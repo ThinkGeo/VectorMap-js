@@ -1,0 +1,7 @@
+{
+  "port": 5000,
+  "server": {
+    "baseDir": "./examples/worldstreets"
+  },
+  "ui": false
+}

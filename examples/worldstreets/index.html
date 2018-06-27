@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ThinkGeo Vector Tile Map</title>
+    <link rel="stylesheet" href="map-icon/icon.css">
+    <link rel="stylesheet" href="css/mapsuite-vectormap.css">
+    <script src="./webfontloader.js"></script>
+    <script>
+        WebFont.load({
+            custom: {
+                families: ["Material Design Icons", "FontAwesome", "ThinkgeoFont"]
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-size: .85em;
+            font-family: Arial, Verdana, Helvetica, Sans-Serif;
+            width: 100%;
+            height: 100%;
+        }
+
+        #map{
+            height: 100%;
+        }
+
+    </style>
+    <script src="dist/ol-debug.js"></script>
+    <script src="dist/ol.mapsuite.js"></script>
+</head>
+
+<body>
+    <div id="map" class="map" tabindex="0"> </div>
+    <script src="index.js"></script>
+</body>
+
+</html>

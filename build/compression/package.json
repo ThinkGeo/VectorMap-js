@@ -1,0 +1,6 @@
+{
+    "name": "base62",
+    "bin": {
+        "base62": "./bin/main.js"
+    }
+}
