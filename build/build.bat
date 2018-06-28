@@ -1,5 +1,6 @@
 @echo off
 cd %~pd0 
+cd ..
 call npm install 
 call npm install uglify-js -g 
 call npm run build 
@@ -13,6 +14,7 @@ call move mapsuite-vectormap-dev.js  %~pd0dist
 call compression.bat 
 call move mapsuite-vectormap.js  %~pd0dist 
 del /q /s  *^ol*
+
 
 
 
