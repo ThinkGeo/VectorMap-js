@@ -35,15 +35,22 @@ __Hybrid Map Style__
 2 options of installing Map Suite VectorMap.js:
    * Use NPM install 
 
-    npm install mapsuite 
+    npm install vectormap-js
 	
 	or 
 	
-	npm install mapsuite-dev
+    npm install vectormap-js-dev
 
-   * Include vectormap.js with "script"
+   * Include related in <header>
 
-    <script src="https://cdnjs.net/thinkgeo/mapsuite-vectormap.js"></script>
+        // style sheet for mapsuite.vectormap.js
+  	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css"></link>
+
+  	// latest version for development  
+  	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap-dev.js"></script>
+
+  	// latest version for release
+  	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
 
 ## Quickstart
 You can create a beautiful map by following these steps:
@@ -53,7 +60,7 @@ You can create a beautiful map by following these steps:
     npm init
 2.Under the current directory, the mapsuite module is installed through 
 
-    npm install mapsuite
+    npm install vectormap-js
 3.Create an index.html in any editor you wanna, here take [Visual Studio Code](https://code.visualstudio.com/) for example, and paste the code below:
     
 ```
@@ -117,10 +124,10 @@ Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.i
 ## Browser Suport
 __mapsuite-vectormap.js__ is officially supported and tested on the last two versions of these browsers:
 
-* Mac OS:Chrome,Firefox,and Safari
-* Windows:Chrome,Firefox,IE11,and Edge
-* iOS:safari,Chrome,Firefox
-* Android:Chrome
+* __Mac OS__: Chrome,Firefox,and Safari
+* __Windows__: Chrome,Firefox,IE11,and Edge
+* __iOS__: safari,Chrome,Firefox
+* __Android__: Chrome
 
 __mapsuite-vectormap.js__ should also run in any brower with HTML5 support.
 
