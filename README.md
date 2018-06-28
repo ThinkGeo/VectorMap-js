@@ -9,12 +9,12 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 Wiki Documentation: http://wiki.thinkgeo.com/wiki/map_suite_api
 
-* [Getting started with Map Suite VectorMap.js]()
-* [Community & Support]()
-* [API documentation]()
-* [Predefined open source styles]()
-* [Map Suite Vector StyleJSON Specification]()
-* [World Streets Data Schema]()
+* [Getting started with Map Suite VectorMap.js](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/get-started/quickstart.html)
+* [Community & Support](https://github.com/ThinkGeo/VectorMap-js/issues)
+* [API documentation](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/api-reference.html)
+* [Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
+* [Map Suite Vector StyleJSON Specification](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/)
+* [World Streets Data Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 
 __Light Map Style__
 
@@ -43,25 +43,25 @@ __Hybrid Map Style__
 
    * Include related in <header>
 
-        // style sheet for mapsuite.vectormap.js
-  	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css"></link>
-
-  	// latest version for development  
-  	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap-dev.js"></script>
-
-  	// latest version for release
+  	// or latest version for release
   	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
+ 
+  	// style sheet for mapsuite.vectormap.js
+	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css"></link>
 
 ## Quickstart
 You can create a beautiful map by following these steps:
 
-1.Create a new folder in which you initialize a pacage.json file with 
+1. Create a new folder in which you initialize a pacage.json file with 
 
     npm init
-2.Under the current directory, the mapsuite module is installed through 
+2. Under the current directory, the mapsuite module is installed through 
 
     npm install vectormap-js
-3.Create an index.html in any editor you wanna, here take [Visual Studio Code](https://code.visualstudio.com/) for example, and paste the code below:
+
+3. Download one of [Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop) and copy it to the directory where the index.html is. For example, we can call it "thinkgeo-world-streets-light.json".
+
+4. Create an index.html in any editor you wanna, here take [Visual Studio Code](https://code.visualstudio.com/) for example, and paste the code below:
     
 ```
 <!DOCTYPE html>
@@ -70,13 +70,13 @@ You can create a beautiful map by following these steps:
         <title>Sample Map (mapbox vector tile)</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./node_modules/mapsuite/mapsuite-vectormap.css" type="text/css">
-        <script src="./node_modules/mapsuite/mapsuite-vectormap.js"></script>
+        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css" type="text/css">
+        <script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
     </head>
     <body>
         <div id="map"></div>
         <script>
-            var worldStreetsLayer = new ol.mapsuite.WorldStreetsVectorTileLayer("thinkgeo-world-streets-light.json");
+            var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json");
             let map = new ol.Map({
                 layers: [vectortilelayer],
                 target: 'map',
@@ -90,8 +90,6 @@ You can create a beautiful map by following these steps:
 </html>
 ```
 
-4.Download one of [Predefined open source styles]() and copy it to the directory where the index.html is. For example, we can call it "worldstreets.json".
-
 5.Run the page and a beautiful map there.
 
 __NOTE:__ 
@@ -99,12 +97,12 @@ __NOTE:__
 __[ThinkGeo Icon FontSet](http://maptest.thinkgeo.com/maps/icon-editor/index.html)__ is an icon set, which is used in "[Predefined open source styles]()" as POI icons. To load it in the map, please add following code in "<Head>".
 
 ```
-<script src="./node_modules/mapsuite-map-icon/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/icons-font/0.1.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["ThinkgeoFont"],
-            urls: ["./node_modules/mapsuite-map-icon/icon.css"]
+            urls: ["https://cdn.thinkgeo.com/icons-font/0.1.0/thinkgeo-font.css"]
         }
     });
 </script>
@@ -133,4 +131,3 @@ __mapsuite-vectormap.js__ should also run in any brower with HTML5 support.
 
 ## License
 __mapsuite-vectormap.js__ is licensed under the [Apache 2.0](https://github.com/ThinkGeo/MapSuiteGisEditor/blob/master/LICENSE). 
-
