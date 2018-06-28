@@ -78,7 +78,7 @@ You can create a beautiful map by following these steps:
         <script>
             var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json");
             let map = new ol.Map({
-                layers: [vectortilelayer],
+                layers: [worldStreetsLayer],
                 target: 'map',
                 view: new ol.View({
                     center: ol.proj.fromLonLat([-96.79620, 32.79423]),
