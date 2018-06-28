@@ -90,7 +90,7 @@ You can create a beautiful map by following these steps:
 </html>
 ```
 
-5.Run the page and a beautiful map there.
+5. Run the page and a beautiful map there.
 
 __NOTE:__ 
 
@@ -122,9 +122,9 @@ Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.i
 ## Browser Suport
 __mapsuite-vectormap.js__ is officially supported and tested on the last two versions of these browsers:
 
-* __Mac OS__: Chrome,Firefox,and Safari
-* __Windows__: Chrome,Firefox,IE11,and Edge
-* __iOS__: safari,Chrome,Firefox
+* __Mac OS__: Chrome, Firefox, and Safari
+* __Windows__: Chrome, Firefox, IE11, and IE Edge
+* __iOS__: Safari, Chrome, Firefox
 * __Android__: Chrome
 
 __mapsuite-vectormap.js__ should also run in any brower with HTML5 support.
