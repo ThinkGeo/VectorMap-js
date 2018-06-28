@@ -241,7 +241,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         let results = [];
                         for (let i = 0; i < lines.length; i++) {
                             tempWord = lines[i];
-                            if (tempWord.startsWith("@")) {
+                            if (tempWord.indexOf("@") === 0) {
                                 tempWord = variables[tempWord];
                             }
                             results.push(tempWord);

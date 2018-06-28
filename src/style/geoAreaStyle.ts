@@ -130,18 +130,18 @@ export class GeoAreaStyle extends GeoStyle {
         }
         let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
 
-        if (this.geometryTransform.startsWith("translate")) {
+        if (this.geometryTransform.indexOf("translate") === 0) {
             geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
-        else if (this.geometryTransform.startsWith("scale")) {
+        else if (this.geometryTransform.indexOf("scale") === 0) {
             geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
-        else if (this.geometryTransform.startsWith("rotate")) {
+        else if (this.geometryTransform.indexOf("rotate") === 0) {
             let center = ol.extent.getCenter(geometry.getExtent());
             let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
             geometry.rotate(angle, center);
         }
-        else if (this.geometryTransform.startsWith("skew")) {
+        else if (this.geometryTransform.indexOf("skew") === 0) {
             this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
 

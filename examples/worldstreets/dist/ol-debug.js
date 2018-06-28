@@ -1,5 +1,25 @@
 function olInit() {
+    String.prototype.startsWith = function(str) {                
+        return this.indexOf(str) === 0;
+    }
+    String.prototype.includes = function(search, start) {
+        if (typeof start !== 'number') {
+            start = 0;
+        }
 
+        if (start + search.length > this.length) {
+            return false;
+        } else {
+            return this.indexOf(search, start) !== -1;
+        }
+    };
+    Array.prototype.includes = function(search, start) {
+        if (typeof start !== 'number') {
+            start = 0;
+        }
+        
+        return this.indexOf(search) !== -1;
+    };
     var isWorker;
     var isMain;
     try {
@@ -97549,7 +97569,7 @@ function olInit() {
                         a = opacity;
                     }
                     array = [r, g, b, a];
-                    if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) {
+                    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
                         return "rgba(" + array.join(",") + ")";
                     }
                     else {

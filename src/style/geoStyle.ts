@@ -109,7 +109,7 @@ export class GeoStyle {
     }
 
     static toRGBAColor(color, opacity = 1): string {
-        if (color.startsWith("#")) {
+        if (color.indexOf("#") === 0) {
             let array: number[];
             let r: number;
             let g: number;
@@ -127,17 +127,17 @@ export class GeoStyle {
                 a = opacity;
             }
             array = [r, g, b, a];
-            if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) {
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
                 return "rgba(" + array.join(",") + ")";
             } else {
                 return "rgba(0,0,0,0)";
             }
         }
-        if (color.startsWith("rgb(")) {
+        if (color.indexOf("rgb(") === 0) {
             color = color.replace("rgb(", "rgba(");
             color = color.substring(0, color.length - 1) + "," + opacity + ")";
         }
-        if (color.startsWith("argb(")) {
+        if (color.indexOf("argb(") === 0) {
             color = color.replace("argb(", "").replace(")", "");
             let array = color.split(",");
             let a = array.shift();

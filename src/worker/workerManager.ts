@@ -24,8 +24,6 @@ export class WorkerManager {
     
                 let worker = new Worker(window.URL.createObjectURL(blob));
                 worker.onmessage = function (e) {
-                    // deserialize
-                    var messageData_ = e.data.messageData;
                     let methodInfo = e.data["methodInfo"];
                     let messageData = e.data["messageData"];
 

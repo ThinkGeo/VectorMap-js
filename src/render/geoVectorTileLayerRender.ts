@@ -469,7 +469,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                             if (!source.getGeoFormat().minimalist && workReplay.instructions) {
                                 for (let i = 0; i < workReplay.instructions.length; i++) {
                                     let instruction = workReplay.instructions[i];
-                                    if (instruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && instruction[1].startsWith("hatch")) {
+                                    if (instruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && instruction[1].indexOf("hatch") === 0) {
                                         let hatchInstruction = instruction[1];
                                         let geoStyleId = hatchInstruction.split("|")[1];
                                         let geoStyle = geoStyles[geoStyleId];
@@ -488,7 +488,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
 
                                 for (let i = 0; i < workReplay.hitDetectionInstructions.length; i++) {
                                     let hitInstruction = workReplay.hitDetectionInstructions[i];
-                                    if (hitInstruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && hitInstruction[1].startsWith("hatch")) {
+                                    if (hitInstruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && hitInstruction[1].indexOf("hatch") === 0) {
                                         let hatchInstruction = hitInstruction[1];
                                         let geoStyleId = hatchInstruction.split("|")[1];
                                         let geoStyle = geoStyles[geoStyleId];

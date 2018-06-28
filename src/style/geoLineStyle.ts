@@ -269,15 +269,15 @@ export class GeoLineStyle extends GeoStyle {
                     if (this.geometryTransform) {
                         let values = this.getTransformValues(this.geometryTransform);
 
-                        if (this.geometryTransform.startsWith("translate")) {
+                        if (this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("scale")) {
+                        } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("rotate")) {
+                        } else if (this.geometryTransform.indexOf("rotate") === 0) {
                             let center = ol.extent.getCenter(geometry.getExtent());
                             let angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
-                        } else if (this.geometryTransform.startsWith("skew")) {
+                        } else if (this.geometryTransform.indexOf("skew") === 0) {
                             this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }
@@ -321,15 +321,15 @@ export class GeoLineStyle extends GeoStyle {
                     if (this.geometryTransform) {
                         let values = this.getTransformValues(this.geometryTransform);
 
-                        if (this.geometryTransform.startsWith("translate")) {
+                        if (this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("scale")) {
+                        } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("rotate")) {
+                        } else if (this.geometryTransform.indexOf("rotate") === 0) {
                             let center = ol.extent.getCenter(geometry.getExtent());
                             let angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
-                        } else if (this.geometryTransform.startsWith("skew")) {
+                        } else if (this.geometryTransform.indexOf("skew") === 0) {
                             this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }
@@ -360,15 +360,15 @@ export class GeoLineStyle extends GeoStyle {
                     if (this.geometryTransform) {
                         let values = this.getTransformValues(this.geometryTransform);
 
-                        if (this.geometryTransform.startsWith("translate")) {
+                        if (this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("scale")) {
+                        } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.startsWith("rotate")) {
+                        } else if (this.geometryTransform.indexOf("rotate") === 0) {
                             let center = ol.extent.getCenter(geometry.getExtent());
                             let angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
-                        } else if (this.geometryTransform.startsWith("skew")) {
+                        } else if (this.geometryTransform.indexOf("skew") === 0) {
                             this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }

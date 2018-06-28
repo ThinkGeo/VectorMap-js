@@ -162,7 +162,7 @@ var GeoStyle = /** @class */ (function () {
     };
     GeoStyle.toRGBAColor = function (color, opacity) {
         if (opacity === void 0) { opacity = 1; }
-        if (color.startsWith("#")) {
+        if (color.indexOf("#") === 0) {
             var array = void 0;
             var r = void 0;
             var g = void 0;
@@ -181,18 +181,18 @@ var GeoStyle = /** @class */ (function () {
                 a = opacity;
             }
             array = [r, g, b, a];
-            if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) {
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
                 return "rgba(" + array.join(",") + ")";
             }
             else {
                 return "rgba(0,0,0,0)";
             }
         }
-        if (color.startsWith("rgb(")) {
+        if (color.indexOf("rgb(") === 0) {
             color = color.replace("rgb(", "rgba(");
             color = color.substring(0, color.length - 1) + "," + opacity + ")";
         }
-        if (color.startsWith("argb(")) {
+        if (color.indexOf("argb(") === 0) {
             color = color.replace("argb(", "").replace(")", "");
             var array = color.split(",");
             var a = array.shift();
@@ -645,7 +645,7 @@ var GeoTextStyle = /** @class */ (function (_super) {
             featureText = feature.get(this.name);
         }
         // A workaround for the language, remove the data update
-        if ((featureText === undefined || featureText === "") && this.name.startsWith("name_")) {
+        if ((featureText === undefined || featureText === "") && this.name.indexOf("name_") === 0) {
             featureText = feature.get("name");
         }
         if (this.numericFormat) {
@@ -1809,7 +1809,7 @@ var VectorTileLayer = /** @class */ (function (_super) {
                         var results = [];
                         for (var i = 0; i < lines.length; i++) {
                             tempWord = lines[i];
-                            if (tempWord.startsWith("@")) {
+                            if (tempWord.indexOf("@") === 0) {
                                 tempWord = variables[tempWord];
                             }
                             results.push(tempWord);
@@ -3338,7 +3338,7 @@ var GeoStyleProperty = /** @class */ (function () {
                 for (var i_1 = 0; i_1 < results.length; i_1++) {
                     if (results[i_1]) {
                         var filterItem = __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__["a" /* GeoFilterItem */].createFilterItem(results[i_1]);
-                        if (filterItem.value.startsWith("~'")) {
+                        if (filterItem.value.indexOf("~'") === 0) {
                             filters.push(new __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__["a" /* GeoRegexFilter */]([filterItem]));
                         }
                         else if (filterItem.key === "zoom") {
@@ -3426,7 +3426,7 @@ var StyleJsonCacheItem = /** @class */ (function () {
                 for (var i_1 = 0; i_1 < results.length; i_1++) {
                     if (results[i_1]) {
                         var filterItem = __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__["a" /* GeoFilterItem */].createFilterItem(results[i_1]);
-                        if (filterItem.value.startsWith("~'")) {
+                        if (filterItem.value.indexOf("~'") === 0) {
                             filters.push(new __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__["a" /* GeoRegexFilter */]([filterItem]));
                         }
                         else if (filterItem.key === "zoom") {
@@ -3680,18 +3680,18 @@ var GeoAreaStyle = /** @class */ (function (_super) {
             }
         }
         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-        if (this.geometryTransform.startsWith("translate")) {
+        if (this.geometryTransform.indexOf("translate") === 0) {
             geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
-        else if (this.geometryTransform.startsWith("scale")) {
+        else if (this.geometryTransform.indexOf("scale") === 0) {
             geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
-        else if (this.geometryTransform.startsWith("rotate")) {
+        else if (this.geometryTransform.indexOf("rotate") === 0) {
             var center = ol.extent.getCenter(geometry.getExtent());
             var angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
             geometry.rotate(angle, center);
         }
-        else if (this.geometryTransform.startsWith("skew")) {
+        else if (this.geometryTransform.indexOf("skew") === 0) {
             this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
         return geometry.flatCoordinates;
@@ -4475,18 +4475,18 @@ var GeoLineStyle = /** @class */ (function (_super) {
                     var geometry = _this.getGeometry(feature);
                     if (_this.geometryTransform) {
                         var values = _this.getTransformValues(_this.geometryTransform);
-                        if (_this.geometryTransform.startsWith("translate")) {
+                        if (_this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("scale")) {
+                        else if (_this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("rotate")) {
+                        else if (_this.geometryTransform.indexOf("rotate") === 0) {
                             var center = ol.extent.getCenter(geometry.getExtent());
                             var angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
                         }
-                        else if (_this.geometryTransform.startsWith("skew")) {
+                        else if (_this.geometryTransform.indexOf("skew") === 0) {
                             _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }
@@ -4518,18 +4518,18 @@ var GeoLineStyle = /** @class */ (function (_super) {
                     var geometry = _this.getGeometry(feature);
                     if (_this.geometryTransform) {
                         var values = _this.getTransformValues(_this.geometryTransform);
-                        if (_this.geometryTransform.startsWith("translate")) {
+                        if (_this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("scale")) {
+                        else if (_this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("rotate")) {
+                        else if (_this.geometryTransform.indexOf("rotate") === 0) {
                             var center = ol.extent.getCenter(geometry.getExtent());
                             var angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
                         }
-                        else if (_this.geometryTransform.startsWith("skew")) {
+                        else if (_this.geometryTransform.indexOf("skew") === 0) {
                             _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }
@@ -4552,18 +4552,18 @@ var GeoLineStyle = /** @class */ (function (_super) {
                     var geometry = _this.getGeometry(feature);
                     if (_this.geometryTransform) {
                         var values = _this.getTransformValues(_this.geometryTransform);
-                        if (_this.geometryTransform.startsWith("translate")) {
+                        if (_this.geometryTransform.indexOf("translate") === 0) {
                             geometry.translate(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("scale")) {
+                        else if (_this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
                         }
-                        else if (_this.geometryTransform.startsWith("rotate")) {
+                        else if (_this.geometryTransform.indexOf("rotate") === 0) {
                             var center = ol.extent.getCenter(geometry.getExtent());
                             var angle = +values[0].trim() * Math.PI / 180;
                             geometry.rotate(angle, center);
                         }
-                        else if (_this.geometryTransform.startsWith("skew")) {
+                        else if (_this.geometryTransform.indexOf("skew") === 0) {
                             _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
                     }
@@ -6270,7 +6270,7 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
                             if (!source.getGeoFormat().minimalist && workReplay.instructions) {
                                 for (var i = 0; i < workReplay.instructions.length; i++) {
                                     var instruction = workReplay.instructions[i];
-                                    if (instruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && instruction[1].startsWith("hatch")) {
+                                    if (instruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && instruction[1].indexOf("hatch") === 0) {
                                         var hatchInstruction = instruction[1];
                                         var geoStyleId = hatchInstruction.split("|")[1];
                                         var geoStyle = geoStyles_1[geoStyleId];
@@ -6288,7 +6288,7 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
                                 }
                                 for (var i = 0; i < workReplay.hitDetectionInstructions.length; i++) {
                                     var hitInstruction = workReplay.hitDetectionInstructions[i];
-                                    if (hitInstruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && hitInstruction[1].startsWith("hatch")) {
+                                    if (hitInstruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && hitInstruction[1].indexOf("hatch") === 0) {
                                         var hatchInstruction = hitInstruction[1];
                                         var geoStyleId = hatchInstruction.split("|")[1];
                                         var geoStyle = geoStyles_1[geoStyleId];
@@ -7629,8 +7629,6 @@ var WorkerManager = /** @class */ (function () {
                 var blob = new Blob([source]);
                 var worker = new Worker(window.URL.createObjectURL(blob));
                 worker.onmessage = function (e) {
-                    // deserialize
-                    var messageData_ = e.data.messageData;
                     var methodInfo = e.data["methodInfo"];
                     var messageData = e.data["messageData"];
                     var uid = methodInfo.uid;

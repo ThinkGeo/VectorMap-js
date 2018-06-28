@@ -99,7 +99,7 @@ export class GeoStyleProperty {
                     if (results[i]) {
                         let filterItem = GeoFilterItem.createFilterItem(results[i]);
 
-                        if (filterItem.value.startsWith("~'")) {
+                        if (filterItem.value.indexOf("~'") === 0) {
                             filters.push(new GeoRegexFilter([filterItem]));
                         } else if (filterItem.key === "zoom") {
                             if (geoZoomFilter === undefined) {
