@@ -53,6 +53,7 @@ __Hybrid Map Style__
 Set up a basic map with VectorMap.js in 6 steps (here take [Visual Studio Code](https://code.visualstudio.com/) for example).
 
 __Step 1__. Create a html page with name "index.html "
+
 __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and related css file.
 
   	<!-- style sheet for vectormap.js -->
