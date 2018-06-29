@@ -1,6 +1,4 @@
 
-![Alt ThinkGeo](https://thinkgeo.com/thinkgeo.png)
-
 ## MapSuite
 
 The __mapsuite-vectormap.js__ is an open-source JavaScript SDK and an extension of [OpenLayers](https://openlayers.org/ "OpenLayers") to create maps for web and mobile devices. With the help of Map Suite vector styling schema - [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/), you can easily create beautiful maps for your application.
@@ -165,7 +163,7 @@ Besides loading the traditional KML, GeoJSON, bitmap tiles etc., Map Suite vecto
 
 ## Styling
 
-Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) is designed for you to specify data sources, layers and how to define and apply styles to layers. Please check the demo from "[Predefined open source styles]()" or check related documentation at https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/. 
+Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) is designed for you to specify data sources, layers and how to define and apply styles to layers. Please check the demo from "[Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles)" or check related documentation at https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/. 
 
 
 ## Browser Suport
