@@ -43,40 +43,88 @@ __Hybrid Map Style__
 
    * Include related in <header>
 
-  	// or latest version for release
+  	<!-- style sheet for vectormap.js -->
+	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css"></link>
+	
+	<!-- latest minified version of vectormap.js -->
   	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
  
-  	// style sheet for mapsuite.vectormap.js
+## Get Started
+Set up a basic map with VectorMap.js in 6 steps (here take [Visual Studio Code](https://code.visualstudio.com/) for example).
+
+__Step 1__. Create a html page with name "index.html "
+__Step 2__. In the `<head>`of your HTML page, import the vectormap.js and related css file.
+
+  	<!-- style sheet for vectormap.js -->
 	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css"></link>
-
-## Quickstart
-You can create a beautiful map by following these steps:
-
-1. Create a new folder in which you initialize a pacage.json file with 
-
-    npm init
-2. Under the current directory, the mapsuite module is installed through 
-
-    npm install vectormap-js
-
-3. Download one of [Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop) and copy it to the directory where the index.html is. For example, we can call it "thinkgeo-world-streets-light.json".
-
-4. Create an index.html in any editor you wanna, here take [Visual Studio Code](https://code.visualstudio.com/) for example, and paste the code below:
+	
+	<!-- latest minified version of vectormap.js -->
+  	<script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
+ 
     
+And add a height and width for the map:
+ 
+```css
+ <style>
+    #map {
+        width: 800px;
+        height: 600px;
+    }
+ </style>
+ ```
+__Step 3__. In the `<body>` of your HTML page, add a `"map"` div.
+```html
+<div id="map"></div>
+```
+
+
+__Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control, and add the vector layer. 
+```javascript
+<script>
+    var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", 
+        {
+            'apikey':'your-thinkgeo-gis-service-vector-tile-key'
+        });
+    let map = new ol.Map({
+        layers: [worldStreetsLayer],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+            zoom: 2,
+        }),
+    });
+</script>
+```
+ 
+ __NOTE:__  Please check [here](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/content/sign-up-thinkgeo-account.html) on how to create your own `ThinkGeo GIS Service Vector Tile key`.
+ 
+__Step 5__. Download one of [Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop) and copy it to the directory where the index.html is. For example, we can call it "thinkgeo-world-streets-light.json".
+
+After all the above steps completed, your HTML page should be:
+
 ```
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sample Map (mapbox vector tile)</title>
+        <title>Sample Map</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.css" type="text/css">
         <script src="https://cdn.thinkgeo.com/vectormap/0.1.0/mapsuite-vectormap.js"></script>
+         <style>
+            #map {
+                width: 800px;
+                height: 600px;
+            }
+         </style>
     </head>
     <body>
         <div id="map"></div>
         <script>
-            var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json");
+            var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", 
+            {
+                'apikey':'your-thinkgeo-gis-service-vector-tile-key'
+            });
             let map = new ol.Map({
                 layers: [worldStreetsLayer],
                 target: 'map',
@@ -90,11 +138,11 @@ You can create a beautiful map by following these steps:
 </html>
 ```
 
-5. Run the page and a beautiful map there.
+__Step 6__. Run the page and a beautiful map there.
 
 __NOTE:__ 
 
-__[ThinkGeo Icon FontSet](http://maptest.thinkgeo.com/maps/icon-editor/index.html)__ is an icon set, which is used in "[Predefined open source styles]()" as POI icons. To load it in the map, please add following code in "<Head>".
+__[ThinkGeo Icon FontSet](http://maptest.thinkgeo.com/maps/icon-editor/index.html)__ is an icon set, which is used in "[Predefined open source styles]()" as POI icons. If you are using ready-to-go predefined styleJSON file downloaded, please add following code in `"<Head>"`.
 
 ```
 <script src="https://cdn.thinkgeo.com/icons-font/0.1.0/webfontloader.js"></script>
