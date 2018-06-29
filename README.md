@@ -144,12 +144,12 @@ __NOTE:__
 __[ThinkGeo Icon FontSet](http://maptest.thinkgeo.com/maps/icon-editor/index.html)__ is an icon set, which is used in "[Predefined open source styles]()" as POI icons. If you are using ready-to-go predefined styleJSON file downloaded, please add following code in `"<Head>"`.
 
 ```
-<script src="https://cdn.thinkgeo.com/icons-font/0.1.0/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["ThinkgeoFont"],
-            urls: ["https://cdn.thinkgeo.com/icons-font/0.1.0/thinkgeo-font.css"]
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
         }
     });
 </script>
