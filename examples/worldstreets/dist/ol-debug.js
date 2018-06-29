@@ -101239,6 +101239,10 @@ function olInit() {
                     }
                     delete self.requestCache[requestKey]
                 }.bind(this);
+                xhr.onerror = function() {
+                    // TODO post message to main thread for request failed.
+                    delete self.requestCache[requestKey]
+                }.bind(this);
                 xhr.send();
                 self.requestCache[requestKey] = xhr;
             }
