@@ -27,16 +27,23 @@
             height: 100%;
         }
 
-        #map{
+        #map {
             height: 100%;
         }
 
+        #olzoom {
+            position: absolute;
+            z-index: 1000;
+            top: 7.5em;
+            left: .5em;
+        }
     </style>
     <script src="dist/ol-debug.js"></script>
     <script src="dist/ol.mapsuite.js"></script>
 </head>
 
 <body>
+    <label id="olzoom"></label>
     <div id="map" class="map" tabindex="0"> </div>
     <script src="index.js"></script>
 </body>
