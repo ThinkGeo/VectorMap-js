@@ -16,10 +16,21 @@ export class GeoVectorTile extends (ol.VectorTile as { new(tileCoord: ol.TileCoo
         if (this["xhr"] != undefined) {
             this["xhr"].abort();
         }
+
+        if (this.workerId !== undefined) {
+            var disposeInfo = {
+                formatId: (<any>ol).getUid(this.getFormat()),
+                tileCoord: this.tileCoord,
+                requestCoord: this.requestTileCoord
+            }
+
+            this.getFormat().workerManager.postMessage(this.tileCoord + (<any>ol).getUid(disposeInfo), "vectorTileDispose", disposeInfo, null, this.workerId);
+        }
+
         (<any>ol.Tile.prototype).disposeInternal.call(this);
     }
 
-    public onLoad(dataProjection,  extent) {
+    public onLoad(dataProjection, extent) {
         this.setProjection(dataProjection);
         this.setFeatures();
         this.setExtent(extent);

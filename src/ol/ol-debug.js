@@ -1,8 +1,8 @@
 function olInit() {
-    String.prototype.startsWith = function(str) {                
+    String.prototype.startsWith = function (str) {
         return this.indexOf(str) === 0;
     }
-    String.prototype.includes = function(search, start) {
+    String.prototype.includes = function (search, start) {
         if (typeof start !== 'number') {
             start = 0;
         }
@@ -13,14 +13,13 @@ function olInit() {
             return this.indexOf(search, start) !== -1;
         }
     };
-    Array.prototype.includes = function(search, start) {
+    Array.prototype.includes = function (search, start) {
         if (typeof start !== 'number') {
             start = 0;
         }
-        
+
         return this.indexOf(search) !== -1;
     };
-
     var isWorker;
     var isMain;
     try {
@@ -11860,30 +11859,30 @@ function olInit() {
      */
     ol.ResolutionConstraint.createSnapToPower = function (power, maxResolution, opt_maxLevel) {
         return (
-          /**
-           * @param {number|undefined} resolution Resolution.
-           * @param {number} delta Delta.
-           * @param {number} direction Direction.
-           * @return {number|undefined} Resolution.
-           */
-          // MapSuite
-          function (resolution, delta, direction) {
-            if (resolution !== undefined) {
-    
-              var offset = -direction / 2;
-              var oldLevel =
-                Math.log(maxResolution / resolution) / Math.log(power) + offset;
-    
-              var newLevel = Math.max(oldLevel + delta, 0);
-              if (opt_maxLevel !== undefined) {
-                newLevel = Math.min(newLevel, opt_maxLevel);
-              }
-              return maxResolution / Math.pow(power, newLevel);
-            } else {
-              return undefined;
-            }
-          });
-      };
+            /**
+             * @param {number|undefined} resolution Resolution.
+             * @param {number} delta Delta.
+             * @param {number} direction Direction.
+             * @return {number|undefined} Resolution.
+             */
+            // MapSuite
+            function (resolution, delta, direction) {
+                if (resolution !== undefined) {
+
+                    var offset = -direction / 2;
+                    var oldLevel =
+                        Math.log(maxResolution / resolution) / Math.log(power) + offset;
+
+                    var newLevel = Math.max(oldLevel + delta, 0);
+                    if (opt_maxLevel !== undefined) {
+                        newLevel = Math.min(newLevel, opt_maxLevel);
+                    }
+                    return maxResolution / Math.pow(power, newLevel);
+                } else {
+                    return undefined;
+                }
+            });
+    };
 
     goog.provide('ol.RotationConstraint');
 
@@ -12641,7 +12640,7 @@ function olInit() {
         }
         return dest;
     };
-    
+
 
     goog.provide('ol.transform');
 
@@ -20164,34 +20163,34 @@ function olInit() {
         var map = this.getMap();
         var view = map.getView();
         if (!view) {
-          // the map does not have a view, so we can't act
-          // upon it
-          return;
+            // the map does not have a view, so we can't act
+            // upon it
+            return;
         }
         var currentResolution = view.getResolution();
         if (currentResolution) {
-          var oldZoom = view.getZoom();
-          // MapSuite:
-          if (oldZoom !== undefined) {
-            var zoom = Math.round(oldZoom);
-            zoom = zoom + delta;
-            delta = zoom - oldZoom;
-          }
-          var newResolution = view.constrainResolution(currentResolution, delta);
-          if (this.duration_ > 0) {
-            if (view.getAnimating()) {
-              view.cancelAnimations();
+            var oldZoom = view.getZoom();
+            // MapSuite:
+            if (oldZoom !== undefined) {
+                var zoom = Math.round(oldZoom);
+                zoom = zoom + delta;
+                delta = zoom - oldZoom;
             }
-            view.animate({
-              resolution: newResolution,
-              duration: this.duration_,
-              easing: ol.easing.easeOut
-            });
-          } else {
-            view.setResolution(newResolution);
-          }
+            var newResolution = view.constrainResolution(currentResolution, delta);
+            if (this.duration_ > 0) {
+                if (view.getAnimating()) {
+                    view.cancelAnimations();
+                }
+                view.animate({
+                    resolution: newResolution,
+                    duration: this.duration_,
+                    easing: ol.easing.easeOut
+                });
+            } else {
+                view.setResolution(newResolution);
+            }
         }
-      };
+    };
 
     goog.provide('ol.control');
 
@@ -22353,35 +22352,35 @@ function olInit() {
     ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function (map) {
         var view = map.getView();
         if (view.getAnimating()) {
-          view.cancelAnimations();
+            view.cancelAnimations();
         }
-    
+
         var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
         var delta = this.delta_ / 100;
         if (delta > 0) {
-          delta = delta * 2 - 1;
+            delta = delta * 2 - 1;
         }
         else {
-          delta = delta * 2 + 1;
+            delta = delta * 2 + 1;
         }
         delta *= 0.15;
-    
+
         var delta = ol.math.clamp(delta, -maxDelta, maxDelta);
         ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
-          this.duration_);
+            this.duration_);
         this.mode_ = undefined;
         this.delta_ = 0;
         this.lastAnchor_ = null;
         this.startTime_ = undefined;
         this.timeoutId_ = undefined;
-      };
+    };
 
-     /**
-     * Enable or disable using the mouse's location as an anchor when zooming
-     * @param {boolean} useAnchor true to zoom to the mouse's location, false
-     * to zoom to the center of the map
-     * @api
-     */
+    /**
+    * Enable or disable using the mouse's location as an anchor when zooming
+    * @param {boolean} useAnchor true to zoom to the mouse's location, false
+    * to zoom to the center of the map
+    * @api
+    */
     ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function (useAnchor) {
         this.useAnchor_ = useAnchor;
         if (!useAnchor) {
@@ -28492,6 +28491,10 @@ function olInit() {
         }
         if (pendingStroke) {
             context.stroke();
+        }
+
+        if (!(this instanceof ol.render.canvas.ImageReplay) && this.instructions === instructions) {
+            this.instructions.length = 0;
         }
         return undefined;
     };
@@ -96665,17 +96668,15 @@ function olInit() {
                             if (matchedNode) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName);
-                                    // if (this.minimalist) {
-                                    //     feature.properties_ = {};
-                                    // }
+                                 
+
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
                                 }
 
                                 var zindex = 0;
                                 if (cacheTree.root.data.zIndex) {
-                                    zindex = rawFeature.properties[cacheTree.root.data.zIndex];
-                                    feature.properties_[cacheTree.root.data.zIndex] = zindex;
+                                    zindex =  feature.properties_[cacheTree.root.data.zIndex]
                                 }
 
                                 if (isNaN(zindex)) {
@@ -96697,6 +96698,7 @@ function olInit() {
                         }
                     }
                 }
+                cacheTrees.length=0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
             return [allFeatures, instructsCache, extent];
@@ -96734,12 +96736,14 @@ function olInit() {
                                     }
                                 }
                                 Array.prototype.push.apply(instructs, childrenInstructs);
+                                childrenInstructs.length=0;
+                                instructsInOneZIndex.length=0;
                             }
                         }
                     }
                 }
             }
-
+            instructsTree.length = 0;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -96777,6 +96781,7 @@ function olInit() {
                         subTileCachedInstruct[tileKey].push(instruct);
                     }
                 }
+                feature.extent_ = undefined;
             }
             return subTileCachedInstruct;
         }
@@ -96891,11 +96896,11 @@ function olInit() {
             }
         }
 
-        var createStyleJsonCache = function (stylejson,geoTextStyleInfos) {
+        var createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
             var styleIdIndex = 0;
             var geoStyles = {};
             var styleJsonCache = new StyleJsonCache();
-            styleJsonCache["geoTextStyleInfos"]=geoTextStyleInfos;
+            styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
                 var item = new StyleJsonCacheItem(json, 0, 24, "layerName");
@@ -96953,18 +96958,16 @@ function olInit() {
                 var result = [];
                 if (node.data.geoStyle) {
                     this.geoStyles[node.data.geoStyle.id] = node.data.geoStyle;
-                    if(node.data.geoStyle instanceof GeoTextStyle && this["geoTextStyleInfos"][node.data.geoStyle.id]!==undefined)
-                    {
-                        node.data.geoStyle.charWidths=this["geoTextStyleInfos"][node.data.geoStyle.id];
+                    if (node.data.geoStyle instanceof GeoTextStyle && this["geoTextStyleInfos"][node.data.geoStyle.id] !== undefined) {
+                        node.data.geoStyle.charWidths = this["geoTextStyleInfos"][node.data.geoStyle.id];
                     }
 
                 }
                 if (node.data.childrenGeoStyles && node.data.childrenGeoStyles.length > 0) {
                     for (var i = 0; i < node.data.childrenGeoStyles.length; i++) {
                         this.geoStyles[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
-                        if(node.data.childrenGeoStyles[i] instanceof GeoTextStyle && this["geoTextStyleInfos"][node.data.childrenGeoStyles[i].id]!==undefined)
-                        {
-                            node.data.childrenGeoStyles[i].charWidths=this["geoTextStyleInfos"][node.data.childrenGeoStyles[i].id];
+                        if (node.data.childrenGeoStyles[i] instanceof GeoTextStyle && this["geoTextStyleInfos"][node.data.childrenGeoStyles[i].id] !== undefined) {
+                            node.data.childrenGeoStyles[i].charWidths = this["geoTextStyleInfos"][node.data.childrenGeoStyles[i].id];
                         }
                     }
                 }
@@ -98607,8 +98610,7 @@ function olInit() {
                 if (flatCoordinates === undefined || flatCoordinates.length < 2) {
                     return false;
                 }
-                else
-                {
+                else {
                     return true;
                 }
             };
@@ -99091,7 +99093,7 @@ function olInit() {
                     _this.name = styleJson["text-name"];
                     _this.opacity = styleJson["text-opacity"];
                     _this.rotateAngle = styleJson["text-rotate-angle"];
-                    _this.placements =  styleJson["text-placements"] ? styleJson["text-placements"] : "U,B,L,R";
+                    _this.placements = styleJson["text-placements"] ? styleJson["text-placements"] : "U,B,L,R";
                     _this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
                     _this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
                     _this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
@@ -99277,7 +99279,7 @@ function olInit() {
                 var scale = textScale * self.devicePixelRatio;
                 var widths = [];
                 var width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-                var lineHeight =this.charWidths["M"];
+                var lineHeight = this.charWidths["M"];
                 var tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
                 var tmpMaskHeightMargin = 0;
                 var tmpMaskWidthMargin = 0;
@@ -99711,7 +99713,7 @@ function olInit() {
             GeoTextStyle.placementsName = "text-placements";
             return GeoTextStyle;
         }(GeoStyle));
-        
+
         var TextReplayCustom = /** @class */ (function (_super) {
             __extends(TextReplayCustom, _super);
             function TextReplayCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
@@ -99960,7 +99962,7 @@ function olInit() {
                                                         }
                                                         anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                                                         anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                                                        this.replayImage_(context, /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */ (part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
+                                                        this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
                                                     }
                                                 }
                                                 if (fillKey) {
@@ -99983,7 +99985,7 @@ function olInit() {
                                                         }
                                                         anchorX = /** @type {number} */ (part[2]);
                                                         anchorY = baseline * labelInfo["height"] - offsetY;
-                                                        this.replayImage_(context, /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */ (part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
+                                                        this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
                                                     }
                                                 }
                                                 declutterGroups.push(tempDeclutterGroup);
@@ -100021,7 +100023,7 @@ function olInit() {
                                                     // label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
                                                     anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                                                     anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                                                    this.replayImage_(context, /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */ (part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
+                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
                                                 }
                                             }
                                             if (fillKey) {
@@ -100044,7 +100046,7 @@ function olInit() {
                                                     }
                                                     anchorX = /** @type {number} */ (part[2]);
                                                     anchorY = baseline * labelInfo["height"] - offsetY;
-                                                    this.replayImage_(context, /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */ (part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
+                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
                                                 }
                                             }
                                             declutterGroups.push(tempDeclutterGroup);
@@ -100127,7 +100129,7 @@ function olInit() {
                                 context.stroke();
                                 pendingStroke = 0;
                             }
-                            this.setStrokeStyle_(context, /** @type {Array.<*>} */ (instruction));
+                            this.setStrokeStyle_(context, /** @type {Array.<*>} */(instruction));
                             ++i;
                             break;
                         case ol.render.canvas.Instruction.STROKE:
@@ -100215,9 +100217,9 @@ function olInit() {
                 }
                 else if (intersects) {
                     if (fillStroke) {
-                        this.replayTextBackground_(context, p1, p2, p3, p4, 
-                        /** @type {Array.<*>} */ (fillInstruction), 
-                        /** @type {Array.<*>} */ (strokeInstruction));
+                        this.replayTextBackground_(context, p1, p2, p3, p4,
+                        /** @type {Array.<*>} */(fillInstruction),
+                        /** @type {Array.<*>} */(strokeInstruction));
                     }
                     ol.render.canvas.drawImage(context, transform, opacity, labelInfo, originX, originY, w, h, x, y, scale);
                 }
@@ -100370,26 +100372,26 @@ function olInit() {
                 }
                 this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
                     begin, end, baseline, declutterGroup,
-                    textState.overflow, fillKey, textState.maxAngle,
-                    function (text) {
-                        var width = widths[text];
-                        if (!width) {
-                            width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
-                        }
-                        return width * textScale * pixelRatio;
-                    },
+                textState.overflow, fillKey, textState.maxAngle,
+                function (text) {
+                    var width = widths[text];
+                    if (!width) {
+                        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
+                    }
+                    return width * textScale * pixelRatio;
+                },
                     offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
                 ]);
                 this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
                     begin, end, baseline, declutterGroup,
-                    textState.overflow, fillKey, textState.maxAngle,
-                    function (text) {
-                        var width = widths[text];
-                        if (!width) {
-                            width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
-                        }
-                        return width * textScale;
-                    },
+                textState.overflow, fillKey, textState.maxAngle,
+                function (text) {
+                    var width = widths[text];
+                    if (!width) {
+                        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
+                    }
+                    return width * textScale;
+                },
                     offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio
                 ]);
             };
@@ -100462,8 +100464,8 @@ function olInit() {
                     this.textRotation_ = textRotation === undefined ? 0 : textRotation;
                     this.strokeKey_ = strokeState ?
                         (typeof strokeState.strokeStyle === "string" ? strokeState.strokeStyle : ol.getUid(strokeState.strokeStyle)) +
-                            strokeState.lineCap + strokeState.lineDashOffset + "|" + strokeState.lineWidth +
-                            strokeState.lineJoin + strokeState.miterLimit + "[" + strokeState.lineDash.join() + "]" :
+                        strokeState.lineCap + strokeState.lineDashOffset + "|" + strokeState.lineWidth +
+                        strokeState.lineJoin + strokeState.miterLimit + "[" + strokeState.lineDash.join() + "]" :
                         "";
                     this.textKey_ = textState.font + textState.scale + (textState.textAlign || "?");
                     this.fillKey_ = fillState ?
@@ -100559,8 +100561,8 @@ function olInit() {
             };
             return TextReplayCustom;
         }(ol.render.canvas.TextReplay));
-        
-        
+
+
 
         var ReplayGroupCustom = /** @class */ (function (_super) {
             __extends(ReplayGroupCustom, _super);
@@ -100599,7 +100601,7 @@ function olInit() {
             };
             return ReplayGroupCustom;
         }(ol.render.canvas.ReplayGroup));
-        
+
 
         var Grid = /** @class */ (function () {
             function Grid(gridSize) {
@@ -101150,7 +101152,7 @@ function olInit() {
             var methodInfo = msg.data["methodInfo"];
             var messageData = msg.data["messageData"];
             var debugInfo = msg.data["debugInfo"];
-            
+
             if (debugInfo) {
                 var now = new Date().getTime();
                 // console.log("+++" + methodInfo.uid + " " + methodInfo.methodName + ": " + (now - debugInfo.postMessageDateTime));
@@ -101160,7 +101162,7 @@ function olInit() {
             if (method) {
                 var resultMessageData = method(messageData, methodInfo);
                 if (resultMessageData) {
-                   
+
                     var postMessageData = {
                         methodInfo: methodInfo,
                         messageData: resultMessageData,
@@ -101168,14 +101170,15 @@ function olInit() {
                             postMessageDateTime: new Date().getTime()
                         }
                     }
-                 
+
                     postMessage(postMessageData);
+                    postMessageData = undefined;
                 }
             }
         }
 
         self.initStyleJSON = function (styleJsonInfo, methodInfo) {
-            self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson,styleJsonInfo.geoTextStyleInfos);
+            self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
         }
 
         self.request = function (requestInfo, methodInfo) {
@@ -101218,8 +101221,8 @@ function olInit() {
                 xhr.responseType = "arraybuffer";
 
                 // Client ID and Client Secret
-                if(requestInfo.token){
-                    xhr.setRequestHeader('Authorization', 'Bearer '+requestInfo.token);
+                if (requestInfo.token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + requestInfo.token);
                 }
 
                 xhr.onload = function (event) {
@@ -101238,6 +101241,10 @@ function olInit() {
                             postMessage(postMessageData);
                         }
                     }
+                    delete self.requestCache[requestKey]
+                }.bind(this);
+                xhr.onerror = function () {
+                    // TODO post message to main thread for request failed.
                     delete self.requestCache[requestKey]
                 }.bind(this);
                 xhr.send();
@@ -101259,7 +101266,7 @@ function olInit() {
             var mainGeoStyleIds = instructsData[1];
 
             var subTileInstructCaches = createSubTileInstructCaches(features, instructs, extent, tileCoord, requestCoord);
-
+            instructs.length = 0;
             var sourceProject = {};
 
             var oTile = {
@@ -101280,11 +101287,9 @@ function olInit() {
 
             var tileKey = tileCoord[1] + "," + tileCoord[2];
 
-            var res = self.getMainInstructs(oTile, mainGeoStyleIds);
 
             var resultData = {
-                requestKey: requestKey,
-                mainInstructs: res
+                requestKey: requestKey
             };
 
             return resultData;
@@ -101299,39 +101304,34 @@ function olInit() {
 
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
 
-            var mainDrawingInstructs=[];
-            var mainFeatures= [];
-            var mainFeatureIndex=0;
-            var renderFeature = function (feature, geoStyles, options,instruct) {
+            var mainDrawingInstructs = [];
+            var mainFeatures = [];
+            var mainFeatureIndex = 0;
+            var renderFeature = function (feature, geoStyles, options, instruct) {
                 var styles = undefined;
                 if (geoStyles) {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                if(geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined)
-                                {
+                                if (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) {
                                     mainFeatures.push(feature);
-                                    mainDrawingInstructs.push([mainFeatureIndex,geoStyles[i].id,instruct[2]]);
+                                    mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
                                 }
-                                else
-                                {
+                                else {
                                     var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
-                                    if( geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle ||geoStyles[i] instanceof GeoPointStyle)
-                                    {
-                                        if(ol4Styles)
-                                        {
+                                    if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
+                                        if (ol4Styles) {
                                             mainFeatures.push(feature);
-                                            mainDrawingInstructs.push([mainFeatureIndex,geoStyles[i].id,instruct[2]]);
+                                            mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                             mainFeatureIndex++;
                                         }
                                     }
-                                    else
-                                    {
+                                    else {
                                         if (styles === undefined) {
-                                        styles = [];
+                                            styles = [];
                                         }
-                                        Array.prototype.push.apply(styles, ol4Styles); 
+                                        Array.prototype.push.apply(styles, ol4Styles);
                                     }
                                 }
                             }
@@ -101382,7 +101382,7 @@ function olInit() {
 
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
             var vectorTileData = self.vectorTilesData[formatId][tileCoordKey];
-            if (tileCoord[0] <= 14 && tileCoord[0] >= 5) {
+             if (tileCoord[0] <= 14 && tileCoord[0] >= 5) {
                 delete self.vectorTilesData[formatId][tileCoordKey];
             }
 
@@ -101410,12 +101410,13 @@ function olInit() {
                         feature.getGeometry().transform(tileProjection, projection);
 
                         feature.extent_ = null;
-                        feature["styleId"]= geoStyleId;
-                        renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: {coordinateToPixelTransform:coordinateToPixelTransform} }, instructs[i]);
+                        feature["styleId"] = geoStyleId;
+                        renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform } }, instructs[i]);
                     }
                 }
             }
             replayGroup.finish();
+            strategyTree.clear();
 
             var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
 
@@ -101424,7 +101425,7 @@ function olInit() {
             ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
 
             var resultData = {};
-            var postPixelCoordinates_ = []; 
+            var postPixelCoordinates_ = [];
             for (var zIndex in replayGroup.replaysByZIndex_) {
                 var replays = replayGroup.replaysByZIndex_[zIndex];
                 if (!resultData[zIndex]) {
@@ -101437,7 +101438,7 @@ function olInit() {
                     var replay = replays[replayType];
 
                     replay.renderedTransform_ = transform;
-                    resultData[zIndex][replayType]["renderedTransform_"] = transform;
+                    resultData[zIndex][replayType]["renderedTransform_"] = transform.slice(0);
 
                     if (!replay.pixelCoordinates_) {
                         replay.pixelCoordinates_ = [];
@@ -101446,27 +101447,36 @@ function olInit() {
                     ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
 
                     //serilize
-                    if(replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay){                        
-                        var buffers = new ArrayBuffer(replay.pixelCoordinates_.length*4);
+                    if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
+                        var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
                         var view = new Int32Array(buffers);
-                        for(var i = 0; i < view.length; i++){
+                        for (var i = 0; i < view.length; i++) {
                             view[i] = replay.pixelCoordinates_[i];
                         }
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
                         postPixelCoordinates_ = postPixelCoordinates_.concat(buffers);
-                    }else{
-                        resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_;
+                    } else {
+                        resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
 
-                    resultData[zIndex][replayType]["instructions"] = replay.instructions;
+                    resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+
                     if (!replay.minimalist) {
-                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates;
-                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
+                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
+
                     }
+
+                    replay.instructions.length = 0;
+                    replay.hitDetectionInstructions.length = 0;
+                    replay.coordinates.length = 0;
+                    replay.pixelCoordinates_.length = 0;
                 }
             }
 
-            return {'replays': resultData, features: mainFeatures,instructs:mainDrawingInstructs};
+            transform.length = 0;
+
+            return { 'replays': resultData, features: mainFeatures, instructs: mainDrawingInstructs };
         }
 
         self.getMainInstructs = function (oTile, mainGeoStyleIds) {
@@ -101503,6 +101513,19 @@ function olInit() {
             delete self.requestCache[requestKey];
             if (xhr) {
                 xhr.abort();
+            }
+        }
+
+        self.vectorTileDispose =function(vectorTileDisposeInfo,methodInfo)
+        {
+            var formatId= vectorTileDisposeInfo["formatId"];
+            var tileCoord= vectorTileDisposeInfo["tileCoord"];
+            var requestCoord= vectorTileDisposeInfo["requestCoord"];
+            requestCoord.push(tileCoord[0])
+            var cacheKey= requestCoord.toString();
+            if(self.vectorTilesData[formatId])
+            {
+               delete   self.vectorTilesData[formatId][cacheKey];
             }
         }
     }// workerEnd

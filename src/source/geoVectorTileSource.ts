@@ -141,9 +141,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
                                 let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
 
-                                loadEventInfo.tile.featuresAndInstructs = { features: data.mainInstructs.features, instructs: data.mainInstructs.subTileMainInstructs[tileKey] };
                                 loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
-
                             }
                         };
 
