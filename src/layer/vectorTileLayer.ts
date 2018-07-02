@@ -620,13 +620,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             // // before
             this.context.drawImage(image, gutter, gutter,
                 image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
-            console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
-            // after
-            this.context.save();
-            var ptrn = this.context.createPattern(image, 'repeat');
-            this.context.fillStyle = ptrn;
-            this.context.fillRect(x, y, w, h);
-            this.context.restore();
+            // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
+            // // after
+            // this.context.save();
+            // var ptrn = this.context.createPattern(image, 'repeat');
+            // this.context.fillStyle = ptrn;
+            // this.context.fillRect(x, y, w, h);
+            // this.context.restore();
 
             if (alphaChanged) {
                 this.context.restore();
@@ -637,7 +637,5 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 tile.endTransition(uid);
             }
         };
-
-
     }
 }
