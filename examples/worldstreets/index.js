@@ -1,18 +1,37 @@
+var view = new ol.View({
+    center: ol.proj.fromLonLat([-96.79748, 32.78819]),
+    zoom: 2,
+    maxZoom: 19,
+    maxResolution: 40075016.68557849 / 512
+});
+var zoom = view.getZoom();
+document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
+view.on("change:resolution", function (e) {
+    var zoom = view.getZoom();
+    if ((zoom.toString()).indexOf(".") > 0) {
+        zoom = zoom.toFixed(2);
+    }
+    document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
+});
+
 var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", {
     declutter: true,
     multithread: true,
     minimalist: true
 });
 
+var tileGrid = new ol.layer.Tile({
+    source: new ol.source.TileDebug({
+        projection: "EPSG:3857",
+        tileGrid: worldStreetsLayer.createVectorTileGrid()
+    })
+});
+
+
 var map = new ol.Map({
-    layers: [worldStreetsLayer],
+    layers: [worldStreetsLayer,tileGrid],
     target: 'map',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79748, 32.78819]),
-        zoom: 2,
-        maxZoom: 19,
-        maxResolution: 40075016.68557849 / 512
-    }),
+    view: view,
     loadTilesWhileInteracting: true
 });
 
