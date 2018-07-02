@@ -150,19 +150,28 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
 
         if (this.styleJson["sources"]) {
-            for (let sourceJson of this.styleJson["sources"]) {
-                // apiKey
-                if (sourceJson['url'].indexOf('apiKey') === -1 && this.apiKey) {
-                    sourceJson['url'] = sourceJson['url'] + '?apiKey=' + this.apiKey;
+            this.styleJson['sources'].find(sourceJson => {
+                if (sourceId === sourceJson['id']) {
+                    if (!sourceJson['urls'] && sourceJson['url']) {
+                        sourceJson['urls'] = [sourceJson['url']];
+                        delete sourceJson['url'];
+                    }
+                    sourceJson['urls'] = sourceJson['urls'].map(url => {
+                        // apiKey
+                        if (url.indexOf('apiKey') === -1 && this.apiKey) {
+                            url = url + '?apiKey=' + this.apiKey;
+                        }
+                        // proxy
+                        if (this.proxy) {
+                            url = this.proxy + encodeURIComponent(url);
+                        }
+                        return url;
+                    })
+                    this.geoSources[sourceJson["id"]] = this.createVectorTileSource(sourceJson);
+                    return true;
                 }
-                // proxy
-                if (this.proxy) {
-                    sourceJson['url'] = this.proxy + encodeURIComponent(sourceJson['url']);
-                }
-
-                this.geoSources[sourceJson["id"]] = this.createVectorTileSource(sourceJson);
-            }
-
+            });
+            
             return this.geoSources[sourceId];
         }
 
@@ -174,7 +183,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var format = this.getVectorSourceFormat();
             var source = new GeoVectorTileSource({
                 tileClass: <any>GeoVectorTile,
-                url: sourceJson["url"],
+                urls: sourceJson["urls"],
                 clientId: this.clientId,
                 clientSecret: this.clientSecret,
                 format: format,
