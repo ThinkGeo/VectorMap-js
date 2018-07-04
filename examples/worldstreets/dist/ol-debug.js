@@ -101303,6 +101303,7 @@ function olInit() {
             self["devicePixelRatio"] = messageData[6];
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
+            var dataMaxZoom= messageData[9];
 
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
 
@@ -101394,8 +101395,17 @@ function olInit() {
             var geoStyles = styleJsonCache.geoStyles;
             var instructs = subTileInstructCaches[tileKey];
 
-            // remove cache data
-            delete subTileInstructCaches[tileKey];
+            if(tileCoord[0]>dataMaxZoom)
+            {
+
+            }
+            else
+            {
+                // remove cache data
+                delete subTileInstructCaches[tileKey];
+            }
+
+            // console.log("sub tile",tileKey,tileCoordKey);
 
             var cachedSubTileCount = 0;
             for (key in subTileInstructCaches) {
@@ -101527,35 +101537,27 @@ function olInit() {
             }
         }
 
-        self.cancleRequest = function (requestInfo, methodInfo) {
-            var requestCoord = requestInfo.requestTileCoord;
-            var tileCoord = requestInfo.tileCoord;
-
-            var requestKey = requestCoord.join(",") + "," + tileCoord[0];
-            var tileKey = tileCoord[1] + "," + tileCoord[2];
-
-            var xhr = self.requestCache[requestKey];
-            delete self.requestCache[requestKey];
-            if (xhr) {
-                xhr.abort();
-            }
-        }
-
         self.vectorTileDispose = function (requestInfo, methodInfo) {
             var requestTileCoord = requestInfo.requestTileCoord;
             var tileCoord = requestInfo.tileCoord;
             var formatId= requestInfo.formatId;
-         
+            var dataMaxZoom= requestInfo.dataMaxZoom;
+
             var requestKey = requestTileCoord.join(",") + "," + tileCoord[0];
-            
+
             var xhr = self.requestCache[requestKey];
             delete self.requestCache[requestKey];
             if (xhr) {
                 xhr.abort();
             }
 
-            var vectorTileData = self.vectorTilesData[formatId][requestKey];
-            delete self.vectorTilesData[formatId][requestKey];
+            // TODO, if the zoom of tile is bigger than max data zoom, skip delete by requestKey, it will delete will all sub tiles have been deleted,
+            if(tileCoord[0]>dataMaxZoom)
+            {
+                var vectorTileData = self.vectorTilesData[formatId][requestKey];
+                delete self.vectorTilesData[formatId][requestKey];
+                // console.log(requestKey);
+            }
         }
     }// workerEnd
     return OPENLAYERS.ol;

@@ -451,6 +451,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         window.devicePixelRatio,
                         (<any>ol).getUid(source.getGeoFormat()),
                         frameState["coordinateToPixelTransform"],
+                        source.getGeoFormat().dataMaxZoom
                     ];
                     var rendera = this;
                     let callabck = function(messageData) {
