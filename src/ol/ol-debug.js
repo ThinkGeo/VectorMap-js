@@ -21252,7 +21252,7 @@ function olInit() {
                     center: view.constrainCenter(dest),
                     duration: 500,
                     easing: function(t){
-                        return 1 - Math.pow(1 - t, 1.6);
+                        return Math.sin(t * 0.5 * Math.PI);
                     }
                 });
             }

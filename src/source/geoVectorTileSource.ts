@@ -6,6 +6,9 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
     constructor(options) {
         super(options);
         this.maxDataZoom = options.maxDataZoom;
+        if (options["tileUrlFunction"] === undefined) {
+            this.setTileUrlFunction(this.getGeoTileUrlFunction());
+        }
         this.clientId = options.clientId;
         this.clientSecret = options.clientSecret;
         this.geoFormat = options.format;
@@ -22,7 +25,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
         let xRegEx = /\{x\}/g;
         let yRegEx = /\{y\}/g;
         let dashYRegEx = /\{-y\}/g;
-        let template = this.urls[0];
+        let urls = this.urls;
         let tileGrid = this.tileGrid;
         let maxDataZoom = this.maxDataZoom;
 
@@ -38,6 +41,9 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                         requestCoord[2] = Math.floor(requestCoord[2] / 2);
                     }
                 }
+                let h = ol.tilecoord.hash(tileCoord);
+                let index = ol.math.modulo(h, urls.length);
+                let template = urls[index];
                 return template.replace(zRegEx, requestCoord[0].toString())
                     .replace(xRegEx, requestCoord[1].toString())
                     .replace(yRegEx, function () {
