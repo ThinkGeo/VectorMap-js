@@ -41,8 +41,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                         requestCoord[2] = Math.floor(requestCoord[2] / 2);
                     }
                 }
-                let h = ol.tilecoord.hash(tileCoord);
-                let index = ol.math.modulo(h, urls.length);
+                let h = (<any>ol).tilecoord.hash(tileCoord);
+                let index = (<any>ol).math.modulo(h, urls.length);
                 let template = urls[index];
                 return template.replace(zRegEx, requestCoord[0].toString())
                     .replace(xRegEx, requestCoord[1].toString())

@@ -21,7 +21,7 @@ export class GeoVectorTile extends (ol.VectorTile as { new(tileCoord: ol.TileCoo
             var disposeInfo = {
                 formatId: (<any>ol).getUid(this.getFormat()),
                 tileCoord: this.tileCoord,
-                requestCoord: this.requestTileCoord
+                requestTileCoord: this.requestTileCoord
             }
 
             this.getFormat().workerManager.postMessage(this.tileCoord + (<any>ol).getUid(disposeInfo), "vectorTileDispose", disposeInfo, null, this.workerId);

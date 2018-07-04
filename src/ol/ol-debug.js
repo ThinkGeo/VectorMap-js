@@ -21251,7 +21251,7 @@ function olInit() {
                 view.animate({
                     center: view.constrainCenter(dest),
                     duration: 500,
-                    easing: function(t){
+                    easing: function (t) {
                         return Math.sin(t * 0.5 * Math.PI);
                     }
                 });
@@ -96670,7 +96670,7 @@ function olInit() {
                             if (matchedNode) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName);
-                                 
+
 
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
@@ -96678,7 +96678,7 @@ function olInit() {
 
                                 var zindex = 0;
                                 if (cacheTree.root.data.zIndex) {
-                                    zindex =  feature.properties_[cacheTree.root.data.zIndex]
+                                    zindex = feature.properties_[cacheTree.root.data.zIndex]
                                 }
 
                                 if (isNaN(zindex)) {
@@ -96700,7 +96700,7 @@ function olInit() {
                         }
                     }
                 }
-                cacheTrees.length=0;
+                cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
             return [allFeatures, instructsCache, extent];
@@ -96738,8 +96738,8 @@ function olInit() {
                                     }
                                 }
                                 Array.prototype.push.apply(instructs, childrenInstructs);
-                                childrenInstructs.length=0;
-                                instructsInOneZIndex.length=0;
+                                childrenInstructs.length = 0;
+                                instructsInOneZIndex.length = 0;
                             }
                         }
                     }
@@ -101384,9 +101384,6 @@ function olInit() {
 
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
             var vectorTileData = self.vectorTilesData[formatId][tileCoordKey];
-             if (tileCoord[0] <= 14 && tileCoord[0] >= 5) {
-                delete self.vectorTilesData[formatId][tileCoordKey];
-            }
 
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
@@ -101396,6 +101393,18 @@ function olInit() {
 
             var geoStyles = styleJsonCache.geoStyles;
             var instructs = subTileInstructCaches[tileKey];
+
+            // remove cache data
+            delete subTileInstructCaches[tileKey];
+
+            var cachedSubTileCount = 0;
+            for (key in subTileInstructCaches) {
+                cachedSubTileCount++;
+            }
+
+            if (cachedSubTileCount === 0) {
+                delete self.vectorTilesData[formatId][tileCoordKey];
+            }
 
             var strategyTree = ol.ext.rbush(9);
 
@@ -101518,17 +101527,35 @@ function olInit() {
             }
         }
 
-        self.vectorTileDispose =function(vectorTileDisposeInfo,methodInfo)
-        {
-            var formatId= vectorTileDisposeInfo["formatId"];
-            var tileCoord= vectorTileDisposeInfo["tileCoord"];
-            var requestCoord= vectorTileDisposeInfo["requestCoord"];
-            requestCoord.push(tileCoord[0])
-            var cacheKey= requestCoord.toString();
-            if(self.vectorTilesData[formatId])
-            {
-               delete   self.vectorTilesData[formatId][cacheKey];
+        self.cancleRequest = function (requestInfo, methodInfo) {
+            var requestCoord = requestInfo.requestTileCoord;
+            var tileCoord = requestInfo.tileCoord;
+
+            var requestKey = requestCoord.join(",") + "," + tileCoord[0];
+            var tileKey = tileCoord[1] + "," + tileCoord[2];
+
+            var xhr = self.requestCache[requestKey];
+            delete self.requestCache[requestKey];
+            if (xhr) {
+                xhr.abort();
             }
+        }
+
+        self.vectorTileDispose = function (requestInfo, methodInfo) {
+            var requestTileCoord = requestInfo.requestTileCoord;
+            var tileCoord = requestInfo.tileCoord;
+            var formatId= requestInfo.formatId;
+         
+            var requestKey = requestTileCoord.join(",") + "," + tileCoord[0];
+            
+            var xhr = self.requestCache[requestKey];
+            delete self.requestCache[requestKey];
+            if (xhr) {
+                xhr.abort();
+            }
+
+            var vectorTileData = self.vectorTilesData[formatId][requestKey];
+            delete self.vectorTilesData[formatId][requestKey];
         }
     }// workerEnd
     return OPENLAYERS.ol;
