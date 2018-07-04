@@ -6,10 +6,6 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
     constructor(options) {
         super(options);
         this.maxDataZoom = options.maxDataZoom;
-        if (options["tileUrlFunction"] === undefined) {
-            this.setTileUrlFunction(this.getGeoTileUrlFunction());
-        }
-
         this.clientId = options.clientId;
         this.clientSecret = options.clientSecret;
         this.geoFormat = options.format;

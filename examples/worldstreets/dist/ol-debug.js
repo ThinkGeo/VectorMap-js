@@ -21251,7 +21251,9 @@ function olInit() {
                 view.animate({
                     center: view.constrainCenter(dest),
                     duration: 500,
-                    easing: ol.easing.easeOut
+                    easing: function(t){
+                      return Math.sin(t * 0.5 * Math.PI);
+                    }
                 });
             }
             view.setHint(ol.ViewHint.INTERACTING, -1);
