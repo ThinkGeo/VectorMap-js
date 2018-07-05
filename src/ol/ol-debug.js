@@ -96744,8 +96744,8 @@ function olInit() {
                         }
                     }
                 }
+                instructsTree.length = 0;
             }
-            instructsTree.length = 0;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -101284,7 +101284,7 @@ function olInit() {
 
             var vectorTileCache = null;
             if (self.vectorTilesData[formatId] === undefined) {
-                self.vectorTilesData[formatId] = new ol.structs.LRUCache(128);
+                self.vectorTilesData[formatId] = new ol.structs.LRUCache(20);
             }
             vectorTileCache = self.vectorTilesData[formatId];
             while (vectorTileCache.canExpireCache()) {
