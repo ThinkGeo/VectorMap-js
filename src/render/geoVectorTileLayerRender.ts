@@ -143,7 +143,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             this.renderedTiles.length = 0;
             /** @type {Array.<number>} */
             let zs = Object.keys(tilesToDrawByZ).map(Number);
-            zs.sort(function(a, b) {
+            zs.sort(function (a, b) {
                 if (a === z) {
                     return 1;
                 } else if (b === z) {
@@ -340,9 +340,32 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             //// reuse replayGroup of source Tile to reduce the memory.
             let distReplayGroup = sourceTile.getReplayGroup(layer, (<any>tile).wrappedTileCoord.toString());
             if (distReplayGroup) {
-                replayState.renderedRevision = revision;
-                replayState.renderedRenderOrder = renderOrder;
-                replayState.renderedTileLoaded = true;
+                // Check replayGroup has  replays
+                let replaysZindexCount=0;
+                if(distReplayGroup.replaysByZIndex_)
+                {
+                    for(var zindex in distReplayGroup.replaysByZIndex_)
+                    {
+                        replaysZindexCount++;
+                    }
+                }
+
+                if(source.isMultithread&&replaysZindexCount===0)
+                {
+                    // the replays did not created, it will create after web worker call back
+                    if(sourceTile)
+                    if(sourceTile["reuseVectorImageTile"]===undefined)
+                    {
+                        sourceTile["reuseVectorImageTile"] = [];
+                    }
+                    sourceTile["reuseVectorImageTile"].push(tile);
+                }
+                else
+                {
+                    replayState.renderedRevision = revision;
+                    replayState.renderedRenderOrder = renderOrder;
+                    replayState.renderedTileLoaded = true;
+                }
             }
             else {
                 let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
@@ -353,7 +376,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                  * @param {ol.Feature|ol.render.Feature} feature Feature.
                  * @this {ol.renderer.canvas.VectorTileLayer}
                  */
-                let renderFeature = function(feature, geoStyles, options) {
+                let renderFeature = function (feature, geoStyles, options) {
                     let styles;
                     if (geoStyles) {
                         if (geoStyles && geoStyles.length > 0) {
@@ -454,7 +477,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         source.getGeoFormat().dataMaxZoom
                     ];
                     var rendera = this;
-                    let callabck = function(messageData) {
+                    let callabck = function (messageData) {
                         var replaysByZIndex_ = messageData["replays"];
                         var features = messageData["features"];
                         var instructs = messageData["instructs"];
@@ -530,6 +553,21 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         }
                         replayState.renderedTileLoaded = true;
                         sourceTile.state = (<any>ol).TileState.LOADED;
+
+                        if(sourceTile["reuseVectorImageTile"])
+                        {
+                            for(var i=0;i<sourceTile["reuseVectorImageTile"].length;i++ )
+                            {
+                                var reusedVectorImageTile= sourceTile["reuseVectorImageTile"][i];
+                                delete sourceTile["reuseVectorImageTile"][i];
+                                let vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
+                                vectorImageTileReplayState.renderedRevision = revision;
+                                vectorImageTileReplayState.renderedRenderOrder = renderOrder;
+                                vectorImageTileReplayState.renderedTileLoaded = true;
+                                reusedVectorImageTile.setState((<any>ol).TileState.LOADED);
+                            }
+                        }
+
                         (<any>tile).setState((<any>ol).TileState.LOADED);
                     };
 

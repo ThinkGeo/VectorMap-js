@@ -20,7 +20,7 @@ export class GeoVectorTile extends (ol.VectorTile as { new(tileCoord: ol.TileCoo
         if (this.workerId !== undefined) {
             var disposeInfo = {
                 formatId: (<any>ol).getUid(this.getFormat()),
-                maxDataZoom:this.getFormat().dataMaxZoom,
+                dataMaxZoom:this.getFormat().dataMaxZoom,
                 tileCoord: this.tileCoord,
                 requestTileCoord: this.requestTileCoord
             }
