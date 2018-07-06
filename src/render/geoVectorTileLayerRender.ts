@@ -42,13 +42,26 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
 
         let tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
-        // Adjust cache size according to tile Range, TODO: add a property for that
+        // Adjust tile cache size according to tile Range, TODO: add a property for that
         let xOffset = (tileRange.maxX - tileRange.minX);
         let yOffset = (tileRange.maxY - tileRange.minY);
         xOffset = xOffset <= 0 ? 1 : xOffset * 2 + 3;
         yOffset = yOffset <= 0 ? 1 : yOffset * 2 + 3;
         let cacheSize = xOffset * yOffset;
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
+
+        //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
+        if (z > tileSource.dataMaxZoom) {
+            var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.dataMaxZoom);
+            var offsetX= dataTileRand.maxX - dataTileRand.minX;
+            var offsetY= dataTileRand.maxY - dataTileRand.minY;
+
+            offsetX = offsetX <= 0 ? 1 : offsetX + 3;
+            offsetY = offsetY <= 0 ? 1 : offsetY + 3;
+            var vectorTileDataCahceSize= offsetX*offsetY;
+            tileSource["vectorTileDataCahceSize"]= vectorTileDataCahceSize;
+            tileSource.getGeoFormat()["vectorTileDataCahceSize"]= vectorTileDataCahceSize;
+        }
 
         let imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
@@ -341,27 +354,22 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             let distReplayGroup = sourceTile.getReplayGroup(layer, (<any>tile).wrappedTileCoord.toString());
             if (distReplayGroup) {
                 // Check replayGroup has  replays
-                let replaysZindexCount=0;
-                if(distReplayGroup.replaysByZIndex_)
-                {
-                    for(var zindex in distReplayGroup.replaysByZIndex_)
-                    {
+                let replaysZindexCount = 0;
+                if (distReplayGroup.replaysByZIndex_) {
+                    for (var zindex in distReplayGroup.replaysByZIndex_) {
                         replaysZindexCount++;
                     }
                 }
 
-                if(source.isMultithread&&replaysZindexCount===0)
-                {
+                if (source.isMultithread && replaysZindexCount === 0) {
                     // the replays did not created, it will create after web worker call back
-                    if(sourceTile)
-                    if(sourceTile["reuseVectorImageTile"]===undefined)
-                    {
-                        sourceTile["reuseVectorImageTile"] = [];
-                    }
+                    if (sourceTile)
+                        if (sourceTile["reuseVectorImageTile"] === undefined) {
+                            sourceTile["reuseVectorImageTile"] = [];
+                        }
                     sourceTile["reuseVectorImageTile"].push(tile);
                 }
-                else
-                {
+                else {
                     replayState.renderedRevision = revision;
                     replayState.renderedRenderOrder = renderOrder;
                     replayState.renderedTileLoaded = true;
@@ -474,7 +482,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         window.devicePixelRatio,
                         (<any>ol).getUid(source.getGeoFormat()),
                         frameState["coordinateToPixelTransform"],
-                        source.getGeoFormat().dataMaxZoom
+                        source.getGeoFormat().dataMaxZoom,
+                        source["vectorTileDataCahceSize"]
                     ];
                     var rendera = this;
                     let callabck = function (messageData) {
@@ -554,11 +563,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         replayState.renderedTileLoaded = true;
                         sourceTile.state = (<any>ol).TileState.LOADED;
 
-                        if(sourceTile["reuseVectorImageTile"])
-                        {
-                            for(var i=0;i<sourceTile["reuseVectorImageTile"].length;i++ )
-                            {
-                                var reusedVectorImageTile= sourceTile["reuseVectorImageTile"][i];
+                        if (sourceTile["reuseVectorImageTile"]) {
+                            for (var i = 0; i < sourceTile["reuseVectorImageTile"].length; i++) {
+                                var reusedVectorImageTile = sourceTile["reuseVectorImageTile"][i];
                                 delete sourceTile["reuseVectorImageTile"][i];
                                 let vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
                                 vectorImageTileReplayState.renderedRevision = revision;

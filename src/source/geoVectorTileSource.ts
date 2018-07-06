@@ -133,6 +133,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 formatId: (<any>ol).getUid(format),
                                 layerName: format.layerName,
                                 token: self.token,
+                                vectorTileDataCahceSize:format["vectorTileDataCahceSize"]
                             };
 
                             let loadedCallback = function (data, methodInfo) {

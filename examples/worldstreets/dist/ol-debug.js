@@ -101189,6 +101189,7 @@ function olInit() {
             var formatId = requestInfo.formatId;
             var minimalist = requestInfo.minimalist;
             var layerName = requestInfo.layerName;
+            var vectorTileDataCahceSize = requestInfo.vectorTileDataCahceSize
 
             var requestKey = requestCoord.join(",") + "," + tileCoord[0];
             var tileKey = tileCoord[1] + "," + tileCoord[2];
@@ -101232,7 +101233,7 @@ function olInit() {
                         var source = undefined;
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
-                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName);
+                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize);
                             var postMessageData = {
                                 methodInfo: methodInfo,
                                 messageData: resultMessageData,
@@ -101254,7 +101255,7 @@ function olInit() {
             }
         }
 
-        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName) {
+        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize) {
             var styleJsonCache = self.styleJsonCache[formatId];
 
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, styleJsonCache, layerName);
@@ -101283,15 +101284,20 @@ function olInit() {
             var requestKey = requestCoord.join(",") + "," + zoom;
 
             var vectorTileCache = null;
+            vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 20 : vectorTileDataCahceSize;
+
             if (self.vectorTilesData[formatId] === undefined) {
-                self.vectorTilesData[formatId] = new ol.structs.LRUCache(20);
+                self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
             vectorTileCache = self.vectorTilesData[formatId];
+            vectorTileCache.highWaterMark = vectorTileDataCahceSize;
             while (vectorTileCache.canExpireCache()) {
                 vectorTileCache.pop();
             }
 
-            vectorTileCache.set(requestKey, oTile);
+            if (!vectorTileCache.containsKey(requestKey)) {
+                vectorTileCache.set(requestKey, oTile);
+            }
 
             var tileKey = tileCoord[1] + "," + tileCoord[2];
 
@@ -101310,6 +101316,7 @@ function olInit() {
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
             var dataMaxZoom = messageData[9];
+            var vectorTileDataCahceSize = messageData[10];
 
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
 
@@ -101391,7 +101398,13 @@ function olInit() {
 
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
 
-            var vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
+            var vectorTileData = null;
+            if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
+                vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
+            }
+            else {
+                this.console.log("missing", tileCoord, tileCoordKey)
+            }
 
             if (tileCoord[0] < dataMaxZoom) {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
@@ -101475,7 +101488,6 @@ function olInit() {
                     if (!replay.minimalist) {
                         resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
                         resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
-
                     }
 
                     replay.instructions.length = 0;
