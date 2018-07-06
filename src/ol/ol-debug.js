@@ -21251,7 +21251,7 @@ function olInit() {
                 view.animate({
                     center: view.constrainCenter(dest),
                     duration: 500,
-                    easing: function(t){
+                    easing: function (t) {
                         return Math.sin(t * 0.5 * Math.PI);
                     }
                 });
@@ -96670,7 +96670,7 @@ function olInit() {
                             if (matchedNode) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName);
-                                 
+
 
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
@@ -96678,7 +96678,7 @@ function olInit() {
 
                                 var zindex = 0;
                                 if (cacheTree.root.data.zIndex) {
-                                    zindex =  feature.properties_[cacheTree.root.data.zIndex]
+                                    zindex = feature.properties_[cacheTree.root.data.zIndex]
                                 }
 
                                 if (isNaN(zindex)) {
@@ -96700,7 +96700,7 @@ function olInit() {
                         }
                     }
                 }
-                cacheTrees.length=0;
+                cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
             return [allFeatures, instructsCache, extent];
@@ -96738,14 +96738,14 @@ function olInit() {
                                     }
                                 }
                                 Array.prototype.push.apply(instructs, childrenInstructs);
-                                childrenInstructs.length=0;
-                                instructsInOneZIndex.length=0;
+                                childrenInstructs.length = 0;
+                                instructsInOneZIndex.length = 0;
                             }
                         }
                     }
                 }
+                instructsTree.length = 0;
             }
-            instructsTree.length = 0;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -101189,20 +101189,22 @@ function olInit() {
             var formatId = requestInfo.formatId;
             var minimalist = requestInfo.minimalist;
             var layerName = requestInfo.layerName;
+            var vectorTileDataCahceSize = requestInfo.vectorTileDataCahceSize
 
             var requestKey = requestCoord.join(",") + "," + tileCoord[0];
             var tileKey = tileCoord[1] + "," + tileCoord[2];
 
             var olTile;
             var formatOlTiles = self.vectorTilesData[formatId];
-            if (formatOlTiles) {
-                olTile = formatOlTiles[requestKey];
+            if (formatOlTiles && formatOlTiles.containsKey(requestKey)) {
+                olTile = formatOlTiles.get(requestKey);
             }
             if (olTile) {
                 var res = self.getMainInstructs(olTile, olTile.mainGeoStyleIds);
 
                 var resultData = {
                     requestKey: requestKey,
+                    status: "succeed",
                     mainInstructs: res
                 };
 
@@ -101232,7 +101234,22 @@ function olInit() {
                         var source = undefined;
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
-                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName);
+                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize);
+                            var postMessageData = {
+                                methodInfo: methodInfo,
+                                messageData: resultMessageData,
+                                debugInfo: {
+                                    postMessageDateTime: new Date().getTime()
+                                }
+                            }
+                            postMessage(postMessageData);
+                        }
+                        else
+                        {
+                            var resultMessageData = {
+                                status: "failure",
+                                requestKey: requestKey,
+                            };
                             var postMessageData = {
                                 methodInfo: methodInfo,
                                 messageData: resultMessageData,
@@ -101243,10 +101260,37 @@ function olInit() {
                             postMessage(postMessageData);
                         }
                     }
+                    else
+                    {
+                        var resultMessageData = {
+                            status: "failure",
+                            requestKey: requestKey,
+                        };
+                        var postMessageData = {
+                            methodInfo: methodInfo,
+                            messageData: resultMessageData,
+                            debugInfo: {
+                                postMessageDateTime: new Date().getTime()
+                            }
+                        }
+                        postMessage(postMessageData);
+                    }
+
                     delete self.requestCache[requestKey]
                 }.bind(this);
                 xhr.onerror = function () {
-                    // TODO post message to main thread for request failed.
+                    var resultMessageData = {
+                        status: "failure",
+                        requestKey: requestKey,
+                    };
+                    var postMessageData = {
+                        methodInfo: methodInfo,
+                        messageData: resultMessageData,
+                        debugInfo: {
+                            postMessageDateTime: new Date().getTime()
+                        }
+                    }
+                    postMessage(postMessageData);
                     delete self.requestCache[requestKey]
                 }.bind(this);
                 xhr.send();
@@ -101254,7 +101298,7 @@ function olInit() {
             }
         }
 
-        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName) {
+        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize) {
             var styleJsonCache = self.styleJsonCache[formatId];
 
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, styleJsonCache, layerName);
@@ -101282,15 +101326,27 @@ function olInit() {
 
             var requestKey = requestCoord.join(",") + "," + zoom;
 
+            var vectorTileCache = null;
+            vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
+
             if (self.vectorTilesData[formatId] === undefined) {
-                self.vectorTilesData[formatId] = {};
+                self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
-            self.vectorTilesData[formatId][requestKey] = oTile;
+            vectorTileCache = self.vectorTilesData[formatId];
+            vectorTileCache.highWaterMark = vectorTileDataCahceSize;
+            while (vectorTileCache.canExpireCache()) {
+                vectorTileCache.pop();
+            }
+
+            if (!vectorTileCache.containsKey(requestKey)) {
+                vectorTileCache.set(requestKey, oTile);
+            }
 
             var tileKey = tileCoord[1] + "," + tileCoord[2];
 
 
             var resultData = {
+                status: "succeed",
                 requestKey: requestKey
             };
 
@@ -101303,6 +101359,8 @@ function olInit() {
             self["devicePixelRatio"] = messageData[6];
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
+            var maxDataZoom = messageData[9];
+            var vectorTileDataCahceSize = messageData[10];
 
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
 
@@ -101383,9 +101441,17 @@ function olInit() {
             var squaredTolerance = messageData[5];
 
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
-            var vectorTileData = self.vectorTilesData[formatId][tileCoordKey];
-             if (tileCoord[0] <= 14 && tileCoord[0] >= 5) {
-                delete self.vectorTilesData[formatId][tileCoordKey];
+
+            var vectorTileData = null;
+            if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
+                vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
+            }
+            else {
+                this.console.log("missing", tileCoord, tileCoordKey)
+            }
+
+            if (tileCoord[0] < maxDataZoom) {
+                self.vectorTilesData[formatId].remove(tileCoordKey);
             }
 
             var features = vectorTileData.features;
@@ -101466,7 +101532,6 @@ function olInit() {
                     if (!replay.minimalist) {
                         resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
                         resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
-
                     }
 
                     replay.instructions.length = 0;
@@ -101518,16 +101583,24 @@ function olInit() {
             }
         }
 
-        self.vectorTileDispose =function(vectorTileDisposeInfo,methodInfo)
-        {
-            var formatId= vectorTileDisposeInfo["formatId"];
-            var tileCoord= vectorTileDisposeInfo["tileCoord"];
-            var requestCoord= vectorTileDisposeInfo["requestCoord"];
-            requestCoord.push(tileCoord[0])
-            var cacheKey= requestCoord.toString();
-            if(self.vectorTilesData[formatId])
-            {
-               delete   self.vectorTilesData[formatId][cacheKey];
+        self.vectorTileDispose = function (requestInfo, methodInfo) {
+            var requestTileCoord = requestInfo.requestTileCoord;
+            var tileCoord = requestInfo.tileCoord;
+            var formatId = requestInfo.formatId;
+            var maxDataZoom = requestInfo.maxDataZoom;
+
+            var requestKey = requestTileCoord.join(",") + "," + tileCoord[0];
+
+            var xhr = self.requestCache[requestKey];
+            delete self.requestCache[requestKey];
+            if (xhr) {
+                xhr.abort();
+            }
+
+            if (tileCoord[0] <= maxDataZoom) {
+                if (self.vectorTilesData[formatId] && self.vectorTilesData[formatId].containsKey(requestKey)) {
+                    self.vectorTilesData[formatId].remove(requestKey);
+                }
             }
         }
     }// workerEnd

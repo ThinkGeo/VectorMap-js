@@ -40,8 +40,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                         requestCoord[2] = Math.floor(requestCoord[2] / 2);
                     }
                 }
-                let h = ol.tilecoord.hash(tileCoord);
-                let index = ol.math.modulo(h, urls.length);
+                let h = (<any>ol).tilecoord.hash(tileCoord);
+                let index = (<any>ol).math.modulo(h, urls.length);
                 let template = urls[index];
                 return template.replace(zRegEx, requestCoord[0].toString())
                     .replace(xRegEx, requestCoord[1].toString())
@@ -93,7 +93,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
 
         return (
             function (extent: any, resolution: any, projection: any) {
-                let maxDataZoom = format.dataMaxZoom;
+                let maxDataZoom = format.maxDataZoom;
                 let requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
                 if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
                     while (requestTileCoord[0] !== maxDataZoom) {
@@ -105,13 +105,13 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                 this.requestTileCoord = requestTileCoord;
 
 
-                let callback = function (tile, successFunction, sourceProjection, lastExtent) {
-                    successFunction.call(tile, sourceProjection, lastExtent);
+                let callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
+                    callbackFunction.call(tile, sourceProjection, lastExtent);
                 };
 
                 let hasRequested = false;
 
-                hasRequested = format.registerTileLoadEvent(this, success, callback);
+                hasRequested = format.registerTileLoadEvent(this, success, failure, callback);
 
                 if (!hasRequested) {
                     const loader = url => {
@@ -128,10 +128,11 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 tileCoord: this.tileCoord,
                                 requestCoord: requestTileCoord,
                                 minimalist: format.minimalist,
-                                dataMaxZoom: format.dataMaxZoom,
+                                maxDataZoom: format.maxDataZoom,
                                 formatId: (<any>ol).getUid(format),
                                 layerName: format.layerName,
                                 token: self.token,
+                                vectorTileDataCahceSize: format["vectorTileDataCahceSize"]
                             };
 
                             let loadedCallback = function (data, methodInfo) {
@@ -142,8 +143,12 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                     let loadEventInfo = tileLoadEventInfos[i];
                                     loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
                                     let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-
-                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
+                                    if (data.status === "succeed") {
+                                        loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
+                                    }
+                                    else {
+                                        loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                                    }
                                 }
                             };
 

@@ -189,7 +189,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 format: format,
                 projection: "EPSG:3857",
                 tileGrid: this.createVectorTileGrid(),
-                cacheSize: 128,
+                cacheSize: 1024,
                 multithread: this.isMultithread,
                 minimalist: this.minimalist,
                 maxDataZoom: this.maxDataZoom
@@ -206,7 +206,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             if (!this.workerManager || !this.workerManager.inited) {
                 this.workerManager = new WorkerManager();
                 this.workerManager.initWorkers();
-
             }
             if (this.workerManager.inited) {
                 format["workerManager"] = this.workerManager;
