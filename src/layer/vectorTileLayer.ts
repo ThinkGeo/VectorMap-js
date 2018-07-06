@@ -611,40 +611,40 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         // refine drawImage performance
-        (<any>ol).renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
-            var image = tile.getImage(this.getLayer());
-            if (!image) {
-                return;
-            }
-            var uid = (<any>ol).getUid(this);
-            var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-            if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
-                this.context.clearRect(x, y, w, h);
-            }
-            var alphaChanged = alpha !== this.context.globalAlpha;
-            if (alphaChanged) {
-                this.context.save();
-                this.context.globalAlpha = alpha;
-            }
-            // // before
-            this.context.drawImage(image, gutter, gutter,
-                image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
-            // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
-            // // after
-            // this.context.save();
-            // var ptrn = this.context.createPattern(image, 'repeat');
-            // this.context.fillStyle = ptrn;
-            // this.context.fillRect(x, y, w, h);
-            // this.context.restore();
+        // (<any>ol).renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
+        //     var image = tile.getImage(this.getLayer());
+        //     if (!image) {
+        //         return;
+        //     }
+        //     var uid = (<any>ol).getUid(this);
+        //     var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+        //     if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
+        //         this.context.clearRect(x, y, w, h);
+        //     }
+        //     var alphaChanged = alpha !== this.context.globalAlpha;
+        //     if (alphaChanged) {
+        //         this.context.save();
+        //         this.context.globalAlpha = alpha;
+        //     }
+        //     // // before
+        //     this.context.drawImage(image, gutter, gutter,
+        //         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
+        //     // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
+        //     // // after
+        //     // this.context.save();
+        //     // var ptrn = this.context.createPattern(image, 'repeat');
+        //     // this.context.fillStyle = ptrn;
+        //     // this.context.fillRect(x, y, w, h);
+        //     // this.context.restore();
 
-            if (alphaChanged) {
-                this.context.restore();
-            }
-            if (alpha !== 1) {
-                frameState.animate = true;
-            } else if (transition) {
-                tile.endTransition(uid);
-            }
-        };
+        //     if (alphaChanged) {
+        //         this.context.restore();
+        //     }
+        //     if (alpha !== 1) {
+        //         frameState.animate = true;
+        //     } else if (transition) {
+        //         tile.endTransition(uid);
+        //     }
+        // };
     }
 }

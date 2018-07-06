@@ -1,4 +1,3 @@
-import { WorkerManager } from "../worker/workerManager";
 
 export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.source.VectorTileOptions): any; }) {
     geoFormat: any;
