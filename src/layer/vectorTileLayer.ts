@@ -157,6 +157,14 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         delete sourceJson['url'];
                     }
                     sourceJson['urls'] = sourceJson['urls'].map(url => {
+                        if(url.indexOf('http') === -1 || url.indexOf('https') === -1){
+                            var href = location.href;
+                            if(url.indexOf('/') !== 0){
+                                url = href + url;
+                            }else if(url.indexOf('/') === 0){
+                                url = href.substring(0, href.length-1) + url;
+                            }
+                        }
                         // apiKey
                         if (url.indexOf('apiKey') === -1 && this.apiKey) {
                             url = url + '?apiKey=' + this.apiKey;

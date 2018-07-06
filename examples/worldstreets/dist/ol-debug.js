@@ -80676,6 +80676,9 @@ function olInit() {
         if (this.state == ol.TileState.LOADING) {
             this.tileKeys.forEach(function (sourceTileKey) {
                 var sourceTile = this.getTile(sourceTileKey);
+                // FIXME Eric
+                sourceTile.tileRange = this.tileRange;
+                sourceTile.tileCoordWithSourceCoord = this.tileCoord;
                 if (sourceTile.state == ol.TileState.IDLE) {
                     sourceTile.setLoader(this.loader_);
                     sourceTile.load();
@@ -101149,6 +101152,7 @@ function olInit() {
         self.vectorTilesData = {};
         self.requestCache = {};
         self.styleJsonCache = {};
+        self.tileCoordWithSourceCoord = {};
 
         self.onmessage = function (msg) {
             var methodInfo = msg.data["methodInfo"];
@@ -101193,12 +101197,40 @@ function olInit() {
 
             var requestKey = requestCoord.join(",") + "," + tileCoord[0];
             var tileKey = tileCoord[1] + "," + tileCoord[2];
-
+            var tileRange = requestInfo.tileRange;
+            var tileCoordWithSourceCoord = requestInfo.tileCoordWithSourceCoord;
             var olTile;
             var formatOlTiles = self.vectorTilesData[formatId];
             if (formatOlTiles && formatOlTiles.containsKey(requestKey)) {
                 olTile = formatOlTiles.get(requestKey);
             }
+            // FIXME Eric cancel tiles out of frameExtent
+            for(var key in self.requestCache){
+                var tileXhr = self.requestCache[key];
+                if(tileXhr){
+                    var coords = self.tileCoordWithSourceCoord[key];
+                    var x = coords[1];
+                    var y = coords[2];
+                    if(coords[0] !== tileCoord[0] && ((tileRange.minX > x || tileRange.maxX < x) || (tileRange.minY > y || tileRange.maxY < y))){
+                        tileXhr.abort();
+                        var resultMessageData = {
+                            status: "failure",
+                            requestKey: key,
+                        };
+                        var postMessageData = {
+                            methodInfo: methodInfo,
+                            messageData: resultMessageData,
+                            debugInfo: {
+                                postMessageDateTime: new Date().getTime()
+                            }
+                        }
+                        postMessage(postMessageData);
+                        delete self.requestCache[key];
+                        delete self.tileCoordWithSourceCoord[requestKey];
+                    }
+                }
+            }
+
             if (olTile) {
                 var res = self.getMainInstructs(olTile, olTile.mainGeoStyleIds);
 
@@ -101276,7 +101308,8 @@ function olInit() {
                         postMessage(postMessageData);
                     }
 
-                    delete self.requestCache[requestKey]
+                    delete self.requestCache[requestKey];
+                    delete self.tileCoordWithSourceCoord[requestKey];
                 }.bind(this);
                 xhr.onerror = function () {
                     var resultMessageData = {
@@ -101291,10 +101324,12 @@ function olInit() {
                         }
                     }
                     postMessage(postMessageData);
-                    delete self.requestCache[requestKey]
+                    delete self.requestCache[requestKey];
+                    delete self.tileCoordWithSourceCoord[requestKey];
                 }.bind(this);
                 xhr.send();
                 self.requestCache[requestKey] = xhr;
+                self.tileCoordWithSourceCoord[requestKey] = tileCoord;
             }
         }
 

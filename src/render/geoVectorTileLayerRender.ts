@@ -81,6 +81,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+                // FIXME Eric
+                tile.tileRange = tileRange;
                 if (tile.getState() === (<any>ol).TileState.ERROR) {
                     if (!tileLayer.getUseInterimTilesOnError()) {
                         // When useInterimTilesOnError is false, we consider the error tile as loaded.

@@ -93,6 +93,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
 
         return (
             function (extent: any, resolution: any, projection: any) {
+                var _this = this;
                 let maxDataZoom = format.maxDataZoom;
                 let requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
                 if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
@@ -132,7 +133,9 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 formatId: (<any>ol).getUid(format),
                                 layerName: format.layerName,
                                 token: self.token,
-                                vectorTileDataCahceSize: format["vectorTileDataCahceSize"]
+                                vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
+                                tileRange: _this.tileRange,
+                                tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord
                             };
 
                             let loadedCallback = function (data, methodInfo) {

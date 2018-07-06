@@ -1735,6 +1735,16 @@ var VectorTileLayer = /** @class */ (function (_super) {
                         delete sourceJson['url'];
                     }
                     sourceJson['urls'] = sourceJson['urls'].map(function (url) {
+                        if (url.indexOf('http') === -1 || url.indexOf('https') === -1) {
+                            var href = location.href;
+                            if (url.indexOf('/') !== 0) {
+                                url = href + url;
+                            }
+                            else if (url.indexOf('/') === 0) {
+                                url = href.substring(0, href.length - 1) + url;
+                            }
+                        }
+                        
                         // apiKey
                         if (url.indexOf('apiKey') === -1 && _this.apiKey) {
                             url = url + '?apiKey=' + _this.apiKey;
@@ -1764,7 +1774,7 @@ var VectorTileLayer = /** @class */ (function (_super) {
                 format: format,
                 projection: "EPSG:3857",
                 tileGrid: this.createVectorTileGrid(),
-                cacheSize: 128,
+                cacheSize: 1024,
                 multithread: this.isMultithread,
                 minimalist: this.minimalist,
                 maxDataZoom: this.maxDataZoom
@@ -2143,40 +2153,40 @@ var VectorTileLayer = /** @class */ (function (_super) {
             setTimeout(this.handlePostRender.bind(this), 0);
         };
         // refine drawImage performance
-        ol.renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
-            var image = tile.getImage(this.getLayer());
-            if (!image) {
-                return;
-            }
-            var uid = ol.getUid(this);
-            var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-            if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
-                this.context.clearRect(x, y, w, h);
-            }
-            var alphaChanged = alpha !== this.context.globalAlpha;
-            if (alphaChanged) {
-                this.context.save();
-                this.context.globalAlpha = alpha;
-            }
-            // // before
-            this.context.drawImage(image, gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
-            // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
-            // // after
-            // this.context.save();
-            // var ptrn = this.context.createPattern(image, 'repeat');
-            // this.context.fillStyle = ptrn;
-            // this.context.fillRect(x, y, w, h);
-            // this.context.restore();
-            if (alphaChanged) {
-                this.context.restore();
-            }
-            if (alpha !== 1) {
-                frameState.animate = true;
-            }
-            else if (transition) {
-                tile.endTransition(uid);
-            }
-        };
+        // (<any>ol).renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
+        //     var image = tile.getImage(this.getLayer());
+        //     if (!image) {
+        //         return;
+        //     }
+        //     var uid = (<any>ol).getUid(this);
+        //     var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+        //     if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
+        //         this.context.clearRect(x, y, w, h);
+        //     }
+        //     var alphaChanged = alpha !== this.context.globalAlpha;
+        //     if (alphaChanged) {
+        //         this.context.save();
+        //         this.context.globalAlpha = alpha;
+        //     }
+        //     // // before
+        //     this.context.drawImage(image, gutter, gutter,
+        //         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
+        //     // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
+        //     // // after
+        //     // this.context.save();
+        //     // var ptrn = this.context.createPattern(image, 'repeat');
+        //     // this.context.fillStyle = ptrn;
+        //     // this.context.fillRect(x, y, w, h);
+        //     // this.context.restore();
+        //     if (alphaChanged) {
+        //         this.context.restore();
+        //     }
+        //     if (alpha !== 1) {
+        //         frameState.animate = true;
+        //     } else if (transition) {
+        //         tile.endTransition(uid);
+        //     }
+        // };
     };
     return VectorTileLayer;
 }(ol.layer.VectorTile));
@@ -2202,14 +2212,17 @@ var __extends = (this && this.__extends) || (function () {
 var GeoVectorTileSource = /** @class */ (function (_super) {
     __extends(GeoVectorTileSource, _super);
     function GeoVectorTileSource(options) {
-        var _this = _super.call(this, options) || this;
-        _this.maxDataZoom = options.maxDataZoom;
-        _this.clientId = options.clientId;
-        _this.clientSecret = options.clientSecret;
-        _this.geoFormat = options.format;
-        _this.tileLoadFunction = _this.vectorTileLoadFunction.bind(_this);
-        _this.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
-        return _this;
+        var _this_1 = _super.call(this, options) || this;
+        _this_1.maxDataZoom = options.maxDataZoom;
+        if (options["tileUrlFunction"] === undefined) {
+            _this_1.setTileUrlFunction(_this_1.getGeoTileUrlFunction());
+        }
+        _this_1.clientId = options.clientId;
+        _this_1.clientSecret = options.clientSecret;
+        _this_1.geoFormat = options.format;
+        _this_1.tileLoadFunction = _this_1.vectorTileLoadFunction.bind(_this_1);
+        _this_1.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
+        return _this_1;
     }
     GeoVectorTileSource.prototype.getGeoFormat = function () {
         return this.geoFormat;
@@ -2219,7 +2232,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
         var xRegEx = /\{x\}/g;
         var yRegEx = /\{y\}/g;
         var dashYRegEx = /\{-y\}/g;
-        var template = this.urls[0];
+        var urls = this.urls;
         var tileGrid = this.tileGrid;
         var maxDataZoom = this.maxDataZoom;
         return function (tileCoord) {
@@ -2235,6 +2248,9 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         requestCoord_1[2] = Math.floor(requestCoord_1[2] / 2);
                     }
                 }
+                var h = ol.tilecoord.hash(tileCoord);
+                var index = ol.math.modulo(h, urls.length);
+                var template = urls[index];
                 return template.replace(zRegEx, requestCoord_1[0].toString())
                     .replace(xRegEx, requestCoord_1[1].toString())
                     .replace(yRegEx, function () {
@@ -2273,8 +2289,9 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
     };
     GeoVectorTileSource.prototype.loadFeaturesXhr = function (urls, format, success, failure, self) {
         return (function (extent, resolution, projection) {
+            var _this_1 = this;
             var _this = this;
-            var maxDataZoom = format.dataMaxZoom;
+            var maxDataZoom = format.maxDataZoom;
             var requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
             if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
                 while (requestTileCoord[0] !== maxDataZoom) {
@@ -2284,11 +2301,11 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                 }
             }
             this.requestTileCoord = requestTileCoord;
-            var callback = function (tile, successFunction, sourceProjection, lastExtent) {
-                successFunction.call(tile, sourceProjection, lastExtent);
+            var callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
+                callbackFunction.call(tile, sourceProjection, lastExtent);
             };
             var hasRequested = false;
-            hasRequested = format.registerTileLoadEvent(this, success, callback);
+            hasRequested = format.registerTileLoadEvent(this, success, failure, callback);
             if (!hasRequested) {
                 var loader = function (url) {
                     // Client ID and Client Secret   
@@ -2299,13 +2316,16 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         var requestInfo = {
                             url: typeof url === "function" ? url(extent, resolution, projection) : url,
                             type: format.getType(),
-                            tileCoord: _this.tileCoord,
+                            tileCoord: _this_1.tileCoord,
                             requestCoord: requestTileCoord,
                             minimalist: format.minimalist,
-                            dataMaxZoom: format.dataMaxZoom,
+                            maxDataZoom: format.maxDataZoom,
                             formatId: ol.getUid(format),
                             layerName: format.layerName,
                             token: self.token,
+                            vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
+                            tileRange: _this.tileRange,
+                            tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord
                         };
                         var loadedCallback = function (data, methodInfo) {
                             var requestKey = data.requestKey;
@@ -2315,14 +2335,19 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                                 var loadEventInfo = tileLoadEventInfos[i];
                                 loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
                                 var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-                                loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
+                                if (data.status === "succeed") {
+                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
+                                }
+                                else {
+                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                                }
                             }
                         };
-                        format.workerManager.postMessage(_this.tileCoord + ol.getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
+                        format.workerManager.postMessage(_this_1.tileCoord + ol.getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
                     }
                     else {
-                        var tileCoord_1 = _this.tileCoord;
-                        var tile_1 = _this;
+                        var tileCoord_1 = _this_1.tileCoord;
+                        var tile_1 = _this_1;
                         var xhr_1 = new XMLHttpRequest();
                         xhr_1.open("GET", typeof url === "function" ? url(extent, resolution, projection) : url, true);
                         if (self.token) {
@@ -2370,11 +2395,11 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                             else {
                                 failure.call(this);
                             }
-                        }.bind(_this);
+                        }.bind(_this_1);
                         xhr_1.onerror = function () {
                             failure.call(this);
-                        }.bind(_this);
-                        _this["xhr"] = xhr_1;
+                        }.bind(_this_1);
+                        _this_1["xhr"] = xhr_1;
                         format.source.dispatchEvent(new ol.VectorTile.Event("sendingTileRequest", xhr_1));
                         xhr_1.send();
                     }
@@ -2387,84 +2412,6 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                 }
                 ;
             }
-            // let process = function (z, x, y, originalZoom) {
-            //     if (z > format.dataMaxZoom) {
-            //         format instanceof ol.format.MVT ? internalFailure.call(this) : failure.call(this);
-            //     }
-            //     else {
-            //         let hasRequested = false;
-            //         if (z === format.dataMaxZoom) {
-            //             let callback = function (tile, successFunction, features, instructs, sourceProjection, lastExtent) {
-            //                 let originalCoord = tile.tileCoord;
-            //                 if (z) {
-            //                     tile.tileCoord = [z, x, -y - 1];
-            //                 }
-            //                 successFunction.call(tile, [features, instructs], sourceProjection, lastExtent);
-            //             };
-            //             hasRequested = format.tryLoadTileFromCacheOrRegosterLoadEvent([z, x, -y - 1], originalZoom, { tile: this, successFunction: success, callback: callback });
-            //             if (!hasRequested) {
-            //                 let originalCoord = this.tileCoord;
-            //                 let source = format.getCachedSource([z, x, -y - 1]);
-            //                 if (source) {
-            //                     format.addSourceToCache(source, originalZoom, { featureProjection: projection, originalCoord: originalCoord, tileCoord: [z, x, -y - 1] });
-            //                     hasRequested = true;
-            //                 }
-            //             }
-            //         }
-            //         if (!hasRequested) {
-            //             let isDataMaxZoom = z === format.dataMaxZoom;
-            //             let xhr = new XMLHttpRequest();
-            //             xhr.open("GET",
-            //                 typeof url === "function" ? url(extent, resolution, projection) : url,
-            //                 true);
-            //             if (format.getType() === (<any>ol).format.FormatType.ARRAY_BUFFER) {
-            //                 xhr.responseType = "arraybuffer";
-            //             }
-            //             xhr.onload = function (event: any) {
-            //                 if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-            //                     let type = format.getType();
-            //                     /** @type {Document|Node|Object|string|undefined} */
-            //                     let source;
-            //                     if (type === (<any>ol).format.FormatType.JSON ||
-            //                         type === (<any>ol).format.FormatType.TEXT) {
-            //                         source = xhr.responseText;
-            //                     } else if (type === (<any>ol).format.FormatType.XML) {
-            //                         source = xhr.responseXML;
-            //                         if (!source) {
-            //                             source = (<any>ol).xml.parse(xhr.responseText);
-            //                         }
-            //                     } else if (type === (<any>ol).format.FormatType.ARRAY_BUFFER) {
-            //                         source = /** @type {ArrayBuffer} */ (xhr.response);
-            //                     }
-            //                     if (source) {
-            //                         let originalCoord = this.tileCoord;
-            //                         if (isDataMaxZoom) {
-            //                             // success.call(this, format.readFeaturesAndCreateInstructs(source, originalZoom, { featureProjection: projection, originalCoord: originalCoord, tilecoord: this.tileCoord }), format.readProjection(source), format.getLastExtent());
-            //                             format.addSourceToCache(source, originalZoom, { featureProjection: projection, originalCoord: originalCoord, tileCoord: [z, x, -y - 1] });
-            //                         } else {
-            //                             success.call(this, format.readFeaturesAndCreateInstructs(source, originalZoom, { featureProjection: projection, originalCoord: originalCoord, tilecoord: this.tileCoord }), format.readProjection(source), format.getLastExtent());
-            //                         }
-            //                     } else {
-            //                         format instanceof ol.format.MVT ? internalFailure.call(this) : failure.call(this);
-            //                     }
-            //                 } else {
-            //                     failure.call(this);
-            //                 }
-            //             }.bind(this);
-            //             xhr.onerror = function () {
-            //                 failure.call(this);
-            //             }.bind(this);
-            //             this["xhr"] = xhr;
-            //             xhr.send();
-            //         }
-            //     }
-            // };
-            // let parts = url.substring(0, url.lastIndexOf(".")).split("/");
-            // let y = +parts.pop();
-            // let x = +parts.pop();
-            // let z = +parts.pop();
-            // let originalZ = z;
-            // process.call(this, z, x, y, originalZ);
         });
     };
     return GeoVectorTileSource;
@@ -2507,8 +2454,9 @@ var GeoVectorTile = /** @class */ (function (_super) {
         if (this.workerId !== undefined) {
             var disposeInfo = {
                 formatId: ol.getUid(this.getFormat()),
+                maxDataZoom: this.getFormat().maxDataZoom,
                 tileCoord: this.tileCoord,
-                requestCoord: this.requestTileCoord
+                requestTileCoord: this.requestTileCoord
             };
             this.getFormat().workerManager.postMessage(this.tileCoord + ol.getUid(disposeInfo), "vectorTileDispose", disposeInfo, null, this.workerId);
         }
@@ -2554,10 +2502,10 @@ var GeoMVTFormat = /** @class */ (function (_super) {
         _this = _super.call(this, options) || this;
         _this.isMultithread = options.multithread;
         _this.minimalist = options.minimalist;
-        _this.dataMaxZoom = options.dataMaxZoom ? options.dataMaxZoom : 14;
+        _this.maxDataZoom = options.maxDataZoom ? options.maxDataZoom : 14;
         _this.layerName = options.layerName;
         _this.styleJsonCache = styleJSonCache;
-        _this.dataMaxZoomCache = {};
+        _this.maxDataZoomCache = {};
         _this.registeredLoadEvents = {};
         _this.lruCache = new ol.structs.LRUCache(15);
         _this.sourceCache = {};
@@ -2566,12 +2514,13 @@ var GeoMVTFormat = /** @class */ (function (_super) {
     GeoMVTFormat.prototype.getLayerName = function () {
         return this.layerName;
     };
-    GeoMVTFormat.prototype.registerTileLoadEvent = function (tile, success, callback) {
+    GeoMVTFormat.prototype.registerTileLoadEvent = function (tile, success, failure, callback) {
         var hasRequested = true;
         var requestKey = tile.requestTileCoord.join(",") + "," + tile.tileCoord[0];
         var loadEventInfo = {
             tile: tile,
             successFunction: success,
+            failureFunction: failure,
             callback: callback
         };
         if (this.registeredLoadEvents[requestKey] === undefined) {
@@ -5938,13 +5887,22 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
             return false;
         }
         var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-        // Adjust cache size according to tile Range, TODO: add a property for that
+        // Adjust tile cache size according to tile Range, TODO: add a property for that
         var xOffset = (tileRange.maxX - tileRange.minX);
         var yOffset = (tileRange.maxY - tileRange.minY);
         xOffset = xOffset <= 0 ? 1 : xOffset * 2 + 3;
         yOffset = yOffset <= 0 ? 1 : yOffset * 2 + 3;
         var cacheSize = xOffset * yOffset;
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
+        //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
+        var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.maxDataZoom);
+        var offsetX = dataTileRand.maxX - dataTileRand.minX;
+        var offsetY = dataTileRand.maxY - dataTileRand.minY;
+        offsetX = offsetX <= 0 ? 1 : offsetX + 3;
+        offsetY = offsetY <= 0 ? 1 : offsetY + 3;
+        var vectorTileDataCahceSize = offsetX * offsetY;
+        tileSource["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
+        tileSource.getGeoFormat()["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
         var imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
         var tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
         /**
@@ -5960,6 +5918,8 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+                // FIXME Eric
+                tile.tileRange = tileRange;
                 if (tile.getState() === ol.TileState.ERROR) {
                     if (!tileLayer.getUseInterimTilesOnError()) {
                         // When useInterimTilesOnError is false, we consider the error tile as loaded.
@@ -6122,7 +6082,9 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
                 if (sourceTile.getState() === ol.TileState.ERROR) {
                     continue;
                 }
-                var replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+                //// reuse replayGroup of source Tile to reduce the memory.
+                // let replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+                var replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
                 if (renderMode !== ol.layer.VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
                     continue;
                 }
@@ -6196,203 +6158,112 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
             if (sourceTile.getState() === ol.TileState.ERROR) {
                 return "continue";
             }
+            console.log(sourceTile.getState());
             var sourceTileCoord = sourceTile.requestTileCoord;
             var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             var sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
             var bufferedExtent = ol.extent.equals(sourceTileExtent, sharedExtent) ? null :
                 ol.extent.buffer(sharedExtent, layer.getRenderBuffer() * resolution);
             var tileProjection = sourceTile.getProjection();
-            var reproject = false;
-            // if (!ol.proj.equivalent(projection, tileProjection)) {
-            reproject = true;
-            //     sourceTile.setProjection(projection);
-            // }
+            var reproject = true;
             replayState.dirty = false;
-            var replayGroup = new __WEBPACK_IMPORTED_MODULE_0__replayGroupCustom__["a" /* ReplayGroupCustom */](0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this_1.declutterTree_, layer.getRenderBuffer());
-            var squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio);
-            var strategyTree = ol.ext.rbush(9);
-            /**
-             * @param {ol.Feature|ol.render.Feature} feature Feature.
-             * @this {ol.renderer.canvas.VectorTileLayer}
-             */
-            var renderFeature = function (feature, geoStyles, options) {
-                var styles;
-                if (geoStyles) {
-                    if (geoStyles && geoStyles.length > 0) {
-                        for (var i = 0, ii = geoStyles.length; i < ii; i++) {
-                            if (geoStyles[i]) {
-                                var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
-                                if (styles === undefined) {
-                                    styles = [];
-                                }
-                                Array.prototype.push.apply(styles, ol4Styles);
-                            }
-                        }
+            //// reuse replayGroup of source Tile to reduce the memory.
+            var distReplayGroup = sourceTile.getReplayGroup(layer, tile.wrappedTileCoord.toString());
+            if (distReplayGroup) {
+                // Check replayGroup has  replays
+                var replaysZindexCount = 0;
+                if (distReplayGroup.replaysByZIndex_) {
+                    for (var zindex in distReplayGroup.replaysByZIndex_) {
+                        replaysZindexCount++;
                     }
+                }
+                if (source.isMultithread && replaysZindexCount === 0) {
+                    // the replays did not created, it will create after web worker call back
+                    if (sourceTile)
+                        if (sourceTile["reuseVectorImageTile"] === undefined) {
+                            sourceTile["reuseVectorImageTile"] = [];
+                        }
+                    sourceTile["reuseVectorImageTile"].push(tile);
                 }
                 else {
-                    var styleFunction = feature.getStyleFunction();
-                    if (styleFunction) {
-                        styles = styleFunction.call(/** @type {ol.Feature} */ (feature), resolution);
+                    replayState.renderedRevision = revision;
+                    replayState.renderedRenderOrder = renderOrder;
+                    replayState.renderedTileLoaded = true;
+                }
+            }
+            else {
+                var replayGroup_1 = new __WEBPACK_IMPORTED_MODULE_0__replayGroupCustom__["a" /* ReplayGroupCustom */](0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this_1.declutterTree_, layer.getRenderBuffer());
+                var squaredTolerance_1 = ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio);
+                var strategyTree_1 = ol.ext.rbush(9);
+                /**
+                 * @param {ol.Feature|ol.render.Feature} feature Feature.
+                 * @this {ol.renderer.canvas.VectorTileLayer}
+                 */
+                var renderFeature_1 = function (feature, geoStyles, options) {
+                    var styles;
+                    if (geoStyles) {
+                        if (geoStyles && geoStyles.length > 0) {
+                            for (var i = 0, ii = geoStyles.length; i < ii; i++) {
+                                if (geoStyles[i]) {
+                                    var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
+                                    if (styles === undefined) {
+                                        styles = [];
+                                    }
+                                    Array.prototype.push.apply(styles, ol4Styles);
+                                }
+                            }
+                        }
                     }
                     else {
-                        styleFunction = layer.getStyleFunction();
+                        var styleFunction = feature.getStyleFunction();
                         if (styleFunction) {
-                            styles = styleFunction(feature, resolution);
+                            styles = styleFunction.call(/** @type {ol.Feature} */ (feature), resolution);
                         }
-                    }
-                }
-                if (styles) {
-                    var dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
-                    this.dirty_ = this.dirty_ || dirty;
-                    replayState.dirty = replayState.dirty || dirty;
-                }
-            };
-            var instructs = void 0;
-            var features = void 0;
-            if (sourceTile.featuresAndInstructs) {
-                instructs = sourceTile.featuresAndInstructs["instructs"];
-                features = sourceTile.featuresAndInstructs["features"];
-            }
-            if (source.isMultithread) {
-                var render = this_1;
-                if (tileProjection.getUnits() === ol.proj.Units.TILE_PIXELS) {
-                    tileProjection.setWorldExtent(sourceTileExtent);
-                    tileProjection.setExtent(sourceTile.getExtent());
-                }
-                var tileProjectionInfo = {};
-                for (var name_1 in tileProjection) {
-                    if (typeof tileProjection[name_1] !== "function") {
-                        tileProjectionInfo[name_1] = tileProjection[name_1];
-                    }
-                }
-                var projectInfo = {};
-                for (var name_2 in projection) {
-                    if (typeof projection[name_2] !== "function") {
-                        projectInfo[name_2] = projection[name_2];
-                    }
-                }
-                var geoStyles_1 = source.getGeoFormat().styleJsonCache.geoStyles;
-                if (features && instructs) {
-                    for (var i = 0; i < instructs.length; i++) {
-                        var geoStyleId = instructs[i][1];
-                        var geoStyle = geoStyles_1[geoStyleId];
-                        var featureInfo = features[instructs[i][0]];
-                        var feature = new ol.render.Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                        if (featureInfo["projected"] === undefined) {
-                            if (tileProjection.getUnits() === ol.proj.Units.TILE_PIXELS) {
-                                // projected tile extent
-                                tileProjection.setWorldExtent(sourceTileExtent);
-                                // tile extent in tile pixel space
-                                tileProjection.setExtent(sourceTile.getExtent());
+                        else {
+                            styleFunction = layer.getStyleFunction();
+                            if (styleFunction) {
+                                styles = styleFunction(feature, resolution);
                             }
-                            feature.getGeometry().transform(tileProjection, projection);
-                            feature.extent_ = null;
-                            featureInfo["projected"] = "";
                         }
-                        feature["tempTreeZindex"] = instructs[i][2];
-                        feature["styleId"] = geoStyleId;
-                        renderFeature.call(this_1, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                     }
+                    if (styles) {
+                        var dirty = this.renderFeature(feature, squaredTolerance_1, styles, replayGroup_1);
+                        this.dirty_ = this.dirty_ || dirty;
+                        replayState.dirty = replayState.dirty || dirty;
+                    }
+                };
+                var instructs = void 0;
+                var features = void 0;
+                if (sourceTile.featuresAndInstructs) {
+                    instructs = sourceTile.featuresAndInstructs["instructs"];
+                    features = sourceTile.featuresAndInstructs["features"];
                 }
-                var messageData = [
-                    [0, tileExtent, resolution, pixelRatio, source.getOverlaps(), this_1.declutterTree_, layer.getRenderBuffer(), source.getGeoFormat().minimalist],
-                    sourceTile.requestTileCoord,
-                    sourceTile.tileCoord,
-                    tileProjectionInfo,
-                    projectInfo,
-                    squaredTolerance,
-                    window.devicePixelRatio,
-                    ol.getUid(source.getGeoFormat()),
-                    frameState["coordinateToPixelTransform"],
-                ];
-                rendera = this_1;
-                var callabck = function (messageData) {
-                    var replaysByZIndex_ = messageData["replays"];
-                    var features = messageData["features"];
-                    var instructs = messageData["instructs"];
+                if (source.isMultithread) {
+                    var render = this_1;
+                    if (tileProjection.getUnits() === ol.proj.Units.TILE_PIXELS) {
+                        tileProjection.setWorldExtent(sourceTileExtent);
+                        tileProjection.setExtent(sourceTile.getExtent());
+                    }
+                    var tileProjectionInfo = {};
+                    for (var name_1 in tileProjection) {
+                        if (typeof tileProjection[name_1] !== "function") {
+                            tileProjectionInfo[name_1] = tileProjection[name_1];
+                        }
+                    }
+                    var projectInfo = {};
+                    for (var name_2 in projection) {
+                        if (typeof projection[name_2] !== "function") {
+                            projectInfo[name_2] = projection[name_2];
+                        }
+                    }
+                    var geoStyles_1 = source.getGeoFormat().styleJsonCache.geoStyles;
                     if (features && instructs) {
                         for (var i = 0; i < instructs.length; i++) {
                             var geoStyleId = instructs[i][1];
                             var geoStyle = geoStyles_1[geoStyleId];
                             var featureInfo = features[instructs[i][0]];
                             var feature = new ol.render.Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                            feature["tempTreeZindex"] = instructs[i][2];
-                            feature["styleId"] = geoStyleId;
-                            renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
-                        }
-                    }
-                    for (var zindex in replaysByZIndex_) {
-                        for (var replayType in replaysByZIndex_[zindex]) {
-                            var replay = replayGroup.getReplayCustom(zindex, replayType);
-                            var workReplay = replaysByZIndex_[zindex][replayType];
-                            if (!source.getGeoFormat().minimalist && workReplay.instructions) {
-                                for (var i = 0; i < workReplay.instructions.length; i++) {
-                                    var instruction = workReplay.instructions[i];
-                                    if (instruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && instruction[1].indexOf("hatch") === 0) {
-                                        var hatchInstruction = instruction[1];
-                                        var geoStyleId = hatchInstruction.split("|")[1];
-                                        var geoStyle = geoStyles_1[geoStyleId];
-                                        if (geoStyle) {
-                                            geoStyle.initialize();
-                                            instruction[1] = geoStyle.geoBrush;
-                                        }
-                                    }
-                                    if (instruction[0] === ol.render.canvas.Instruction.BEGIN_GEOMETRY || instruction[0] === ol.render.canvas.Instruction.END_GEOMETRY) {
-                                        var featureInfo = instruction[1];
-                                        var feature = new ol.render.Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                                        feature["styleId"] = featureInfo.styleId;
-                                        instruction[1] = feature;
-                                    }
-                                }
-                                for (var i = 0; i < workReplay.hitDetectionInstructions.length; i++) {
-                                    var hitInstruction = workReplay.hitDetectionInstructions[i];
-                                    if (hitInstruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && hitInstruction[1].indexOf("hatch") === 0) {
-                                        var hatchInstruction = hitInstruction[1];
-                                        var geoStyleId = hatchInstruction.split("|")[1];
-                                        var geoStyle = geoStyles_1[geoStyleId];
-                                        if (geoStyle) {
-                                            geoStyle.initialize();
-                                            hitInstruction[1] = geoStyle.geoBrush;
-                                        }
-                                    }
-                                    if (hitInstruction[0] === ol.render.canvas.Instruction.BEGIN_GEOMETRY || hitInstruction[0] === ol.render.canvas.Instruction.END_GEOMETRY) {
-                                        var hitfeatureInfo = hitInstruction[1];
-                                        var hitfeature = new ol.render.Feature(hitfeatureInfo.type_, hitfeatureInfo.flatCoordinates_, hitfeatureInfo.ends_, hitfeatureInfo.properties_);
-                                        hitfeature["styleId"] = hitfeatureInfo.styleId;
-                                        hitInstruction[1] = hitfeature;
-                                    }
-                                }
-                            }
-                            for (var key in workReplay) {
-                                if (key === "pixelCoordinates_") {
-                                    replay[key] = new Int32Array(workReplay[key]);
-                                }
-                                else {
-                                    replay[key] = workReplay[key];
-                                }
-                            }
-                        }
-                    }
-                    for (var r in replayGroup.getReplays()) {
-                        zIndexKeys[r] = true;
-                    }
-                    replayState.renderedTileLoaded = true;
-                    sourceTile.state = ol.TileState.LOADED;
-                    tile.setState(ol.TileState.LOADED);
-                };
-                sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
-                source.getGeoFormat().workerManager.postMessage(sourceTile.tileCoord + ol.getUid(callabck), "createReplay", messageData, callabck, sourceTile.workerId);
-                replayState.renderedRevision = revision;
-                replayState.renderedTileLoaded = false;
-            }
-            else {
-                if (instructs && instructs.length > 0) {
-                    for (var i = 0; i < instructs.length; i++) {
-                        var featureIndex = instructs[i][0];
-                        var feature = features[featureIndex];
-                        if (feature["projected"] === undefined) {
-                            if (reproject) {
+                            if (featureInfo["projected"] === undefined) {
                                 if (tileProjection.getUnits() === ol.proj.Units.TILE_PIXELS) {
                                     // projected tile extent
                                     tileProjection.setWorldExtent(sourceTileExtent);
@@ -6401,22 +6272,150 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
                                 }
                                 feature.getGeometry().transform(tileProjection, projection);
                                 feature.extent_ = null;
-                                feature.getExtent();
+                                featureInfo["projected"] = "";
                             }
-                            feature["projected"] = "";
+                            feature["tempTreeZindex"] = instructs[i][2];
+                            feature["styleId"] = geoStyleId;
+                            renderFeature_1.call(this_1, feature, [geoStyle], { strategyTree: strategyTree_1, frameState: frameState });
                         }
-                        feature["tempTreeZindex"] = instructs[i][2];
-                        renderFeature.call(this_1, feature, [instructs[i][1]], { strategyTree: strategyTree, frameState: frameState });
                     }
+                    var messageData = [
+                        [0, tileExtent, resolution, pixelRatio, source.getOverlaps(), this_1.declutterTree_, layer.getRenderBuffer(), source.getGeoFormat().minimalist],
+                        sourceTile.requestTileCoord,
+                        sourceTile.tileCoord,
+                        tileProjectionInfo,
+                        projectInfo,
+                        squaredTolerance_1,
+                        window.devicePixelRatio,
+                        ol.getUid(source.getGeoFormat()),
+                        frameState["coordinateToPixelTransform"],
+                        source.getGeoFormat().maxDataZoom,
+                        source["vectorTileDataCahceSize"]
+                    ];
+                    rendera = this_1;
+                    var callabck = function (messageData) {
+                        var replaysByZIndex_ = messageData["replays"];
+                        var features = messageData["features"];
+                        var instructs = messageData["instructs"];
+                        if (features && instructs) {
+                            for (var i_1 = 0; i_1 < instructs.length; i_1++) {
+                                var geoStyleId = instructs[i_1][1];
+                                var geoStyle = geoStyles_1[geoStyleId];
+                                var featureInfo = features[instructs[i_1][0]];
+                                var feature = new ol.render.Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                feature["tempTreeZindex"] = instructs[i_1][2];
+                                feature["styleId"] = geoStyleId;
+                                renderFeature_1.call(rendera, feature, [geoStyle], { strategyTree: strategyTree_1, frameState: frameState });
+                            }
+                        }
+                        for (var zindex_1 in replaysByZIndex_) {
+                            for (var replayType in replaysByZIndex_[zindex_1]) {
+                                var replay = replayGroup_1.getReplayCustom(zindex_1, replayType);
+                                var workReplay = replaysByZIndex_[zindex_1][replayType];
+                                if (!source.getGeoFormat().minimalist && workReplay.instructions) {
+                                    for (var i_2 = 0; i_2 < workReplay.instructions.length; i_2++) {
+                                        var instruction = workReplay.instructions[i_2];
+                                        if (instruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && instruction[1].indexOf("hatch") === 0) {
+                                            var hatchInstruction = instruction[1];
+                                            var geoStyleId = hatchInstruction.split("|")[1];
+                                            var geoStyle = geoStyles_1[geoStyleId];
+                                            if (geoStyle) {
+                                                geoStyle.initialize();
+                                                instruction[1] = geoStyle.geoBrush;
+                                            }
+                                        }
+                                        if (instruction[0] === ol.render.canvas.Instruction.BEGIN_GEOMETRY || instruction[0] === ol.render.canvas.Instruction.END_GEOMETRY) {
+                                            var featureInfo = instruction[1];
+                                            var feature = new ol.render.Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                            feature["styleId"] = featureInfo.styleId;
+                                            instruction[1] = feature;
+                                        }
+                                    }
+                                    for (var i_3 = 0; i_3 < workReplay.hitDetectionInstructions.length; i_3++) {
+                                        var hitInstruction = workReplay.hitDetectionInstructions[i_3];
+                                        if (hitInstruction[0] === ol.render.canvas.Instruction.SET_FILL_STYLE && hitInstruction[1].indexOf("hatch") === 0) {
+                                            var hatchInstruction = hitInstruction[1];
+                                            var geoStyleId = hatchInstruction.split("|")[1];
+                                            var geoStyle = geoStyles_1[geoStyleId];
+                                            if (geoStyle) {
+                                                geoStyle.initialize();
+                                                hitInstruction[1] = geoStyle.geoBrush;
+                                            }
+                                        }
+                                        if (hitInstruction[0] === ol.render.canvas.Instruction.BEGIN_GEOMETRY || hitInstruction[0] === ol.render.canvas.Instruction.END_GEOMETRY) {
+                                            var hitfeatureInfo = hitInstruction[1];
+                                            var hitfeature = new ol.render.Feature(hitfeatureInfo.type_, hitfeatureInfo.flatCoordinates_, hitfeatureInfo.ends_, hitfeatureInfo.properties_);
+                                            hitfeature["styleId"] = hitfeatureInfo.styleId;
+                                            hitInstruction[1] = hitfeature;
+                                        }
+                                    }
+                                }
+                                for (var key in workReplay) {
+                                    if (key === "pixelCoordinates_") {
+                                        replay[key] = new Int32Array(workReplay[key]);
+                                    }
+                                    else {
+                                        replay[key] = workReplay[key];
+                                    }
+                                }
+                            }
+                        }
+                        for (var r in replayGroup_1.getReplays()) {
+                            zIndexKeys[r] = true;
+                        }
+                        replayState.renderedTileLoaded = true;
+                        sourceTile.state = ol.TileState.LOADED;
+                        if (sourceTile["reuseVectorImageTile"]) {
+                            for (var i = 0; i < sourceTile["reuseVectorImageTile"].length; i++) {
+                                var reusedVectorImageTile = sourceTile["reuseVectorImageTile"][i];
+                                delete sourceTile["reuseVectorImageTile"][i];
+                                var vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
+                                vectorImageTileReplayState.renderedRevision = revision;
+                                vectorImageTileReplayState.renderedRenderOrder = renderOrder;
+                                vectorImageTileReplayState.renderedTileLoaded = true;
+                                reusedVectorImageTile.setState(ol.TileState.LOADED);
+                            }
+                        }
+                        tile.setState(ol.TileState.LOADED);
+                    };
+                    //// reuse replayGroup of source Tile to reduce the memory.
+                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup_1);
+                    source.getGeoFormat().workerManager.postMessage(sourceTile.tileCoord + ol.getUid(callabck), "createReplay", messageData, callabck, sourceTile.workerId);
+                    replayState.renderedRevision = revision;
+                    replayState.renderedTileLoaded = false;
                 }
-                replayGroup.finish();
-                for (var r in replayGroup.getReplays()) {
-                    zIndexKeys[r] = true;
+                else {
+                    if (instructs && instructs.length > 0) {
+                        for (var i = 0; i < instructs.length; i++) {
+                            var featureIndex = instructs[i][0];
+                            var feature = features[featureIndex];
+                            if (feature["projected"] === undefined) {
+                                if (reproject) {
+                                    if (tileProjection.getUnits() === ol.proj.Units.TILE_PIXELS) {
+                                        // projected tile extent
+                                        tileProjection.setWorldExtent(sourceTileExtent);
+                                        // tile extent in tile pixel space
+                                        tileProjection.setExtent(sourceTile.getExtent());
+                                    }
+                                    feature.getGeometry().transform(tileProjection, projection);
+                                    feature.extent_ = null;
+                                    feature.getExtent();
+                                }
+                                feature["projected"] = "";
+                            }
+                            feature["tempTreeZindex"] = instructs[i][2];
+                            renderFeature_1.call(this_1, feature, [instructs[i][1]], { strategyTree: strategyTree_1, frameState: frameState });
+                        }
+                    }
+                    replayGroup_1.finish();
+                    for (var r in replayGroup_1.getReplays()) {
+                        zIndexKeys[r] = true;
+                    }
+                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup_1);
+                    replayState.renderedRevision = revision;
+                    replayState.renderedRenderOrder = renderOrder;
+                    replayState.renderedTileLoaded = true;
                 }
-                sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
-                replayState.renderedRevision = revision;
-                replayState.renderedRenderOrder = renderOrder;
-                replayState.renderedTileLoaded = true;
             }
         };
         var this_1 = this, rendera;
@@ -6456,7 +6455,8 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
                 var transform = ol.transform.reset(this.tmpTransform_);
                 ol.transform.scale(transform, pixelScale, -pixelScale);
                 ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
-                var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+                //// reuse replayGroup of source Tile to reduce the memory.
+                var replayGroup = sourceTile.getReplayGroup(layer, tileCoord);
                 replayGroup.replay(context, transform, 0, {}, replays);
             }
         }
