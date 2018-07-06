@@ -215,7 +215,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
     }
 
     protected createVectorTileGrid(): ol.tilegrid.TileGrid {
-        return ol.tilegrid.createXYZ({ tileSize: 256, maxZoom: 22 });
+        return ol.tilegrid.createXYZ({ tileSize: 512, maxZoom: 22 });
     }
 
     getVariables(variablesJson: any) {

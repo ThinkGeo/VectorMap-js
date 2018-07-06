@@ -51,17 +51,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
 
         //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
-        if (z > tileSource.dataMaxZoom) {
-            var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.dataMaxZoom);
-            var offsetX= dataTileRand.maxX - dataTileRand.minX;
-            var offsetY= dataTileRand.maxY - dataTileRand.minY;
+        var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.maxDataZoom);
+        var offsetX = dataTileRand.maxX - dataTileRand.minX;
+        var offsetY = dataTileRand.maxY - dataTileRand.minY;
 
-            offsetX = offsetX <= 0 ? 1 : offsetX + 3;
-            offsetY = offsetY <= 0 ? 1 : offsetY + 3;
-            var vectorTileDataCahceSize= offsetX*offsetY;
-            tileSource["vectorTileDataCahceSize"]= vectorTileDataCahceSize;
-            tileSource.getGeoFormat()["vectorTileDataCahceSize"]= vectorTileDataCahceSize;
-        }
+        offsetX = offsetX <= 0 ? 1 : offsetX + 3;
+        offsetY = offsetY <= 0 ? 1 : offsetY + 3;
+        var vectorTileDataCahceSize = offsetX * offsetY;
+        tileSource["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
+        tileSource.getGeoFormat()["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
 
         let imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
@@ -340,7 +338,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
                 continue;
             }
-
+            console.log(sourceTile.getState());
             let sourceTileCoord = sourceTile.requestTileCoord;
             let sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             let sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
@@ -482,7 +480,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         window.devicePixelRatio,
                         (<any>ol).getUid(source.getGeoFormat()),
                         frameState["coordinateToPixelTransform"],
-                        source.getGeoFormat().dataMaxZoom,
+                        source.getGeoFormat().maxDataZoom,
                         source["vectorTileDataCahceSize"]
                     ];
                     var rendera = this;

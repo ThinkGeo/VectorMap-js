@@ -101204,6 +101204,7 @@ function olInit() {
 
                 var resultData = {
                     requestKey: requestKey,
+                    status: "succeed",
                     mainInstructs: res
                 };
 
@@ -101243,11 +101244,53 @@ function olInit() {
                             }
                             postMessage(postMessageData);
                         }
+                        else
+                        {
+                            var resultMessageData = {
+                                status: "failure",
+                                requestKey: requestKey,
+                            };
+                            var postMessageData = {
+                                methodInfo: methodInfo,
+                                messageData: resultMessageData,
+                                debugInfo: {
+                                    postMessageDateTime: new Date().getTime()
+                                }
+                            }
+                            postMessage(postMessageData);
+                        }
                     }
+                    else
+                    {
+                        var resultMessageData = {
+                            status: "failure",
+                            requestKey: requestKey,
+                        };
+                        var postMessageData = {
+                            methodInfo: methodInfo,
+                            messageData: resultMessageData,
+                            debugInfo: {
+                                postMessageDateTime: new Date().getTime()
+                            }
+                        }
+                        postMessage(postMessageData);
+                    }
+
                     delete self.requestCache[requestKey]
                 }.bind(this);
                 xhr.onerror = function () {
-                    // TODO post message to main thread for request failed.
+                    var resultMessageData = {
+                        status: "failure",
+                        requestKey: requestKey,
+                    };
+                    var postMessageData = {
+                        methodInfo: methodInfo,
+                        messageData: resultMessageData,
+                        debugInfo: {
+                            postMessageDateTime: new Date().getTime()
+                        }
+                    }
+                    postMessage(postMessageData);
                     delete self.requestCache[requestKey]
                 }.bind(this);
                 xhr.send();
@@ -101284,7 +101327,7 @@ function olInit() {
             var requestKey = requestCoord.join(",") + "," + zoom;
 
             var vectorTileCache = null;
-            vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 20 : vectorTileDataCahceSize;
+            vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
             if (self.vectorTilesData[formatId] === undefined) {
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
@@ -101303,6 +101346,7 @@ function olInit() {
 
 
             var resultData = {
+                status: "succeed",
                 requestKey: requestKey
             };
 
@@ -101315,7 +101359,7 @@ function olInit() {
             self["devicePixelRatio"] = messageData[6];
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
-            var dataMaxZoom = messageData[9];
+            var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
 
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
@@ -101406,7 +101450,7 @@ function olInit() {
                 this.console.log("missing", tileCoord, tileCoordKey)
             }
 
-            if (tileCoord[0] < dataMaxZoom) {
+            if (tileCoord[0] < maxDataZoom) {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
             }
 
@@ -101543,7 +101587,7 @@ function olInit() {
             var requestTileCoord = requestInfo.requestTileCoord;
             var tileCoord = requestInfo.tileCoord;
             var formatId = requestInfo.formatId;
-            var dataMaxZoom = requestInfo.dataMaxZoom;
+            var maxDataZoom = requestInfo.maxDataZoom;
 
             var requestKey = requestTileCoord.join(",") + "," + tileCoord[0];
 
@@ -101553,7 +101597,7 @@ function olInit() {
                 xhr.abort();
             }
 
-            if (tileCoord[0] <= dataMaxZoom) {
+            if (tileCoord[0] <= maxDataZoom) {
                 if (self.vectorTilesData[formatId] && self.vectorTilesData[formatId].containsKey(requestKey)) {
                     self.vectorTilesData[formatId].remove(requestKey);
                 }

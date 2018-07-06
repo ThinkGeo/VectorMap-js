@@ -1,8 +1,8 @@
 export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptions): any; }) {
     styleJsonCache: any;
     layerName: string;
-    dataMaxZoom: number;
-    dataMaxZoomCache: any;
+    maxDataZoom: number;
+    maxDataZoomCache: any;
     registeredLoadEvents: any;
 
     lruCache: any;
@@ -12,12 +12,12 @@ export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptio
     constructor(styleJSonCache: any, options: any) {
         options.layerName = options.layerName ? options.layerName : "layerName";
         super(options);
-        this.isMultithread= options.multithread;
-        this.minimalist= options.minimalist;
-        this.dataMaxZoom = options.dataMaxZoom ? options.dataMaxZoom : 14;
+        this.isMultithread = options.multithread;
+        this.minimalist = options.minimalist;
+        this.maxDataZoom = options.maxDataZoom ? options.maxDataZoom : 14;
         this.layerName = options.layerName;
         this.styleJsonCache = styleJSonCache;
-        this.dataMaxZoomCache = {};
+        this.maxDataZoomCache = {};
         this.registeredLoadEvents = {};
         this.lruCache = new (<any>ol).structs.LRUCache(15);
         this.sourceCache = {};
@@ -28,12 +28,13 @@ export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptio
     }
 
 
-    registerTileLoadEvent(tile, success, callback) {
+    registerTileLoadEvent(tile, success, failure, callback) {
         let hasRequested = true;
         let requestKey = tile.requestTileCoord.join(",") + "," + tile.tileCoord[0];
         let loadEventInfo = {
             tile: tile,
             successFunction: success,
+            failureFunction: failure,
             callback: callback
         }
         if (this.registeredLoadEvents[requestKey] === undefined) {
@@ -172,7 +173,7 @@ export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptio
                         let childrenInstructs = [];
                         for (let h = 0; h < instructsInOneZIndex.length; h++) {
                             let instruct = instructsInOneZIndex[h];
-                            var feature= features[instruct[0]];
+                            var feature = features[instruct[0]];
                             feature.styleId = feature.styleId ? feature.styleId : {}
                             if (instruct[1].geoStyle) {
                                 feature.styleId[instruct[1].geoStyle.id] = 0;
@@ -229,7 +230,7 @@ export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptio
 
         }
 
-        return [features,subTileCachedInstruct];
+        return [features, subTileCachedInstruct];
     }
 
 

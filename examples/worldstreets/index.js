@@ -1,7 +1,8 @@
 var view = new ol.View({
     center: ol.proj.fromLonLat([-96.79748, 32.78819]),
-    zoom: 2,
+    zoom: 14,
     maxZoom: 19,
+    maxResolution: 40075016.68557849 / 512
 });
 var zoom = view.getZoom();
 document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
