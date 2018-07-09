@@ -16,8 +16,8 @@ view.on("change:resolution", function (e) {
 
 var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", {
     declutter: true,
-    threadMode:ol.mapsuite.VectorTileLayerThreadMode.SingleBackgroundWorker,
-    backgroundWorkerCount:2,
+    // threadMode:ol.mapsuite.VectorTileLayerThreadMode.Default,
+    // backgroundWorkerCount:2,
     multithread: true,
     minimalist: true,
 });

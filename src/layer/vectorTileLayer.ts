@@ -32,9 +32,20 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
 
         if (opt_options !== undefined) {
+            // temp Emil
+            var tempIsMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
+
             this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
             this.isMultithread = this.threadMode !== VectorTileLayerThreadMode.SingleThread;
             this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
+
+            // temp Emil
+            if (tempIsMultithread) {
+                this.threadMode = VectorTileLayerThreadMode.Default;
+                this.backgroundWorkerCount = 1;
+            }
+
+
             this.minimalist = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];
             this.maxDataZoom = opt_options["maxDataZoom"] === undefined ? 14 : opt_options["maxDataZoom"];
             this.proxy = opt_options["proxy"];
@@ -216,7 +227,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         let format = new GeoMVTFormat(undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
         if (this.isMultithread) {
             if (!this.workerManager || !this.workerManager.inited) {
-                this.workerManager = new WorkerManager(this.threadMode,this.backgroundWorkerCount);
+                this.workerManager = new WorkerManager(this.threadMode, this.backgroundWorkerCount);
                 this.workerManager.initWorkers();
             }
             if (this.workerManager.inited) {

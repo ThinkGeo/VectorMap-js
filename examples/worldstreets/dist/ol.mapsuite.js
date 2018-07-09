@@ -1640,9 +1640,16 @@ var VectorTileLayer = /** @class */ (function (_super) {
             _this = _super.call(this, options) || this;
         }
         if (opt_options !== undefined) {
+            // temp Emil
+            var tempIsMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
             _this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
             _this.isMultithread = _this.threadMode !== __WEBPACK_IMPORTED_MODULE_10__worker_vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */].SingleThread;
             _this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
+            // temp Emil
+            if (tempIsMultithread) {
+                _this.threadMode = __WEBPACK_IMPORTED_MODULE_10__worker_vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */].Default;
+                _this.backgroundWorkerCount = 1;
+            }
             _this.minimalist = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];
             _this.maxDataZoom = opt_options["maxDataZoom"] === undefined ? 14 : opt_options["maxDataZoom"];
             _this.proxy = opt_options["proxy"];
