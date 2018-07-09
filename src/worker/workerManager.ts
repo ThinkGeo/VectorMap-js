@@ -1,3 +1,5 @@
+import { VectorTileLayerThreadMode } from "./vectorTileLayerThreadMode";
+
 export class WorkerManager {
     workerCount: number;
     workers: Worker[];
@@ -6,10 +8,19 @@ export class WorkerManager {
     inited: boolean;
     workerCallback: any;
 
-    constructor() {
-        // passed by parm
-        // this.workerCount = Math.max(Math.floor(window.navigator.hardwareConcurrency / 2),1);
-        this.workerCount = 1;
+    constructor(threadMode, workerCount: number) {
+        if (threadMode === VectorTileLayerThreadMode.SingleBackgroundWorker) {
+            this.workerCount = 1;
+        }
+        else {
+            if (isNaN(workerCount)|| workerCount<=0) {
+                this.workerCount = Math.max(Math.floor(window.navigator.hardwareConcurrency / 2), 1);
+            }
+            else {
+                // passed by parm
+                this.workerCount = workerCount;
+            }
+        }
         this.currentWorkerIndex = 0;
         this.workers = [];
         this.workerCallback = {};
@@ -21,7 +32,7 @@ export class WorkerManager {
             for (let i = 0; i < this.workerCount; i++) {
                 let source = '(' + window["olInit"] + ')()';
                 let blob = new Blob([source]);
-    
+
                 let worker = new Worker(window.URL.createObjectURL(blob));
                 worker.onmessage = function (e) {
                     let methodInfo = e.data["methodInfo"];

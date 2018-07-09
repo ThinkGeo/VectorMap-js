@@ -8,12 +8,14 @@ import { GeoVectorTileLayerRender } from "../render/geoVectorTilelayerRender";
 import { TreeNode } from "../tree/TreeNode";
 import { Tree } from "../tree/tree";
 import { WorkerManager } from "../worker/workerManager";
+import { VectorTileLayerThreadMode } from "../worker/vectorTileLayerThreadMode";
 
 
 export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.VectorTileOptions): any; }) {
     maxDataZoom: number;
-    isMultithread: boolean;
     minimalist: boolean;
+    threadMode: VectorTileLayerThreadMode;
+    isMultithread: boolean;
     workerManager: WorkerManager;
 
     constructor(styleJson: any, opt_options?: olx.layer.VectorTileOptions) {
@@ -30,7 +32,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
 
         if (opt_options !== undefined) {
-            this.isMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
+            this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
+            this.isMultithread = this.threadMode !== VectorTileLayerThreadMode.SingleThread;
+            this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
             this.minimalist = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];
             this.maxDataZoom = opt_options["maxDataZoom"] === undefined ? 14 : opt_options["maxDataZoom"];
             this.proxy = opt_options["proxy"];
@@ -157,12 +161,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         delete sourceJson['url'];
                     }
                     sourceJson['urls'] = sourceJson['urls'].map(url => {
-                        if(url.indexOf('http') === -1 && url.indexOf('https') === -1){
+                        if (url.indexOf('http') === -1 && url.indexOf('https') === -1) {
                             var href = location.href;
-                            if(url.indexOf('/') !== 0){
+                            if (url.indexOf('/') !== 0) {
                                 url = href + url;
-                            }else if(url.indexOf('/') === 0){
-                                url = href.substring(0, href.length-1) + url;
+                            } else if (url.indexOf('/') === 0) {
+                                url = href.substring(0, href.length - 1) + url;
                             }
                         }
                         // apiKey
@@ -179,7 +183,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     return true;
                 }
             });
-            
+
             return this.geoSources[sourceId];
         }
 
@@ -212,7 +216,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         let format = new GeoMVTFormat(undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
         if (this.isMultithread) {
             if (!this.workerManager || !this.workerManager.inited) {
-                this.workerManager = new WorkerManager();
+                this.workerManager = new WorkerManager(this.threadMode,this.backgroundWorkerCount);
                 this.workerManager.initWorkers();
             }
             if (this.workerManager.inited) {
@@ -681,10 +685,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     pixelCoordinates = (<any>ol).geom.flat.transform.transform2D(
                         this.coordinates, 0, this.coordinates.length, 2,
                         transform, this.pixelCoordinates_);
-                        (<any>ol).transform.setFromArray(this.renderedTransform_, transform);
+                    (<any>ol).transform.setFromArray(this.renderedTransform_, transform);
                 }
             }
-    
+
             var skipFeatures = !(<any>ol).obj.isEmpty(skippedFeaturesHash);
             var i = 0; // instruction index
             var ii = instructions.length; // end of instructions
@@ -697,20 +701,20 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var lastStrokeInstruction = null;
             var coordinateCache = this.coordinateCache_;
             var viewRotation = this.viewRotation_;
-    
+
             var state = /** @type {olx.render.State} */ ({
                 context: context,
                 pixelRatio: this.pixelRatio,
                 resolution: this.resolution,
                 rotation: viewRotation
             });
-    
+
             // When the batch size gets too big, performance decreases. 200 is a good
             // balance between batch size and number of fill/stroke instructions.
             var batchSize =
                 this.instructions != instructions || this.overlaps ? 0 : 200;
-    
-    
+
+
             while (i < ii) {
                 var instruction = instructions[i];
                 var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -801,7 +805,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         var scale = /** @type {number} */ (instruction[13]);
                         var snapToPixel = /** @type {boolean} */ (instruction[14]);
                         var width = /** @type {number} */ (instruction[15]);
-    
+
                         var padding, backgroundFill, backgroundStroke;
                         if (instruction.length > 16) {
                             padding = /** @type {Array.<number>} */ (instruction[16]);
@@ -811,7 +815,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             padding = (<any>ol).render.canvas.defaultPadding;
                             backgroundFill = backgroundStroke = false;
                         }
-    
+
                         if (rotateWithView) {
                             rotation += viewRotation;
                         }
@@ -841,7 +845,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         var text = /** @type {string} */ (instruction[12]);
                         var textKey = /** @type {string} */ (instruction[13]);
                         var textScale = /** @type {number} */ (instruction[14]);
-    
+
                         var pathLength = (<any>ol).geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
                         var textLength = measure(text);
                         if (overflow || textLength <= pathLength) {
@@ -862,7 +866,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                           /** @type {number} */(part[0]), /** @type {number} */(part[1]), label,
                                             anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                           /** @type {number} */(part[3]), textScale, false, label.width,
-                          (<any>ol.render).canvas.defaultPadding, null, null);
+                                            (<any>ol.render).canvas.defaultPadding, null, null);
                                     }
                                 }
                                 if (fillKey) {
@@ -876,7 +880,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                           /** @type {number} */(part[0]), /** @type {number} */(part[1]), label,
                                             anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                           /** @type {number} */(part[3]), textScale, false, label.width,
-                          (<any>ol).render.canvas.defaultPadding, null, null);
+                                            (<any>ol).render.canvas.defaultPadding, null, null);
                                     }
                                 }
                             }
@@ -930,7 +934,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     case (<any>ol).render.canvas.Instruction.SET_FILL_STYLE:
                         lastFillInstruction = instruction;
                         this.fillOrigin_ = instruction[2];
-    
+
                         if (pendingFill) {
                             this.fill_(context);
                             pendingFill = 0;
@@ -939,7 +943,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                                 pendingStroke = 0;
                             }
                         }
-    
+
                         context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
                         ++i;
                         break;
@@ -989,10 +993,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var layer = this.getLayer();
             /** @type {Object.<string, boolean>} */
             var features = {};
-    
+
             /** @type {Array.<ol.VectorImageTile>} */
             var renderedTiles = this.renderedTiles;
-    
+
             var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
             var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
             var bufferedExtent, found;
@@ -1029,6 +1033,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
             return found;
         };
-    
+
     }
 }
