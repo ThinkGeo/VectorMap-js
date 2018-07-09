@@ -1735,7 +1735,7 @@ var VectorTileLayer = /** @class */ (function (_super) {
                         delete sourceJson['url'];
                     }
                     sourceJson['urls'] = sourceJson['urls'].map(function (url) {
-                        if (url.indexOf('http') === -1 || url.indexOf('https') === -1) {
+                        if (url.indexOf('http') === -1 && url.indexOf('https') === -1) {
                             var href = location.href;
                             if (url.indexOf('/') !== 0) {
                                 url = href + url;
@@ -1744,7 +1744,6 @@ var VectorTileLayer = /** @class */ (function (_super) {
                                 url = href.substring(0, href.length - 1) + url;
                             }
                         }
-                        
                         // apiKey
                         if (url.indexOf('apiKey') === -1 && _this.apiKey) {
                             url = url + '?apiKey=' + _this.apiKey;
