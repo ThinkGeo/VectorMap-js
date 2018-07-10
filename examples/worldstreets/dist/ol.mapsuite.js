@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -482,9 +482,24 @@ var DetectTextLabelingStrategy = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VectorTileLayerThreadMode; });
+var VectorTileLayerThreadMode;
+(function (VectorTileLayerThreadMode) {
+    VectorTileLayerThreadMode[VectorTileLayerThreadMode["Default"] = 1] = "Default";
+    VectorTileLayerThreadMode[VectorTileLayerThreadMode["SingleThread"] = 2] = "SingleThread";
+    VectorTileLayerThreadMode[VectorTileLayerThreadMode["SingleBackgroundWorker"] = 3] = "SingleBackgroundWorker";
+    VectorTileLayerThreadMode[VectorTileLayerThreadMode["MultiBackgroundWorker"] = 4] = "MultiBackgroundWorker";
+})(VectorTileLayerThreadMode || (VectorTileLayerThreadMode = {}));
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoTextStyle; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoStyle__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geoStyleProperty__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geoStyleProperty__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__textLabelingStrategy__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__detectTextLabelingStrategy__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
@@ -1226,7 +1241,7 @@ Date.prototype.format = function (fmt) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1250,12 +1265,12 @@ var GeoFilterItem = /** @class */ (function () {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoZoomFilter; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoRangeFilter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoRangeFilter__ = __webpack_require__(8);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1284,7 +1299,7 @@ var GeoZoomFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1406,7 +1421,7 @@ var GeoRangeFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1477,7 +1492,7 @@ var GeoStringAttributeFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1527,12 +1542,12 @@ var GeoRegexFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoNumberAttributeFilter; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoRangeFilter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoRangeFilter__ = __webpack_require__(8);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1555,34 +1570,38 @@ var GeoNumberAttributeFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__layer_vectorTileLayer__ = __webpack_require__(12);
-
-ol.mapsuite = {};
-ol.mapsuite["VectorTileLayer"] = __WEBPACK_IMPORTED_MODULE_0__layer_vectorTileLayer__["a" /* VectorTileLayer */];
-window["ol"] = ol;
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__layer_vectorTileLayer__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_vectorTileLayerThreadMode__ = __webpack_require__(4);
+
+
+ol.mapsuite = {};
+ol.mapsuite["VectorTileLayer"] = __WEBPACK_IMPORTED_MODULE_0__layer_vectorTileLayer__["a" /* VectorTileLayer */];
+ol.mapsuite["VectorTileLayerThreadMode"] = __WEBPACK_IMPORTED_MODULE_1__worker_vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */];
+window["ol"] = ol;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VectorTileLayer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__source_geoVectorTileSource__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geoVectorTile__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__source_geoVectorTileSource__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geoVectorTile__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_geoStyle__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__format_geoMvt__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tree_styleJsonCache__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__tree_styleJsonCacheItem__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__render_geoVectorTilelayerRender__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__tree_TreeNode__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__tree_tree__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__worker_workerManager__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__format_geoMvt__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tree_styleJsonCache__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__tree_styleJsonCacheItem__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__render_geoVectorTilelayerRender__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__tree_TreeNode__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__tree_tree__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__worker_workerManager__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__worker_vectorTileLayerThreadMode__ = __webpack_require__(4);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1593,6 +1612,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -1620,7 +1640,16 @@ var VectorTileLayer = /** @class */ (function (_super) {
             _this = _super.call(this, options) || this;
         }
         if (opt_options !== undefined) {
-            _this.isMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
+            // temp Emil
+            var tempIsMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
+            _this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
+            _this.isMultithread = _this.threadMode !== __WEBPACK_IMPORTED_MODULE_10__worker_vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */].SingleThread;
+            _this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
+            // temp Emil
+            if (tempIsMultithread) {
+                _this.threadMode = __WEBPACK_IMPORTED_MODULE_10__worker_vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */].Default;
+                _this.backgroundWorkerCount = 1;
+            }
             _this.minimalist = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];
             _this.maxDataZoom = opt_options["maxDataZoom"] === undefined ? 14 : opt_options["maxDataZoom"];
             _this.proxy = opt_options["proxy"];
@@ -1736,12 +1765,13 @@ var VectorTileLayer = /** @class */ (function (_super) {
                     }
                     sourceJson['urls'] = sourceJson['urls'].map(function (url) {
                         if (url.indexOf('http') === -1 && url.indexOf('https') === -1) {
-                            var href = location.href;
+                            var host = location.host;
+                            var protocol = location.protocol;
                             if (url.indexOf('/') !== 0) {
-                                url = href + url;
+                                url = protocol + '//' + host + '/' + url;
                             }
                             else if (url.indexOf('/') === 0) {
-                                url = href.substring(0, href.length - 1) + url;
+                                url = protocol + '//' + host + url;
                             }
                         }
                         // apiKey
@@ -1786,7 +1816,7 @@ var VectorTileLayer = /** @class */ (function (_super) {
         var format = new __WEBPACK_IMPORTED_MODULE_3__format_geoMvt__["a" /* GeoMVTFormat */](undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
         if (this.isMultithread) {
             if (!this.workerManager || !this.workerManager.inited) {
-                this.workerManager = new __WEBPACK_IMPORTED_MODULE_9__worker_workerManager__["a" /* WorkerManager */]();
+                this.workerManager = new __WEBPACK_IMPORTED_MODULE_9__worker_workerManager__["a" /* WorkerManager */](this.threadMode, this.backgroundWorkerCount);
                 this.workerManager.initWorkers();
             }
             if (this.workerManager.inited) {
@@ -2152,40 +2182,389 @@ var VectorTileLayer = /** @class */ (function (_super) {
             setTimeout(this.handlePostRender.bind(this), 0);
         };
         // refine drawImage performance
-        // (<any>ol).renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
-        //     var image = tile.getImage(this.getLayer());
-        //     if (!image) {
-        //         return;
-        //     }
-        //     var uid = (<any>ol).getUid(this);
-        //     var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-        //     if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
-        //         this.context.clearRect(x, y, w, h);
-        //     }
-        //     var alphaChanged = alpha !== this.context.globalAlpha;
-        //     if (alphaChanged) {
-        //         this.context.save();
-        //         this.context.globalAlpha = alpha;
-        //     }
-        //     // // before
-        //     this.context.drawImage(image, gutter, gutter,
-        //         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
-        //     // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
-        //     // // after
-        //     // this.context.save();
-        //     // var ptrn = this.context.createPattern(image, 'repeat');
-        //     // this.context.fillStyle = ptrn;
-        //     // this.context.fillRect(x, y, w, h);
-        //     // this.context.restore();
-        //     if (alphaChanged) {
-        //         this.context.restore();
-        //     }
-        //     if (alpha !== 1) {
-        //         frameState.animate = true;
-        //     } else if (transition) {
-        //         tile.endTransition(uid);
-        //     }
-        // };
+        ol.renderer.canvas.TileLayer.prototype.drawTileImage = function (tile, frameState, layerState, x, y, w, h, gutter, transition) {
+            var image = tile.getImage(this.getLayer());
+            if (!image) {
+                return;
+            }
+            var uid = ol.getUid(this);
+            var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+            if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
+                this.context.clearRect(x, y, w, h);
+            }
+            var alphaChanged = alpha !== this.context.globalAlpha;
+            if (alphaChanged) {
+                this.context.save();
+                this.context.globalAlpha = alpha;
+            }
+            // // before
+            this.context.drawImage(image, gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
+            // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
+            // // after
+            // this.context.save();
+            // var ptrn = this.context.createPattern(image, 'repeat');
+            // this.context.fillStyle = ptrn;
+            // this.context.fillRect(x, y, w, h);
+            // this.context.restore();
+            if (alphaChanged) {
+                this.context.restore();
+            }
+            if (alpha !== 1) {
+                frameState.animate = true;
+            }
+            else if (transition) {
+                tile.endTransition(uid);
+            }
+        };
+        //refine drawing, and remove instructions after using
+        ol.render.canvas.Replay.prototype.replay_ = function (context, transform, skippedFeaturesHash, instructions, featureCallback, opt_hitExtent) {
+            /** @type {Array.<number>} */
+            var pixelCoordinates;
+            if (this.instructions != instructions) {
+                // hit instructions
+                if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
+                    pixelCoordinates = this.pixelCoordinates_;
+                }
+                else {
+                    pixelCoordinates = ol.geom.flat.transform.transform2D(this.coordinates, 0, this.coordinates.length, 2, transform, []);
+                }
+            }
+            else {
+                // instructions
+                if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
+                    pixelCoordinates = this.pixelCoordinates_;
+                }
+                else {
+                    if (!this.pixelCoordinates_) {
+                        this.pixelCoordinates_ = [];
+                    }
+                    pixelCoordinates = ol.geom.flat.transform.transform2D(this.coordinates, 0, this.coordinates.length, 2, transform, this.pixelCoordinates_);
+                    ol.transform.setFromArray(this.renderedTransform_, transform);
+                }
+            }
+            var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
+            var i = 0; // instruction index
+            var ii = instructions.length; // end of instructions
+            var d = 0; // data index
+            var dd; // end of per-instruction data
+            var anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image;
+            var pendingFill = 0;
+            var pendingStroke = 0;
+            var lastFillInstruction = null;
+            var lastStrokeInstruction = null;
+            var coordinateCache = this.coordinateCache_;
+            var viewRotation = this.viewRotation_;
+            var state = /** @type {olx.render.State} */ ({
+                context: context,
+                pixelRatio: this.pixelRatio,
+                resolution: this.resolution,
+                rotation: viewRotation
+            });
+            // When the batch size gets too big, performance decreases. 200 is a good
+            // balance between batch size and number of fill/stroke instructions.
+            var batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
+            while (i < ii) {
+                var instruction = instructions[i];
+                var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+                var /** @type {ol.Feature|ol.render.Feature} */ feature, x, y;
+                switch (type) {
+                    case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
+                        feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+                        if ((skipFeatures &&
+                            skippedFeaturesHash[ol.getUid(feature).toString()]) ||
+                            !feature.getGeometry()) {
+                            i = /** @type {number} */ (instruction[2]);
+                        }
+                        else if (opt_hitExtent !== undefined && !ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent())) {
+                            i = /** @type {number} */ (instruction[2]) + 1;
+                        }
+                        else {
+                            ++i;
+                        }
+                        break;
+                    case ol.render.canvas.Instruction.BEGIN_PATH:
+                        if (pendingFill > batchSize) {
+                            this.fill_(context);
+                            pendingFill = 0;
+                        }
+                        if (pendingStroke > batchSize) {
+                            context.stroke();
+                            pendingStroke = 0;
+                        }
+                        if (!pendingFill && !pendingStroke) {
+                            context.beginPath();
+                            prevX = prevY = NaN;
+                        }
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.CIRCLE:
+                        d = /** @type {number} */ (instruction[1]);
+                        var x1 = pixelCoordinates[d];
+                        var y1 = pixelCoordinates[d + 1];
+                        var x2 = pixelCoordinates[d + 2];
+                        var y2 = pixelCoordinates[d + 3];
+                        var dx = x2 - x1;
+                        var dy = y2 - y1;
+                        var r = Math.sqrt(dx * dx + dy * dy);
+                        context.moveTo(x1 + r, y1);
+                        context.arc(x1, y1, r, 0, 2 * Math.PI, true);
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.CLOSE_PATH:
+                        context.closePath();
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.CUSTOM:
+                        d = /** @type {number} */ (instruction[1]);
+                        dd = instruction[2];
+                        var geometry = /** @type {ol.geom.SimpleGeometry} */ (instruction[3]);
+                        var renderer = instruction[4];
+                        var fn = instruction.length == 6 ? instruction[5] : undefined;
+                        state["geometry"] = geometry;
+                        state["feature"] = feature;
+                        if (!(i in coordinateCache)) {
+                            coordinateCache[i] = [];
+                        }
+                        var coords = coordinateCache[i];
+                        if (fn) {
+                            fn(pixelCoordinates, d, dd, 2, coords);
+                        }
+                        else {
+                            coords[0] = pixelCoordinates[d];
+                            coords[1] = pixelCoordinates[d + 1];
+                            coords.length = 2;
+                        }
+                        renderer(coords, state);
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.DRAW_IMAGE:
+                        d = /** @type {number} */ (instruction[1]);
+                        dd = /** @type {number} */ (instruction[2]);
+                        image = /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
+                            (instruction[3]);
+                        // Remaining arguments in DRAW_IMAGE are in alphabetical order
+                        anchorX = /** @type {number} */ (instruction[4]);
+                        anchorY = /** @type {number} */ (instruction[5]);
+                        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[6]);
+                        var height = /** @type {number} */ (instruction[7]);
+                        var opacity = /** @type {number} */ (instruction[8]);
+                        var originX = /** @type {number} */ (instruction[9]);
+                        var originY = /** @type {number} */ (instruction[10]);
+                        var rotateWithView = /** @type {boolean} */ (instruction[11]);
+                        var rotation = /** @type {number} */ (instruction[12]);
+                        var scale = /** @type {number} */ (instruction[13]);
+                        var snapToPixel = /** @type {boolean} */ (instruction[14]);
+                        var width = /** @type {number} */ (instruction[15]);
+                        var padding, backgroundFill, backgroundStroke;
+                        if (instruction.length > 16) {
+                            padding = /** @type {Array.<number>} */ (instruction[16]);
+                            backgroundFill = /** @type {boolean} */ (instruction[17]);
+                            backgroundStroke = /** @type {boolean} */ (instruction[18]);
+                        }
+                        else {
+                            padding = ol.render.canvas.defaultPadding;
+                            backgroundFill = backgroundStroke = false;
+                        }
+                        if (rotateWithView) {
+                            rotation += viewRotation;
+                        }
+                        for (; d < dd; d += 2) {
+                            this.replayImage_(context, pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY, declutterGroup, height, opacity, originX, originY, rotation, scale, snapToPixel, width, padding, backgroundFill ? /** @type {Array.<*>} */ (lastFillInstruction) : null, backgroundStroke ? /** @type {Array.<*>} */ (lastStrokeInstruction) : null);
+                        }
+                        this.renderDeclutter_(declutterGroup, feature);
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.DRAW_CHARS:
+                        var begin = /** @type {number} */ (instruction[1]);
+                        var end = /** @type {number} */ (instruction[2]);
+                        var baseline = /** @type {number} */ (instruction[3]);
+                        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[4]);
+                        var overflow = /** @type {number} */ (instruction[5]);
+                        var fillKey = /** @type {string} */ (instruction[6]);
+                        var maxAngle = /** @type {number} */ (instruction[7]);
+                        var measure = /** @type {function(string):number} */ (instruction[8]);
+                        var offsetY = /** @type {number} */ (instruction[9]);
+                        var strokeKey = /** @type {string} */ (instruction[10]);
+                        var strokeWidth = /** @type {number} */ (instruction[11]);
+                        var text = /** @type {string} */ (instruction[12]);
+                        var textKey = /** @type {string} */ (instruction[13]);
+                        var textScale = /** @type {number} */ (instruction[14]);
+                        var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
+                        var textLength = measure(text);
+                        if (overflow || textLength <= pathLength) {
+                            var textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
+                            var startM = (pathLength - textLength) * ol.render.replay.TEXT_ALIGN[textAlign];
+                            var parts = ol.geom.flat.textpath.lineString(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
+                            if (parts) {
+                                var c, cc, chars, label, part;
+                                if (strokeKey) {
+                                    for (c = 0, cc = parts.length; c < cc; ++c) {
+                                        part = parts[c]; // x, y, anchorX, rotation, chunk
+                                        chars = /** @type {string} */ (part[4]);
+                                        label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, '', strokeKey);
+                                        anchorX = /** @type {number} */ (part[2]) + strokeWidth;
+                                        anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
+                                        this.replayImage_(context, 
+                                        /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label, anchorX, anchorY, declutterGroup, label.height, 1, 0, 0, 
+                                        /** @type {number} */ (part[3]), textScale, false, label.width, ol.render.canvas.defaultPadding, null, null);
+                                    }
+                                }
+                                if (fillKey) {
+                                    for (c = 0, cc = parts.length; c < cc; ++c) {
+                                        part = parts[c]; // x, y, anchorX, rotation, chunk
+                                        chars = /** @type {string} */ (part[4]);
+                                        label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, '');
+                                        anchorX = /** @type {number} */ (part[2]);
+                                        anchorY = baseline * label.height - offsetY;
+                                        this.replayImage_(context, 
+                                        /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label, anchorX, anchorY, declutterGroup, label.height, 1, 0, 0, 
+                                        /** @type {number} */ (part[3]), textScale, false, label.width, ol.render.canvas.defaultPadding, null, null);
+                                    }
+                                }
+                            }
+                        }
+                        this.renderDeclutter_(declutterGroup, feature);
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.END_GEOMETRY:
+                        if (featureCallback !== undefined) {
+                            feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+                            var result = featureCallback(feature);
+                            if (result) {
+                                return result;
+                            }
+                        }
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.FILL:
+                        if (batchSize) {
+                            pendingFill++;
+                        }
+                        else {
+                            this.fill_(context);
+                        }
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
+                        d = /** @type {number} */ (instruction[1]);
+                        dd = /** @type {number} */ (instruction[2]);
+                        x = pixelCoordinates[d];
+                        y = pixelCoordinates[d + 1];
+                        roundX = (x + 0.5) | 0;
+                        roundY = (y + 0.5) | 0;
+                        if (roundX !== prevX || roundY !== prevY) {
+                            context.moveTo(x, y);
+                            prevX = roundX;
+                            prevY = roundY;
+                        }
+                        for (d += 2; d < dd; d += 2) {
+                            x = pixelCoordinates[d];
+                            y = pixelCoordinates[d + 1];
+                            roundX = (x + 0.5) | 0;
+                            roundY = (y + 0.5) | 0;
+                            if (d == dd - 2 || roundX !== prevX || roundY !== prevY) {
+                                context.lineTo(x, y);
+                                prevX = roundX;
+                                prevY = roundY;
+                            }
+                        }
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.SET_FILL_STYLE:
+                        lastFillInstruction = instruction;
+                        this.fillOrigin_ = instruction[2];
+                        if (pendingFill) {
+                            this.fill_(context);
+                            pendingFill = 0;
+                            if (pendingStroke) {
+                                context.stroke();
+                                pendingStroke = 0;
+                            }
+                        }
+                        context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.SET_STROKE_STYLE:
+                        lastStrokeInstruction = instruction;
+                        if (pendingStroke) {
+                            context.stroke();
+                            pendingStroke = 0;
+                        }
+                        this.setStrokeStyle_(context, /** @type {Array.<*>} */ (instruction));
+                        ++i;
+                        break;
+                    case ol.render.canvas.Instruction.STROKE:
+                        if (batchSize) {
+                            pendingStroke++;
+                        }
+                        else {
+                            context.stroke();
+                        }
+                        ++i;
+                        break;
+                    default:
+                        ++i; // consume the instruction anyway, to avoid an infinite loop
+                        break;
+                }
+            }
+            if (pendingFill) {
+                this.fill_(context);
+            }
+            if (pendingStroke) {
+                context.stroke();
+            }
+            // //release instructions
+            // if (this.instructions === instructions&&!(this instanceof (<any>ol).render.canvas.ImageReplay))
+            // {
+            //     this.instructions.length=0;
+            //     this.pixelCoordinates_=null;
+            // }
+            return undefined;
+        };
+        ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function (coordinate, frameState, hitTolerance, callback, thisArg) {
+            var resolution = frameState.viewState.resolution;
+            var rotation = frameState.viewState.rotation;
+            hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
+            var layer = this.getLayer();
+            /** @type {Object.<string, boolean>} */
+            var features = {};
+            /** @type {Array.<ol.VectorImageTile>} */
+            var renderedTiles = this.renderedTiles;
+            var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
+            var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+            var bufferedExtent, found;
+            var i, ii, replayGroup;
+            var tile, tileCoord, tileExtent;
+            for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
+                tile = renderedTiles[i];
+                tileCoord = tile.wrappedTileCoord;
+                tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+                bufferedExtent = ol.extent.buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
+                if (!ol.extent.containsCoordinate(bufferedExtent, coordinate)) {
+                    continue;
+                }
+                for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+                    var sourceTile = tile.getTile(tile.tileKeys[t]);
+                    if (sourceTile.getState() == ol.TileState.ERROR) {
+                        continue;
+                    }
+                    replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+                    found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {}, 
+                    /**
+                     * @param {ol.Feature|ol.render.Feature} feature Feature.
+                     * @return {?} Callback result.
+                     */
+                    function (feature) {
+                        var key = ol.getUid(feature).toString();
+                        if (!(key in features)) {
+                            features[key] = true;
+                            return callback.call(thisArg, feature, layer);
+                        }
+                    }, null);
+                }
+            }
+            return found;
+        };
     };
     return VectorTileLayer;
 }(ol.layer.VectorTile));
@@ -2193,7 +2572,7 @@ var VectorTileLayer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2312,7 +2691,6 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         self.getIDAndSecret(self);
                     }
                     if (format.isMultithread && format.workerManager) {
-                        // FIXME Eric
                         var requestInfo = {
                             url: typeof url === "function" ? url(extent, resolution, projection) : url,
                             type: format.getType(),
@@ -2339,17 +2717,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                                     loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
                                 }
                                 else {
-                                    // ImageTile
-                                    loadEventInfo.tile.tile.setState(ol.TileState.IDLE);
-                                    // tile
-                                    loadEventInfo.tile.setState(ol.TileState.IDLE);
-
-                                    // loadEventInfo.tile.state = ol.TileState.IDLE;
-                                    // tileSource.canExpireCache();
-
-                                    // loadEventInfo.tile.changed();
-                                    // ol.Tile.prototype.disposeInternal.call(loadEventInfo.tile);
-                                    // loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
                                 }
                             }
                         };
@@ -2430,7 +2798,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2489,7 +2857,7 @@ var GeoVectorTile = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3199,12 +3567,12 @@ ol.format.MVT.pbfReaders_["featureColumnValue"] = GeoMVTFormat.featureColumnValu
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StyleJsonCache; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_geoTextStyle__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_geoTextStyle__ = __webpack_require__(5);
 
 var StyleJsonCache = /** @class */ (function () {
     function StyleJsonCache() {
@@ -3262,16 +3630,16 @@ var StyleJsonCache = /** @class */ (function () {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoStyleProperty; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter_geoZoomFilter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__filter_geoStringAttributeFilter__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filter_geoNumberAttributeFilter__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter_geoZoomFilter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__filter_geoStringAttributeFilter__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filter_geoNumberAttributeFilter__ = __webpack_require__(11);
 
 
 
@@ -3388,21 +3756,21 @@ var GeoStyleProperty = /** @class */ (function () {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StyleJsonCacheItem; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter_geoZoomFilter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__filter_geoStringAttributeFilter__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filter_geoNumberAttributeFilter__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__style_geoAreaStyle__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__style_geoLineStyle__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__style_geoPointStyle__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__style_geoTextStyle__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__style_geoShieldStyle__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filter_geoFilterItem__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter_geoZoomFilter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__filter_geoStringAttributeFilter__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__filter_geoRegexFilter__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filter_geoNumberAttributeFilter__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__style_geoAreaStyle__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__style_geoLineStyle__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__style_geoPointStyle__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__style_geoTextStyle__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__style_geoShieldStyle__ = __webpack_require__(24);
 
 
 
@@ -3597,13 +3965,13 @@ var StyleJsonCacheItem = /** @class */ (function () {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoAreaStyle; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geoStyle__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style_geoBrush__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style_geoBrush__ = __webpack_require__(21);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3787,7 +4155,7 @@ var GeoAreaStyle = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4279,7 +4647,7 @@ var GeoBrush = /** @class */ (function () {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4771,7 +5139,7 @@ var GeoLineStyle = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5209,7 +5577,7 @@ var GeoPointStyle = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5843,12 +6211,12 @@ var GeoShieldStyle = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GeoVectorTileLayerRender; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__replayGroupCustom__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__replayGroupCustom__ = __webpack_require__(26);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6482,12 +6850,12 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReplayGroupCustom; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__textReplayCustom__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__textReplayCustom__ = __webpack_require__(27);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6629,7 +6997,7 @@ var ReplayGroupCustom = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7621,7 +7989,7 @@ var TextReplayCustom = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7637,7 +8005,7 @@ var TreeNode = /** @class */ (function () {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7675,16 +8043,27 @@ var Tree = /** @class */ (function () {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WorkerManager; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vectorTileLayerThreadMode__ = __webpack_require__(4);
+
 var WorkerManager = /** @class */ (function () {
-    function WorkerManager() {
-        // passed by parm
-        // this.workerCount = Math.max(Math.floor(window.navigator.hardwareConcurrency / 2),1);
-        this.workerCount = 1;
+    function WorkerManager(threadMode, workerCount) {
+        if (threadMode === __WEBPACK_IMPORTED_MODULE_0__vectorTileLayerThreadMode__["a" /* VectorTileLayerThreadMode */].SingleBackgroundWorker) {
+            this.workerCount = 1;
+        }
+        else {
+            if (isNaN(workerCount) || workerCount <= 0) {
+                this.workerCount = Math.max(Math.floor(window.navigator.hardwareConcurrency / 2), 1);
+            }
+            else {
+                // passed by parm
+                this.workerCount = workerCount;
+            }
+        }
         this.currentWorkerIndex = 0;
         this.workers = [];
         this.workerCallback = {};

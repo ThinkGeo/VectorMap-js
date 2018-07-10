@@ -28498,9 +28498,6 @@ function olInit() {
             context.stroke();
         }
 
-        if (!(this instanceof ol.render.canvas.ImageReplay) && this.instructions === instructions) {
-            this.instructions.length = 0;
-        }
         return undefined;
     };
 

@@ -340,7 +340,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
                 continue;
             }
-            console.log(sourceTile.getState());
             let sourceTileCoord = sourceTile.requestTileCoord;
             let sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             let sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
