@@ -1636,7 +1636,7 @@
         "id": "poi_icon",
         "filter": "layerName='poi'",
         "point-type": "glyph",
-        "point-glyph": "ThinkgeoFont",
+        "point-glyph": "thinkgeo-icons-webfont",
         "point-fill": "@naturalAndSports",
         "point-size": 22,
         "point-outline-color": "#ffffff",
