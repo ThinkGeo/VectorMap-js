@@ -1,21 +1,19 @@
 /**
  * @file icon.css
-    Icon Font:  ThinkgeoFont
-    The webfonts are created by Thinkgeo, which are based on images format svg. The images are converted from png, which are download from https://icons8.com. 
  */
 
 @font-face {
-    font-family: "ThinkgeoFont"; 
-    src: url("ThinkgeoFont.eot"); /* IE9 */
-    src: url("ThinkgeoFont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-    url("ThinkgeoFont.woff") format("woff"), /* chrome、firefox */
-    url("ThinkgeoFont.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-    url("ThinkgeoFont.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
+    font-family: "thinkgeo-icons-webfont";
+    src: url("thinkgeo-icons-webfont.eot"); /* IE9 */
+    src: url("thinkgeo-icons-webfont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("thinkgeo-icons-webfont.woff") format("woff"), /* chrome、firefox */
+    url("thinkgeo-icons-webfont.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    url("thinkgeo-icons-webfont.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
 }
 
 
 .icon {
-    font-family: "ThinkgeoFont" !important;
+    font-family: "thinkgeo-icons-webfont" !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
