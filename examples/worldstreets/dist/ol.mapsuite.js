@@ -2312,6 +2312,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         self.getIDAndSecret(self);
                     }
                     if (format.isMultithread && format.workerManager) {
+                        // FIXME Eric
                         var requestInfo = {
                             url: typeof url === "function" ? url(extent, resolution, projection) : url,
                             type: format.getType(),
@@ -2338,7 +2339,17 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                                     loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
                                 }
                                 else {
-                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                                    // ImageTile
+                                    loadEventInfo.tile.tile.setState(ol.TileState.IDLE);
+                                    // tile
+                                    loadEventInfo.tile.setState(ol.TileState.IDLE);
+
+                                    // loadEventInfo.tile.state = ol.TileState.IDLE;
+                                    // tileSource.canExpireCache();
+
+                                    // loadEventInfo.tile.changed();
+                                    // ol.Tile.prototype.disposeInternal.call(loadEventInfo.tile);
+                                    // loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
                                 }
                             }
                         };
@@ -6157,7 +6168,6 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
             if (sourceTile.getState() === ol.TileState.ERROR) {
                 return "continue";
             }
-            console.log(sourceTile.getState());
             var sourceTileCoord = sourceTile.requestTileCoord;
             var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             var sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);

@@ -18476,6 +18476,9 @@ function olInit() {
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
         if (!tileQueue.isEmpty()) {
+
+            console.log(tileQueue);
+            
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
             if (frameState) {
@@ -80679,6 +80682,7 @@ function olInit() {
                 // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.tileCoordWithSourceCoord = this.tileCoord;
+                sourceTile.tile = this;
                 if (sourceTile.state == ol.TileState.IDLE) {
                     sourceTile.setLoader(this.loader_);
                     sourceTile.load();
@@ -101212,7 +101216,7 @@ function olInit() {
                     var x = coords[1];
                     var y = coords[2];
                     if(coords[0] !== tileCoord[0] && ((tileRange.minX > x || tileRange.maxX < x) || (tileRange.minY > y || tileRange.maxY < y))){
-                        tileXhr.abort();
+                        // tileXhr.abort();
                         var resultMessageData = {
                             status: "failure",
                             requestKey: key,
@@ -101224,9 +101228,9 @@ function olInit() {
                                 postMessageDateTime: new Date().getTime()
                             }
                         }
-                        postMessage(postMessageData);
-                        delete self.requestCache[key];
-                        delete self.tileCoordWithSourceCoord[requestKey];
+                        // postMessage(postMessageData);
+                        // delete self.requestCache[key];
+                        // delete self.tileCoordWithSourceCoord[requestKey];
                     }
                 }
             }
