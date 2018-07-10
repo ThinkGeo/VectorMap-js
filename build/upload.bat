@@ -18,8 +18,8 @@ echo %%j:"%1")
 if "!s:~1,7!" neq "version" echo !s!))>temp.json
 del package.json
 ren "temp.json" "package.json"
-del mapsuite-vectormap-dev-js
-npm publish vectormap-js
+del mapsuite-vectormap-dev.js
+npm publish 
 
 
 

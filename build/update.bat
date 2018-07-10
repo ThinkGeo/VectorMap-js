@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+cd  %~dp0
 call cd ..
 call git pull
 for /F %%i in ('git rev-parse --short HEAD') do ( set commitid=%%i)
