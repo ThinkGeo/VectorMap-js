@@ -18477,8 +18477,6 @@ function olInit() {
         var tileQueue = this.tileQueue_;
         if (!tileQueue.isEmpty()) {
 
-            console.log(tileQueue);
-            
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
             if (frameState) {
