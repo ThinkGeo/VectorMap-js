@@ -192,8 +192,7 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         // A workaround for the language, remove the data update
-        if((featureText === undefined || featureText === "") && this.name.indexOf("name_") === 0)
-        {
+        if ((featureText === undefined || featureText === "") && this.name.indexOf("name_") === 0) {
             featureText = feature.get("name");
         }
 
@@ -206,11 +205,13 @@ export class GeoTextStyle extends GeoStyle {
         if (this.textFormat) {
             featureText = this.getTextWithFormat(featureText);
         }
-        featureText = this.getTextTransform(featureText);
 
         if (featureText === undefined || featureText === "") {
             return textStyles;
         }
+
+        featureText = this.getTextTransform(featureText);
+
         this.placements = this.propertyPlacements.getValue(featureProperties);
 
         this.style.getText().setText(featureText);
@@ -775,15 +776,17 @@ export class GeoTextStyle extends GeoStyle {
         return (<any>String).format(this.textFormat, featureText);
     }
     public getTextTransform(featureText: string) {
-        switch (this.textTransform) {
-            case "uppercase":
-                featureText = featureText.toLocaleUpperCase();
-                break;
-            case "lowercase":
-                featureText = featureText.toLocaleLowerCase();
-                break;
-            default:
-                break;
+        if (featureText !== undefined) {
+            switch (this.textTransform) {
+                case "uppercase":
+                    featureText = featureText.toLocaleUpperCase();
+                    break;
+                case "lowercase":
+                    featureText = featureText.toLocaleLowerCase();
+                    break;
+                default:
+                    break;
+            }
         }
         return featureText;
     }
