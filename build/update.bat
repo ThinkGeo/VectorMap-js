@@ -27,8 +27,10 @@ set newversion=1
 move config.json C:\config\config.json
 call cd build
 call build.bat
-call cd ..
-call upload.bat %newversion%
+call cd %~dp0
+call upload.bat %newversion% vectormap-js mapsuite-vectormap-dev.js
+call cd %~dp0
+call upload.bat %newversion% vectormap-js-dev mapsuite-vectormap.js
 call cd ..\..\..\
 call git clean -xdf
 :end
