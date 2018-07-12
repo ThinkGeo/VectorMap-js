@@ -28,6 +28,9 @@ move config.json C:\config\config.json
 call cd build
 call build.bat
 call cd %~dp0
+call aws s3 cp ..\dist\mapsuite-vectormap.js s3://cdnorigin.thinkgeo.com/vectormap/%1/
+call aws s3 cp ..\dist\mapsuite-vectormap-dev.js s3://cdnorigin.thinkgeo.com/vectormap/%1/
+call aws s3 cp ..\dist\mapsuite-vectormap.css s3://cdnorigin.thinkgeo.com/vectormap/%1/
 call upload.bat %newversion% vectormap-js mapsuite-vectormap-dev.js
 call cd %~dp0
 call upload.bat %newversion% vectormap-js-dev mapsuite-vectormap.js
