@@ -543,7 +543,6 @@ var GeoTextStyle = /** @class */ (function (_super) {
             MultiPolygon: __WEBPACK_IMPORTED_MODULE_3__detectTextLabelingStrategy__["a" /* DetectTextLabelingStrategy */]
         };
         _this.labelInfos = [];
-        _this.imageCache = [];
         _this.charWidths = {};
         if (styleJson) {
             _this.align = styleJson["text-align"];
@@ -672,10 +671,10 @@ var GeoTextStyle = /** @class */ (function (_super) {
         if (this.textFormat) {
             featureText = this.getTextWithFormat(featureText);
         }
-        featureText = this.getTextTransform(featureText);
         if (featureText === undefined || featureText === "") {
             return textStyles;
         }
+        featureText = this.getTextTransform(featureText);
         this.placements = this.propertyPlacements.getValue(featureProperties);
         this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature, resolution, this.style.getText(), options.strategyTree, options.frameState)) {
@@ -753,11 +752,7 @@ var GeoTextStyle = /** @class */ (function (_super) {
             if (flatCoordinates === undefined) {
                 return false;
             }
-            var labelImage = this.imageCache[text];
-            if (!labelImage) {
-                labelImage = this.getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
-                this.imageCache[text] = labelImage;
-            }
+            var labelImage = this.getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
             if (labelImage === undefined) {
                 return;
             }
@@ -852,101 +847,107 @@ var GeoTextStyle = /** @class */ (function (_super) {
         return width;
     };
     GeoTextStyle.prototype.getImage = function (textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths) {
-        var fillState = textState.getFill();
-        var strokeState = textState.getStroke();
-        var label;
-        var align = ol.render.replay.TEXT_ALIGN[textState.getTextAlign() || ol.render.canvas.defaultTextAlign];
-        var context = ol.dom.createCanvasContext2D(labelWidth, labelHeight);
-        label = context.canvas;
-        label.style.display = "none";
-        // For letterSpacing we need app
-        var body;
-        if (this.letterSpacing) {
-            body = document.getElementsByTagName("body")[0];
-            if (body) {
-                label.style.display = "none";
-                body.appendChild(label);
-            }
-            label.style.letterSpacing = this.letterSpacing + "px";
-            context = label.getContext("2d");
-        }
-        if (scale !== 1) {
-            context.scale(scale, scale);
-        }
-        context.font = font;
-        if (strokeState) {
-            context.strokeStyle = strokeState.getColor();
-            context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
-            context.lineCap = strokeState.getLineCap();
-            context.lineJoin = strokeState.getLineJoin();
-            context.miterLimit = strokeState.getMiterLimit();
-            var lineDash = strokeState.getLineDash();
-            lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
-            if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
-                context.setLineDash(strokeState.getLineDash());
-                context.lineDashOffset = strokeState.getLineDashOffset();
-            }
-        }
-        this.drawMask(context, 0, 0, renderWidth, height);
-        if (this.maskType) {
-            if (this.maskType.toLowerCase() === "circle") {
-                if (scale !== 1) {
-                    context.scale(scale, scale);
+        var labelCache = ol.render.canvas.labelCache;
+        var key = this.id !== undefined ? this.id : ol.getUid(this);
+        key += lines.toString();
+        if (!labelCache.containsKey(key)) {
+            var fillState = textState.getFill();
+            var strokeState = textState.getStroke();
+            var label = void 0;
+            var align = ol.render.replay.TEXT_ALIGN[textState.getTextAlign() || ol.render.canvas.defaultTextAlign];
+            var context = ol.dom.createCanvasContext2D(labelWidth, labelHeight);
+            label = context.canvas;
+            labelCache.set(key, label);
+            label.style.display = "none";
+            // For letterSpacing we need app
+            var body = void 0;
+            if (this.letterSpacing) {
+                body = document.getElementsByTagName("body")[0];
+                if (body) {
+                    label.style.display = "none";
+                    body.appendChild(label);
                 }
-                context.font = font;
-                if (strokeState) {
-                    context.strokeStyle = strokeState.getColor();
-                    context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
-                    context.lineCap = strokeState.getLineCap();
-                    context.lineJoin = strokeState.getLineJoin();
-                    context.miterLimit = strokeState.getMiterLimit();
-                    var lineDash = strokeState.getLineDash();
-                    lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
-                    if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
-                        context.setLineDash(strokeState.getLineDash());
-                        context.lineDashOffset = strokeState.getLineDashOffset();
-                    }
-                }
+                label.style.letterSpacing = this.letterSpacing + "px";
+                context = label.getContext("2d");
             }
-        }
-        context.textBaseline = "middle";
-        context.textAlign = "center";
-        var leftRight = 0.5 - align;
-        var x = align * label.width / scale + leftRight * strokeWidth;
-        var i;
-        var tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-        var tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
-        if (strokeState) {
-            if (strokeState.getColor() !== null) {
+            if (scale !== 1) {
+                context.scale(scale, scale);
+            }
+            context.font = font;
+            if (strokeState) {
                 context.strokeStyle = strokeState.getColor();
-                context.lineWidth = this.haloRadius ? this.haloRadius : 0;
-                for (i = 0; i < numLines; ++i) {
-                    if (this.drawnMask) {
-                        context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
+                context.lineCap = strokeState.getLineCap();
+                context.lineJoin = strokeState.getLineJoin();
+                context.miterLimit = strokeState.getMiterLimit();
+                var lineDash = strokeState.getLineDash();
+                lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
+                if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
+                    context.setLineDash(strokeState.getLineDash());
+                    context.lineDashOffset = strokeState.getLineDashOffset();
+                }
+            }
+            this.drawMask(context, 0, 0, renderWidth, height);
+            if (this.maskType) {
+                if (this.maskType.toLowerCase() === "circle") {
+                    if (scale !== 1) {
+                        context.scale(scale, scale);
                     }
-                    else {
-                        context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - +parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+                    context.font = font;
+                    if (strokeState) {
+                        context.strokeStyle = strokeState.getColor();
+                        context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
+                        context.lineCap = strokeState.getLineCap();
+                        context.lineJoin = strokeState.getLineJoin();
+                        context.miterLimit = strokeState.getMiterLimit();
+                        var lineDash = strokeState.getLineDash();
+                        lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
+                        if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
+                            context.setLineDash(strokeState.getLineDash());
+                            context.lineDashOffset = strokeState.getLineDashOffset();
+                        }
                     }
                 }
             }
-        }
-        if (fillState) {
-            if (fillState.getColor() !== null) {
-                context.fillStyle = fillState.getColor();
-                for (i = 0; i < numLines; ++i) {
-                    if (this.drawnMask) {
-                        context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
-                    }
-                    else {
-                        context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+            context.textBaseline = "middle";
+            context.textAlign = "center";
+            var leftRight = 0.5 - align;
+            var x = align * label.width / scale + leftRight * strokeWidth;
+            var i = void 0;
+            var tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
+            var tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
+            if (strokeState) {
+                if (strokeState.getColor() !== null) {
+                    context.strokeStyle = strokeState.getColor();
+                    context.lineWidth = this.haloRadius ? this.haloRadius : 0;
+                    for (i = 0; i < numLines; ++i) {
+                        if (this.drawnMask) {
+                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                        }
+                        else {
+                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - +parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+                        }
                     }
                 }
             }
+            if (fillState) {
+                if (fillState.getColor() !== null) {
+                    context.fillStyle = fillState.getColor();
+                    for (i = 0; i < numLines; ++i) {
+                        if (this.drawnMask) {
+                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                        }
+                        else {
+                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+                        }
+                    }
+                }
+            }
+            if (this.letterSpacing && body) {
+                body.removeChild(label);
+            }
         }
-        if (this.letterSpacing && body) {
-            body.removeChild(label);
-        }
-        return label;
+        return labelCache.get(key);
     };
     GeoTextStyle.prototype.wrapText = function (text, font) {
         var resultText;
@@ -1197,15 +1198,17 @@ var GeoTextStyle = /** @class */ (function (_super) {
         return String.format(this.textFormat, featureText);
     };
     GeoTextStyle.prototype.getTextTransform = function (featureText) {
-        switch (this.textTransform) {
-            case "uppercase":
-                featureText = featureText.toLocaleUpperCase();
-                break;
-            case "lowercase":
-                featureText = featureText.toLocaleLowerCase();
-                break;
-            default:
-                break;
+        if (featureText !== undefined) {
+            switch (this.textTransform) {
+                case "uppercase":
+                    featureText = featureText.toLocaleUpperCase();
+                    break;
+                case "lowercase":
+                    featureText = featureText.toLocaleLowerCase();
+                    break;
+                default:
+                    break;
+            }
         }
         return featureText;
     };
@@ -2713,7 +2716,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                             for (var i = 0; i < tileLoadEventInfos.length; i++) {
                                 var loadEventInfo = tileLoadEventInfos[i];
                                 loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
-                                // var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
+                                // let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
                                 // FIXME Eric
                                 if (data.status === "cancel") {
                                     loadEventInfo.tile.setState(ol.TileState.CANCEL);

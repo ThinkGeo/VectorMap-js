@@ -1636,7 +1636,7 @@
         "id": "poi_icon",
         "filter": "layerName='poi'",
         "point-type": "glyph",
-        "point-glyph": "ThinkgeoFont",
+        "point-glyph": "thinkgeo-icons-webfont",
         "point-fill": "@naturalAndSports",
         "point-size": 22,
         "point-outline-color": "#ffffff",
@@ -2886,14 +2886,14 @@
         "filter": "oneway=1;layerName='road'",
         "style": [{
             "filter": "zoom=15;class='primary'",
-            "line-oneway-symbol": "http://maptest.thinkgeo.com/onewayImages/oneway-gray.png"
+            "line-oneway-symbol": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAFCAYAAABIHbx0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABOSURBVChTYzAxMSEKX758efulS5essMmBMFZBbPjKlSv/ofgo0FBfdHkUDpJighhoWAOyXhSD8GEkQw5fvXrVCV0ehYMPAw3YjTuMTBgA4r93NU8NzhcAAAAASUVORK5CYII="
         }, {
             "filter": "zoom>=16;zoom<=19;",
             "style": [{
                 "filter": "class!='motorway,motorway_link'",
-                "line-oneway-symbol": "http://maptest.thinkgeo.com/onewayImages/oneway-gray.png"
+                "line-oneway-symbol": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAFCAYAAABIHbx0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABOSURBVChTYzAxMSEKX758efulS5essMmBMFZBbPjKlSv/ofgo0FBfdHkUDpJighhoWAOyXhSD8GEkQw5fvXrVCV0ehYMPAw3YjTuMTBgA4r93NU8NzhcAAAAASUVORK5CYII="
             }, {
-                "line-oneway-symbol": "http://maptest.thinkgeo.com/onewayImages/oneway-white.png"
+                "line-oneway-symbol": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAFCAYAAABIHbx0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABISURBVChTY6ivrycK////fzsQW2GTA2Gsgtgw0BAYOArEvujyKByIOqJBA7JeFIPwYahmEDgMxE7o8igcfBioeTcQ4wijegYAQdC9YX5WhhEAAAAASUVORK5CYII="
             }]
         }]
     }, {

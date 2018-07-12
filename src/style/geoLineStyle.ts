@@ -169,8 +169,6 @@ export class GeoLineStyle extends GeoStyle {
             }
         }
 
-        
-
         if (this.onewaySymbol) {
             this.onewayIcon = new ol.style.Icon({
                 src: this.onewaySymbol,
