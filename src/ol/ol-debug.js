@@ -101254,14 +101254,32 @@ function olInit() {
                 var values = Object.values(self.tileCoordWithSourceCoord);
                 if(values.length > 0){
                     var lastestCoord = values[values.length-1];
+                    var lastestX = lastestCoord[1];
+                    var lastestY = lastestCoord[2];
                     if(lastestCoord[0] !== tileCoord[0]){
                         for(var key in self.requestCache){
                             var tileXhr = self.requestCache[key];
                             if(tileXhr){
                                 var coords = self.tileCoordWithSourceCoord[key];
                                 var x = coords[1];
+                                var y = coords[2];                                
+                                if(coords[0] !== tileCoord[0]){                                      
+                                    tileXhr.abort();
+                                    postMessage(self.postCancelMessageData[key]);
+                                    delete self.requestCache[key];
+                                    delete self.tileCoordWithSourceCoord[key];
+                                    delete self.postCancelMessageData[key];
+                                }
+                            }
+                        }
+                    }else if((tileRange.minX - 1 > lastestX || tileRange.maxX + 1 < lastestX) || (tileRange.minY -1 > lastestY || tileRange.maxY + 1 < lastestY)){
+                        for(var key in self.requestCache){
+                            var tileXhr = self.requestCache[key];
+                            if(tileXhr){
+                                var coords = self.tileCoordWithSourceCoord[key];
+                                var x = coords[1];
                                 var y = coords[2];
-                                if(coords[0] !== tileCoord[0] && ((tileRange.minX > x || tileRange.maxX < x) || (tileRange.minY > y || tileRange.maxY < y))){                            
+                                if((tileRange.minX - 1 > x || tileRange.maxX + 1 < x) || (tileRange.minY -1 > y || tileRange.maxY + 1 < y)){                            
                                     tileXhr.abort();
                                     postMessage(self.postCancelMessageData[key]);
                                     delete self.requestCache[key];
