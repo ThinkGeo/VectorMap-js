@@ -351,7 +351,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             let tile = /** @type {ol.Tile} */ (event.target);
             let state = tile.getState();
             if (state === (<any>ol).TileState.LOADED || state === (<any>ol).TileState.ERROR ||
-                state === (<any>ol).TileState.EMPTY || state === (<any>ol).TileState.ABORT) {
+                state === (<any>ol).TileState.EMPTY || state === (<any>ol).TileState.ABORT ||
+                state === (<any>ol).TileState.CANCEL){
                 if (state === (<any>ol).TileState.ABORT || state === (<any>ol).TileState.ERROR) {
                     (<any>ol).events.unlisten(tile, (<any>ol).events.EventType.CHANGE,
                         this.handleTileChange, this);

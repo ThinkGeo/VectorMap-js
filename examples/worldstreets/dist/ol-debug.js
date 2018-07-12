@@ -11368,7 +11368,8 @@ function olInit() {
         LOADED: 2,
         ERROR: 3,
         EMPTY: 4,
-        ABORT: 5
+        ABORT: 5,
+        CANCEL: 6
     };
 
     goog.provide('ol.structs.PriorityQueue');
@@ -11764,7 +11765,8 @@ function olInit() {
             state = tile.getState();
             if (state === ol.TileState.ABORT) {
                 abortedTiles = true;
-            } else if (state === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+                // FIXME Eric
+            } else if ((state === ol.TileState.IDLE || state === ol.TileState.CANCEL) && !(tileKey in this.tilesLoadingKeys_)) {
                 this.tilesLoadingKeys_[tileKey] = true;
                 ++this.tilesLoading_;
                 ++newLoads;
@@ -18476,9 +18478,6 @@ function olInit() {
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
         if (!tileQueue.isEmpty()) {
-
-            console.log(tileQueue);
-            
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
             if (frameState) {
@@ -25325,7 +25324,8 @@ function olInit() {
                 for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                     if (currentZ - z <= preload) {
                         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-                        if (tile.getState() == ol.TileState.IDLE) {
+                        // FIXME Eric
+                        if (tile.getState() == ol.TileState.IDLE || tile.getState() == ol.TileState.CANCEL) {
                             wantedTiles[tile.getKey()] = true;
                             if (!tileQueue.isKeyQueued(tile.getKey())) {
                                 tileQueue.enqueue([tile, tileSourceKey,
@@ -80673,13 +80673,16 @@ function olInit() {
         if (this.state == ol.TileState.IDLE) {
             this.setState(ol.TileState.LOADING);
         }
-        if (this.state == ol.TileState.LOADING) {
+        if (this.state == ol.TileState.LOADING || this.state == ol.TileState.CANCEL) {
             this.tileKeys.forEach(function (sourceTileKey) {
                 var sourceTile = this.getTile(sourceTileKey);
                 // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
-                sourceTile.tileCoordWithSourceCoord = this.tileCoord;
-                sourceTile.tile = this;
+                // sourceTile.tileCoordWithSourceCoord = this.tileCoord;
+                sourceTile.tile = this;                
+                if(sourceTile.state == ol.TileState.CANCEL){
+                    sourceTile.state = ol.TileState.IDLE;
+                }
                 if (sourceTile.state == ol.TileState.IDLE) {
                     sourceTile.setLoader(this.loader_);
                     sourceTile.load();
@@ -80688,7 +80691,8 @@ function olInit() {
                     var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function (e) {
                         var state = sourceTile.getState();
                         if (state == ol.TileState.LOADED ||
-                            state == ol.TileState.ERROR) {
+                            state == ol.TileState.ERROR ||
+                            state == ol.TileState.CANCEL) {
                             var uid = ol.getUid(sourceTile);
                             if (state == ol.TileState.ERROR) {
                                 errorSourceTiles[uid] = true;
@@ -80718,8 +80722,14 @@ function olInit() {
     ol.VectorImageTile.prototype.finishLoading_ = function () {
         var loaded = this.tileKeys.length;
         var empty = 0;
+        var cancel = 0;
         for (var i = loaded - 1; i >= 0; --i) {
             var state = this.getTile(this.tileKeys[i]).getState();
+            // FIXME Eric
+            if(state === ol.TileState.CANCEL){
+                ++cancel;
+                break;
+            }
             if (state != ol.TileState.LOADED) {
                 --loaded;
             }
@@ -80727,7 +80737,10 @@ function olInit() {
                 ++empty;
             }
         }
-        if (loaded == this.tileKeys.length) {
+
+        if(cancel){
+            this.setState(ol.TileState.CANCEL);
+        }else if (loaded == this.tileKeys.length) {
             this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
             this.loadListenerKeys_.length = 0;
             this.setState(ol.TileState.LOADED);
@@ -101154,6 +101167,7 @@ function olInit() {
         self.requestCache = {};
         self.styleJsonCache = {};
         self.tileCoordWithSourceCoord = {};
+        self.postCancelMessageData = {};
 
         self.onmessage = function (msg) {
             var methodInfo = msg.data["methodInfo"];
@@ -101199,37 +101213,11 @@ function olInit() {
             var requestKey = requestCoord.join(",") + "," + tileCoord[0];
             var tileKey = tileCoord[1] + "," + tileCoord[2];
             var tileRange = requestInfo.tileRange;
-            var tileCoordWithSourceCoord = requestInfo.tileCoordWithSourceCoord;
+            // var tileCoordWithSourceCoord = requestInfo.tileCoordWithSourceCoord;
             var olTile;
             var formatOlTiles = self.vectorTilesData[formatId];
             if (formatOlTiles && formatOlTiles.containsKey(requestKey)) {
                 olTile = formatOlTiles.get(requestKey);
-            }
-            // FIXME Eric cancel tiles out of frameExtent
-            for(var key in self.requestCache){
-                var tileXhr = self.requestCache[key];
-                if(tileXhr){
-                    var coords = self.tileCoordWithSourceCoord[key];
-                    var x = coords[1];
-                    var y = coords[2];
-                    if(coords[0] !== tileCoord[0] && ((tileRange.minX > x || tileRange.maxX < x) || (tileRange.minY > y || tileRange.maxY < y))){
-                        // tileXhr.abort();
-                        var resultMessageData = {
-                            status: "failure",
-                            requestKey: key,
-                        };
-                        var postMessageData = {
-                            methodInfo: methodInfo,
-                            messageData: resultMessageData,
-                            debugInfo: {
-                                postMessageDateTime: new Date().getTime()
-                            }
-                        }
-                        // postMessage(postMessageData);
-                        // delete self.requestCache[key];
-                        // delete self.tileCoordWithSourceCoord[requestKey];
-                    }
-                }
             }
 
             if (olTile) {
@@ -101262,75 +101250,115 @@ function olInit() {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + requestInfo.token);
                 }
 
+                // FIXME Eric cancel tiles out of frameExtent
+                var values = Object.values(self.tileCoordWithSourceCoord);
+                if(values.length > 0){
+                    var lastestCoord = values[values.length-1];
+                    if(lastestCoord[0] !== tileCoord[0]){
+                        for(var key in self.requestCache){
+                            var tileXhr = self.requestCache[key];
+                            if(tileXhr){
+                                var coords = self.tileCoordWithSourceCoord[key];
+                                var x = coords[1];
+                                var y = coords[2];
+                                if(coords[0] !== tileCoord[0] && ((tileRange.minX > x || tileRange.maxX < x) || (tileRange.minY > y || tileRange.maxY < y))){                            
+                                    tileXhr.abort();
+                                    postMessage(self.postCancelMessageData[key]);
+                                    delete self.requestCache[key];
+                                    delete self.tileCoordWithSourceCoord[key];
+                                    delete self.postCancelMessageData[key];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var resultMessageData = {
+                    status: "cancel",
+                    requestKey: requestKey
+                };
+                var postMessageData = {
+                    methodInfo: methodInfo,
+                    messageData: resultMessageData,
+                    debugInfo: {
+                        postMessageDateTime: new Date().getTime()
+                    }
+                }
+
                 xhr.onload = function (event) {
                     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
                         var source = undefined;
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
                             var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize);
-                            var postMessageData = {
-                                methodInfo: methodInfo,
-                                messageData: resultMessageData,
-                                debugInfo: {
-                                    postMessageDateTime: new Date().getTime()
-                                }
-                            }
+                            // var postMessageData = {
+                            //     methodInfo: methodInfo,
+                            //     messageData: resultMessageData,
+                            //     debugInfo: {
+                            //         postMessageDateTime: new Date().getTime()
+                            //     }
+                            // }
+
+                            postMessageData.messageData = resultMessageData;
                             postMessage(postMessageData);
                         }
                         else
                         {
-                            var resultMessageData = {
-                                status: "failure",
-                                requestKey: requestKey,
-                            };
-                            var postMessageData = {
-                                methodInfo: methodInfo,
-                                messageData: resultMessageData,
-                                debugInfo: {
-                                    postMessageDateTime: new Date().getTime()
-                                }
-                            }
+                            postMessageData.messageData.status = "failure";                            
+                            // var resultMessageData = {
+                            //     status: "failure",
+                            //     requestKey: requestKey,
+                            // };
+                            // var postMessageData = {
+                            //     methodInfo: methodInfo,
+                            //     messageData: resultMessageData,
+                            //     debugInfo: {
+                            //         postMessageDateTime: new Date().getTime()
+                            //     }
+                            // }
                             postMessage(postMessageData);
                         }
                     }
                     else
                     {
-                        var resultMessageData = {
-                            status: "failure",
-                            requestKey: requestKey,
-                        };
-                        var postMessageData = {
-                            methodInfo: methodInfo,
-                            messageData: resultMessageData,
-                            debugInfo: {
-                                postMessageDateTime: new Date().getTime()
-                            }
-                        }
+                        postMessageData.messageData.status = "failure";
+                        // var resultMessageData = {
+                        //     status: "failure",
+                        //     requestKey: requestKey,
+                        // };
+                        // var postMessageData = {
+                        //     methodInfo: methodInfo,
+                        //     messageData: resultMessageData,
+                        //     debugInfo: {
+                        //         postMessageDateTime: new Date().getTime()
+                        //     }
+                        // }
                         postMessage(postMessageData);
                     }
 
                     delete self.requestCache[requestKey];
-                    delete self.tileCoordWithSourceCoord[requestKey];
                 }.bind(this);
                 xhr.onerror = function () {
-                    var resultMessageData = {
-                        status: "failure",
-                        requestKey: requestKey,
-                    };
-                    var postMessageData = {
-                        methodInfo: methodInfo,
-                        messageData: resultMessageData,
-                        debugInfo: {
-                            postMessageDateTime: new Date().getTime()
-                        }
-                    }
+                    postMessageData.messageData.status = "failure";
+                    // var resultMessageData = {
+                    //     status: "failure",
+                    //     requestKey: requestKey,
+                    // };
+                    // var postMessageData = {
+                    //     methodInfo: methodInfo,
+                    //     messageData: resultMessageData,
+                    //     debugInfo: {
+                    //         postMessageDateTime: new Date().getTime()
+                    //     }
+                    // }
                     postMessage(postMessageData);
                     delete self.requestCache[requestKey];
-                    delete self.tileCoordWithSourceCoord[requestKey];
                 }.bind(this);
                 xhr.send();
                 self.requestCache[requestKey] = xhr;
                 self.tileCoordWithSourceCoord[requestKey] = tileCoord;
+                postMessageData.messageData.status = "cancel";
+                self.postCancelMessageData[requestKey] = postMessageData;
             }
         }
 

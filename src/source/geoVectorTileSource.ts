@@ -73,7 +73,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
 
     public getIDAndSecret(self) {
         let xhr = new XMLHttpRequest();
-        let url = 'https://gisserverbeta.thinkgeo.com/api/v1/auth/token';
+        let url = 'https://gisserver.thinkgeo.com/api/v1/auth/token';
         let content = 'ApiKey=' + self.clientId + '&ApiSecret=' + self.clientSecret;
 
         xhr.open("POST", url, false);
@@ -145,15 +145,18 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 for (let i = 0; i < tileLoadEventInfos.length; i++) {
                                     let loadEventInfo = tileLoadEventInfos[i];
                                     loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
-                                    let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-                                    if (data.status === "succeed") {
+                                    // let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
+                                    // FIXME Eric
+                                    if(data.status === "cancel"){
+                                        loadEventInfo.tile.setState((<any>ol).TileState.CANCEL);                                      
+                                    }else if (data.status === "succeed") {
                                         loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
                                     }
                                     else {
                                         loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
                                     }
-                                }
-                            };
+                                }                                
+                            }
 
                             format.workerManager.postMessage(this.tileCoord + (<any>ol).getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
                         }

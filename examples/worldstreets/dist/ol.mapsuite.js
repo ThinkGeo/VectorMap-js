@@ -1929,7 +1929,8 @@ var VectorTileLayer = /** @class */ (function (_super) {
             var tile = /** @type {ol.Tile} */ (event.target);
             var state = tile.getState();
             if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
-                state === ol.TileState.EMPTY || state === ol.TileState.ABORT) {
+                state === ol.TileState.EMPTY || state === ol.TileState.ABORT ||
+                state === ol.TileState.CANCEL) {
                 if (state === ol.TileState.ABORT || state === ol.TileState.ERROR) {
                     ol.events.unlisten(tile, ol.events.EventType.CHANGE, this.handleTileChange, this);
                 }
@@ -2651,7 +2652,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
     };
     GeoVectorTileSource.prototype.getIDAndSecret = function (self) {
         var xhr = new XMLHttpRequest();
-        var url = 'https://gisserverbeta.thinkgeo.com/api/v1/auth/token';
+        var url = 'https://gisserver.thinkgeo.com/api/v1/auth/token';
         var content = 'ApiKey=' + self.clientId + '&ApiSecret=' + self.clientSecret;
         xhr.open("POST", url, false);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -2712,8 +2713,12 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                             for (var i = 0; i < tileLoadEventInfos.length; i++) {
                                 var loadEventInfo = tileLoadEventInfos[i];
                                 loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
-                                var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-                                if (data.status === "succeed") {
+                                // var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
+                                // FIXME Eric
+                                if (data.status === "cancel") {
+                                    loadEventInfo.tile.setState(ol.TileState.CANCEL);
+                                }
+                                else if (data.status === "succeed") {
                                     loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
                                 }
                                 else {
@@ -6408,6 +6413,42 @@ var GeoVectorTileLayerRender = /** @class */ (function (_super) {
         this.updateLogos(frameState, tileSource);
         return this.renderedTiles.length > 0;
     };
+    // public manageTilePyramidCustom = function (
+    //     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
+    //     currentZ, preload, opt_tileCallback, opt_this) {
+    //     var tileSourceKey = (<any>ol).getUid(tileSource).toString();
+    //     if (!(tileSourceKey in frameState.wantedTiles)) {
+    //         frameState.wantedTiles[tileSourceKey] = {};
+    //     }
+    //     var wantedTiles = frameState.wantedTiles[tileSourceKey];
+    //     var tileQueue = frameState.tileQueue;
+    //     var minZoom = tileGrid.getMinZoom();
+    //     var tile, tileRange, tileResolution, x, y, z;
+    //     for (z = minZoom; z <= currentZ; ++z) {
+    //         tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
+    //         tileResolution = tileGrid.getResolution(z);
+    //         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    //             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+    //                 if (currentZ - z <= preload) {
+    //                     tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+    //                     // FIXME Eric
+    //                     if (tile.getState() == (<any>ol).TileState.IDLE || tile.getState() == (<any>ol).TileState.CANCEL) {
+    //                         wantedTiles[tile.getKey()] = true;
+    //                         if (!tileQueue.isKeyQueued(tile.getKey())) {
+    //                             tileQueue.enqueue([tile, tileSourceKey,
+    //                                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
+    //                         }
+    //                     }
+    //                     if (opt_tileCallback !== undefined) {
+    //                         opt_tileCallback.call(opt_this, tile);
+    //                     }
+    //                 } else {
+    //                     tileSource.useTile(z, x, y, projection);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // };
     GeoVectorTileLayerRender.prototype.prepareFrameCustom = function (frameState, layerState) {
         var layer = this.getLayer();
         var layerRevision = layer.getRevision();

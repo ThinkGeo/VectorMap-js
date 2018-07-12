@@ -203,6 +203,43 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         return this.renderedTiles.length > 0;
     }
 
+    // public manageTilePyramidCustom = function (
+    //     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
+    //     currentZ, preload, opt_tileCallback, opt_this) {
+    //     var tileSourceKey = (<any>ol).getUid(tileSource).toString();
+    //     if (!(tileSourceKey in frameState.wantedTiles)) {
+    //         frameState.wantedTiles[tileSourceKey] = {};
+    //     }
+    //     var wantedTiles = frameState.wantedTiles[tileSourceKey];
+    //     var tileQueue = frameState.tileQueue;
+    //     var minZoom = tileGrid.getMinZoom();
+    //     var tile, tileRange, tileResolution, x, y, z;
+    //     for (z = minZoom; z <= currentZ; ++z) {
+    //         tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
+    //         tileResolution = tileGrid.getResolution(z);
+    //         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    //             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+    //                 if (currentZ - z <= preload) {
+    //                     tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+    //                     // FIXME Eric
+    //                     if (tile.getState() == (<any>ol).TileState.IDLE || tile.getState() == (<any>ol).TileState.CANCEL) {
+    //                         wantedTiles[tile.getKey()] = true;
+    //                         if (!tileQueue.isKeyQueued(tile.getKey())) {
+    //                             tileQueue.enqueue([tile, tileSourceKey,
+    //                                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
+    //                         }
+    //                     }
+    //                     if (opt_tileCallback !== undefined) {
+    //                         opt_tileCallback.call(opt_this, tile);
+    //                     }
+    //                 } else {
+    //                     tileSource.useTile(z, x, y, projection);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // };
+
     public prepareFrameCustom(frameState: any, layerState: any) {
         let layer = this.getLayer();
         let layerRevision = layer.getRevision();
