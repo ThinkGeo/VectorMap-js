@@ -2649,8 +2649,8 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
             }
         };
     };
-    GeoVectorTileSource.prototype.vectorTileLoadFunction = function (tile, urls) {
-        var loader = this.loadFeaturesXhr(urls, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile), this);
+    GeoVectorTileSource.prototype.vectorTileLoadFunction = function (tile, url) {
+        var loader = this.loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile), this);
         tile.setLoader(loader);
     };
     GeoVectorTileSource.prototype.getIDAndSecret = function (self) {
@@ -2669,9 +2669,8 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
         }.bind(this);
         xhr.send(content);
     };
-    GeoVectorTileSource.prototype.loadFeaturesXhr = function (urls, format, success, failure, self) {
+    GeoVectorTileSource.prototype.loadFeaturesXhr = function (url, format, success, failure, self) {
         return (function (extent, resolution, projection) {
-            var _this_1 = this;
             var _this = this;
             var maxDataZoom = format.maxDataZoom;
             var requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
@@ -2689,114 +2688,105 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
             var hasRequested = false;
             hasRequested = format.registerTileLoadEvent(this, success, failure, callback);
             if (!hasRequested) {
-                var loader = function (url) {
-                    // Client ID and Client Secret   
-                    if (url.indexOf('apiKey') === -1 && self.clientId && self.clientSecret && !self.token) {
-                        self.getIDAndSecret(self);
+                // Client ID and Client Secret   
+                if (url.indexOf('apiKey') === -1 && self.clientId && self.clientSecret && !self.token) {
+                    self.getIDAndSecret(self);
+                }
+                if (format.isMultithread && format.workerManager) {
+                    var requestInfo = {
+                        url: typeof url === "function" ? url(extent, resolution, projection) : url,
+                        type: format.getType(),
+                        tileCoord: this.tileCoord,
+                        requestCoord: requestTileCoord,
+                        minimalist: format.minimalist,
+                        maxDataZoom: format.maxDataZoom,
+                        formatId: ol.getUid(format),
+                        layerName: format.layerName,
+                        token: self.token,
+                        vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
+                        tileRange: _this.tileRange,
+                        tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord
+                    };
+                    var loadedCallback = function (data, methodInfo) {
+                        var requestKey = data.requestKey;
+                        var tileLoadEventInfos = format.registeredLoadEvents[requestKey];
+                        delete format.registeredLoadEvents[requestKey];
+                        for (var i = 0; i < tileLoadEventInfos.length; i++) {
+                            var loadEventInfo = tileLoadEventInfos[i];
+                            loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
+                            // let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
+                            // FIXME Eric
+                            if (data.status === "cancel") {
+                                loadEventInfo.tile.setState(ol.TileState.CANCEL);
+                            }
+                            else if (data.status === "succeed") {
+                                loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
+                            }
+                            else {
+                                loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                            }
+                        }
+                    };
+                    format.workerManager.postMessage(this.tileCoord + ol.getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
+                }
+                else {
+                    var tileCoord_1 = this.tileCoord;
+                    var tile_1 = this;
+                    var xhr_1 = new XMLHttpRequest();
+                    xhr_1.open("GET", typeof url === "function" ? url(extent, resolution, projection) : url, true);
+                    if (self.token) {
+                        xhr_1.setRequestHeader('Authorization', 'Bearer ' + self.token);
                     }
-                    if (format.isMultithread && format.workerManager) {
-                        var requestInfo = {
-                            url: typeof url === "function" ? url(extent, resolution, projection) : url,
-                            type: format.getType(),
-                            tileCoord: _this_1.tileCoord,
-                            requestCoord: requestTileCoord,
-                            minimalist: format.minimalist,
-                            maxDataZoom: format.maxDataZoom,
-                            formatId: ol.getUid(format),
-                            layerName: format.layerName,
-                            token: self.token,
-                            vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
-                            tileRange: _this.tileRange,
-                            tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord
-                        };
-                        var loadedCallback = function (data, methodInfo) {
-                            var requestKey = data.requestKey;
-                            var tileLoadEventInfos = format.registeredLoadEvents[requestKey];
-                            delete format.registeredLoadEvents[requestKey];
-                            for (var i = 0; i < tileLoadEventInfos.length; i++) {
-                                var loadEventInfo = tileLoadEventInfos[i];
-                                loadEventInfo.tile.workerId = methodInfo.workerId; // Currently, we just one web worker for one layer.
-                                // let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-                                // FIXME Eric
-                                if (data.status === "cancel") {
-                                    loadEventInfo.tile.setState(ol.TileState.CANCEL);
-                                }
-                                else if (data.status === "succeed") {
-                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
-                                }
-                                else {
-                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
+                    if (format.getType() === ol.format.FormatType.ARRAY_BUFFER) {
+                        xhr_1.responseType = "arraybuffer";
+                    }
+                    xhr_1.onload = function (event) {
+                        if (!xhr_1.status || xhr_1.status >= 200 && xhr_1.status < 300) {
+                            var type = format.getType();
+                            /** @type {Document|Node|Object|string|undefined} */
+                            var source = void 0;
+                            if (type === ol.format.FormatType.JSON ||
+                                type === ol.format.FormatType.TEXT) {
+                                source = xhr_1.responseText;
+                            }
+                            else if (type === ol.format.FormatType.XML) {
+                                source = xhr_1.responseXML;
+                                if (!source) {
+                                    source = ol.xml.parse(xhr_1.responseText);
                                 }
                             }
-                        };
-                        format.workerManager.postMessage(_this_1.tileCoord + ol.getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
-                    }
-                    else {
-                        var tileCoord_1 = _this_1.tileCoord;
-                        var tile_1 = _this_1;
-                        var xhr_1 = new XMLHttpRequest();
-                        xhr_1.open("GET", typeof url === "function" ? url(extent, resolution, projection) : url, true);
-                        if (self.token) {
-                            xhr_1.setRequestHeader('Authorization', 'Bearer ' + self.token);
-                        }
-                        if (format.getType() === ol.format.FormatType.ARRAY_BUFFER) {
-                            xhr_1.responseType = "arraybuffer";
-                        }
-                        xhr_1.onload = function (event) {
-                            if (!xhr_1.status || xhr_1.status >= 200 && xhr_1.status < 300) {
-                                var type = format.getType();
-                                /** @type {Document|Node|Object|string|undefined} */
-                                var source = void 0;
-                                if (type === ol.format.FormatType.JSON ||
-                                    type === ol.format.FormatType.TEXT) {
-                                    source = xhr_1.responseText;
-                                }
-                                else if (type === ol.format.FormatType.XML) {
-                                    source = xhr_1.responseXML;
-                                    if (!source) {
-                                        source = ol.xml.parse(xhr_1.responseText);
-                                    }
-                                }
-                                else if (type === ol.format.FormatType.ARRAY_BUFFER) {
-                                    source = /** @type {ArrayBuffer} */ (xhr_1.response);
-                                }
-                                if (source) {
-                                    // ReadFeature
-                                    var data = format.readFeaturesAndCreateInstructsNew(source, requestTileCoord, tileCoord_1);
-                                    // Call Load Event
-                                    var requestKey = tile_1.requestTileCoord.join(",") + "," + tile_1.tileCoord[0];
-                                    var tileLoadEventInfos = format.registeredLoadEvents[requestKey];
-                                    delete format.registeredLoadEvents[requestKey];
-                                    for (var i = 0; i < tileLoadEventInfos.length; i++) {
-                                        var loadEventInfo = tileLoadEventInfos[i];
-                                        var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-                                        loadEventInfo.tile.featuresAndInstructs = { features: data[0], instructs: data[1][tileKey] };
-                                        loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
-                                    }
-                                }
-                                else {
-                                    failure.call(this);
+                            else if (type === ol.format.FormatType.ARRAY_BUFFER) {
+                                source = /** @type {ArrayBuffer} */ (xhr_1.response);
+                            }
+                            if (source) {
+                                // ReadFeature
+                                var data = format.readFeaturesAndCreateInstructsNew(source, requestTileCoord, tileCoord_1);
+                                // Call Load Event
+                                var requestKey = tile_1.requestTileCoord.join(",") + "," + tile_1.tileCoord[0];
+                                var tileLoadEventInfos = format.registeredLoadEvents[requestKey];
+                                delete format.registeredLoadEvents[requestKey];
+                                for (var i = 0; i < tileLoadEventInfos.length; i++) {
+                                    var loadEventInfo = tileLoadEventInfos[i];
+                                    var tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
+                                    loadEventInfo.tile.featuresAndInstructs = { features: data[0], instructs: data[1][tileKey] };
+                                    loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
                                 }
                             }
                             else {
                                 failure.call(this);
                             }
-                        }.bind(_this_1);
-                        xhr_1.onerror = function () {
+                        }
+                        else {
                             failure.call(this);
-                        }.bind(_this_1);
-                        _this_1["xhr"] = xhr_1;
-                        format.source.dispatchEvent(new ol.VectorTile.Event("sendingTileRequest", xhr_1));
-                        xhr_1.send();
-                    }
-                };
-                if (Array.isArray(urls)) {
-                    urls.forEach(loader);
+                        }
+                    }.bind(this);
+                    xhr_1.onerror = function () {
+                        failure.call(this);
+                    }.bind(this);
+                    this["xhr"] = xhr_1;
+                    format.source.dispatchEvent(new ol.VectorTile.Event("sendingTileRequest", xhr_1));
+                    xhr_1.send();
                 }
-                else if (typeof urls === 'string') {
-                    loader(urls);
-                }
-                ;
             }
         });
     };
