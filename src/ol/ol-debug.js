@@ -80678,6 +80678,7 @@ function olInit() {
                 var sourceTile = this.getTile(sourceTileKey);
                 // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
+                sourceTile.vectorImageTileCoord = this.tileCoord;
                 // sourceTile.tileCoordWithSourceCoord = this.tileCoord;
                 sourceTile.tile = this;                
                 if(sourceTile.state == ol.TileState.CANCEL){
@@ -101205,6 +101206,7 @@ function olInit() {
         self.request = function (requestInfo, methodInfo) {
             var requestCoord = requestInfo.requestCoord;
             var tileCoord = requestInfo.tileCoord;
+            var vectorImageTileCoord = requestInfo.vectorImageTileCoord;
             var formatId = requestInfo.formatId;
             var minimalist = requestInfo.minimalist;
             var layerName = requestInfo.layerName;
@@ -101256,14 +101258,14 @@ function olInit() {
                     var lastestCoord = values[values.length-1];
                     var lastestX = lastestCoord[1];
                     var lastestY = lastestCoord[2];
-                    if(lastestCoord[0] !== tileCoord[0]){
+                    if(lastestCoord[0] !== vectorImageTileCoord[0]){
                         for(var key in self.requestCache){
                             var tileXhr = self.requestCache[key];
                             if(tileXhr){
                                 var coords = self.tileCoordWithSourceCoord[key];
                                 var x = coords[1];
                                 var y = coords[2];                                
-                                if(coords[0] !== tileCoord[0]){                                      
+                                if(coords[0] !== vectorImageTileCoord[0]){                                      
                                     tileXhr.abort();
                                     postMessage(self.postCancelMessageData[key]);
                                     delete self.requestCache[key];
@@ -101374,7 +101376,7 @@ function olInit() {
                 }.bind(this);
                 xhr.send();
                 self.requestCache[requestKey] = xhr;
-                self.tileCoordWithSourceCoord[requestKey] = tileCoord;
+                self.tileCoordWithSourceCoord[requestKey] = vectorImageTileCoord;
                 postMessageData.messageData.status = "cancel";
                 self.postCancelMessageData[requestKey] = postMessageData;
             }
@@ -101425,8 +101427,7 @@ function olInit() {
             }
 
             var tileKey = tileCoord[1] + "," + tileCoord[2];
-
-
+            
             var resultData = {
                 status: "succeed",
                 requestKey: requestKey

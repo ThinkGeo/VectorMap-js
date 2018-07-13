@@ -2705,7 +2705,8 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         token: self.token,
                         vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
                         tileRange: _this.tileRange,
-                        tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord
+                        tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord,
+                        vectorImageTileCoord: _this.vectorImageTileCoord
                     };
                     var loadedCallback = function (data, methodInfo) {
                         var requestKey = data.requestKey;
