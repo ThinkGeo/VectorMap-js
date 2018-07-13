@@ -2594,17 +2594,17 @@ var __extends = (this && this.__extends) || (function () {
 var GeoVectorTileSource = /** @class */ (function (_super) {
     __extends(GeoVectorTileSource, _super);
     function GeoVectorTileSource(options) {
-        var _this_1 = _super.call(this, options) || this;
-        _this_1.maxDataZoom = options.maxDataZoom;
+        var _this = _super.call(this, options) || this;
+        _this.maxDataZoom = options.maxDataZoom;
         if (options["tileUrlFunction"] === undefined) {
-            _this_1.setTileUrlFunction(_this_1.getGeoTileUrlFunction());
+            _this.setTileUrlFunction(_this.getGeoTileUrlFunction());
         }
-        _this_1.clientId = options.clientId;
-        _this_1.clientSecret = options.clientSecret;
-        _this_1.geoFormat = options.format;
-        _this_1.tileLoadFunction = _this_1.vectorTileLoadFunction.bind(_this_1);
-        _this_1.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
-        return _this_1;
+        _this.clientId = options.clientId;
+        _this.clientSecret = options.clientSecret;
+        _this.geoFormat = options.format;
+        _this.tileLoadFunction = _this.vectorTileLoadFunction.bind(_this);
+        _this.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
+        return _this;
     }
     GeoVectorTileSource.prototype.getGeoFormat = function () {
         return this.geoFormat;
@@ -2671,7 +2671,7 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
     };
     GeoVectorTileSource.prototype.loadFeaturesXhr = function (url, format, success, failure, self) {
         return (function (extent, resolution, projection) {
-            var _this = this;
+            var sourceTile = this;
             var maxDataZoom = format.maxDataZoom;
             var requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
             if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
@@ -2682,6 +2682,9 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                 }
             }
             this.requestTileCoord = requestTileCoord;
+            var tileGrid = self.getTileGrid();
+            var tileExtent = tileGrid.getTileCoordExtent(sourceTile.tileCoord);
+            var tileResolution = tileGrid.getResolution(sourceTile.tileCoord[0]);
             var callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
                 callbackFunction.call(tile, sourceProjection, lastExtent);
             };
@@ -2704,9 +2707,11 @@ var GeoVectorTileSource = /** @class */ (function (_super) {
                         layerName: format.layerName,
                         token: self.token,
                         vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
-                        tileRange: _this.tileRange,
-                        tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord,
-                        vectorImageTileCoord: _this.vectorImageTileCoord
+                        tileRange: sourceTile.tileRange,
+                        tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
+                        vectorImageTileCoord: sourceTile.vectorImageTileCoord,
+                        tileExtent: tileExtent,
+                        tileResolution: tileResolution
                     };
                     var loadedCallback = function (data, methodInfo) {
                         var requestKey = data.requestKey;

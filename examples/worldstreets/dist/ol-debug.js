@@ -80680,8 +80680,8 @@ function olInit() {
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
                 // sourceTile.tileCoordWithSourceCoord = this.tileCoord;
-                sourceTile.tile = this;                
-                if(sourceTile.state == ol.TileState.CANCEL){
+                sourceTile.tile = this;
+                if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
                 }
                 if (sourceTile.state == ol.TileState.IDLE) {
@@ -80727,7 +80727,7 @@ function olInit() {
         for (var i = loaded - 1; i >= 0; --i) {
             var state = this.getTile(this.tileKeys[i]).getState();
             // FIXME Eric
-            if(state === ol.TileState.CANCEL){
+            if (state === ol.TileState.CANCEL) {
                 ++cancel;
                 break;
             }
@@ -80739,9 +80739,9 @@ function olInit() {
             }
         }
 
-        if(cancel){
+        if (cancel) {
             this.setState(ol.TileState.CANCEL);
-        }else if (loaded == this.tileKeys.length) {
+        } else if (loaded == this.tileKeys.length) {
             this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
             this.loadListenerKeys_.length = 0;
             this.setState(ol.TileState.LOADED);
@@ -96599,7 +96599,7 @@ function olInit() {
 
     // workerStart
     if (isWorker) {
-        var readFeaturesAndCreateInstructTrees = function (source, zoom, styleJsonCache, layerName) {
+        var readFeaturesAndCreateInstructTrees = function (source, zoom, dataZoom, styleJsonCache, layerName, tileExtent, tileResolution) {
             var pbf = new ol.ext.PBF((source));
             var pbfLayers = pbf.readFields((ol).format.MVT.pbfReaders_.layers, {});
             var features = [];
@@ -96631,6 +96631,10 @@ function olInit() {
 
                 pbfLayer = pbfLayers[name];
                 extent = pbfLayer.extent;
+
+                var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
+                var offset = tileResolution / scale;
+
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName[name]);
@@ -96687,7 +96691,7 @@ function olInit() {
 
                             if (matchedNode) {
                                 if (feature === undefined) {
-                                    feature = createFeature_(pbf, rawFeature, layerName);
+                                    feature = createFeature_(pbf, rawFeature, layerName, offset);
 
 
                                     featureIndex += 1;
@@ -96833,7 +96837,7 @@ function olInit() {
             return [minX, minY, maxX, maxY];
         }
 
-        var createFeature_ = function (pbf, rawFeature, layerName) {
+        var createFeature_ = function (pbf, rawFeature, layerName, offset) {
             var type = rawFeature.type;
             if (type === 0) {
                 return null;
@@ -96846,13 +96850,78 @@ function olInit() {
 
             var flatCoordinates = [];
             var ends = [];
-            ol.format.MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+            readRawGeometry_(pbf, rawFeature, flatCoordinates, ends, offset);
 
             var geometryType = ol.format.MVT.getGeometryType_(type, ends.length);
 
             feature = new ol.render.Feature(geometryType, flatCoordinates, ends, values, id);
 
             return feature;
+        };
+
+        var readRawGeometry_ = function (pbf, feature, flatCoordinates, ends, offset) {
+            var prevX = 0;
+            var prevY = 0;
+            var isBegin = true;
+
+            pbf.pos = feature.geometry;
+
+            var end = pbf.readVarint() + pbf.pos;
+            var cmd = 1;
+            var length = 0;
+            var x = 0;
+            var y = 0;
+            var coordsLen = 0;
+            var currentEnd = 0;
+
+            while (pbf.pos < end) {
+                if (!length) {
+                    var cmdLen = pbf.readVarint();
+                    cmd = cmdLen & 0x7;
+                    length = cmdLen >> 3;
+                    isBegin = true;
+                }
+
+                length--;
+
+                if (cmd === 1 || cmd === 2) {
+                    x += pbf.readSVarint();
+                    y += pbf.readSVarint();
+
+                    if (cmd === 1) { // moveTo
+                        if (coordsLen > currentEnd) {
+                            ends.push(coordsLen);
+                            currentEnd = coordsLen;
+                        }
+                    }
+
+                    if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
+                        flatCoordinates.push(x, y);
+                        prevX = x;
+                        prevY = y;
+                        coordsLen += 2;
+                        isBegin = false;
+                    }
+                } else if (cmd === 7) {
+
+                    if (coordsLen > currentEnd) {
+                        // close polygon
+                        flatCoordinates.push(
+                            flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+                        coordsLen += 2;
+                        isBegin = true;
+                    }
+
+                } else {
+                    ol.asserts.assert(false, 59); // Invalid command found in the PBF
+                }
+            }
+
+            if (coordsLen > currentEnd) {
+                ends.push(coordsLen);
+                currentEnd = coordsLen;
+            }
+
         };
 
         var readRawFeature_ = function (pbf, layer, i) {
@@ -101211,11 +101280,12 @@ function olInit() {
             var minimalist = requestInfo.minimalist;
             var layerName = requestInfo.layerName;
             var vectorTileDataCahceSize = requestInfo.vectorTileDataCahceSize
+            var tileExtent = requestInfo.tileExtent;
+            var tileResolution = requestInfo.tileResolution;
 
             var requestKey = requestCoord.join(",") + "," + tileCoord[0];
             var tileKey = tileCoord[1] + "," + tileCoord[2];
             var tileRange = requestInfo.tileRange;
-            // var tileCoordWithSourceCoord = requestInfo.tileCoordWithSourceCoord;
             var olTile;
             var formatOlTiles = self.vectorTilesData[formatId];
             if (formatOlTiles && formatOlTiles.containsKey(requestKey)) {
@@ -101254,18 +101324,18 @@ function olInit() {
 
                 // FIXME Eric cancel tiles out of frameExtent
                 var values = Object.values(self.tileCoordWithSourceCoord);
-                if(values.length > 0){
-                    var lastestCoord = values[values.length-1];
+                if (values.length > 0) {
+                    var lastestCoord = values[values.length - 1];
                     var lastestX = lastestCoord[1];
                     var lastestY = lastestCoord[2];
-                    if(lastestCoord[0] !== vectorImageTileCoord[0]){
-                        for(var key in self.requestCache){
+                    if (lastestCoord[0] !== vectorImageTileCoord[0]) {
+                        for (var key in self.requestCache) {
                             var tileXhr = self.requestCache[key];
-                            if(tileXhr){
+                            if (tileXhr) {
                                 var coords = self.tileCoordWithSourceCoord[key];
                                 var x = coords[1];
-                                var y = coords[2];                                
-                                if(coords[0] !== vectorImageTileCoord[0]){                                      
+                                var y = coords[2];
+                                if (coords[0] !== vectorImageTileCoord[0]) {
                                     tileXhr.abort();
                                     postMessage(self.postCancelMessageData[key]);
                                     delete self.requestCache[key];
@@ -101274,14 +101344,14 @@ function olInit() {
                                 }
                             }
                         }
-                    }else if((tileRange.minX - 1 > lastestX || tileRange.maxX + 1 < lastestX) || (tileRange.minY -1 > lastestY || tileRange.maxY + 1 < lastestY)){
-                        for(var key in self.requestCache){
+                    } else if ((tileRange.minX - 1 > lastestX || tileRange.maxX + 1 < lastestX) || (tileRange.minY - 1 > lastestY || tileRange.maxY + 1 < lastestY)) {
+                        for (var key in self.requestCache) {
                             var tileXhr = self.requestCache[key];
-                            if(tileXhr){
+                            if (tileXhr) {
                                 var coords = self.tileCoordWithSourceCoord[key];
                                 var x = coords[1];
                                 var y = coords[2];
-                                if((tileRange.minX - 1 > x || tileRange.maxX + 1 < x) || (tileRange.minY -1 > y || tileRange.maxY + 1 < y)){                            
+                                if ((tileRange.minX - 1 > x || tileRange.maxX + 1 < x) || (tileRange.minY - 1 > y || tileRange.maxY + 1 < y)) {
                                     tileXhr.abort();
                                     postMessage(self.postCancelMessageData[key]);
                                     delete self.requestCache[key];
@@ -101310,7 +101380,7 @@ function olInit() {
                         var source = undefined;
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
-                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize);
+                            var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
                             // var postMessageData = {
                             //     methodInfo: methodInfo,
                             //     messageData: resultMessageData,
@@ -101322,9 +101392,8 @@ function olInit() {
                             postMessageData.messageData = resultMessageData;
                             postMessage(postMessageData);
                         }
-                        else
-                        {
-                            postMessageData.messageData.status = "failure";                            
+                        else {
+                            postMessageData.messageData.status = "failure";
                             // var resultMessageData = {
                             //     status: "failure",
                             //     requestKey: requestKey,
@@ -101339,8 +101408,7 @@ function olInit() {
                             postMessage(postMessageData);
                         }
                     }
-                    else
-                    {
+                    else {
                         postMessageData.messageData.status = "failure";
                         // var resultMessageData = {
                         //     status: "failure",
@@ -101382,10 +101450,10 @@ function olInit() {
             }
         }
 
-        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize) {
+        self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
 
-            var readData = readFeaturesAndCreateInstructTrees(source, zoom, styleJsonCache, layerName);
+            var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
             var instructsTree = readData[1];
@@ -101427,7 +101495,7 @@ function olInit() {
             }
 
             var tileKey = tileCoord[1] + "," + tileCoord[2];
-            
+
             var resultData = {
                 status: "succeed",
                 requestKey: requestKey

@@ -93,7 +93,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
 
         return (
             function (extent: any, resolution: any, projection: any) {
-                var _this = this;
+                var sourceTile = this;
                 let maxDataZoom = format.maxDataZoom;
                 let requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
                 if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
@@ -105,6 +105,9 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                 }
                 this.requestTileCoord = requestTileCoord;
 
+                let tileGrid=self.getTileGrid();
+                let tileExtent= tileGrid.getTileCoordExtent(sourceTile.tileCoord);
+                let tileResolution = tileGrid.getResolution(sourceTile.tileCoord[0]);
 
                 let callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
                     callbackFunction.call(tile, sourceProjection, lastExtent);
@@ -133,9 +136,11 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                             layerName: format.layerName,
                             token: self.token,
                             vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
-                            tileRange: _this.tileRange,
-                            tileCoordWithSourceCoord: _this.tileCoordWithSourceCoord,
-                            vectorImageTileCoord: _this.vectorImageTileCoord
+                            tileRange: sourceTile.tileRange,
+                            tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
+                            vectorImageTileCoord: sourceTile.vectorImageTileCoord,
+                            tileExtent:tileExtent,
+                            tileResolution:tileResolution
                         };
 
                         let loadedCallback = function (data, methodInfo) {
