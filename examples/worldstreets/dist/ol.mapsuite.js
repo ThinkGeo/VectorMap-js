@@ -2517,12 +2517,11 @@ var VectorTileLayer = /** @class */ (function (_super) {
             if (pendingStroke) {
                 context.stroke();
             }
-            // //release instructions
-            // if (this.instructions === instructions&&!(this instanceof (<any>ol).render.canvas.ImageReplay))
-            // {
-            //     this.instructions.length=0;
-            //     this.pixelCoordinates_=null;
-            // }
+            //release instructions
+            if (this.resolution < 2445.98490512564 && this.instructions === instructions && !(this instanceof ol.render.canvas.ImageReplay)) {
+                this.instructions.length = 0;
+                this.pixelCoordinates_ = null;
+            }
             return undefined;
         };
         ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function (coordinate, frameState, hitTolerance, callback, thisArg) {

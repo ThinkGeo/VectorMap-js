@@ -96632,8 +96632,9 @@ function olInit() {
                 pbfLayer = pbfLayers[name];
                 extent = pbfLayer.extent;
 
+                var skipOffset=1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = tileResolution / scale;
+                var offset = (tileResolution / scale)*skipOffset;
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
