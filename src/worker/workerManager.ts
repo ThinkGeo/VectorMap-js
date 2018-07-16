@@ -13,7 +13,7 @@ export class WorkerManager {
             this.workerCount = 1;
         }
         else {
-            if (isNaN(workerCount)|| workerCount<=0) {
+            if (isNaN(workerCount) || workerCount <= 0) {
                 this.workerCount = Math.max(Math.floor(window.navigator.hardwareConcurrency / 2), 1);
             }
             else {
@@ -80,5 +80,12 @@ export class WorkerManager {
 
         this.workers[workerIndex].postMessage(postMessage);
         return workerIndex;
+    }
+
+    close() {
+        this.workerCallback = {};
+        for (let index = 0; index < this.workers.length; index++) {
+            this.workers[index].terminate();
+        }
     }
 }

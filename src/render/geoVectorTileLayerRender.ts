@@ -703,4 +703,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
     public static create(mapRenderer: any, layer: ol.layer.Tile) {
         return new GeoVectorTileLayerRender(<any>layer);
     }
+
+    disposeInternal() {
+        (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
+        var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
+        workerManager.close();
+        (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
+    };
 }
