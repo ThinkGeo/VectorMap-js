@@ -23523,7 +23523,7 @@ function olInit() {
     /**
      * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
      */
-    ol.render.canvas.labelCache = new ol.structs.LRUCache();
+    ol.render.canvas.labelCache = new ol.structs.LRUCache(1024);
 
 
     /**
