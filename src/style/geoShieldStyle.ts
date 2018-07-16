@@ -61,7 +61,7 @@ export class GeoShieldStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         this.imageCache = [];
-        this.labelInfos = [];
+        this.labelInfos =  new (<any>ol).structs.LRUCache(512);
         this.charWidths = {};
 
         if (styleJson) {
@@ -214,11 +214,7 @@ export class GeoShieldStyle extends GeoStyle {
 
         this.textStyle.setText(featureText);
 
-        let labelInfo = this.labelInfos[featureText];
-        if (!labelInfo) {
-            labelInfo = this.getLabelInfo(featureText);
-            this.labelInfos[featureText] = labelInfo;
-        }
+        let labelInfo = this.getLabelInfo(featureText);
 
         let flatCoordinates = this.setLabelPosition(feature, resolution, labelInfo, options.strategyTree, options.frameState);
         if (flatCoordinates === undefined || flatCoordinates.length < 2) {
@@ -405,47 +401,52 @@ export class GeoShieldStyle extends GeoStyle {
     }
 
     getLabelInfo(text: string) {
-        let font = this.formatFont(this.textStyle.getFont());
-        text = this.wrapText(text, font);
-
-        let fillState = this.textStyle.getFill();
-        let strokeState = this.textStyle.getStroke();
-
-        let pixelRatio = window.devicePixelRatio;
-        let scale = this.textStyle.getScale();
-        scale = (scale ? scale : 1) * pixelRatio;
-
-        let align = (<any>ol.render).replay.TEXT_ALIGN[this.textStyle.getTextAlign() || (<any>ol.render.canvas).defaultTextAlign];
-        let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
-
-        let lines = text.split("\n");
-        let numLines = lines.length;
-        let widths = [];
-
-        // let width = (<any>ol.render.canvas).TextReplay.measureTextWidths(font, lines, widths);
-        let width = this.getEstimatedWidth(font, lines, widths);
-        let renderWidth = width + strokeWidth;
-
-        let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
-        let height = lineHeight * numLines;
-
-        if (this.dx) { this.textStyle.setOffsetX(this.dx + height / 2); }
-        if (this.dy) { this.textStyle.setOffsetY(this.dy + height / 2); }
-
-        let labelWidth = Math.ceil(renderWidth * scale);
-        let labelHeight = Math.ceil((height + strokeWidth) * scale);
-
-        let labelInfo = {
-            width: labelWidth,
-            height: labelHeight,
-            scale: scale,
-            numLines: numLines,
-            lines: lines,
-            widths: widths,
-            lineHeight: lineHeight,
-            font: font
-        };
-        return labelInfo;
+        let key= text;
+        if (!this.labelInfos.containsKey(key)) 
+        {
+            let font = this.formatFont(this.textStyle.getFont());
+            text = this.wrapText(text, font);
+    
+            let fillState = this.textStyle.getFill();
+            let strokeState = this.textStyle.getStroke();
+    
+            let pixelRatio = window.devicePixelRatio;
+            let scale = this.textStyle.getScale();
+            scale = (scale ? scale : 1) * pixelRatio;
+    
+            let align = (<any>ol.render).replay.TEXT_ALIGN[this.textStyle.getTextAlign() || (<any>ol.render.canvas).defaultTextAlign];
+            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
+    
+            let lines = text.split("\n");
+            let numLines = lines.length;
+            let widths = [];
+    
+            // let width = (<any>ol.render.canvas).TextReplay.measureTextWidths(font, lines, widths);
+            let width = this.getEstimatedWidth(font, lines, widths);
+            let renderWidth = width + strokeWidth;
+    
+            let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
+            let height = lineHeight * numLines;
+    
+            if (this.dx) { this.textStyle.setOffsetX(this.dx + height / 2); }
+            if (this.dy) { this.textStyle.setOffsetY(this.dy + height / 2); }
+    
+            let labelWidth = Math.ceil(renderWidth * scale);
+            let labelHeight = Math.ceil((height + strokeWidth) * scale);
+    
+            let labelInfo = {
+                width: labelWidth,
+                height: labelHeight,
+                scale: scale,
+                numLines: numLines,
+                lines: lines,
+                widths: widths,
+                lineHeight: lineHeight,
+                font: font
+            };
+            this.labelInfos.set(key,labelInfo);
+        }        
+        return this.labelInfos.get(key);
     }
 
     setLabelPosition(geometry: any, resolution: any, labelInfo: any, strategyTree: any, frameState: olx.FrameState) {

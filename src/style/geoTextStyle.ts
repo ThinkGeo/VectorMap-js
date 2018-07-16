@@ -61,7 +61,7 @@ export class GeoTextStyle extends GeoStyle {
 
     constructor(styleJson?: any) {
         super(styleJson);
-        this.labelInfos = [];
+        this.labelInfos = new (<any>ol).structs.LRUCache(512);
         this.charWidths = {};
 
         if (styleJson) {
@@ -235,12 +235,7 @@ export class GeoTextStyle extends GeoStyle {
             flatCoordinates = geometry.getFlatCoordinates();
             if (flatCoordinates === undefined) { return false; }
         } else {
-            let labelInfo = this.labelInfos[text];
-            if (!labelInfo) {
-                labelInfo = this.getLabelInfo(text, textState);
-                this.labelInfos[text] = labelInfo;
-            }
-
+            let labelInfo = this.getLabelInfo(text, textState);
             let labelWidth = labelInfo.labelWidth;
             let labelHeight = labelInfo.labelHeight;
             let scale = labelInfo.scale;
@@ -291,7 +286,6 @@ export class GeoTextStyle extends GeoStyle {
 
             if (flatCoordinates === undefined) { return false; }
 
-
             var labelImage = this.getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
 
             if (labelImage === undefined) {
@@ -306,70 +300,74 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     getLabelInfo(text: string, textState: ol.style.Text) {
-        let font = textState.getFont();
-        text = this.wrapText(text, font);
+        var key = text;
+        if (!this.labelInfos.containsKey(key)) {
+            let font = textState.getFont();
+            text = this.wrapText(text, font);
 
-        let strokeState = textState.getStroke();
-        let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
-        let lines = text.split("\n");
-        let numLines = lines.length;
-        let textScale = textState.getScale();
-        textScale = textScale === undefined ? 1 : textScale;
-        let scale = textScale * window.devicePixelRatio;
-        let widths = [];
-        let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-        let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
-        let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-        let tmpMaskHeightMargin = 0;
-        let tmpMaskWidthMargin = 0;
-        switch (tmpMaskMargin.length) {
-            case 1:
-                tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                tmpMaskWidthMargin = parseInt(tmpMaskMargin[0]) * 2;
-                break;
-            case 2:
-                tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                break;
-            case 3:
-                tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                break;
-            case 4:
-                tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) + parseInt(tmpMaskMargin[3]);
-                break;
-            default:
-                break;
-        }
-
-        if (this.maskType) {
-            if (this.maskType.toLowerCase() === "circle") {
-                tmpMaskHeightMargin = tmpMaskHeightMargin > tmpMaskWidthMargin ? tmpMaskHeightMargin : tmpMaskWidthMargin;
-                tmpMaskWidthMargin = tmpMaskHeightMargin;
+            let strokeState = textState.getStroke();
+            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
+            let lines = text.split("\n");
+            let numLines = lines.length;
+            let textScale = textState.getScale();
+            textScale = textScale === undefined ? 1 : textScale;
+            let scale = textScale * window.devicePixelRatio;
+            let widths = [];
+            let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
+            let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
+            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
+            let tmpMaskHeightMargin = 0;
+            let tmpMaskWidthMargin = 0;
+            switch (tmpMaskMargin.length) {
+                case 1:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    break;
+                case 2:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
+                    break;
+                case 3:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
+                    break;
+                case 4:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) + parseInt(tmpMaskMargin[3]);
+                    break;
+                default:
+                    break;
             }
+
+            if (this.maskType) {
+                if (this.maskType.toLowerCase() === "circle") {
+                    tmpMaskHeightMargin = tmpMaskHeightMargin > tmpMaskWidthMargin ? tmpMaskHeightMargin : tmpMaskWidthMargin;
+                    tmpMaskWidthMargin = tmpMaskHeightMargin;
+                }
+            }
+            let height = lineHeight * numLines + strokeWidth + tmpMaskHeightMargin;
+            let renderWidth = width + strokeWidth + tmpMaskWidthMargin;
+            let tmpMaskOutlineWidth = (this.maskOutlineWidth ? this.maskOutlineWidth : 0);
+            let labelWidth = Math.ceil((renderWidth + tmpMaskOutlineWidth * 3) * 1.1 * scale);
+            let labelHeight = Math.ceil((height + tmpMaskOutlineWidth * 3) * 1.1 * scale);
+
+            let labelInfo = {
+                labelWidth: labelWidth,
+                labelHeight: labelHeight,
+                scale: scale,
+                font: font,
+                strokeWidth: strokeWidth,
+                numLines: numLines,
+                lines: lines,
+                lineHeight: lineHeight,
+                renderWidth: renderWidth,
+                height: height,
+                widths: widths
+            };
+            this.labelInfos.set(key, labelInfo);
         }
-        let height = lineHeight * numLines + strokeWidth + tmpMaskHeightMargin;
-        let renderWidth = width + strokeWidth + tmpMaskWidthMargin;
-        let tmpMaskOutlineWidth = (this.maskOutlineWidth ? this.maskOutlineWidth : 0);
-        let labelWidth = Math.ceil((renderWidth + tmpMaskOutlineWidth * 3) * 1.1 * scale);
-        let labelHeight = Math.ceil((height + tmpMaskOutlineWidth * 3) * 1.1 * scale);
 
-        let labelInfo = {
-            labelWidth: labelWidth,
-            labelHeight: labelHeight,
-            scale: scale,
-            font: font,
-            strokeWidth: strokeWidth,
-            numLines: numLines,
-            lines: lines,
-            lineHeight: lineHeight,
-            renderWidth: renderWidth,
-            height: height,
-            widths: widths
-        };
-
-        return labelInfo;
+        return this.labelInfos.get(key);
     }
 
     getEstimatedWidth(font, lines, widths, letterSpacing) {
@@ -398,16 +396,15 @@ export class GeoTextStyle extends GeoStyle {
 
     getImage(textState: ol.style.Text, labelWidth: number, labelHeight: number, scale: number, font: string, strokeWidth: number, numLines: any, lines: any, lineHeight: number, renderWidth: number, height: number, widths: any) {
         var labelCache = (<any>ol).render.canvas.labelCache;
-        var key= this.id!==undefined?this.id:  (<any>ol).getUid(this);
-        key+=lines.toString();
-        if(!labelCache.containsKey(key))
-        {
+        var key = this.id !== undefined ? this.id : (<any>ol).getUid(this);
+        key += lines.toString();
+        if (!labelCache.containsKey(key)) {
             let fillState = textState.getFill();
             let strokeState = textState.getStroke();
             let label;
-    
+
             let align = (<any>ol.render).replay.TEXT_ALIGN[textState.getTextAlign() || (<any>ol.render.canvas).defaultTextAlign];
-    
+
             let context = (<any>ol).dom.createCanvasContext2D(labelWidth, labelHeight);
             label = context.canvas;
             labelCache.set(key, label);
@@ -423,7 +420,7 @@ export class GeoTextStyle extends GeoStyle {
                 label.style.letterSpacing = this.letterSpacing + "px";
                 context = label.getContext("2d");
             }
-    
+
             if (scale !== 1) { context.scale(scale, scale); }
             context.font = font;
             if (strokeState) {
@@ -439,9 +436,9 @@ export class GeoTextStyle extends GeoStyle {
                     context.lineDashOffset = (<any>strokeState).getLineDashOffset();
                 }
             }
-    
+
             this.drawMask(context, 0, 0, renderWidth, height);
-    
+
             if (this.maskType) {
                 if (this.maskType.toLowerCase() === "circle") {
                     if (scale !== 1) { context.scale(scale, scale); }
@@ -461,7 +458,7 @@ export class GeoTextStyle extends GeoStyle {
                     }
                 }
             }
-    
+
             context.textBaseline = "middle";
             context.textAlign = "center";
             let leftRight = 0.5 - align;
