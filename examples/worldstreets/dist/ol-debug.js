@@ -101324,7 +101324,11 @@ function olInit() {
                 }
 
                 // FIXME Eric cancel tiles out of frameExtent
-                var values = Object.values(self.tileCoordWithSourceCoord);
+                // var values = Object.values(self.tileCoordWithSourceCoord);
+                var values = [];
+                for(var key in self.tileCoordWithSourceCoord){
+                    values.push(self.tileCoordWithSourceCoord[key])
+                }
                 if (values.length > 0) {
                     var lastestCoord = values[values.length - 1];
                     var lastestX = lastestCoord[1];
