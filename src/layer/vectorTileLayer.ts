@@ -165,7 +165,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
 
         if (this.styleJson["sources"]) {
-            this.styleJson['sources'].find(sourceJson => {
+            this.styleJson['sources'].forEach(sourceJson => {
                 if (sourceId === sourceJson['id']) {
                     if (!sourceJson['urls'] && sourceJson['url']) {
                         sourceJson['urls'] = [sourceJson['url']];
