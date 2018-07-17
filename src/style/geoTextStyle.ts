@@ -300,7 +300,7 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     getLabelInfo(text: string, textState: ol.style.Text) {
-        var key = text;
+        var key = text + this.uid;
         if (!this.labelInfos.containsKey(key)) {
             let font = textState.getFont();
             text = this.wrapText(text, font);
@@ -396,7 +396,7 @@ export class GeoTextStyle extends GeoStyle {
 
     getImage(textState: ol.style.Text, labelWidth: number, labelHeight: number, scale: number, font: string, strokeWidth: number, numLines: any, lines: any, lineHeight: number, renderWidth: number, height: number, widths: any) {
         var labelCache = (<any>ol).render.canvas.labelCache;
-        var key = this.id !== undefined ? this.id : (<any>ol).getUid(this);
+        var key = this.uid !== undefined ? this.uid : (<any>ol).getUid(this);
         key += lines.toString();
         if (!labelCache.containsKey(key)) {
             let fillState = textState.getFill();

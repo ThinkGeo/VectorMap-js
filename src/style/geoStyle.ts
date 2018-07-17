@@ -1,5 +1,6 @@
 export class GeoStyle {
     public id: string;
+    public uid:any;
     public visible: true;
     public styles: any[];
 
@@ -9,6 +10,7 @@ export class GeoStyle {
         this.styles = [];
         if (styleJson) {
             this.id = styleJson["id"];
+            this.uid= (<any>ol).getUid(this);
             this.visible = styleJson["visible"] === undefined ? true : styleJson["visible"];
         }
     }
