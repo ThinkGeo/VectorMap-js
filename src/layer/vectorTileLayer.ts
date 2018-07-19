@@ -991,10 +991,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             //release instructions
-            if (this.resolution < 2445.98490512564 && this.instructions === instructions && !(this instanceof (<any>ol).render.canvas.ImageReplay)) {
-                this.instructions.length = 0;
-                this.pixelCoordinates_ = null;
-            }
+            // if (this.resolution < 2445.98490512564 && this.instructions === instructions && !(this instanceof (<any>ol).render.canvas.ImageReplay)) {
+            //     this.instructions.length = 0;
+            //     this.pixelCoordinates_ = null;
+            // }
 
             return undefined;
         };
