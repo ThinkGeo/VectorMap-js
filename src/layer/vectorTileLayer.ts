@@ -315,12 +315,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         (<any>ol).LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
         // TODO: check the plugin had been registed.
         (<any>ol).plugins.register((<any>ol).PluginType.LAYER_RENDERER, GeoVectorTileLayerRender);
-        (<any>ol.VectorTile).Event = function (type, xhr) {
-            ol.events.Event.call(this, type);
+        // (<any>ol.VectorTile).Event = function (type, xhr) {
+        //     ol.events.Event.call(this, type);
 
-            this.xhr = xhr;
-        };
-        ol.inherits((<any>ol.VectorTile), (<any>ol.events).Event);
+        //     this.xhr = xhr;
+        // };
+        // ol.inherits((<any>ol.VectorTile), (<any>ol.events).Event);
 
         (<any>ol).VectorImageTile.prototype.disposeInternal = function () {
             for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
