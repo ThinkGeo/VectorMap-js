@@ -428,8 +428,10 @@ export class GeoShieldStyle extends GeoStyle {
             let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
             let height = lineHeight * numLines;
     
-            if (this.dx) { this.textStyle.setOffsetX(this.dx + height / 2); }
-            if (this.dy) { this.textStyle.setOffsetY(this.dy + height / 2); }
+            // if (this.dx) { this.textStyle.setOffsetX(this.dx + height / 2); }
+            if (this.dx) { this.textStyle.setOffsetX(this.dx); }
+            // if (this.dy) { this.textStyle.setOffsetY(this.dy + height / 2); }
+            if (this.dy) { this.textStyle.setOffsetY(this.dy); }
     
             let labelWidth = Math.ceil(renderWidth * scale);
             let labelHeight = Math.ceil((height + strokeWidth) * scale);

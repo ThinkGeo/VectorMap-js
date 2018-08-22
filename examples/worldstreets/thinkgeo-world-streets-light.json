@@ -2967,7 +2967,7 @@
         "type": "MVT"
     }, {
         "id": "worldstreets_source_test",
-        "url": "http://18.144.33.48/data/v/{z}/{x}/{y}.pbf",
+        "url": "https://gisserver.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
         "type": "MVT"
     }],
     "layers": [{
