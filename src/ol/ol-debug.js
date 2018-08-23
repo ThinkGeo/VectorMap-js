@@ -16918,6 +16918,23 @@ function olInit() {
 
     };
 
+    ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
+        let webglContext = {};
+        if (isMain) {
+            // var canvas = document.createElement('CANVAS');
+            if (opt_width) {
+                webglContext.width = opt_width;
+            }
+            if (opt_height) {
+                webglContext.height = opt_height;
+            }
+
+            webglContext.canvas = document.createElement('canvas');
+            // return canvas.getContext('webgl');
+            return webglContext;
+        }
+
+    };
 
     /**
      * Get the current computed width for the given element including margin,
@@ -28006,6 +28023,9 @@ function olInit() {
             this.coordinates[myEnd++] = lastCoord[0];
             this.coordinates[myEnd++] = lastCoord[1];
         }
+
+        this.webglEnds && this.webglEnds.push(myEnd);
+
         return myEnd;
     };
 
@@ -30361,8 +30381,8 @@ function olInit() {
 
         // setup clipping so that the parts of over-simplified geometries are not
         // visible outside the current extent when panning
-        context.save();
-        this.clip(context, transform);
+        // context.save();
+        // this.clip(context, transform);
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
@@ -30388,7 +30408,7 @@ function olInit() {
             }
         }
 
-        context.restore();
+        // context.restore();
     };
 
 
@@ -80607,7 +80627,8 @@ function olInit() {
     ol.VectorImageTile.prototype.getContext = function (layer) {
         var key = ol.getUid(layer).toString();
         if (!(key in this.context_)) {
-            this.context_[key] = ol.dom.createCanvasContext2D();
+            // this.context_[key] = ol.dom.createCanvasContext2D();
+            this.context_[key] = ol.dom.createCanvasContextWebgl();  
         }
         return this.context_[key];
     };
@@ -100686,6 +100707,7 @@ function olInit() {
                     replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
                     replay.minimalist = this.minimalist;
                     replays[replayType] = replay;
+                    replay.webglEnds=[];
                 }
                 return replay;
             };
@@ -101649,7 +101671,6 @@ function olInit() {
             ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
 
             var resultData = {};
-            var postPixelCoordinates_ = [];
             for (var zIndex in replayGroup.replaysByZIndex_) {
                 var replays = replayGroup.replaysByZIndex_[zIndex];
                 if (!resultData[zIndex]) {
@@ -101678,7 +101699,9 @@ function olInit() {
                             view[i] = replay.pixelCoordinates_[i];
                         }
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
-                        postPixelCoordinates_ = postPixelCoordinates_.concat(buffers);
+                        // resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
+                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
+
                     } else {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
@@ -101694,6 +101717,7 @@ function olInit() {
                     replay.hitDetectionInstructions.length = 0;
                     replay.coordinates.length = 0;
                     replay.pixelCoordinates_.length = 0;
+                    replay.webglEnds.length = 0;
                 }
             }
 
