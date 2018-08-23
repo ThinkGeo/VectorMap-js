@@ -1,5 +1,4 @@
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -22,13 +21,6 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist')
     },
-    plugins: [
-        new CopyWebpackPlugin([
-            {
-                from: __dirname + '/src/ol/ol-debug.js', to: __dirname + '/examples/worldstreets/dist',
-            }
-        ])
-    ],
     devServer: {
         open: true,
         port: 7000,
