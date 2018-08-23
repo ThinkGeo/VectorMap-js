@@ -22,6 +22,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
     "gulp-typescript": "^4.0.0-alpha.1",
@@ -35,7 +36,7 @@
     "webpack-stream": "^4.0.0"
   },
   "dependencies": {
-    "openlayers": "^4.6.4",
-    "lite-server": "^2.3.0"
+    "lite-server": "^2.3.0",
+    "openlayers": "^4.6.4"
   }
 }

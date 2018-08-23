@@ -1,8 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './src/main.ts',
+    entry: {
+        'ol.mapsuite': './src/main.ts'
+    },
     // devtool: 'inline-source-map',
     module: {
         rules: [
@@ -17,9 +19,16 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
-        filename: 'ol.mapsuite.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist')
     },
+    plugins: [
+        new CopyWebpackPlugin([
+            {
+                from: __dirname + '/src/ol/ol-debug.js', to: __dirname + '/examples/worldstreets/dist',
+            }
+        ])
+    ],
     devServer: {
         open: true,
         port: 7000,
