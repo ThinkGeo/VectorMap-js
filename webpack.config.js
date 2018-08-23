@@ -1,8 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/main.ts',
-    plugins: [new webpack.HotModuleReplacementPlugin()],
     // devtool: 'inline-source-map',
     module: {
         rules: [
