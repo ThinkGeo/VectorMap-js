@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: './src/main.ts',
+    plugins: [new webpack.HotModuleReplacementPlugin()],
     // devtool: 'inline-source-map',
     module: {
         rules: [
@@ -18,5 +19,12 @@ module.exports = {
     output: {
         filename: 'ol.mapsuite.js',
         path: path.resolve(__dirname, 'dist')
-    }
+    },
+    devServer: {
+        open: true,
+        port: 7000,
+        publicPath: '/examples/worldstreets/dist',
+        openPage: '/examples/worldstreets'
+    },
+    mode: 'development'
 };
