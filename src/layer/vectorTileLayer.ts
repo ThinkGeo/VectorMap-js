@@ -705,11 +705,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             if (this.webglEnds) {
-
                 let width = context.width;
                 let height = context.height;
 
-                // console.log(pixelCoordinates)
                 pixelCoordinates = Array.from(pixelCoordinates);
                 for (var j = 0, tempLength = pixelCoordinates.length; j < tempLength; j += 2) {
                     pixelCoordinates[j] = 2 * pixelCoordinates[j] / width - 1;
@@ -730,7 +728,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 tempContext.canvas.height = height;
 
                 drawPolygonGl(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
-                console.log(canvas.toDataURL())
                 tempContext.drawImage(canvas, 0, 0, width, height);
             }
             return undefined;

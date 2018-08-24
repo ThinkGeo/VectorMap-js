@@ -100707,7 +100707,7 @@ function olInit() {
                     replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
                     replay.minimalist = this.minimalist;
                     replays[replayType] = replay;
-                    replay.webglEnds=[];
+                   (replay instanceof ol.render.canvas.PolygonReplay) &&  (replay.webglEnds=[]);
                 }
                 return replay;
             };
@@ -101700,7 +101700,7 @@ function olInit() {
                         }
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
                         // resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
-                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
+                        replay.webglEnds&& (resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0));
 
                     } else {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
@@ -101717,7 +101717,7 @@ function olInit() {
                     replay.hitDetectionInstructions.length = 0;
                     replay.coordinates.length = 0;
                     replay.pixelCoordinates_.length = 0;
-                    replay.webglEnds.length = 0;
+                    replay.webglEnds&&  (replay.webglEnds.length = 0);
                 }
             }
 

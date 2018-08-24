@@ -7,7 +7,7 @@ const v_shader_source = `
     varying vec4 v_Color;
     void main(){
         gl_Position = a_Position;
-        gl_PointSize = 1.0;
+        gl_PointSize = 1.5;
     }
 `;
 
@@ -16,7 +16,7 @@ const f_shader_source = `
 
     varying vec4 a_Color;
     void main(){
-        gl_FragColor = vec4(1.0,0.0,0.0,2.0);
+        gl_FragColor = vec4(1.0,1.0,1.0,1);
     }
 `;
 
@@ -65,7 +65,9 @@ const drawPolygonGl = (gl, data) => {
     webglEnds.reduce((pre, current) => {
         let coords = coordinates.slice(pre, current);
         let offset = pre / 2;
-        let temp = getPolygonIndex(coords).map(val => offset + val);
+        let temp = getPolygonIndex(coords);
+        if (temp.length === 0) return current;
+        temp = temp.map(val => offset + val);
         index = index.concat(temp);
         if (index.length > 2500) {
             sum.push([...index]);
@@ -75,7 +77,6 @@ const drawPolygonGl = (gl, data) => {
     }, 0);
     index.length > 0 && sum.push(index);
 
-    console.log(sum.length)
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coordinates), gl.DYNAMIC_DRAW);
