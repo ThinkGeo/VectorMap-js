@@ -672,24 +672,13 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             let resolution = tileGrid.getResolution(z);
             let context = tile.getContext(layer);
             let size = source.getTilePixelSize(z, pixelRatio, frameState.viewState.projection);
-            context.width = size[0];
-            context.height = size[1];
+            context.canvas.width = size[0];
+            context.canvas.height = size[1];
             let tileExtent = tileGrid.getTileCoordExtent(tileCoord);
             if (layer.background) {
-                // context.rect(0, 0, size[0], size[1]);
-                // context.fillStyle = layer.background;
-                // context.fill();
-
-                let color = layer.background.match(/\d+/g);
-                if (!color[3]) color[3] = 1;
-                color = color.map((val, index) => {
-                    let temp = +val;
-                    if (index === 3) return temp;
-                    Number.isNaN(temp) && (temp = 0);
-                    return temp / 255;
-                });
-                (<Array<number>>context.backgroundColor) = color;
-
+                context.rect(0, 0, size[0], size[1]);
+                context.fillStyle = layer.background;
+                context.fill();
             }
             for (let i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
                 let sourceTile = tile.getTile(tile.tileKeys[i]);

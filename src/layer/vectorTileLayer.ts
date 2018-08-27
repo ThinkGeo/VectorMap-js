@@ -10,6 +10,7 @@ import { Tree } from "../tree/tree";
 import { WorkerManager } from "../worker/workerManager";
 import { VectorTileLayerThreadMode } from "../worker/vectorTileLayerThreadMode";
 import drawPolygonGl from './../webgl/polygon';
+import drawLineString from './../webgl/lineString';
 
 
 export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.VectorTileOptions): any; }) {
@@ -705,8 +706,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             if (this.webglEnds) {
-                let width = context.width;
-                let height = context.height;
+                let width = context.canvas.width;
+                let height = context.canvas.height;
 
                 pixelCoordinates = Array.from(pixelCoordinates);
                 for (var j = 0, tempLength = pixelCoordinates.length; j < tempLength; j += 2) {
@@ -719,16 +720,17 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 canvas.height = height;
 
                 let gl = canvas.getContext('webgl');
-                gl.clearColor.apply(gl, context.backgroundColor);
+                gl.clearColor.apply(gl, [0.0, 0.0, 0.0, 0.0]);
                 gl.clear(gl.COLOR_BUFFER_BIT);
 
-
-                let tempContext = context.canvas.getContext('2d');
-                tempContext.canvas.width = width;
-                tempContext.canvas.height = height;
-
-                drawPolygonGl(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
-                tempContext.drawImage(canvas, 0, 0, width, height);
+                if(this.webglDrawType === 'polygonReplay'){
+                    drawPolygonGl(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
+                    console.log("%c  ", "background-image: url("+canvas.toDataURL()+"); background-repeat: no-repeat; background-size: 88px 128px; font-size: 128px");
+                    console.log(1);
+                }else if(this.webglDrawType === 'lineStringReplay'){
+                    drawLineString(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
+                }
+                context.drawImage(canvas, 0, 0, width, height);
             }
             return undefined;
         };

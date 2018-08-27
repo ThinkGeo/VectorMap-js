@@ -1,4 +1,5 @@
 import { getPolygonIndex } from './tools';
+import createProgram from './initShader';
 
 const v_shader_source = `
     attribute vec4 a_Position;
@@ -19,35 +20,6 @@ const f_shader_source = `
         gl_FragColor = vec4(1.0,1.0,1.0,1);
     }
 `;
-
-const loadShader = (gl, type, sourceCode) => {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, sourceCode);
-    gl.compileShader(shader);
-    let compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!compiled) {
-        let error = gl.getShaderInfoLog(shader);
-        console.log(error);
-        gl.deleteShader(shader);
-        return null;
-    }
-
-    return shader;
-}
-
-const createProgram = (gl, v_shader_source, f_shader_source) => {
-    const program = gl.createProgram();
-    gl.attachShader(program, loadShader(gl, gl.VERTEX_SHADER, v_shader_source));
-    gl.attachShader(program, loadShader(gl, gl.FRAGMENT_SHADER, f_shader_source));
-    gl.linkProgram(program);
-
-    let linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (!linked) {
-        console.log(gl.getProgramInfoLog(program));
-    }
-    return program;
-}
-
 
 const drawPolygonGl = (gl, data) => {
     const program = createProgram(gl, v_shader_source, f_shader_source);
@@ -75,7 +47,7 @@ const drawPolygonGl = (gl, data) => {
         }
         return current;
     }, 0);
-    index.length > 0 && sum.push(index);
+    (index.length > 0) && sum.push(index);
 
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -85,13 +57,11 @@ const drawPolygonGl = (gl, data) => {
 
     let indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    var ext = gl.getExtension('OES_element_index_uint');
     sum.forEach(index => {
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), gl.DYNAMIC_DRAW);
-
-        gl.drawElements(4, index.length, gl.UNSIGNED_SHORT, 0);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(index), gl.DYNAMIC_DRAW);
+        gl.drawElements(4, index.length, gl.UNSIGNED_INT, 0);
     })
-
-
 }
 
 export default drawPolygonGl;

@@ -4,7 +4,7 @@ module.exports = {
     entry: {
         'ol.mapsuite': './src/main.ts'
     },
-    // devtool: 'inline-source-map',
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {

@@ -80627,8 +80627,7 @@ function olInit() {
     ol.VectorImageTile.prototype.getContext = function (layer) {
         var key = ol.getUid(layer).toString();
         if (!(key in this.context_)) {
-            // this.context_[key] = ol.dom.createCanvasContext2D();
-            this.context_[key] = ol.dom.createCanvasContextWebgl();  
+            this.context_[key] = ol.dom.createCanvasContext2D();
         }
         return this.context_[key];
     };
@@ -100707,7 +100706,14 @@ function olInit() {
                     replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
                     replay.minimalist = this.minimalist;
                     replays[replayType] = replay;
-                   (replay instanceof ol.render.canvas.PolygonReplay) &&  (replay.webglEnds=[]);
+
+                    if(replay instanceof ol.render.canvas.PolygonReplay){
+                        replay.webglEnds=[];
+                        replay.webglDrawType = 'polygonReplay';
+                    }else if(replay instanceof ol.render.canvas.LineStringReplay){
+                        replay.webglEnds=[];
+                        replay.webglDrawType = 'lineStringReplay';
+                    }
                 }
                 return replay;
             };
@@ -101699,8 +101705,8 @@ function olInit() {
                             view[i] = replay.pixelCoordinates_[i];
                         }
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
-                        // resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
-                        replay.webglEnds&& (resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0));
+                       resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
+                       resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
 
                     } else {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
@@ -101717,7 +101723,8 @@ function olInit() {
                     replay.hitDetectionInstructions.length = 0;
                     replay.coordinates.length = 0;
                     replay.pixelCoordinates_.length = 0;
-                    replay.webglEnds&&  (replay.webglEnds.length = 0);
+                    replay.webglEnds&& (replay.webglEnds.length = 0);
+                    delete replay['webglDrawType'];
                 }
             }
 
