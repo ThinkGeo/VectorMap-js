@@ -16918,6 +16918,12 @@ function olInit() {
 
     };
 
+    /**
+     * Create an html canvas element and returns webgl object.
+     * @param {number=} opt_width Canvas width.
+     * @param {number=} opt_height Canvas height.
+     * @return {object} The context.
+     */
     ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
         let webglContext = {};
         if (isMain) {
