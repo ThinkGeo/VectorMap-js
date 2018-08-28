@@ -719,18 +719,23 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 canvas.width = width;
                 canvas.height = height;
 
-                let gl = canvas.getContext('webgl');
-                gl.clearColor.apply(gl, [0.0, 0.0, 0.0, 0.0]);
-                gl.clear(gl.COLOR_BUFFER_BIT);
-
-                if(this.webglDrawType === 'polygonReplay'){
-                    drawPolygonGl(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
-                    console.log("%c  ", "background-image: url("+canvas.toDataURL()+"); background-repeat: no-repeat; background-size: 88px 128px; font-size: 128px");
-                    console.log(1);
-                }else if(this.webglDrawType === 'lineStringReplay'){
-                    drawLineString(gl, { coordinates: Array.from(pixelCoordinates), webglEnds: this.webglEnds });
+                if (this.webglDrawType === 'polygonReplay') {
+                    let gl = canvas.getContext('webgl', {
+                        premultipliedAlpha: false
+                    });
+                    gl.enable(gl.BLEND);
+                    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+                    drawPolygonGl(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
+                    // console.log("%c  ", "background-image: url("+canvas.toDataURL()+"); background-repeat: no-repeat; background-size: 400px 400px; font-size: 400px");
+                    context.drawImage(canvas, 0, 0, width, height);
+                    gl.getExtension('WEBGL_lose_context').loseContext();
                 }
-                context.drawImage(canvas, 0, 0, width, height);
+                else if (this.webglDrawType === 'lineStringReplay') {
+                    let gl = canvas.getContext('webgl');
+                    drawLineString(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
+                    context.drawImage(canvas, 0, 0, width, height);
+                    gl.getExtension('WEBGL_lose_context').loseContext();
+                }
             }
             return undefined;
         };
