@@ -29169,6 +29169,7 @@ function olInit() {
             var myBegin = this.coordinates.length;
             var myEnd = this.appendFlatCoordinates(
                 flatCoordinates, offset, end, stride, true, !stroke);
+            this.webglStyle.push({ color: state.fillStyle });
             var moveToLineToInstruction =
                 [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
             this.instructions.push(moveToLineToInstruction);
@@ -96652,9 +96653,9 @@ function olInit() {
                 pbfLayer = pbfLayers[name];
                 extent = pbfLayer.extent;
 
-                var skipOffset=1;
+                var skipOffset = 1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = (tileResolution / scale)*skipOffset;
+                var offset = (tileResolution / scale) * skipOffset;
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
@@ -100707,11 +100708,13 @@ function olInit() {
                     replay.minimalist = this.minimalist;
                     replays[replayType] = replay;
 
-                    if(replay instanceof ol.render.canvas.PolygonReplay){
-                        replay.webglEnds=[];
+                    if (replay instanceof ol.render.canvas.PolygonReplay) {
+                        replay.webglEnds = [];
+                        replay.webglStyle = [];//{color:}
                         replay.webglDrawType = 'polygonReplay';
-                    }else if(replay instanceof ol.render.canvas.LineStringReplay){
-                        replay.webglEnds=[];
+                    } else if (replay instanceof ol.render.canvas.LineStringReplay) {
+                        replay.webglEnds = [];
+                        replay.webglStyle = [];
                         replay.webglDrawType = 'lineStringReplay';
                     }
                 }
@@ -101354,7 +101357,7 @@ function olInit() {
                 // FIXME Eric cancel tiles out of frameExtent
                 // var values = Object.values(self.tileCoordWithSourceCoord);
                 var values = [];
-                for(var key in self.tileCoordWithSourceCoord){
+                for (var key in self.tileCoordWithSourceCoord) {
                     values.push(self.tileCoordWithSourceCoord[key]);
                 }
                 if (values.length > 0) {
@@ -101705,8 +101708,9 @@ function olInit() {
                             view[i] = replay.pixelCoordinates_[i];
                         }
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
-                       resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
-                       resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
+                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
+                        resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
+                        resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle.slice(0);
 
                     } else {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
@@ -101723,7 +101727,8 @@ function olInit() {
                     replay.hitDetectionInstructions.length = 0;
                     replay.coordinates.length = 0;
                     replay.pixelCoordinates_.length = 0;
-                    replay.webglEnds&& (replay.webglEnds.length = 0);
+                    replay.webglEnds && (replay.webglEnds.length = 0);
+                    replay.webglStyle && (replay.webglStyle.length = 0);
                     delete replay['webglDrawType'];
                 }
             }

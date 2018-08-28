@@ -7,7 +7,17 @@ const getPolygonIndex = coordinates => {
     return arr;
 }
 
+const colorStrToWebglColor = (str: string): Array<Number> => {
+    let color = str.match(/[\d\.]+/mg).map((val, index) => {
+        if (index !== 3) return +val / 255;
+        return +val;
+    });
+    return color;
+};
+
+
 export {
     createCanvasContext2D,
-    getPolygonIndex
+    getPolygonIndex,
+    colorStrToWebglColor
 }
