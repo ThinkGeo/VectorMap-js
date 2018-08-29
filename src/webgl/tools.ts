@@ -10,7 +10,7 @@ const getPolygonIndex = coordinates => {
 const colorStrToWebglColor = (str: string): Array<Number> => {
     let color = str.match(/[\d\.]+/mg).map((val, index) => {
         if (index !== 3) return +val / 255;
-        return +val;
+        return +val === 1 ? +val : (+val / 10 + 0.75)
     });
     return color;
 };
