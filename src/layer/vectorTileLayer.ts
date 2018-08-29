@@ -73,7 +73,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
     loadStyleJsonAsyn(styleJsonUrl) {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", styleJsonUrl, false);
+        // FIXME Eric
+        xhr.open("GET", styleJsonUrl);
 
         xhr.onload = function (event: any) {
             if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
@@ -653,16 +654,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 this.context.save();
                 this.context.globalAlpha = alpha;
             }
-            // // before
             this.context.drawImage(image, gutter, gutter,
                 image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
-            // console.log(gutter, gutter, image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h)
-            // // after
-            // this.context.save();
-            // var ptrn = this.context.createPattern(image, 'repeat');
-            // this.context.fillStyle = ptrn;
-            // this.context.fillRect(x, y, w, h);
-            // this.context.restore();
 
             if (alphaChanged) {
                 this.context.restore();
