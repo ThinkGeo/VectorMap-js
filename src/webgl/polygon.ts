@@ -51,7 +51,7 @@ const drawPolygonGl = (gl, data) => {
             t1 += 4;
         }
 
-        if (tempIndex.length > 0) {
+        if (tempIndex.length > 0 || i ===length -1) {
             tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
             index.push(...tempIndex);
             if (color.length > 2500 || i === length - 1) {

@@ -721,10 +721,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if (this.webglDrawType === 'polygonReplay') {
                     let gl = canvas.getContext('webgl', {
-                        premultipliedAlpha: false
+                        // premultipliedAlpha: false,
                     });
-                    gl.enable(gl.BLEND);
-                    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+                    // gl.enable(gl.BLEND);
+                    // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
                     drawPolygonGl(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
                     // console.log("%c  ", "background-image: url("+canvas.toDataURL()+"); background-repeat: no-repeat; background-size: 400px 400px; font-size: 400px");
                     context.drawImage(canvas, 0, 0, width, height);
