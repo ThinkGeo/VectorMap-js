@@ -33,62 +33,124 @@ const drawLineString = (gl, data) => {
         webglStyle
     } = data;
 
-    let obj = {
+    let lines = {
         indexArr: [],
-        coordinatesIndexArr: [],
+        coordinatesArr: [],
         colorArr: []
     }
 
-    for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
-        let end = webglEnds[i];
-
-        let t1 = (prev - lastIndex) / 2;
-        let t2 = (end - lastIndex) / 2;
-        while (t1 + 1 < t2) {
-            index.push(t1++, t1);
-        }
-
-        t1 = (prev - lastIndex) * 2;
-        t2 = (end - lastIndex) * 2;
-        let webglColor = colorStrToWebglColor(webglStyle[i].strokeStyle);
-        while (t1 < t2) {
-            color.push(...webglColor);
-            t1 += 4;
-        }
-
-        if (color.length > 2500 || i === length - 1) {
-            obj.indexArr.push(index.slice(0));
-            obj.colorArr.push(color.slice(0));
-            obj.coordinatesIndexArr.push([lastIndex, end]);
-            lastIndex = end;
-            index.length = 0;
-            color.length = 0;
-        }
-
-        prev = end;
+    let multiplyLine = {
+        indexArr: [],
+        coordinatesArr: [],
+        colorArr: []
     }
 
+    let lineArr = [];
+    let lineIndexArr = [];
+    let lineColorArr = [];
 
-    let buffer = gl.createBuffer();
-    let indexBuffer = gl.createBuffer();
-    let colorBuffer = gl.createBuffer();
-    obj.indexArr.forEach((val, index) => {
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        let position = coordinates.slice.apply(coordinates, obj.coordinatesIndexArr[index]);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.DYNAMIC_DRAW);
-        gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(a_Position);
+    let mutiLineArr = [];
+    let mutiLineIndexArr = [];
+    let mutiLineColorArr = [];
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj.colorArr[index]), gl.DYNAMIC_DRAW);
-        gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(a_Color);
+    for (let i = 0, length = webglEnds.length, prevEnd; i < length; i++) {
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
+        let coord = coordinates.slice(prevEnd, webglEnds[i]);
+        let webglColor = colorStrToWebglColor(webglStyle[i].strokeStyle);
 
-        gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
-    })
+        if (webglStyle[i].lineWidth === 1) {
+            let lastLength = lineArr.length;
+            lineArr = lineArr.concat(coord);
+            let currentLength = lineArr.length;
+            while (lastLength + 1 < currentLength) {
+                lineIndexArr.push(lastLength++, lastLength);
+                lineColorArr.push(...webglColor);
+            }
+            lineColorArr.push(...webglColor);  //last time
+
+            if (lineColorArr.length > 2500) {
+                lines.indexArr.push(lineIndexArr);
+                lines.coordinatesArr.push(lineArr);
+                lines.colorArr.push(lineColorArr);
+
+                lineIndexArr = [];
+                lineArr = [];
+                lineColorArr = [];
+            }
+        } else {
+            let lastLength = mutiLineArr.length;
+            
+            mutiLineArr = mutiLineArr.concat(coord);
+            let currentLength = mutiLineArr.length;
+
+        }
+    }
+
+    lines.indexArr.push(lineIndexArr);
+    lines.coordinatesArr.push(lineArr);
+    lines.colorArr.push(lineColorArr);
+
+    lineIndexArr = [];
+    lineArr = [];
+    lineColorArr = [];
+
+
+    // let obj = {
+    //     indexArr: [],
+    //     coordinatesIndexArr: [],
+    //     colorArr: []
+    // }
+
+    // for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
+    //     let end = webglEnds[i];
+
+    //     let t1 = (prev - lastIndex) / 2;
+    //     let t2 = (end - lastIndex) / 2;
+    //     while (t1 + 1 < t2) {
+    //         index.push(t1++, t1);
+    //     }
+
+    //     t1 = (prev - lastIndex) * 2;
+    //     t2 = (end - lastIndex) * 2;
+    //     let webglColor = colorStrToWebglColor(webglStyle[i].strokeStyle);
+    //     while (t1 < t2) {
+    //         color.push(...webglColor);
+    //         t1 += 4;
+    //     }
+
+    //     if (color.length > 2500 || i === length - 1) {
+    //         obj.indexArr.push(index.slice(0));
+    //         obj.colorArr.push(color.slice(0));
+    //         obj.coordinatesIndexArr.push([lastIndex, end]);
+    //         lastIndex = end;
+    //         index.length = 0;
+    //         color.length = 0;
+    //     }
+
+    //     prev = end;
+    // }
+
+
+    // let buffer = gl.createBuffer();
+    // let indexBuffer = gl.createBuffer();
+    // let colorBuffer = gl.createBuffer();
+    // obj.indexArr.forEach((val, index) => {
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    //     let position = coordinates.slice.apply(coordinates, obj.coordinatesIndexArr[index]);
+    //     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.DYNAMIC_DRAW);
+    //     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    //     gl.enableVertexAttribArray(a_Position);
+
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    //     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj.colorArr[index]), gl.DYNAMIC_DRAW);
+    //     gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
+    //     gl.enableVertexAttribArray(a_Color);
+
+    //     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    //     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
+
+    //     gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
+    // })
 }
 
 export default drawLineString;
