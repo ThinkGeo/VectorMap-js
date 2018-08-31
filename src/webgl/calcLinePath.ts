@@ -40,10 +40,6 @@ const getPathOffset = function (points, offset) {
   if(len===2 && points[0]===points[2] && points[1]===points[3]){
     return [[],[]];
   }
-  // var position = new Float32Array(count);
-  // var positionPrev = new Float32Array(count);
-  // var positionNext = new Float32Array(count);
-  // var color = new Float32Array(len * 4 * 2);
   var indicesCount = 3 * 2 * (len - 1);
   var triangleOffset = 0, vertexOffset = 0, colorOffset = 0;
   for (var i = 0; i < len; i++) {
@@ -61,14 +57,6 @@ const getPathOffset = function (points, offset) {
     position[i3 + 3] = pointX;
     position[i3 + 4] = pointY;
     position[i3 + 5] = 0;
-    // color[i4 + 0] = pcolor[0];
-    // color[i4 + 1] = pcolor[1];
-    // color[i4 + 2] = pcolor[2];
-    // color[i4 + 3] = pcolor[3];
-    // color[i4 + 4] = pcolor[0];
-    // color[i4 + 5] = pcolor[1];
-    // color[i4 + 6] = pcolor[2];
-    // color[i4 + 7] = pcolor[3];
     if (i < count - 1) {
       var i3p = i3 + 6;
       positionNext[i3p + 0] = pointX;
@@ -112,10 +100,6 @@ const getPathOffset = function (points, offset) {
   }
 
   var coordinates = getPathCoordinate(position, positionNext, positionPrev, offset)
-  // return {
-  //   coordinates: coordinates,
-  //   indices: indices,
-  // }
   return [coordinates, indices]
 };
 

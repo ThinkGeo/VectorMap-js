@@ -80,13 +80,10 @@ const drawLineString = (gl, data) => {
                 lineArr = [];
                 lineColorArr = [];
             }
-        } else if (webglStyle[i].lineWidth !== 1) {
+        } else{
             let widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
             let lastLength = mutiLineArr.length / 2;
             let [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
-            // console.log(tempCoordinates, coord);
-            // let temp1 = tempCoordinates.find(val => Number.isNaN(val));
-            // console.log(temp1);
 
             mutiLineArr = mutiLineArr.concat(tempCoordinates);
             let currentLength = mutiLineArr.length / 2;
