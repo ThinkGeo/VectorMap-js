@@ -45,6 +45,7 @@ const drawPolygonGl = (gl, data) => {
         let tempIndex = getPolygonIndex(coordinates.slice(prev, end));
         let t1 = (prev - lastIndex) * 2;
         let t2 = (end - lastIndex) * 2;
+        
         let webglColor = colorStrToWebglColor(webglStyle[i].color);
         while (t1 < t2) {
             color.push(...webglColor);
@@ -55,8 +56,10 @@ const drawPolygonGl = (gl, data) => {
             tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
             index.push(...tempIndex);
             if (color.length > 2500 || i === length - 1) {
-                obj.indexArr.push(index.slice(0));
-                obj.colorArr.push(color.slice(0));
+                // obj.indexArr.push(index.slice(0));
+                obj.indexArr.push([...index]);
+                // obj.colorArr.push(color.slice(0));
+                obj.colorArr.push([...color]);
                 obj.coordinatesIndexArr.push([lastIndex, end]);
                 lastIndex = end;
                 index.length = 0;

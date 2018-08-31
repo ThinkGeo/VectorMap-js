@@ -703,10 +703,11 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let height = context.canvas.height;
 
                 pixelCoordinates = [].slice.apply(pixelCoordinates, [0]);
+                // pixelCoordinates = new Float32Array(pixelCoordinates);
                 for (var j = 0, tempLength = pixelCoordinates.length; j < tempLength; j += 2) {
                     pixelCoordinates[j] = 2 * pixelCoordinates[j] / width - 1;
                     pixelCoordinates[j + 1] = 1 - 2 * pixelCoordinates[j + 1] / height;
-                }
+                }               
 
                 let canvas = document.createElement('canvas');
                 canvas.width = width;
@@ -714,15 +715,19 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if (this.webglDrawType === 'polygonReplay') {
                     let gl = canvas.getContext('webgl');
+                    // gl.enable(gl.BLEND);
+                    // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
                     drawPolygonGl(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
+                    // drawPolygonGl(gl, { coordinates: new Float32Array(pixelCoordinates), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
                     context.drawImage(canvas, 0, 0, width, height);
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
                     let gl = canvas.getContext('webgl');
+                    // drawLineString(gl, { coordinates: new Float32Array(pixelCoordinates), webglEnds: this.webglEnds, webglStyle: this.webglStyle, canvasSize: [width, height] });
                     drawLineString(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle, canvasSize: [width, height] });
                     context.drawImage(canvas, 0, 0, width, height);
                 }
-            } else {
+            }else {
                 var skipFeatures = !(<any>ol).obj.isEmpty(skippedFeaturesHash);
                 var i = 0; // instruction index
                 var ii = instructions.length; // end of instructions

@@ -29172,7 +29172,6 @@ function olInit() {
         var numEnds = ends.length;
         var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
         this.instructions.push(beginPathInstruction);
-
         this.hitDetectionInstructions.push(beginPathInstruction);
         for (var i = 0; i < numEnds; ++i) {
             var end = ends[i];
@@ -72605,7 +72604,7 @@ function olInit() {
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
 
-        gl.clearColor(0, 0, 0, 1);
+        gl.clearColor(0, 0, 0, 0);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
         gl.enable(ol.webgl.BLEND);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
@@ -73011,7 +73010,7 @@ function olInit() {
             this.bindFramebuffer(frameState, framebufferDimension);
             gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
-            gl.clearColor(0, 0, 0, 1);
+            gl.clearColor(0, 0, 0, 0);
             gl.clear(ol.webgl.COLOR_BUFFER_BIT);
             gl.disable(ol.webgl.BLEND);
 
