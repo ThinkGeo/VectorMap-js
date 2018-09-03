@@ -1,6 +1,4 @@
 import createProgram from './initShader';
-import { colorStrToWebglColor } from './tools';
-import getPathOffset from './calcLinePath';
 
 const v_shader_source = `
     attribute vec4 a_Position;
@@ -29,105 +27,11 @@ const drawLineString = (gl, data) => {
     const a_Color = gl.getAttribLocation(program, 'a_Color');
 
     let {
-        coordinates,
-        webglEnds,
-        webglStyle,
-        canvasSize
+        webglLineIndex
     } = data;
 
-    let lines = {
-        indexArr: [],
-        coordinatesArr: [],
-        colorArr: []
-    }
-
-    let multiplyLine = {
-        indexArr: [],
-        coordinatesArr: [],
-        colorArr: []
-    }
-
-    let lineArr = [];
-    let lineIndexArr = [];
-    let lineColorArr = [];
-
-    let mutiLineArr = [];
-    let mutiLineIndexArr = [];
-    let mutiLineColorArr = [];
-
-    for (let i = 0, length = webglEnds.length, prevEnd = 0; i < length; i++) {
-
-        let coord = coordinates.slice(prevEnd, webglEnds[i]);
-        let webglColor = colorStrToWebglColor(webglStyle[i].strokeStyle);
-
-        if (webglStyle[i].lineWidth === 1) {
-            let lastLength = lineArr.length / 2;
-            lineArr = lineArr.concat(coord);
-            let currentLength = lineArr.length / 2;
-
-            while (lastLength < currentLength - 1) {
-                lineIndexArr.push(lastLength++, lastLength);
-                lineColorArr.push(...webglColor);
-            }
-            lineColorArr.push(...webglColor);  //last time
-
-            if (lineColorArr.length > 2500) {
-                lines.indexArr.push(lineIndexArr);
-                lines.coordinatesArr.push(lineArr);
-                lines.colorArr.push(lineColorArr);
-
-                lineIndexArr = [];
-                lineArr = [];
-                lineColorArr = [];
-            }
-        } else if (webglStyle[i].lineWidth !== 1) {
-            let widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
-            let lastLength = mutiLineArr.length / 2;
-            let [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
-            mutiLineArr = mutiLineArr.concat(tempCoordinates);
-            let currentLength = mutiLineArr.length / 2;
-
-            for (let i = 0, length = tempIndex.length; i < length; i++) {
-                mutiLineIndexArr.push(lastLength + tempIndex[i]);
-            }
-
-            while (lastLength++ < currentLength) {
-                mutiLineColorArr.push(...webglColor);
-            }
-
-            if (mutiLineArr.length > 2500) {
-                multiplyLine.indexArr.push(mutiLineIndexArr);
-                multiplyLine.coordinatesArr.push(mutiLineArr);
-                multiplyLine.colorArr.push(mutiLineColorArr);
-
-                mutiLineIndexArr = [];
-                mutiLineArr = [];
-                mutiLineColorArr = [];
-            }
-
-        }
-
-        prevEnd = webglEnds[i];
-    }
-
-    lines.indexArr.push(lineIndexArr);
-    lines.coordinatesArr.push(lineArr);
-    lines.colorArr.push(lineColorArr);
-
-    lineIndexArr = [];
-    lineArr = [];
-    lineColorArr = [];
-
-    if (mutiLineIndexArr.length > 0) {
-        multiplyLine.indexArr.push(mutiLineIndexArr);
-        multiplyLine.coordinatesArr.push(mutiLineArr);
-        multiplyLine.colorArr.push(mutiLineColorArr);
-
-        mutiLineIndexArr = null;
-        mutiLineArr = null;
-        mutiLineColorArr = null;
-    }
-
+    let multiplyLine = webglLineIndex.multiplyLine;
+    let lines = webglLineIndex.lines;
 
     let buffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();

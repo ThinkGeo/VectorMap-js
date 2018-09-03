@@ -101660,7 +101660,6 @@ function olInit() {
             var instructs = subTileInstructCaches[tileKey];
 
             var strategyTree = ol.ext.rbush(9);
-
             if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];

@@ -701,30 +701,30 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             if (this.webglEnds) {
                 let width = context.canvas.width;
                 let height = context.canvas.height;
-
-                pixelCoordinates = [].slice.apply(pixelCoordinates, [0]);
-                // pixelCoordinates = new Float32Array(pixelCoordinates);
-                for (var j = 0, tempLength = pixelCoordinates.length; j < tempLength; j += 2) {
-                    pixelCoordinates[j] = 2 * pixelCoordinates[j] / width - 1;
-                    pixelCoordinates[j + 1] = 1 - 2 * pixelCoordinates[j + 1] / height;
-                }               
-
                 let canvas = document.createElement('canvas');
                 canvas.width = width;
                 canvas.height = height;
-
+                let gl = canvas.getContext('webgl');
+                
                 if (this.webglDrawType === 'polygonReplay') {
-                    let gl = canvas.getContext('webgl');
                     // gl.enable(gl.BLEND);
                     // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-                    drawPolygonGl(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
-                    // drawPolygonGl(gl, { coordinates: new Float32Array(pixelCoordinates), webglEnds: this.webglEnds, webglStyle: this.webglStyle });
+                    drawPolygonGl(gl, 
+                        { 
+                            coordinates: this.webglCoordinates, 
+                            webglEnds: this.webglEnds, 
+                            webglStyle: this.webglStyle, 
+                            webglIndexObj: this.webglIndexObj 
+                        }
+                    );
                     context.drawImage(canvas, 0, 0, width, height);
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
-                    let gl = canvas.getContext('webgl');
-                    // drawLineString(gl, { coordinates: new Float32Array(pixelCoordinates), webglEnds: this.webglEnds, webglStyle: this.webglStyle, canvasSize: [width, height] });
-                    drawLineString(gl, { coordinates: [].slice.apply(pixelCoordinates, [0]), webglEnds: this.webglEnds, webglStyle: this.webglStyle, canvasSize: [width, height] });
+                    drawLineString(gl, 
+                        { 
+                            webglLineIndex: this.webglLineIndex
+                        }
+                    );
                     context.drawImage(canvas, 0, 0, width, height);
                 }
             }else {

@@ -31,9 +31,9 @@ const drawPolygonGl = (gl, data) => {
     let {
         coordinates,
         webglEnds,
-        webglStyle
+        webglStyle,
+        webglIndexObj
     } = data;
-
     let obj = {
         indexArr: [],
         coordinatesIndexArr: [],
@@ -74,6 +74,7 @@ const drawPolygonGl = (gl, data) => {
     let colorBuffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     gl.getExtension('OES_element_index_uint');
+
     obj.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         let position = coordinates.slice.apply(coordinates, obj.coordinatesIndexArr[index]);
