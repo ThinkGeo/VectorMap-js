@@ -36,7 +36,7 @@ const drawLineString = (gl, data) => {
     let buffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     let colorBuffer = gl.createBuffer();
-
+    // console.log(JSON.stringify(data))
     multiplyLine.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(multiplyLine.coordinatesArr[index]), gl.DYNAMIC_DRAW);
@@ -49,11 +49,11 @@ const drawLineString = (gl, data) => {
         gl.enableVertexAttribArray(a_Color);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
-
         gl.drawElements(4, val.length, gl.UNSIGNED_SHORT, 0);
     });
-
+    
     lines.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines.coordinatesArr[index]), gl.DYNAMIC_DRAW);
@@ -69,7 +69,7 @@ const drawLineString = (gl, data) => {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
 
         gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
-    });
+    })
 }
 
 export default drawLineString;

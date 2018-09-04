@@ -30385,7 +30385,6 @@ function olInit() {
      */
     ol.render.canvas.ReplayGroup.prototype.replay = function (context,
         transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
-
         /** @type {Array.<number>} */
         var zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort(ol.array.numberSafeCompareFunction);
@@ -30397,6 +30396,7 @@ function olInit() {
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
+        var gl,canvas,flag=true;
         for (i = 0, ii = zs.length; i < ii; ++i) {
             var zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -30404,6 +30404,19 @@ function olInit() {
                 var replayType = replayTypes[j];
                 replay = replays[replayType];
                 if (replay !== undefined) {
+                    if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
+                        flag=false;
+                        let width = context.canvas.width;
+                        let height = context.canvas.height;
+                        canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        gl = canvas.getContext('webgl');
+                        // console.log('create canvas')
+                    }
+                    if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
+                        replay.webglContext={canvas:canvas,gl:gl}
+                    }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30413,6 +30426,7 @@ function olInit() {
                             declutter.push(replay, transform.slice(0));
                         }
                     } else {
+                        // console.log('replay')
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }
