@@ -21,11 +21,5 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist')
     },
-    devServer: {
-        open: true,
-        port: 7000,
-        publicPath: '/examples/worldstreets/dist',
-        openPage: '/examples/worldstreets'
-    },
     mode: 'development'
 };
