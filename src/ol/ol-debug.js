@@ -80724,8 +80724,8 @@ function olInit() {
                 // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
-                // sourceTile.tileCoordWithSourceCoord = this.tileCoord;
                 sourceTile.tile = this;
+                sourceTile.pixelRatio = map.frameState_.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
                 }
@@ -101348,6 +101348,10 @@ function olInit() {
                 olTile = formatOlTiles.get(requestKey);
             }
 
+            if(self.tileSize === undefined){
+                self.tileSize = requestInfo.tileSize;
+            }
+
             if (olTile) {
                 var res = self.getMainInstructs(olTile, olTile.mainGeoStyleIds);
 
@@ -101441,46 +101445,16 @@ function olInit() {
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
                             var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
-                            // var postMessageData = {
-                            //     methodInfo: methodInfo,
-                            //     messageData: resultMessageData,
-                            //     debugInfo: {
-                            //         postMessageDateTime: new Date().getTime()
-                            //     }
-                            // }
-
                             postMessageData.messageData = resultMessageData;
                             postMessage(postMessageData);
                         }
                         else {
                             postMessageData.messageData.status = "failure";
-                            // var resultMessageData = {
-                            //     status: "failure",
-                            //     requestKey: requestKey,
-                            // };
-                            // var postMessageData = {
-                            //     methodInfo: methodInfo,
-                            //     messageData: resultMessageData,
-                            //     debugInfo: {
-                            //         postMessageDateTime: new Date().getTime()
-                            //     }
-                            // }
                             postMessage(postMessageData);
                         }
                     }
                     else {
                         postMessageData.messageData.status = "failure";
-                        // var resultMessageData = {
-                        //     status: "failure",
-                        //     requestKey: requestKey,
-                        // };
-                        // var postMessageData = {
-                        //     methodInfo: methodInfo,
-                        //     messageData: resultMessageData,
-                        //     debugInfo: {
-                        //         postMessageDateTime: new Date().getTime()
-                        //     }
-                        // }
                         postMessage(postMessageData);
                     }
 
@@ -101488,17 +101462,6 @@ function olInit() {
                 }.bind(this);
                 xhr.onerror = function () {
                     postMessageData.messageData.status = "failure";
-                    // var resultMessageData = {
-                    //     status: "failure",
-                    //     requestKey: requestKey,
-                    // };
-                    // var postMessageData = {
-                    //     methodInfo: methodInfo,
-                    //     messageData: resultMessageData,
-                    //     debugInfo: {
-                    //         postMessageDateTime: new Date().getTime()
-                    //     }
-                    // }
                     postMessage(postMessageData);
                     delete self.requestCache[requestKey];
                 }.bind(this);
@@ -101665,6 +101628,9 @@ function olInit() {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
             }
 
+            if(!vectorTileData){
+                return false;
+            }
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -101736,8 +101702,8 @@ function olInit() {
                         var pixelCoordinates_ = replay.pixelCoordinates_;
                         var webglCoordinates = [];
                         // FIXME needs a varying instead of constant
-                        var width = 512;
-                        var height = 512;
+                        var width = self.tileSize;
+                        var height = self.tileSize;
                         for (var j = 0, tempLength = pixelCoordinates_.length; j < tempLength; j += 2) {
                             webglCoordinates[j] = 2 * pixelCoordinates_[j] / width - 1;
                             webglCoordinates[j + 1] = 1 - 2 * pixelCoordinates_[j + 1] / height;

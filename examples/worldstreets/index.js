@@ -29,7 +29,7 @@ var tileGrid = new ol.layer.Tile({
     })
 });
 
-var map11 = new ol.Map({
+var map = new ol.Map({
     layers: [worldStreetsLayer],
     target: 'map',
     view: view,
