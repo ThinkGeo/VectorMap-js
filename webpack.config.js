@@ -1,9 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: {
-        'ol.mapsuite': './src/main.ts'
-    },
+    entry: './src/main.ts',
     // devtool: 'inline-source-map',
     module: {
         rules: [
@@ -18,8 +16,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
-        filename: '[name].js',
+        filename: 'ol.mapsuite.js',
         path: path.resolve(__dirname, 'dist')
-    },
-    mode: 'development'
+    }
 };
