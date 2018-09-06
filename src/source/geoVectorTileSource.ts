@@ -124,7 +124,6 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                     }
 
                     if (format.isMultithread && format.workerManager) {
-
                         let requestInfo = {
                             url: typeof url === "function" ? (<any>url)(extent, resolution, projection) : url,
                             type: format.getType(),
@@ -140,7 +139,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                             tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
                             vectorImageTileCoord: sourceTile.vectorImageTileCoord,
                             tileExtent:tileExtent,
-                            tileResolution:tileResolution
+                            tileResolution:tileResolution,
+                            tileSize: this.format_.source.tileGrid.tileSize_ * sourceTile.pixelRatio
                         };
 
                         let loadedCallback = function (data, methodInfo) {
