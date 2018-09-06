@@ -9079,6 +9079,13 @@ function olInit() {
                         failIfMajorPerformanceCaveat: true
                     });
                     if (gl) {
+                        canvas.width=512;
+                        canvas.height=512;
+                        ol.webglCanvas = canvas;
+                        gl.clearColor(0.0,0.0,0.0,0.0);
+                        gl.viewport(0,0,512,512)
+                        ol.webglGl = gl;
+                        ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -30406,18 +30413,16 @@ function olInit() {
                 if (replay !== undefined) {
                     if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
                         flag=false;
-                        let width = context.canvas.width;
-                        let height = context.canvas.height;
-                        canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        gl = canvas.getContext('webgl');
-
-                        // console.log('create canvas')
+                        // let width = context.canvas.width;
+                        // let height = context.canvas.height;
+                        // canvas = document.createElement('canvas');
+                        // canvas.width = width;
+                        // canvas.height = height;
+                        // gl = canvas.getContext('webgl');
                     }
-                    if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
-                        replay.webglContext={canvas:canvas,gl:gl}
-                    }
+                    // if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
+                    //     replay.webglContext={canvas:canvas,gl:gl}
+                    // }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30434,7 +30439,7 @@ function olInit() {
             }
         }
         if(flag===false){
-            gl.getExtension('WEBGL_lose_context').loseContext();
+            ol.webglGl.clear(ol.webglGl.COLOR_BUFFER_BIT);
         }
         // context.restore();
     };
@@ -80727,8 +80732,8 @@ function olInit() {
                 // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
-                // sourceTile.tileCoordWithSourceCoord = this.tileCoord;
                 sourceTile.tile = this;
+                sourceTile.pixelRatio = map.frameState_.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
                 }
@@ -101351,6 +101356,10 @@ function olInit() {
                 olTile = formatOlTiles.get(requestKey);
             }
 
+            if(self.tileSize === undefined){
+                self.tileSize = requestInfo.tileSize;
+            }
+
             if (olTile) {
                 var res = self.getMainInstructs(olTile, olTile.mainGeoStyleIds);
 
@@ -101444,46 +101453,16 @@ function olInit() {
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                         if (source) {
                             var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
-                            // var postMessageData = {
-                            //     methodInfo: methodInfo,
-                            //     messageData: resultMessageData,
-                            //     debugInfo: {
-                            //         postMessageDateTime: new Date().getTime()
-                            //     }
-                            // }
-
                             postMessageData.messageData = resultMessageData;
                             postMessage(postMessageData);
                         }
                         else {
                             postMessageData.messageData.status = "failure";
-                            // var resultMessageData = {
-                            //     status: "failure",
-                            //     requestKey: requestKey,
-                            // };
-                            // var postMessageData = {
-                            //     methodInfo: methodInfo,
-                            //     messageData: resultMessageData,
-                            //     debugInfo: {
-                            //         postMessageDateTime: new Date().getTime()
-                            //     }
-                            // }
                             postMessage(postMessageData);
                         }
                     }
                     else {
                         postMessageData.messageData.status = "failure";
-                        // var resultMessageData = {
-                        //     status: "failure",
-                        //     requestKey: requestKey,
-                        // };
-                        // var postMessageData = {
-                        //     methodInfo: methodInfo,
-                        //     messageData: resultMessageData,
-                        //     debugInfo: {
-                        //         postMessageDateTime: new Date().getTime()
-                        //     }
-                        // }
                         postMessage(postMessageData);
                     }
 
@@ -101491,17 +101470,6 @@ function olInit() {
                 }.bind(this);
                 xhr.onerror = function () {
                     postMessageData.messageData.status = "failure";
-                    // var resultMessageData = {
-                    //     status: "failure",
-                    //     requestKey: requestKey,
-                    // };
-                    // var postMessageData = {
-                    //     methodInfo: methodInfo,
-                    //     messageData: resultMessageData,
-                    //     debugInfo: {
-                    //         postMessageDateTime: new Date().getTime()
-                    //     }
-                    // }
                     postMessage(postMessageData);
                     delete self.requestCache[requestKey];
                 }.bind(this);
@@ -101668,6 +101636,9 @@ function olInit() {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
             }
 
+            if(!vectorTileData){
+                return false;
+            }
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -101739,8 +101710,8 @@ function olInit() {
                         var pixelCoordinates_ = replay.pixelCoordinates_;
                         var webglCoordinates = [];
                         // FIXME needs a varying instead of constant
-                        var width = 512;
-                        var height = 512;
+                        var width = self.tileSize;
+                        var height = self.tileSize;
                         for (var j = 0, tempLength = pixelCoordinates_.length; j < tempLength; j += 2) {
                             webglCoordinates[j] = 2 * pixelCoordinates_[j] / width - 1;
                             webglCoordinates[j + 1] = 1 - 2 * pixelCoordinates_[j + 1] / height;

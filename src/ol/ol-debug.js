@@ -9075,16 +9075,13 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
+                    canvas.width=512;
+                    canvas.height=512;
                     var gl = ol.webgl.getContext(canvas, {
                         failIfMajorPerformanceCaveat: true
                     });
                     if (gl) {
-                        canvas.width=512;
-                        canvas.height=512;
-                        ol.webglCanvas = canvas;
                         gl.clearColor(0.0,0.0,0.0,0.0);
-                        gl.viewport(0,0,512,512)
-                        ol.webglGl = gl;
                         ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
@@ -30439,7 +30436,7 @@ function olInit() {
             }
         }
         if(flag===false){
-            ol.webglGl.clear(ol.webglGl.COLOR_BUFFER_BIT);
+            ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
         // context.restore();
     };
