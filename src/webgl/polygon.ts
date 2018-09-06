@@ -74,7 +74,6 @@ const drawPolygonGl = (gl, data) => {
     let colorBuffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     gl.getExtension('OES_element_index_uint');
-    console.time()
     obj.indexArr.forEach((val, index) => {
         
         let length=val.length;
@@ -95,7 +94,6 @@ const drawPolygonGl = (gl, data) => {
         gl.drawElements(4, length, gl.UNSIGNED_INT, 0);
         
     })
-    console.timeEnd()
 }
 
 export default drawPolygonGl;

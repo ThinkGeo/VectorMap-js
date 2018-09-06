@@ -9077,11 +9077,13 @@ function olInit() {
                         (document.createElement('CANVAS'));
                     canvas.width=512;
                     canvas.height=512;
-                    var gl = ol.webgl.getContext(canvas, {
-                        failIfMajorPerformanceCaveat: true
-                    });
+                    // var gl = ol.webgl.getContext(canvas, {
+                    //     failIfMajorPerformanceCaveat: true
+                    // });
+                    var gl=canvas.getContext('webgl');
                     if (gl) {
-                        gl.clearColor(0.0,0.0,0.0,0.0);
+                        gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
+                        // gl.clearColor(1.0,0.0,0.0,1.0)
                         ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
@@ -29176,7 +29178,7 @@ function olInit() {
         var numEnds = ends.length;
         var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
         this.instructions.push(beginPathInstruction);
-
+        // console.log(state)
         this.hitDetectionInstructions.push(beginPathInstruction);
         for (var i = 0; i < numEnds; ++i) {
             var end = ends[i];
@@ -80730,7 +80732,7 @@ function olInit() {
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
                 sourceTile.tile = this;
-                sourceTile.pixelRatio = map.frameState_.pixelRatio;
+                sourceTile.pixelRatio = this.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
                 }
