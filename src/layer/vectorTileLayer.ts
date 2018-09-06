@@ -711,7 +711,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             coordinates: this.webglCoordinates, 
                             webglEnds: this.webglEnds, 
                             webglStyle: this.webglStyle, 
-                            webglIndexObj: this.webglIndexObj 
+                            webglIndexObj: this.webglIndexObj,
+                            webglProgram:webglContext['polyProgram'] 
                         }
                     );
                     context.drawImage(webglContext.canvas, 0, 0, width, height);
@@ -719,7 +720,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 else if (this.webglDrawType === 'lineStringReplay') {
                     drawLineString(webglContext.gl, 
                         { 
-                            webglLineIndex: this.webglLineIndex
+                            webglLineIndex: this.webglLineIndex,
+                            webglProgram:webglContext['lineProgram']
                         }
                     );
                     context.drawImage(webglContext.canvas, 0, 0, width, height);

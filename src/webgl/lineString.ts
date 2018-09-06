@@ -21,15 +21,20 @@ const f_shader_source = `
 `;
 
 const drawLineString = (gl, data) => {
-    const program = createProgram(gl, v_shader_source, f_shader_source);
-    gl.useProgram(program);
-    const a_Position = gl.getAttribLocation(program, 'a_Position');
-    const a_Color = gl.getAttribLocation(program, 'a_Color');
-
     let {
-        webglLineIndex
+        webglLineIndex,
+        webglProgram
     } = data;
 
+    if(webglProgram===undefined){
+        webglProgram = createProgram(gl, v_shader_source, f_shader_source);
+        (<any>ol).webglContext['lineProgram']=webglProgram;
+    }
+    gl.useProgram(webglProgram);
+    const a_Position = gl.getAttribLocation(webglProgram, 'a_Position');
+    const a_Color = gl.getAttribLocation(webglProgram, 'a_Color');
+
+    
     let multiplyLine = webglLineIndex.multiplyLine;
     let lines = webglLineIndex.lines;
 

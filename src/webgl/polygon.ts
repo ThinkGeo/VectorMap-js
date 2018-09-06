@@ -23,22 +23,25 @@ const f_shader_source = `
 `;
 
 const drawPolygonGl = (gl, data) => {
-    const program = createProgram(gl, v_shader_source, f_shader_source);
-    gl.useProgram(program);
-    const a_Position = gl.getAttribLocation(program, 'a_Position');
-    const a_Color = gl.getAttribLocation(program, 'a_Color');
-
     let {
         coordinates,
         webglEnds,
         webglStyle,
-        webglIndexObj
+        webglIndexObj,
+        webglProgram
     } = data;
     let obj = {
         indexArr: [],
         coordinatesIndexArr: [],
         colorArr: []
     }
+    if(webglProgram===undefined){
+        webglProgram = createProgram(gl, v_shader_source, f_shader_source);
+        (<any>ol).webglContext['polyProgram']=webglProgram;
+    }
+    gl.useProgram(webglProgram);
+    const a_Position = gl.getAttribLocation(webglProgram, 'a_Position');
+    const a_Color = gl.getAttribLocation(webglProgram, 'a_Color');
 
     for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
         let end = webglEnds[i];
