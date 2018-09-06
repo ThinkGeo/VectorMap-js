@@ -699,7 +699,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             if (this.webglEnds) {
-                let webglContext=this.webglContext;
+                var webglContext=(<any>ol).webglContext;
+                // let webglContext=this.webglContext;
                 let width = webglContext.canvas.width;
                 let height = webglContext.canvas.height;
                 if (this.webglDrawType === 'polygonReplay') {
@@ -716,12 +717,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     context.drawImage(webglContext.canvas, 0, 0, width, height);
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
-                    drawLineString(webglContext.gl, 
-                        { 
-                            webglLineIndex: this.webglLineIndex
-                        }
-                    );
-                    context.drawImage(webglContext.canvas, 0, 0, width, height);
+                    // drawLineString(webglContext.gl, 
+                    //     { 
+                    //         webglLineIndex: this.webglLineIndex
+                    //     }
+                    // );
+                    // context.drawImage(webglContext.canvas, 0, 0, width, height);
                 }
             }else {
                 var skipFeatures = !(<any>ol).obj.isEmpty(skippedFeaturesHash);

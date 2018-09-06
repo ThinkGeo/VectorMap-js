@@ -9079,6 +9079,13 @@ function olInit() {
                         failIfMajorPerformanceCaveat: true
                     });
                     if (gl) {
+                        canvas.width=512;
+                        canvas.height=512;
+                        ol.webglCanvas = canvas;
+                        gl.clearColor(0.0,0.0,0.0,0.0);
+                        gl.viewport(0,0,512,512)
+                        ol.webglGl = gl;
+                        ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -30406,17 +30413,16 @@ function olInit() {
                 if (replay !== undefined) {
                     if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
                         flag=false;
-                        let width = context.canvas.width;
-                        let height = context.canvas.height;
-                        canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        gl = canvas.getContext('webgl');
-                        // console.log('create canvas')
+                        // let width = context.canvas.width;
+                        // let height = context.canvas.height;
+                        // canvas = document.createElement('canvas');
+                        // canvas.width = width;
+                        // canvas.height = height;
+                        // gl = canvas.getContext('webgl');
                     }
-                    if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
-                        replay.webglContext={canvas:canvas,gl:gl}
-                    }
+                    // if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
+                    //     replay.webglContext={canvas:canvas,gl:gl}
+                    // }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30432,7 +30438,9 @@ function olInit() {
                 }
             }
         }
-
+        if(flag===false){
+            ol.webglGl.clear(ol.webglGl.COLOR_BUFFER_BIT);
+        }
         // context.restore();
     };
 

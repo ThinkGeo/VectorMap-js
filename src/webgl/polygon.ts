@@ -55,7 +55,7 @@ const drawPolygonGl = (gl, data) => {
         if (tempIndex.length > 0 || i ===length -1) {
             tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
             index.push(...tempIndex);
-            if (color.length > 2500 || i === length - 1) {
+            if (color.length > 2048 || i === length - 1) {
                 // obj.indexArr.push(index.slice(0));
                 obj.indexArr.push([...index]);
                 // obj.colorArr.push(color.slice(0));
@@ -74,8 +74,10 @@ const drawPolygonGl = (gl, data) => {
     let colorBuffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     gl.getExtension('OES_element_index_uint');
-
+    console.time()
     obj.indexArr.forEach((val, index) => {
+        
+        let length=val.length;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         let position = coordinates.slice.apply(coordinates, obj.coordinatesIndexArr[index]);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.DYNAMIC_DRAW);
@@ -89,9 +91,11 @@ const drawPolygonGl = (gl, data) => {
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(val), gl.DYNAMIC_DRAW);
-
-        gl.drawElements(4, val.length, gl.UNSIGNED_INT, 0);
+        
+        gl.drawElements(4, length, gl.UNSIGNED_INT, 0);
+        
     })
+    console.timeEnd()
 }
 
 export default drawPolygonGl;
