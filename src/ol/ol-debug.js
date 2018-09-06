@@ -9075,8 +9075,8 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    canvas.width=512;
-                    canvas.height=512;
+                    // canvas.width=512;
+                    // canvas.height=512;
                     // var gl = ol.webgl.getContext(canvas, {
                     //     failIfMajorPerformanceCaveat: true
                     // });
@@ -18749,7 +18749,6 @@ function olInit() {
      */
     ol.PluggableMap.prototype.renderFrame_ = function (time) {
         var i, ii, viewState;
-
         var size = this.getSize();
         var view = this.getView();
         var extent = ol.extent.createEmpty();
@@ -18790,7 +18789,6 @@ function olInit() {
                 wantedTiles: {}
             });
         }
-
         if (frameState) {
             frameState.extent = ol.extent.getForViewAndSize(viewState.center,
                 viewState.resolution, viewState.rotation, frameState.size, extent);
@@ -29178,7 +29176,6 @@ function olInit() {
         var numEnds = ends.length;
         var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
         this.instructions.push(beginPathInstruction);
-        // console.log(state)
         this.hitDetectionInstructions.push(beginPathInstruction);
         for (var i = 0; i < numEnds; ++i) {
             var end = ends[i];
@@ -81105,7 +81102,11 @@ function olInit() {
             minZoom: options.minZoom,
             tileSize: options.tileSize || 512
         });
-
+        var webglContext=ol.webglContext;
+        var webglSize=ol.has.DEVICE_PIXEL_RATIO*tileGrid.tileSize_;
+        webglContext.canvas.height = webglSize;
+        webglContext.canvas.width=webglSize;
+        webglContext.gl.viewport(0,0,webglSize,webglSize);
         ol.source.UrlTile.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,

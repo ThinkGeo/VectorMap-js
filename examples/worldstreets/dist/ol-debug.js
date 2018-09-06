@@ -9075,16 +9075,15 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    var gl = ol.webgl.getContext(canvas, {
-                        failIfMajorPerformanceCaveat: true
-                    });
+                    // canvas.width=512;
+                    // canvas.height=512;
+                    // var gl = ol.webgl.getContext(canvas, {
+                    //     failIfMajorPerformanceCaveat: true
+                    // });
+                    var gl=canvas.getContext('webgl');
                     if (gl) {
-                        canvas.width=512;
-                        canvas.height=512;
-                        ol.webglCanvas = canvas;
-                        gl.clearColor(0.0,0.0,0.0,0.0);
-                        gl.viewport(0,0,512,512)
-                        ol.webglGl = gl;
+                        gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
+                        // gl.clearColor(1.0,0.0,0.0,1.0)
                         ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
@@ -18750,7 +18749,6 @@ function olInit() {
      */
     ol.PluggableMap.prototype.renderFrame_ = function (time) {
         var i, ii, viewState;
-
         var size = this.getSize();
         var view = this.getView();
         var extent = ol.extent.createEmpty();
@@ -18791,7 +18789,6 @@ function olInit() {
                 wantedTiles: {}
             });
         }
-
         if (frameState) {
             frameState.extent = ol.extent.getForViewAndSize(viewState.center,
                 viewState.resolution, viewState.rotation, frameState.size, extent);
@@ -29179,7 +29176,6 @@ function olInit() {
         var numEnds = ends.length;
         var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
         this.instructions.push(beginPathInstruction);
-
         this.hitDetectionInstructions.push(beginPathInstruction);
         for (var i = 0; i < numEnds; ++i) {
             var end = ends[i];
@@ -30439,7 +30435,7 @@ function olInit() {
             }
         }
         if(flag===false){
-            ol.webglGl.clear(ol.webglGl.COLOR_BUFFER_BIT);
+            ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
         // context.restore();
     };
@@ -80733,7 +80729,7 @@ function olInit() {
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
                 sourceTile.tile = this;
-                sourceTile.pixelRatio = map.frameState_.pixelRatio;
+                sourceTile.pixelRatio = this.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
                 }
@@ -81106,7 +81102,11 @@ function olInit() {
             minZoom: options.minZoom,
             tileSize: options.tileSize || 512
         });
-
+        var webglContext=ol.webglContext;
+        var webglSize=ol.has.DEVICE_PIXEL_RATIO*tileGrid.tileSize_;
+        webglContext.canvas.height = webglSize;
+        webglContext.canvas.width=webglSize;
+        webglContext.gl.viewport(0,0,webglSize,webglSize);
         ol.source.UrlTile.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
