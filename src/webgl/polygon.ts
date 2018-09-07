@@ -25,16 +25,16 @@ const f_shader_source = `
 const drawPolygonGl = (gl, data) => {
     let {
         coordinates,
-        webglEnds,
-        webglStyle,
+        // webglEnds,
+        // webglStyle,
         webglIndexObj,
         webglProgram
     } = data;
-    let obj = {
-        indexArr: [],
-        coordinatesIndexArr: [],
-        colorArr: []
-    }
+    // let obj = {
+    //     indexArr: [],
+    //     coordinatesIndexArr: [],
+    //     colorArr: []
+    // }
     if(webglProgram===undefined){
         webglProgram = createProgram(gl, v_shader_source, f_shader_source);
         (<any>ol).webglContext['polyProgram']=webglProgram;
@@ -43,42 +43,48 @@ const drawPolygonGl = (gl, data) => {
     const a_Position = gl.getAttribLocation(webglProgram, 'a_Position');
     const a_Color = gl.getAttribLocation(webglProgram, 'a_Color');
 
-    for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
-        let end = webglEnds[i];
-        let tempIndex = getPolygonIndex(coordinates.slice(prev, end));
-        let t1 = (prev - lastIndex) * 2;
-        let t2 = (end - lastIndex) * 2;
+    let obj = webglIndexObj;
+    // let obj = {
+    //     indexArr: [],
+    //     coordinatesIndexArr: [],
+    //     colorArr: []
+    // }
+
+    // for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
+    //     let end = webglEnds[i];
+    //     let tempIndex = getPolygonIndex(coordinates.slice(prev, end));
+    //     let t1 = (prev - lastIndex) * 2;
+    //     let t2 = (end - lastIndex) * 2;
         
-        let webglColor = colorStrToWebglColor(webglStyle[i].color);
-        while (t1 < t2) {
-            color.push(...webglColor);
-            t1 += 4;
-        }
+    //     let webglColor = colorStrToWebglColor(webglStyle[i].color);
+    //     while (t1 < t2) {
+    //         color.push(...webglColor);
+    //         t1 += 4;
+    //     }
 
-        if (tempIndex.length > 0 || i ===length -1) {
-            tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
-            index.push(...tempIndex);
-            if (color.length > 2048 || i === length - 1) {
-                // obj.indexArr.push(index.slice(0));
-                obj.indexArr.push([...index]);
-                // obj.colorArr.push(color.slice(0));
-                obj.colorArr.push([...color]);
-                obj.coordinatesIndexArr.push([lastIndex, end]);
-                lastIndex = end;
-                index.length = 0;
-                color.length = 0;
-            }
-        }
+    //     if (tempIndex.length > 0 || i ===length -1) {
+    //         tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
+    //         index.push(...tempIndex);
+    //         if (color.length > 2048 || i === length - 1) {
+    //             // obj.indexArr.push(index.slice(0));
+    //             obj.indexArr.push([...index]);
+    //             // obj.colorArr.push(color.slice(0));
+    //             obj.colorArr.push([...color]);
+    //             obj.coordinatesIndexArr.push([lastIndex, end]);
+    //             lastIndex = end;
+    //             index.length = 0;
+    //             color.length = 0;
+    //         }
+    //     }
 
-        prev = end;
-    }
+    //     prev = end;
+    // }
 
     let buffer = gl.createBuffer();
     let colorBuffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     gl.getExtension('OES_element_index_uint');
-    obj.indexArr.forEach((val, index) => {
-        
+    obj.indexArr.forEach((val, index) => {        
         let length=val.length;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         let position = coordinates.slice.apply(coordinates, obj.coordinatesIndexArr[index]);

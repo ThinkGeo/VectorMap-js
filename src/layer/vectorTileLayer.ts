@@ -8,6 +8,7 @@ import { GeoVectorTileLayerRender } from "../render/geoVectorTilelayerRender";
 import { TreeNode } from "../tree/TreeNode";
 import { Tree } from "../tree/tree";
 import { WorkerManager } from "../worker/workerManager";
+import { WebglManager } from "../worker/webglManager";
 import { VectorTileLayerThreadMode } from "../worker/vectorTileLayerThreadMode";
 import drawPolygonGl from './../webgl/polygon';
 import drawLineString from './../webgl/lineString';
@@ -59,7 +60,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.minimalist = true;
             this.maxDataZoom = 14;
         }
-
         this.registerGeoVector();
         if (this.isStyleJsonUrl(styleJson)) {
             this.loadStyleJsonAsyn(styleJson);
@@ -69,6 +69,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
         this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;
 
+        // create webworker for webgl
+        (<any>ol).webglManager = new WebglManager();
+        // (<any>ol).webglManager.initWorkers();
     }
 
     loadStyleJsonAsyn(styleJsonUrl) {
@@ -703,19 +706,43 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // let webglContext=this.webglContext;
                 let width = webglContext.canvas.width;
                 let height = webglContext.canvas.height;
+                
                 if (this.webglDrawType === 'polygonReplay') {
+                    let callBack = function(data){
+                        drawPolygonGl(data.webglContext.gl, 
+                            { 
+                                coordinates: data.webglCoordinates,
+                                webglIndexObj: data.webglIndexObj 
+                            }
+                        );
+                        data.canvasContext.drawImage(data.webglContext.canvas, 0, 0, width, height);                    
+                    };
                     // gl.enable(gl.BLEND);
                     // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-                    drawPolygonGl(webglContext.gl, 
-                        { 
-                            coordinates: this.webglCoordinates, 
-                            webglEnds: this.webglEnds, 
-                            webglStyle: this.webglStyle, 
-                            webglIndexObj: this.webglIndexObj,
-                            webglProgram:webglContext['polyProgram'] 
-                        }
-                    );
-                    context.drawImage(webglContext.canvas, 0, 0, width, height);
+
+                    (<any>ol).webglManager.postMessage({
+                        coordinates: this.webglCoordinates, 
+                        webglEnds: this.webglEnds, 
+                        webglStyle: this.webglStyle,
+                        uid: this.uid,
+                        callBack: callBack,
+                        canvasContext: context,
+                        webglContext: webglContext
+                    });
+                    
+                    // let webglCoordinates = this.webglCoordinates;
+                        
+                    (<any>ol).webglWorker.onmessage = function(e){
+                        let data = e.data;
+                        drawPolygonGl(webglContext.gl, 
+                            { 
+                                coordinates: data.webglCoordinates,
+                                webglIndexObj: data.webglIndexObj,
+                                webglProgram:webglContext['polyProgram'] 
+                            }
+                        );
+                        context.drawImage(webglContext.canvas, 0, 0, width, height);
+                    }                  
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
                     drawLineString(webglContext.gl, 

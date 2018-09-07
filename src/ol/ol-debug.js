@@ -101721,6 +101721,7 @@ function olInit() {
                         resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
                         resultData[zIndex][replayType]["webglCoordinates"] = webglCoordinates;
                         resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
+                        resultData[zIndex][replayType]["uid"] = methodInfo.uid;
                         resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle.slice(0);
                         // webgl data translate
                         if(replay instanceof ol.render.canvas.LineStringReplay){
@@ -102085,7 +102086,6 @@ function olInit() {
     }// workerEnd
     return OPENLAYERS.ol;
 }
-
 
 ; (function (root, factory) {
     if (typeof exports === "object") {
