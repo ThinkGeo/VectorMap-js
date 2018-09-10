@@ -71,7 +71,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         // create webworker for webgl
         (<any>ol).webglManager = new WebglManager();
-        // (<any>ol).webglManager.initWorkers();
     }
 
     loadStyleJsonAsyn(styleJsonUrl) {
@@ -706,52 +705,24 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let width = webglContext.canvas.width;
                 let height = webglContext.canvas.height;
                 
-                if (this.webglDrawType === 'polygonReplay') {
-                    let callBack = function(data){
-                        drawPolygonGl(data.webglContext.gl, 
-                            { 
-                                coordinates: data.webglCoordinates,
-                                webglIndexObj: data.webglIndexObj 
-                            }
-                        );
-                        data.canvasContext.drawImage(data.webglContext.canvas, 0, 0, width, height);  
-                        data.webglContext.gl.clear(data.webglContext.gl.COLOR_BUFFER_BIT);                  
-                    };
-                    // gl.enable(gl.BLEND);
-                    // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-
-                    // (<any>ol).webglManager.postMessage({
-                    //     coordinates: this.webglCoordinates, 
-                    //     webglEnds: this.webglEnds, 
-                    //     webglStyle: this.webglStyle,
-                    //     uid: this.uid,
-                    //     callBack: callBack,
-                    //     canvasContext: context,
-                    //     webglContext: webglContext
-                    // });
-                    
-                    // let webglCoordinates = this.webglCoordinates;
-                        
-                    // (<any>ol).webglManager.onmessage = function(e){
-                    //     let data = e.data;
-                    //     drawPolygonGl(webglContext.gl, 
-                    //         { 
-                    //             coordinates: data.webglCoordinates,
-                    //             webglIndexObj: data.webglIndexObj,
-                    //             webglProgram:webglContext['polyProgram'] 
-                    //         }
-                    //     );
-                    //     context.drawImage(webglContext.canvas, 0, 0, width, height);
-                    // }                  
+                if (this.webglDrawType === 'polygonReplay') {                  
+                    drawPolygonGl(webglContext.gl, 
+                        { 
+                            coordinates: this.webglCoordinates,
+                            webglIndexObj: this.webglIndexObj,
+                            webglProgram: webglContext['polyProgram'] 
+                        }
+                    );
+                    context.drawImage(webglContext.canvas, 0, 0, width, height);
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
-                    // drawLineString(webglContext.gl, 
-                    //     { 
-                    //         webglLineIndex: this.webglLineIndex,
-                    //         webglProgram:webglContext['lineProgram']
-                    //     }
-                    // );
-                    // context.drawImage(webglContext.canvas, 0, 0, width, height);
+                    drawLineString(webglContext.gl, 
+                        { 
+                            webglLineIndex: this.webglIndexObj,
+                            webglProgram: webglContext['lineProgram']
+                        }
+                    );
+                    context.drawImage(webglContext.canvas, 0, 0, width, height);
                 }
             }else {
                 var skipFeatures = !(<any>ol).obj.isEmpty(skippedFeaturesHash);

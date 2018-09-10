@@ -1,24 +1,43 @@
 export function webglCaculate(){
 
     onmessage = function(e){
-      var data = e.data;
-      var webglIndexObj = getWebglIndexObj(data);
+      let data = e.data;
+      let {
+          replays
+      } = data;
+      let webglPolygonIndex;
+      let webglLineIndex;
+      
+      for(let key in replays){
+          let replay = replays[key];
+          if(replay.webglDrawType === 'lineStringReplay'){
+            webglLineIndex = getWebglLineIndex(replay);
+            delete replay.webglEnds;
+            delete replay.webglStyle;
+          }else if(replay.webglDrawType === 'polygonReplay'){
+            webglPolygonIndex = getWebglIndexObj(replay);
+            delete replay.webglEnds;
+            delete replay.webglStyle;
+          }
+      }
 
       postMessage({
-        webglIndexObj,
-        webglCoordinates: data.coordinates,
+        webglPolygonIndex,
+        webglLineIndex,
         uid: data.uid,
-        messageData:data.messageData,
-        methodInfo:data.methodInfo
+        messageData: data.messageData,
+        methodInfo: data.methodInfo
       });
     }
     
+    // polygon
     function getWebglIndexObj(data) {
       let {
-        coordinates,
+        webglCoordinates,
         webglEnds,
         webglStyle    
       } = data;
+
       let obj = {
           indexArr: [],
           coordinatesIndexArr: [],
@@ -27,7 +46,7 @@ export function webglCaculate(){
     
       for (let i = 0, prev = 0, lastIndex = 0, index = [], color = [], length = webglEnds.length; i < length; i++) {
         let end = webglEnds[i];
-        let tempIndex = getPolygonIndex(coordinates.slice(prev, end));
+        let tempIndex = getPolygonIndex(webglCoordinates.slice(prev, end));
         let t1 = (prev - lastIndex) * 2;
         let t2 = (end - lastIndex) * 2;
         
@@ -85,6 +104,215 @@ export function webglCaculate(){
     
         return color;
     };
+
+    // lineString
+    function getPathOffset(points, offset) {
+        var len = points.length / 2;
+        var count = len * 3 * 2;
+        var position = [];
+        var positionPrev = [];
+        var positionNext = [];
+        if(len===2 && points[0]===points[2] && points[1]===points[3]){
+          return [[],[]];
+        }
+        var indicesCount = 3 * 2 * (len - 1);
+        var triangleOffset = 0, vertexOffset = 0, colorOffset = 0;
+        for (var i = 0; i < len; i++) {
+          var i3 = i * 3 * 2;
+          var i4 = i * 4 * 2;
+          var pointX = points[2 * i];
+          var pointY = points[2 * i + 1]
+          if(pointX===points[2*i+2] && pointY===points[2*i+3]){
+            indicesCount-=6;
+            continue;
+          }
+          position[i3 + 0] = pointX;
+          position[i3 + 1] = pointY;
+          position[i3 + 2] = 0;
+          position[i3 + 3] = pointX;
+          position[i3 + 4] = pointY;
+          position[i3 + 5] = 0;
+          if (i < count - 1) {
+            var i3p = i3 + 6;
+            positionNext[i3p + 0] = pointX;
+            positionNext[i3p + 1] = pointY;
+            positionNext[i3p + 2] = 0;
+      
+            positionNext[i3p + 3] = pointX;
+            positionNext[i3p + 4] = pointY;
+            positionNext[i3p + 5] = 0;
+          }
+          if (i > 0) {
+            var i3n = i3 - 6;
+            positionPrev[i3n + 0] = pointX;
+            positionPrev[i3n + 1] = pointY;
+            positionPrev[i3n + 2] = 0;
+      
+            positionPrev[i3n + 3] = pointX;
+            positionPrev[i3n + 4] = pointY;
+            positionPrev[i3n + 5] = 0;
+          }
+        }
+      
+        var indices = new Uint16Array(indicesCount);
+        var end = count - 1;
+        for (i = 0; i < 6; i++) {
+          positionNext[i] = positionNext[i + 6];
+          positionPrev[end - i] = positionPrev[end - i - 6];
+        }
+        for (i = 0; i < indicesCount; i++) {
+          if (i % 2 == 0) {
+            indices[triangleOffset++] = i;
+            indices[triangleOffset++] = i + 1;
+            indices[triangleOffset++] = i + 2;
+          } else {
+            indices[triangleOffset++] = i + 1;
+            indices[triangleOffset++] = i;
+            indices[triangleOffset++] = i + 2;
+          }
+        }
+      
+        var coordinates = getPathCoordinate(position, positionNext, positionPrev, offset)
+        return [coordinates, indices]
+    };
+
+    function getWebglLineIndex(data) {
+        let {
+            webglCoordinates,
+            webglEnds,
+            webglStyle    
+        } = data; 
+        var lines = {
+            indexArr: [],
+            coordinatesArr: [],
+            colorArr: []
+        }
+        var multiplyLine = {
+            indexArr: [],
+            coordinatesArr: [],
+            colorArr: []
+        }        
+        var lineArr = [];
+        var lineIndexArr = [];
+        var lineColorArr = [];
+    
+        var mutiLineArr = [];
+        var mutiLineIndexArr = [];
+        var mutiLineColorArr = [];
+        // FIXME needs a varying instead of constant
+        var canvasSize = [512, 512];
+
+        for (var i = 0, length = webglEnds.length, prevEnd = 0; i < length; i++) {
+
+            var coord = webglCoordinates.slice(prevEnd, webglEnds[i]);
+            var webglColor = colorStrToWebglColor(webglStyle[i].strokeStyle);
+    
+            if (webglStyle[i].lineWidth === 1) {
+                var lastLength = lineArr.length / 2;
+                lineArr = lineArr.concat(coord);
+                var currentLength = lineArr.length / 2;
+    
+                while (lastLength < currentLength - 1) {
+                    lineIndexArr.push(lastLength++, lastLength);
+                    lineColorArr.push(...webglColor);
+                }
+                lineColorArr.push(...webglColor);  //last time
+    
+                if (lineColorArr.length > 2500) {
+                    lines.indexArr.push(lineIndexArr);
+                    lines.coordinatesArr.push(lineArr);
+                    lines.colorArr.push(lineColorArr);
+    
+                    lineIndexArr = [];
+                    lineArr = [];
+                    lineColorArr = [];
+                }
+            } else if (webglStyle[i].lineWidth !== 1) {
+                var widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
+                var lastLength = (mutiLineArr.length) / 2;
+                var [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
+                mutiLineArr = mutiLineArr.concat(tempCoordinates);
+                var currentLength = mutiLineArr.length / 2;
+    
+                for (let i = 0, length = tempIndex.length; i < length; i++) {
+                    mutiLineIndexArr.push(lastLength + tempIndex[i]);
+                }
+    
+                while (lastLength++ < currentLength) {
+                    mutiLineColorArr.push(...webglColor);
+                }
+    
+                if (mutiLineArr.length > 2500) {
+                    multiplyLine.indexArr.push(mutiLineIndexArr);
+                    multiplyLine.coordinatesArr.push(mutiLineArr);
+                    multiplyLine.colorArr.push(mutiLineColorArr);
+    
+                    mutiLineIndexArr = [];
+                    mutiLineArr = [];
+                    mutiLineColorArr = [];
+                }       
+            }
+    
+            prevEnd = webglEnds[i];
+        }
+        lines.indexArr.push(lineIndexArr);
+        lines.coordinatesArr.push(lineArr);
+        lines.colorArr.push(lineColorArr);
+
+        lineIndexArr = [];
+        lineArr = [];
+        lineColorArr = [];
+
+        if (mutiLineIndexArr.length > 0) {
+            multiplyLine.indexArr.push(mutiLineIndexArr);
+            multiplyLine.coordinatesArr.push(mutiLineArr);
+            multiplyLine.colorArr.push(mutiLineColorArr);
+
+            mutiLineIndexArr = null;
+            mutiLineArr = null;
+            mutiLineColorArr = null;
+        }
+
+        return {
+            multiplyLine,
+            lines
+        }
+    }
+
+    function getPathCoordinate(a_position, a_positionNext, a_positionPrev, a_offset) {
+        var pointss = [];
+        var length = a_position.length;
+        var flag = 1;
+        for (var i = 0; i < length; i += 3) {
+          var curr = { x: a_position[i], y: a_position[i + 1] }
+          var next = { x: a_positionNext[i], y: a_positionNext[i + 1] }
+          var prev = { x: a_positionPrev[i], y: a_positionPrev[i + 1] }
+          var dir, len = a_offset * flag;
+          if (curr.x === prev.x && curr.y === prev.y) {
+            dir = normalize(next.x - curr.x, next.y - curr.y);
+          }
+          else if (curr.x === next.x && curr.y === next.y) {
+            dir = normalize(curr.x - prev.x, curr.y - prev.y)
+          }
+          else {
+            var dir1 = normalize(curr.x - prev.x, curr.y - prev.y)
+            var dir2 = normalize(next.x - curr.x, next.y - curr.y)
+            dir = normalize(dir1.x + dir2.x, dir1.y + dir2.y);
+            var miter = 1.0 / Math.max(dir.x * dir1.x + dir.y * dir1.y, 0.5);
+            len *= miter;
+          }
+          dir = { x: -dir.y * len, y: dir.x * len };
+          pointss.push(curr.x + dir.x);
+          pointss.push(curr.y + dir.y);
+          flag *= -1;
+        }
+        return pointss
+    }
+
+    function normalize(x, y) {
+        var m = Math.sqrt(x * x + y * y);
+        return { x: x / m, y: y / m }
+    }        
 
     /**
      * earcut

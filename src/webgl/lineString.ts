@@ -41,7 +41,7 @@ const drawLineString = (gl, data) => {
     let buffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     let colorBuffer = gl.createBuffer();
-    // console.log(JSON.stringify(data))
+    
     multiplyLine.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(multiplyLine.coordinatesArr[index]), gl.DYNAMIC_DRAW);

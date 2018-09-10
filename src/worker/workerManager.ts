@@ -38,28 +38,32 @@ export class WorkerManager {
                     let messageData = e.data["messageData"];
                     let uid = methodInfo.uid;
                     let callback = callbacks[uid];
-                    if(methodInfo.methodName==='createReplay'){
-                        let replay=messageData.replays[0].Polygon;
-                        (<any>ol).webglManager.postMessage({
-                            coordinates: replay.webglCoordinates, 
-                            webglEnds: replay.webglEnds, 
-                            webglStyle: replay.webglStyle,
-                            uid: uid,
-                            callBack: callback,
-                            messageData:messageData,
-                            methodInfo:methodInfo
-                            // canvasContext: context,
-                            // webglContext: (<any>ol).webglContext
-                        });   
+                    if(methodInfo.methodName === 'createReplay'){
+                        let replays = messageData.replays[0];
+                        // let polygon = replays.Polygon;
+                        // let lineString = replays.LineString;
+                        // for(let key in replays){
+                        //     let replay = replays[key];
+                        //     if(replay.webglDrawType === 'lineStringReplay' || replay.webglDrawType === 'polygonReplay'){
+                                (<any>ol).webglManager.postMessage({
+                                    replays: replays,
+                                    // coordinates: polygon.webglCoordinates, 
+                                    // webglEnds: polygon.webglEnds, 
+                                    // webglStyle: polygon.webglStyle,
+                                    uid: uid,
+                                    callBack: callback,
+                                    messageData: messageData,
+                                    methodInfo: methodInfo
+                                });   
+                        //     }
+                        // }
                     }
                     else{
                         if (callback) {
                             callback(messageData, methodInfo);
                         }
-                        delete callbacks[uid];
-                    }
-                    
-                    
+                    }        
+                    delete callbacks[uid];
                 }
                 this.workers.push(worker);
             }
