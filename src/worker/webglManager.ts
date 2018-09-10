@@ -5,6 +5,7 @@ export class WebglManager {
     worker: any;
     canvasContext: any;
     webglContext: any;
+    callBackArg: any;
 
     constructor() {       
         this.worker = {};
@@ -19,7 +20,7 @@ export class WebglManager {
             let callBack = this.workerCallback;
             let canvasContext = this.canvasContext;
             let webglContext = this.webglContext;
-            
+
             let source = '(' + window["webglCaculate"] + ')()';
             let blob = new Blob([source]);
 
@@ -28,10 +29,12 @@ export class WebglManager {
                 let data = e.data;
                 let uid = data.uid;
                 let webglCallBack = callBack[uid];
+                // add webglIndexObj to data??? webglIndexObj is the result of earcut
                 if (webglCallBack) {
                     data.webglContext = webglContext[uid];
                     data.canvasContext = canvasContext[uid];
-                    webglCallBack(data);
+                    data.messageData.webglIndexObj=data.webglIndexObj;
+                    webglCallBack(data.messageData,data.methodInfo);
                 }
                 delete callBack[uid];
             }
@@ -51,7 +54,9 @@ export class WebglManager {
             uid,
             callBack,
             canvasContext,
-            webglContext
+            webglContext,
+            messageData,
+            methodInfo
         } = data;
 
         if (callBack) {
@@ -59,14 +64,14 @@ export class WebglManager {
             this.canvasContext[uid] = canvasContext;
             this.webglContext[uid] = webglContext;
         }
-
         let postMessage = {
             coordinates,
             webglEnds,
             webglStyle,
-            uid: uid
+            uid: uid,
+            messageData,
+            methodInfo
         }
-
         this.worker.postMessage(postMessage);
     }
 

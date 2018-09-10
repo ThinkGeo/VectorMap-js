@@ -32,18 +32,34 @@ export class WorkerManager {
             for (let i = 0; i < this.workerCount; i++) {
                 let source = '(' + window["olInit"] + ')()';
                 let blob = new Blob([source]);
-
                 let worker = new Worker(window.URL.createObjectURL(blob));
                 worker.onmessage = function (e) {
                     let methodInfo = e.data["methodInfo"];
                     let messageData = e.data["messageData"];
-
                     let uid = methodInfo.uid;
                     let callback = callbacks[uid];
-                    if (callback) {
-                        callback(messageData, methodInfo);
+                    if(methodInfo.methodName==='createReplay'){
+                        let replay=messageData.replays[0].Polygon;
+                        (<any>ol).webglManager.postMessage({
+                            coordinates: replay.webglCoordinates, 
+                            webglEnds: replay.webglEnds, 
+                            webglStyle: replay.webglStyle,
+                            uid: uid,
+                            callBack: callback,
+                            messageData:messageData,
+                            methodInfo:methodInfo
+                            // canvasContext: context,
+                            // webglContext: (<any>ol).webglContext
+                        });   
                     }
-                    delete callbacks[uid];
+                    else{
+                        if (callback) {
+                            callback(messageData, methodInfo);
+                        }
+                        delete callbacks[uid];
+                    }
+                    
+                    
                 }
                 this.workers.push(worker);
             }

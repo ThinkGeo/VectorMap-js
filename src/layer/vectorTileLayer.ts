@@ -700,7 +700,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     (<any>ol).transform.setFromArray(this.renderedTransform_, transform);
                 }
             }
-
             if (this.webglEnds) {
                 var webglContext=(<any>ol).webglContext;
                 // let webglContext=this.webglContext;
@@ -715,43 +714,44 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                                 webglIndexObj: data.webglIndexObj 
                             }
                         );
-                        data.canvasContext.drawImage(data.webglContext.canvas, 0, 0, width, height);                    
+                        data.canvasContext.drawImage(data.webglContext.canvas, 0, 0, width, height);  
+                        data.webglContext.gl.clear(data.webglContext.gl.COLOR_BUFFER_BIT);                  
                     };
                     // gl.enable(gl.BLEND);
                     // gl.blendFunc(gl.SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
 
-                    (<any>ol).webglManager.postMessage({
-                        coordinates: this.webglCoordinates, 
-                        webglEnds: this.webglEnds, 
-                        webglStyle: this.webglStyle,
-                        uid: this.uid,
-                        callBack: callBack,
-                        canvasContext: context,
-                        webglContext: webglContext
-                    });
+                    // (<any>ol).webglManager.postMessage({
+                    //     coordinates: this.webglCoordinates, 
+                    //     webglEnds: this.webglEnds, 
+                    //     webglStyle: this.webglStyle,
+                    //     uid: this.uid,
+                    //     callBack: callBack,
+                    //     canvasContext: context,
+                    //     webglContext: webglContext
+                    // });
                     
                     // let webglCoordinates = this.webglCoordinates;
                         
-                    (<any>ol).webglWorker.onmessage = function(e){
-                        let data = e.data;
-                        drawPolygonGl(webglContext.gl, 
-                            { 
-                                coordinates: data.webglCoordinates,
-                                webglIndexObj: data.webglIndexObj,
-                                webglProgram:webglContext['polyProgram'] 
-                            }
-                        );
-                        context.drawImage(webglContext.canvas, 0, 0, width, height);
-                    }                  
+                    // (<any>ol).webglManager.onmessage = function(e){
+                    //     let data = e.data;
+                    //     drawPolygonGl(webglContext.gl, 
+                    //         { 
+                    //             coordinates: data.webglCoordinates,
+                    //             webglIndexObj: data.webglIndexObj,
+                    //             webglProgram:webglContext['polyProgram'] 
+                    //         }
+                    //     );
+                    //     context.drawImage(webglContext.canvas, 0, 0, width, height);
+                    // }                  
                 }
                 else if (this.webglDrawType === 'lineStringReplay') {
-                    drawLineString(webglContext.gl, 
-                        { 
-                            webglLineIndex: this.webglLineIndex,
-                            webglProgram:webglContext['lineProgram']
-                        }
-                    );
-                    context.drawImage(webglContext.canvas, 0, 0, width, height);
+                    // drawLineString(webglContext.gl, 
+                    //     { 
+                    //         webglLineIndex: this.webglLineIndex,
+                    //         webglProgram:webglContext['lineProgram']
+                    //     }
+                    // );
+                    // context.drawImage(webglContext.canvas, 0, 0, width, height);
                 }
             }else {
                 var skipFeatures = !(<any>ol).obj.isEmpty(skippedFeaturesHash);

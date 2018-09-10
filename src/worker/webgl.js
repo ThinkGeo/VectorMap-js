@@ -3,11 +3,13 @@ export function webglCaculate(){
     onmessage = function(e){
       var data = e.data;
       var webglIndexObj = getWebglIndexObj(data);
-    
+
       postMessage({
         webglIndexObj,
         webglCoordinates: data.coordinates,
-        uid: data.uid
+        uid: data.uid,
+        messageData:data.messageData,
+        methodInfo:data.methodInfo
       });
     }
     
