@@ -40,25 +40,14 @@ export class WorkerManager {
                     let callback = callbacks[uid];
                     if(methodInfo.methodName === 'createReplay'){
                         let replays = messageData.replays[0];
-                        // let polygon = replays.Polygon;
-                        // let lineString = replays.LineString;
-                        // for(let key in replays){
-                        //     let replay = replays[key];
-                        //     if(replay.webglDrawType === 'lineStringReplay' || replay.webglDrawType === 'polygonReplay'){
-                                (<any>ol).webglManager.postMessage({
-                                    replays: replays,
-                                    // coordinates: polygon.webglCoordinates, 
-                                    // webglEnds: polygon.webglEnds, 
-                                    // webglStyle: polygon.webglStyle,
-                                    uid: uid,
-                                    callBack: callback,
-                                    messageData: messageData,
-                                    methodInfo: methodInfo
-                                });   
-                        //     }
-                        // }
-                    }
-                    else{
+                        (<any>window).webglManager.postMessage({
+                            replays: replays,
+                            uid: uid,
+                            callBack: callback,
+                            messageData: messageData,
+                            methodInfo: methodInfo
+                        });   
+                    } else{
                         if (callback) {
                             callback(messageData, methodInfo);
                         }

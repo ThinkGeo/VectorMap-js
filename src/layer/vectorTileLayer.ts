@@ -69,8 +69,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
         this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;
 
-        // create webworker for webgl
-        (<any>ol).webglManager = new WebglManager();
+        // create webworker for webgl        
+        if(!(<any>window).webglManager){
+            (<any>window).webglManager = new WebglManager();
+        }
     }
 
     loadStyleJsonAsyn(styleJsonUrl) {
@@ -699,13 +701,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     (<any>ol).transform.setFromArray(this.renderedTransform_, transform);
                 }
             }
-            if (this.webglEnds) {
+            if (this.webglCoordinates) {
                 var webglContext=(<any>ol).webglContext;
                 // let webglContext=this.webglContext;
                 let width = webglContext.canvas.width;
                 let height = webglContext.canvas.height;
                 
-                if (this.webglDrawType === 'polygonReplay') {                  
+                if (this.webglDrawType === 'polygonReplay') { 
                     drawPolygonGl(webglContext.gl, 
                         { 
                             coordinates: this.webglCoordinates,

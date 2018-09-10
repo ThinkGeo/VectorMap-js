@@ -101717,10 +101717,10 @@ function olInit() {
                         }   
 
                         resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
-                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds;
+                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
                         resultData[zIndex][replayType]["webglCoordinates"] = webglCoordinates;
                         resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
-                        resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle;
+                        resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle.slice(0);
                     } else {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
