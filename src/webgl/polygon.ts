@@ -45,22 +45,20 @@ const drawPolygonGl = (gl, data) => {
     webglIndexObj.indexArr.forEach((val, index) => {        
         let length=val.length;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        let position = coordinates.slice.apply(coordinates, webglIndexObj.coordinatesIndexArr[index]);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, webglIndexObj.coordinatesIndexArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Position);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(webglIndexObj.colorArr[index]), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, webglIndexObj.colorArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Color);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(val), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
         
-        gl.drawElements(4, length, gl.UNSIGNED_INT, 0);
-        
-    })
+        gl.drawElements(4, length, gl.UNSIGNED_INT, 0);        
+    });
 }
 
 export default drawPolygonGl;

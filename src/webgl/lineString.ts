@@ -44,34 +44,34 @@ const drawLineString = (gl, data) => {
     
     multiplyLine.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(multiplyLine.coordinatesArr[index]), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, multiplyLine.coordinatesArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Position);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(multiplyLine.colorArr[index]), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, multiplyLine.colorArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Color);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
         gl.drawElements(4, val.length, gl.UNSIGNED_SHORT, 0);
     });
     
     lines.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines.coordinatesArr[index]), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, lines.coordinatesArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Position);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines.colorArr[index]), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, lines.colorArr[index], gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Color);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(val), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
 
         gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
     })
