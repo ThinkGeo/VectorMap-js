@@ -59,7 +59,9 @@ export class TextReplayCustom extends ((<any>ol.render.canvas).TextReplay as { n
         let batchSize = this.instructions !== instructions || this.overlaps ? 0 : 200;
         var currentResolution = context["currentResolution"];
         var ratio = window.devicePixelRatio * 1.194328566955879 / currentResolution;
-        if(ratio >= 3){
+        
+        // different label distance between desktop and mobile
+        if(!navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i) && ratio >= 3){            
             ratio /= 2;
         }
         while (i < ii) {
