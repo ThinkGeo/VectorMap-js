@@ -48,7 +48,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         xOffset = xOffset <= 0 ? 1 : xOffset * 2 + 3;
         yOffset = yOffset <= 0 ? 1 : yOffset * 2 + 3;
         let cacheSize = xOffset * yOffset;
-        //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
+        //// Adjust vectorTileData cache size according to the tile Range in data max zoom.
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
         
         // Set the tile cache size to 16 on mobile. TODO: remove 
