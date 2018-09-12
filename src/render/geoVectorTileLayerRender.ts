@@ -48,9 +48,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         xOffset = xOffset <= 0 ? 1 : xOffset * 2 + 3;
         yOffset = yOffset <= 0 ? 1 : yOffset * 2 + 3;
         let cacheSize = xOffset * yOffset;
-        tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
-
         //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
+        tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
+        
+        // Set the tile cache size to 16 on mobile. TODO: remove 
+        if(navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))
+        {   
+            tileSource.tileCache.highWaterMark = 16;
+        }
+
         var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.maxDataZoom);
         var offsetX = dataTileRand.maxX - dataTileRand.minX;
         var offsetY = dataTileRand.maxY - dataTileRand.minY;
