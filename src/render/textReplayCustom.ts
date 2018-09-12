@@ -61,9 +61,10 @@ export class TextReplayCustom extends ((<any>ol.render.canvas).TextReplay as { n
         var ratio = window.devicePixelRatio * 1.194328566955879 / currentResolution;
         
         // different label distance between desktop and mobile
-        if(!navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i) && ratio >= 3){            
-            ratio /= 2;
-        }
+        // if(!navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i) && ratio >= 3){            
+        //     ratio /= 2;
+        // }
+        
         while (i < ii) {
             let instruction = instructions[i];
             let type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
