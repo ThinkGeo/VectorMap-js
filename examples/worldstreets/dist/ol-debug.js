@@ -9004,6 +9004,10 @@ function olInit() {
                     if (context.setLineDash !== undefined) {
                         ol.has.CANVAS_LINE_DASH = true;
                     }
+                    // MapSuite
+                    context.canvas.width = 1;
+                    context.canvas.height = 1;
+                    context = undefined;
                     return true;
                 }
             } catch (e) {
@@ -9075,6 +9079,13 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
+                    // MapSuite
+                    if(canvas)
+                    {
+                        canvas.width = 1;
+                        canvas.height = 1;
+                    }
+                    
                     var gl = ol.webgl.getContext(canvas, {
                         failIfMajorPerformanceCaveat: true
                     });
@@ -16910,9 +16921,20 @@ function olInit() {
             if (opt_width) {
                 canvas.width = opt_width;
             }
+            // MapSuite
+            else
+            {
+                canvas.width = 1;
+            }
+
             if (opt_height) {
                 canvas.height = opt_height;
             }
+            // MapSuite
+            else
+            {
+                canvas.height = 1;
+            }            
             return canvas.getContext('2d');
         }
 
@@ -78295,8 +78317,11 @@ function olInit() {
             } catch (_) {
                 hasImageData = false;
             }
+            var context=null;
             if (isMain) {
-                var context = document.createElement('canvas').getContext('2d');
+                context= document.createElement('canvas').getContext('2d');
+                context.canvas.width=1;
+                context.canvas.height=1;
             }
             function newImageData$1(data, width, height) {
                 if (hasImageData) {
@@ -96632,9 +96657,9 @@ function olInit() {
                 pbfLayer = pbfLayers[name];
                 extent = pbfLayer.extent;
 
-                var skipOffset=1;
+                var skipOffset = 1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = (tileResolution / scale)*skipOffset;
+                var offset = (tileResolution / scale) * skipOffset;
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
@@ -101326,7 +101351,7 @@ function olInit() {
                 // FIXME Eric cancel tiles out of frameExtent
                 // var values = Object.values(self.tileCoordWithSourceCoord);
                 var values = [];
-                for(var key in self.tileCoordWithSourceCoord){
+                for (var key in self.tileCoordWithSourceCoord) {
                     values.push(self.tileCoordWithSourceCoord[key])
                 }
                 if (values.length > 0) {
