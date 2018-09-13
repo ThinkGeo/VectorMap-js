@@ -1047,5 +1047,44 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             return found;
         };
 
+        (<any>ol).array.linearFindNearest = function (arr, target, direction) {
+            var n = arr.length;
+            if (arr[0] <= target) {
+                return 0;
+            } else if (target <= arr[n - 1]) {
+                return n - 1;
+            } else {
+                var i;
+                if (direction > 0) {
+                    for (i = 1; i < n; ++i) {
+                        if (arr[i] < target) {
+                            return i - 1;
+                        }
+                    }
+                } else if (direction < 0) {
+                    for (i = 1; i < n; ++i) {
+                        if (arr[i] <= target) {
+                            return i;
+                        }
+                    }
+                } else {
+                    for (i = 1; i < n; ++i) {
+                        if (arr[i] == target) {
+                            return i;
+                        } else if (arr[i] < target) {
+                            var delta=  arr[i - 1]-arr[i];
+                            delta= delta*0.5;
+    
+                            if (arr[i - 1] - target - delta < target - arr[i]) {
+                                return i - 1;
+                            } else {
+                                return i;
+                            }
+                        }
+                    }
+                }
+                return n - 1;
+            }
+        };
     }
 }
