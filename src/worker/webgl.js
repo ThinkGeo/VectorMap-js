@@ -59,7 +59,8 @@ export function webglCaculate(){
         if (tempIndex.length > 0 || i ===length -1) {
             tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
             index.push(...tempIndex);
-            if (color.length > 2500 || i === length - 1) {
+            // if (color.length > 250000000 || i === length - 1) {
+            if (i === length - 1) {
                 obj.indexArr.push(new Uint32Array([...index]));
                 obj.colorArr.push(new Float32Array([...color]));
                 obj.coordinatesIndexArr.push(new Float32Array(webglCoordinates.slice.apply(webglCoordinates, [lastIndex, end])));                
@@ -216,15 +217,15 @@ export function webglCaculate(){
                 }
                 lineColorArr.push(...webglColor);  //last time
     
-                if (lineColorArr.length > 2500) {
-                    lines.indexArr.push(new Uint16Array(lineIndexArr));
-                    lines.coordinatesArr.push(new Float32Array(lineArr));
-                    lines.colorArr.push(new Float32Array(lineColorArr));
+                // if (lineColorArr.length > 25000000) {
+                //     lines.indexArr.push(new Uint16Array(lineIndexArr));
+                //     lines.coordinatesArr.push(new Float32Array(lineArr));
+                //     lines.colorArr.push(new Float32Array(lineColorArr));
 
-                    lineIndexArr = [];
-                    lineArr = [];
-                    lineColorArr = [];
-                }
+                //     lineIndexArr = [];
+                //     lineArr = [];
+                //     lineColorArr = [];
+                // }
             } else if (webglStyle[i].lineWidth !== 1) {
                 var widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
                 var lastLength = (mutiLineArr.length) / 2;
@@ -240,15 +241,15 @@ export function webglCaculate(){
                     mutiLineColorArr.push(...webglColor);
                 }
     
-                if (mutiLineArr.length > 2500) {
-                    multiplyLine.indexArr.push(new Uint16Array(mutiLineIndexArr));
-                    multiplyLine.coordinatesArr.push(new Float32Array(mutiLineArr));
-                    multiplyLine.colorArr.push(new Float32Array(mutiLineColorArr));
+                // if (mutiLineArr.length > 250000000) {
+                //     multiplyLine.indexArr.push(new Uint16Array(mutiLineIndexArr));
+                //     multiplyLine.coordinatesArr.push(new Float32Array(mutiLineArr));
+                //     multiplyLine.colorArr.push(new Float32Array(mutiLineColorArr));
 
-                    mutiLineIndexArr = [];
-                    mutiLineArr = [];
-                    mutiLineColorArr = [];
-                }       
+                //     mutiLineIndexArr = [];
+                //     mutiLineArr = [];
+                //     mutiLineColorArr = [];
+                // }       
             }
     
             prevEnd = webglEnds[i];
