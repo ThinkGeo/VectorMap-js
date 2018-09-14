@@ -14,10 +14,12 @@ export function webglCaculate(){
             webglLineIndex = getWebglLineIndex(replay);
             delete replay.webglEnds;
             delete replay.webglStyle;
+            delete replay.webglCoordinates;
           }else if(replay.webglDrawType === 'polygonReplay'){
             webglPolygonIndex = getWebglIndexObj(replay);
             delete replay.webglEnds;
             delete replay.webglStyle;
+            delete replay.webglCoordinates;
           }
       }
 

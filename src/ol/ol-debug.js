@@ -30408,17 +30408,8 @@ function olInit() {
                 replay = replays[replayType];
                 if (replay !== undefined) {
                     if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
-                        flag=false;
-                        // let width = context.canvas.width;
-                        // let height = context.canvas.height;
-                        // canvas = document.createElement('canvas');
-                        // canvas.width = width;
-                        // canvas.height = height;
-                        // gl = canvas.getContext('webgl');
+                        flag=false;                        
                     }
-                    // if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
-                    //     replay.webglContext={canvas:canvas,gl:gl}
-                    // }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -101700,11 +101691,11 @@ function olInit() {
 
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
-                        var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
-                        var view = new Int32Array(buffers);
-                        for (var i = 0; i < view.length; i++) {
-                            view[i] = replay.pixelCoordinates_[i];
-                        }
+                        // var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
+                        // var view = new Int32Array(buffers);
+                        // for (var i = 0; i < view.length; i++) {
+                        //     view[i] = replay.pixelCoordinates_[i];
+                        // }
 
                         // translate coordinates to webglCoordinates
                         var pixelCoordinates_ = replay.pixelCoordinates_;
@@ -101716,7 +101707,7 @@ function olInit() {
                             webglCoordinates[j + 1] = 1 - 2 * pixelCoordinates_[j + 1] / height;
                         }   
 
-                        resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
+                        resultData[zIndex][replayType]["pixelCoordinates_"] = pixelCoordinates_;
                         resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
                         resultData[zIndex][replayType]["webglCoordinates"] = webglCoordinates;
                         resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
@@ -101725,11 +101716,14 @@ function olInit() {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
 
-                    resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+                    resultData[zIndex][replayType]["instructions"] = replay.instructions;
+                    // resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
 
                     if (!replay.minimalist) {
-                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
+                        // resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates;
+                        // resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
+                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
                     }
 
                     replay.instructions.length = 0;

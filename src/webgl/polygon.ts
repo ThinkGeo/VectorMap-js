@@ -23,7 +23,6 @@ const f_shader_source = `
 
 const drawPolygonGl = (gl, data) => {
     let {
-        coordinates,
         webglIndexObj,
         webglProgram
     } = data;

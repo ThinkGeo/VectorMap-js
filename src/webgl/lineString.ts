@@ -58,7 +58,7 @@ const drawLineString = (gl, data) => {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
         gl.drawElements(4, val.length, gl.UNSIGNED_SHORT, 0);
     });
-    
+
     lines.indexArr.forEach((val, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, lines.coordinatesArr[index], gl.DYNAMIC_DRAW);
@@ -74,7 +74,7 @@ const drawLineString = (gl, data) => {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
 
         gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
-    })
+    });
 }
 
 export default drawLineString;

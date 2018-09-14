@@ -585,12 +585,12 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                                     }
                                 }
                                 for (let key in workReplay) {
-                                    if (key === "pixelCoordinates_") {
-                                        replay[key] = new Int32Array(workReplay[key]);
-                                    }
-                                    else {
+                                    // if (key === "pixelCoordinates_") {
+                                    //     replay[key] = new Int32Array(workReplay[key]);
+                                    // }
+                                    // else {
                                         replay[key] = workReplay[key];
-                                    }
+                                    // }
                                 }
                             }
                         }

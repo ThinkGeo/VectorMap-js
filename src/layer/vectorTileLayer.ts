@@ -701,7 +701,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     (<any>ol).transform.setFromArray(this.renderedTransform_, transform);
                 }
             }
-            if (this.webglCoordinates) {
+            if (this.webglIndexObj) {
                 var webglContext=(<any>ol).webglContext;
                 // let webglContext=this.webglContext;
                 let width = webglContext.canvas.width;
@@ -710,7 +710,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 if (this.webglDrawType === 'polygonReplay') { 
                     drawPolygonGl(webglContext.gl, 
                         { 
-                            coordinates: this.webglCoordinates,
                             webglIndexObj: this.webglIndexObj,
                             webglProgram: webglContext['polyProgram'] 
                         }
@@ -1015,7 +1014,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }
 
             }
-
             return undefined;
         };
 
