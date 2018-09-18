@@ -101627,14 +101627,11 @@ function olInit() {
             if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
                 vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
             }
-            else {
-                this.console.log("missing", tileCoord, tileCoordKey)
-            }
 
             if (tileCoord[0] < maxDataZoom) {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
             }
-
+            
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
