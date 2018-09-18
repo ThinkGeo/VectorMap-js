@@ -1,7 +1,6 @@
 export class WebglManager {
     workerCallback: any;
     worker: any;
-    callBackArg: any;
 
     constructor() {       
         this.worker = {};

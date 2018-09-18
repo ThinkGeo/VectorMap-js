@@ -75,6 +75,12 @@ const drawLineString = (gl, data) => {
 
         gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
     });
+
+    gl.disableVertexAttribArray(a_Position);
+    gl.disableVertexAttribArray(a_Color);
+    gl.deleteBuffer(buffer);
+    gl.deleteBuffer(colorBuffer);
+    gl.deleteBuffer(indexBuffer);
 }
 
 export default drawLineString;

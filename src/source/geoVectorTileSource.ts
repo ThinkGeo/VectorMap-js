@@ -136,7 +136,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                             token: self.token,
                             vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
                             tileRange: sourceTile.tileRange,
-                            tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
+                            // tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
                             vectorImageTileCoord: sourceTile.vectorImageTileCoord,
                             tileExtent:tileExtent,
                             tileResolution:tileResolution,

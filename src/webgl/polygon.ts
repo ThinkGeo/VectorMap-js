@@ -58,6 +58,12 @@ const drawPolygonGl = (gl, data) => {
         
         gl.drawElements(4, length, gl.UNSIGNED_INT, 0);        
     });
+
+    gl.disableVertexAttribArray(a_Position);
+    gl.disableVertexAttribArray(a_Color);
+    gl.deleteBuffer(buffer);
+    gl.deleteBuffer(colorBuffer);
+    gl.deleteBuffer(indexBuffer);
 }
 
 export default drawPolygonGl;

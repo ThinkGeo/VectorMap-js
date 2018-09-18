@@ -58,6 +58,8 @@
         "@roadOutline": "#e5e5e5",
         "@motorwayFill": "#febd80",
         "@motorwayOutline": "#e9aa6f",
+        "@motorwayFillTunnel": "#ddd",
+        "@motorwayTunnelOutline": "#b3b3b3",
         "@primaryFill": "#ffffff",
         "@primaryOutline": "#e5e5e5",
         "@trunkFill": "#ffe659",
@@ -93,7 +95,8 @@
         "@haloSolid": "#ffffff",
         "@haloTransp50": "rgba(255, 255, 255, 0.5)",
         "@haloTransp35": "rgba(255, 255, 255, 0.35)",
-        "@name": "name"
+        "@name": "name_en",
+        "@roadName": "name"
     },
     "styles": [{
         "id": "marine_name",
@@ -247,7 +250,7 @@
                 "filter": "labelrank=0",
                 "text-wrap-width": 120,
                 "style": [{
-                    "filter": "zoom=2",
+                    "filter": "zoom>=1;zoom<=2",
                     "text-font": "500 18px Arial, Helvetica, sans-serif"
                 }, {
                     "filter": "zoom=3",
@@ -337,7 +340,7 @@
                 "style": [{
                     "filter": "zoom=3",
                     "text-halo-radius": 1,
-                    "text-min-distance": -100,
+                    "text-min-distance": 10,
                     "text-letter-case": "uppercase",
                     "text-font": "500 9px Arial, Helvetica, sans-serif"
                 }, {
@@ -715,58 +718,140 @@
                 "style": [{
                     "filter": "zoom=12",
                     "line-width": 5,
-                    "children": [{
-                        "line-width": 3,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "children": [{
+                            "line-width": 4,
+                            "line-color": "@motorwayFillTunnel"
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 3,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=13;",
                     "line-width": 6,
-                    "children": [{
-                        "line-width": 4,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "children": [{
+                            "line-width": 5,
+                            "line-color": "@motorwayFillTunnel"
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 4,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=14;",
                     "line-width": 8,
-                    "children": [{
-                        "line-width": 6,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "children": [{
+                            "line-width": 7,
+                            "line-color": "@motorwayFillTunnel"
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 6,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=15;",
                     "line-width": 12,
-                    "children": [{
-                        "line-width": 10,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "line-opacity": 0.2,
+                        "children": [{
+                            "line-width": 11,
+                            "line-color": "@motorwayFillTunnel",
+                            "line-opacity": 0.7
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 10,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=16;",
                     "line-width": 16,
-                    "children": [{
-                        "line-width": 14,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "line-opacity": 0.2,
+                        "children": [{
+                            "line-width": 15,
+                            "line-color": "@motorwayFillTunnel",
+                            "line-opacity": 0.7
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 14,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=17;",
                     "line-width": 26,
-                    "children": [{
-                        "line-width": 22,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "line-opacity": 0.2,
+                        "children": [{
+                            "line-width": 24,
+                            "line-color": "@motorwayFillTunnel",
+                            "line-opacity": 0.6
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 22,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=18;",
                     "line-width": 38,
-                    "children": [{
-                        "line-width": 34,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "line-opacity": 0.2,
+                        "children": [{
+                            "line-width": 34,
+                            "line-color": "@motorwayFillTunnel",
+                            "line-opacity": 0.6
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 34,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }, {
                     "filter": "zoom=19;",
                     "line-width": 60,
-                    "children": [{
-                        "line-width": 56,
-                        "line-color": "@motorwayFill"
+                    "style": [{
+                        "filter": "tunnel=1",
+                        "line-color": "@motorwayTunnelOutline",
+                        "line-opacity": 0.2,
+                        "children": [{
+                            "line-width": 54,
+                            "line-color": "@motorwayFillTunnel",
+                            "line-opacity": 0.6
+                        }]
+                    }, {
+                        "children": [{
+                            "line-width": 56,
+                            "line-color": "@motorwayFill"
+                        }]
                     }]
                 }]
             }]
@@ -1703,7 +1788,7 @@
                 }, {
                     "filter": "class='sports_centre'",
                     "point-fill": "@naturalAndSports",
-                    "point-glyph-name": ""
+                    "point-glyph-name": "\ue085"
                 }]
             }]
         }, {
@@ -2718,7 +2803,7 @@
     }, {
         "id": "motorway_name",
         "filter": "layerName='road_name';class='motorway'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "text-halo-radius": 2,
         "text-halo-fill": "@haloTransp50",
@@ -2741,7 +2826,7 @@
     }, {
         "id": "trunk_name",
         "filter": "layerName='road_name';class='trunk'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "text-halo-radius": 1,
         "text-halo-fill": "@haloTransp50",
@@ -2761,7 +2846,7 @@
     }, {
         "id": "primary_name",
         "filter": "layerName='road_name';class='primary'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "text-max-char-angle": 1,
         "style": [{
@@ -2782,8 +2867,9 @@
     }, {
         "id": "secondary_name",
         "filter": "layerName='road_name';class='secondary'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
+        "text-max-char-angle": 1,
         "style": [{
             "filter": "zoom>=12;zoom<=13",
             "text-halo-radius": 1,
@@ -2804,7 +2890,7 @@
     }, {
         "id": "tertiary_name",
         "filter": "layerName='road_name';class='tertiary'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-max-char-angle": 0,
         "text-fill": "@grayLevel1",
         "style": [{
@@ -2830,7 +2916,7 @@
     }, {
         "id": "residential_name",
         "filter": "layerName='road_name';class='residential'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "style": [{
             "filter": "zoom=14",
@@ -2857,7 +2943,7 @@
     }, {
         "id": "pedestrian_name",
         "filter": "layerName='road_name';class='pedestrian'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "text-max-char-angle": 1,
         "style": [{
@@ -2871,7 +2957,7 @@
     }, {
         "id": "otherroad_name",
         "filter": "layerName='road_name';class='road,raceway,unclassified,cycleway, bridleway, path, track'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-fill": "@grayLevel1",
         "text-max-char-angle": 2,
         "style": [{
@@ -2925,7 +3011,7 @@
     }, {
         "id": "waterway_name",
         "filter": "layerName='waterway_name'",
-        "text-name": "@name",
+        "text-name": "@roadName",
         "text-max-char-angle": 0.4,
         "text-fill": "@waterLabels",
         "style": [{
@@ -2967,7 +3053,13 @@
         "type": "MVT"
     }, {
         "id": "worldstreets_source_test",
-        "url": "https://gisserver.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+        "urls": ["https://gisserver1.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+            "https://gisserver2.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+            "https://gisserver3.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+            "https://gisserver4.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+            "https://gisserver5.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+            "https://gisserver6.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~"
+        ],
         "type": "MVT"
     }],
     "layers": [{

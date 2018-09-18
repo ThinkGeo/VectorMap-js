@@ -381,13 +381,13 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             let sourceTileCoord = sourceTile.requestTileCoord;
             let sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
             let sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
-            let bufferedExtent = ol.extent.equals(sourceTileExtent, sharedExtent) ? null :
-                ol.extent.buffer(sharedExtent, layer.getRenderBuffer() * resolution);
+            // let bufferedExtent = ol.extent.equals(sourceTileExtent, sharedExtent) ? null :
+            //     ol.extent.buffer(sharedExtent, layer.getRenderBuffer() * resolution);
             let tileProjection = sourceTile.getProjection();
             let reproject = true;
             replayState.dirty = false;
 
-            //// reuse replayGroup of source Tile to reduce the memory.
+            // reuse replayGroup of source Tile to reduce the memory.
             let distReplayGroup = sourceTile.getReplayGroup(layer, (<any>tile).wrappedTileCoord.toString());
             if (distReplayGroup) {
                 // Check replayGroup has  replays

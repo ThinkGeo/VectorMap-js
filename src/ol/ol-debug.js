@@ -30399,7 +30399,7 @@ function olInit() {
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
-        var gl,canvas,flag=true;
+        var flag=true;
         for (i = 0, ii = zs.length; i < ii; ++i) {
             var zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -30425,6 +30425,7 @@ function olInit() {
                 }
             }
         }
+        
         if(flag===false){
             ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
