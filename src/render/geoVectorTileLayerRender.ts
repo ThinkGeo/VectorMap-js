@@ -69,7 +69,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         offsetY = offsetY <= 0 ? 1 : offsetY + 3;
         var vectorTileDataCahceSize = offsetX * offsetY;
         // the cache size of vector tile data in web worker.
-        vectorTileDataCahceSize=128; 
+        vectorTileDataCahceSize=96; 
         tileSource["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
         tileSource.getGeoFormat()["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
 
