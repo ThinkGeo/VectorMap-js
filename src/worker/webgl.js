@@ -191,7 +191,10 @@ export function webglCaculate(){
         var multiplyLine = {
             indexArr: [],
             coordinatesArr: [],
-            colorArr: []
+            colorArr: [],
+            railwayIndexArr: [],
+            railwayCoordinatesArr: [],
+            railwayColorArr: []
         }        
         var lineArr = [];
         var lineIndexArr = [];
@@ -200,6 +203,11 @@ export function webglCaculate(){
         var mutiLineArr = [];
         var mutiLineIndexArr = [];
         var mutiLineColorArr = [];
+
+        // railway
+        var mutiRailwayLineArr = [];
+        var mutiRailwayLineIndexArr = [];
+        var mutiRailwayLineColorArr = [];
         // FIXME needs a varying instead of constant
         var canvasSize = [512, 512];
 
@@ -218,40 +226,38 @@ export function webglCaculate(){
                     lineColorArr.push(...webglColor);
                 }
                 lineColorArr.push(...webglColor);  //last time
-    
-                // if (lineColorArr.length > 25000000) {
-                //     lines.indexArr.push(new Uint16Array(lineIndexArr));
-                //     lines.coordinatesArr.push(new Float32Array(lineArr));
-                //     lines.colorArr.push(new Float32Array(lineColorArr));
-
-                //     lineIndexArr = [];
-                //     lineArr = [];
-                //     lineColorArr = [];
-                // }
             } else if (webglStyle[i].lineWidth !== 1) {
-                var widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
-                var lastLength = (mutiLineArr.length) / 2;
-                var [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
-                mutiLineArr = mutiLineArr.concat(tempCoordinates);
-                var currentLength = mutiLineArr.length / 2;
-    
-                for (let i = 0, length = tempIndex.length; i < length; i++) {
-                    mutiLineIndexArr.push(lastLength + tempIndex[i]);
-                }
-    
-                while (lastLength++ < currentLength) {
-                    mutiLineColorArr.push(...webglColor);
-                }
-    
-                // if (mutiLineArr.length > 250000000) {
-                //     multiplyLine.indexArr.push(new Uint16Array(mutiLineIndexArr));
-                //     multiplyLine.coordinatesArr.push(new Float32Array(mutiLineArr));
-                //     multiplyLine.colorArr.push(new Float32Array(mutiLineColorArr));
+                if(webglStyle[i].styleId){
+                    // railway
+                    let mutiRailwayLineIndexArr_ = [];
+                    let mutiRailwayLineColorArr_ = [];
 
-                //     mutiLineIndexArr = [];
-                //     mutiLineArr = [];
-                //     mutiLineColorArr = [];
-                // }       
+                    var widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
+                    var [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
+
+                    mutiRailwayLineArr.push(new Float32Array(tempCoordinates));           
+                    
+                    for (let i = 0, length = tempCoordinates.length; i < length / 2; i++) {
+                        mutiRailwayLineIndexArr_.push(i);
+                        mutiRailwayLineColorArr_.push(...webglColor);
+                    }
+                    mutiRailwayLineIndexArr.push(new Uint16Array(mutiRailwayLineIndexArr_));
+                    mutiRailwayLineColorArr.push(new Float32Array(mutiRailwayLineColorArr_));
+                }else {
+                    var widthHalf = webglStyle[i].lineWidth / (canvasSize[0] / 2) / 2;
+                    var lastLength = (mutiLineArr.length) / 2;
+                    var [tempCoordinates, tempIndex] = getPathOffset(coord, widthHalf);
+                    mutiLineArr = mutiLineArr.concat(tempCoordinates);
+                    var currentLength = mutiLineArr.length / 2;
+        
+                    for (let i = 0, length = tempIndex.length; i < length; i++) {
+                        mutiLineIndexArr.push(lastLength + tempIndex[i]);
+                    }
+        
+                    while (lastLength++ < currentLength) {
+                        mutiLineColorArr.push(...webglColor);
+                    }
+                }
             }
     
             prevEnd = webglEnds[i];
@@ -272,6 +278,17 @@ export function webglCaculate(){
             mutiLineIndexArr = null;
             mutiLineArr = null;
             mutiLineColorArr = null;
+        }
+
+        // railway
+        if (mutiRailwayLineIndexArr.length > 0) {
+            multiplyLine.railwayIndexArr.push(...mutiRailwayLineIndexArr);
+            multiplyLine.railwayCoordinatesArr.push(...mutiRailwayLineArr);
+            multiplyLine.railwayColorArr.push(...mutiRailwayLineColorArr);
+
+            mutiRailwayLineIndexArr = null;
+            mutiRailwayLineArr = null;
+            mutiRailwayLineColorArr = null;
         }
 
         return {

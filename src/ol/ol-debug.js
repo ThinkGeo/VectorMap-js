@@ -29056,6 +29056,10 @@ function olInit() {
         if (strokeStyle === undefined || lineWidth === undefined) {
             return;
         }
+        // Eric
+        if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
+            state.styleId = lineStringGeometry.styleId;
+        }
         this.updateStrokeStyle(state, this.applyStroke);
         this.beginGeometry(lineStringGeometry, feature);
         this.hitDetectionInstructions.push([

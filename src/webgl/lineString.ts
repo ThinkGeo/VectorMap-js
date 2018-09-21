@@ -53,10 +53,28 @@ const drawLineString = (gl, data) => {
         gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Color);
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);        
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
+
         gl.drawElements(4, val.length, gl.UNSIGNED_SHORT, 0);
+    });
+
+    // railway    
+    multiplyLine.railwayIndexArr.forEach((val, index) => {       
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, multiplyLine.railwayCoordinatesArr[index], gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(a_Position);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, multiplyLine.railwayColorArr[index], gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(a_Color);
+        
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);        
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, val, gl.DYNAMIC_DRAW);
+        
+        gl.drawElements(1, val.length, gl.UNSIGNED_SHORT, 0);
     });
 
     lines.indexArr.forEach((val, index) => {
