@@ -30431,6 +30431,10 @@ function olInit() {
         }
         
         if(flag===false){
+            var webglContext = ol.webglContext;
+            var width = webglContext.canvas.width;
+            var height = webglContext.canvas.height;
+            context.drawImage(webglContext.canvas, 0, 0, width, height);
             ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
         // context.restore();

@@ -29041,7 +29041,7 @@ function olInit() {
         this.instructions.push(moveToLineToInstruction);
         this.hitDetectionInstructions.push(moveToLineToInstruction);
         
-        this.webglStyle.push({...this.state});
+        this.webglStyle.push(this.state);
         return end;
     };
 
@@ -29055,6 +29055,10 @@ function olInit() {
         var lineWidth = state.lineWidth;
         if (strokeStyle === undefined || lineWidth === undefined) {
             return;
+        }
+        // Eric
+        if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
+            state.styleId = lineStringGeometry.styleId;
         }
         this.updateStrokeStyle(state, this.applyStroke);
         this.beginGeometry(lineStringGeometry, feature);
@@ -30399,7 +30403,7 @@ function olInit() {
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
-        var gl,canvas,flag=true;
+        var flag=true;
         for (i = 0, ii = zs.length; i < ii; ++i) {
             var zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -30408,17 +30412,8 @@ function olInit() {
                 replay = replays[replayType];
                 if (replay !== undefined) {
                     if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
-                        flag=false;
-                        // let width = context.canvas.width;
-                        // let height = context.canvas.height;
-                        // canvas = document.createElement('canvas');
-                        // canvas.width = width;
-                        // canvas.height = height;
-                        // gl = canvas.getContext('webgl');
+                        flag=false;                        
                     }
-                    // if((replayType==='Polygon' || replayType ==='LineString') && flag===false){
-                    //     replay.webglContext={canvas:canvas,gl:gl}
-                    // }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30434,7 +30429,12 @@ function olInit() {
                 }
             }
         }
+        
         if(flag===false){
+            var webglContext = ol.webglContext;
+            var width = webglContext.canvas.width;
+            var height = webglContext.canvas.height;
+            context.drawImage(webglContext.canvas, 0, 0, width, height);
             ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
         // context.restore();
@@ -101700,11 +101700,11 @@ function olInit() {
 
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
-                        var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
-                        var view = new Int32Array(buffers);
-                        for (var i = 0; i < view.length; i++) {
-                            view[i] = replay.pixelCoordinates_[i];
-                        }
+                        // var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
+                        // var view = new Int32Array(buffers);
+                        // for (var i = 0; i < view.length; i++) {
+                        //     view[i] = replay.pixelCoordinates_[i];
+                        // }
 
                         // translate coordinates to webglCoordinates
                         var pixelCoordinates_ = replay.pixelCoordinates_;
@@ -101716,7 +101716,7 @@ function olInit() {
                             webglCoordinates[j + 1] = 1 - 2 * pixelCoordinates_[j + 1] / height;
                         }   
 
-                        resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
+                        resultData[zIndex][replayType]["pixelCoordinates_"] = pixelCoordinates_;
                         resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
                         resultData[zIndex][replayType]["webglCoordinates"] = webglCoordinates;
                         resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
@@ -101725,11 +101725,14 @@ function olInit() {
                         resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
 
-                    resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+                    resultData[zIndex][replayType]["instructions"] = replay.instructions;
+                    // resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
 
                     if (!replay.minimalist) {
-                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
+                        // resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates;
+                        // resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
+                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
                     }
 
                     replay.instructions.length = 0;
