@@ -29039,9 +29039,9 @@ function olInit() {
         var moveToLineToInstruction =
             [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
         this.instructions.push(moveToLineToInstruction);
-        this.hitDetectionInstructions.push(moveToLineToInstruction);
+        this.hitDetectionInstructions.push(moveToLineToInstruction);        
+        this.webglStyle.push(Object.assign({}, this.state));
         
-        this.webglStyle.push(this.state);
         return end;
     };
 
