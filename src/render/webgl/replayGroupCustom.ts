@@ -1,13 +1,13 @@
-import { TextReplayCustom } from "./textReplayCustom";
+// import { TextReplayCustom } from "./textReplayCustom";
 
-export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as { new(tolerance: number, maxExtent: any, resolution: number, pixelRatio: number, overlaps: boolean, declutterTree: any, opt_renderBuffer: number) }) {
+export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
-    constructor(tolerance: number, maxExtent: any, resolution: number, pixelRatio: number, overlaps: boolean, declutterTree: any, opt_renderBuffer: number) {
-        super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer);
+    constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number) {
+        super(tolerance, maxExtent, opt_renderBuffer);
         this.getReplay = this.getReplayCustom;
         this.BATCH_CONSTRUCTORS_ = this.BATCH_CONSTRUCTORS_CUSTOM;
         this.replay = this.replayCustom;
-        this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
+        // this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
     }
 
     public forEachFeatureAtCoordinateCustom(coordinate: any, resolution: number, rotation: number, hitTolerance: number, skippedFeaturesHash: any, callback: any, declutterReplays: any) {
@@ -122,19 +122,20 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
         let replay = replays[replayType];
         if (replay === undefined) {
             let Constructor = this.BATCH_CONSTRUCTORS_[replayType];
-            replay = new Constructor(this.tolerance_, this.maxExtent_,
-                this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
+            replay = new Constructor(this.tolerance_, this.maxExtent_, this.opt_renderBuffer);
+
             replays[replayType] = replay;
         }
+
         return replay;
     }
 
     BATCH_CONSTRUCTORS_CUSTOM = {
-        "Circle": (<any>ol.render.canvas).PolygonReplay,
-        "Default": (<any>ol.render.canvas).Replay,
-        "Image": (<any>ol.render.canvas).ImageReplay,
-        "LineString": (<any>ol.render.canvas).LineStringReplay,
-        "Polygon": (<any>ol.render.canvas).PolygonReplay,
-        "Text": TextReplayCustom
+        "Circle": (<any>ol.render).webgl.PolygonReplay,
+        "Default": (<any>ol.render).webgl.Replay,
+        "Image": (<any>ol.render).webgl.ImageReplay,
+        "LineString": (<any>ol.render).webgl.LineStringReplay,
+        "Polygon": (<any>ol.render).webgl.PolygonReplay,
+        "Text": (<any>ol.render).webgl.TextReplay
     };
 }

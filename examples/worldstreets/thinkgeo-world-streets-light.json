@@ -3053,12 +3053,12 @@
         "type": "MVT"
     }, {
         "id": "worldstreets_source_test",
-        "urls": ["https://gisserver1.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
-            "https://gisserver2.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
-            "https://gisserver3.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
-            "https://gisserver4.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
-            "https://gisserver5.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
-            "https://gisserver6.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~"
+        "urls": ["https://gisserver1.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}",
+            "https://gisserver2.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}",
+            "https://gisserver3.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}",
+            "https://gisserver4.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}",
+            "https://gisserver5.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}",
+            "https://gisserver6.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}"
         ],
         "type": "MVT"
     }],

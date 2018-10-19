@@ -16,6 +16,7 @@ export class TextReplayCustom extends ((<any>ol.render.canvas).TextReplay as { n
     public replayCustom(context: CanvasRenderingContext2D, transform: any, skippedFeaturesHash: any, instructions: any[], featureCallback: any, opt_hitExtent: [number, number, number, number]) {
         /** @type {Array.<number>} */
         let pixelExten;
+        return undefined;
 
         pixelExten = (<any>ol.geom).flat.transform.transform2D(this.maxExtent, 0, this.maxExtent.length, 2, transform, this["pixelExten"]);
 
