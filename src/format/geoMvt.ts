@@ -233,21 +233,6 @@ export class GeoMVTFormat extends (ol.format.MVT as { new(p: olx.format.MVTOptio
         return [features, subTileCachedInstruct];
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     getCachedSource(tileCoord: string) {
         return this.sourceCache[tileCoord];
     }

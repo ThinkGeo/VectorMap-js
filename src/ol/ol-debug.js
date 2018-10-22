@@ -9080,12 +9080,11 @@ function olInit() {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
                     // MapSuite
-                    if(canvas)
-                    {
+                    if (canvas) {
                         canvas.width = 1;
                         canvas.height = 1;
                     }
-                    
+
                     var gl = ol.webgl.getContext(canvas, {
                         failIfMajorPerformanceCaveat: true
                     });
@@ -16922,8 +16921,7 @@ function olInit() {
                 canvas.width = opt_width;
             }
             // MapSuite
-            else
-            {
+            else {
                 canvas.width = 1;
             }
 
@@ -16931,10 +16929,9 @@ function olInit() {
                 canvas.height = opt_height;
             }
             // MapSuite
-            else
-            {
+            else {
                 canvas.height = 1;
-            }            
+            }
             return canvas.getContext('2d');
         }
 
@@ -37062,6 +37059,7 @@ function olInit() {
              * @this {ol.source.Vector|ol.VectorTile}
              */
             function (extent, resolution, projection) {
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET',
                     typeof url === 'function' ? url(extent, resolution, projection) : url,
@@ -78317,11 +78315,11 @@ function olInit() {
             } catch (_) {
                 hasImageData = false;
             }
-            var context=null;
+            var context = null;
             if (isMain) {
-                context= document.createElement('canvas').getContext('2d');
-                context.canvas.width=1;
-                context.canvas.height=1;
+                context = document.createElement('canvas').getContext('2d');
+                context.canvas.width = 1;
+                context.canvas.height = 1;
             }
             function newImageData$1(data, width, height) {
                 if (hasImageData) {
@@ -96667,7 +96665,6 @@ function olInit() {
 
                 if (cacheTrees && cacheTrees.length > 0) {
                     replaceFiltersToIndexOfPbfLayer(cacheTrees, pbfLayer);
-
                     for (var i = 0; i < pbfLayer.length; i++) {
                         var rawFeature = readRawFeature_(pbf, pbfLayer, i);
                         var feature = undefined;
@@ -96719,7 +96716,6 @@ function olInit() {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName, offset);
 
-
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
                                 }
@@ -96751,6 +96747,7 @@ function olInit() {
                 cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
+
             return [allFeatures, instructsCache, extent];
         }
 
@@ -96876,7 +96873,10 @@ function olInit() {
 
             var flatCoordinates = [];
             var ends = [];
-            readRawGeometry_(pbf, rawFeature, flatCoordinates, ends, offset);
+            ol.format.MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+
+            // // Here is a refines with offset, it will skip the same pixel,but it casue an issue 10-22-2018
+            // readRawGeometry_(pbf, rawFeature, flatCoordinates, ends, offset);
 
             var geometryType = ol.format.MVT.getGeometryType_(type, ends.length);
 
@@ -101631,7 +101631,7 @@ function olInit() {
             if (tileCoord[0] < maxDataZoom) {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
             }
-            
+
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -101654,7 +101654,7 @@ function olInit() {
                         var cloneEnds = featureInfo.ends_.slice(0);
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
-
+                        
                         feature.extent_ = null;
                         feature["styleId"] = geoStyleId;
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform } }, instructs[i]);
@@ -101690,7 +101690,7 @@ function olInit() {
                         replay.pixelCoordinates_ = [];
                     }
 
-                    ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
+                    ol.geom.flat.transform.transform2D(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
 
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
