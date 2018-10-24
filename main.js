@@ -27,8 +27,12 @@ var stylejson =
         "id": "country",
         "filter": "layerName='country'",
         "style": [{
-          "filter": "zoom>=0;zoom<=19;",
+          "filter": "zoom>=0;zoom<=5;",
           "polygon-fill": "#cccccc"
+        },
+        {
+          "filter": "zoom>=6;zoom<=19;",
+          "polygon-fill": "#ffe659"
         }]
       }
     ],

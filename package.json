@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "dev":"webpack --config webpack.config.js&live-server"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lite-server": "^2.4.0",
     "ol": "^5.2.0",
-    "webpack": "^4.20.2",
+    "webpack": "^4.22.0",
     "webpack-command": "^0.4.1"
   }
 }
