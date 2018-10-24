@@ -1,33 +1,17 @@
 {
-  "name": "ol.mapsuite",
+  "name": "vectormapwithol5.0",
   "version": "1.0.0",
-  "description": "The project of StyleJson for Openlayers",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "gulp build&lite-server -c lite-server-config.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.thinkgeo.com/MapSuite/StyleJsonForOpenLayers.git"
+    "build": "webpack --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/openlayers": "^4.3.12",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.4.0",
-    "gulp-typescript": "^4.0.0-alpha.1",
-    "run-sequence": "^2.2.1",
-    "ts-loader": "^3.2.0",
-    "tslint": "^5.9.1",
-    "typescript": "^2.6.2",
-    "webpack": "^3.10.0",
-    "webpack-stream": "^4.0.0"
-  },
   "dependencies": {
-    "lite-server": "^2.3.0",
-    "openlayers": "^4.6.4"
+    "lite-server": "^2.4.0",
+    "ol": "^5.2.0",
+    "webpack": "^4.20.2",
+    "webpack-command": "^0.4.1"
   }
 }
