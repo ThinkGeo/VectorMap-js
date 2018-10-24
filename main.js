@@ -28,11 +28,11 @@ var stylejson =
         "filter": "layerName='country'",
         "style": [{
           "filter": "zoom>=0;zoom<=5;",
-          "polygon-fill": "#cccccc"
+          "polygon-fill": "#ffe659"
         },
         {
           "filter": "zoom>=6;zoom<=19;",
-          "polygon-fill": "#ffe659"
+          "polygon-fill": "#cccccc"
         }]
       }
     ],
@@ -44,15 +44,7 @@ var stylejson =
   }
 
 var vectorTile = new GeoVectorTileLayer(stylejson, {
-  style: function (f, r) {
-    if (f.get("layerName") === "country") {
-      return new Style({
-        fill: new Fill({
-          color: "#CCCCCC"
-        })
-      })
-    }
-  }
+  maxDataZoom: 14
 })
 
 var tilegrid = new Tile({
@@ -68,6 +60,6 @@ var map = new Map({
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
-    zoom: 0
+    zoom: 14
   })
 });

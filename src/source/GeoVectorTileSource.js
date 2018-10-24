@@ -1,20 +1,24 @@
 import VectorTile from './VectorTile';
-import { hash, getKeyZXY } from 'ol/tileCoord';
 import { modulo } from 'ol/math';
 import { assert } from 'ol/asserts.js';
 import FormatType from 'ol/format/FormatType';
 import TileState from 'ol/TileState.js';
 import VectorImageTile, { defaultLoadFunction } from '../VectorImageTile';
 
+import { wrapX } from "ol/tileGrid";
+import { hash, getKeyZXY, withinExtentAndZ } from 'ol/tilecoord';
+
 class GeoVectorTileSource extends VectorTile {
     constructor(opt_optins) {
         const options = opt_optins ? opt_optins : {};
         options.tileLoadFunction = options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction;
+
         super(options);
-        // this.maxDataZoom = options.maxDataZoom;
-        // if (options["tileUrlFunction"] === undefined) {
-        //     this.setTileUrlFunction(this.getGeoTileUrlFunction());
-        // }
+        this.maxDataZoom = options.maxDataZoom;
+
+        if (options["tileUrlFunction"] === undefined) {
+            this.setTileUrlFunction(this.getTileUrlFunction());
+        }
         // this.clientId = options.clientId;
         // this.clientSecret = options.clientSecret;
         this.geoFormat = options.format;
@@ -30,6 +34,7 @@ class GeoVectorTileSource extends VectorTile {
             );
         } else {
             const tileCoord = [z, x, y];
+
             const urlTileCoord = this.getTileCoordForTileUrlFunction(
                 tileCoord, projection);
             const tile = new VectorImageTile(
@@ -50,48 +55,46 @@ class GeoVectorTileSource extends VectorTile {
         return this.geoFormat;
     }
 
+    getTileUrlFunction() {
+        let zRegEx = /\{z\}/g;
+        let xRegEx = /\{x\}/g;
+        let yRegEx = /\{y\}/g;
+        let dashYRegEx = /\{-y\}/g;
+        let urls = this.urls;
+        let tileGrid = this.tileGrid;
+        let maxDataZoom = this.maxDataZoom;
 
-
-    // getGeoTileUrlFunction() {
-    //     let zRegEx = /\{z\}/g;
-    //     let xRegEx = /\{x\}/g;
-    //     let yRegEx = /\{y\}/g;
-    //     let dashYRegEx = /\{-y\}/g;
-    //     let urls = this.urls;
-    //     let tileGrid = this.tileGrid;
-    //     let maxDataZoom = this.maxDataZoom;
-
-    //     return function (tileCoord) {
-    //         if (!tileCoord) {
-    //             return undefined;
-    //         } else {
-    //             let requestCoord = [tileCoord[0], tileCoord[1], tileCoord[2]];
-    //             if (maxDataZoom && requestCoord[0] > maxDataZoom) {
-    //                 while (requestCoord[0] !== maxDataZoom) {
-    //                     requestCoord[0] -= 1;
-    //                     requestCoord[1] = Math.floor(requestCoord[1] / 2);
-    //                     requestCoord[2] = Math.floor(requestCoord[2] / 2);
-    //                 }
-    //             }
-    //             let h = hash(tileCoord);
-    //             let index = modulo(h, urls.length);
-    //             let template = urls[index];
-    //             return template.replace(zRegEx, requestCoord[0].toString())
-    //                 .replace(xRegEx, requestCoord[1].toString())
-    //                 .replace(yRegEx, function () {
-    //                     let y = -requestCoord[2] - 1;
-    //                     return y.toString();
-    //                 })
-    //                 .replace(dashYRegEx, function () {
-    //                     let z = requestCoord[0];
-    //                     let range = tileGrid.getFullTileRange(z);
-    //                     assert(range, 55); // The {-y} placeholder requires a tile grid with extent
-    //                     let y = range.getHeight() + requestCoord[2];
-    //                     return y.toString();
-    //                 });
-    //         }
-    //     };
-    // }
+        return function (tileCoord) {
+            if (!tileCoord) {
+                return undefined;
+            } else {
+                let requestCoord = [tileCoord[0], tileCoord[1], tileCoord[2]];
+                if (maxDataZoom && requestCoord[0] > maxDataZoom) {
+                    while (requestCoord[0] !== maxDataZoom) {
+                        requestCoord[0] -= 1;
+                        requestCoord[1] = Math.floor(requestCoord[1] / 2);
+                        requestCoord[2] = Math.floor(requestCoord[2] / 2);
+                    }
+                }
+                let h = hash(tileCoord);
+                let index = modulo(h, urls.length);
+                let template = urls[index];
+                return template.replace(zRegEx, requestCoord[0].toString())
+                    .replace(xRegEx, requestCoord[1].toString())
+                    .replace(yRegEx, function () {
+                        let y = -requestCoord[2] - 1;
+                        return y.toString();
+                    })
+                    .replace(dashYRegEx, function () {
+                        let z = requestCoord[0];
+                        let range = tileGrid.getFullTileRange(z);
+                        assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+                        let y = range.getHeight() + requestCoord[2];
+                        return y.toString();
+                    });
+            }
+        };
+    }
 
     // vectorTileLoadFunction(tile, url) {
     //     let loader = this.loadFeaturesXhr(
