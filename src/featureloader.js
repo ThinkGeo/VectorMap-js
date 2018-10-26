@@ -58,12 +58,20 @@ export function loadFeaturesXhr(url, format, success, failure) {
     function (extent, resolution, projection) {
       var vectorTileSource = format.getSource();
 
-      // No request needs to be sent when the tile is over maxDataZoom and the rquest has been sent by other isogenous tile
       var sendRequest = true;
       var isOverMaxDataZoom = vectorTileSource.maxDataZoom <= this.tileCoord[0];
       if (isOverMaxDataZoom) {
-        var hasRequested = vectorTileSource.registerTileLoadEvent(this, success, failure);
-        sendRequest = !hasRequested;
+        //Check the cache of in homologousTilesInstructions in source
+        var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(this.requestCoord, this.tileCoord);
+        if (tileFeatureAndInstrictions) {
+          success.call(this, tileFeatureAndInstrictions,
+            format.readProjection(undefined), format.getLastExtent());
+          sendRequest = false;
+        }
+        else {
+          var hasRequested = vectorTileSource.registerTileLoadEvent(this, success, failure);
+          sendRequest = !hasRequested;
+        }
       }
 
       if (sendRequest) {

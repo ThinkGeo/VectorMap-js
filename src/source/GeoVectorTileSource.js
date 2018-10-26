@@ -142,7 +142,7 @@ class GeoVectorTileSource extends VectorTile {
 
     getTileInstrictions(requestCoord, tileCoord) {
         let zoom = tileCoord[0];
-        let featuresAndInstructs = [];
+        let featuresAndInstructs = undefined;
         if (this.instructionsCache[requestCoord] === undefined) {
         }
         else {
