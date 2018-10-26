@@ -7,6 +7,7 @@ import VectorImageTile, { defaultLoadFunction } from '../VectorImageTile';
 
 import { wrapX } from "ol/tileGrid";
 import { hash, getKeyZXY, withinExtentAndZ } from 'ol/tilecoord';
+import LRUCache from 'ol/structs/LRUCache';
 
 class GeoVectorTileSource extends VectorTile {
     constructor(opt_optins) {
@@ -22,7 +23,7 @@ class GeoVectorTileSource extends VectorTile {
         this.geoFormat = options.format;
         this.registerRequest = {};
         this.instructionsCache = {};
-        this.features = {};
+        this.features = new LRUCache(4);
         // this.clientId = options.clientId;
         // this.clientSecret = options.clientSecret;
         // this.tileLoadFunction = this.vectorTileLoadFunction.bind(this);
@@ -127,29 +128,31 @@ class GeoVectorTileSource extends VectorTile {
         return tileLoadEventInfos;
     }
 
-
     saveTileInstructions(requestCoord, zoom, features, homologousTilesInstructions) {
-        if (this.instructionsCache[requestCoord] === undefined) {
-            this.instructionsCache[requestCoord] = {};
-        }
-        this.instructionsCache[requestCoord][zoom] = homologousTilesInstructions;
+        let cacheKey = "" + requestCoord + "," + zoom;
+        this.instructionsCache[cacheKey] = homologousTilesInstructions;
 
-        if (this.features[requestCoord] === undefined) {
-            this.features[requestCoord] = {};
+        if (this.features.containsKey(cacheKey)) {
+            this.features.replace(cacheKey, features);
         }
-        this.features[requestCoord][zoom] = features;
+        else {
+            this.features.set(cacheKey, features);
+            while (this.features.canExpireCache()) {
+                const lastKey = this.features.peekLastKey();
+                this.features.remove(lastKey);
+                delete this.instructionsCache[lastKey]
+            }
+        }
     }
 
     getTileInstrictions(requestCoord, tileCoord) {
         let zoom = tileCoord[0];
+        let cacheKey = "" + requestCoord + "," + zoom;
+
         let featuresAndInstructs = undefined;
-        if (this.instructionsCache[requestCoord] === undefined) {
-        }
-        else {
-            if (this.instructionsCache[requestCoord][zoom] === undefined) {
-            }
-            else {
-                featuresAndInstructs = [this.features[requestCoord][zoom], this.instructionsCache[requestCoord][zoom][tileCoord]];
+        if (this.features.containsKey(cacheKey)) {
+            if (this.instructionsCache[cacheKey]) {
+                featuresAndInstructs = [this.features.get(cacheKey), this.instructionsCache[cacheKey][tileCoord] === undefined ? [] : this.instructionsCache[cacheKey][tileCoord]];
             }
         }
 
