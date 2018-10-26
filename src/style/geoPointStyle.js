@@ -1,11 +1,15 @@
 import GeoStyle from "./geoStyle";
 import { Style, Fill, Stroke, Circle, RegularShape, Icon, Text } from 'ol/style';
-import { createCanvasContext2D } from 'ol.dom';
 import SAFARI from 'ol/has';
+
+import { measureTextWidths } from 'ol/render/canvas/TextReplay';
+import { measureTextHeight } from 'ol/render/canvas';
+import { createCanvasContext2D } from 'ol/dom';
 
 class GeoPointStyle extends GeoStyle {
     constructor(styleJson) {
         super(styleJson);
+
         if (styleJson) {
             this.glyph = styleJson["point-glyph"];
             this.linearGradient = styleJson["point-linear-gradient"];
@@ -24,7 +28,7 @@ class GeoPointStyle extends GeoStyle {
             this.dx = styleJson["point-dx"];
             this.dy = styleJson["point-dy"];
             this.pointFile = styleJson["point-file"];
-            this.opacity = styleJson["point-opacity"];
+            this.opacity = styleJson["point-opacity"] | 1;
             this.symbolType = styleJson["point-symbol-type"];
             this.transform = styleJson["point-transform"];
             this.pointType = styleJson["point-type"];
@@ -38,25 +42,25 @@ class GeoPointStyle extends GeoStyle {
             }
 
             if (this.linearGradient) {
-                if (GeoPointStyle.linearGradientDictionary.hasOwnProperty(this.linearGradient)) {
-                    this.convertedGlyphFill = GeoPointStyle.linearGradientDictionary[this.linearGradient];
-                } else {
-                    this.convertedGlyphFill = GeoStyle.toOLLinearGradient(this.linearGradient, this.opacity, this.size);
-                    GeoPointStyle.linearGradientDictionary[this.linearGradient] = this.convertedGlyphFill;
-                }
+                debugger;
+                // if (GeoPointStyle.linearGradientDictionary.hasOwnProperty(this.linearGradient)) {
+                //     this.convertedGlyphFill = GeoPointStyle.linearGradientDictionary[this.linearGradient];
+                // } else {
+                //     this.convertedGlyphFill = GeoStyle.toOLLinearGradient(this.linearGradient, this.opacity, this.size);
+                //     GeoPointStyle.linearGradientDictionary[this.linearGradient] = this.convertedGlyphFill;
+                // }
             }
 
             if (this.radialGradient) {
-                if (GeoPointStyle.radialGradientDictionary.hasOwnProperty(this.radialGradient)) {
-                    this.convertedGlyphFill = GeoPointStyle.radialGradientDictionary[this.radialGradient];
-                } else {
-                    this.convertedGlyphFill = GeoStyle.toOLRadialGradient(this.radialGradient, this.opacity, this.size);
-                    GeoPointStyle.radialGradientDictionary[this.radialGradient] = this.convertedGlyphFill;
-                }
+                debugger;
+                // if (GeoPointStyle.radialGradientDictionary.hasOwnProperty(this.radialGradient)) {
+                //     this.convertedGlyphFill = GeoPointStyle.radialGradientDictionary[this.radialGradient];
+                // } else {
+                //     this.convertedGlyphFill = GeoStyle.toOLRadialGradient(this.radialGradient, this.opacity, this.size);
+                //     GeoPointStyle.radialGradientDictionary[this.radialGradient] = this.convertedGlyphFill;
+                // }
             }
         }
-
-
     }
 
     initializeCore() {
@@ -118,8 +122,8 @@ class GeoPointStyle extends GeoStyle {
         let scale = window.devicePixelRatio;
 
         // here
-        let width = ol.render.canvas.TextReplay.measureTextWidths(font, [textState.text_], []) + outlineWidth * 2;
-        let height = ol.render.canvas.measureTextHeight(font) + outlineWidth * 2;
+        let width = measureTextWidths(font, [textState.text_], []) + outlineWidth * 2;
+        let height = measureTextHeight(font) + outlineWidth * 2;
 
         let tmpMaskMargin = (this.glyphMaskMargin ? this.glyphMaskMargin : "0").split(',');
         let tmpMaskHeightMargin = 0;
@@ -454,3 +458,5 @@ class GeoPointStyle extends GeoStyle {
         }
     }
 }
+
+export default GeoPointStyle;

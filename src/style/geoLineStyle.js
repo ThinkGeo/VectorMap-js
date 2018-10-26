@@ -5,6 +5,24 @@ import { Style, Stroke, Fill, Icon } from 'ol/style'
 class GeoLineStyle extends GeoStyle {
     constructor(styleJson) {
         super(styleJson);
+
+        this.geometryLineCaps = [
+            "triangle",
+            "squareanchor",
+            "roundanchor",
+            "diamondanchor",
+            "arrowanchor"
+        ];
+        this.olLineCapsMap = {
+            butt: "butt",
+            flat: "square",
+            square: "square",
+            round: "round",
+            noanchor: "square",
+            anchormask: "square",
+            custom: "square"
+        };
+
         this.lineStroke = new Stroke();
         this.lineStyle = new Style({ stroke: this.lineStroke });
         this.lineCapFill = new Fill();
@@ -26,6 +44,7 @@ class GeoLineStyle extends GeoStyle {
             fill: this.lineCapCenterFill
         });
 
+
         if (styleJson) {
             this.lineCap = styleJson["line-cap"];
             this.color = styleJson["line-color"];
@@ -35,7 +54,7 @@ class GeoLineStyle extends GeoStyle {
             this.lineJoin = styleJson["line-join"];
             this.miterLimit = styleJson["line-miterlimit"];
             this.offset = styleJson["line-offset"];
-            this.opacity = styleJson["line-opacity"];
+            this.opacity = styleJson["line-opacity"] | 1;;
             this.width = styleJson["line-width"];
             this.lineCapInner = styleJson["line-cap-inner"];
             this.colorInner = styleJson["line-color-inner"];
@@ -63,7 +82,7 @@ class GeoLineStyle extends GeoStyle {
         if (this.dashArray) {
             let tmpArray = this.dashArray.split(",");
             for (let a of tmpArray) {
-                this.convertedDashArray.push(parseFloat(a));
+                this.convertedDashArray === undefined ? this.convertedDashArray = [parseFloat(a)] : this.convertedDashArray.push(parseFloat(a));
             }
         }
 
@@ -358,6 +377,8 @@ class GeoLineStyle extends GeoStyle {
     }
 }
 
+
+
 GeoLineStyle["createAnchoredGeometry"] = function (geometry, lineCap, lineWidth, resolution) {
     let segments = GeoLineStyle.getTerminalSegments(geometry);
     let linearRing;
@@ -462,5 +483,6 @@ GeoLineStyle["createAnchoredGeometry"] = function (geometry, lineCap, lineWidth,
     }
     return multiPolygon;
 }
+
 
 export default GeoLineStyle;
