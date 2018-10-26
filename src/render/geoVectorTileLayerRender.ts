@@ -520,113 +520,29 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                                 // merge worker to main with replaysByZIndex_
                                 let replay = replayGroup.getReplay(zindex, replayType);    
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
-                                // replay['indices'] = workerReplay['indicesBuffer'].arr_;
-                                // replay['indicesBuffer'] = null;
-                                // replay['vertices'] = workerReplay['verticesBuffer'].arr_;
-                                // replay['verticesBuffer'] = null;
-                                // if(workerReplay['lineStringReplay']){
-                                //     replay['lineStringReplay']['indices'] = workerReplay['lineStringReplay']['indicesBuffer'].arr_;
-                                //     replay['lineStringReplay']['indicesBuffer'] = null;
-                                //     replay['lineStringReplay']['vertices'] = workerReplay['lineStringReplay']['verticesBuffer'].arr_;
-                                //     replay['lineStringReplay']['verticesBuffer'] = null;
-                                // }
                                 
                                 for(let key in workerReplay){
-                                    // if(!(key === 'indices' || key === 'indicesBuffer' || key === 'vertices' || key === 'verticesBuffer' || key === 'lineStringReplay')){
                                     if(key !== 'lineStringReplay'){
                                         replay[key] = workerReplay[key];
                                     }
-                                    // }
-                                    if(workerReplay['lineStringReplay']){
-                                        for(let lineStringKey in workerReplay['lineStringReplay']){
-                                            // if(!(lineStringKey === 'indices' || lineStringKey === 'indicesBuffer' || lineStringKey === 'vertices' || lineStringKey === 'verticesBuffer')){
-                                                replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey];
-                                            // }
-                                        }
+                                }
+                                if(workerReplay['lineStringReplay']){
+                                    for(let lineStringKey in workerReplay['lineStringReplay']){
+                                        replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey];
                                     }
                                 }
-
-
-
-                                // for (let key in workerReplay) {
-                                //     if(key === 'indices'){
-                                //         workerReplay[key] = workerReplay['indicesBuffer'].arr_;
-                                //     }else if(key === 'vertices'){
-                                //         workerReplay[key] = workerReplay['verticesBuffer'].arr_;
-                                //     }else if(key === 'lineStringReplay'){
-
-                                //     }
-
-                                //     replay[key] = workerReplay[key];
-                                // }
-                                
-                                // let replays = replayGroup.replaysByZIndex_[zindex];
-                                // if (replays === undefined) {
-                                //     replays = {};
-                                //     replayGroup.replaysByZIndex_[zindex] = replays;
-                                // }
-                                // let replay = replays[replayType];
-                                // if (replay === undefined) {
-                                //     var Obj = replaysByZIndex_[zindex][replayType];        
-                                //     // var indicesBuffer = Obj.indicesBuffer;
-                                    
-                                //     replaysByZIndex_[zindex][replayType].finish();
-                                //     // Obj.indicesBuffer = new WebGLBuffer(Obj.indicesBuffer);
-                                //     replays[replayType] = replaysByZIndex_[zindex][replayType];
-                                // }
-
-                                // if (!source.getGeoFormat().minimalist && workReplay.instructions) {
-                                //     for (let i = 0; i < workReplay.instructions.length; i++) {
-                                //         let instruction = workReplay.instructions[i];
-                                //         if (instruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && instruction[1].indexOf("hatch") === 0) {
-                                //             let hatchInstruction = instruction[1];
-                                //             let geoStyleId = hatchInstruction.split("|")[1];
-                                //             let geoStyle = geoStyles[geoStyleId];
-                                //             if (geoStyle) {
-                                //                 geoStyle.initialize();
-                                //                 instruction[1] = geoStyle.geoBrush;
-                                //             }
-                                //         }
-                                //         if (instruction[0] === (<any>ol.render).canvas.Instruction.BEGIN_GEOMETRY || instruction[0] === (<any>ol).render.canvas.Instruction.END_GEOMETRY) {
-                                //             let featureInfo = instruction[1];
-                                //             let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                                //             feature["styleId"] = featureInfo.styleId;
-                                //             instruction[1] = feature;
-                                //         }
-                                //     }
-
-                                //     for (let i = 0; i < workReplay.hitDetectionInstructions.length; i++) {
-                                //         let hitInstruction = workReplay.hitDetectionInstructions[i];
-                                //         if (hitInstruction[0] === (<any>ol.render.canvas).Instruction.SET_FILL_STYLE && hitInstruction[1].indexOf("hatch") === 0) {
-                                //             let hatchInstruction = hitInstruction[1];
-                                //             let geoStyleId = hatchInstruction.split("|")[1];
-                                //             let geoStyle = geoStyles[geoStyleId];
-                                //             if (geoStyle) {
-                                //                 geoStyle.initialize();
-                                //                 hitInstruction[1] = geoStyle.geoBrush;
-                                //             }
-                                //         }
-                                //         if (hitInstruction[0] === (<any>ol.render).canvas.Instruction.BEGIN_GEOMETRY || hitInstruction[0] === (<any>ol).render.canvas.Instruction.END_GEOMETRY) {
-                                //             let hitfeatureInfo = hitInstruction[1];
-                                //             let hitfeature = new (<any>ol.render).Feature(hitfeatureInfo.type_, hitfeatureInfo.flatCoordinates_, hitfeatureInfo.ends_, hitfeatureInfo.properties_);
-                                //             hitfeature["styleId"] = hitfeatureInfo.styleId;
-                                //             hitInstruction[1] = hitfeature;
-                                //         }
-                                //     }
-                                // }
-                                
                             }
                         }
                         // for (let r in replayGroup.getReplays()) {
                         //     zIndexKeys[r] = true;
                         // }
-                        replayGroup.finish(frameState['context'].webglContext);
+                        replayGroup.finish(frameState['context']);
                         // console.log('===========');                        
                         // console.log(JSON.stringify(replayGroup.replaysByZIndex_[0].Polygon.indicesBuffer.arr_));
                         // console.log(JSON.stringify(replayGroup.replaysByZIndex_[0].Polygon.verticesBuffer.arr_));
                         for(var key in replayGroup.replaysByZIndex_){
                             if(key != '0'){
-                                delete replayGroup.replaysByZIndex_[key];
+                                // delete replayGroup.replaysByZIndex_[key];
                             }
                         }
                         // replayGroup.replaysByZIndex_[0].Polygon.origin = [0, 0];

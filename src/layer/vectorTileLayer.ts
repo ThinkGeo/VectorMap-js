@@ -697,25 +697,25 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var rotation = viewState.rotation;
             var oneByOne = undefined;
 
-            // var gl = context.canvas;
+            var gl = context.getGL();
             var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
                 tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
 
             if (this.lineStringReplay) {
-                tmpStencil = context.isEnabled(context.STENCIL_TEST);
-                tmpStencilFunc = context.getParameter(context.STENCIL_FUNC);
-                tmpStencilMaskVal = context.getParameter(context.STENCIL_VALUE_MASK);
-                tmpStencilRef = context.getParameter(context.STENCIL_REF);
-                tmpStencilMask = context.getParameter(context.STENCIL_WRITEMASK);
-                tmpStencilOpFail = context.getParameter(context.STENCIL_FAIL);
-                tmpStencilOpPass = context.getParameter(context.STENCIL_PASS_DEPTH_PASS);
-                tmpStencilOpZFail = context.getParameter(context.STENCIL_PASS_DEPTH_FAIL);
+                tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
+                tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
+                tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
+                tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
+                tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
+                tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
+                tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
+                tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
 
-                context.enable(context.STENCIL_TEST);
-                context.clear(context.STENCIL_BUFFER_BIT);
-                context.stencilMask(255);
-                context.stencilFunc(context.ALWAYS, 1, 255);
-                context.stencilOp(context.KEEP, context.KEEP, context.REPLACE);
+                gl.enable(gl.STENCIL_TEST);
+                gl.clear(gl.STENCIL_BUFFER_BIT);
+                gl.stencilMask(255);
+                gl.stencilFunc(gl.ALWAYS, 1, 255);
+                gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
 
 
 
@@ -724,15 +724,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     opacity, skippedFeaturesHash,
                     featureCallback, oneByOne, opt_hitExtent);
 
-                context.stencilMask(0);
-                context.stencilFunc(context.NOTEQUAL, 1, 255);
+                gl.stencilMask(0);
+                // FIXME Eric
+                // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
 
-            var webglContext = context.webglContext;
-            webglContext.bindBuffer(context.ARRAY_BUFFER, this.verticesBuffer);
-            webglContext.bindBuffer(context.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+            // var webglContext = context.webglContext;
+            context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
+            context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
-            var locations = this.setUpProgram(context, context.webglContext, size, pixelRatio);
+            var locations = this.setUpProgram(gl, context, size, pixelRatio);
 
             // set the "uniform" values
             var projectionMatrix = (<any>ol).transform.reset(this.projectionMatrix_);
@@ -748,18 +749,18 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).transform.rotate(offsetRotateMatrix, -rotation);
             }
 
-            context.uniformMatrix4fv(locations.u_projectionMatrix, false,
+            gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
-            context.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
+            gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
-            context.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
+            gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-            context.uniform1f(locations.u_opacity, opacity);
+            gl.uniform1f(locations.u_opacity, opacity);
 
             // draw!
             var result;
             if (featureCallback === undefined) {                
-                this.drawReplay(context, context, skippedFeaturesHash, false);
+                this.drawReplay(gl, context, skippedFeaturesHash, false);
             } else {
             // draw feature by feature for the hit-detection
                 // result = this.drawHitDetectionReplay(context, context, skippedFeaturesHash,
@@ -767,17 +768,17 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             // disable the vertex attrib arrays
-            this.shutDownProgram(context, locations);
+            this.shutDownProgram(gl, locations);
 
             if (this.lineStringReplay) {
                 if (!tmpStencil) {
-                    context.disable(context.STENCIL_TEST);
+                    gl.disable(gl.STENCIL_TEST);
                 }
-                context.clear(context.STENCIL_BUFFER_BIT);
-                context.stencilFunc(/** @type {number} */ (tmpStencilFunc),
+                gl.clear(gl.STENCIL_BUFFER_BIT);
+                gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
                     /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
-                context.stencilMask(/** @type {number} */ (tmpStencilMask));
-                context.stencilOp(/** @type {number} */ (tmpStencilOpFail),
+                gl.stencilMask(/** @type {number} */ (tmpStencilMask));
+                gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
                     /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
             }
 
