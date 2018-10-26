@@ -60,6 +60,6 @@ var map = new Map({
   target: 'map',
   view: new View({
     center: [-11000000, 4600000],
-    zoom: 14
+    zoom: 15
   })
 });

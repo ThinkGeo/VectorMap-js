@@ -123,11 +123,13 @@ class VectorImageTile extends Tile {
                     const sourceTileKey = sourceTileCoord.toString();
                     let sourceTile = sourceTiles[sourceTileKey];
                     if (!sourceTile && !useLoadedOnly) {
-                        const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+                        const tileUrlAndRequestTileCoord = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+
                         sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
-                            tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
-                            tileUrl == undefined ? '' : tileUrl,
+                            tileUrlAndRequestTileCoord[0] == undefined ? TileState.EMPTY : TileState.IDLE,
+                            tileUrlAndRequestTileCoord[0] == undefined ? '' : tileUrlAndRequestTileCoord[0],
                             format, tileLoadFunction);
+                        sourceTile["requestCoord"] = tileUrlAndRequestTileCoord[1];
                         this.sourceTileListenerKeys_.push(
                             listen(sourceTile, EventType.CHANGE, handleTileChange));
                     }

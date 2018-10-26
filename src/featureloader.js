@@ -56,52 +56,83 @@ export function loadFeaturesXhr(url, format, success, failure) {
      * @this {module:ol/source/Vector|module:ol/VectorTile}
      */
     function (extent, resolution, projection) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET',
-        typeof url === 'function' ? url(extent, resolution, projection) : url,
-        true);
-      if (format.getType() == FormatType.ARRAY_BUFFER) {
-        xhr.responseType = 'arraybuffer';
+      var vectorTileSource = format.getSource();
+
+      // No request needs to be sent when the tile is over maxDataZoom and the rquest has been sent by other isogenous tile
+      var sendRequest = true;
+      var isOverMaxDataZoom = vectorTileSource.maxDataZoom <= this.tileCoord[0];
+      if (isOverMaxDataZoom) {
+        var hasRequested = vectorTileSource.registerTileLoadEvent(this, success, failure);
+        sendRequest = !hasRequested;
       }
-      /**
-       * @param {Event} event Event.
-       * @private
-       */
-      xhr.onload = function (event) {
-        // status will be 0 for file:// urls
-        if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-          var type = format.getType();
-          /** @type {Document|Node|Object|string|undefined} */
-          var source;
-          if (type == FormatType.JSON || type == FormatType.TEXT) {
-            source = xhr.responseText;
-          } else if (type == FormatType.XML) {
-            source = xhr.responseXML;
-            if (!source) {
-              source = new DOMParser().parseFromString(xhr.responseText, 'application/xml');
+
+      if (sendRequest) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET',
+          typeof url === 'function' ? url(extent, resolution, projection) : url,
+          true);
+        if (format.getType() == FormatType.ARRAY_BUFFER) {
+          xhr.responseType = 'arraybuffer';
+        }
+        /**
+         * @param {Event} event Event.
+         * @private
+         */
+        xhr.onload = function (event) {
+          // status will be 0 for file:// urls
+          if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+            var type = format.getType();
+            /** @type {Document|Node|Object|string|undefined} */
+            var source;
+            if (type == FormatType.JSON || type == FormatType.TEXT) {
+              source = xhr.responseText;
+            } else if (type == FormatType.XML) {
+              source = xhr.responseXML;
+              if (!source) {
+                source = new DOMParser().parseFromString(xhr.responseText, 'application/xml');
+              }
+            } else if (type == FormatType.ARRAY_BUFFER) {
+              source = /** @type {ArrayBuffer} */ (xhr.response);
             }
-          } else if (type == FormatType.ARRAY_BUFFER) {
-            source = /** @type {ArrayBuffer} */ (xhr.response);
-          }
-          if (source) {
-            var features = format.readFeatures(source,
-              { featureProjection: projection, tileCoord: this.tileCoord });
-            success.call(this, features,
-              format.readProjection(source), format.getLastExtent());
+            if (source) {
+              // Get the all feature in the request tile and the instructions of the tile zoom
+              var featuresAndInstructions = format.readFeaturesAndInstructions(source, { featureProjection: projection, tileCoord: this.tileCoord });
+
+              if (isOverMaxDataZoom) {
+                // Segment instructions to homologous cells.
+                var homologousTilesInstructions = format.CreateInstructionsForHomologousTiles(featuresAndInstructions, this.requestCoord, this.tileCoord[0]);
+
+                // Save the homologousTilesInstructions to source
+                vectorTileSource.saveTileInstructions(this.requestCoord, this.tileCoord[0], featuresAndInstructions[0], homologousTilesInstructions);
+
+                // Get tile load Event 
+                var tileLoadEventInfos = vectorTileSource.getTileLoadEvent(this.requestCoord)
+
+                for (let i = 0; i < tileLoadEventInfos.length; i++) {
+                  let loadEventInfo = tileLoadEventInfos[i];
+                  var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(loadEventInfo.tile.requestCoord, loadEventInfo.tile.tileCoord);
+                  loadEventInfo.successFunction.call(loadEventInfo.tile, tileFeatureAndInstrictions, format.readProjection(source), format.getLastExtent())
+                }
+              }
+              else {
+                success.call(this, featuresAndInstructions,
+                  format.readProjection(source), format.getLastExtent());
+              }
+            } else {
+              failure.call(this);
+            }
           } else {
             failure.call(this);
           }
-        } else {
+        }.bind(this);
+        /**
+         * @private
+         */
+        xhr.onerror = function () {
           failure.call(this);
-        }
-      }.bind(this);
-      /**
-       * @private
-       */
-      xhr.onerror = function () {
-        failure.call(this);
-      }.bind(this);
-      xhr.send();
+        }.bind(this);
+        xhr.send();
+      }
     }
   );
 }

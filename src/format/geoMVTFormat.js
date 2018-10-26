@@ -25,11 +25,18 @@ class GeoMVTFormat extends MVT {
         this.layerName = layerName;
     }
 
+    setSource(source) {
+        this.source = source
+    }
+    getSource() {
+        return this.source;
+    }
+
     setStyleJsonCache(styleJSonCache) {
         this.styleJsonCache = styleJSonCache;
     }
 
-    readFeatures(source, opt_options) {
+    readFeaturesAndInstructions(source, opt_options) {
         const features = [];
         const tileCoord = opt_options["tileCoord"];
         let zoomMatchedGeoStylesGroupByLayerId = this.styleJsonCache.geoStyleGroupByZoom[tileCoord[0]];
@@ -174,7 +181,38 @@ class GeoMVTFormat extends MVT {
         }
 
         // return features ;
-        return  [features, instructs];
+        return [features, instructs];
+    }
+
+    CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, zoom) {
+        let subTileCachedInstruct = {};
+        let offsetZ = zoom - requestCoord[0];
+        let tileSize = 4096 / Math.pow(2, offsetZ);
+        let tileRange = this.getTileRange(requestCoord, zoom);
+
+        let features = featuresAndInstructions[0];
+        let instructs = featuresAndInstructions[1];
+
+        for (let i = 0; i < instructs.length; i++) {
+            let instruct = instructs[i];
+            let feature = features[instruct[0]];
+
+            let featureExtent = feature.getExtent();
+
+            let featureTileRange = this.getFeatureTileRange(featureExtent, 4096, tileSize, requestCoord, offsetZ);
+
+            for (let x = tileRange[0] > featureTileRange[0] ? tileRange[0] : featureTileRange[0], xx = featureTileRange[2] > tileRange[2] ? tileRange[2] : featureTileRange[2]; x <= xx; x++) {
+                for (let y = tileRange[1] > featureTileRange[1] ? tileRange[1] : featureTileRange[1], yy = featureTileRange[3] > tileRange[3] ? tileRange[3] : featureTileRange[3]; y <= yy; y++) {
+                    let tileKey = "" + [zoom, x, y];
+                    if (subTileCachedInstruct[tileKey] === undefined) {
+                        subTileCachedInstruct[tileKey] = [];
+                    }
+                    subTileCachedInstruct[tileKey].push(instruct);
+                }
+            }
+        }
+
+        return subTileCachedInstruct;
     }
 
     getTileRange(tileCoord, zoom) {
@@ -191,15 +229,37 @@ class GeoMVTFormat extends MVT {
             minY = minY * 2;
             maxY = maxY * 2 + 1;
         }
+        // let tiles = {};
+
+        // for (let x = minX; x <= maxX; x++) {
+        //     let minX = (x - minX) * tileSize;
+        //     let maxX = (x - minX + 1) * tileSize;
+        //     for (let y = maxY; y >= minY; y--) {
+        //         let minY = (maxY - y) * tileSize;
+        //         let maxY = (maxY - y + 1) * tileSize;
+        //         tiles["" + [x, y]] = [minX, minY, maxX, maxY];
+        //     }
+        // }
+
         return [minX, minY, maxX, maxY];
     }
 
-    getFeatureTileRange(featureExtent, extent, tileSize, requestTileCoord, offsetZ) {
+    getFeatureTileRange(featureExtent, extent, tileSize, requestCoord, offsetZ) {
 
-        let minX = requestTileCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[0] / tileSize);
-        let maxX = requestTileCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[2] / tileSize);
-        let minY = requestTileCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[3]) / tileSize);
-        let maxY = requestTileCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[1]) / tileSize);
+        let minX = requestCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[0] / tileSize);
+        let maxX = requestCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[2] / tileSize);
+        let minY = requestCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[3]) / tileSize);
+        let maxY = requestCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[1]) / tileSize);
+
+        return [minX, minY, maxX, maxY];
+    }
+
+    getFeatureTileRange(featureExtent, extent, tileSize, requestCoord, offsetZ) {
+
+        let minX = requestCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[0] / tileSize);
+        let maxX = requestCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[2] / tileSize);
+        let minY = requestCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[3]) / tileSize);
+        let maxY = requestCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[1]) / tileSize);
 
         return [minX, minY, maxX, maxY];
     }

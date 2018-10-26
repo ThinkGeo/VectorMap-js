@@ -19,9 +19,12 @@ class GeoVectorTileSource extends VectorTile {
         if (options["tileUrlFunction"] === undefined) {
             this.setTileUrlFunction(this.getTileUrlFunction());
         }
+        this.geoFormat = options.format;
+        this.registerRequest = {};
+        this.instructionsCache = {};
+        this.features = {};
         // this.clientId = options.clientId;
         // this.clientSecret = options.clientSecret;
-        this.geoFormat = options.format;
         // this.tileLoadFunction = this.vectorTileLoadFunction.bind(this);
         // this.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
     }
@@ -79,7 +82,7 @@ class GeoVectorTileSource extends VectorTile {
                 let h = hash(tileCoord);
                 let index = modulo(h, urls.length);
                 let template = urls[index];
-                return template.replace(zRegEx, requestCoord[0].toString())
+                var requestUrl = template.replace(zRegEx, requestCoord[0].toString())
                     .replace(xRegEx, requestCoord[1].toString())
                     .replace(yRegEx, function () {
                         let y = -requestCoord[2] - 1;
@@ -92,9 +95,68 @@ class GeoVectorTileSource extends VectorTile {
                         let y = range.getHeight() + requestCoord[2];
                         return y.toString();
                     });
+                return [requestUrl, requestCoord];
             }
         };
     }
+
+    registerTileLoadEvent(tile, successFunction, failureFunction) {
+        var hasRequested = true;
+
+        let requestKey = tile.requestCoord.join(",");
+
+        let loadEventInfo = {
+            tile: tile,
+            successFunction: successFunction,
+            failureFunction: failureFunction,
+        }
+
+
+        if (this.registerRequest[requestKey] === undefined) {
+            this.registerRequest[requestKey] = [];
+            hasRequested = false;
+        }
+
+        this.registerRequest[requestKey].push(loadEventInfo);
+        return hasRequested;
+    }
+    getTileLoadEvent(requestCoord) {
+        let requestKey = requestCoord.join(",");
+        let tileLoadEventInfos = this.registerRequest[requestKey]
+        delete this.registerRequest[requestKey];
+        return tileLoadEventInfos;
+    }
+
+
+    saveTileInstructions(requestCoord, zoom, features, homologousTilesInstructions) {
+        if (this.instructionsCache[requestCoord] === undefined) {
+            this.instructionsCache[requestCoord] = {};
+        }
+        this.instructionsCache[requestCoord][zoom] = homologousTilesInstructions;
+
+        if (this.features[requestCoord] === undefined) {
+            this.features[requestCoord] = {};
+        }
+        this.features[requestCoord][zoom] = features;
+    }
+
+    getTileInstrictions(requestCoord, tileCoord) {
+        let zoom = tileCoord[0];
+        let featuresAndInstructs = [];
+        if (this.instructionsCache[requestCoord] === undefined) {
+        }
+        else {
+            if (this.instructionsCache[requestCoord][zoom] === undefined) {
+            }
+            else {
+                featuresAndInstructs = [this.features[requestCoord][zoom], this.instructionsCache[requestCoord][zoom][tileCoord]];
+            }
+        }
+
+        return featuresAndInstructs;
+    }
+
+
 
     // vectorTileLoadFunction(tile, url) {
     //     let loader = this.loadFeaturesXhr(

@@ -202,8 +202,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 minimalist: this.minimalist,
                 maxDataZoom: this.maxDataZoom
             });
-            format['source'] = source;
-
+            format.setSource(source);
             return source;
         }
     }

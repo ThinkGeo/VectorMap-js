@@ -4,7 +4,7 @@ import LayerType from 'ol/LayerType';
 // import { ORDER } from 'ol/render/replay';
 // import { createCanvasContext2D } from 'ol/dom';
 // import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
-import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from 'ol/extent';
+import { buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects } from 'ol/extent';
 
 import TileState from 'ol/TileState';
 import { equivalent as equivalentProjection } from 'ol/proj';
@@ -51,7 +51,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             }
 
             const sourceTileCoord = sourceTile.tileCoord;
-            const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+            const requestCoord = sourceTile.requestCoord;
+            const sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
             const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
             const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
                 buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
@@ -107,7 +108,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                 let geoStyle = instructs[i][1];
 
-                if (reproject) {
+                if (reproject && !feature["projected"]) {
                     if (tileProjection.getUnits() == Units.TILE_PIXELS) {
                         // projected tile extent
                         tileProjection.setWorldExtent(sourceTileExtent);
@@ -115,6 +116,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         tileProjection.setExtent(sourceTile.getExtent());
                     }
                     feature.getGeometry().transform(tileProjection, projection);
+                    feature["projected"] = true;
+                    feature.extent_ = null;
                 }
                 if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
                     render.call(this, feature, geoStyle);
