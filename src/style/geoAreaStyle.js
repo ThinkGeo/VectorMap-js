@@ -3,12 +3,11 @@ import GeoBrush from "./geoBrush";
 import GeoBrushType from "./geoBrushType";
 import { transform } from 'ol/transform'
 import { Polygon } from 'ol/geom';
+import {translate} from 'ol/geom/flat/transform';
 
 import { Style, Fill, Stroke } from 'ol/style'
 
 class GeoAreaStyle extends GeoStyle {
-
-
 
     constructor(styleJson) {
         super(styleJson);
@@ -165,7 +164,7 @@ class GeoAreaStyle extends GeoStyle {
 
             // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
             if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
-                let newStroke = new ol.style.Stroke();
+                let newStroke = new Stroke();
                 newStroke.setColor(this.convertedOutlineColor);
                 newStroke.setLineDash(this.convertedOutlineDashArray);
                 newStroke.setWidth(this.outlineWidth);
