@@ -1,4 +1,4 @@
-var a={
+var light = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -2967,12 +2967,47 @@ var a={
         "type": "MVT"
     }, {
         "id": "worldstreets_source_test",
-        "url": "https://gisservertest.thinkgeo.com/api/v1/world-streets/vector/{z}/{x}/{y}?apiKey=IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~",
+        "url": "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
         "type": "MVT"
     }],
     "layers": [{
         "id": "worldstreets_layers",
         "source": "worldstreets_source_test",
-        "styles": ["country", "urban", "landcover", "water", "waterway", "building", "country_boundary", "province_boundary", "aeroway", "road", "railway", "place_popular", "place_others", "poi_icon", "country_name", "state_name", "marine_name", "poi_text", "road_number", "motorway_name", "trunk_name", "primary_name", "secondary_name", "tertiary_name", "residential_name", "pedestrian_name", "otherroad_name", "road_oneway", "water_name", "waterway_name", "building_name", "housenumber"]
+        "styles": [
+            "country",
+            "urban",
+            "landcover",
+            "water",
+            "waterway",
+            "building",
+            "country_boundary",
+            // "province_boundary",
+            // "aeroway",
+            // "road",
+            // "railway",
+            // "place_popular",
+            // "place_others",
+            "poi_icon",
+            // "country_name",
+            // "state_name",
+            // "marine_name",
+            // "poi_text",
+            // "road_number",
+            // "motorway_name",
+            // "trunk_name",
+            // "primary_name",
+            // "secondary_name",
+            // "tertiary_name",
+            // "residential_name",
+            // "pedestrian_name",
+            // "otherroad_name",
+            // "road_oneway",
+            // "water_name",
+            // "waterway_name",
+            // "building_name",
+            // "housenumber"
+        ]
     }]
 }
+
+export default light;
