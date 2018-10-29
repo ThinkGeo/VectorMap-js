@@ -7,6 +7,7 @@ import GeoStringAttributeFilter from '../filters/geoStringAttributeFilter';
 import GeoAreaStyle from '../style/geoAreaStyle';
 import GeoLineStyle from '../style/geoLineStyle';
 import GeoPointStyle from '../style/geoPointStyle';
+import GeoTextStyle from '../style/geoTextStyle';
 
 class StyleJsonCacheItem {
     constructor(styleJson, minZoom, maxZoom, dataLayerColumnName) {

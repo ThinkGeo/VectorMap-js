@@ -1,9 +1,6 @@
 import GeoStyle from "./geoStyle";
 
-
-
 class GeoBrush {
-
     static createBrushByType(brushType, feature, resolution, brushTypeOptions) {
         let geoBrushFunction = GeoBrush.geoBrushFunctions[brushType];
         if (typeof geoBrushFunction === "function") {
@@ -13,8 +10,6 @@ class GeoBrush {
         }
     }
 }
-
-
 
 GeoBrush["geoPatternFunctions"] = {
     Cross: GeoBrush.getCrossPattern,
