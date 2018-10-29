@@ -5,7 +5,7 @@ import { isEmpty } from "ol/obj"
 import { transform2D } from "ol/geom/flat/transform";
 import { setFromArray } from "ol/transform";
 import { getUid } from 'ol/util.js';
-import { equals, intersects } from 'ol/extent';
+import { equals, intersects, createOrUpdateEmpty } from 'ol/extent';
 import CanvasInstruction from 'ol/render/canvas/Instruction.js';
 import { lineStringLength } from 'ol/geom/flat/length.js';
 import { drawTextOnPath } from 'ol/geom/flat/textpath.js';
@@ -15,7 +15,7 @@ import { TEXT_ALIGN } from 'ol/render/replay.js';
 import {
     setFromArray as transformSetFromArray
 } from 'ol/transform.js';
-import { defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
+import {drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
 
 import { asColorLike } from 'ol/colorlike.js';
 
@@ -475,6 +475,43 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         return undefined;
     }
 
+    getImageInfo(text, textKey, fillKey, strokeKey) {
+        var labelInfo = {};
+        labelInfo["text"] = text;
+        labelInfo["textKey"] = textKey;
+        labelInfo["fillKey"] = fillKey;
+        labelInfo["strokeKey"] = strokeKey;
+        var label;
+        var key = strokeKey + textKey + text + fillKey + this.pixelRatio;
+
+        if (!this.labelInfoCache.containsKey(key)) {
+            var strokeState = strokeKey ? this.strokeStates[strokeKey] || this.textStrokeState_ : null;
+            var fillState = fillKey ? this.fillStates[fillKey] || this.textFillState_ : null;
+            var textState = this.textStates[textKey] || this.textState_;
+            var pixelRatio = this.pixelRatio;
+            var scale = textState.scale * pixelRatio;
+            var align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+            var strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
+
+            var lines = text.split('\n');
+            var numLines = lines.length;
+            var widths = [];
+
+            var width = measureTextWidths(textState.font, lines, widths);
+            var lineHeight = textState.lineHeight;
+            var height = lineHeight * numLines;
+            var renderWidth = (width + strokeWidth);
+
+            labelInfo["width"] = Math.ceil(renderWidth * scale);
+            labelInfo["widths"] = widths;
+            labelInfo["height"] = Math.ceil((height + strokeWidth) * scale);
+            this.labelInfoCache.set(key, labelInfo);
+            return labelInfo;
+        }
+
+        return this.labelInfoCache.get(key);
+    }
+
     drawText(geometry, feature) {
         let fillState = this.textFillState_;
         let strokeState = this.textStrokeState_;
@@ -541,6 +578,80 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             return;
         }
     }
+    drawChars_(begin, end, declutterGroup) {
+        var strokeState = this.textStrokeState_;
+        var textState = this.textState_;
+        var fillState = this.textFillState_;
+
+        var strokeKey = this.strokeKey_;
+        if (strokeState) {
+            if (!(strokeKey in this.strokeStates)) {
+                this.strokeStates[strokeKey] = /** @type {ol.CanvasStrokeState} */ ({
+                    strokeStyle: strokeState.strokeStyle,
+                    lineCap: strokeState.lineCap,
+                    lineDashOffset: strokeState.lineDashOffset,
+                    lineWidth: strokeState.lineWidth,
+                    lineJoin: strokeState.lineJoin,
+                    miterLimit: strokeState.miterLimit,
+                    lineDash: strokeState.lineDash
+                });
+            }
+        }
+        var textKey = this.textKey_;
+        if (!(this.textKey_ in this.textStates)) {
+            this.textStates[this.textKey_] = /** @type {ol.CanvasTextState} */ ({
+                font: textState.font,
+                lineHeight: measureTextHeight(textState.font),
+                textAlign: textState.textAlign || defaultTextAlign,
+                scale: textState.scale
+            });
+        }
+        var fillKey = this.fillKey_;
+        if (fillState) {
+            if (!(fillKey in this.fillStates)) {
+                this.fillStates[fillKey] = /** @type {ol.CanvasFillState} */ ({
+                    fillStyle: fillState.fillStyle
+                });
+            }
+        }
+
+        var pixelRatio = this.pixelRatio;
+        var baseline = TEXT_ALIGN[textState.textBaseline];
+
+        var offsetY = this.textOffsetY_ * pixelRatio;
+        var text = this.text_;
+        var font = textState.font;
+        var textScale = textState.scale;
+        var strokeWidth = strokeState ? strokeState.lineWidth * textScale / 2 : 0;
+        var widths = this.widths_[font];
+        if (!widths) {
+            this.widths_[font] = widths = {};
+        }
+        this.instructions.push([CanvasInstruction.DRAW_CHARS,
+            begin, end, baseline, declutterGroup,
+        textState.overflow, fillKey, textState.maxAngle,
+        function (text) {
+            var width = widths[text];
+            if (!width) {
+                width = widths[text] = measureTextWidth(font, text);
+            }
+            return width * textScale * pixelRatio;
+        },
+            offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
+        ]);
+        this.hitDetectionInstructions.push([CanvasInstruction.DRAW_CHARS,
+            begin, end, baseline, declutterGroup,
+        textState.overflow, fillKey, textState.maxAngle,
+        function (text) {
+            var width = widths[text];
+            if (!width) {
+                width = widths[text] = measureTextWidth(font, text);
+            }
+            return width * textScale;
+        },
+            offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio
+        ]);
+    };
 
     setTextStyle(textStyle, declutterGroup) {
         let textState, fillState, strokeState;
@@ -624,6 +735,52 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             this.labelPosition = textStyle.labelPosition;
         }
     }
+
+    renderDeclutterChar_(declutterGroup, feature) {
+        if (declutterGroup && declutterGroup.length > 5) {
+            var groupCount = declutterGroup[4];
+            if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
+                /** @type {ol.RBushEntry} */
+                var box = {
+                    minX: /** @type {number} */ (declutterGroup[0]),
+                    minY: /** @type {number} */ (declutterGroup[1]),
+                    maxX: /** @type {number} */ (declutterGroup[2]),
+                    maxY: /** @type {number} */ (declutterGroup[3]),
+                    value: feature
+                };
+                if (!this.declutterTree.collides(box)) {
+                    this.declutterTree.insert(box);
+                    for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
+                        var declutterData = /** @type {Array} */ (declutterGroup[j]);
+                        if (declutterData) {
+                            if (declutterData.length > 11) {
+                                this.replayTextBackground_(declutterData[0],
+                                    declutterData[13], declutterData[14], declutterData[15], declutterData[16],
+                                    declutterData[11], declutterData[12]);
+                            }
+                            let labelInfo = declutterData[3];
+                            let labelImage = this.getImage(labelInfo["text"], labelInfo["textKey"], labelInfo["fillKey"], labelInfo["strokeKey"]);
+                            declutterData[3] = labelImage;
+
+                            drawImage.apply(undefined, declutterData);
+                        }
+                    }
+                }
+                declutterGroup.length = 5;
+                createOrUpdateEmpty(declutterGroup);
+            }
+        }
+    };
 }
 
+export function measureTextWidths(font, lines, widths) {
+    const numLines = lines.length;
+    let width = 0;
+    for (let i = 0; i < numLines; ++i) {
+        const currentWidth = measureTextWidth(font, lines[i]);
+        width = Math.max(width, currentWidth);
+        widths.push(currentWidth);
+    }
+    return width;
+}
 export default GeoCanvasTextReplay
