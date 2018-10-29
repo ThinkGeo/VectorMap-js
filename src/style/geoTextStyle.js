@@ -1,6 +1,17 @@
 import GeoStyle from "./geoStyle";
+import GeometryType from "ol/geom/GeometryType";
+import { measureTextHeight } from "ol/render/canvas";
+import LRUCache from "ol/structs/LRUCache";
+import { LabelCache } from "ol/render/canvas";
+import { getUid } from 'ol/util';
+import { TEXT_ALIGN } from "ol/render/replay";
+import { defaultTextAlign, defaultLineDash } from "ol/render/canvas";
+import { createCanvasContext2D } from "ol/dom";
+import { SAFARI, CANVAS_LINE_DASH } from "ol/has";
 
 import { Style, Fill, Stroke, Text } from 'ol/style'
+import DetectTextLabelingStrategy from "./detectTextLabelingStrategy";
+import TextLabelingStrategy from "./textLabelingStrategy";
 
 class GeoTextStyle extends GeoStyle {
     constructor(styleJson) {
@@ -8,6 +19,7 @@ class GeoTextStyle extends GeoStyle {
         this.textAligns = ["left", "right", "center", "end", "start"];
         this.textBaseline = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
         this.textTransforms = ["default", "uppercase", "lowercase"];
+        this.labelInfos = new LRUCache(512);
 
         if (styleJson) {
             this.align = styleJson["text-align"];
@@ -50,7 +62,6 @@ class GeoTextStyle extends GeoStyle {
             this.splineType = styleJson["text-spline-type"];
             // TODO
             this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
-
 
         }
     }
@@ -151,15 +162,295 @@ class GeoTextStyle extends GeoStyle {
         featureText = this.getTextTransform(featureText);
 
         this.style.getText().setText(featureText);
-        let featureZindex = feature["tempTreeZindex"];
-        if (featureZindex === undefined) {
-            featureZindex = 0;
-        }
-        this.style.setZIndex(featureZindex);
 
-        textStyles.push(this.style);
+        if (this.setLabelPosition(featureText, feature, resolution, this.style.getText(), options.strategyTree, options.frameState)) {
+            var featureZindex = feature["tempTreeZindex"];
+            if (featureZindex === undefined) {
+                featureZindex = 0;
+            }
+            this.style.setZIndex(featureZindex);
+            textStyles.push(this.style);
+        }
 
         return textStyles;
+    }
+
+    setLabelPosition(text, feature, resolution, textStyle, strategyTree, frameState) {
+        let flatCoordinates;
+
+        let geometryType = feature.getType();
+        if ((geometryType === GeometryType.LINE_STRING || geometryType === GeometryType.MULTI_LINE_STRING) && !this.forceHorizontalForLine) {
+            flatCoordinates = feature.getFlatCoordinates();
+            if (flatCoordinates === undefined) { return false; }
+        }
+        else {
+            let labelInfo = this.getLabelInfo(text, textStyle);
+            let labelWidth = labelInfo.labelWidth;
+            let labelHeight = labelInfo.labelHeight;
+            let scale = labelInfo.scale;
+            let font = labelInfo.font;
+            let strokeWidth = labelInfo.strokeWidth;
+            let numLines = labelInfo.numLines;
+            let lines = labelInfo.lines;
+            let lineHeight = labelInfo.lineHeight;
+            let renderWidth = labelInfo.renderWidth;
+            let height = labelInfo.height;
+            let widths = labelInfo.widths;
+
+            let Constructor = undefined;
+            if (this.placementType === "default") {
+                Constructor = this.BATCH_CONSTRUCTORS_DEFAULT[geometryType];
+            } else if (this.placementType === "detect") {
+                Constructor = this.BATCH_CONSTRUCTORS_DETECT[geometryType];
+            }
+
+            let textLabelingStrategy = new Constructor();
+            let tmpLabelWidth = labelWidth / window.devicePixelRatio;
+            let tmpLabelHeight = labelHeight / window.devicePixelRatio;
+
+            switch (geometryType) {
+                case GeometryType.POINT:
+                    flatCoordinates = feature.getFlatCoordinates();
+                    break;
+                case GeometryType.MULTI_POINT:
+                    flatCoordinates = feature.getCenter();
+                    break;
+                case GeometryType.LINE_STRING:
+                    flatCoordinates = /** @type {ol.geom.LineString} */ (feature).getFlatMidpoint();
+                    break;
+                case GeometryType.CIRCLE:
+                    flatCoordinates = /** @type {ol.geom.Circle} */ (feature).getCenter();
+                    break;
+                case GeometryType.MULTI_LINE_STRING:
+                    flatCoordinates = /** @type {ol.geom.MultiLineString} */ (feature).getFlatMidpoints();
+                    break;
+                case GeometryType.POLYGON:
+                    flatCoordinates = /** @type {ol.geom.Polygon} */ (feature).getFlatInteriorPoint();
+                    break;
+                case GeometryType.MULTI_POLYGON:
+                    let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (feature).getFlatMidpoint();
+                    break;
+                default:
+            }
+
+            flatCoordinates = textLabelingStrategy.markLocation(flatCoordinates, tmpLabelWidth, tmpLabelHeight, resolution, geometryType, this, strategyTree, frameState);
+
+            if (flatCoordinates === undefined) { return false; }
+
+            var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
+
+            if (labelImage === undefined) {
+                return;
+            }
+
+            textStyle.label = labelImage;
+        }
+        textStyle.labelPosition = flatCoordinates;
+
+        return true;
+    }
+
+    getLabelInfo(text, textState) {
+        let key = text
+        if (!this.labelInfos.containsKey(key)) {
+            let font = textState.getFont();
+            text = this.wrapText(text, font);
+
+            let strokeState = textState.getStroke();
+            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
+            let lines = text.split("\n");
+            let numLines = lines.length;
+            let textScale = textState.getScale();
+            textScale = textScale === undefined ? 1 : textScale;
+            let scale = textScale * window.devicePixelRatio;
+            let widths = [];
+            let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
+            let lineHeight = measureTextHeight(font);
+            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
+            let tmpMaskHeightMargin = 0;
+            let tmpMaskWidthMargin = 0;
+            switch (tmpMaskMargin.length) {
+                case 1:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    break;
+                case 2:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
+                    break;
+                case 3:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
+                    break;
+                case 4:
+                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
+                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) + parseInt(tmpMaskMargin[3]);
+                    break;
+                default:
+                    break;
+            }
+
+            if (this.maskType) {
+                if (this.maskType.toLowerCase() === "circle") {
+                    tmpMaskHeightMargin = tmpMaskHeightMargin > tmpMaskWidthMargin ? tmpMaskHeightMargin : tmpMaskWidthMargin;
+                    tmpMaskWidthMargin = tmpMaskHeightMargin;
+                }
+            }
+            let height = lineHeight * numLines + strokeWidth + tmpMaskHeightMargin;
+            let renderWidth = width + strokeWidth + tmpMaskWidthMargin;
+            let tmpMaskOutlineWidth = (this.maskOutlineWidth ? this.maskOutlineWidth : 0);
+            let labelWidth = Math.ceil((renderWidth + tmpMaskOutlineWidth * 3) * 1.1 * scale);
+            let labelHeight = Math.ceil((height + tmpMaskOutlineWidth * 3) * 1.1 * scale);
+
+            let labelInfo = {
+                labelWidth: labelWidth,
+                labelHeight: labelHeight,
+                scale: scale,
+                font: font,
+                strokeWidth: strokeWidth,
+                numLines: numLines,
+                lines: lines,
+                lineHeight: lineHeight,
+                renderWidth: renderWidth,
+                height: height,
+                widths: widths
+            };
+            this.labelInfos.set(key, labelInfo);
+        }
+
+        return this.labelInfos.get(key);
+    }
+
+    getEstimatedWidth(font, lines, widths, letterSpacing) {
+        let numLines = lines.length;
+        let width = 0;
+        let currentWidth, i;
+        for (i = 0; i < numLines; ++i) {
+            currentWidth = 0;
+            for (let j = 0; j < lines[i].length; j++) {
+                let charWidth = this.charWidths[lines[i][j]];
+                if (charWidth) {
+                    currentWidth += charWidth;
+                }
+                else {
+                    currentWidth += this.charWidths["W"];
+                }
+            }
+            if (letterSpacing) {
+                currentWidth = currentWidth + (lines[i].length - 1) * letterSpacing;
+            }
+            width = Math.max(width, currentWidth);
+            widths.push(currentWidth);
+        }
+        return width;
+    }
+
+    getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths) {
+        var key = this.uid !== undefined ? this.uid : getUid(this);
+        key += lines.toString();
+        if (!labelCache.containsKey(key)) {
+            let fillState = textState.getFill();
+            let strokeState = textState.getStroke();
+            let label;
+
+            let align = TEXT_ALIGN[textState.getTextAlign() || defaultTextAlign];
+
+            let context = createCanvasContext2D(labelWidth, labelHeight);
+            label = context.canvas;
+            labelCache.set(key, label);
+            label.style.display = "none";
+            // For letterSpacing we need app
+            let body;
+            if (this.letterSpacing) {
+                body = document.getElementsByTagName("body")[0];
+                if (body) {
+                    label.style.display = "none";
+                    body.appendChild(label);
+                }
+                label.style.letterSpacing = this.letterSpacing + "px";
+                context = label.getContext("2d");
+            }
+
+            if (scale !== 1) {
+                context.scale(scale, scale);
+            }
+            context.font = font;
+            if (strokeState) {
+                context.strokeStyle = strokeState.getColor();
+                context.lineWidth = strokeWidth * (SAFARI ? scale : 1);
+                context.lineCap = strokeState.getLineCap();
+                context.lineJoin = strokeState.getLineJoin();
+                context.miterLimit = strokeState.getMiterLimit();
+                let lineDash = strokeState.getLineDash();
+                lineDash = lineDash ? lineDash.slice() : defaultLineDash;
+                if (CANVAS_LINE_DASH && lineDash.length) {
+                    context.setLineDash(strokeState.getLineDash());
+                    context.lineDashOffset = strokeState.getLineDashOffset();
+                }
+            }
+
+            this.drawMask(context, 0, 0, renderWidth, height);
+
+            if (this.maskType) {
+                if (this.maskType.toLowerCase() === "circle") {
+                    if (scale !== 1) { context.scale(scale, scale); }
+                    context.font = font;
+                    if (strokeState) {
+                        context.strokeStyle = strokeState.getColor();
+                        context.lineWidth = strokeWidth * (SAFARI ? scale : 1);
+                        context.lineCap = strokeState.getLineCap();
+                        context.lineJoin = strokeState.getLineJoin();
+                        context.miterLimit = strokeState.getMiterLimit();
+                        let lineDash = strokeState.getLineDash();
+                        lineDash = lineDash ? lineDash.slice() : defaultLineDash;
+                        if (CANVAS_LINE_DASH && lineDash.length) {
+                            context.setLineDash(strokeState.getLineDash());
+                            context.lineDashOffset = strokeState.getLineDashOffset();
+                        }
+                    }
+                }
+            }
+
+            context.textBaseline = "middle";
+            context.textAlign = "center";
+            let leftRight = 0.5 - align;
+            let x = align * label.width / scale + leftRight * strokeWidth;
+            let i;
+            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
+            let tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
+            if (strokeState) {
+                if (strokeState.getColor() !== null) {
+                    context.strokeStyle = strokeState.getColor();
+                    context.lineWidth = this.haloRadius ? this.haloRadius : 0;
+                    for (i = 0; i < numLines; ++i) {
+                        if (this.drawnMask) {
+                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                        }
+                        else {
+                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+                        }
+                    }
+                }
+            }
+            if (fillState) {
+                if (fillState.getColor() !== null) {
+                    context.fillStyle = fillState.getColor();
+                    for (i = 0; i < numLines; ++i) {
+                        if (this.drawnMask) {
+                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                        }
+                        else {
+                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
+                        }
+                    }
+                }
+            }
+            if (this.letterSpacing && body) {
+                body.removeChild(label);
+            }
+        }
+
+        return labelCache.get(key);
     }
 
     getTextTransform(featureText) {
@@ -178,4 +469,26 @@ class GeoTextStyle extends GeoStyle {
         return featureText;
     }
 }
+
+
+GeoTextStyle["BATCH_CONSTRUCTORS_DEFAULT"] = {
+    Point: TextLabelingStrategy,
+    MultiPoint: TextLabelingStrategy,
+    LineString: TextLabelingStrategy,
+    Circle: TextLabelingStrategy,
+    MultiLineString: TextLabelingStrategy,
+    Polygon: TextLabelingStrategy,
+    MultiPolygon: TextLabelingStrategy
+};
+
+GeoTextStyle["BATCH_CONSTRUCTORS_DETECT"] = {
+    Point: DetectTextLabelingStrategy,
+    MultiPoint: DetectTextLabelingStrategy,
+    LineString: DetectTextLabelingStrategy,
+    Circle: DetectTextLabelingStrategy,
+    MultiLineString: DetectTextLabelingStrategy,
+    Polygon: DetectTextLabelingStrategy,
+    MultiPolygon: DetectTextLabelingStrategy
+};
+
 export default GeoTextStyle;

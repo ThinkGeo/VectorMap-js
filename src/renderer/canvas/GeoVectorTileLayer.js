@@ -8,7 +8,9 @@ import { buffer, containsCoordinate, equals, getIntersection, getTopLeft, inters
 
 import TileState from 'ol/TileState';
 import { equivalent as equivalentProjection } from 'ol/proj';
-import CanvasReplayGroup, { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
+import { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
+import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
+
 import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
 // import { getUid } from 'ol/util';
 // import ViewHint from 'ol/ViewHint';
@@ -63,7 +65,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 sourceTile.setProjection(projection);
             }
             replayState.dirty = false;
-            const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
+            const replayGroup = new GeoCanvasReplayGroup(0, sharedExtent, resolution,
                 pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
             const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
