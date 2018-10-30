@@ -3,7 +3,7 @@ import GeoBrush from "./geoBrush";
 import GeoBrushType from "./geoBrushType";
 import { transform } from 'ol/transform'
 import { Polygon } from 'ol/geom';
-import {translate} from 'ol/geom/flat/transform';
+import { translate } from 'ol/geom/flat/transform';
 
 import { Style, Fill, Stroke } from 'ol/style'
 
@@ -21,10 +21,10 @@ class GeoAreaStyle extends GeoStyle {
             this.gamma = styleJson["polygon-gamma"] ? styleJson["polygon-gamma"] : true;
             this.geometryTransform = styleJson["polygon-geometry-transform"];
             this.hatchStyle = styleJson["polygon-hatch-style"];
-            this.opacity = styleJson["polygon-opacity"]|1;
+            this.opacity = styleJson["polygon-opacity"] | 1;
             this.outlineColor = styleJson["polygon-outline-color"];
             this.outlineDashArray = styleJson["polygon-outline-dasharray"];
-            this.outlineOpacity = styleJson["polygon-outline-opacity"];
+            this.outlineOpacity = styleJson["polygon-outline-opacity"] | 1;
             this.outlineWidth = styleJson["polygon-outline-width"];
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
@@ -152,12 +152,10 @@ class GeoAreaStyle extends GeoStyle {
             }
 
             if (this.fill) {
-                if(this.brushType=="solid"&&this.geoBrush)
-                {
+                if (this.brushType == "solid" && this.geoBrush) {
                     GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
                 }
-                else
-                {
+                else {
                     this.geoBrush = GeoBrush.createBrushByType(this.brushType, feature, resolution, this.brushOptions);
                 }
             }
