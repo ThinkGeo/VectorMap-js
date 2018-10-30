@@ -50,11 +50,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let cacheSize = xOffset * yOffset;
         //// Adjust vectorTileData cache size according to the tile Range in data max zoom.
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
-        
+
         // Set the tile cache size to 16 on mobile. TODO: remove 
-        if(navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))
-        {   
+        if (navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i)) {
             tileSource.tileCache.highWaterMark = 16;
+        }
+
+        var tilecacheinfo = document.getElementById("tilecacheinfo")
+        if (tilecacheinfo) {
+            tilecacheinfo.innerHTML = "tile cache:" + tileSource.tileCache.highWaterMark;
         }
 
         var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.maxDataZoom);
@@ -64,6 +68,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         offsetX = offsetX <= 0 ? 1 : offsetX + 3;
         offsetY = offsetY <= 0 ? 1 : offsetY + 3;
         var vectorTileDataCahceSize = offsetX * offsetY;
+        // the cache size of vector tile data in web worker.
+        vectorTileDataCahceSize=96; 
         tileSource["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
         tileSource.getGeoFormat()["vectorTileDataCahceSize"] = vectorTileDataCahceSize;
 
@@ -78,7 +84,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         tilesToDrawByZ[z] = {};
 
         let findLoadedTiles = this.createLoadedTileFinder(
-            tileSource, projection, tilesToDrawByZ);
+            tileSource, projection, tilesToDrawByZ, tileLayer);
 
         let tmpExtent = this.tmpExtent;
         let tmpTileRange = this.tmpTileRange_;
@@ -146,6 +152,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 let tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
                 let width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
                 let height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
+                var layerCanvas = document.getElementById("layerCanvas")
+                if (layerCanvas) {
+                    layerCanvas.innerHTML = "layer canvas:" + width + "X" + height;
+                }
                 let canvas = context.canvas;
                 if (canvas.width !== width || canvas.height !== height) {
                     this.oversampling_ = oversampling;
@@ -716,4 +726,22 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         workerManager.close();
         (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
     };
+
+    public createLoadedTileFinder(source, projection, tiles, tileLayer) {
+        return (
+            /**
+             * @param {number} zoom Zoom level.
+             * @param {ol.TileRange} tileRange Tile range.
+             * @return {boolean} The tile range is fully loaded.
+             */
+            function (zoom, tileRange) {
+                function callback(tile) {
+                    if (!tiles[zoom]) {
+                        tiles[zoom] = {};
+                    }
+                    tiles[zoom][tile.tileCoord.toString()] = tile;
+                }
+                return source.forEachLoadedTile(projection, zoom, tileRange, callback, tileLayer);
+            });
+    }
 }
