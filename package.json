@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "lite-server": "^2.3.0",
-    "openlayers": "^4.6.4"
+    "openlayers": "^4.6.4",
+    "package-lock": "^1.0.0",
+    "package-name": "^0.1.0"
   }
 }

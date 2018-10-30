@@ -69083,26 +69083,16 @@ function olInit() {
         var maxYCoords = this.getMaxCoords_(outerRing);     
         var minCoords = this.getMinCoords_(outerRing);     
         var minYCoords = this.getMinCoords_(outerRing);     
-        
-        // Austrilia
-        if(flatCoordinates.includes(5958419.228886059)){
-            debugger;
-        }
 
-
-        if(window.test){
-            console.log('flatCoordinates:')  ;
+        if(false && window.test){
+            console.log('flatCoordinates:');
             var flatCoordinatesArray = [];
             for(var i = 0; i < flatCoordinates.length; i+=2){
                 flatCoordinatesArray.push(ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326'));
             }
-            if((flatCoordinatesArray[0][0]).toFixed(4) == '53.5253'){
-                console.log('=============');
-                
-                // debugger
-            }
             console.log(JSON.stringify(flatCoordinatesArray));
 
+            window.test = false
             console.log('-------');
             for(var i = 0; i < holeFlatCoordinates.length; i++){
                 var holeFlatCoordinatesArray = [];
@@ -69917,10 +69907,12 @@ function olInit() {
             }else if(ends[0] == 68 && ends[1] == 76 && ends[5] == 108 && ends[6] == 116){
                 // window.test = true;
                 // debugger;
-            }else if(ends == [18, 198]){
-                // Austrilia
+            }else if((ends[0] == 28 && ends[1] == 272)){
+                window.test = true;
+                // return;
                 // debugger
             }
+
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
@@ -69944,7 +69936,9 @@ function olInit() {
                 this.lineStringReplay.setPolygonStyle(feature);
 
                 this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-
+                
+                // Austrilia
+                // console.log(this.lineStringReplay.vertices);
                 // FIXME Eric
                 var holesTmp = [];
                 for(var i = 0; i < holes.length; i++){
@@ -70187,10 +70181,36 @@ function olInit() {
         if (strokeStyle) {
             this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
         } else {
+            if(!window.count){
+                window.colors = [
+                    [0,0,0,1],
+                    [100,0,0,1],
+                    [0,100,0,1],
+                    [0,0,100,1],
+                    [200,0,0,1],
+                    [0,200,0,1],
+                    [0,0,200,1],
+                    [100,100,0,1],
+                    [0,100,100,1],
+                    [100,0,100,1],
+                    [100,100,100,1],
+                    [200,200,0,1],
+                    [0,200,200,1],
+                    [200,0,200,1],
+                    [200,200,200,1]
+                ]
+                window.count = 0;
+            }
+            var test = window.colors[(window.count++) % window.colors.length];
+            if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
+                // debugger
+            }
+            
             var nullStrokeStyle = new ol.style.Stroke({
-                color: [0, 0, 0, 1],
+                color: test,
                 lineWidth: 1
-            });
+            });  
+            
             this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
         }
     };
@@ -101780,8 +101800,7 @@ function olInit() {
         }
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
-            var styleJsonCache = self.styleJsonCache[formatId];
-
+            var styleJsonCache = self.styleJsonCache[formatId];            
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
@@ -101810,7 +101829,7 @@ function olInit() {
             var vectorTileCache = null;
             vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
-            if (self.vectorTilesData[formatId] === undefined) {
+            if (self.vectorTilesData[formatId] === undefined) {                
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
             vectorTileCache = self.vectorTilesData[formatId];
@@ -101997,7 +102016,9 @@ function olInit() {
                     // }
 
                     // ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
-
+                    if(replay instanceof ol.render.webgl.LineStringReplay){
+                        debugger
+                    }
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
                         // translate coordinates to webglCoordinates
