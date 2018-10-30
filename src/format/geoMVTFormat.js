@@ -41,7 +41,7 @@ class GeoMVTFormat extends MVT {
         const tileCoord = opt_options["tileCoord"];
         let zoomMatchedGeoStylesGroupByLayerId = this.styleJsonCache.geoStyleGroupByZoom[tileCoord[0]];
         if (!zoomMatchedGeoStylesGroupByLayerId) {
-            return features;
+            return [[], []];
         }
 
         let pbfLayerNamesWithGeoStyle = [];

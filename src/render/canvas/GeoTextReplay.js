@@ -5,7 +5,8 @@ import { isEmpty } from "ol/obj"
 import { transform2D } from "ol/geom/flat/transform";
 import { setFromArray } from "ol/transform";
 import { getUid } from 'ol/util.js';
-import { equals, intersects, createOrUpdateEmpty } from 'ol/extent';
+import { intersects, createOrUpdateEmpty } from 'ol/extent';
+import { equals } from 'ol/array';
 import CanvasInstruction from 'ol/render/canvas/Instruction.js';
 import { lineStringLength } from 'ol/geom/flat/length.js';
 import { drawTextOnPath } from 'ol/geom/flat/textpath.js';
@@ -15,7 +16,7 @@ import { TEXT_ALIGN } from 'ol/render/replay.js';
 import {
     setFromArray as transformSetFromArray
 } from 'ol/transform.js';
-import {drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
+import { drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
 
 import { asColorLike } from 'ol/colorlike.js';
 
@@ -25,15 +26,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         this.labelInfoCache = new LRUCache();
     }
 
-    replay_(
-        context,
-        transform,
-        skippedFeaturesHash,
-        instructions,
-        snapToPixel,
-        featureCallback,
-        opt_hitExtent
-    ) {
+    replay_(context, transform, skippedFeaturesHash, instructions, snapToPixel, featureCallback, opt_hitExtent) {
         /** @type {Array<number>} */
 
         let pixelExten;
