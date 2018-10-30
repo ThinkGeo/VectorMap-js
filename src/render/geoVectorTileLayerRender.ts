@@ -50,7 +50,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let cacheSize = xOffset * yOffset;
         tileSource.tileCache.highWaterMark = cacheSize <= 15 ? 15 : cacheSize;
 
-        //// Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
+        // Adjust vectorTileData cache size according to the tile Range in data max zoom. it will pass 
         var dataTileRand = tileGrid.getTileRangeForExtentAndZ(extent, tileSource.maxDataZoom);
         var offsetX = dataTileRand.maxX - dataTileRand.minX;
         var offsetY = dataTileRand.maxY - dataTileRand.minY;
@@ -234,7 +234,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         if (rotation) {
             offsetX = Math.round(pixelRatio * size[0] / 2);
             offsetY = Math.round(pixelRatio * size[1] / 2);
-            (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
+            // (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
         }
         if (declutterReplays) {
             this.declutterTree_.clear();
@@ -302,7 +302,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         if (declutterReplays) {
             var hints = frameState.viewHints;
             var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
-            delete context["quickZoom"]
+            // delete context["quickZoom"]
             if (animatingOrInteracting) {
                 context["quickZoom"] = frameState["quickZoom"];
             }
@@ -310,8 +310,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             (<any>ol.render.canvas).ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {
-            (<any>ol.render.canvas).rotateAtOffset(context, rotation,
-        /** @type {number} */(offsetX), /** @type {number} */(offsetY));
+        //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
+        // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
         (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);
     }
@@ -515,7 +515,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         for (let zindex in replaysByZIndex_) {
                             for (let replayType in replaysByZIndex_[zindex]) {
                                 if(replayType === 'LineString'){
-                                    continue;
+                                    // continue;
                                 }
                                 // merge worker to main with replaysByZIndex_
                                 let replay = replayGroup.getReplay(zindex, replayType);    
@@ -639,7 +639,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 let transform = (<any>ol).transform.reset(this.tmpTransform_);
                 (<any>ol).transform.scale(transform, pixelScale, -pixelScale);
                 (<any>ol).transform.translate(transform, -tileExtent[0], -tileExtent[3]);
-                //// reuse replayGroup of source Tile to reduce the memory.
+                // reuse replayGroup of source Tile to reduce the memory.
                 let replayGroup = sourceTile.getReplayGroup(layer, tileCoord);
                 replayGroup.replay(context, transform, 0, {}, replays);
             }

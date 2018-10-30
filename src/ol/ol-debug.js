@@ -26459,7 +26459,7 @@ function olInit() {
             stencil: true
         });
         
-        this.gl_.viewport(0, 0, 1680, 906);
+        this.gl_.viewport(0, 0, window.innerWidth, window.innerHeight);
         /**
          * @private
          * @type {ol.webgl.Context}
@@ -26573,6 +26573,7 @@ function olInit() {
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
+            this.gl_.viewport(0, 0, window.innerWidth, window.innerHeight);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
@@ -69406,17 +69407,10 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.triangulate_ = function (list, rtree) {
         var ccw = false;
         var simple = this.isSimple_(list, rtree);     
-
-        // console.log(list.first_.data.ol_uid); 
-        var test = list.first_.data.ol_uid;          
-        if(list.first_.data.ol_uid === 181700 || list.first_.data.ol_uid === 707826){
-            console.log(11);
-            debugger;
-        }
         // Start clipping ears
         while (list.getLength() > 3) {
             if (simple) {
-                if (!this.clipEars_(list, rtree, simple, ccw, test)) {
+                if (!this.clipEars_(list, rtree, simple, ccw)) {
                     if (!this.classifyPoints_(list, rtree, ccw)) {
                         // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
                         // introduce touching segments. However, the original data may have some.
@@ -69445,10 +69439,6 @@ function olInit() {
                 }
             }
         }
-        if(!list.first_){
-            console.log(22,'---', test);
-            debugger;
-        }
         if (list.getLength() === 3) {
             var numIndices = this.indices.length;
             this.indices[numIndices++] = list.getPrevItem().p0.i;
@@ -69466,7 +69456,7 @@ function olInit() {
      * @param {boolean} ccw Orientation of the polygon is counter-clockwise.
      * @return {boolean} There were processed ears.
      */
-    ol.render.webgl.PolygonReplay.prototype.clipEars_ = function (list, rtree, simple, ccw, test) {
+    ol.render.webgl.PolygonReplay.prototype.clipEars_ = function (list, rtree, simple, ccw) {
         var numIndices = this.indices.length;
         var start = list.firstItem();
         var s0 = list.getPrevItem();
@@ -69476,10 +69466,6 @@ function olInit() {
         var p0, p1, p2;
         var processedEars = false;
         do {
-            if(!s1){
-                console.log('===========', test);
-                debugger
-            }
             p0 = s1.p0;
             p1 = s1.p1;
             p2 = s2.p1;
@@ -69897,17 +69883,7 @@ function olInit() {
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
         if (ends.length > 0) {
-            if(ends[0] === 30 && ends[1] === 36 && ends[2] === 44){
-                // debugger
-                // [48, 76, 86, 92, 102, 108, 116]
-            }else if(ends[0] == 48 && ends[1] == 76 && ends[5] == 108 && ends[6] == 116 ){
-                // debugger
-            }else if(ends[0] === 30 && ends[1] === 40){                
-                // debugger
-            }else if(ends[0] == 68 && ends[1] == 76 && ends[5] == 108 && ends[6] == 116){
-                // window.test = true;
-                // debugger;
-            }else if((ends[0] == 28 && ends[1] == 272)){
+            if((ends[0] == 28 && ends[1] == 272)){
                 window.test = true;
                 // return;
                 // debugger
@@ -102016,9 +101992,7 @@ function olInit() {
                     // }
 
                     // ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
-                    if(replay instanceof ol.render.webgl.LineStringReplay){
-                        debugger
-                    }
+                    
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
                         // translate coordinates to webglCoordinates

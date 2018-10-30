@@ -16933,7 +16933,7 @@ function olInit() {
     ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
         let webglContext = {};
         if (isMain) {
-            // var canvas = document.createElement('CANVAS');
+            var canvas = document.createElement('CANVAS');
             if (opt_width) {
                 webglContext.width = opt_width;
             }
@@ -16941,9 +16941,9 @@ function olInit() {
                 webglContext.height = opt_height;
             }
 
-            webglContext.canvas = document.createElement('canvas');
-            // return canvas.getContext('webgl');
-            return webglContext;
+            // webglContext.canvas = document.createElement('canvas');
+            return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            // return webglContext;
         }
 
     };
@@ -26426,19 +26426,45 @@ function olInit() {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        this.context_ = ol.dom.createCanvasContext2D();
+        // this.context_ = ol.dom.createCanvasContext2D();
+        // this.context_ = ol.dom.createCanvasContextWebgl();
+        // this.context_.viewport(0, 0, 1680, 906);
+        // this.context_.webglContext = new ol.webgl.Context(this.context_.canvas, this.context_);
+        // this.context_.gl_ = ol.webgl.getContext(this.canvas_, {
+        //     antialias: true,
+        //     depth: true,
+        //     failIfMajorPerformanceCaveat: true,
+        //     preserveDrawingBuffer: false,
+        //     stencil: true
+        // });
 
         /**
          * @private
          * @type {HTMLCanvasElement}
          */
-        this.canvas_ = this.context_.canvas;
-
+        this.canvas_ = /** @type {HTMLCanvasElement} */
+            (document.createElement('CANVAS'));
+        // this.canvas_ = this.context_.canvas;
         this.canvas_.style.width = '100%';
         this.canvas_.style.height = '100%';
         this.canvas_.style.display = 'block';
         this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
         container.insertBefore(this.canvas_, container.childNodes[0] || null);
+
+        this.gl_ = ol.webgl.getContext(this.canvas_, {
+            antialias: true,
+            depth: true,
+            failIfMajorPerformanceCaveat: true,
+            preserveDrawingBuffer: false,
+            stencil: true
+        });
+        
+        this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+        /**
+         * @private
+         * @type {ol.webgl.Context}
+         */
+        this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
         /**
          * @private
@@ -26542,14 +26568,17 @@ function olInit() {
         }
 
         var context = this.context_;
+        var gl = context.getGL();
         var pixelRatio = frameState.pixelRatio;
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
+            this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
-            context.clearRect(0, 0, width, height);
+            // context.clearRect(0, 0, width, height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
         }
 
         var rotation = frameState.viewState.rotation;
@@ -26562,8 +26591,8 @@ function olInit() {
         ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
         if (rotation) {
-            context.save();
-            ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+            // context.save();
+            // ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
         }
 
         var viewResolution = frameState.viewState.resolution;
@@ -26582,7 +26611,7 @@ function olInit() {
         }
 
         if (rotation) {
-            context.restore();
+            // context.restore();
         }
 
         this.dispatchComposeEvent_(
@@ -29018,11 +29047,65 @@ function olInit() {
      */
     ol.render.canvas.LineStringReplay = function (
         tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+        this.fragment = ol.render.webgl.linestringreplay.defaultshader.fragment;
+        this.vertex = ol.render.webgl.linestringreplay.defaultshader.vertex;
+        this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
+        this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
+        this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
+        this.origin = [0, 0];
+        this.tmpMat4_ = [
+            1, 0, 0, 0, 0,
+            1, 0, 0, 0, 0,
+            1, 0, 0, 0, 0,
+            1
+        ];
+
         ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
+    /**
+     * webgl insert
+     */
+    ol.render.canvas.LineStringReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
+        // get the program
+        var program = context.getProgram(this.fragment, this.vertex);
+
+        // get the locations
+        var locations;
+        if (!this.defaultLocations_) {
+        locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
+            this.defaultLocations_ = locations;
+        } else {
+            locations = this.defaultLocations_;
+        }
+
+        context.useProgram(program);
+
+        // enable the vertex attrib arrays
+        gl.enableVertexAttribArray(locations.a_lastPos);
+        gl.vertexAttribPointer(locations.a_lastPos, 2, gl.FLOAT,
+            false, 28, 0);
+
+        gl.enableVertexAttribArray(locations.a_position);
+        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
+            false, 28, 8);
+
+        gl.enableVertexAttribArray(locations.a_nextPos);
+        gl.vertexAttribPointer(locations.a_nextPos, 2, gl.FLOAT,
+            false, 28, 16);
+
+        gl.enableVertexAttribArray(locations.a_direction);
+        gl.vertexAttribPointer(locations.a_direction, 1, gl.FLOAT,
+            false, 28, 24);
+
+        // Enable renderer specific uniforms.
+        gl.uniform2fv(locations.u_size, size);
+        gl.uniform1f(locations.u_pixelRatio, pixelRatio);
+
+        return locations;
+    }
 
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -29041,7 +29124,7 @@ function olInit() {
         this.instructions.push(moveToLineToInstruction);
         this.hitDetectionInstructions.push(moveToLineToInstruction);        
         this.webglStyle.push(Object.assign({}, this.state));
-        
+
         return end;
     };
 
@@ -29134,7 +29217,7 @@ function olInit() {
         state.lastStroke = 0;
         ol.render.canvas.Replay.prototype.applyStroke.call(this, state);
         this.instructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
-    };
+    };    
 
     goog.provide('ol.render.canvas.PolygonReplay');
 
@@ -29159,11 +29242,90 @@ function olInit() {
      */
     ol.render.canvas.PolygonReplay = function (
         tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-        ol.render.canvas.Replay.call(this,
+            this.fragment = ol.render.webgl.polygonreplay.defaultshader.fragment;
+            this.vertex = ol.render.webgl.polygonreplay.defaultshader.vertex;    
+            this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
+            this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
+            this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
+            this.origin = [0, 0];
+            this.tmpMat4_ = [
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1
+            ];
+
+            ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
+    /**
+     * webgl insert
+     */
+    ol.render.canvas.PolygonReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
+        // get the program
+        var program = context.getProgram(this.fragment, this.vertex);
+
+        // get the locations
+        var locations;
+        if (!this.defaultLocations_) {
+        locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
+            this.defaultLocations_ = locations;
+        } else {
+            locations = this.defaultLocations_;
+        }
+
+        context.useProgram(program);
+
+        // enable the vertex attrib arrays
+        gl.enableVertexAttribArray(locations.a_position);
+        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
+            false, 8, 0);
+
+        return locations;
+    }
+
+    ol.render.canvas.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
+        var this$1 = this;
+
+        //Save GL parameters.
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+
+        if (!hitDetection) {
+            gl.enable(gl.DEPTH_TEST);
+            // gl.depthMask(true);
+            // gl.depthFunc(gl.NOTEQUAL);
+        }
+
+        if (!isEmpty(skippedFeaturesHash)) {
+            this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+        } else {
+            //Draw by style groups to minimize drawElements() calls.
+            var i, start, end, nextStyle;
+            end = this.startIndices[this.startIndices.length - 1];
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+                start = this$1.styleIndices_[i];
+                nextStyle = this$1.styles_[i];
+                this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+                this$1.drawElements(gl, context, start, end);
+                gl.clear(gl.DEPTH_BUFFER_BIT);
+                end = start;
+            }
+        }
+        if (!hitDetection) {
+            gl.disable(gl.DEPTH_TEST);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            //Restore GL parameters.
+            // gl.depthMask(tmpDepthMask);
+            // gl.depthFunc(tmpDepthFunc);
+        }
+    };
+
+    ol.render.canvas.PolygonReplay.prototype.setFillStyle_ = function (gl, color) {
+        gl.uniform4fv(this.defaultLocations_.u_color, color);
+    };
 
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -30431,11 +30593,11 @@ function olInit() {
         }
         
         if(flag===false){
-            var webglContext = ol.webglContext;
-            var width = webglContext.canvas.width;
-            var height = webglContext.canvas.height;
-            context.drawImage(webglContext.canvas, 0, 0, width, height);
-            ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
+            // var webglContext = ol.webglContext;
+            // var width = webglContext.canvas.width;
+            // var height = webglContext.canvas.height;
+            // context.drawImage(webglContext.canvas, 0, 0, width, height);
+            // ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
         }
         // context.restore();
     };
@@ -31571,7 +31733,7 @@ function olInit() {
     ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function (
         tile, frameState, layerState, x, y, w, h, gutter, transition) {
         var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
-        this.createReplayGroup_(vectorImageTile, frameState);
+        this.createReplayGroup_(vectorImageTile, frameState, x, y);
         if (this.context) {
             this.renderTileImage_(vectorImageTile, frameState, layerState);
             ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
@@ -66540,13 +66702,10 @@ function olInit() {
             this.state_.lineDashOffset = strokeStyleLineDashOffset ?
                 strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
             strokeStyleColor = strokeStyle.getColor();
-            if (!(strokeStyleColor instanceof CanvasGradient) &&
-                !(strokeStyleColor instanceof CanvasPattern)) {
+            if (strokeStyleColor) {
                 strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
                     return i != 3 ? c / 255 : c;
                 }) || ol.render.webgl.defaultStrokeStyle;
-            } else {
-                strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
             }
             strokeStyleWidth = strokeStyle.getWidth();
             strokeStyleWidth = strokeStyleWidth !== undefined ?
@@ -66556,13 +66715,10 @@ function olInit() {
             strokeStyleWidth = 0;
         }
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (!(fillStyleColor instanceof CanvasGradient) &&
-            !(fillStyleColor instanceof CanvasPattern)) {
+        if (fillStyleColor) {
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
-        } else {
-            fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
         if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
             !this.state_.fillColor || !ol.array.equals(this.state_.fillColor, fillStyleColor) ||
@@ -68188,8 +68344,17 @@ function olInit() {
         }
         this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
         if (holeFlatCoordinates.length) {
-            var i, ii;
+            var i, ii, deleteIndexArray = [];
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+                var end = holeFlatCoordinates[i].length;
+                var lastCoord = end - stride;
+                var offset = 0;
+
+                // FIXME Eric
+                if (holeFlatCoordinates[i][offset] === holeFlatCoordinates[i][lastCoord] &&
+                    holeFlatCoordinates[i][offset + 1] === holeFlatCoordinates[i][lastCoord + 1] && (end - offset) / stride <= 3) {
+                        continue;
+                    }
                 if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0,
                     holeFlatCoordinates[i].length, stride)) {
                     holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
@@ -68199,6 +68364,9 @@ function olInit() {
                     holeFlatCoordinates[i].length, stride);
             }
         }
+
+        // delete
+
     };
 
 
@@ -68469,8 +68637,7 @@ function olInit() {
         this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
             strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
         var strokeStyleColor = strokeStyle.getColor();
-        if (!(strokeStyleColor instanceof CanvasGradient) &&
-            !(strokeStyleColor instanceof CanvasPattern)) {
+        if (strokeStyleColor) {
             strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultStrokeStyle;
@@ -68902,14 +69069,37 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function (
         flatCoordinates, holeFlatCoordinates, stride) {
         // Triangulate the polygon
-        var outerRing = new ol.structs.LinkedList();
+        var outerRing = new ol.structs.LinkedList();        
         var rtree = new ol.structs.RBush();
         // Initialize the outer ring
         this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
-        var maxCoords = this.getMaxCoords_(outerRing);
+        var maxCoords = this.getMaxCoords_(outerRing);     
+        var maxYCoords = this.getMaxCoords_(outerRing);     
+        var minCoords = this.getMinCoords_(outerRing);     
+        var minYCoords = this.getMinCoords_(outerRing);     
+
+        if(false && window.test){
+            console.log('flatCoordinates:');
+            var flatCoordinatesArray = [];
+            for(var i = 0; i < flatCoordinates.length; i+=2){
+                flatCoordinatesArray.push(ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326'));
+            }
+            console.log(JSON.stringify(flatCoordinatesArray));
+
+            window.test = false
+            console.log('-------');
+            for(var i = 0; i < holeFlatCoordinates.length; i++){
+                var holeFlatCoordinatesArray = [];
+                var holeFlatCoordinate = holeFlatCoordinates[i];
+                for(var j = 0; j < holeFlatCoordinate.length; j+=2){
+                    holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
+                }
+                console.log(JSON.stringify(holeFlatCoordinatesArray));
+            } 
+        }
 
         // Eliminate holes, if there are any
-        if (holeFlatCoordinates.length) {
+        if(false && holeFlatCoordinates.length) {
             var i, ii;
             var holeLists = [];
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
@@ -68918,9 +69108,20 @@ function olInit() {
                     maxCoords: undefined,
                     rtree: new ol.structs.RBush()
                 };
-                holeLists.push(holeList);
                 this.processFlatCoordinates_(holeFlatCoordinates[i],
                     stride, holeList.list, holeList.rtree, false);
+                
+                
+                // FIXME Eric
+                // var maxCoords_hole = this.getMaxCoords_(holeList.list);     
+                // var maxYCoords_hole = this.getMaxYCoords_(holeList.list);     
+                // var minCoords_hole = this.getMinCoords_(holeList.list); 
+                // var minYCoords_hole = this.getMinYCoords_(holeList.list); 
+                // if(maxCoords_hole[0] <= minCoords[0] || minCoords_hole[0] >= maxCoords[0]
+                //     || maxYCoords_hole[1] <= minYCoords[1] || minYCoords_hole[1] >= maxYCoords[1]){
+                //     continue;
+                // }
+                holeLists.push(holeList);
                 this.classifyPoints_(holeList.list, holeList.rtree, true);
                 holeList.maxCoords = this.getMaxCoords_(holeList.list);
             }
@@ -68928,6 +69129,7 @@ function olInit() {
                 return b.maxCoords[0] === a.maxCoords[0] ?
                     a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
             });
+
             for (i = 0; i < holeLists.length; ++i) {
                 var currList = holeLists[i].list;
                 var start = currList.firstItem();
@@ -68941,6 +69143,7 @@ function olInit() {
                     }
                     currItem = currList.nextItem();
                 } while (start !== currItem);
+                
                 if (!intersection) {
                     if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
                         rtree.concat(holeLists[i].rtree);
@@ -69030,7 +69233,50 @@ function olInit() {
 
         return maxCoords;
     };
+    ol.render.webgl.PolygonReplay.prototype.getMaxYCoords_ = function (list) {
+        var start = list.firstItem();
+        var seg = start;
+        var maxCoords = [seg.p0.x, seg.p0.y];
 
+        do {
+            seg = list.nextItem();
+            if (seg.p0.y > maxCoords[1]) {
+                maxCoords = [seg.p0.x, seg.p0.y];
+            }
+        } while (seg !== start);
+
+        return maxCoords;
+    };
+
+    ol.render.webgl.PolygonReplay.prototype.getMinCoords_ = function (list) {
+        var start = list.firstItem();
+        var seg = start;
+        var minCoords = [seg.p0.x, seg.p0.y];
+
+        do {
+            seg = list.nextItem();
+            if (seg.p0.x < minCoords[0]) {
+                minCoords = [seg.p0.x, seg.p0.y];
+            }
+        } while (seg !== start);
+
+        return minCoords;
+    };
+
+    ol.render.webgl.PolygonReplay.prototype.getMinYCoords_ = function (list) {
+        var start = list.firstItem();
+        var seg = start;
+        var minCoords = [seg.p0.x, seg.p0.y];
+
+        do {
+            seg = list.nextItem();
+            if (seg.p0.y < minCoords[1]) {
+                minCoords = [seg.p0.x, seg.p0.y];
+            }
+        } while (seg !== start);
+
+        return minCoords;
+    };
 
     /**
      * Classifies the points of a polygon list as convex, reflex. Removes collinear vertices.
@@ -69153,8 +69399,7 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.triangulate_ = function (list, rtree) {
         var ccw = false;
-        var simple = this.isSimple_(list, rtree);
-
+        var simple = this.isSimple_(list, rtree);     
         // Start clipping ears
         while (list.getLength() > 3) {
             if (simple) {
@@ -69627,10 +69872,16 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
+    ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
         if (ends.length > 0) {
+            if((ends[0] == 28 && ends[1] == 272)){
+                window.test = true;
+                // return;
+                // debugger
+            }
+
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
@@ -69654,7 +69905,17 @@ function olInit() {
                 this.lineStringReplay.setPolygonStyle(feature);
 
                 this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                this.drawCoordinates_(outerRing, holes, stride);
+                
+                // Austrilia
+                // console.log(this.lineStringReplay.vertices);
+                // FIXME Eric
+                var holesTmp = [];
+                for(var i = 0; i < holes.length; i++){
+                    if(holes[i].length >= 8){
+                        holesTmp.push(holes[i]);
+                    }
+                }
+                this.drawCoordinates_(outerRing, holesTmp, stride);
             }
         }
     };
@@ -69872,13 +70133,10 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function (fillStyle, strokeStyle) {
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (!(fillStyleColor instanceof CanvasGradient) &&
-            !(fillStyleColor instanceof CanvasPattern)) {
+        if (fillStyleColor) {
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
-        } else {
-            fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
         if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
             this.state_.fillColor = fillStyleColor;
@@ -69889,10 +70147,36 @@ function olInit() {
         if (strokeStyle) {
             this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
         } else {
+            if(!window.count){
+                window.colors = [
+                    [0,0,0,1],
+                    [100,0,0,1],
+                    [0,100,0,1],
+                    [0,0,100,1],
+                    [200,0,0,1],
+                    [0,200,0,1],
+                    [0,0,200,1],
+                    [100,100,0,1],
+                    [0,100,100,1],
+                    [100,0,100,1],
+                    [100,100,100,1],
+                    [200,200,0,1],
+                    [0,200,200,1],
+                    [200,0,200,1],
+                    [200,200,200,1]
+                ]
+                window.count = 0;
+            }
+            var test = window.colors[(window.count++) % window.colors.length];
+            if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
+                // debugger
+            }
+            
             var nullStrokeStyle = new ol.style.Stroke({
-                color: [0, 0, 0, 0],
-                lineWidth: 0
-            });
+                color: test,
+                lineWidth: 1
+            });  
+            
             this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
         }
     };
@@ -101482,8 +101766,7 @@ function olInit() {
         }
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
-            var styleJsonCache = self.styleJsonCache[formatId];
-
+            var styleJsonCache = self.styleJsonCache[formatId];            
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
@@ -101512,7 +101795,7 @@ function olInit() {
             var vectorTileCache = null;
             vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
-            if (self.vectorTilesData[formatId] === undefined) {
+            if (self.vectorTilesData[formatId] === undefined) {                
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
             vectorTileCache = self.vectorTilesData[formatId];
@@ -101544,7 +101827,9 @@ function olInit() {
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
 
-            var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
+            var replayGroup = new ol.render.webgl.ReplayGroup(
+                replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
+            // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
 
             var mainDrawingInstructs = [];
             var mainFeatures = [];
@@ -101668,7 +101953,7 @@ function olInit() {
                     }
                 }
             }
-            replayGroup.finish();
+            // replayGroup.finish();
             strategyTree.clear();
 
             var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
@@ -101692,62 +101977,53 @@ function olInit() {
                     replay.renderedTransform_ = transform;
                     resultData[zIndex][replayType]["renderedTransform_"] = transform.slice(0);
 
-                    if (!replay.pixelCoordinates_) {
-                        replay.pixelCoordinates_ = [];
-                    }
+                    // if (!replay.pixelCoordinates_) {
+                    //     replay.pixelCoordinates_ = [];
+                    // }
 
-                    ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
-
+                    // ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
+                    
                     //serilize
                     if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
-                        // var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
-                        // var view = new Int32Array(buffers);
-                        // for (var i = 0; i < view.length; i++) {
-                        //     view[i] = replay.pixelCoordinates_[i];
-                        // }
-
                         // translate coordinates to webglCoordinates
-                        var pixelCoordinates_ = replay.pixelCoordinates_;
+                        // var pixelCoordinates_ = replay.pixelCoordinates_;
                         var webglCoordinates = [];                        
                         var width = self.tileSize;
                         var height = self.tileSize;
-                        for (var j = 0, tempLength = pixelCoordinates_.length; j < tempLength; j += 2) {
-                            webglCoordinates[j] = 2 * pixelCoordinates_[j] / width - 1;
-                            webglCoordinates[j + 1] = 1 - 2 * pixelCoordinates_[j + 1] / height;
-                        }   
+                        // for (var j = 0, tempLength = pixelCoordinates_.length; j < tempLength; j += 2) {
+                        //     webglCoordinates[j] = 2 * (pixelCoordinates_[j] + messageData[11]) / 2048 - 1;
+                        //     webglCoordinates[j + 1] = 1 - 2 * (pixelCoordinates_[j + 1] + messageData[12]) / 1536;
+                        // } 
 
-                        resultData[zIndex][replayType]["pixelCoordinates_"] = pixelCoordinates_;
+                        // resultData[zIndex][replayType]["pixelCoordinates_"] = pixelCoordinates_.slice(0);
                         resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
-                        resultData[zIndex][replayType]["webglCoordinates"] = webglCoordinates;
+                        resultData[zIndex][replayType]["webglCoordinates"] = replay.coordinates;
                         resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
                         resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle.slice(0);
                     } else {
-                        resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
+                        // resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
                     }
 
-                    resultData[zIndex][replayType]["instructions"] = replay.instructions;
-                    // resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+                    // resultData[zIndex][replayType]["instructions"] = replay.instructions;
+                    // resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
 
-                    if (!replay.minimalist) {
-                        // resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-                        resultData[zIndex][replayType]["coordinates"] = replay.coordinates;
-                        // resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions.slice(0);
-                        resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
-                    }
+                    // if (!replay.minimalist) {
+                    //     resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
+                    // }
 
-                    replay.instructions.length = 0;
-                    replay.hitDetectionInstructions.length = 0;
-                    replay.coordinates.length = 0;
-                    replay.pixelCoordinates_.length = 0;
-                    replay.webglEnds && (replay.webglEnds.length = 0);
-                    replay.webglStyle && (replay.webglStyle.length = 0);
-                    delete replay['webglDrawType'];
+                    // replay.instructions.length = 0;
+                    // replay.hitDetectionInstructions.length = 0;
+                    // replay.coordinates.length = 0;
+                    // // replay.pixelCoordinates_.length = 0;
+                    // replay.webglEnds && (replay.webglEnds.length = 0);
+                    // replay.webglStyle && (replay.webglStyle.length = 0);
+                    // delete replay['webglDrawType'];
                 }
             }
 
             transform.length = 0;
-
-            return { 'replays': resultData, features: mainFeatures, instructs: mainDrawingInstructs };
+            
+            return { 'replays': replayGroup.replaysByZIndex_, features: mainFeatures, instructs: mainDrawingInstructs };
         }
         
         self.getMainInstructs = function (oTile, mainGeoStyleIds) {
