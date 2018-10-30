@@ -570,6 +570,25 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             this.endGeometry(geometry, feature);
             return;
         }
+
+        let begin = this.coordinates.length;
+        let flatCoordinates = this.labelPosition;
+        let end = 2;
+        let stride = 2;
+        let label = this.label;
+
+        if (geometry.getType() === GeometryType.POLYGON) {
+            stride = 3;
+        }
+        end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
+        this.beginGeometry(geometry, feature);
+        if (textState.backgroundFill || textState.backgroundStroke) {
+            this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
+            this.updateFillStyle(this.state, this.applyFill, geometry);
+            this.updateStrokeStyle(this.state, this.applyStroke);
+        }
+        this.drawTextImage_(label, begin, end);
+        this.endGeometry(geometry, feature);
     }
     drawChars_(begin, end, declutterGroup) {
         var strokeState = this.textStrokeState_;

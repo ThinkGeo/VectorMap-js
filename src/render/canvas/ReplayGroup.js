@@ -21,14 +21,14 @@ import { create as createTransform, compose as composeTransform } from 'ol/trans
 /**
  * @type {Object<ReplayType, typeof CanvasReplay>}
  */
-// const BATCH_CONSTRUCTORS = {
-//     'Circle': CanvasPolygonReplay,
-//     'Default': CanvasReplay,
-//     'Image': CanvasImageReplay,
-//     'LineString': CanvasLineStringReplay,
-//     'Polygon': CanvasPolygonReplay,
-//     'Text': CanvasTextReplay
-//   };
+const BATCH_CONSTRUCTORS = {
+    'Circle': CanvasPolygonReplay,
+    'Default': CanvasReplay,
+    'Image': CanvasImageReplay,
+    'LineString': CanvasLineStringReplay,
+    'Polygon': CanvasPolygonReplay,
+    'Text': CanvasTextReplay
+  };
   
   
   class CanvasReplayGroup extends ReplayGroup {

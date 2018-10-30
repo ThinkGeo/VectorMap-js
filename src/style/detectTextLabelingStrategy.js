@@ -3,7 +3,7 @@ import { GeoTextStyle } from "./geoTextStyle";
 import GeometryType from "ol/geom/GeometryType";
 
 
-export class DetectTextLabelingStrategy extends TextLabelingStrategy {
+class DetectTextLabelingStrategy extends TextLabelingStrategy {
     constructor() {
         super();
         this.markLocationCore = this.markLocationCoreCustom;
@@ -136,3 +136,5 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         return newFlatCoordinates;
     }
 }
+
+export default DetectTextLabelingStrategy;

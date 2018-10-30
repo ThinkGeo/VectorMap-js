@@ -1,17 +1,40 @@
 import GeoStyle from "./geoStyle";
 import GeometryType from "ol/geom/GeometryType";
 import { measureTextHeight } from "ol/render/canvas";
+import { measureTextWidth } from 'ol/render/canvas';
 import LRUCache from "ol/structs/LRUCache";
-import { LabelCache } from "ol/render/canvas";
+import { labelCache } from "ol/render/canvas";
 import { getUid } from 'ol/util';
 import { TEXT_ALIGN } from "ol/render/replay";
 import { defaultTextAlign, defaultLineDash } from "ol/render/canvas";
 import { createCanvasContext2D } from "ol/dom";
 import { SAFARI, CANVAS_LINE_DASH } from "ol/has";
 
+
 import { Style, Fill, Stroke, Text } from 'ol/style'
 import DetectTextLabelingStrategy from "./detectTextLabelingStrategy";
 import TextLabelingStrategy from "./textLabelingStrategy";
+
+const BATCH_CONSTRUCTORS_DEFAULT = {
+    "Point": TextLabelingStrategy,
+    "MultiPoint": TextLabelingStrategy,
+    "LineString": TextLabelingStrategy,
+    "Circle": TextLabelingStrategy,
+    "MultiLineString": TextLabelingStrategy,
+    "Polygon": TextLabelingStrategy,
+    "MultiPolygon": TextLabelingStrategy
+};
+
+const BATCH_CONSTRUCTORS_DETECT = {
+    "Point": DetectTextLabelingStrategy,
+    "MultiPoint": DetectTextLabelingStrategy,
+    "LineString": DetectTextLabelingStrategy,
+    "Circle": DetectTextLabelingStrategy,
+    "MultiLineString": DetectTextLabelingStrategy,
+    "Polygon": DetectTextLabelingStrategy,
+    "MultiPolygon": DetectTextLabelingStrategy
+};
+
 
 class GeoTextStyle extends GeoStyle {
     constructor(styleJson) {
@@ -20,6 +43,7 @@ class GeoTextStyle extends GeoStyle {
         this.textBaseline = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
         this.textTransforms = ["default", "uppercase", "lowercase"];
         this.labelInfos = new LRUCache(512);
+        this.charWidths = {};
 
         if (styleJson) {
             this.align = styleJson["text-align"];
@@ -62,6 +86,7 @@ class GeoTextStyle extends GeoStyle {
             this.splineType = styleJson["text-spline-type"];
             // TODO
             this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
+
 
         }
     }
@@ -128,6 +153,15 @@ class GeoTextStyle extends GeoStyle {
 
         if (this.placementType) {
             textStyle.setPlacement(this.placementType);
+        }
+
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for (let i = 0; i < chars.length; i++) {
+            this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
+        }
+        this.charWidths[" "] = measureTextWidth(this.font, " ");
+        for (let i = 0; i <= 9; i++) {
+            this.charWidths[i] = measureTextWidth(this.font, i);
         }
     }
 
@@ -199,9 +233,9 @@ class GeoTextStyle extends GeoStyle {
 
             let Constructor = undefined;
             if (this.placementType === "default") {
-                Constructor = this.BATCH_CONSTRUCTORS_DEFAULT[geometryType];
+                Constructor = BATCH_CONSTRUCTORS_DEFAULT[geometryType];
             } else if (this.placementType === "detect") {
-                Constructor = this.BATCH_CONSTRUCTORS_DETECT[geometryType];
+                Constructor = BATCH_CONSTRUCTORS_DETECT[geometryType];
             }
 
             let textLabelingStrategy = new Constructor();
@@ -453,6 +487,192 @@ class GeoTextStyle extends GeoStyle {
         return labelCache.get(key);
     }
 
+    drawMask(context, x, y, width, height) {
+        var fill = undefined;
+        var stroke = undefined;
+        if (this.maskColor) {
+            fill = new Fill();
+            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ? this.opacity : 1));
+        }
+        if (this.maskOutlineColor && this.maskOutlineWidth) {
+            stroke = new Stroke();
+            if (this.maskOutlineColor) {
+                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ? this.opacity : 1));
+            }
+            if (this.maskOutlineWidth) {
+                stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);
+            }
+        }
+        if (this.maskType) {
+            this.drawnMask = true;
+        }
+        else {
+            this.drawnMask = false;
+        }
+        switch (this.maskType) {
+            case "default":
+            case "Default":
+            case "rectangle":
+            case "Rectangle":
+                this.drawRectangle(context, x, y, width, height, fill, stroke);
+                break;
+            case "roundedCorners":
+            case "RoundedCorners":
+                this.drawRoundRectangle(context, x, y, width, height, fill, stroke);
+                break;
+            case "roundedEnds":
+            case "RoundedEnds":
+                this.drawRoundedEnds(context, x, y, width, height, fill, stroke);
+                break;
+            case "circle":
+            case "Circle":
+                this.drawCircle(context, x, y, width, height, fill, stroke);
+                break;
+        }
+    }
+
+    drawRectangle(context, x, y, width, height, fill, stroke) {
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fillRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
+        }
+        if (stroke) {
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.strokeRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
+        }
+    };
+
+    drawRoundRectangle(context, x, y, width, height, fill, stroke) {
+        var radius = (width < height ? width : height) * 0.3;
+        // width *= 0.9;
+        // height *= 0.8;
+        if (stroke) {
+            x = x + (stroke.getWidth() ? stroke.getWidth() : 0);
+            y = y + (stroke.getWidth() ? stroke.getWidth() : 0);
+        }
+        context.beginPath();
+        context.moveTo(x + radius + stroke.getWidth() * 2, y);
+        context.lineTo(x + width - radius + stroke.getWidth() * 2, y);
+        context.quadraticCurveTo(x + width + stroke.getWidth() * 2, y, x + width + stroke.getWidth() * 2, y + radius);
+        context.lineTo(x + width + stroke.getWidth() * 2, y + height - radius);
+        context.quadraticCurveTo(x + width + stroke.getWidth() * 2, y + height, x + width - radius + stroke.getWidth() * 2, y + height);
+        context.lineTo(x + radius, y + height);
+        context.quadraticCurveTo(x, y + height, x, y + height - radius);
+        context.lineTo(x, y + radius);
+        context.quadraticCurveTo(x, y, x + radius, y);
+        context.closePath();
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+        if (stroke) {
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+    };
+
+    drawRoundedEnds(context, x, y, width, height, fill, stroke) {
+        var radius = (width < height ? width : height) * 0.2;
+        // width *= 0.9;
+        // height *= 0.8;
+        var strokeWidth = (stroke.getWidth() ? stroke.getWidth() : 0);
+        if (stroke) {
+            x = x + strokeWidth;
+            y = y + strokeWidth;
+        }
+        context.beginPath();
+        context.moveTo(x + radius, y);
+        context.lineTo(x + width - radius + strokeWidth * 2, y);
+        context.quadraticCurveTo(x + width + strokeWidth * 2, y + height * 0.5, x + width - radius + strokeWidth * 2, y + height);
+        context.lineTo(x + radius, y + height);
+        context.quadraticCurveTo(x, y + height * 0.5, x + radius, y);
+        context.closePath();
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+        if (stroke) {
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+    };
+
+    drawCircle(context, x, y, width, height, fill, stroke) {
+        context.canvas.width = context.canvas.width > context.canvas.height ? context.canvas.width : context.canvas.height;
+        context.canvas.height = context.canvas.width;
+        var radius = 0;
+        if (stroke) {
+            radius -= stroke.getWidth();
+        }
+        radius += context.canvas.width * 0.5;
+        context.beginPath();
+        context.arc(x + context.canvas.width * 0.5, y + context.canvas.width * 0.5, radius, 0, 2 * Math.PI, false);
+        context.closePath();
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+        if (stroke) {
+            context.lineWidth = stroke.getWidth() * window.devicePixelRatio;
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+    };
+
+    getTextWithNumericFormat(featureText) {
+        var tmpArguments = this.numericFormat.split(",");
+        var numericFormatOptions = {};
+        for (var _i = 0, tmpArguments_1 = tmpArguments; _i < tmpArguments_1.length; _i++) {
+            var tmpArgument = tmpArguments_1[_i];
+            var keyValuePair = tmpArgument.split(":");
+            switch (keyValuePair[0].trim()) {
+                case "localeMatcher":
+                    numericFormatOptions.localeMatcher = keyValuePair[1].trim();
+                    break;
+                case "style":
+                    numericFormatOptions.style = keyValuePair[1].trim();
+                    break;
+                case "currency":
+                    numericFormatOptions.currency = keyValuePair[1].trim();
+                    break;
+                case "currencyDisplay":
+                    numericFormatOptions.currencyDisplay = keyValuePair[1].trim();
+                    break;
+                case "useGrouping":
+                    numericFormatOptions.useGrouping = keyValuePair[1].trim();
+                    break;
+                case "minimumIntegerDigits":
+                    numericFormatOptions.minimumIntegerDigits = keyValuePair[1].trim();
+                    break;
+                case "minimumFractionDigits":
+                    numericFormatOptions.minimumFractionDigits = keyValuePair[1].trim();
+                    break;
+                case "maximumFractionDigits":
+                    numericFormatOptions.maximumFractionDigits = keyValuePair[1].trim();
+                    break;
+                case "minimumSignificantDigits":
+                    numericFormatOptions.minimumSignificantDigits = keyValuePair[1].trim();
+                    break;
+                case "maximumSignificantDigits":
+                    numericFormatOptions.maximumSignificantDigits = keyValuePair[1].trim();
+                    break;
+            }
+        }
+        var numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
+        return numeric.format(Number(featureText));
+    };
+
+    getTextWithDateFormat(featureText) {
+        return (new Date(featureText)).format(this.dateFormat);
+    };
+
+    getTextWithFormat(featureText) {
+        return String.format(this.textFormat, featureText);
+    };
+
     getTextTransform(featureText) {
         if (featureText !== undefined) {
             switch (this.textTransform) {
@@ -468,27 +688,83 @@ class GeoTextStyle extends GeoStyle {
         }
         return featureText;
     }
+
+    wrapText(text, font) {
+        let resultText;
+
+        if (text !== "") {
+            let lines = [text];
+            let widths = [];
+            let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
+
+            let wrapWidth = this.wrapWidth;
+            let wrapCharacter = " ";
+            let isWrapBefore = this.wrapBefore;
+
+            if (wrapWidth > 0 && width > wrapWidth && text.includes(wrapCharacter)) {
+                let textLines = [];
+                lines = text.split(wrapCharacter);
+                let wrapLines = [];
+                let wrapWidthSum = 0;
+                let tmpWrapWidth;
+
+                if (isWrapBefore) {
+                    for (let line of lines) {
+                        let tmpLine = [line];
+                        tmpWrapWidth = this.getEstimatedWidth(font, tmpLine, widths, this.letterSpacing);
+
+                        wrapWidthSum += tmpWrapWidth;
+                        if (tmpWrapWidth > wrapWidth) {
+                            wrapLines = [];
+                            textLines = [];
+                            wrapWidthSum = 0;
+                            break;
+                        }
+
+                        if (wrapLines.length > 0) {
+                            if (wrapWidthSum > wrapWidth) {
+                                wrapLines.push("\n");
+                                textLines.push(wrapLines.join(""));
+                                wrapLines = [];
+                                wrapWidthSum = 0;
+                            }
+                        }
+
+                        wrapLines.push(" " + line);
+                    }
+
+                    if (wrapLines.length > 0) {
+                        textLines.push(wrapLines.join(""));
+                    }
+                } else {
+                    for (let line of lines) {
+                        wrapLines.push(" " + line);
+                        let tmpLine = [line];
+                        tmpWrapWidth = this.getEstimatedWidth(font, tmpLine, widths, this.letterSpacing);
+                        wrapWidthSum += tmpWrapWidth;
+
+                        if (wrapWidthSum > wrapWidth) {
+                            wrapLines.push("\n");
+                            textLines.push(wrapLines.join(""));
+                            wrapLines = [];
+                            wrapWidthSum = 0;
+                        }
+                    }
+
+                    if (wrapLines.length > 0) { textLines.push(wrapLines.join("")); }
+                }
+
+                resultText = textLines.join("");
+                if (resultText.lastIndexOf("\n") === resultText.length - 1) {
+                    resultText = resultText.substr(0, resultText.length - 1);
+                }
+            } else {
+                resultText = text;
+            }
+        }
+
+        return resultText;
+    }
 }
-
-
-GeoTextStyle["BATCH_CONSTRUCTORS_DEFAULT"] = {
-    Point: TextLabelingStrategy,
-    MultiPoint: TextLabelingStrategy,
-    LineString: TextLabelingStrategy,
-    Circle: TextLabelingStrategy,
-    MultiLineString: TextLabelingStrategy,
-    Polygon: TextLabelingStrategy,
-    MultiPolygon: TextLabelingStrategy
-};
-
-GeoTextStyle["BATCH_CONSTRUCTORS_DETECT"] = {
-    Point: DetectTextLabelingStrategy,
-    MultiPoint: DetectTextLabelingStrategy,
-    LineString: DetectTextLabelingStrategy,
-    Circle: DetectTextLabelingStrategy,
-    MultiLineString: DetectTextLabelingStrategy,
-    Polygon: DetectTextLabelingStrategy,
-    MultiPolygon: DetectTextLabelingStrategy
-};
 
 export default GeoTextStyle;

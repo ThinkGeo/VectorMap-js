@@ -1,23 +1,23 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import {getUid} from 'ol/util';
+import { getUid } from 'ol/util';
 import LayerType from 'ol/LayerType';
 import TileState from 'ol/TileState';
 import ViewHint from 'ol/ViewHint';
-import {createCanvasContext2D} from 'ol/dom';
-import {listen, unlisten} from 'ol/events';
+import { createCanvasContext2D } from 'ol/dom';
+import { listen, unlisten } from 'ol/events';
 import EventType from 'ol/events/EventType';
 import rbush from 'rbush';
-import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from 'ol/extent';
+import { buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects } from 'ol/extent';
 import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
-import {equivalent as equivalentProjection} from 'ol/proj';
+import { equivalent as equivalentProjection } from 'ol/proj';
 import Units from 'ol/proj/Units';
 import ReplayType from 'ol/render/ReplayType';
-import {labelCache, rotateAtOffset} from 'ol/render/canvas';
-import CanvasReplayGroup, {replayDeclutter} from 'ol/render/canvas/ReplayGroup';
-import {ORDER} from 'ol/render/replay';
-import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector';
+import { labelCache, rotateAtOffset } from 'ol/render/canvas';
+import CanvasReplayGroup, { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
+import { ORDER } from 'ol/render/replay';
+import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
 import {
   create as createTransform,
   compose as composeTransform,
@@ -34,7 +34,7 @@ import CanvasTileLayerRenderer from './TileLayer';
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
-    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
+  ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
   'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
 };
 
@@ -108,9 +108,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getTile(z, x, y, pixelRatio, projection) {
     const tile = super.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() === TileState.LOADED) {
-      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection);
       if (this.context) {
-        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection);
       }
     }
     return tile;
@@ -157,7 +157,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const replayState = tile.getReplayState(layer);
     if (!replayState.dirty && replayState.renderedRevision == revision &&
-        replayState.renderedRenderOrder == renderOrder) {
+      replayState.renderedRenderOrder == renderOrder) {
       return;
     }
 
@@ -194,7 +194,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
        * @param {import("../../Feature.js").FeatureLike} feature Feature.
        * @this {CanvasVectorTileLayerRenderer}
        */
-      const render = function(feature) {
+      const render = function (feature) {
         let styles;
         const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
         if (styleFunction) {
@@ -269,7 +269,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
            * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
            */
-          function(feature) {
+          function (feature) {
             const key = getUid(feature).toString();
             if (!(key in features)) {
               features[key] = true;
@@ -413,7 +413,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       if (rotation) {
         rotateAtOffset(context, rotation,
-          /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
+          /** @type {number} */(offsetX), /** @type {number} */(offsetY));
       }
     }
     super.postCompose(context, frameState, layerState);
@@ -491,7 +491,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
  * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasVectorTileLayerRenderer['handles'] = function(layer) {
+CanvasVectorTileLayerRenderer['handles'] = function (layer) {
   return layer.getType() === LayerType.VECTOR_TILE;
 };
 
@@ -502,8 +502,8 @@ CanvasVectorTileLayerRenderer['handles'] = function(layer) {
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
  * @return {CanvasVectorTileLayerRenderer} The layer renderer.
  */
-CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */ (layer));
+CanvasVectorTileLayerRenderer['create'] = function (mapRenderer, layer) {
+  return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */(layer));
 };
 
 

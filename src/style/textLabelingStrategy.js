@@ -51,3 +51,5 @@ export class TextLabelingStrategy {
         return applyTransform(frameState.coordinateToPixelTransform, coordinate.slice(0, 2));
     }
 }
+
+export default TextLabelingStrategy;

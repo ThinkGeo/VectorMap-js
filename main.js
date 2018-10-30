@@ -30,10 +30,10 @@ var tilegrid = new Tile({
 
 
 var map = new Map({
-  layers: [vectorTile, tilegrid],
+  layers: [vectorTile],
   target: 'map',
   view: new View({
     center: fromLonLat([-96.79748, 32.78819]),
-    zoom: 15
+    zoom: 5
   })
 });
