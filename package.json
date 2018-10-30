@@ -27,6 +27,7 @@
     "webpack-stream": "^4.0.0"
   },
   "dependencies": {
+    "hawk": "^7.0.7",
     "lite-server": "^2.3.0",
     "openlayers": "^4.6.4"
   }
