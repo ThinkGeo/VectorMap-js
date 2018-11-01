@@ -8,17 +8,28 @@ import { equivalent as equivalentProjection } from 'ol/proj';
 import { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
 import { createCanvasContext2D } from 'ol/dom';
 import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
-import { compose as composeTransform } from 'ol/transform';
 import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
 import Units from 'ol/proj/Units';
 import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
 import rbush from 'rbush';
+import ReplayType from 'ol/render/ReplayType';
+import {
+    compose as composeTransform,
+    reset as resetTransform,
+    scale as scaleTransform,
+    translate as translateTransform
+} from 'ol/transform.js';
+
+const IMAGE_REPLAYS = {
+    'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
+    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
+    'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
+};
 
 class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
     constructor(layer) {
         super(layer);
     }
-
 
     prepareFrame(frameState, layerState) {
         const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
@@ -199,6 +210,44 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         this.scheduleExpireCache(frameState, tileSource);
 
         return this.renderedTiles.length > 0;
+    }
+
+    renderTileImage_(tile, pixelRatio, projection) {
+        const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+        const replayState = tile.getReplayState(layer);
+        const revision = layer.getRevision();
+        const replays = IMAGE_REPLAYS[layer.getRenderMode()];
+        if (replays && replayState.renderedTileRevision !== revision) {
+            replayState.renderedTileRevision = revision;
+            const tileCoord = tile.wrappedTileCoord;
+            const z = tileCoord[0];
+            const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
+            const tileGrid = source.getTileGridForProjection(projection);
+            const resolution = tileGrid.getResolution(z);
+            const context = tile.getContext(layer);
+            const size = source.getTilePixelSize(z, pixelRatio, projection);
+            context.canvas.width = size[0];
+            context.canvas.height = size[1];
+            const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+            if (layer.background) {
+                context.rect(0, 0, size[0], size[1]);
+                context.fillStyle = layer.background;
+                context.fill();
+            }
+            for (let i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
+                const sourceTile = tile.getTile(tile.tileKeys[i]);
+                if (sourceTile.getState() != TileState.LOADED) {
+                    continue;
+                }
+                const pixelScale = pixelRatio / resolution;
+                const transform = resetTransform(this.tmpTransform_);
+                scaleTransform(transform, pixelScale, -pixelScale);
+                translateTransform(transform, -tileExtent[0], -tileExtent[3]);
+                const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+                    tile.tileCoord.toString()));
+                replayGroup.replay(context, transform, 0, {}, true, replays);
+            }
+        }
     }
 
     getTile(z, x, y, pixelRatio, projection, frameState) {

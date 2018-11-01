@@ -1,4 +1,4 @@
-import {getUid} from 'ol/util'
+import { getUid } from 'ol/util'
 class GeoStyle {
 
     constructor(styleJson) {
@@ -37,7 +37,7 @@ class GeoStyle {
     }
 
 
-    static toRGBAColor(color, opacity) {
+    static toRGBAColor(color, opacity = 1) {
         if (color.indexOf("#") === 0) {
             let array = [];
             let r;
