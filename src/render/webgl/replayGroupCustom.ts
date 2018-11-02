@@ -2,11 +2,12 @@
 
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
-    constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number) {
+    constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number, declutterTree: any) {
         super(tolerance, maxExtent, opt_renderBuffer);
         this.getReplay = this.getReplayCustom;
         this.BATCH_CONSTRUCTORS_ = this.BATCH_CONSTRUCTORS_CUSTOM;
         this.replay = this.replayCustom;
+        this.declutterTree = declutterTree;
         // this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
     }
 
@@ -122,7 +123,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         let replay = replays[replayType];
         if (replay === undefined) {
             let Constructor = this.BATCH_CONSTRUCTORS_[replayType];
-            replay = new Constructor(this.tolerance_, this.maxExtent_, this.opt_renderBuffer);
+            replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree);
 
             replays[replayType] = replay;
         }

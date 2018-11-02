@@ -378,7 +378,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             }
             else {
                 var replayGroup = new ReplayGroupCustom(
-                    0, sharedExtent, layer.getRenderBuffer());
+                    0, sharedExtent, layer.getRenderBuffer(), this.declutterTree_);
                
                 // let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
                 let squaredTolerance = (<any>ol).renderer.vector.getSquaredTolerance(resolution, pixelRatio);
