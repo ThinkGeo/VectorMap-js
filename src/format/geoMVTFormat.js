@@ -194,7 +194,6 @@ class GeoMVTFormat extends MVT {
         let instructs = featuresAndInstructions[1];
 
         if (instructs === undefined) {
-            debugger;
         }
         for (let i = 0; i < instructs.length; i++) {
             let instruct = instructs[i];

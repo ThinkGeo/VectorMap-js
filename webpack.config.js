@@ -6,5 +6,16 @@ module.exports = {
   output: {
     filename: 'bundle.js'
   },
-  mode: 'development'
+  mode: 'development',
+  module: {
+    rules: [
+      {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: { inline: true, fallback: false }
+        }
+      }
+    ]
+  }
 };

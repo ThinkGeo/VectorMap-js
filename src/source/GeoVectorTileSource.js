@@ -159,7 +159,12 @@ class GeoVectorTileSource extends VectorTile {
         return featuresAndInstructs;
     }
 
-
+    setWorkerManager(workerManager) {
+        this.workerManager = workerManager;
+    }
+    getWorkerManager(workerManager) {
+        return this.workerManager;
+    }
 
     // vectorTileLoadFunction(tile, url) {
     //     let loader = this.loadFeaturesXhr(

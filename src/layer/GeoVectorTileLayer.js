@@ -9,7 +9,7 @@ import Map from 'ol/Map';
 import CanvasMapRenderer from 'ol/renderer/canvas/Map';
 import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
 import CanvasVectorLayerRenderer from 'ol/renderer/canvas/VectorLayer';
-
+import { getUid } from 'ol/util'
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
 import GeoVectorTileRenderer from '../renderer/canvas/GeoVectorTileLayer';
@@ -18,6 +18,7 @@ import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
 import GeoVectorTile from '../GeoVectorTile';
 import TreeNode from '../tree/treeNode';
 import Tree from '../tree/tree';
+import WorkerManager from "../worker/workerManager";
 
 class GeoVectorTileLayer extends VectorTileLayer {
     constructor(stylejson, opt_options) {
@@ -34,6 +35,11 @@ class GeoVectorTileLayer extends VectorTileLayer {
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
 
+        if (this.multithread && window.Worker) {
+            this.workerManager = new WorkerManager();
+            this.workerManager.initWorkers();
+        }
+
         this.styleJson = null;
         if (this.isStyleJsonUrl(stylejson)) {
             this.loadStyleJsonAsyn(stylejson);
@@ -44,6 +50,8 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
         LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
         this.type = LayerType.GEOVECTORTILE;
+
+
     }
 
     isStyleJsonUrl(styleJson) {
@@ -138,6 +146,19 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 }
                 let geoFormat = source.getGeoFormat();
                 geoFormat.setStyleJsonCache(styleJsonCache);
+
+                if (this.workerManager) {
+                    let messageData = {
+                        formatId: getUid(geoFormat),
+                        styleJson: styleJsonCache.styleJson,
+                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
+                    };
+                    for (let i = 0; i < this.workerManager.workerCount; i++) {
+                        this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
+                    }
+
+                    source.setWorkerManager(this.workerManager);
+                }
             }
         }
     }

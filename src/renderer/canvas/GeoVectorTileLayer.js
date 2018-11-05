@@ -360,7 +360,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             const featuresAndInstructs = sourceTile.getFeatures();
 
             if (featuresAndInstructs === undefined) {
-                debugger;
             }
             const features = featuresAndInstructs[0];
             const instructs = featuresAndInstructs[1];

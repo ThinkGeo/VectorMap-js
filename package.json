@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "dev":"webpack --config webpack.config.js&live-server"
+    "dev": "webpack --config webpack.config.js&live-server"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ol": "^5.2.0",
     "webpack": "^4.22.0",
-    "webpack-command": "^0.4.1"
+    "webpack-command": "^0.4.1",
+    "worker-loader": "^2.0.0"
   }
 }

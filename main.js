@@ -13,7 +13,21 @@ import light from './thinkgeo-world-streets-light';
 import { fromLonLat } from 'ol/proj'
 
 
-
+var view = new View({
+  center: fromLonLat([-96.79748, 32.78819]),
+  zoom: 4,
+  maxZoom: 19,
+  maxResolution: 40075016.68557849 / 512
+});
+var zoom = view.getZoom();
+document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
+view.on("change:resolution", function (e) {
+  var zoom = view.getZoom();
+  if ((zoom.toString()).indexOf(".") > 0) {
+    zoom = zoom.toFixed(2);
+  }
+  document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
+});
 
 var vectorTile = new GeoVectorTileLayer(light, {
   maxDataZoom: 14,
@@ -28,12 +42,10 @@ var tilegrid = new Tile({
   })
 })
 
-
 var map = new Map({
   layers: [vectorTile],
   target: 'map',
-  view: new View({
-    center: fromLonLat([-96.79748, 32.78819]),
-    zoom: 5
-  })
+  view: view
 });
+
+window["map"] = map;
