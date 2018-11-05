@@ -70759,14 +70759,14 @@ function olInit() {
                     flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
                     break;
                 case ol.geom.GeometryType.LINE_STRING:
-                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
-                    flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    end = flatCoordinates.length;
+                    flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
+                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.MULTI_LINE_STRING:
-                    // flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
-                    flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    end = flatCoordinates.length;
+                    flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
+                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
+                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
@@ -70781,7 +70781,7 @@ function olInit() {
             var type  = geometry.getType();
             var lines;
             lines = this.text_.split('\n');
-            if(type == 'point' && lines.length < 2 && this.text_.length > 16){
+            if(type == 'Point' && lines.length < 2 && this.text_.length > 16){
                 var textArray = this.text_.split(' ');
                 if(textArray.length > 2){
                     lines = [];
@@ -70794,7 +70794,7 @@ function olInit() {
             var pathLength;
             var startM;
             if(type == 'LineString'){
-                pathLength = ol.geom.flat.length.lineString(flatCoordinates, offset, end, 2);
+                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
                 startM = pathLength * this.textAlign_;
             }
             
@@ -70804,10 +70804,10 @@ function olInit() {
             var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
 
             // declutter duplicate label
-            var labelCoordinates = geometry.getFlatMidpoint();
-            var extent = [labelCoordinates[0], labelCoordinates[1], labelCoordinates[0] + 256, labelCoordinates[1] + 256];
+            // var labelCoordinates = geometry.getFlatMidpoint();
+            var extent = [flatCoordinates[0], flatCoordinates[1], flatCoordinates[0] + 256, flatCoordinates[1] + 256];
             if(!this.renderDeclutter_(extent, feature)){
-                return;
+                // return;
             }
             
             // FIXME zoom 12 test
@@ -70841,14 +70841,15 @@ function olInit() {
                 charArr = lines[i].split('');
 
                 if(type == 'LineString'){
+                    var lineStringCoordinates = geometry.getFlatCoordinates();
                     // Keep text upright
-                    var reverse = flatCoordinates[offset] > flatCoordinates[end - stride]; 
+                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[end - stride]; 
                     var numChars = charArr.length;
-                    var x1 = flatCoordinates[offset];
-                    var y1 = flatCoordinates[offset + 1];
+                    var x1 = lineStringCoordinates[offset];
+                    var y1 = lineStringCoordinates[offset + 1];
                     offset += stride;
-                    var x2 = flatCoordinates[offset];
-                    var y2 = flatCoordinates[offset + 1];
+                    var x2 = lineStringCoordinates[offset];
+                    var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
                     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
@@ -70870,8 +70871,8 @@ function olInit() {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
-                                x2 = flatCoordinates[offset];
-                                y2 = flatCoordinates[offset + 1];
+                                x2 = lineStringCoordinates[offset];
+                                y2 = lineStringCoordinates[offset + 1];
                                 segmentM += segmentLength;
                                 segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
                             }
@@ -70911,7 +70912,7 @@ function olInit() {
                                     this.images_.push(image);
                                 }
                             }
-                            this.drawText_(labelCoordinates, 0, 2, stride);
+                            this.drawText_(flatCoordinates, 0, 2, stride);
                         }
                         currX += this.width;
                     }
