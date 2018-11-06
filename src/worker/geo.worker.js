@@ -11,7 +11,6 @@ import LRUCache from 'ol/structs/LRUCache'
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
-self.features = {};
 
 self.onmessage = function (msg) {
     var methodInfo = msg.data["methodInfo"];
@@ -56,23 +55,16 @@ self.request = function (requestInfo, methodInfo) {
     var vectorTileDataCahceSize = requestInfo.vectorTileDataCahceSize
     var tileExtent = requestInfo.tileExtent;
     var tileResolution = requestInfo.tileResolution;
-
-    var requestKey = requestCoord.join(",") + "," + tileCoord[0];
-    var tileKey = tileCoord[1] + "," + tileCoord[2];
     var tileRange = requestInfo.tileRange;
-    var olTile;
-    var formatOlTiles = self.vectorTilesData[formatId];
-    if (formatOlTiles && formatOlTiles.containsKey(requestKey)) {
-        olTile = formatOlTiles.get(requestKey);
-    }
 
-    if (olTile) {
-        var res = self.getMainInstructs(olTile, olTile.mainGeoStyleIds);
+    var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
+    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
 
+    if (tileFeatureAndInstrictions) {
         var resultData = {
-            requestKey: requestKey,
+            requestKey: cacheKey,
             status: "succeed",
-            mainInstructs: res
+            data: tileFeatureAndInstrictions
         };
 
         var postMessageData = {
@@ -118,16 +110,9 @@ self.request = function (requestInfo, methodInfo) {
 
     }
 
-
-
-
-
-
 }
 
-
 // Method
-
 self.createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
     var styleIdIndex = 0;
     var geoStyles = {};
@@ -165,11 +150,15 @@ self.createChildrenNode = function (currentNode, item, zoom) {
 
 self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
     var featuresAndInstructions = self.readFeaturesAndInstructions(source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
+
     var homologousTilesInstructions = CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, tileCoord[0]);
+    let cacheKey = requestCoord + "," + zoom;
+    self.saveTileInstructions(cacheKey, featuresAndInstructions[0], homologousTilesInstructions);
+    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
 
-    self.saveTileInstructions(formatId, requestCoord, zoom, featuresAndInstructions[0], homologousTilesInstructions);
-    var tileFeatureAndInstrictions = self.saveTileInstructions(formatId, requestCoord, tileCoord);
-
+    if (tileFeatureAndInstrictions === undefined) {
+        debugger;
+    }
     var requestKey = requestCoord.join(",") + "," + zoom;
     var resultData = {
         status: "succeed",
@@ -486,7 +475,7 @@ self.CreateInstructionsForHomologousTiles = function (featuresAndInstructions, r
     let subTileCachedInstruct = {};
     let offsetZ = zoom - requestCoord[0];
     let tileSize = 4096 / Math.pow(2, offsetZ);
-    let tileRange = this.getTileRange(requestCoord, zoom);
+    let tileRange = self.getTileRange(requestCoord, zoom);
 
     let features = featuresAndInstructions[0];
     let instructs = featuresAndInstructions[1];
@@ -512,6 +501,23 @@ self.CreateInstructionsForHomologousTiles = function (featuresAndInstructions, r
 
     return subTileCachedInstruct;
 }
+self.getTileRange = function (tileCoord, zoom) {
+    let x = tileCoord[1];
+    let y = tileCoord[2];
+    let minX = x;
+    let maxX = x;
+    let minY = y;
+    let maxY = y;
+
+    for (let i = tileCoord[0]; i < zoom; i++) {
+        minX = minX * 2;
+        maxX = maxX * 2 + 1;
+        minY = minY * 2;
+        maxY = maxY * 2 + 1;
+    }
+
+    return [minX, minY, maxX, maxY];
+}
 self.getFeatureTileRange = function (featureExtent, extent, tileSize, requestCoord, offsetZ) {
 
     let minX = requestCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[0] / tileSize);
@@ -522,28 +528,33 @@ self.getFeatureTileRange = function (featureExtent, extent, tileSize, requestCoo
     return [minX, minY, maxX, maxY];
 }
 
-self.saveTileInstructions = function (formatId, requestCoord, zoom, features, homologousTilesInstructions) {
-    let cacheKey = "" + requestCoord + "," + zoom;
-    if (self.vectorTilesData[formatId] === undefined) {
-        self.vectorTilesData[formatId] = {};
-    }
-    self.vectorTilesData[formatId][cacheKey] = homologousTilesInstructions;
+self.saveTileInstructions = function (cacheKey, features, homologousTilesInstructions) {
+    self.vectorTilesData[cacheKey] = homologousTilesInstructions;
 
-    if (self.features[formatId] === undefined) {
-        self.features[formatId] = new LRUCache(4);
+    if (self.features === undefined) {
+        self.features = new LRUCache(4);
     }
-    if (self.features[formatId].containsKey(cacheKey)) {
-        self.features[formatId].replace(cacheKey, features);
+    if (self.features.containsKey(cacheKey)) {
+        self.features.replace(cacheKey, features);
     }
     else {
-        self.features[formatId].set(cacheKey, features);
-        while (this.features[formatId].canExpireCache()) {
-            const lastKey = self.features[formatId].peekLastKey();
-            self.features[formatId].remove(lastKey);
-            delete self.vectorTilesData[formatId][cacheKey]
+        self.features.set(cacheKey, features);
+        while (this.features.canExpireCache()) {
+            const lastKey = self.features.peekLastKey();
+            self.features.remove(lastKey);
+            delete self.vectorTilesData[lastKey]
+        }
+    }
+}
+
+self.getTileInstrictions = function (cacheKey, tileCoord) {
+    let featuresAndInstructs = undefined;
+    if (self.features && self.features.containsKey(cacheKey)) {
+        if (self.vectorTilesData && self.vectorTilesData[cacheKey]) {
+            featuresAndInstructs = [this.features.get(cacheKey), this.vectorTilesData[cacheKey][tileCoord] === undefined ? [] : this.vectorTilesData[cacheKey][tileCoord]];
         }
     }
 
-
-
+    return featuresAndInstructs;
 }
+

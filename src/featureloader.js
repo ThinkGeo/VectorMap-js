@@ -115,7 +115,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
               loadEventInfo.tile.workerId = methodInfo.workerId;
               if (data.status === "succeed") {
                 data.data;
-                loadEventInfo.successFunction.call(loadEventInfo.tile, data.data, format.readProjection(source), format.getLastExtent())
+                loadEventInfo.successFunction.call(loadEventInfo.tile, data.data, format.readProjection({}), format.getLastExtent())
               }
             }
           }
