@@ -6,10 +6,12 @@ import Tree from "../tree/tree";
 import PBF from 'pbf';
 import GeometryType from 'ol/geom/GeometryType';
 import RenderFeature from 'ol/render/Feature';
+import LRUCache from 'ol/structs/LRUCache'
 
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
+self.features = {};
 
 self.onmessage = function (msg) {
     var methodInfo = msg.data["methodInfo"];
@@ -94,13 +96,20 @@ self.request = function (requestInfo, methodInfo) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + requestInfo.token);
         }
 
-        var postMessageData = {};
+        var postMessageData = {
+            methodInfo: methodInfo,
+            messageData: {},
+            debugInfo: {
+                postMessageDateTime: new Date().getTime()
+            }
+        };
         xhr.onload = function (event) {
             if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
                 var source = undefined;
                 source = /** @type {ArrayBuffer} */ (xhr.response);
                 if (source) {
                     var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
+                    postMessageData.messageData = resultMessageData;
                     postMessage(postMessageData);
                 }
             }
@@ -156,12 +165,19 @@ self.createChildrenNode = function (currentNode, item, zoom) {
 
 self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
     var featuresAndInstructions = self.readFeaturesAndInstructions(source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
-    if (zoom >= 14) {
-        // TODO: 14 is the maxdatazoom 
-        var homologousTilesInstructions = CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, tileCoord[0]);
+    var homologousTilesInstructions = CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, tileCoord[0]);
 
-    }
+    self.saveTileInstructions(formatId, requestCoord, zoom, featuresAndInstructions[0], homologousTilesInstructions);
+    var tileFeatureAndInstrictions = self.saveTileInstructions(formatId, requestCoord, tileCoord);
 
+    var requestKey = requestCoord.join(",") + "," + zoom;
+    var resultData = {
+        status: "succeed",
+        requestKey: requestKey,
+        data: tileFeatureAndInstrictions
+    };
+
+    return resultData;
 }
 
 self.readFeaturesAndInstructions = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
@@ -285,13 +301,13 @@ self.readFeaturesAndInstructions = function (source, zoom, formatId, tileCoord, 
                         feature.styleId = feature.styleId ? feature.styleId : {}
                         if (instruct[1].geoStyle) {
                             feature.styleId[instruct[1].geoStyle.id] = 0;
-                            instructs.push([instruct[0], instruct[1].geoStyle, i]);
+                            instructs.push([instruct[0], instruct[1].geoStyle.id, i]);
                         }
 
                         if (instruct[1].childrenGeoStyles) {
                             for (let k = 0; k < instruct[1].childrenGeoStyles.length; k++) {
                                 feature.styleId[instruct[1].childrenGeoStyles[k].id] = 1;
-                                childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k], i]);
+                                childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k].id, i]);
                             }
                         }
                     }
@@ -301,6 +317,7 @@ self.readFeaturesAndInstructions = function (source, zoom, formatId, tileCoord, 
         }
     }
 
+    return [features, instructs];
 }
 function layersPBFReader(tag, layers, pbf) {
     if (tag === 3) {
@@ -388,47 +405,7 @@ self.createFeature_ = function (pbf, rawFeature, opt_options) {
     self.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
     const geometryType = getGeometryType(type, ends.length);
-
-    if (this.featureClass_ === RenderFeature) {
-        feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
-    } else {
-        let geom;
-        if (geometryType == GeometryType.POLYGON) {
-            const endss = [];
-            let offset = 0;
-            let prevEndIndex = 0;
-            for (let i = 0, ii = ends.length; i < ii; ++i) {
-                const end = ends[i];
-                if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
-                    endss.push(ends.slice(prevEndIndex, i));
-                    prevEndIndex = i;
-                }
-                offset = end;
-            }
-            if (endss.length > 1) {
-                geom = new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss);
-            } else {
-                geom = new Polygon(flatCoordinates, GeometryLayout.XY, ends);
-            }
-        } else {
-            geom = geometryType === GeometryType.POINT ? new Point(flatCoordinates, GeometryLayout.XY) :
-                geometryType === GeometryType.LINE_STRING ? new LineString(flatCoordinates, GeometryLayout.XY) :
-                    geometryType === GeometryType.POLYGON ? new Polygon(flatCoordinates, GeometryLayout.XY, ends) :
-                        geometryType === GeometryType.MULTI_POINT ? new MultiPoint(flatCoordinates, GeometryLayout.XY) :
-                            geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
-                                null;
-        }
-        const ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
-        feature = new ctor();
-        if (this.geometryName_) {
-            feature.setGeometryName(this.geometryName_);
-        }
-        const geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geom, false,
-            this.adaptOptions(opt_options)));
-        feature.setGeometry(geometry);
-        feature.setId(id);
-        feature.setProperties(values);
-    }
+    feature = new RenderFeature(geometryType, flatCoordinates, ends, values, id);
 
     return feature;
 }
@@ -543,4 +520,30 @@ self.getFeatureTileRange = function (featureExtent, extent, tileSize, requestCoo
     let maxY = requestCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[1]) / tileSize);
 
     return [minX, minY, maxX, maxY];
+}
+
+self.saveTileInstructions = function (formatId, requestCoord, zoom, features, homologousTilesInstructions) {
+    let cacheKey = "" + requestCoord + "," + zoom;
+    if (self.vectorTilesData[formatId] === undefined) {
+        self.vectorTilesData[formatId] = {};
+    }
+    self.vectorTilesData[formatId][cacheKey] = homologousTilesInstructions;
+
+    if (self.features[formatId] === undefined) {
+        self.features[formatId] = new LRUCache(4);
+    }
+    if (self.features[formatId].containsKey(cacheKey)) {
+        self.features[formatId].replace(cacheKey, features);
+    }
+    else {
+        self.features[formatId].set(cacheKey, features);
+        while (this.features[formatId].canExpireCache()) {
+            const lastKey = self.features[formatId].peekLastKey();
+            self.features[formatId].remove(lastKey);
+            delete self.vectorTilesData[formatId][cacheKey]
+        }
+    }
+
+
+
 }

@@ -104,7 +104,7 @@ class GeoVectorTileSource extends VectorTile {
     registerTileLoadEvent(tile, successFunction, failureFunction) {
         var hasRequested = true;
 
-        let requestKey = tile.requestCoord.join(",");
+        let requestKey = tile.requestCoord.join(",") + "," + tile.tileCoord[0];
 
         let loadEventInfo = {
             tile: tile,
@@ -121,15 +121,15 @@ class GeoVectorTileSource extends VectorTile {
         this.registerRequest[requestKey].push(loadEventInfo);
         return hasRequested;
     }
-    getTileLoadEvent(requestCoord) {
-        let requestKey = requestCoord.join(",");
+    getTileLoadEvent(requestKey) {
+
         let tileLoadEventInfos = this.registerRequest[requestKey]
         delete this.registerRequest[requestKey];
+
         return tileLoadEventInfos;
     }
 
-    saveTileInstructions(requestCoord, zoom, features, homologousTilesInstructions) {
-        let cacheKey = "" + requestCoord + "," + zoom;
+    saveTileInstructions(cacheKey, features, homologousTilesInstructions) {
         this.instructionsCache[cacheKey] = homologousTilesInstructions;
 
         if (this.features.containsKey(cacheKey)) {
@@ -145,10 +145,7 @@ class GeoVectorTileSource extends VectorTile {
         }
     }
 
-    getTileInstrictions(requestCoord, tileCoord) {
-        let zoom = tileCoord[0];
-        let cacheKey = "" + requestCoord + "," + zoom;
-
+    getTileInstrictions(cacheKey, tileCoord) {
         let featuresAndInstructs = undefined;
         if (this.features.containsKey(cacheKey)) {
             if (this.instructionsCache[cacheKey]) {
@@ -165,158 +162,6 @@ class GeoVectorTileSource extends VectorTile {
     getWorkerManager(workerManager) {
         return this.workerManager;
     }
-
-    // vectorTileLoadFunction(tile, url) {
-    //     let loader = this.loadFeaturesXhr(
-    //         url,
-    //         tile.getFormat(),
-    //         tile.onLoad.bind(tile),
-    //         tile.onError.bind(tile),
-    //         this
-    //     );
-    //     tile.setLoader(loader);
-    // }
-
-    // getIDAndSecret(self) {
-    //     let xhr = new XMLHttpRequest();
-    //     let url = 'https://gisserver.thinkgeo.com/api/v1/auth/token';
-    //     let content = 'ApiKey=' + self.clientId + '&ApiSecret=' + self.clientSecret;
-
-    //     xhr.open("POST", url, false);
-    //     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    //     xhr.onload = function (event) {
-    //         if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-    //             var token = JSON.parse(xhr.responseText).data.access_token;
-    //             self.token = token;
-    //         }
-    //     }.bind(this);
-    //     xhr.onerror = function () {
-    //     }.bind(this);
-    //     xhr.send(content);
-    // }
-
-    // loadFeaturesXhr(url, format, success, failure, self) {
-    //     return (
-    //         function (extent, resolution, projection) {
-    //             var sourceTile = this;
-    //             let maxDataZoom = format.maxDataZoom;
-    //             let requestTileCoord = [this.tileCoord[0], this.tileCoord[1], this.tileCoord[2]];
-    //             if (maxDataZoom && requestTileCoord[0] > maxDataZoom) {
-    //                 while (requestTileCoord[0] !== maxDataZoom) {
-    //                     requestTileCoord[0] -= 1;
-    //                     requestTileCoord[1] = Math.floor(requestTileCoord[1] / 2);
-    //                     requestTileCoord[2] = Math.floor(requestTileCoord[2] / 2);
-    //                 }
-    //             }
-    //             this.requestTileCoord = requestTileCoord;
-
-    //             let tileGrid = self.getTileGrid();
-    //             let tileExtent = tileGrid.getTileCoordExtent(sourceTile.tileCoord);
-    //             let tileResolution = tileGrid.getResolution(sourceTile.tileCoord[0]);
-
-    //             let callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
-    //                 callbackFunction.call(tile, sourceProjection, lastExtent);
-    //             };
-
-    //             let hasRequested = false;
-
-    //             hasRequested = format.registerTileLoadEvent(this, success, failure, callback);
-
-    //             if (!hasRequested) {
-    //                 // Client ID and Client Secret   
-    //                 if (url.indexOf('apiKey') === -1 && self.clientId && self.clientSecret && !self.token) {
-    //                     self.getIDAndSecret(self);
-    //                 }
-    //                 let tileCoord = this.tileCoord;
-    //                 let tile = this;
-    //                 let xhr = new XMLHttpRequest();
-    //                 xhr.open("GET",
-    //                     typeof url === "function" ? (url)(extent, resolution, projection) : url,
-    //                     true);
-
-    //                 if (self.token) {
-    //                     xhr.setRequestHeader('Authorization', 'Bearer ' + self.token);
-    //                 }
-
-    //                 if (format.getType() === FormatType.ARRAY_BUFFER) {
-    //                     xhr.responseType = "arraybuffer";
-    //                 }
-
-    //                 xhr.onload = function (event) {
-    //                     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-    //                         let type = format.getType();
-    //                         /** @type {Document | Node | Object | string | undefined} */
-    //                         let source;
-    //                         if (type === FormatType.ARRAY_BUFFER) {
-    //                             source = /** @type {ArrayBuffer} */ (xhr.response);
-    //                         }
-
-    //                         if (source) {
-    //                             // ReadFeature
-
-    //                             var data = format.readFeaturesAndCreateInstructsNew(source, requestTileCoord, tileCoord);
-
-    //                             // Call Load Event
-    //                             let requestKey = tile.requestTileCoord.join(",") + "," + tile.tileCoord[0];
-    //                             let tileLoadEventInfos = format.registeredLoadEvents[requestKey];
-    //                             delete format.registeredLoadEvents[requestKey];
-    //                             for (let i = 0; i < tileLoadEventInfos.length; i++) {
-    //                                 let loadEventInfo = tileLoadEventInfos[i];
-
-    //                                 let tileKey = "" + loadEventInfo.tile.tileCoord[1] + "," + loadEventInfo.tile.tileCoord[2];
-    //                                 loadEventInfo.tile.featuresAndInstructs = { features: data[0], instructs: data[1][tileKey] }
-    //                                 loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.successFunction, format.readProjection());
-    //                             }
-
-    //                         } else {
-    //                             failure.call(this);
-    //                         }
-    //                     } else {
-    //                         failure.call(this);
-    //                     }
-    //                 }.bind(this);
-    //                 xhr.onerror = function () {
-    //                     failure.call(this);
-    //                 }.bind(this);
-    //                 this["xhr"] = xhr;
-    //                 xhr.send();
-    //             }
-    //         }
-    //     );
-    // }
-
-    // forEachLoadedTile(projection, z, tileRange, callback, layer) {
-    //     let tileCache = this.getTileCacheForProjection(projection);
-    //     if (!tileCache) {
-    //         return false;
-    //     }
-
-    //     let covered = true;
-    //     let tile, tileCoordKey, loaded;
-    //     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
-    //         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-    //             tileCoordKey = getKeyZXY(z, x, y);
-    //             loaded = false;
-    //             if (tileCache.containsKey(tileCoordKey)) {
-    //                 tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
-    //                 loaded = tile.getState() === (ol).TileState.LOADED;
-    //                 if (loaded) {
-    //                     if (layer) {
-    //                         let replayState = tile.getReplayState(layer);
-    //                         loaded = replayState.renderedTileLoaded;
-    //                     }
-    //                 }
-    //                 if (loaded) {
-    //                     loaded = (callback(tile) !== false);
-    //                 }
-    //             }
-    //             if (!loaded) {
-    //                 covered = false;
-    //             }
-    //         }
-    //     }
-    //     return covered;
-    // }
 }
 
 export default GeoVectorTileSource;

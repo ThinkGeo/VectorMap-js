@@ -21,13 +21,20 @@ class WorkerManager {
         // worker.onmessage = function (e) {
         //     console.log('Worker said: ', e.data); // message received from worker
         // };
+        let callbacks = this.workerCallback;
+        var worker = new Worker();
+        worker.onmessage = function (e) {
+            let methodInfo = e.data["methodInfo"];
+            let messageData = e.data["messageData"];
 
-        var w = new Worker();
-
-        w.onmessage = function (e) {
-            console.log('Worker said: ', e.data); // message received from worker
-        };
-        this.workers.push(w);
+            let uid = methodInfo.uid;
+            let callback = callbacks[uid];
+            if (callback) {
+                callback(messageData, methodInfo);
+            }
+            delete callbacks[uid];
+        }
+        this.workers.push(worker);
     }
 
 

@@ -31,6 +31,7 @@ view.on("change:resolution", function (e) {
 
 var vectorTile = new GeoVectorTileLayer(light, {
   maxDataZoom: 14,
+  multithread: false,
   updateWhileAnimating: true,
   updateWhileInteracting: true
 })
