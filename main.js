@@ -1,6 +1,6 @@
 import { Map, View } from 'ol';
 import GeoVectorTileLayer from './src/layer/GeoVectorTileLayer'
-import VectorTileLayer from './src/layer/VectorTile'
+import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/vectorTile'
 import MVT from 'ol/format/MVT'
 import { GEOLOCATION } from 'ol/has';
@@ -29,7 +29,7 @@ view.on("change:resolution", function (e) {
   document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
-var vectorTile = new GeoVectorTileLayer(light, {
+var geoVectorTileLayer = new GeoVectorTileLayer(light, {
   maxDataZoom: 14,
   multithread: true,
   updateWhileAnimating: true,
@@ -43,8 +43,15 @@ var tilegrid = new Tile({
   })
 })
 
+// var vectorTileLayer = new VectorTileLayer({
+//   source: new VectorTileSource({
+//     format: new MVT(),
+//     url: "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~"
+//   })
+// })
+
 var map = new Map({
-  layers: [vectorTile],
+  layers: [geoVectorTileLayer],
   target: 'map',
   view: view
 });

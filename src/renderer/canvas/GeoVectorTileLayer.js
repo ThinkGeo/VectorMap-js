@@ -281,13 +281,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         return tile;
     }
 
-
-    /**
- * @param {import("../../VectorImageTile.js").default} tile Tile.
- * @param {number} pixelRatio Pixel ratio.
- * @param {import("../../proj/Projection.js").default} projection Projection.
- * @private
- */
     createReplayGroup_(tile, pixelRatio, projection, frameState) {
         const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
         const revision = layer.getRevision();
@@ -312,127 +305,134 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 continue;
             }
 
-            const sourceTileCoord = sourceTile.tileCoord;
-            const requestCoord = sourceTile.requestCoord;
-            const sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
-            const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
-            const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
-                buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
-            const tileProjection = sourceTile.getProjection();
-            let reproject = false;
-            if (!equivalentProjection(projection, tileProjection)) {
-                reproject = true;
-                sourceTile.setProjection(projection);
+            var originalReplayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
+
+            if (originalReplayGroup) {
+                sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), originalReplayGroup);
             }
-            replayState.dirty = false;
-            const replayGroup = new GeoCanvasReplayGroup(0, sharedExtent, resolution,
-                pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
-            const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
-            let strategyTree = rbush(9);
+            else {
+                const sourceTileCoord = sourceTile.tileCoord;
+                const requestCoord = sourceTile.requestCoord;
+                const sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
+                const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
+                const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
+                    buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
+                const tileProjection = sourceTile.getProjection();
+                let reproject = false;
+                if (!equivalentProjection(projection, tileProjection)) {
+                    reproject = true;
+                    sourceTile.setProjection(projection);
+                }
+                replayState.dirty = false;
+                const replayGroup = new GeoCanvasReplayGroup(0, sharedExtent, resolution,
+                    pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
+                const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
+                let strategyTree = rbush(9);
 
 
-            /**
-             * @param {import("../../Feature.js").FeatureLike} feature Feature.
-             * @this {CanvasVectorTileLayerRenderer}
-             */
-            const render = function (feature, geostyle) {
-                let styles;
-                if (geostyle) {
-                    let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
-                    if (styles === undefined) {
-                        styles = [];
+                /**
+                 * @param {import("../../Feature.js").FeatureLike} feature Feature.
+                 * @this {CanvasVectorTileLayerRenderer}
+                 */
+                const render = function (feature, geostyle) {
+                    let styles;
+                    if (geostyle) {
+                        let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                        if (styles === undefined) {
+                            styles = [];
+                        }
+                        Array.prototype.push.apply(styles, ol4Styles);
                     }
-                    Array.prototype.push.apply(styles, ol4Styles);
+                    else {
+                        const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
+                        if (styleFunction) {
+                            styles = styleFunction(feature, resolution);
+                        }
+                    }
+
+                    if (styles) {
+                        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
+                        this.dirty_ = this.dirty_ || dirty;
+                        replayState.dirty = replayState.dirty || dirty;
+                    }
+                };
+
+                const featuresAndInstructs = sourceTile.getFeatures();
+
+                let features = undefined;
+                let instructs = undefined;
+                if (featuresAndInstructs === undefined) {
+                    features = [];
+                    instructs = [];
                 }
                 else {
-                    const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
-                    if (styleFunction) {
-                        styles = styleFunction(feature, resolution);
-                    }
+                    features = featuresAndInstructs[0];
+                    instructs = featuresAndInstructs[1];
                 }
 
-                if (styles) {
-                    const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
-                    this.dirty_ = this.dirty_ || dirty;
-                    replayState.dirty = replayState.dirty || dirty;
+                if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
+                    features.sort(renderOrder);
                 }
-            };
 
-            const featuresAndInstructs = sourceTile.getFeatures();
+                var workerManager = source.getWorkerManager();
+                if (workerManager) {
+                    let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
 
-            let features = undefined;
-            let instructs = undefined;
-            if (featuresAndInstructs === undefined) {
-                features = [];
-                instructs = [];
-            }
-            else {
-                features = featuresAndInstructs[0];
-                instructs = featuresAndInstructs[1];
-            }
+                    for (let i = 0, ii = instructs.length; i < ii; ++i) {
+                        const featureIndex = instructs[i][0];
+                        const featureInfo = features[featureIndex];
+                        let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
 
-            if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
-                features.sort(renderOrder);
-            }
+                        let geoStyleId = instructs[i][1];
+                        let geoStyle = geoStyles[geoStyleId];
 
-            var workerManager = source.getWorkerManager();
-            if (workerManager) {
-                let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
-
-                for (let i = 0, ii = instructs.length; i < ii; ++i) {
-                    const featureIndex = instructs[i][0];
-                    const featureInfo = features[featureIndex];
-                    let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-
-                    let geoStyleId = instructs[i][1];
-                    let geoStyle = geoStyles[geoStyleId];
-
-                    if (reproject && !featureInfo["projected"]) {
-                        if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-                            // projected tile extent
-                            tileProjection.setWorldExtent(sourceTileExtent);
-                            // tile extent in tile pixel space
-                            tileProjection.setExtent(sourceTile.getExtent());
+                        if (reproject && !featureInfo["projected"]) {
+                            if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                                // projected tile extent
+                                tileProjection.setWorldExtent(sourceTileExtent);
+                                // tile extent in tile pixel space
+                                tileProjection.setExtent(sourceTile.getExtent());
+                            }
+                            feature.getGeometry().transform(tileProjection, projection);
+                            feature.extent_ = null;
+                            featureInfo["projected"] = true;
                         }
-                        feature.getGeometry().transform(tileProjection, projection);
-                        feature.extent_ = null;
-                        featureInfo["projected"] = true;
-                    }
-                    if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-                        render.call(this, feature, geoStyle);
-                    }
-                }
-            }
-            else {
-                // 
-                for (let i = 0, ii = instructs.length; i < ii; ++i) {
-                    const featureIndex = instructs[i][0];
-                    const feature = features[featureIndex];
-
-                    let geoStyle = instructs[i][1];
-
-                    if (reproject && !feature["projected"]) {
-                        if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-                            // projected tile extent
-                            tileProjection.setWorldExtent(sourceTileExtent);
-                            // tile extent in tile pixel space
-                            tileProjection.setExtent(sourceTile.getExtent());
+                        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                            render.call(this, feature, geoStyle);
                         }
-                        feature.getGeometry().transform(tileProjection, projection);
-                        feature["projected"] = true;
-                        feature.extent_ = null;
-                    }
-                    if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-                        render.call(this, feature, geoStyle);
                     }
                 }
-            }
+                else {
+                    // 
+                    for (let i = 0, ii = instructs.length; i < ii; ++i) {
+                        const featureIndex = instructs[i][0];
+                        const feature = features[featureIndex];
 
-            replayGroup.finish();
-            for (const r in replayGroup.getReplays()) {
-                zIndexKeys[r] = true;
+                        let geoStyle = instructs[i][1];
+
+                        if (reproject && !feature["projected"]) {
+                            if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                                // projected tile extent
+                                tileProjection.setWorldExtent(sourceTileExtent);
+                                // tile extent in tile pixel space
+                                tileProjection.setExtent(sourceTile.getExtent());
+                            }
+                            feature.getGeometry().transform(tileProjection, projection);
+                            feature["projected"] = true;
+                            feature.extent_ = null;
+                        }
+                        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                            render.call(this, feature, geoStyle);
+                        }
+                    }
+                }
+
+                replayGroup.finish();
+                for (const r in replayGroup.getReplays()) {
+                    zIndexKeys[r] = true;
+                }
+                sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
             }
-            sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
         }
         replayState.renderedRevision = revision;
         replayState.renderedRenderOrder = renderOrder;
