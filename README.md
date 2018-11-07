@@ -87,7 +87,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
     var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
     var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
-            'apikey':'your-thinkgeo-cloud-service-vector-tile-key'
+            'apikey':'your-ThinkGeo-Cloud-Service-key'
         });
     let map = new ol.Map({
         layers: [worldstreets],
@@ -102,14 +102,28 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
  
 __NOTE:__
  
- * ThinkGeo Cloud Service key
+ * __ThinkGeo Cloud Service key__
  
  Access to ThinkGeo Cloud services, including Vector Tile data, requires an `API Key` that connects API requests to your account, Please check [here](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/content/sign-up-thinkgeo-account.html) on how to create your own `ThinkGeo Cloud Service key` __FOR FREE__.
  
  * World Streets Styles
  
  `World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
- 
+
+__Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with.
+
+
+```
+<script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
+<script>
+    WebFont.load({
+        custom: {
+            families: ["ThinkgeoFont"],
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
+        }
+    });
+</script>
+```
 
 After all the above steps completed, your HTML page should be:
 
@@ -125,6 +139,16 @@ After all the above steps completed, your HTML page should be:
         
         <!-- latest minified version of vectormap.js -->
         <script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
+	
+	<script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
+	<script>
+	    WebFont.load({
+		custom: {
+		    families: ["ThinkgeoFont"],
+		    urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
+		}
+	    });
+	</script>
     </head>
     <body>
         <div id="map" style="width:800px;height=600px;"></div>
@@ -151,19 +175,7 @@ __Step 6__. Run the page and a beautiful map is there.
 
 ## ThinkGeo Map Icons
 
-__[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ is a pack of more than 200 beautifully crafted Open Source icons for common mapping. It's used in `Map Suite World Streets Styles`, in other words, if you use  the pre-defined styles, please add following code in `"<Head>"`.
-
-```
-<script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
-<script>
-    WebFont.load({
-        custom: {
-            families: ["ThinkgeoFont"],
-            urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
-        }
-    });
-</script>
-```
+__[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ is a pack of more than 200 beautifully crafted Open Source icons for common mapping. 
 
 ## Vector Data Supported
 
