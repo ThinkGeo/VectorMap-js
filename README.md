@@ -100,7 +100,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
 </script>
 ```
  
- - NOTE:
+__NOTE:__
  
  * ThinkGeo Cloud Service key
  Access to ThinkGeo Cloud services, including Vector Tile data, requires an `API Key` that connects API requests to your account, Please check [here](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/content/sign-up-thinkgeo-account.html) on how to create your own `ThinkGeo Cloud Service key` __FOR FREE__.
