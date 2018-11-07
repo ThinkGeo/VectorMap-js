@@ -139,8 +139,10 @@ After all the above steps completed, your HTML page should be:
         
         <!-- latest minified version of vectormap.js -->
         <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
-	    <script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
-	    <script>
+
+        <!-- option: Map Suite World Streets Styles -->
+        <script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
+        <script>
             WebFont.load({
                 custom: {
                     families: ["ThinkgeoFont"],
