@@ -1,7 +1,7 @@
 
 ## MapSuite
 
-The __mapsuite-vectormap.js__ is an open-source JavaScript SDK and an extension of [OpenLayers](https://openlayers.org/ "OpenLayers") to create maps for web and mobile devices. With the help of Map Suite vector styling schema - [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/), you can easily create beautiful maps for your application.
+The __VectorMap.js__ is an open-source JavaScript SDK and an extension of [OpenLayers](https://openlayers.org/ "OpenLayers") to create maps for web and mobile devices. With the help of Map Suite vector styling schema - [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/), you can easily create beautiful maps for your application.
 
 With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://openlayers.org/ "OpenLayers"), as well as any plugins or extensions created based on [OpenLayers](https://openlayers.org/ "OpenLayers"), for example, the "[3rd party libraries](http://openlayers.org/3rd-party/)" published on https://openlayers.org. With the help of them, you can easily create any styled map and put it anywhere, and build a customized geocoding or routings from other providers.
 
@@ -12,7 +12,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [API Documentation](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/api-reference.html)
 * [Vector StyleJSON Specification](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/)
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
-* [Wolrd Street Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
+* [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
 __Light Map__
 
@@ -28,7 +28,7 @@ __Hybrid Map__
 
 ## Install
 
-> The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript, and have some experience of any front-end development editor, such as [Visual Studio Code](https://code.visualstudio.com/), [Webstorm](https://www.jetbrains.com/webstorm/), [Sublime Text](https://www.sublimetext.com/) or some similars. if you are totally new to frontend development, the easiest way to try out this library is using the "[OpenCodePen Hello World exampleLayers]()". Feel free to open it in another tab and follow along as we go through some features.
+> The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript, and have some experience of any front-end development editor, such as [Visual Studio Code](https://code.visualstudio.com/), [Webstorm](https://www.jetbrains.com/webstorm/), [Sublime Text](https://www.sublimetext.com/) or some similars. if you are totally new to frontend development, the easiest way to try out this library which is the "[Hello World](https://codepen.io/thinkgeo/project/editor/ZQEWEq)" example on CodePen. Feel free to open it in another tab and follow along as we go through some features.
 
 ### CDN
 Load from CDN in your project:
@@ -163,11 +163,11 @@ __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ is a pack 
 </script>
 ```
 
-## Vector Tiles
+## Vector Data Supported
 
-Besides loading the traditional KML, GeoJSON, bitmap tiles etc., Map Suite vectormap.js draws its own tiles from vector tiles that contains the source data. 
+Besides loading the traditional KML, GeoJSON, bitmap tiles etc., __`VectorMap.js`__ can work with [Vector Tiles](https://en.wikipedia.org/wiki/Vector_tiles). 
 
-[Map Suite GIS Service](https://thinkgeo.com/gisserver) provides a free vector tile service (*.mvt) based on open data from [OpenStreetMap](https://openstreetmap.org/), [Natural Earth](http://www.naturalearthdata.com/) and some other data providers, with global  coverage updated continuously. - sign up for an [API Key here](https://gisserverbeta.thinkgeo.com/).
+[Map Suite Cloud Service](https://Cloud.thinkgeo.com) provides a free vector tile service (*.mvt) based on open data from [OpenStreetMap](https://openstreetmap.org/), [Natural Earth](http://www.naturalearthdata.com/) and some other data providers, with global  coverage updated continuously. - sign up for an [API Key] for free (https://gisserverbeta.thinkgeo.com/).
 
 ## Styling
 
