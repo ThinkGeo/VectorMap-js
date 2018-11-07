@@ -70,15 +70,15 @@ __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and relate
 
 ```html
   	<!-- style sheet for vectormap.js -->
-	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.css"></link>
+	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
 	
 	<!-- latest minified version of vectormap.js -->
-  	<script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
+  	<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
 ```
  
 __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
 ```html
-<div id="map" style="width:800px;height=600px;"></div>
+<div id="map" style="width:800px;height:600px;"></div>
 ```
 
 __Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control with one vector layer created. 
@@ -135,7 +135,7 @@ After all the above steps completed, your HTML page should be:
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- style sheet for vectormap.js -->
-        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.css"></link>
+        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
         <script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
@@ -151,12 +151,12 @@ After all the above steps completed, your HTML page should be:
 	</script>
     </head>
     <body>
-        <div id="map" style="width:800px;height=600px;"></div>
+        <div id="map" style="width:800px;height:600px;"></div>
         <script>
             var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
-                'apikey':'your-thinkgeo-gis-service-vector-tile-key'
+                apiKey:'your-thinkgeo-gis-service-vector-tile-key'
             });
             let map = new ol.Map({
                 layers: [worldstreets],
