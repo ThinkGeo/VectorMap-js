@@ -167,7 +167,7 @@ __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ is a pack 
 
 Besides loading the traditional KML, GeoJSON, bitmap tiles etc., __`VectorMap.js`__ can work with [Vector Tiles](https://en.wikipedia.org/wiki/Vector_tiles). 
 
-[Map Suite Cloud Service](https://Cloud.thinkgeo.com) provides a free vector tile service (*.mvt) based on open data from [OpenStreetMap](https://openstreetmap.org/), [Natural Earth](http://www.naturalearthdata.com/) and some other data providers, with global  coverage updated continuously. - sign up for an [API Key] for free (https://gisserverbeta.thinkgeo.com/).
+[Map Suite Cloud Service](https://Cloud.thinkgeo.com) provides a free vector tile service (*.mvt) based on open data from [OpenStreetMap](https://openstreetmap.org/), [Natural Earth](http://www.naturalearthdata.com/) and some other data providers, with global  coverage updated continuously. - sign up for an [API Key](https://cloud.thinkgeo.com) for free.
 
 ## Styling
 
@@ -175,14 +175,14 @@ Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.i
 
 
 ## Browser Suport
-__mapsuite-vectormap.js__ is officially supported and tested on the last two versions of these browsers:
+__VectorMap.js__ is officially supported and tested on the last two versions of these browsers:
 
 * __Mac OS__: Chrome, Firefox, and Safari
 * __Windows__: Chrome, Firefox, IE11, and IE Edge
 * __iOS__: Safari, Chrome, Firefox
 * __Android__: Chrome
 
-__mapsuite-vectormap.js__ should also run in any brower with HTML5 support.
+__VectorMap.js__ should also run in any brower with HTML5 support.
 
 ## License
-__mapsuite-vectormap.js__ is licensed under the [Apache 2.0](https://github.com/ThinkGeo/MapSuiteGisEditor/blob/master/LICENSE). 
+__VectorMap.js__ is licensed under the [Apache 2.0](https://github.com/ThinkGeo/MapSuiteGisEditor/blob/master/LICENSE). 
