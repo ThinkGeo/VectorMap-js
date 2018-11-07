@@ -26573,7 +26573,7 @@ function olInit() {
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+            this.gl_.viewport(0, 0, width * frameState.pixelRatio, height * frameState.pixelRatio);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
@@ -66706,6 +66706,8 @@ function olInit() {
                 strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
                     return i != 3 ? c / 255 : c;
                 }) || ol.render.webgl.defaultStrokeStyle;
+            } else {
+                strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
             }
             strokeStyleWidth = strokeStyle.getWidth();
             strokeStyleWidth = strokeStyleWidth !== undefined ?
@@ -66715,10 +66717,13 @@ function olInit() {
             strokeStyleWidth = 0;
         }
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (fillStyleColor) {
+        if (!(fillStyleColor instanceof CanvasGradient) &&
+            !(fillStyleColor instanceof CanvasPattern)) {
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
+        } else {
+            fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
         if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
             !this.state_.fillColor || !ol.array.equals(this.state_.fillColor, fillStyleColor) ||
@@ -70137,6 +70142,8 @@ function olInit() {
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
+        } else {
+            fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
         if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
             this.state_.fillColor = fillStyleColor;
@@ -70603,7 +70610,7 @@ function olInit() {
      * @param {ol.Extent} maxExtent Max extent.
      * @struct
      */
-    ol.render.webgl.TextReplay = function (tolerance, maxExtent) {
+    ol.render.webgl.TextReplay = function (tolerance, maxExtent, declutterTree) {
         ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
 
         /**
@@ -70623,6 +70630,12 @@ function olInit() {
          * @type {HTMLCanvasElement}
          */
         this.measureCanvas_ = ol.dom.createCanvasContext2D(0, 0).canvas;
+
+        /**
+         * @private
+         * @type {Array}
+         */
+        this.declutterTree = declutterTree;
 
         /**
          * @private
@@ -70699,6 +70712,29 @@ function olInit() {
     };
     ol.inherits(ol.render.webgl.TextReplay, ol.render.webgl.TextureReplay);
 
+    /**
+     * @private
+     * @param {Array.<string>} lines Label to draw split to lines.
+     * @return {Array.<number>} Size of the label in pixels.
+     */
+
+    ol.render.webgl.TextReplay.prototype.renderDeclutter_ = function (extent, feature) {
+        var box = {
+            minX: extent[0],
+            minY: extent[1],
+            maxX: extent[2],
+            maxY: extent[3],
+            value: feature,
+        }
+
+        if(!this.declutterTree.collides(box)){
+            this.declutterTree.insert(box);
+            
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * @inheritDoc
@@ -70721,10 +70757,13 @@ function olInit() {
                     break;
                 case ol.geom.GeometryType.LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
+                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.MULTI_LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
-                    end = flatCoordinates.length;
+                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
+                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
@@ -70735,52 +70774,176 @@ function olInit() {
                     break;
                 default:
             }
-            this.startIndices.push(this.indices.length);
-            this.startIndicesFeature.push(feature);
+            
+            var type  = geometry.getType();
+            var lines;
+            lines = this.text_.split('\n');
+            if(type == 'Point' && lines.length < 2 && this.text_.length > 16){
+                var textArray = this.text_.split(' ');
+                if(textArray.length > 2){
+                    lines = [];
+                    for(var i = 0; i < textArray.length; i += 2){
+                        lines.push(textArray[i] + ' ' + (textArray[i+1] || ''));
+                    }
+                }
+            }
 
-            var glyphAtlas = this.currAtlas_;
-            var lines = this.text_.split('\n');
+            var pathLength;
+            var startM;
+            if(type == 'LineString'){
+                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
+                startM = pathLength * this.textAlign_;
+            }
+            
             var textSize = this.getTextSize_(lines);
             var i, ii, j, jj, currX, currY, charArr, charInfo;
             var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
             var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
-            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
 
+            // declutter duplicate label
+            // var labelCoordinates = geometry.getFlatMidpoint();
+            var extent = [flatCoordinates[0], flatCoordinates[1], flatCoordinates[0] + 256, flatCoordinates[1] + 256];
+            if(!this.renderDeclutter_(extent, feature)){
+                // return;
+            }
+            
+            // FIXME zoom 12 test
+            if(this.text_.includes('Ferguson Road')){
+                // var projExtent = [];
+                // for(var i = 0; i < extent.length; i+=2){
+                //     var point = ol.proj.transform([extent[i], extent[i+1]], 'EPSG:3857', 'EPSG:4326');                    
+                //     projExtent[i] = point[0];
+                //     projExtent[i + 1] = point[1];
+                // }
+
+                // var coordinates = [
+                //     [projExtent[0], projExtent[1]],
+                //     [projExtent[2], projExtent[1]],
+                //     [projExtent[2], projExtent[3]],
+                //     [projExtent[0], projExtent[3]],
+                //     [projExtent[0], projExtent[1]]
+                // ]
+                // console.log(JSON.stringify(coordinates));                
+            }
+
+            this.startIndices.push(this.indices.length);
+            this.startIndicesFeature.push(feature);
+
+            var glyphAtlas = this.currAtlas_;            
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+            
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 currX = 0;
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
 
-                for (j = 0, jj = charArr.length; j < jj; ++j) {
-                    charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+                if(type == 'LineString'){
+                    var lineStringCoordinates = geometry.getFlatCoordinates();
+                    // Keep text upright
+                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[end - stride]; 
+                    var numChars = charArr.length;
+                    var x1 = lineStringCoordinates[offset];
+                    var y1 = lineStringCoordinates[offset + 1];
+                    offset += stride;
+                    var x2 = lineStringCoordinates[offset];
+                    var y2 = lineStringCoordinates[offset + 1];
+                    var segmentM = 0;
+                    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-                    if (charInfo) {
-                        var image = charInfo.image;
+                    var chunk = '';
+                    // var chunkLength = 0;
+                    var data, index, previousAngle;
+                    for (var j = 0; j < numChars; ++j) {
+                        charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+                        if (charInfo) {
 
-                        this.anchorX = anchorX - currX;
-                        this.anchorY = anchorY - currY;
-                        this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                        this.originY = charInfo.offsetY;
-                        this.height = glyphAtlas.height;
-                        this.width = j === 0 || j === charArr.length - 1 ?
-                            glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-                        this.imageHeight = image.height;
-                        this.imageWidth = image.width;
-
-                        var currentImage;
-                        if (this.images_.length === 0) {
-                            this.images_.push(image);
-                        } else {
-                            currentImage = this.images_[this.images_.length - 1];
-                            if (ol.getUid(currentImage) != ol.getUid(image)) {
-                                this.groupIndices.push(this.indices.length);
-                                this.images_.push(image);
+                            index = reverse ? numChars - j - 1 : j;
+                            var char = charArr[index];
+                            chunk = reverse ? char + chunk : chunk + char;
+                            // var charLength = measure(chunk) - chunkLength;
+                            var charLength = glyphAtlas.width[char];
+                            // chunkLength += charLength;
+                            var charM = startM + charLength / 2;
+                            while (offset < end - stride && segmentM + segmentLength < charM) {
+                                x1 = x2;
+                                y1 = y2;
+                                offset += stride;
+                                x2 = lineStringCoordinates[offset];
+                                y2 = lineStringCoordinates[offset + 1];
+                                segmentM += segmentLength;
+                                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
                             }
-                        }
+                            // var segmentPos = charM - segmentM;
+                            var angle = Math.atan2(y2 - y1, x2 - x1);
+                            if (reverse) {
+                                angle += angle > 0 ? -Math.PI : Math.PI;
+                            }
+                            this.rotation = -angle;
+                            previousAngle = angle;
+                            startM += charLength;
 
-                        this.drawText_(flatCoordinates, offset, end, stride);
+                            //FIXME zoom 12 test
+                            if(this.text_.includes('Ferguson Road')){
+                                // console.log(this.rotation);
+                                
+                            }
+                            var image = charInfo.image;
+    
+                            this.anchorX = anchorX - currX;
+                            this.anchorY = anchorY - currY;
+                            this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                            this.originY = charInfo.offsetY;
+                            this.height = glyphAtlas.height;
+                            this.width = j === 0 || j === charArr.length - 1 ?
+                                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                            this.imageHeight = image.height;
+                            this.imageWidth = image.width;
+    
+                            var currentImage;
+                            if (this.images_.length === 0) {
+                                this.images_.push(image);
+                            } else {
+                                currentImage = this.images_[this.images_.length - 1];
+                                if (ol.getUid(currentImage) != ol.getUid(image)) {
+                                    this.groupIndices.push(this.indices.length);
+                                    this.images_.push(image);
+                                }
+                            }
+                            this.drawText_(flatCoordinates, 0, 2, stride);
+                        }
+                        currX += this.width;
                     }
-                    currX += this.width;
+                }else{
+                    for (j = 0, jj = charArr.length; j < jj; ++j) {
+                        charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+    
+                        if (charInfo) {
+                            var image = charInfo.image;
+    
+                            this.anchorX = anchorX - currX;
+                            this.anchorY = anchorY - currY;
+                            this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                            this.originY = charInfo.offsetY;
+                            this.height = glyphAtlas.height;
+                            this.width = j === 0 || j === charArr.length - 1 ?
+                                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                            this.imageHeight = image.height;
+                            this.imageWidth = image.width;
+    
+                            var currentImage;
+                            if (this.images_.length === 0) {
+                                this.images_.push(image);
+                            } else {
+                                currentImage = this.images_[this.images_.length - 1];
+                                if (ol.getUid(currentImage) != ol.getUid(image)) {
+                                    this.groupIndices.push(this.indices.length);
+                                    this.images_.push(image);
+                                }
+                            }
+                            this.drawText_(flatCoordinates, offset, end, stride);
+                        }
+                        currX += this.width;
+                    }
                 }
             }
         }

@@ -241,7 +241,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         }
         let tiles = this.renderedTiles;
         let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-        let clips = [];
+        // let clips = [];
         let zs = [];
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
@@ -267,7 +267,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 if (!transform) {
                     transform = this.getTransform(frameState, worldOffset);
                 }
-                let currentZ = sourceTile.tileCoord[0];
+                // let currentZ = sourceTile.tileCoord[0];
                 // let currentClip = replayGroup.getClipCoords(transform);
                 // context.save();
                 context.globalAlpha = layerState.opacity;
@@ -295,10 +295,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays);
                 // context.restore();
                 // clips.push(currentClip);
-                zs.push(currentZ);
+                // zs.push(currentZ);
             }
         }
-
+        
         if (declutterReplays) {
             var hints = frameState.viewHints;
             var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
@@ -336,7 +336,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let resolution = tileGrid.getResolution((<any>tile).tileCoord[0]);
         let tileExtent = tileGrid.getTileCoordExtent((<any>tile).wrappedTileCoord);
 
-        let zIndexKeys = {};
+        // let zIndexKeys = {};
         for (let t = 0, tt = (<any>tile).tileKeys.length; t < tt; ++t) {
             let sourceTile = (<any>tile).getTile((<any>tile).tileKeys[t]);
             if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
@@ -431,7 +431,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 }
 
                 if (source.isMultithread) {
-                    let render = this;
+                    // let render = this;
                     if (tileProjection.getUnits() === (<any>ol.proj).Units.TILE_PIXELS) {
                         tileProjection.setWorldExtent(sourceTileExtent);
                         tileProjection.setExtent(sourceTile.getExtent());
@@ -506,17 +506,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                                 let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
-                                renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
+                                // renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
 
                         // replayGroup.getReplaysMerged(replaysByZIndex_);
                         
                         for (let zindex in replaysByZIndex_) {
-                            for (let replayType in replaysByZIndex_[zindex]) {
-                                if(replayType === 'LineString'){
-                                    // continue;
-                                }
+                            for (let replayType in replaysByZIndex_[zindex]) {                                
                                 // merge worker to main with replaysByZIndex_
                                 let replay = replayGroup.getReplay(zindex, replayType);    
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
@@ -536,17 +533,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         // for (let r in replayGroup.getReplays()) {
                         //     zIndexKeys[r] = true;
                         // }
-                        replayGroup.finish(frameState['context']);
-                        // console.log('===========');                        
-                        // console.log(JSON.stringify(replayGroup.replaysByZIndex_[0].Polygon.indicesBuffer.arr_));
-                        // console.log(JSON.stringify(replayGroup.replaysByZIndex_[0].Polygon.verticesBuffer.arr_));
-                        for(var key in replayGroup.replaysByZIndex_){
-                            if(key != '0'){
-                                // delete replayGroup.replaysByZIndex_[key];
-                            }
-                        }
-                        // replayGroup.replaysByZIndex_[0].Polygon.origin = [0, 0];
-                        // replayGroup.replaysByZIndex_[0].Polygon.lineStringReplay.origin = [0, 0];
+                        replayGroup.finish(frameState['context']);                       
 
                         replayState.renderedTileLoaded = true;
                         sourceTile.state = (<any>ol).TileState.LOADED;
