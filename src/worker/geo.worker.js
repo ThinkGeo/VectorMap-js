@@ -112,6 +112,10 @@ self.request = function (requestInfo, methodInfo) {
 
 }
 
+self.createReplayGroup = function (requestInfo, methodInfo) {
+    return "OK";
+}
+
 // Method
 self.createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
     var styleIdIndex = 0;
