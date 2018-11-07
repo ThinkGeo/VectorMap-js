@@ -108,7 +108,7 @@ __NOTE:__
  
  * World Streets Styles
  
- `World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
+`World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
 
 __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with.
 
@@ -139,7 +139,6 @@ After all the above steps completed, your HTML page should be:
         
         <!-- latest minified version of vectormap.js -->
         <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
-	
 	    <script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
 	    <script>
             WebFont.load({
