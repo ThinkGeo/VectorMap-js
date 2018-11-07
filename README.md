@@ -12,7 +12,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [API Documentation](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/api-reference.html)
 * [Vector StyleJSON Specification](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/)
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
-* [Wolrd Street Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop), including:
+* [Wolrd Street Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
 __Light Map__
 
@@ -84,9 +84,10 @@ __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
 __Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control with one vector layer created. 
 ```javascript
 <script>
-    var worldstreets = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", 
+    var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+    var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
-            'apikey':'your-thinkgeo-gis-service-vector-tile-key'
+            'apikey':'your-thinkgeo-cloud-service-vector-tile-key'
         });
     let map = new ol.Map({
         layers: [worldstreets],
@@ -99,17 +100,22 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
 </script>
 ```
  
- __NOTE:__  Please check [here](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/content/sign-up-thinkgeo-account.html) on how to create your own `ThinkGeo GIS Service Vector Tile key`.
+ - NOTE:
  
-__Step 5__. Download one of [Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop) and copy it to the directory where the index.html is. For example, we can call it "thinkgeo-world-streets-light.json".
+ * ThinkGeo Cloud Service key
+ Access to ThinkGeo Cloud services, including Vector Tile data, requires an `API Key` that connects API requests to your account, Please check [here](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/content/sign-up-thinkgeo-account.html) on how to create your own `ThinkGeo Cloud Service key` __FOR FREE__.
+ 
+ * World Streets Styles
+ `World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
+ 
 
 After all the above steps completed, your HTML page should be:
 
-```
+```html
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sample Map</title>
+        <title>Vector World Map</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- style sheet for vectormap.js -->
@@ -119,9 +125,10 @@ After all the above steps completed, your HTML page should be:
         <script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
     </head>
     <body>
-        <div id="map"></div>
+        <div id="map" style="width:800px;height=600px;"></div>
         <script>
-            var worldstreets = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", 
+            var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+            var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
                 'apikey':'your-thinkgeo-gis-service-vector-tile-key'
             });
@@ -138,11 +145,11 @@ After all the above steps completed, your HTML page should be:
 </html>
 ```
 
-__Step 6__. Run the page and a beautiful map there.
+__Step 6__. Run the page and a beautiful map is there.
 
-__NOTE:__ 
+## ThinkGeo Map Icons
 
-__[ThinkGeo Icon FontSet](http://maptest.thinkgeo.com/maps/icon-editor/index.html)__ is an icon set, which is used in "[Predefined open source styles]()" as POI icons. If you are using ready-to-go predefined styleJSON file downloaded, please add following code in `"<Head>"`.
+__[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ is a pack of more than 200 beautifully crafted Open Source icons for common mapping. It's used in `Map Suite World Streets Styles`, in other words, if you use  the pre-defined styles, please add following code in `"<Head>"`.
 
 ```
 <script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
