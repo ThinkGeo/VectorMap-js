@@ -69,11 +69,11 @@ __Step 1__. Create a html page with name "index.html "
 __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and related css file.
 
 ```html
-  	<!-- style sheet for vectormap.js -->
-	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
+<!-- style sheet for vectormap.js -->
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
 	
-	<!-- latest minified version of vectormap.js -->
-  	<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
+<!-- latest minified version of vectormap.js -->
+<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
 ```
  
 __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
@@ -87,7 +87,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
     var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
     var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
-            'apikey':'your-ThinkGeo-Cloud-Service-key'
+            apiKey:'your-ThinkGeo-Cloud-Service-key'
         });
     let map = new ol.Map({
         layers: [worldstreets],
@@ -138,17 +138,17 @@ After all the above steps completed, your HTML page should be:
         <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
-        <script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
+        <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
 	
-	<script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
-	<script>
-	    WebFont.load({
-		custom: {
-		    families: ["ThinkgeoFont"],
-		    urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
-		}
-	    });
-	</script>
+	    <script src="https://cdn.thinkgeo.com/vectormap-icons/0.1.0/webfontloader.js"></script>
+	    <script>
+            WebFont.load({
+                custom: {
+                    families: ["ThinkgeoFont"],
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/0.1.0/thinkgeo-font.css"]
+                }
+            });
+        </script>
     </head>
     <body>
         <div id="map" style="width:800px;height:600px;"></div>
@@ -156,7 +156,7 @@ After all the above steps completed, your HTML page should be:
             var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
-                apiKey:'your-thinkgeo-gis-service-vector-tile-key'
+                apiKey:'your-ThinkGeo-Cloud-Service-key'
             });
             let map = new ol.Map({
                 layers: [worldstreets],
