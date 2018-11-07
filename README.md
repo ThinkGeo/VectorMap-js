@@ -34,11 +34,11 @@ __Hybrid Map__
 Load from CDN in your project:
 
 ```html
-  	<!-- style sheet for vectormap.js -->
-	<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.css"></link>
+<!-- style sheet for vectormap.js -->
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
 	
-	<!-- latest minified version of vectormap.js -->
-  	<script src="https://cdn.thinkgeo.com/vectormap/1.0.2/vectormap.js"></script>
+<!-- latest minified version of vectormap.js -->
+<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
 ```
 
 ### NPM
@@ -54,11 +54,11 @@ npm i vectormap-js-dev
 ``` 
 - Include it to your page:
 ```html
-  	<!-- style sheet for vectormap.js -->
-	<link rel="stylesheet" href="path/to/dist/vectormap.css"></link>
+<!-- style sheet for vectormap.js -->
+<link rel="stylesheet" href="path/to/dist/vectormap.css"></link>
 	
-	<!-- latest minified version of vectormap.js -->
-  	<script src="path/to/dist/vectormap.js"></script>
+<!-- latest minified version of vectormap.js -->
+<script src="path/to/dist/vectormap.js"></script>
 ```
  
 ## How to use
