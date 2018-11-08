@@ -14,15 +14,15 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-__Light Map__
+__Light Map__ [View Live Map](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc)
 
 <img src="https://thinkgeo.com/image/gallery/LightMap.png">
 
-__Dark Map__
+__Dark Map__ [View Live Map](https://maps.thinkgeo.com/?id=38de0c3315677eca2b05d2b8dfe11a99)
 
 <img src="https://thinkgeo.com/image/gallery/DarkMap.png">
 
-__Hybrid Map__
+__Hybrid Map__ [View Live Map](https://maps.thinkgeo.com/?id=49bca9b0bbc306e0da6d740b1ca992b2)
 
 <img src="https://thinkgeo.com/image/gallery/HybridMap.png">
 
