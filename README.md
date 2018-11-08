@@ -14,7 +14,9 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc)
+## Examples:
+
+__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc), <img src="https://cdn0.iconfinder.com/data/icons/social-glyph/30/codepen-480.png" style="width=30px;height=30px;"> Edit On CodePen
 
 <img src="https://thinkgeo.com/image/gallery/LightMap.png">
 
