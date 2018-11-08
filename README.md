@@ -35,10 +35,10 @@ Load from CDN in your project:
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/mapsuite-vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
 ```
 
 ### NPM
