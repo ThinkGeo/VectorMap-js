@@ -16,7 +16,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Examples:
 
-__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc), [Edit On CodePen](https://codepen.io/thinkgeo/pen/BGjbRG)
+__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc) ([Edit On CodePen](https://codepen.io/thinkgeo/pen/BGjbRG))
 
 <img src="https://thinkgeo.com/image/gallery/LightMap.png">
 
