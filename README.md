@@ -114,12 +114,12 @@ __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your 
 
 
 ```
-<script src="https://cdn.thinkgeo.com/fonts/1.0.0/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["vectormap-icons"],
-            urls: ["https://cdn.thinkgeo.com/fonts/1.0.0/vectormap-icons.css"]
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
         }
     });
 </script>
@@ -141,12 +141,12 @@ After all the above steps completed, your HTML page should be:
         <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
-        <script src="https://cdn.thinkgeo.com/fonts/1.0.0/webfontloader.js"></script>
+        <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
         <script>
             WebFont.load({
                 custom: {
                     families: ["vectormap-icons"],
-                    urls: ["https://cdn.thinkgeo.com/fonts/1.0.0/vectormap-icons.css"]
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
                 }
             });
         </script>
