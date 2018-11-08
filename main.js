@@ -16,8 +16,8 @@ import { fromLonLat } from 'ol/proj'
 var view = new View({
   center: fromLonLat([-96.79748, 32.78819]),
   zoom: 4,
-  maxZoom: 19,
-  maxResolution: 40075016.68557849 / 512
+  // maxZoom: 19,
+  // maxResolution: 40075016.68557849 / 512
 });
 var zoom = view.getZoom();
 document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
@@ -43,15 +43,16 @@ var tilegrid = new Tile({
   })
 })
 
-// var vectorTileLayer = new VectorTileLayer({
-//   source: new VectorTileSource({
-//     format: new MVT(),
-//     url: "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~"
-//   })
-// })
+var vectorTileLayer = new VectorTileLayer({
+  source: new VectorTileSource({
+    format: new MVT(),
+    url: "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~"
+  })
+})
+
 
 var map = new Map({
-  layers: [geoVectorTileLayer],
+  layers: [vectorTileLayer],
   target: 'map',
   view: view
 });

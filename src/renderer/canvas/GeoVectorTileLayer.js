@@ -13,6 +13,7 @@ import Units from 'ol/proj/Units';
 import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
 import rbush from 'rbush';
 import ReplayType from 'ol/render/ReplayType';
+import { listen, unlisten } from 'ol/events.js';
 import {
     compose as composeTransform,
     reset as resetTransform,
@@ -213,6 +214,42 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         return this.renderedTiles.length > 0;
     }
 
+    manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio, projection, extent, currentZ, preload, opt_tileCallback, opt_this) {
+        const tileSourceKey = getUid(tileSource).toString();
+        if (!(tileSourceKey in frameState.wantedTiles)) {
+            frameState.wantedTiles[tileSourceKey] = {};
+        }
+        const wantedTiles = frameState.wantedTiles[tileSourceKey];
+        const tileQueue = frameState.tileQueue;
+        const minZoom = tileGrid.getMinZoom();
+        let tile, tileRange, tileResolution, x, y, z;
+        for (z = minZoom; z <= currentZ; ++z) {
+            tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
+            tileResolution = tileGrid.getResolution(z);
+            for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+                for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+                    if (currentZ - z <= preload) {
+                        tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+                        if (tile.getState() == TileState.IDLE) {
+                            wantedTiles[tile.getKey()] = true;
+                            if (!tileQueue.isKeyQueued(tile.getKey())) {
+                                if (tileQueue.enqueue([tile, tileSourceKey,
+                                    tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution])) {
+                                    listen(tile, "loadeded", tileQueue.handleTileChange, tileQueue);
+                                };
+                            }
+                        }
+                        if (opt_tileCallback !== undefined) {
+                            opt_tileCallback.call(opt_this, tile);
+                        }
+                    } else {
+                        tileSource.useTile(z, x, y, projection);
+                    }
+                }
+            }
+        }
+    }
+
     renderTileImage_(tile, pixelRatio, projection) {
         const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
         const replayState = tile.getReplayState(layer);
@@ -407,7 +444,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         }
                         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                         replayState.createReplayGroup = true;
-                        sourceTile.setState(TileState.LOADED);
+                        tile.dispatchEvent("loadeded");
 
                     }
                     workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", {}, createReplayGroupCallback, undefined);
