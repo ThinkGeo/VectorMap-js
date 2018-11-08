@@ -154,7 +154,7 @@ After all the above steps completed, your HTML page should be:
     <body>
         <div id="map" style="width:800px;height:600px;"></div>
         <script>
-            var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'
