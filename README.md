@@ -28,7 +28,7 @@ __Hybrid Map__
 
 ## Install
 
-> The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript, and have some experience of any front-end development editor, such as [Visual Studio Code](https://code.visualstudio.com/), [Webstorm](https://www.jetbrains.com/webstorm/), [Sublime Text](https://www.sublimetext.com/) or some similars. if you are totally new to frontend development, the easiest way to try out this library which is the "[Hello World](https://codepen.io/thinkgeo/project/editor/ZQEWEq)" example on CodePen. Feel free to open it in another tab and follow along as we go through some features.
+> The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript, and have some experience of any front-end development editor, such as [Visual Studio Code](https://code.visualstudio.com/), [Webstorm](https://www.jetbrains.com/webstorm/), [Sublime Text](https://www.sublimetext.com/) or some similars. if you are totally new to frontend development, the easiest way to try out this library which is the "[Hello World](https://codepen.io/thinkgeo/pen/BGjbRG)" example on CodePen. Feel free to open it in another tab and follow along as we go through some features.
 
 ### CDN
 Load from CDN in your project:
