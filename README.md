@@ -94,7 +94,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
         target: 'map',
         view: new ol.View({
             center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-            zoom: 2,
+            zoom: 4,
         }),
     });
 </script>
