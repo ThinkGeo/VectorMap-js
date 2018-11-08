@@ -1,7 +1,7 @@
 
 # VectorMap.js
 
-The __VectorMap.js__ is an open-source JavaScript SDK and an extension of [OpenLayers](https://openlayers.org/ "OpenLayers") to create maps for web and mobile devices. With the help of Map Suite vector styling schema - [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/), you can easily create beautiful maps for your application.
+HTML5, WebGL Vector mapping library with any vector data – EsriJSON, GML, GPX, GeoJSON, KML, Vector Tile (MVT), WFS, WKT or WMS, can be beautifully rendered with CSS similar style file – [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) schema. It’s an extension of [OpenLayers](https://openlayers.org/ "OpenLayers"), and fits any requirements in browsers and mobile devices. 
 
 With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://openlayers.org/ "OpenLayers"), as well as any plugins or extensions created based on [OpenLayers](https://openlayers.org/ "OpenLayers"), for example, the "[3rd party libraries](http://openlayers.org/3rd-party/)" published on https://openlayers.org. With the help of them, you can easily create any styled map and put it anywhere, and build a customized geocoding or routings from other providers.
 
