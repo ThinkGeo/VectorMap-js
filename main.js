@@ -35,60 +35,10 @@ view.on("change:resolution", function (e) {
   document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
-
 var map = new Map({
   target: 'map',
   view: view
 });
-
-
-var geoVectorTileLayer = new GeoVectorTileLayer(light, {
-  maxDataZoom: 14,
-  multithread: true,
-  updateWhileAnimating: true,
-  updateWhileInteracting: true
-})
-var tilegrid = new Tile({
-  source: new TileDebug({
-    projection: "EPSG:3857",
-    tileGrid: createXYZ({ tileSize: 512, maxZoom: 22 })
-  })
-})
-// map.addLayer(geoVectorTileLayer);
-
-
-var style = new Style({
-  fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new Stroke({
-    color: '#319FD3',
-    width: 1
-  }),
-  text: new Text({
-    font: '12px Calibri,sans-serif',
-    fill: new Fill({
-      color: '#000'
-    }),
-    stroke: new Stroke({
-      color: '#fff',
-      width: 3
-    })
-  })
-});
-
-var vectorLayer = new VectorLayer({
-  source: new VectorSource({
-    url: 'https://openlayers.org/en/latest/examples/data/geojson/countries.geojson',
-    format: new GeoJSON()
-  }),
-  style: function (feature) {
-    style.getText().setText(feature.get('name'));
-    return style;
-  }
-});
-// map.addLayer(vectorLayer);
-
 
 var geoVectorLayer = new GeoVectorLayer(geosjonStyle, {
   multithread: false

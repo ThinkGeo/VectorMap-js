@@ -1,8 +1,8 @@
 /**
  * @module ol/featureloader
  */
-import { VOID } from './functions.js';
-import FormatType from './format/FormatType.js';
+import { VOID } from 'ol/functions.js';
+import FormatType from 'ol/format/FormatType.js';
 
 /**
  * {@link module:ol/source/Vector} sources use a function of this type to
@@ -55,6 +55,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
          * @this {import("./source/Vector").default|import("./VectorTile.js").default}
          */
         function (extent, resolution, projection) {
+
             const xhr = new XMLHttpRequest();
             xhr.open('GET',
                 typeof url === 'function' ? url(extent, resolution, projection) : url,
@@ -83,9 +84,9 @@ export function loadFeaturesXhr(url, format, success, failure) {
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                     }
                     if (source) {
-                        success.call(this, format.readFeatures(source,
-                            { featureProjection: projection }),
-                            format.readProjection(source), format.getLastExtent());
+                        debugger;
+                        const features = format.readFeatures(source, { featureProjection: projection })
+                        success.call(this, features, format.readProjection(source), format.getLastExtent());
                     } else {
                         failure.call(this);
                     }

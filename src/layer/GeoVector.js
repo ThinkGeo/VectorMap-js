@@ -1,15 +1,18 @@
 import LayerType from 'ol/LayerType';
 import GeoStyle from '../style/geoStyle';
-import StyleJsonCache from '../tree/styleJsonCache';
 import Map from 'ol/Map';
 import { getUid } from 'ol/util'
-import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
-import TreeNode from '../tree/treeNode';
-import Tree from '../tree/tree';
 import WorkerManager from "../worker/workerManager";
 import VectorLayer from "./Vector";
 import GeoVectorSource from "../source/GeoVector";
 import GeoJSON from "ol/format/GeoJSON";
+
+import StyleJsonCache from '../tree/styleJsonCache';
+import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
+import TreeNode from '../tree/treeNode';
+import Tree from '../tree/tree';
+
+
 
 import CanvasMapRenderer from 'ol/renderer/canvas/Map';
 import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
@@ -140,21 +143,7 @@ class GeoVectorLayer extends VectorLayer {
                         styleIdIndex += 1;
                     }
                 }
-                let geoFormat = source.getFormat();
-                geoFormat.styleJsonCache = "styleJsonCache";
-
-                if (this.workerManager) {
-                    let messageData = {
-                        formatId: getUid(geoFormat),
-                        styleJson: styleJsonCache.styleJson,
-                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
-                    };
-                    for (let i = 0; i < this.workerManager.workerCount; i++) {
-                        this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
-                    }
-
-                    source.setWorkerManager(this.workerManager);
-                }
+                this.styleJsonCache = styleJsonCache;
             }
         }
     }
@@ -250,6 +239,19 @@ class GeoVectorLayer extends VectorLayer {
                     else {
                         styleJson[propertyName] = variables[lines[0]];
                     }
+                }
+            }
+        }
+    }
+
+    createChildrenNode(currentNode, item, zoom) {
+        if (item.subStyleCacheItems && item.subStyleCacheItems.length > 0) {
+            for (let i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
+                let subStyleItem = item.subStyleCacheItems[i];
+                if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                    let node = new TreeNode(subStyleItem);
+                    currentNode.children.push(node);
+                    this.createChildrenNode(node, subStyleItem, zoom);
                 }
             }
         }
