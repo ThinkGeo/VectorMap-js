@@ -13,6 +13,7 @@ class GeoVectorTile extends VectorTile {
             this.loader_(null, NaN, null);
         }
     }
+   
 }
 
 export default GeoVectorTile;

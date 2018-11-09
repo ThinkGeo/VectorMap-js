@@ -20,6 +20,7 @@ import {
     translate as translateTransform
 } from 'ol/transform.js';
 import RenderFeature from 'ol/render/Feature';
+import { listen } from 'ol/events';
 
 const IMAGE_REPLAYS = {
     'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -218,7 +219,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         const replayState = tile.getReplayState(layer);
         const revision = layer.getRevision();
         const replays = IMAGE_REPLAYS[layer.getRenderMode()];
-        if (replays && replayState.renderedTileRevision !== revision) {
+        // Add a condition: the replayGroup has been created.
+        if (replays && replayState.renderedTileRevision !== revision && replayState.replayGroupCreated) {
             replayState.renderedTileRevision = revision;
             const tileCoord = tile.wrappedTileCoord;
             const z = tileCoord[0];
@@ -253,7 +255,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
     getTile(z, x, y, pixelRatio, projection, frameState) {
         const tile = this.getTileSuper(z, x, y, pixelRatio, projection);
-        if (tile.getState() === TileState.LOADED) {
+        if (tile.getState() === TileState.LOADED || tile.getState() === "createReplay") {
             this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection, frameState);
             if (this.context) {
                 this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection);
@@ -309,6 +311,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
             if (originalReplayGroup) {
                 sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), originalReplayGroup);
+                replayState.replayGroupCreated = true;
             }
             else {
                 const sourceTileCoord = sourceTile.tileCoord;
@@ -376,31 +379,49 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                 var workerManager = source.getWorkerManager();
                 if (workerManager) {
-                    let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
 
-                    for (let i = 0, ii = instructs.length; i < ii; ++i) {
-                        const featureIndex = instructs[i][0];
-                        const featureInfo = features[featureIndex];
-                        let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                    let rendererSelf = this;
 
-                        let geoStyleId = instructs[i][1];
-                        let geoStyle = geoStyles[geoStyleId];
+                    let createReplayGroupCallback = function (data, methodInfo) {
 
-                        if (reproject && !featureInfo["projected"]) {
-                            if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-                                // projected tile extent
-                                tileProjection.setWorldExtent(sourceTileExtent);
-                                // tile extent in tile pixel space
-                                tileProjection.setExtent(sourceTile.getExtent());
+                        let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
+
+                        for (let i = 0, ii = instructs.length; i < ii; ++i) {
+                            const featureIndex = instructs[i][0];
+                            const featureInfo = features[featureIndex];
+                            let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+
+                            let geoStyleId = instructs[i][1];
+                            let geoStyle = geoStyles[geoStyleId];
+
+                            if (reproject && !featureInfo["projected"]) {
+                                if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                                    // projected tile extent
+                                    tileProjection.setWorldExtent(sourceTileExtent);
+                                    // tile extent in tile pixel space
+                                    tileProjection.setExtent(sourceTile.getExtent());
+                                }
+                                feature.getGeometry().transform(tileProjection, projection);
+                                feature.extent_ = null;
+                                featureInfo["projected"] = true;
                             }
-                            feature.getGeometry().transform(tileProjection, projection);
-                            feature.extent_ = null;
-                            featureInfo["projected"] = true;
+                            if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                                render.call(rendererSelf, feature, geoStyle);
+                            }
                         }
-                        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-                            render.call(this, feature, geoStyle);
+                        replayState.replayGroupCreated = true;
+                        replayGroup.finish();
+                        for (const r in replayGroup.getReplays()) {
+                            zIndexKeys[r] = true;
                         }
+                        sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+
+                        tile.setState(TileState.LOADED);
+                        tile["replayCreated"] = true;
+                        console.log("CreateReplay Event:" + tile.tileCoord);
                     }
+                    replayState.replayGroupCreated = false;
+                    workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", sourceTileCoord.toString(), createReplayGroupCallback, undefined);
                 }
                 else {
                     // 
@@ -425,18 +446,78 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             render.call(this, feature, geoStyle);
                         }
                     }
+                    replayState.replayGroupCreated = true;
+                    replayGroup.finish();
+                    for (const r in replayGroup.getReplays()) {
+                        zIndexKeys[r] = true;
+                    }
+                    sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                 }
 
-                replayGroup.finish();
-                for (const r in replayGroup.getReplays()) {
-                    zIndexKeys[r] = true;
-                }
-                sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+
             }
         }
         replayState.renderedRevision = revision;
         replayState.renderedRenderOrder = renderOrder;
     }
+
+    manageTilePyramid(
+        frameState,
+        tileSource,
+        tileGrid,
+        pixelRatio,
+        projection,
+        extent,
+        currentZ,
+        preload,
+        opt_tileCallback,
+        opt_this
+    ) {
+        const tileSourceKey = getUid(tileSource).toString();
+        if (!(tileSourceKey in frameState.wantedTiles)) {
+            frameState.wantedTiles[tileSourceKey] = {};
+        }
+        const wantedTiles = frameState.wantedTiles[tileSourceKey];
+        const tileQueue = frameState.tileQueue;
+        const minZoom = tileGrid.getMinZoom();
+        let tile, tileRange, tileResolution, x, y, z;
+        for (z = minZoom; z <= currentZ; ++z) {
+            tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
+            tileResolution = tileGrid.getResolution(z);
+            for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+                for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+                    if (currentZ - z <= preload) {
+                        tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+                        if (tile.getState() == TileState.IDLE) {
+                            wantedTiles[tile.getKey()] = true;
+                            if (!tileQueue.isKeyQueued(tile.getKey())) {
+                                if (tileQueue.enqueue([tile, tileSourceKey,
+                                    tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution])) {
+                                    listen(tile, "loaded", tileQueue.handleTileChange, tileQueue);
+                                };
+                            }
+                        }
+                        if (opt_tileCallback !== undefined) {
+                            opt_tileCallback.call(opt_this, tile);
+                        }
+                    } else {
+                        tileSource.useTile(z, x, y, projection);
+                    }
+                }
+            }
+        }
+    }
+
+    isDrawableTile_(tile) {
+        const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+        const tileState = tile.getState();
+        const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+        // Tile Loaded and replay has been created.
+        return (tileState == TileState.LOADED && tile.replayCreated) ||
+            tileState == TileState.EMPTY ||
+            tileState == TileState.ERROR && !useInterimTilesOnError;
+    }
+
 }
 
 GeoCanvasVectorTileLayerRenderer['handles'] = function (layer) {

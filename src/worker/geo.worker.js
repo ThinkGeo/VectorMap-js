@@ -11,6 +11,7 @@ import LRUCache from 'ol/structs/LRUCache'
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
+self.createReplayGroupTile = {};
 
 self.onmessage = function (msg) {
     var methodInfo = msg.data["methodInfo"];
@@ -110,6 +111,17 @@ self.request = function (requestInfo, methodInfo) {
 
     }
 
+}
+
+self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
+    // Create ReplayGroup in this method
+    if (self.createReplayGroupTile[createReplayGroupInfo]) {
+        console.log(createReplayGroupInfo);
+    }
+    else {
+        self.createReplayGroupTile[createReplayGroupInfo] = true;
+    }
+    return "OK";
 }
 
 // Method

@@ -6,6 +6,10 @@ import GeoStyle from '../style/geoStyle';
 import StyleJsonCache from '../tree/styleJsonCache';
 import { createXYZ } from 'ol/tilegrid';
 import Map from 'ol/Map';
+import TileQueue from "ol/TileQueue";
+import TileState from "ol/TileState";
+import { unlisten } from "ol/events/";
+import EventType from "ol/events/EventType";
 import CanvasMapRenderer from 'ol/renderer/canvas/Map';
 import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
 import CanvasVectorLayerRenderer from 'ol/renderer/canvas/VectorLayer';
@@ -316,5 +320,28 @@ Map.prototype.createRenderer = function createRenderer() {
     ]);
     return renderer;
 };
+
+TileQueue.prototype.handleTileChange = function (event) {
+    const tile = /** @type {import("./Tile.js").default} */ (event.target);
+    const state = tile.getState();
+    if (state === TileState.LOADED || state === TileState.ERROR ||
+        state === TileState.EMPTY || state === TileState.ABORT || state === "createReplay") {
+        if (tile.isGeoVectorTile) {
+            if (tile.replayCreated) {
+                unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
+            }
+        }
+        else {
+            unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
+        }
+
+        const tileKey = tile.getKey();
+        if (tileKey in this.tilesLoadingKeys_) {
+            delete this.tilesLoadingKeys_[tileKey];
+            --this.tilesLoading_;
+        }
+        this.tileChangeCallback_();
+    }
+}
 
 export default GeoVectorTileLayer;

@@ -14,7 +14,7 @@ import { fromLonLat } from 'ol/proj'
 
 
 var view = new View({
-  center: fromLonLat([-96.79748, 32.78819]),
+  center: fromLonLat([-100.79748, 32.78819]),
   zoom: 4,
   maxZoom: 19,
   maxResolution: 40075016.68557849 / 512
@@ -27,6 +27,11 @@ view.on("change:resolution", function (e) {
     zoom = zoom.toFixed(2);
   }
   document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
+});
+
+var map = new Map({
+  target: 'map',
+  view: view
 });
 
 var geoVectorTileLayer = new GeoVectorTileLayer(light, {
@@ -50,10 +55,6 @@ var tilegrid = new Tile({
 //   })
 // })
 
-var map = new Map({
-  layers: [geoVectorTileLayer],
-  target: 'map',
-  view: view
-});
+map.addLayer(geoVectorTileLayer);
 
 window["map"] = map;
