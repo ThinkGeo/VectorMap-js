@@ -4,6 +4,7 @@ call npm install
 call npm install uglify-js -g 
 call npm run build 
 call copy style  "dist"
+call copy README.md  "dist"
 move dist\ol.mapsuite.js  %~pd0compression
 copy src\ol  %~pd0compression   
 cd %~pd0compression 
