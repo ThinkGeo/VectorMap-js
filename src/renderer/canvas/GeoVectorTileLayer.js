@@ -344,6 +344,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             var originalReplayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
             if (originalReplayGroup) {
                 sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), originalReplayGroup);
+                replayState.replayGroupCreated = true;
             }
             else {
                 var workerManager = source.getWorkerManager();

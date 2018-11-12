@@ -30,6 +30,7 @@ class GeoVectorTileSource extends VectorTile {
         // this.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
     }
 
+    // Add "isGeoVectorTile" for VectorTImageTile
     getTile(z, x, y, pixelRatio, projection) {
         const tileCoordKey = getKeyZXY(z, x, y);
         if (this.tileCache.containsKey(tileCoordKey)) {
@@ -49,6 +50,7 @@ class GeoVectorTileSource extends VectorTile {
                 this.tileGrid, this.getTileGridForProjection(projection),
                 this.sourceTiles_, pixelRatio, projection, this.tileClass,
                 this.handleTileChange.bind(this), tileCoord[0]);
+            tile.isGeoVectorTile = true;
 
             this.tileCache.set(tileCoordKey, tile);
             return tile;

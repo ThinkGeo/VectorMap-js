@@ -1,48 +1,42 @@
-import VectorTileLayer from './VectorTile';
 import LayerType from 'ol/LayerType';
-import GeoVectorTileSource from '../source/geoVectorTileSource';
-import GeoMVTFormat from '../format/geoMVTFormat';
 import GeoStyle from '../style/geoStyle';
-import StyleJsonCache from '../tree/styleJsonCache';
-import { createXYZ } from 'ol/tilegrid';
 import Map from 'ol/Map';
-import TileQueue from "ol/TileQueue";
-import TileState from "ol/TileState";
-import { unlisten } from "ol/events/";
-import EventType from "ol/events/EventType";
-import CanvasMapRenderer from 'ol/renderer/canvas/Map';
-import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
-import CanvasVectorLayerRenderer from 'ol/renderer/canvas/VectorLayer';
 import { getUid } from 'ol/util'
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
-import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
-import GeoVectorTileRenderer from '../renderer/canvas/GeoVectorTileLayer';
-import GeoCanvasVectorTileLayerRenderer from '../renderer/canvas/GeoVectorTileLayer';
+import WorkerManager from "../worker/workerManager";
+import VectorLayer from "./Vector";
+import GeoVectorSource from "../source/GeoVector";
+import GeoJSON from "ol/format/GeoJSON";
+import StyleJsonCache from '../tree/styleJsonCache';
 import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
-import GeoVectorTile from '../GeoVectorTile';
 import TreeNode from '../tree/treeNode';
 import Tree from '../tree/tree';
-import WorkerManager from "../worker/workerManager";
+import CanvasMapRenderer from 'ol/renderer/canvas/Map';
+import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
+import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
+import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
+import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer';
+import GeoCanvasVectorTileLayerRenderer from "../renderer/canvas/GeoVectorTileLayer";
+import GeoCanvasVectorLayerRenderer from "../renderer/canvas/GeoVectorLayer";
+import ImageCanvas from 'ol/ImageCanvas';
 
-class GeoVectorTileLayer extends VectorTileLayer {
+import EsriJSON from "ol/format/EsriJSON";
+import TopoJSON from "ol/format/TopoJSON";
+import IGC from "ol/format/IGC";
+import Polyline from "ol/format/Polyline";
+import WKT from "ol/format/WKT";
+import GPX from "ol/format/GPX";
+import KML from "ol/format/KML";
+
+class GeoVectorLayer extends VectorLayer {
     constructor(stylejson, opt_options) {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
-        super(options);
-        this.multithread = options.multithread == undefined ? true : options.multithread
-        this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
+        super(options)
 
-        this.minimalist = options.minimalist === undefined ? true : options.minimalist;
-        this.maxDataZoom = options.maxDataZoom === undefined ? 14 : options.maxDataZoom;
         this.proxy = options["proxy"];
         this.clientId = options["clientId"];
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
-
-        if (this.multithread && window.Worker) {
-            this.workerManager = new WorkerManager();
-            this.workerManager.initWorkers();
-        }
 
         this.styleJson = null;
         if (this.isStyleJsonUrl(stylejson)) {
@@ -52,10 +46,8 @@ class GeoVectorTileLayer extends VectorTileLayer {
             this.loadStyleJson(stylejson);
         }
 
-        LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
-        this.type = LayerType.GEOVECTORTILE;
-
-
+        LayerType["GEOVECTOR"] = "GEOVECTOR";
+        this.type = LayerType.GEOVECTOR;
     }
 
     isStyleJsonUrl(styleJson) {
@@ -66,7 +58,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
         }
         return false;
     }
-
     loadStyleJsonAsyn(styleJsonUrl) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", styleJsonUrl, false);
@@ -91,9 +82,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
         this.dateTime = styleJson["dateTime"];
         this.variables = this.getVariables(styleJson["variables"]);
         this.background = styleJson["background"];
-
         this.replaceVariables(styleJson, this.variables);
-
         this.geoSources = {};
         if (styleJson["layers"] && styleJson["layers"].length > 0) {
             var layerJson = styleJson["layers"][0];
@@ -116,8 +105,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 let minZoom = 0;
                 let maxZoom = 22;
 
-
-                // this is the column name of pbflayer name, 
                 let layerName = "layerName"
 
                 // Create a StyleJsonCache
@@ -148,21 +135,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                         styleIdIndex += 1;
                     }
                 }
-                let geoFormat = source.getGeoFormat();
-                geoFormat.setStyleJsonCache(styleJsonCache);
-
-                if (this.workerManager) {
-                    let messageData = {
-                        formatId: getUid(geoFormat),
-                        styleJson: styleJsonCache.styleJson,
-                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
-                    };
-                    for (let i = 0; i < this.workerManager.workerCount; i++) {
-                        this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
-                    }
-
-                    source.setWorkerManager(this.workerManager);
-                }
+                this.styleJsonCache = styleJsonCache;
             }
         }
     }
@@ -175,33 +148,26 @@ class GeoVectorTileLayer extends VectorTileLayer {
         if (this.styleJson["sources"]) {
             this.styleJson['sources'].forEach(sourceJson => {
                 if (sourceId === sourceJson['id']) {
-                    if (!sourceJson['urls'] && sourceJson['url']) {
-                        sourceJson['urls'] = [sourceJson['url']];
-                        delete sourceJson['url'];
+                    let url = sourceJson["url"];
+                    var host = location.host;
+                    var protocol = location.protocol;
+                    if (url.indexOf('/') !== 0) {
+                        url = protocol + '//' + host + '/' + url;
                     }
-                    sourceJson['urls'] = sourceJson['urls'].map(url => {
-                        if (url.indexOf('http') === -1 && url.indexOf('https') === -1) {
-                            var host = location.host;
-                            var protocol = location.protocol;
-                            if (url.indexOf('/') !== 0) {
-                                url = protocol + '//' + host + '/' + url;
-                            }
-                            else if (url.indexOf('/') === 0) {
-                                url = protocol + '//' + host + url;
-                            }
-                        }
-                        // apiKey
-                        if (url.indexOf('apiKey') === -1 && this.apiKey) {
-                            url = url + '?apiKey=' + this.apiKey;
-                        }
-                        // proxy
-                        if (this.proxy) {
-                            url = this.proxy + encodeURIComponent(url);
-                        }
-                        return url;
-                    })
-                    this.geoSources[sourceJson["id"]] = this.createVectorTileSource(sourceJson);
-                    return true;
+                    else if (url.indexOf('/') === 0) {
+                        url = protocol + '//' + host + url;
+                    }
+
+                    // apiKey
+                    if (url.indexOf('apiKey') === -1 && this.apiKey) {
+                        url = url + '?apiKey=' + this.apiKey;
+                    }
+                    // proxy
+                    if (this.proxy) {
+                        url = this.proxy + encodeURIComponent(url);
+                    }
+                    sourceJson[url] = url;
+                    this.geoSources[sourceJson["id"]] = this.createSource(sourceJson);
                 }
             });
 
@@ -211,33 +177,50 @@ class GeoVectorTileLayer extends VectorTileLayer {
         return false;
     }
 
-    createVectorTileSource(sourceJson) {
-        if (sourceJson["type"] === "MVT") {
-            var format = this.getVectorSourceFormat();
-            var source = new GeoVectorTileSource({
-                tileClass: GeoVectorTile,
-                urls: sourceJson["urls"],
-                clientId: this.clientId,
-                clientSecret: this.clientSecret,
-                format: format,
-                projection: "EPSG:3857",
-                tileGrid: this.createVectorTileGrid(),
-                cacheSize: 1024,
-                multithread: this.multithread,
-                minimalist: this.minimalist,
-                maxDataZoom: this.maxDataZoom
-            });
-            format.setSource(source);
-            return source;
+    createSource(sourceJson) {
+        var sourceType = sourceJson["type"].toLowerCase();
+        var format = undefined;
+        if (sourceType === "geojson") {
+            format = new GeoJSON();
         }
-    }
-    getVectorSourceFormat() {
-        let format = new GeoMVTFormat(undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
+        else if (sourceType === "esrijson") {
+            // TODO: testing
+            format = new EsriJSON();
+        }
+        else if (sourceType === "topojson") {
+            // TODO: support "layers", http://openlayers.org/en/latest/examples/topojson.html?q=topojson.
+            format = new TopoJSON();
+        }
+        else if (sourceType === "igc") {
+            format = new IGC();
+        }
+        else if (sourceType === "polyline") {
+            // TODO: testing
+            format = new Polyline();
+        }
+        else if (sourceType === "wkt") {
+            // TODO: testing
+            format = new WMT();
+        }
+        else if (sourceType === "gpx") {
+            format = new GPX();
+        }
+        else if (sourceType === "kml") {
+            format = new KML();
+        }
+        else if(sourceType==="wfs")
+        {
+            // Format is GeoJSON.
+            format= new GeoJSON();
+        }
 
-        return format;
-    }
-    createVectorTileGrid() {
-        return createXYZ({ tileSize: 512, maxZoom: 22 });
+        var source = new GeoVectorSource({
+            url: sourceJson["url"],
+            clientId: this.clientId,
+            clientSecret: this.clientSecret,
+            format: format,
+        });
+        return source;
     }
 
     getVariables(variablesJson) {
@@ -298,15 +281,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
             }
         }
     }
-
-    isStyleJsonUrl(styleJson) {
-        if (styleJson) {
-            if (typeof styleJson !== "object") {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
 Map.prototype.createRenderer = function createRenderer() {
@@ -316,32 +290,10 @@ Map.prototype.createRenderer = function createRenderer() {
         CanvasTileLayerRenderer,
         CanvasVectorLayerRenderer,
         CanvasVectorTileLayerRenderer,
-        GeoCanvasVectorTileLayerRenderer
+        GeoCanvasVectorTileLayerRenderer,
+        GeoCanvasVectorLayerRenderer
     ]);
     return renderer;
 };
 
-TileQueue.prototype.handleTileChange = function (event) {
-    const tile = /** @type {import("./Tile.js").default} */ (event.target);
-    const state = tile.getState();
-    if (state === TileState.LOADED || state === TileState.ERROR ||
-        state === TileState.EMPTY || state === TileState.ABORT || state === "createReplay") {
-        if (tile.isGeoVectorTile) {
-            if (tile.replayCreated) {
-                unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
-            }
-        }
-        else {
-            unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
-        }
-
-        const tileKey = tile.getKey();
-        if (tileKey in this.tilesLoadingKeys_) {
-            delete this.tilesLoadingKeys_[tileKey];
-            --this.tilesLoading_;
-        }
-        this.tileChangeCallback_();
-    }
-}
-
-export default GeoVectorTileLayer;
+export default GeoVectorLayer;
