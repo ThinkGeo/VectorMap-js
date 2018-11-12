@@ -20,8 +20,8 @@ var geosjonStyle =
     }],
     "sources": [{
         "id": "countries_source",
-        "url": "https://openlayers.org/en/latest/examples/data/geojson/countries.geojson",
-        "type": "GeoJSON"
+        "url": "esrijson.txt",
+        "type": "EsriJSON"
     }],
     "layers": [{
         "id": "worldstreets_layers",

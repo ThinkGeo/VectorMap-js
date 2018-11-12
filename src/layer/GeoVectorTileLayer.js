@@ -325,7 +325,7 @@ TileQueue.prototype.handleTileChange = function (event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
     if (state === TileState.LOADED || state === TileState.ERROR ||
-        state === TileState.EMPTY || state === TileState.ABORT || state === "createReplay") {
+        state === TileState.EMPTY || state === TileState.ABORT) {
         if (tile.isGeoVectorTile) {
             if (tile.replayCreated) {
                 unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
