@@ -6,14 +6,10 @@ import WorkerManager from "../worker/workerManager";
 import VectorLayer from "./Vector";
 import GeoVectorSource from "../source/GeoVector";
 import GeoJSON from "ol/format/GeoJSON";
-
 import StyleJsonCache from '../tree/styleJsonCache';
 import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
 import TreeNode from '../tree/treeNode';
 import Tree from '../tree/tree';
-
-
-
 import CanvasMapRenderer from 'ol/renderer/canvas/Map';
 import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
@@ -21,26 +17,26 @@ import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer';
 import GeoCanvasVectorTileLayerRenderer from "../renderer/canvas/GeoVectorTileLayer";
 import GeoCanvasVectorLayerRenderer from "../renderer/canvas/GeoVectorLayer";
+import ImageCanvas from 'ol/ImageCanvas';
 
+import EsriJSON from "ol/format/EsriJSON";
+import TopoJSON from "ol/format/TopoJSON";
+import IGC from "ol/format/IGC";
+import Polyline from "ol/format/Polyline";
+import WKT from "ol/format/WKT";
+import GPX from "ol/format/GPX";
+import KML from "ol/format/KML";
 
 class GeoVectorLayer extends VectorLayer {
     constructor(stylejson, opt_options) {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
         super(options)
-        this.multithread = options.multithread == undefined ? true : options.multithread
-        this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
 
-        this.minimalist = options.minimalist === undefined ? true : options.minimalist;
-        this.maxDataZoom = options.maxDataZoom === undefined ? 14 : options.maxDataZoom;
         this.proxy = options["proxy"];
         this.clientId = options["clientId"];
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
-        if (this.multithread && window.Worker) {
-            this.workerManager = new WorkerManager();
-            this.workerManager.initWorkers();
-        }
 
         this.styleJson = null;
         if (this.isStyleJsonUrl(stylejson)) {
@@ -86,9 +82,7 @@ class GeoVectorLayer extends VectorLayer {
         this.dateTime = styleJson["dateTime"];
         this.variables = this.getVariables(styleJson["variables"]);
         this.background = styleJson["background"];
-
         this.replaceVariables(styleJson, this.variables);
-
         this.geoSources = {};
         if (styleJson["layers"] && styleJson["layers"].length > 0) {
             var layerJson = styleJson["layers"][0];
@@ -111,8 +105,6 @@ class GeoVectorLayer extends VectorLayer {
                 let minZoom = 0;
                 let maxZoom = 22;
 
-
-                // this is the column name of pbflayer name, 
                 let layerName = "layerName"
 
                 // Create a StyleJsonCache
@@ -186,16 +178,49 @@ class GeoVectorLayer extends VectorLayer {
     }
 
     createSource(sourceJson) {
-        if (sourceJson["type"] === "GeoJSON") {
-            var format = new GeoJSON();
-            var source = new GeoVectorSource({
-                url: sourceJson["url"],
-                clientId: this.clientId,
-                clientSecret: this.clientSecret,
-                format: format,
-            });
-            return source;
+        var sourceType = sourceJson["type"].toLowerCase();
+        var format = undefined;
+        if (sourceType === "geojson") {
+            format = new GeoJSON();
         }
+        else if (sourceType === "esrijson") {
+            // TODO: testing
+            format = new EsriJSON();
+        }
+        else if (sourceType === "topojson") {
+            // TODO: support "layers", http://openlayers.org/en/latest/examples/topojson.html?q=topojson.
+            format = new TopoJSON();
+        }
+        else if (sourceType === "igc") {
+            format = new IGC();
+        }
+        else if (sourceType === "polyline") {
+            // TODO: testing
+            format = new Polyline();
+        }
+        else if (sourceType === "wkt") {
+            // TODO: testing
+            format = new WMT();
+        }
+        else if (sourceType === "gpx") {
+            format = new GPX();
+        }
+        else if (sourceType === "kml") {
+            format = new KML();
+        }
+        else if(sourceType==="wfs")
+        {
+            // Format is GeoJSON.
+            format= new GeoJSON();
+        }
+
+        var source = new GeoVectorSource({
+            url: sourceJson["url"],
+            clientId: this.clientId,
+            clientSecret: this.clientSecret,
+            format: format,
+        });
+        return source;
     }
 
     getVariables(variablesJson) {
