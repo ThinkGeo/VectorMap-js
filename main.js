@@ -11,11 +11,12 @@ import TileDebug from 'ol/source/TileDebug'
 import Tile from 'ol/layer/Tile'
 import light from './thinkgeo-world-streets-light';
 import { fromLonLat } from 'ol/proj'
+import { FALSE } from 'ol/functions';
 
 
 var view = new View({
-  center: fromLonLat([-96.79748, 32.78819]),
-  zoom: 4,
+  center: [-10775718.490585351, 3868389.0226015863],
+  zoom: 14,
   // maxZoom: 19,
   maxResolution: 40075016.68557849 / 512
 });

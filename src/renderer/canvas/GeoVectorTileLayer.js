@@ -319,10 +319,12 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             else {
                 const sourceTileCoord = sourceTile.tileCoord;
                 const requestCoord = sourceTile.requestCoord;
-                const sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
-                const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
-                const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
+
+                var sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
+                var sharedExtent = getIntersection(tileExtent, sourceTileExtent);
+                var  bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
                     buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
+
                 const tileProjection = sourceTile.getProjection();
                 let reproject = false;
                 if (!equivalentProjection(projection, tileProjection)) {
@@ -385,9 +387,15 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                     let rendererSelf = this;
 
+
                     let createReplayGroupCallback = function (data, methodInfo) {
 
                         let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
+
+                         sourceTileExtent = sourceTileGrid.getTileCoordExtent(requestCoord);
+                         sharedExtent = getIntersection(tileExtent, sourceTileExtent);
+                         bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
+                            buffer(sharedExtent, layer.getRenderBuffer() * resolution, rendererSelf.tmpExtent);
 
                         for (let i = 0, ii = instructs.length; i < ii; ++i) {
                             const featureIndex = instructs[i][0];

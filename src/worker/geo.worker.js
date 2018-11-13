@@ -167,7 +167,7 @@ self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, reque
     var resultData = {
         status: "succeed",
         requestKey: requestKey,
-        data: tileFeatureAndInstrictions
+        data: [featuresAndInstructions[0],homologousTilesInstructions]
     };
 
     return resultData;
