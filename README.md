@@ -7,7 +7,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Documentation:
 
-* [Getting Started](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/get-started/quickstart.html)
+* [Getting Started](https://github.com/ThinkGeo/VectorMap-js/wiki)
 * [Community & Support](https://github.com/ThinkGeo/VectorMap-js/issues)
 * [API Documentation](https://thinkgeo.gitbooks.io/map-suite-vector-map-js/api-reference.html)
 * [Vector StyleJSON Specification](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/)
