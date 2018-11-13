@@ -7,7 +7,14 @@ import PBF from 'pbf';
 import GeometryType from 'ol/geom/GeometryType';
 import RenderFeature from 'ol/render/Feature';
 import LRUCache from 'ol/structs/LRUCache'
-
+import rbush from "rbush";
+import Projection from "ol/proj/Projection";
+import Units from "ol/proj/Units";
+import GeoCanvasReplayGroup from "../render/canvas/GeoReplayGroup";
+import GeoTextStyle from "../style/geoTextStyle";
+import GeoShieldStyle from "../style/geoShieldStyle";
+import GeoPointStyle from "../style/geoPointStyle";
+import {getUid} from "ol/util"
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
@@ -112,11 +119,117 @@ self.request = function (requestInfo, methodInfo) {
 
 }
 
-self.createReplayGroup = function (requestInfo, methodInfo) {
+
+self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
+    let replayGroupInfo = createReplayGroupInfo["replayGroupInfo"];
+    let resolution = replayGroupInfo[2];
+    let requestCoord = createReplayGroupInfo["requestCoord"];
+    let tileCoord = createReplayGroupInfo["tileCoord"];
+    let tileProjectionInfo = createReplayGroupInfo["tileProjectionInfo"];
+    let projectInfo = createReplayGroupInfo["projectInfo"];
+    let sourceTileExtent = createReplayGroupInfo["sourceTileExtent"];
+    let bufferedExtent = createReplayGroupInfo["bufferedExtent"];
+    let squaredTolerance = createReplayGroupInfo["squaredTolerance"];
+
+    var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
+    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
+    if (tileFeatureAndInstrictions === undefined) {
+        debugger;
+    }
+    let features = tileFeatureAndInstrictions[0];
+    let instructs = tileFeatureAndInstrictions[1];
+    let strategyTree = rbush(9);
+
+    let frameState = {};
+
+    let tileProjection = new Projection({
+        code: 'EPSG:3857',
+        units: Units.TILE_PIXELS
+    })
+    let projection = new Projection({
+        code: 'EPSG:3857',
+        units: Units.TILE_PIXELS
+    })
+
+    for (var name in tileProjectionInfo) {
+        tileProjection[name] = tileProjectionInfo[name];
+    }
+    for (var name in projectInfo) {
+        projection[name] = projectInfo[name];
+    }
+
+    let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
+        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
+
+    let mainFeatures = {};
+    let mainDrawingInstructs = [];
+    const render = function (feature, geostyle) {
+        let styles;
+        if (geostyle) {
+            let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+            if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
+                mainFeatures[getUid(feature)] = feature;
+                mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+            }
+            else {
+                if (styles === undefined) {
+                    styles = [];
+                }
+                Array.prototype.push.apply(styles, ol4Styles);
+            }
+        }
+        else {
+            const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
+            if (styleFunction) {
+                styles = styleFunction(feature, resolution);
+            }
+        }
+
+        if (styles) {
+            const dirty = self.renderFeature(feature, squaredTolerance, styles, replayGroup);
+        }
+    };
+
+    for (let i = 0, ii = instructs.length; i < ii; i++) {
+        const featureIndex = instructs[i][0];
+        const featureInfo = features[featureIndex];
+
+        let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+        let geoStyle = instructs[i][1];
+        if (!featureInfo["projected"]) {
+            feature.getGeometry().transform(tileProjection, projection);
+            feature.extent_ = null;
+            featureInfo["projected"] = true;
+        }
+        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+            render(feature, geoStyle);
+        }
+    }
     return "OK";
 }
 
 // Method
+
+
+self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
+    if (!styles) {
+        return false;
+    }
+    let loading = false;
+    if (Array.isArray(styles)) {
+        for (let i = 0, ii = styles.length; i < ii; ++i) {
+            loading = renderFeature(
+                replayGroup, feature, styles[i], squaredTolerance,
+                this.handleStyleImageChange_, this) || loading;
+        }
+    } else {
+        loading = renderFeature(
+            replayGroup, feature, styles, squaredTolerance,
+            this.handleStyleImageChange_, this);
+    }
+    return loading;
+}
+
 self.createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
     var styleIdIndex = 0;
     var geoStyles = {};
@@ -167,7 +280,7 @@ self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, reque
     var resultData = {
         status: "succeed",
         requestKey: requestKey,
-        data: [featuresAndInstructions[0],homologousTilesInstructions]
+        data: [featuresAndInstructions[0], homologousTilesInstructions]
     };
 
     return resultData;
@@ -293,14 +406,12 @@ self.readFeaturesAndInstructions = function (source, zoom, formatId, tileCoord, 
                         var feature = features[instruct[0]];
                         feature.styleId = feature.styleId ? feature.styleId : {}
                         if (instruct[1].geoStyle) {
-                            feature.styleId[instruct[1].geoStyle.id] = 0;
-                            instructs.push([instruct[0], instruct[1].geoStyle.id, i]);
+                            instructs.push([instruct[0], instruct[1].geoStyle, i]);
                         }
 
                         if (instruct[1].childrenGeoStyles) {
                             for (let k = 0; k < instruct[1].childrenGeoStyles.length; k++) {
-                                feature.styleId[instruct[1].childrenGeoStyles[k].id] = 1;
-                                childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k].id, i]);
+                                childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k], i]);
                             }
                         }
                     }
@@ -536,7 +647,7 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     self.vectorTilesData[cacheKey] = homologousTilesInstructions;
 
     if (self.features === undefined) {
-        self.features = new LRUCache(4);
+        self.features = new LRUCache(1024);
     }
     if (self.features.containsKey(cacheKey)) {
         self.features.replace(cacheKey, features);

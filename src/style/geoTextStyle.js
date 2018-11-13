@@ -155,13 +155,15 @@ class GeoTextStyle extends GeoStyle {
             textStyle.setPlacement(this.placementType);
         }
 
-        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for (let i = 0; i < chars.length; i++) {
-            this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
-        }
-        this.charWidths[" "] = measureTextWidth(this.font, " ");
-        for (let i = 0; i <= 9; i++) {
-            this.charWidths[i] = measureTextWidth(this.font, i);
+        if (typeof WorkerGlobalScope === "undefined") {
+            let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (let i = 0; i < chars.length; i++) {
+                this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
+            }
+            this.charWidths[" "] = measureTextWidth(this.font, " ");
+            for (let i = 0; i <= 9; i++) {
+                this.charWidths[i] = measureTextWidth(this.font, i);
+            }
         }
     }
 
