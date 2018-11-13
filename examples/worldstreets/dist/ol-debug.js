@@ -26568,13 +26568,13 @@ function olInit() {
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            this.gl_.viewport(0, 0, width * frameState.pixelRatio, height * frameState.pixelRatio);
+            this.gl_.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
             // context.clearRect(0, 0, width, height);
         }
-
+        
         gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
 

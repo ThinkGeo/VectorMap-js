@@ -26568,7 +26568,7 @@ function olInit() {
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            this.gl_.viewport(0, 0, width * frameState.pixelRatio, height * frameState.pixelRatio);
+            this.gl_.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
