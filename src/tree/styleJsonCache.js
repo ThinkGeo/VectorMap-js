@@ -1,4 +1,5 @@
 import GeoTextStyle from '../style/geoTextStyle';
+import GeoShieldStyle from '../style/geoShieldStyle';
 
 class StyleJsonCache {
 
@@ -33,15 +34,25 @@ class StyleJsonCache {
         if (node.data.geoStyle) {
             this.geoStyles[node.data.geoStyle.id] = node.data.geoStyle;
             // get the widths of GeoTextStyle
-            if (node.data.geoStyle instanceof GeoTextStyle) {
-                this.geoTextStyleInfo[node.data.geoStyle.id] = node.data.geoStyle.charWidths;
+            if (node.data.geoStyle instanceof GeoTextStyle || node.data.geoStyle instanceof GeoShieldStyle) {
+                if (typeof WorkerGlobalScope === "undefined") {
+                    this.geoTextStyleInfo[node.data.geoStyle.id] = node.data.geoStyle.charWidths;
+                }
+                else {
+                    node.data.geoStyle.charWidths = this.geoTextStyleInfo[node.data.geoStyle.id]
+                }
             }
         }
         if (node.data.childrenGeoStyles && node.data.childrenGeoStyles.length > 0) {
             for (let i = 0; i < node.data.childrenGeoStyles.length; i++) {
                 this.geoStyles[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
-                if (node.data.childrenGeoStyles[i] instanceof GeoTextStyle) {
-                    this.geoTextStyleInfo[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
+                if (node.data.childrenGeoStyles[i] instanceof GeoTextStyle || node.data.geoStyle instanceof GeoShieldStyle) {
+                    if (typeof WorkerGlobalScope === "undefined") {
+                        this.geoTextStyleInfo[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
+                    }
+                    else {
+                        node.data.childrenGeoStyles[i] = this.geoTextStyleInfo[node.data.childrenGeoStyles[i].id];
+                    }
                 }
             }
         }
