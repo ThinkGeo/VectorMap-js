@@ -30741,7 +30741,7 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));            
             textReplay.drawText(geometry, feature);
         }
     };
@@ -30944,7 +30944,7 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
             textReplay.drawText(geometry, feature);
         }
     };
@@ -37753,6 +37753,11 @@ function olInit() {
                 fraction * flatCoordinates[offset + stride];
             pointY = (1 - fraction) * flatCoordinates[offset + 1] +
                 fraction * flatCoordinates[offset + stride + 1];
+            // import for rotation
+            flatCoordinates.push(flatCoordinates[offset + stride]);
+            flatCoordinates.push(flatCoordinates[offset + stride + 1]);
+            flatCoordinates[offset + stride] = pointX;
+            flatCoordinates[offset + stride + 1] = pointY;
         } else if (n !== 0) {
             var x1 = flatCoordinates[offset];
             var y1 = flatCoordinates[offset + 1];
@@ -37777,6 +37782,14 @@ function olInit() {
                     flatCoordinates[o], flatCoordinates[o + stride], t);
                 pointY = ol.math.lerp(
                     flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
+                
+                // import for rotation         
+                // for(var i = flatCoordinates.length; i > o; i -= 2){
+                    // flatCoordinates[i] = flatCoordinates[i - 2];
+                    // flatCoordinates[i + 1] = flatCoordinates[i - 1];
+                // }       
+                flatCoordinates[o] = pointX;
+                flatCoordinates[o + 1] = pointY;
             } else {
                 pointX = flatCoordinates[offset + index * stride];
                 pointY = flatCoordinates[offset + index * stride + 1];
@@ -70786,13 +70799,9 @@ function olInit() {
                     break;
                 case ol.geom.GeometryType.LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
-                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.MULTI_LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
-                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
@@ -70816,44 +70825,105 @@ function olInit() {
                     }
                 }
             }
-
+            
             var pathLength;
             var startM;
-            if(type == 'LineString'){
-                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
-                startM = pathLength * this.textAlign_;
-            }
-            
-            var textSize = this.getTextSize_(lines);
-            var i, ii, j, jj, currX, currY, charArr, charInfo;
-            var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-            var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+            var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
-            // var labelCoordinates = geometry.getFlatMidpoint();
-            var extent = [flatCoordinates[0], flatCoordinates[1], flatCoordinates[0] + 256, flatCoordinates[1] + 256];
-            if(!this.renderDeclutter_(extent, feature)){
-                // return;
+            if(!lines.includes('North Beckley Avenue')){
+                // return
             }
-            
-            // FIXME zoom 12 test
-            if(this.text_.includes('Ferguson Road')){
-                // var projExtent = [];
-                // for(var i = 0; i < extent.length; i+=2){
-                //     var point = ol.proj.transform([extent[i], extent[i+1]], 'EPSG:3857', 'EPSG:4326');                    
-                //     projExtent[i] = point[0];
-                //     projExtent[i + 1] = point[1];
-                // }
 
-                // var coordinates = [
-                //     [projExtent[0], projExtent[1]],
-                //     [projExtent[2], projExtent[1]],
-                //     [projExtent[2], projExtent[3]],
-                //     [projExtent[0], projExtent[3]],
-                //     [projExtent[0], projExtent[1]]
-                // ]
-                // console.log(JSON.stringify(coordinates));                
+            var labelWidth = 0;
+            var labelHeight = 0;
+            for(var i = 0; i < lines.length; i++){
+                var textSize = this.getTextSize_([lines[i]]);                    
+                (labelWidth < textSize[0]) && (labelWidth = textSize[0]);
+                labelHeight += textSize[1];
             }
+
+            var anchorX = Math.round(labelWidth * this.textAlign_ - this.offsetX_);
+            var anchorY = Math.round(labelHeight * this.textBaseline_ - this.offsetY_);
+            var flatCoordinatesToPixel = map.getPixelFromCoordinate(flatCoordinates);
+
+            if(type == 'LineString' && !this.label){
+                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
+                startM = pathLength * this.textAlign_;
+                
+                var lineStringCoordinates = geometry.getFlatCoordinates();
+                var reverse = lineStringCoordinates[offset] > lineStringCoordinates[lineStringCoordinates.length - stride];
+                // var textSize = this.getTextSize_(lines);                    
+                var lineLength = 0;
+                var x1, x2, y1, y2;
+                var startM_ = 0;
+                var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+
+                var minX = lineStringCoordinates[offset_];
+                var minY = lineStringCoordinates[offset_ + 1];
+                var maxX = lineStringCoordinates[offset_];
+                var maxY = lineStringCoordinates[offset_ + 1];
+                x1 = minX;
+                y1 = minY;
+
+                for (var j = offset_ + 2, jj = lineStringCoordinates.length; j < jj; j += 2) {
+                    if(lineStringCoordinates[j] < minX){
+                        minX = lineStringCoordinates[j];
+                    }else if(lineStringCoordinates[j] > maxX){
+                        maxX = lineStringCoordinates[j];
+                    }
+
+                    if(lineStringCoordinates[j + 1] < minY){
+                        minY = lineStringCoordinates[j + 1];
+                    }else if(lineStringCoordinates[j + 1] > maxY){
+                        maxY = lineStringCoordinates[j + 1];
+                    }
+
+                    if(lineLength >= labelWidth){
+                        break;
+                    }
+                    
+                    x2 = lineStringCoordinates[j];
+                    y2 = lineStringCoordinates[j + 1];
+                    lineLength += Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    x1 = x2;
+                    y1 = y2;
+                }
+
+                var minCoordinatesToPixel = map.getPixelFromCoordinate([minX, minY]);
+                var maxCoordinatesToPixel = map.getPixelFromCoordinate([maxX, maxY]);
+
+                extent = [minCoordinatesToPixel[0] - anchorX, minCoordinatesToPixel[1] + labelWidth + labelHeight - anchorY, 
+                            maxCoordinatesToPixel[0] + labelWidth + labelHeight + anchorX, maxCoordinatesToPixel[1] + anchorY];                
+               
+                var array = [];
+                min = map.getCoordinateFromPixel([extent[0], extent[1]]);
+                max = map.getCoordinateFromPixel([extent[2], extent[3]]);
+                
+                extent = [min[0], min[1], max[0], max[1]];
+                // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[2], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[0], extent[3]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                
+                // console.log(JSON.stringify(array))
+                // console.log('-----', JSON.stringify(ol.proj.transform(flatCoordinates, 'EPSG:3857', 'EPSG:4326')))                
+            }else{
+                var minX = flatCoordinatesToPixel[0] - anchorX;
+                var minY = flatCoordinatesToPixel[1] + labelHeight - anchorY;
+                var maxX = flatCoordinatesToPixel[0] + labelWidth - anchorX;
+                var maxY = flatCoordinatesToPixel[1] - anchorY;
+                
+                extent = [minX, minY, maxX, maxY]; 
+            }
+
+            if(!this.renderDeclutter_(extent, feature)){
+                return;
+            }
+            // declutter duplicate label end
+
+            var i, ii, j, jj, currX, currY, charArr, charInfo; 
 
             this.startIndices.push(this.indices.length);
             this.startIndicesFeature.push(feature);
@@ -70862,14 +70932,21 @@ function olInit() {
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
             
             for (i = 0, ii = lines.length; i < ii; ++i) {
+                var textSize = this.getTextSize_([lines[i]]);
+                var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+                var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+
                 currX = 0;
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
 
-                if(type == 'LineString'){
+                if(type == 'LineString' && !this.label){
                     var lineStringCoordinates = geometry.getFlatCoordinates();
+                    var endLineString = lineStringCoordinates.length;
                     // Keep text upright
-                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[end - stride]; 
+                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
+                    
+                    var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
                     var numChars = charArr.length;
                     var x1 = lineStringCoordinates[offset];
                     var y1 = lineStringCoordinates[offset + 1];
@@ -70878,7 +70955,7 @@ function olInit() {
                     var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
                     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
+            
                     var chunk = '';
                     // var chunkLength = 0;
                     var data, index, previousAngle;
@@ -70893,7 +70970,7 @@ function olInit() {
                             var charLength = glyphAtlas.width[char];
                             // chunkLength += charLength;
                             var charM = startM + charLength / 2;
-                            while (offset < end - stride && segmentM + segmentLength < charM) {
+                            while (offset < endLineString - stride && segmentM + segmentLength < charM) {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
@@ -70911,13 +70988,8 @@ function olInit() {
                             previousAngle = angle;
                             startM += charLength;
 
-                            //FIXME zoom 12 test
-                            if(this.text_.includes('Ferguson Road')){
-                                // console.log(this.rotation);
-                                
-                            }
                             var image = charInfo.image;
-    
+
                             this.anchorX = anchorX - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
@@ -70938,7 +71010,8 @@ function olInit() {
                                     this.images_.push(image);
                                 }
                             }
-                            this.drawText_(flatCoordinates, 0, 2, stride);
+                            this.drawText_([lineStringCoordinates[0], lineStringCoordinates[1]], 0, 2, stride);
+                            // this.drawText_(flatCoordinates, 0, 2, stride);
                         }
                         currX += this.width;
                     }
@@ -71042,7 +71115,7 @@ function olInit() {
                     ctx.font = /** @type {string} */ (state.font);
                     ctx.fillStyle = state.fillColor;
                     ctx.strokeStyle = state.strokeColor;
-                    ctx.lineWidth = state.lineWidth;
+                    // ctx.lineWidth = state.lineWidth;
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
                     ctx.lineJoin = /** @type {string} */ (state.lineJoin);
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
@@ -71056,7 +71129,7 @@ function olInit() {
                     if (state.scale !== 1) {
                         //FIXME: use pixelRatio
                         ctx.setTransform(/** @type {number} */(state.scale), 0, 0,
-                  /** @type {number} */(state.scale), 0, 0);
+                        /** @type {number} */(state.scale), 0, 0);
                     }
 
                     //Draw the character on the canvas
@@ -71165,8 +71238,9 @@ function olInit() {
             this.offsetY_ = textStyle.getOffsetY() || 0;
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
-
+            
             this.currAtlas_ = this.getAtlas_(state);
+            this.label = textStyle.label;
         }
     };
 
@@ -76537,7 +76611,7 @@ function olInit() {
      */
     ol.source.BingMaps.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
         'href="https://www.microsoft.com/maps/product/terms.html">' +
-        'Terms of Use</a>';
+        'Terms of Use</>';
 
 
     /**

@@ -506,7 +506,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                                 let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
-                                // renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
+                                renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
 

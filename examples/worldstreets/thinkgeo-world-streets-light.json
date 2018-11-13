@@ -658,7 +658,7 @@
         "filter": "layerName='road';ref=~'^((?!;).)*$'",
         "text-name": "ref",
         "text-fill": "@grayLevel0",
-        "text-halo-radius": 1,
+        "text-halo-radius": 0.1,
         "text-force-horizontal-for-line": true,
         "text-mask-outline-width": 1,
         "text-mask-outline-color": "rgba(0,0,0,0)",
@@ -666,7 +666,7 @@
         "text-mask-margin": "1,3,1,3",
         "style": [{
             "filter": "class='motorway'",
-            "text-font": "bold 10px Arial, Helvetica, sans-serif",
+            "text-font": "10px Arial, Helvetica, sans-serif",
             "text-mask-color": "@roadShieldMotorway",
             "text-fill": "@grayLevel0",
             "style": [{
@@ -678,7 +678,7 @@
             }]
         }, {
             "filter": "class='trunk'",
-            "text-font": "bold 9px Arial, Helvetica, sans-serif",
+            "text-font": "9px Arial, Helvetica, sans-serif",
             "text-mask-color": "@roadShieldTrunk",
             "style": [{
                 "filter": "zoom>=7;zoom<=16",

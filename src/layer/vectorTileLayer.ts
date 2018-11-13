@@ -586,7 +586,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     quickZoom: quickZoom,
                     currentResolution: viewState.resolution,
                     wantedTiles: {},
-                    // context: this.renderer_.context_
+                    context: this.renderer_.context_
                 });
             }
 

@@ -9075,11 +9075,6 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    // canvas.width=512;
-                    // canvas.height=512;
-                    // var gl = ol.webgl.getContext(canvas, {
-                    //     failIfMajorPerformanceCaveat: true
-                    // });
                     var gl=canvas.getContext('webgl');
                     if (gl) {
                         gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
@@ -25259,7 +25254,7 @@ function olInit() {
                 var tileSourceKey = ol.getUid(tileSource).toString();
                 if (tileSourceKey in frameState.usedTiles) {
                     tileSource.expireCache(frameState.viewState.projection,
-                        frameState.usedTiles[tileSourceKey]);
+                        frameState.usedTiles[tileSourceKey], map.renderer_.context_);
                 }
             }.bind(null, tileSource);
 
@@ -26578,8 +26573,10 @@ function olInit() {
             this.canvas_.height = height;
         } else {
             // context.clearRect(0, 0, width, height);
-            gl.clear(gl.COLOR_BUFFER_BIT);
         }
+
+        gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
         var rotation = frameState.viewState.rotation;
 
@@ -26613,6 +26610,19 @@ function olInit() {
         if (rotation) {
             // context.restore();
         }
+
+        // FIXME Texture
+        // if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
+        //     ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+        //     frameState.postRenderFunctions.push(
+        //   /** @type {ol.PostRenderFunction} */(this.expireCache_.bind(this))
+        //     );
+        // }
+
+        // if (!this.tileTextureQueue_.isEmpty()) {
+        //     frameState.postRenderFunctions.push(this.loadNextTileTexture_);
+        //     frameState.animate = true;
+        // }
 
         this.dispatchComposeEvent_(
             ol.render.EventType.POSTCOMPOSE, frameState);
@@ -30731,7 +30741,7 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));            
             textReplay.drawText(geometry, feature);
         }
     };
@@ -30934,7 +30944,7 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
             textReplay.drawText(geometry, feature);
         }
     };
@@ -37743,6 +37753,11 @@ function olInit() {
                 fraction * flatCoordinates[offset + stride];
             pointY = (1 - fraction) * flatCoordinates[offset + 1] +
                 fraction * flatCoordinates[offset + stride + 1];
+            // import for rotation
+            flatCoordinates.push(flatCoordinates[offset + stride]);
+            flatCoordinates.push(flatCoordinates[offset + stride + 1]);
+            flatCoordinates[offset + stride] = pointX;
+            flatCoordinates[offset + stride + 1] = pointY;
         } else if (n !== 0) {
             var x1 = flatCoordinates[offset];
             var y1 = flatCoordinates[offset + 1];
@@ -37767,6 +37782,14 @@ function olInit() {
                     flatCoordinates[o], flatCoordinates[o + stride], t);
                 pointY = ol.math.lerp(
                     flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
+                
+                // import for rotation         
+                // for(var i = flatCoordinates.length; i > o; i -= 2){
+                    // flatCoordinates[i] = flatCoordinates[i - 2];
+                    // flatCoordinates[i + 1] = flatCoordinates[i - 1];
+                // }       
+                flatCoordinates[o] = pointX;
+                flatCoordinates[o + 1] = pointY;
             } else {
                 pointX = flatCoordinates[offset + index * stride];
                 pointY = flatCoordinates[offset + index * stride + 1];
@@ -66717,8 +66740,7 @@ function olInit() {
             strokeStyleWidth = 0;
         }
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (!(fillStyleColor instanceof CanvasGradient) &&
-            !(fillStyleColor instanceof CanvasPattern)) {
+        if (fillStyleColor) {
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
@@ -66974,10 +66996,14 @@ function olInit() {
         var gl = this.getGL();
         var bufferKey = String(ol.getUid(buf));
         var bufferCacheEntry = this.bufferCache_[bufferKey];
-        if (!gl.isContextLost()) {
-            gl.deleteBuffer(bufferCacheEntry.buffer);
+        
+        // there may be no bufferKey in bufferCache_
+        if(bufferCacheEntry){
+            if (!gl.isContextLost()) {
+                gl.deleteBuffer(bufferCacheEntry.buffer);
+            }
+            delete this.bufferCache_[bufferKey];
         }
-        delete this.bufferCache_[bufferKey];
     };
 
 
@@ -69029,8 +69055,9 @@ function olInit() {
     ol.render.webgl.PolygonReplay = function (tolerance, maxExtent) {
         ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
-        this.lineStringReplay = new ol.render.webgl.LineStringReplay(
-            tolerance, maxExtent);
+        // this.lineStringReplay = new ol.render.webgl.LineStringReplay(
+        //     tolerance, maxExtent);
+        this.lineStringReplay = undefined;
 
         /**
          * @private
@@ -69907,9 +69934,11 @@ function olInit() {
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
-                this.lineStringReplay.setPolygonStyle(feature);
+                if(this.lineStringReplay){
+                    this.lineStringReplay.setPolygonStyle(feature);
 
-                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                    this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                }
                 
                 // Austrilia
                 // console.log(this.lineStringReplay.vertices);
@@ -69938,7 +69967,9 @@ function olInit() {
 
         this.startIndices.push(this.indices.length);
 
-        this.lineStringReplay.finish(context);
+        if(this.lineStringReplay){
+            this.lineStringReplay.finish(context);
+        }            
 
         //Clean up, if there is nothing to draw
         if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
@@ -69956,11 +69987,16 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function (context) {
         var verticesBuffer = this.verticesBuffer;
         var indicesBuffer = this.indicesBuffer;
-        var lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
+        var lineDeleter;
+
+        if(this.lineStringReplay){
+            lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
+        }
+        
         return function () {
             context.deleteBuffer(verticesBuffer);
             context.deleteBuffer(indicesBuffer);
-            lineDeleter();
+            lineDeleter && lineDeleter();
         };
     };
 
@@ -70151,40 +70187,42 @@ function olInit() {
             this.styles_.push(fillStyleColor);
         }
         //Provide a null stroke style, if no strokeStyle is provided. Required for the draw interaction to work.
-        if (strokeStyle) {
-            this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-        } else {
-            if(!window.count){
-                window.colors = [
-                    [0,0,0,1],
-                    [100,0,0,1],
-                    [0,100,0,1],
-                    [0,0,100,1],
-                    [200,0,0,1],
-                    [0,200,0,1],
-                    [0,0,200,1],
-                    [100,100,0,1],
-                    [0,100,100,1],
-                    [100,0,100,1],
-                    [100,100,100,1],
-                    [200,200,0,1],
-                    [0,200,200,1],
-                    [200,0,200,1],
-                    [200,200,200,1]
-                ]
-                window.count = 0;
+        if(this.lineStringReplay){
+            if (strokeStyle) {
+                this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+            } else {
+                if(!window.count){
+                    window.colors = [
+                        [0,0,0,1],
+                        [100,0,0,1],
+                        [0,100,0,1],
+                        [0,0,100,1],
+                        [200,0,0,1],
+                        [0,200,0,1],
+                        [0,0,200,1],
+                        [100,100,0,1],
+                        [0,100,100,1],
+                        [100,0,100,1],
+                        [100,100,100,1],
+                        [200,200,0,1],
+                        [0,200,200,1],
+                        [200,0,200,1],
+                        [200,200,200,1]
+                    ]
+                    window.count = 0;
+                }
+                var test = window.colors[(window.count++) % window.colors.length];
+                if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
+                    // debugger
+                }
+                
+                var nullStrokeStyle = new ol.style.Stroke({
+                    color: test,
+                    lineWidth: 1
+                });  
+                
+                this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
             }
-            var test = window.colors[(window.count++) % window.colors.length];
-            if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
-                // debugger
-            }
-            
-            var nullStrokeStyle = new ol.style.Stroke({
-                color: test,
-                lineWidth: 1
-            });  
-            
-            this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
         }
     };
 
@@ -70757,13 +70795,9 @@ function olInit() {
                     break;
                 case ol.geom.GeometryType.LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
-                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.MULTI_LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
-                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
-                    // end = flatCoordinates.length;
                     break;
                 case ol.geom.GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
@@ -70787,44 +70821,105 @@ function olInit() {
                     }
                 }
             }
-
+            
             var pathLength;
             var startM;
-            if(type == 'LineString'){
-                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
-                startM = pathLength * this.textAlign_;
-            }
-            
-            var textSize = this.getTextSize_(lines);
-            var i, ii, j, jj, currX, currY, charArr, charInfo;
-            var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-            var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+            var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
-            // var labelCoordinates = geometry.getFlatMidpoint();
-            var extent = [flatCoordinates[0], flatCoordinates[1], flatCoordinates[0] + 256, flatCoordinates[1] + 256];
-            if(!this.renderDeclutter_(extent, feature)){
-                // return;
+            if(!lines.includes('North Beckley Avenue')){
+                // return
             }
-            
-            // FIXME zoom 12 test
-            if(this.text_.includes('Ferguson Road')){
-                // var projExtent = [];
-                // for(var i = 0; i < extent.length; i+=2){
-                //     var point = ol.proj.transform([extent[i], extent[i+1]], 'EPSG:3857', 'EPSG:4326');                    
-                //     projExtent[i] = point[0];
-                //     projExtent[i + 1] = point[1];
-                // }
 
-                // var coordinates = [
-                //     [projExtent[0], projExtent[1]],
-                //     [projExtent[2], projExtent[1]],
-                //     [projExtent[2], projExtent[3]],
-                //     [projExtent[0], projExtent[3]],
-                //     [projExtent[0], projExtent[1]]
-                // ]
-                // console.log(JSON.stringify(coordinates));                
+            var labelWidth = 0;
+            var labelHeight = 0;
+            for(var i = 0; i < lines.length; i++){
+                var textSize = this.getTextSize_([lines[i]]);                    
+                (labelWidth < textSize[0]) && (labelWidth = textSize[0]);
+                labelHeight += textSize[1];
             }
+
+            var anchorX = Math.round(labelWidth * this.textAlign_ - this.offsetX_);
+            var anchorY = Math.round(labelHeight * this.textBaseline_ - this.offsetY_);
+            var flatCoordinatesToPixel = map.getPixelFromCoordinate(flatCoordinates);
+
+            if(type == 'LineString' && !this.label){
+                pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
+                startM = pathLength * this.textAlign_;
+                
+                var lineStringCoordinates = geometry.getFlatCoordinates();
+                var reverse = lineStringCoordinates[offset] > lineStringCoordinates[lineStringCoordinates.length - stride];
+                // var textSize = this.getTextSize_(lines);                    
+                var lineLength = 0;
+                var x1, x2, y1, y2;
+                var startM_ = 0;
+                var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+
+                var minX = lineStringCoordinates[offset_];
+                var minY = lineStringCoordinates[offset_ + 1];
+                var maxX = lineStringCoordinates[offset_];
+                var maxY = lineStringCoordinates[offset_ + 1];
+                x1 = minX;
+                y1 = minY;
+
+                for (var j = offset_ + 2, jj = lineStringCoordinates.length; j < jj; j += 2) {
+                    if(lineStringCoordinates[j] < minX){
+                        minX = lineStringCoordinates[j];
+                    }else if(lineStringCoordinates[j] > maxX){
+                        maxX = lineStringCoordinates[j];
+                    }
+
+                    if(lineStringCoordinates[j + 1] < minY){
+                        minY = lineStringCoordinates[j + 1];
+                    }else if(lineStringCoordinates[j + 1] > maxY){
+                        maxY = lineStringCoordinates[j + 1];
+                    }
+
+                    if(lineLength >= labelWidth){
+                        break;
+                    }
+                    
+                    x2 = lineStringCoordinates[j];
+                    y2 = lineStringCoordinates[j + 1];
+                    lineLength += Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    x1 = x2;
+                    y1 = y2;
+                }
+
+                var minCoordinatesToPixel = map.getPixelFromCoordinate([minX, minY]);
+                var maxCoordinatesToPixel = map.getPixelFromCoordinate([maxX, maxY]);
+
+                extent = [minCoordinatesToPixel[0] - anchorX, minCoordinatesToPixel[1] + labelWidth + labelHeight - anchorY, 
+                            maxCoordinatesToPixel[0] + labelWidth + labelHeight + anchorX, maxCoordinatesToPixel[1] + anchorY];                
+               
+                var array = [];
+                min = map.getCoordinateFromPixel([extent[0], extent[1]]);
+                max = map.getCoordinateFromPixel([extent[2], extent[3]]);
+                
+                extent = [min[0], min[1], max[0], max[1]];
+                // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[2], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[0], extent[3]], 'EPSG:3857', 'EPSG:4326'));
+                // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
+                
+                // console.log(JSON.stringify(array))
+                // console.log('-----', JSON.stringify(ol.proj.transform(flatCoordinates, 'EPSG:3857', 'EPSG:4326')))                
+            }else{
+                var minX = flatCoordinatesToPixel[0] - anchorX;
+                var minY = flatCoordinatesToPixel[1] + labelHeight - anchorY;
+                var maxX = flatCoordinatesToPixel[0] + labelWidth - anchorX;
+                var maxY = flatCoordinatesToPixel[1] - anchorY;
+                
+                extent = [minX, minY, maxX, maxY]; 
+            }
+
+            if(!this.renderDeclutter_(extent, feature)){
+                return;
+            }
+            // declutter duplicate label end
+
+            var i, ii, j, jj, currX, currY, charArr, charInfo; 
 
             this.startIndices.push(this.indices.length);
             this.startIndicesFeature.push(feature);
@@ -70833,14 +70928,21 @@ function olInit() {
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
             
             for (i = 0, ii = lines.length; i < ii; ++i) {
+                var textSize = this.getTextSize_([lines[i]]);
+                var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+                var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+
                 currX = 0;
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
 
-                if(type == 'LineString'){
+                if(type == 'LineString' && !this.label){
                     var lineStringCoordinates = geometry.getFlatCoordinates();
+                    var endLineString = lineStringCoordinates.length;
                     // Keep text upright
-                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[end - stride]; 
+                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
+                    
+                    var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
                     var numChars = charArr.length;
                     var x1 = lineStringCoordinates[offset];
                     var y1 = lineStringCoordinates[offset + 1];
@@ -70849,7 +70951,7 @@ function olInit() {
                     var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
                     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
+            
                     var chunk = '';
                     // var chunkLength = 0;
                     var data, index, previousAngle;
@@ -70864,7 +70966,7 @@ function olInit() {
                             var charLength = glyphAtlas.width[char];
                             // chunkLength += charLength;
                             var charM = startM + charLength / 2;
-                            while (offset < end - stride && segmentM + segmentLength < charM) {
+                            while (offset < endLineString - stride && segmentM + segmentLength < charM) {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
@@ -70882,13 +70984,8 @@ function olInit() {
                             previousAngle = angle;
                             startM += charLength;
 
-                            //FIXME zoom 12 test
-                            if(this.text_.includes('Ferguson Road')){
-                                // console.log(this.rotation);
-                                
-                            }
                             var image = charInfo.image;
-    
+
                             this.anchorX = anchorX - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
@@ -70909,7 +71006,8 @@ function olInit() {
                                     this.images_.push(image);
                                 }
                             }
-                            this.drawText_(flatCoordinates, 0, 2, stride);
+                            this.drawText_([lineStringCoordinates[0], lineStringCoordinates[1]], 0, 2, stride);
+                            // this.drawText_(flatCoordinates, 0, 2, stride);
                         }
                         currX += this.width;
                     }
@@ -71013,7 +71111,7 @@ function olInit() {
                     ctx.font = /** @type {string} */ (state.font);
                     ctx.fillStyle = state.fillColor;
                     ctx.strokeStyle = state.strokeColor;
-                    ctx.lineWidth = state.lineWidth;
+                    // ctx.lineWidth = state.lineWidth;
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
                     ctx.lineJoin = /** @type {string} */ (state.lineJoin);
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
@@ -71027,7 +71125,7 @@ function olInit() {
                     if (state.scale !== 1) {
                         //FIXME: use pixelRatio
                         ctx.setTransform(/** @type {number} */(state.scale), 0, 0,
-                  /** @type {number} */(state.scale), 0, 0);
+                        /** @type {number} */(state.scale), 0, 0);
                     }
 
                     //Draw the character on the canvas
@@ -71136,8 +71234,9 @@ function olInit() {
             this.offsetY_ = textStyle.getOffsetY() || 0;
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
-
+            
             this.currAtlas_ = this.getAtlas_(state);
+            this.label = textStyle.label;
         }
     };
 
@@ -75435,7 +75534,7 @@ function olInit() {
     /**
      * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
      */
-    ol.TileCache.prototype.expireCache = function (usedTiles) {
+    ol.TileCache.prototype.expireCache = function (usedTiles, context) {
         var tile, zKey;
         while (this.canExpireCache()) {
             tile = this.peekLast();
@@ -75443,7 +75542,17 @@ function olInit() {
             if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
                 break;
             } else {
-                this.pop().dispose();
+                var vectorImageTile = this.pop();
+                // BufferCache in webgl
+                if(tile.tileKeys.length){
+                    var vectorTile = vectorImageTile.sourceTiles_[tile.tileKeys.toString()];
+                    var replayGroups = vectorTile.replayGroups_;
+                    
+                    for(var key in replayGroups){
+                        replayGroups[key].getDeleteResourcesFunction(context)();
+                    }
+                }
+                vectorImageTile.dispose();
             }
         }
     };
@@ -75562,10 +75671,10 @@ function olInit() {
      * @param {ol.proj.Projection} projection Projection.
      * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
      */
-    ol.source.Tile.prototype.expireCache = function (projection, usedTiles) {
+    ol.source.Tile.prototype.expireCache = function (projection, usedTiles, context) {
         var tileCache = this.getTileCacheForProjection(projection);
         if (tileCache) {
-            tileCache.expireCache(usedTiles);
+            tileCache.expireCache(usedTiles, context);
         }
     };
 
@@ -76498,7 +76607,7 @@ function olInit() {
      */
     ol.source.BingMaps.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
         'href="https://www.microsoft.com/maps/product/terms.html">' +
-        'Terms of Use</a>';
+        'Terms of Use</>';
 
 
     /**
@@ -81172,10 +81281,9 @@ function olInit() {
         if (this.state == ol.TileState.LOADING || this.state == ol.TileState.CANCEL) {
             this.tileKeys.forEach(function (sourceTileKey) {
                 var sourceTile = this.getTile(sourceTileKey);
-                // FIXME Eric
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
-                sourceTile.tile = this;
+                // sourceTile.tile = this;
                 sourceTile.pixelRatio = this.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
@@ -101186,16 +101294,6 @@ function olInit() {
                     replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
                     replay.minimalist = this.minimalist;
                     replays[replayType] = replay;
-
-                    if (replay instanceof ol.render.canvas.PolygonReplay) {
-                        replay.webglEnds = [];
-                        replay.webglStyle = [];//{color:}
-                        replay.webglDrawType = 'polygonReplay';
-                    } else if (replay instanceof ol.render.canvas.LineStringReplay) {
-                        replay.webglEnds = [];
-                        replay.webglStyle = [];
-                        replay.webglDrawType = 'lineStringReplay';
-                    }
                 }
                 return replay;
             };
@@ -102119,72 +102217,13 @@ function olInit() {
             // replayGroup.finish();
             strategyTree.clear();
 
-            var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
+            // var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
 
-            var transform = ol.transform.create();
-            ol.transform.scale(transform, pixelScale, -pixelScale);
-            ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
-
-            var resultData = {};
-            for (var zIndex in replayGroup.replaysByZIndex_) {
-                var replays = replayGroup.replaysByZIndex_[zIndex];
-                if (!resultData[zIndex]) {
-                    resultData[zIndex] = {};
-                }
-                for (var replayType in replays) {
-                    if (!resultData[zIndex][replayType]) {
-                        resultData[zIndex][replayType] = {};
-                    }
-                    var replay = replays[replayType];
-
-                    replay.renderedTransform_ = transform;
-                    resultData[zIndex][replayType]["renderedTransform_"] = transform.slice(0);
-
-                    // if (!replay.pixelCoordinates_) {
-                    //     replay.pixelCoordinates_ = [];
-                    // }
-
-                    // ol.geom.flat.transform.transform2DRound(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
-                    
-                    //serilize
-                    if (replay instanceof ol.render.canvas.PolygonReplay || replay instanceof ol.render.canvas.LineStringReplay) {
-                        // translate coordinates to webglCoordinates
-                        // var pixelCoordinates_ = replay.pixelCoordinates_;
-                        var webglCoordinates = [];                        
-                        var width = self.tileSize;
-                        var height = self.tileSize;
-                        // for (var j = 0, tempLength = pixelCoordinates_.length; j < tempLength; j += 2) {
-                        //     webglCoordinates[j] = 2 * (pixelCoordinates_[j] + messageData[11]) / 2048 - 1;
-                        //     webglCoordinates[j + 1] = 1 - 2 * (pixelCoordinates_[j + 1] + messageData[12]) / 1536;
-                        // } 
-
-                        // resultData[zIndex][replayType]["pixelCoordinates_"] = pixelCoordinates_.slice(0);
-                        resultData[zIndex][replayType]["webglEnds"] = replay.webglEnds.slice(0);
-                        resultData[zIndex][replayType]["webglCoordinates"] = replay.coordinates;
-                        resultData[zIndex][replayType]["webglDrawType"] = replay.webglDrawType;
-                        resultData[zIndex][replayType]["webglStyle"] = replay.webglStyle.slice(0);
-                    } else {
-                        // resultData[zIndex][replayType]["pixelCoordinates_"] = replay.pixelCoordinates_.slice(0);
-                    }
-
-                    // resultData[zIndex][replayType]["instructions"] = replay.instructions;
-                    // resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-
-                    // if (!replay.minimalist) {
-                    //     resultData[zIndex][replayType]["hitDetectionInstructions"] = replay.hitDetectionInstructions;
-                    // }
-
-                    // replay.instructions.length = 0;
-                    // replay.hitDetectionInstructions.length = 0;
-                    // replay.coordinates.length = 0;
-                    // // replay.pixelCoordinates_.length = 0;
-                    // replay.webglEnds && (replay.webglEnds.length = 0);
-                    // replay.webglStyle && (replay.webglStyle.length = 0);
-                    // delete replay['webglDrawType'];
-                }
-            }
-
-            transform.length = 0;
+            // var transform = ol.transform.create();
+            // ol.transform.scale(transform, pixelScale, -pixelScale);
+            // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
+            
+            // transform.length = 0;
             
             return { 'replays': replayGroup.replaysByZIndex_, features: mainFeatures, instructs: mainDrawingInstructs };
         }
