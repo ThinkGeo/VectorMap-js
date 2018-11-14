@@ -51,7 +51,7 @@ var vectorTileLayer = new VectorTileLayer({
   })
 })
 var map = new Map({
-  layers: [geoVectorTileLayer, tilegrid],
+  layers: [geoVectorTileLayer],
   target: 'map',
   view: view
 });

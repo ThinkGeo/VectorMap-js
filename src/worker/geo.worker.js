@@ -219,7 +219,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             render(feature, geoStyle);
         }
     }
-
+    replayGroup.finish();
     var resultData = {
     };
 
