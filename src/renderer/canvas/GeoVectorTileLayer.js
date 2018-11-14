@@ -21,6 +21,7 @@ import {
 } from 'ol/transform.js';
 import RenderFeature from 'ol/render/Feature';
 import { listen } from 'ol/events';
+import Instruction from "ol/render/canvas/Instruction";
 
 const IMAGE_REPLAYS = {
     'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -424,9 +425,41 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         projectInfo: projectInfo,
                         squaredTolerance: squaredTolerance,
                         sourceTileExtent: sourceTileExtent,
-                        bufferedExtent: bufferedExtent
+                        bufferedExtent: bufferedExtent,
+                        coordinateToPixelTransform: frameState.coordinateToPixelTransform
                     };
                     let createReplayGroupCallback = function (data, methodInfo) {
+                        let replaysByZIndex = data["replays"];
+
+                        for (let zindex in replaysByZIndex) {
+                            for (let replayType in replaysByZIndex[zindex]) {
+                                let workerReplay = replaysByZIndex[zindex][replayType];
+                                let replay = replayGroup.getReplay(zindex, replayType);
+
+                                if (workerReplay["instructions"]) {
+                                    for (let i = 0; i < workerReplay["instructions"].length; i++) {
+                                        let instruction = workerReplay["instructions"][i];
+                                        if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                                            let featureInfo = instruction[1];
+                                            let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                            instruction[1] = feature;
+                                        }
+                                    }
+                                }
+                                replay["instructions"] = workerReplay["instructions"];
+                                replay["coordinates"] = workerReplay["coordinates"];
+                            }
+                        }
+
+                        replayState.replayGroupCreated = true;
+                        replayGroup.finish();
+                        for (const r in replayGroup.getReplays()) {
+                            zIndexKeys[r] = true;
+                        }
+                        sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+                        tile["replayCreated"] = true;
+                        tile.setState(TileState.LOADED);
+                        console.log("CreateReplay Event:" + tile.tileCoord + "|" + sourceTile.tileCoord);
 
                     }
                     replayState.replayGroupCreated = false;

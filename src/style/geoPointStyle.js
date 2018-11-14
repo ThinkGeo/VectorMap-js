@@ -64,33 +64,38 @@ class GeoPointStyle extends GeoStyle {
     }
 
     initializeCore() {
-        this.style = new Style();
-        switch (this.pointType) {
-            case "symbol":
-                this.initSymbolStyle();
-                break;
-            case "image":
-                this.initBitmapStyle();
-                break;
-            case "glyph":
-                this.initGlyphStyle();
-            default:
-                break;
-        }
-
-        if (this.pointType === "glyph") {
-            if (this.glyph && this.glyphName) {
-                (this.textStyle).label = this.getGlyphImage(this.textStyle);
-                this.style.setImage(null);
-                this.style.setText(this.textStyle);
+        if (typeof WorkerGlobalScope === "undefined") {
+            this.style = new Style();
+            switch (this.pointType) {
+                case "symbol":
+                    this.initSymbolStyle();
+                    break;
+                case "image":
+                    this.initBitmapStyle();
+                    break;
+                case "glyph":
+                    this.initGlyphStyle();
+                default:
+                    break;
             }
-        }
-        else {
-            this.style.setImage(this.imageStyle);
+
+            if (this.pointType === "glyph") {
+                if (this.glyph && this.glyphName) {
+                    (this.textStyle).label = this.getGlyphImage(this.textStyle);
+                    this.style.setImage(null);
+                    this.style.setText(this.textStyle);
+                }
+            }
+            else {
+                this.style.setImage(this.imageStyle);
+            }
         }
     }
 
     getConvertedStyleCore(feature, resolution, options) {
+        if (typeof WorkerGlobalScope !== "undefined") {
+            return true;
+        }
         if (this.pointType === "glyph") {
             if (this.glyph && this.glyphName) {
                 this.textStyle.labelPosition = feature.getFlatCoordinates();

@@ -14,7 +14,10 @@ import GeoCanvasReplayGroup from "../render/canvas/GeoReplayGroup";
 import GeoTextStyle from "../style/geoTextStyle";
 import GeoShieldStyle from "../style/geoShieldStyle";
 import GeoPointStyle from "../style/geoPointStyle";
-import {getUid} from "ol/util"
+import { getUid } from "ol/util";
+import { renderFeature } from '../renderer/vector';
+import { intersects } from 'ol/extent';
+import GeoLineStyle from "../style/geoLineStyle";
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
@@ -130,6 +133,11 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let sourceTileExtent = createReplayGroupInfo["sourceTileExtent"];
     let bufferedExtent = createReplayGroupInfo["bufferedExtent"];
     let squaredTolerance = createReplayGroupInfo["squaredTolerance"];
+    let coordinateToPixelTransform = createReplayGroupInfo["coordinateToPixelTransform"];
+
+    let frameState = {
+        coordinateToPixelTransform: coordinateToPixelTransform
+    };
 
     var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
     var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
@@ -140,7 +148,6 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let instructs = tileFeatureAndInstrictions[1];
     let strategyTree = rbush(9);
 
-    let frameState = {};
 
     let tileProjection = new Projection({
         code: 'EPSG:3857',
@@ -166,16 +173,22 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     const render = function (feature, geostyle) {
         let styles;
         if (geostyle) {
-            let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
-            if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
+            if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
                 mainFeatures[getUid(feature)] = feature;
                 mainDrawingInstructs.push([getUid(feature), geostyle.id]);
             }
             else {
-                if (styles === undefined) {
-                    styles = [];
+                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
+                    mainFeatures[getUid(feature)] = feature;
+                    mainDrawingInstructs.push([getUid(feature), geostyle.id]);
                 }
-                Array.prototype.push.apply(styles, ol4Styles);
+                else {
+                    if (styles === undefined) {
+                        styles = [];
+                    }
+                    Array.prototype.push.apply(styles, ol4Styles);
+                }
             }
         }
         else {
@@ -205,7 +218,26 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             render(feature, geoStyle);
         }
     }
-    return "OK";
+
+    var resultData = {};
+
+    for (var zIndex in replayGroup.replaysByZIndex_) {
+        var replays = replayGroup.replaysByZIndex_[zIndex];
+        if (!resultData[zIndex]) {
+            resultData[zIndex] = {};
+        }
+        for (var replayType in replays) {
+            if (!resultData[zIndex][replayType]) {
+                resultData[zIndex][replayType] = {};
+            }
+            var replay = replays[replayType];
+
+            resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+            resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+        }
+    }
+
+    return { "replays": resultData };
 }
 
 // Method
@@ -279,8 +311,7 @@ self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, reque
     var requestKey = requestCoord.join(",") + "," + zoom;
     var resultData = {
         status: "succeed",
-        requestKey: requestKey,
-        data: [featuresAndInstructions[0], homologousTilesInstructions]
+        requestKey: requestKey
     };
 
     return resultData;

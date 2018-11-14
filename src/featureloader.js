@@ -114,9 +114,8 @@ export function loadFeaturesXhr(url, format, success, failure) {
               let loadEventInfo = tileLoadEventInfos[i];
               loadEventInfo.tile.workerId = methodInfo.workerId;
               if (data.status === "succeed") {
-                data.data;
                 let tileKey =loadEventInfo.tile.tileCoord+"";
-                loadEventInfo.successFunction.call(loadEventInfo.tile, [data.data[0],data.data[1][tileKey]], format.readProjection({}), format.getLastExtent())
+                loadEventInfo.successFunction.call(loadEventInfo.tile, {}, format.readProjection({}), format.getLastExtent())
               }
             }
           }

@@ -155,7 +155,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                     let messageData = {
                         formatId: getUid(geoFormat),
                         styleJson: styleJsonCache.styleJson,
-                        geoTextStyleInfo: styleJsonCache.geoTextStyleInfo
+                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfos
                     };
                     for (let i = 0; i < this.workerManager.workerCount; i++) {
                         this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);

@@ -117,6 +117,18 @@ class GeoShieldStyle extends GeoStyle {
             this.wrap = styleJson["shield-wrap-before"] ? true : styleJson["shield-wrap-before"];
 
             this.wrapWidth = styleJson["shield-wrap-width"];
+
+            if (typeof WorkerGlobalScope === "undefined") {
+                let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+                for (let i = 0; i < chars.length; i++) {
+                    this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
+                }
+                this.charWidths[" "] = measureTextWidth(this.font, " ");
+                for (let i = 0; i <= 9; i++) {
+                    this.charWidths[i] = measureTextWidth(this.font, i);
+                }
+            }
         }
     }
 
@@ -164,15 +176,6 @@ class GeoShieldStyle extends GeoStyle {
         });
 
         if (typeof WorkerGlobalScope === "undefined") {
-            let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            for (let i = 0; i < chars.length; i++) {
-                this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
-            }
-            this.charWidths[" "] = measureTextWidth(this.font, " ");
-            for (let i = 0; i <= 9; i++) {
-                this.charWidths[i] = measureTextWidth(this.font, i);
-            }
 
             switch (this.iconType) {
                 case "image":

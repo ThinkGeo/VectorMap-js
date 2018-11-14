@@ -7,7 +7,7 @@ class StyleJsonCache {
         this.geoStyleGroupByZoom = [];
         this.styleJson = {};
         this.geoStyles = {};
-        this.geoTextStyleInfo = {};
+        this.geoTextStyleInfos = {};
     }
 
     add(zoom, dataLayerName, tree) {
@@ -36,10 +36,10 @@ class StyleJsonCache {
             // get the widths of GeoTextStyle
             if (node.data.geoStyle instanceof GeoTextStyle || node.data.geoStyle instanceof GeoShieldStyle) {
                 if (typeof WorkerGlobalScope === "undefined") {
-                    this.geoTextStyleInfo[node.data.geoStyle.id] = node.data.geoStyle.charWidths;
+                    this.geoTextStyleInfos[node.data.geoStyle.id] = node.data.geoStyle.charWidths;
                 }
                 else {
-                    node.data.geoStyle.charWidths = this.geoTextStyleInfo[node.data.geoStyle.id]
+                    node.data.geoStyle.charWidths = this.geoTextStyleInfos[node.data.geoStyle.id]
                 }
             }
         }
@@ -48,10 +48,10 @@ class StyleJsonCache {
                 this.geoStyles[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
                 if (node.data.childrenGeoStyles[i] instanceof GeoTextStyle || node.data.geoStyle instanceof GeoShieldStyle) {
                     if (typeof WorkerGlobalScope === "undefined") {
-                        this.geoTextStyleInfo[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
+                        this.geoTextStyleInfos[node.data.childrenGeoStyles[i].id] = node.data.childrenGeoStyles[i];
                     }
                     else {
-                        node.data.childrenGeoStyles[i] = this.geoTextStyleInfo[node.data.childrenGeoStyles[i].id];
+                        node.data.childrenGeoStyles[i] = this.geoTextStyleInfos[node.data.childrenGeoStyles[i].id];
                     }
                 }
             }

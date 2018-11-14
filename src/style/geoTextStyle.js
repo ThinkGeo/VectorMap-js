@@ -87,7 +87,17 @@ class GeoTextStyle extends GeoStyle {
             // TODO
             this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
 
-
+            if (typeof WorkerGlobalScope === "undefined") {
+                let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                for (let i = 0; i < chars.length; i++) {
+                    this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
+                }
+                this.charWidths[" "] = measureTextWidth(this.font, " ");
+                for (let i = 0; i <= 9; i++) {
+                    this.charWidths[i] = measureTextWidth(this.font, i);
+                }
+                this.charWidths["lineHeight"] = measureTextHeight(this.font);
+            }
         }
     }
 
@@ -153,17 +163,6 @@ class GeoTextStyle extends GeoStyle {
 
         if (this.placementType) {
             textStyle.setPlacement(this.placementType);
-        }
-
-        if (typeof WorkerGlobalScope === "undefined") {
-            let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            for (let i = 0; i < chars.length; i++) {
-                this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
-            }
-            this.charWidths[" "] = measureTextWidth(this.font, " ");
-            for (let i = 0; i <= 9; i++) {
-                this.charWidths[i] = measureTextWidth(this.font, i);
-            }
         }
     }
 
@@ -273,13 +272,15 @@ class GeoTextStyle extends GeoStyle {
 
             if (flatCoordinates === undefined) { return false; }
 
-            var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
+            if (typeof WorkerGlobalScope === undefined) {
+                var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
 
-            if (labelImage === undefined) {
-                return;
+                if (labelImage === undefined) {
+                    return false;
+                }
+
+                textStyle.label = labelImage;
             }
-
-            textStyle.label = labelImage;
         }
         textStyle.labelPosition = flatCoordinates;
 
@@ -301,7 +302,7 @@ class GeoTextStyle extends GeoStyle {
             let scale = textScale * window.devicePixelRatio;
             let widths = [];
             let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-            let lineHeight = measureTextHeight(font);
+            let lineHeight = this.charWidths["lineHeight"];
             let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
             let tmpMaskHeightMargin = 0;
             let tmpMaskWidthMargin = 0;
