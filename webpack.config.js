@@ -1,22 +1,29 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/main.ts',
-    // devtool: 'inline-source-map',
+    entry: './js/index.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
+        publicPath: 'temp/'
+    },
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015']
+                }
             }
         ]
     },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js']
-    },
-    output: {
-        filename: 'ol.mapsuite.js',
-        path: path.resolve(__dirname, 'dist')
+    plugins: [],
+    devServer: {
+        contentBase: './',
+        host: 'localhost',
+        compress: true,
+        port: 8080
     }
-};
+}

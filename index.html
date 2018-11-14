@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ThinkGeo Example</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--SNS-->
+    <meta property="og:image" content="image/style/thinkgeo.png" />
+    <meta property="og:site_name" content="ThinkGeo.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.thinkgeo.com/" />
+    <meta property="og:title" content="Online Store" />
+    <meta property="og:description" content="Purchase ThinkGeo products online." />
+
+
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="style/font-awesome.min.css" rel="stylesheet">
+    <link href="style/main.css" rel="stylesheet">
+    <link href="./lib/highlight/css/github.css" rel="stylesheet">
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="images/apple-touch-icon-144x144.png" />
+</head>
+
+<body>
+    <nav class="navbar   bg-dark  fixed-top">
+        <a class="navbar-brand" href="#"> </a>
+        <span class="navbar-text">
+            <h4>ThinkGeo Example</h4>
+            <h6>GUIDES, DEMOS AND EXAMPLES</h6>
+        </span>
+    </nav>
+    <div class="container-fluid">
+        <div class="row justify-content-end">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" id="sidebar-search" type="text" placeholder="search" aria-label="Search" />
+                    <hr />
+                    <div id="search" aria-hidden="true">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </form>
+                <ul id="menu-bar" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9  col-md-10   main" id="content"></div>
+        </div>
+    </div>
+    <div id="loadingImage">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+    </div>
+</body>
+<script>
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+            "SymbianOS", "Windows Phone",
+            "iPod"
+        ];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+    if (!IsPC()) {
+        document.getElementById('navbar').classList.add('collapse');
+    }
+</script>
+
+<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="./lib/highlight/js/highlight.pack.js"></script>
+<script src="./temp/bundle.js"></script>
+
+</html>
