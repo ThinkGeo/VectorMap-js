@@ -18,6 +18,7 @@ import { getUid } from "ol/util";
 import { renderFeature } from '../renderer/vector';
 import { intersects } from 'ol/extent';
 import GeoLineStyle from "../style/geoLineStyle";
+import Instruction from "ol/render/canvas/Instruction";
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
@@ -74,7 +75,6 @@ self.request = function (requestInfo, methodInfo) {
         var resultData = {
             requestKey: cacheKey,
             status: "succeed",
-            data: tileFeatureAndInstrictions
         };
 
         var postMessageData = {
@@ -168,19 +168,19 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
         replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
 
-    let mainFeatures = {};
+    let drawingFeatures = {};
     let mainDrawingInstructs = [];
     const render = function (feature, geostyle) {
         let styles;
         if (geostyle) {
             if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
-                mainFeatures[getUid(feature)] = feature;
+                drawingFeatures[getUid(feature)] = feature;
                 mainDrawingInstructs.push([getUid(feature), geostyle.id]);
             }
             else {
                 let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
                 if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
-                    mainFeatures[getUid(feature)] = feature;
+                    drawingFeatures[getUid(feature)] = feature;
                     mainDrawingInstructs.push([getUid(feature), geostyle.id]);
                 }
                 else {
@@ -200,6 +200,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
         if (styles) {
             const dirty = self.renderFeature(feature, squaredTolerance, styles, replayGroup);
+            drawingFeatures[getUid(feature)] = feature;
         }
     };
 
@@ -219,7 +220,8 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
         }
     }
 
-    var resultData = {};
+    var resultData = {
+    };
 
     for (var zIndex in replayGroup.replaysByZIndex_) {
         var replays = replayGroup.replaysByZIndex_[zIndex];
@@ -231,13 +233,22 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 resultData[zIndex][replayType] = {};
             }
             var replay = replays[replayType];
-
-            resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+            resultData[zIndex][replayType]["instructions"] = [];
+            for (let i = 0; i < replay.instructions.length; i++) {
+                let instruction = replay.instructions[i];
+                if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                    let feature = instruction[1];
+                    instruction[1] = getUid(feature);
+                }
+                resultData[zIndex][replayType]["instructions"].push(instruction);
+            }
             resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+            replay.coordinates.length = 0;
+            replay.instructions.length = 0;
         }
     }
 
-    return { "replays": resultData };
+    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
 }
 
 // Method

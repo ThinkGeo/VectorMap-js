@@ -355,7 +355,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             }
                             try {
                                 Array.prototype.push.apply(styles, ol4Styles);
-
                             }
                             catch (exx) {
                                 debugger;
@@ -430,6 +429,13 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     };
                     let createReplayGroupCallback = function (data, methodInfo) {
                         let replaysByZIndex = data["replays"];
+                        let featuresInfo = data["features"];
+                        let features = {};
+                        for (let featureId in featuresInfo) {
+                            let featureInfo = featuresInfo[featureId];
+                            let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                            features[featureId] = feature;
+                        }
 
                         for (let zindex in replaysByZIndex) {
                             for (let replayType in replaysByZIndex[zindex]) {
@@ -440,9 +446,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                     for (let i = 0; i < workerReplay["instructions"].length; i++) {
                                         let instruction = workerReplay["instructions"][i];
                                         if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
-                                            let featureInfo = instruction[1];
-                                            let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                                            instruction[1] = feature;
+                                            let featureId = instruction[1];
+                                            instruction[1] = features[featureId];
                                         }
                                     }
                                 }
