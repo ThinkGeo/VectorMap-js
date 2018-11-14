@@ -77,15 +77,13 @@ export function loadFeaturesXhr(url, format, success, failure) {
       }
 
       if (sendRequest) {
+        // Client ID and Client Secret   
+        if (url.indexOf('apiKey') === -1 && vectorTileSource.clientId && vectorTileSource.clientSecret && !vectorTileSource.token) {
+          vectorTileSource.getIDAndSecret(vectorTileSource);
+        }
 
         var workerManager = vectorTileSource.getWorkerManager();
-
         if (workerManager) {
-          // Client ID and Client Secret   
-          if (url.indexOf('apiKey') === -1 && vectorTileSource.clientId && vectorTileSource.clientSecret && !vectorTileSource.token) {
-            vectorTileSource.getIDAndSecret(vectorTileSource);
-          }
-
           let tileGrid = vectorTileSource.getTileGrid();
           let tileExtent = tileGrid.getTileCoordExtent(this.tileCoord);
           let tileResolution = tileGrid.getResolution(this.tileCoord[0]);
@@ -114,7 +112,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
               let loadEventInfo = tileLoadEventInfos[i];
               loadEventInfo.tile.workerId = methodInfo.workerId;
               if (data.status === "succeed") {
-                let tileKey =loadEventInfo.tile.tileCoord+"";
+                let tileKey = loadEventInfo.tile.tileCoord + "";
                 loadEventInfo.successFunction.call(loadEventInfo.tile, {}, format.readProjection({}), format.getLastExtent())
               }
             }
@@ -124,6 +122,11 @@ export function loadFeaturesXhr(url, format, success, failure) {
         else {
           var xhr = new XMLHttpRequest();
           xhr.open('GET', typeof url === 'function' ? url(extent, resolution, projection) : url, true);
+
+          if (vectorTileSource.token) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + vectorTileSource.token);
+          }
+
           if (format.getType() == FormatType.ARRAY_BUFFER) {
             xhr.responseType = 'arraybuffer';
           }

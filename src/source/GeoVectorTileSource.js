@@ -24,10 +24,8 @@ class GeoVectorTileSource extends VectorTile {
         this.registerRequest = {};
         this.instructionsCache = {};
         this.features = new LRUCache(4);
-        // this.clientId = options.clientId;
-        // this.clientSecret = options.clientSecret;
-        // this.tileLoadFunction = this.vectorTileLoadFunction.bind(this);
-        // this.isMultithread = options["multithread"] === undefined ? true : options["multithread"];
+        this.clientId = options.clientId;
+        this.clientSecret = options.clientSecret;
     }
 
     // Add "isGeoVectorTile" for VectorTImageTile
@@ -163,6 +161,24 @@ class GeoVectorTileSource extends VectorTile {
     }
     getWorkerManager(workerManager) {
         return this.workerManager;
+    }
+
+    getIDAndSecret(self) {
+        let xhr = new XMLHttpRequest();
+        let url = 'https://gisserver.thinkgeo.com/api/v1/auth/token';
+        let content = 'ApiKey=' + self.clientId + '&ApiSecret=' + self.clientSecret;
+
+        xhr.open("POST", url, false);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function (event) {
+            if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+                var token = JSON.parse(xhr.responseText).data.access_token;
+                self.token = token;
+            }
+        }.bind(this);
+        xhr.onerror = function () {
+        }.bind(this);
+        xhr.send(content);
     }
 }
 

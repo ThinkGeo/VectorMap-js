@@ -67,6 +67,8 @@ self.request = function (requestInfo, methodInfo) {
     var tileExtent = requestInfo.tileExtent;
     var tileResolution = requestInfo.tileResolution;
     var tileRange = requestInfo.tileRange;
+    var requestToken = requestInfo.token;
+    var url = requestInfo.url;
 
     var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
     var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
@@ -89,13 +91,13 @@ self.request = function (requestInfo, methodInfo) {
     }
     else {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", requestInfo.url, true);
-        // TODO others type, such as geojson.
+        xhr.open("GET", url, true);
+
         xhr.responseType = "arraybuffer";
 
         // Client ID and Client Secret
-        if (requestInfo.token) {
-            xhr.setRequestHeader('Authorization', 'Bearer ' + requestInfo.token);
+        if (requestToken) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + requestToken);
         }
 
         var postMessageData = {
@@ -117,7 +119,6 @@ self.request = function (requestInfo, methodInfo) {
             }
         }
         xhr.send();
-
     }
 
 }

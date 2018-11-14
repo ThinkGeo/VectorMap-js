@@ -192,7 +192,12 @@ class GeoVectorTileLayer extends VectorTileLayer {
                         }
                         // apiKey
                         if (url.indexOf('apiKey') === -1 && this.apiKey) {
-                            url = url + '?apiKey=' + this.apiKey;
+                            if (url.indexOf('?') > 0) {
+                                url = url + '&apiKey=' + this.apiKey;
+                            }
+                            else {
+                                url = url + '?apiKey=' + this.apiKey;
+                            }
                         }
                         // proxy
                         if (this.proxy) {
