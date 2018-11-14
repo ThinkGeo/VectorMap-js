@@ -272,7 +272,7 @@ class GeoTextStyle extends GeoStyle {
 
             if (flatCoordinates === undefined) { return false; }
 
-            if (typeof WorkerGlobalScope === undefined) {
+            if (typeof WorkerGlobalScope === "undefined") {
                 var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
 
                 if (labelImage === undefined) {

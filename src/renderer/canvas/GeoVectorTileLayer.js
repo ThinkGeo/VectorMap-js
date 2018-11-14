@@ -395,6 +395,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 var workerManager = source.getWorkerManager();
                 if (workerManager) {
 
+                    let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
+
                     if (tileProjection.getUnits() == Units.TILE_PIXELS) {
                         // projected tile extent
                         tileProjection.setWorldExtent(sourceTileExtent);
@@ -430,11 +432,23 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     let createReplayGroupCallback = function (data, methodInfo) {
                         let replaysByZIndex = data["replays"];
                         let featuresInfo = data["features"];
+                        let mainDrawingInstructs = data["mainDrawingInstructs"];
+
                         let features = {};
                         for (let featureId in featuresInfo) {
                             let featureInfo = featuresInfo[featureId];
                             let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
                             features[featureId] = feature;
+                        }
+
+                        if (featuresInfo && mainDrawingInstructs) {
+                            for (let i = 0; i < mainDrawingInstructs.length; i++) {
+                                let geoStyleId = mainDrawingInstructs[i][1];
+                                let geoStyle = geoStyles[geoStyleId];
+
+                                let feature = features[mainDrawingInstructs[i][0]];
+                                render.call(rendererSelf, feature, geoStyle, { strategyTree: strategyTree, frameState: frameState });
+                            }
                         }
 
                         for (let zindex in replaysByZIndex) {
