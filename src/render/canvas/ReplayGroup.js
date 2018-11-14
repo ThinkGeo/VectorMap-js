@@ -3,7 +3,7 @@
  */
 
 import { numberSafeCompareFunction } from 'ol/array.js';
-import { createCanvasContext2D } from 'ol/dom.js';
+import { createCanvasContext2D } from '../../dom';
 import { buffer, createEmpty, extendCoordinate } from 'ol/extent.js';
 import { transform2D } from 'ol/geom/flat/transform.js';
 import { isEmpty } from 'ol/obj.js';

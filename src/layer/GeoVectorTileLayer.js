@@ -155,7 +155,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                     let messageData = {
                         formatId: getUid(geoFormat),
                         styleJson: styleJsonCache.styleJson,
-                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
+                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfos
                     };
                     for (let i = 0; i < this.workerManager.workerCount; i++) {
                         this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
@@ -325,7 +325,7 @@ TileQueue.prototype.handleTileChange = function (event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
     if (state === TileState.LOADED || state === TileState.ERROR ||
-        state === TileState.EMPTY || state === TileState.ABORT || state === "createReplay") {
+        state === TileState.EMPTY || state === TileState.ABORT) {
         if (tile.isGeoVectorTile) {
             if (tile.replayCreated) {
                 unlisten(tile, EventType.CHANGE, this.handleTileChange, this);

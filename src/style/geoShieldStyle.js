@@ -117,6 +117,18 @@ class GeoShieldStyle extends GeoStyle {
             this.wrap = styleJson["shield-wrap-before"] ? true : styleJson["shield-wrap-before"];
 
             this.wrapWidth = styleJson["shield-wrap-width"];
+
+            if (typeof WorkerGlobalScope === "undefined") {
+                let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+                for (let i = 0; i < chars.length; i++) {
+                    this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
+                }
+                this.charWidths[" "] = measureTextWidth(this.font, " ");
+                for (let i = 0; i <= 9; i++) {
+                    this.charWidths[i] = measureTextWidth(this.font, i);
+                }
+            }
         }
     }
 
@@ -163,26 +175,20 @@ class GeoShieldStyle extends GeoStyle {
             text: this.textStyle
         });
 
-        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (typeof WorkerGlobalScope === "undefined") {
 
-        for (let i = 0; i < chars.length; i++) {
-            this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
-        }
-        this.charWidths[" "] = measureTextWidth(this.font, " ");
-        for (let i = 0; i <= 9; i++) {
-            this.charWidths[i] = measureTextWidth(this.font, i);
+            switch (this.iconType) {
+                case "image":
+                case "Image":
+                    this.setShiledImageIcon();
+                    break;
+                case "symbol":
+                case "Symbol":
+                    this.setShieldSymbolIcon();
+                    break;
+            }
         }
 
-        switch (this.iconType) {
-            case "image":
-            case "Image":
-                this.setShiledImageIcon();
-                break;
-            case "symbol":
-            case "Symbol":
-                this.setShieldSymbolIcon();
-                break;
-        }
     }
 
     getConvertedStyleCore(feature, resolution, options) {
@@ -201,7 +207,10 @@ class GeoShieldStyle extends GeoStyle {
 
         let flatCoordinates = this.setLabelPosition(feature, resolution, labelInfo, options.strategyTree, options.frameState);
         if (flatCoordinates === undefined || flatCoordinates.length < 2) {
-            return;
+            return false;
+        }
+        if (typeof WorkerGlobalScope !== "undefined") {
+            return true;
         }
 
         this.style.setGeometry(new Point(flatCoordinates, "XY"));
