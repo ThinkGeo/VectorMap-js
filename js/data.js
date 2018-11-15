@@ -19,8 +19,8 @@ const menuData = [{
         jsPath: './example/js/imagery-with-labels.js'
     }, {
         title: 'Retina maps ',
-        htmlPath: './example/html/RoundedPoint.html',
-        jsPath: './example/js/RoundedPoint.js'
+        htmlPath: './example/html/retina-maps.html',
+        jsPath: './example/js/retina-maps.js'
     }
     ]
 }, {
@@ -72,28 +72,28 @@ const menuData = [{
     styleName: 'Styling',
     subitems: [{
         title: 'Styling vector layer',
-        htmlPath: './katie/Demo/TriangleFan.html',
-        jsPath: './katie/Demo/js/TriangleFan.js'
+        htmlPath: './example/html/styling-lines.html',
+        jsPath: './example/js/styling-lines.js'
     }, {
         title: 'Styling points',
-        htmlPath: './katie/Demo/ColoredTriangle.html',
-        jsPath: './katie/Demo/js/ColoredTriangle.js'
+        htmlPath: './example/html/styling-points.html',
+        jsPath: './example/js/styling-points.js'
     }, {
         title: 'Styling lines',
-        htmlPath: './katie/Demo/ColorFillPlygon.html',
-        jsPath: './katie/Demo/js/ColorFillPlygon.js'
+        htmlPath: './example/html/styling-lines.html',
+        jsPath: './example/js/styling-lines.js'
     }, {
         title: 'Styling polygons',
-        htmlPath: './katie/Demo/TexturedQuad.html',
-        jsPath: './katie/Demo/js/TexturedQuad.js'
+        htmlPath: './example/html/styling-polygons.html',
+        jsPath: './example/js/styling-polygons.js'
     }, {
         title: 'Labeling features',
-        htmlPath: './katie/Demo/TexturedQaud_Clamp_Mirror.html',
-        jsPath: './katie/Demo/js/TexturedQaud_Clamp_Mirror.js'
+        htmlPath: './example/html/TexturedQaud_Clamp_Mirror.html',
+        jsPath: './example/js/TexturedQaud_Clamp_Mirror.js'
     }, {
         title: 'Marking places',
-        htmlPath: './katie/Demo/MultiTexture.html',
-        jsPath: './katie/Demo/js/MultiTexture.js'
+        htmlPath: './example/html/MultiTexture.html',
+        jsPath: './example/js/MultiTexture.js'
     }]
 }, {
     dataTarget: 'vector-data',

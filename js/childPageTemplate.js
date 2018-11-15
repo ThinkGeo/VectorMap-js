@@ -78,7 +78,6 @@ const ShowHandleFuns = class {
     }
 
     showHtmlViewFun(viewDiv) {
-        viewDiv.querySelector('iframe').setAttribute('height', window.innerHeight - 200);
         viewDiv.querySelector('iframe').src = this.htmlPath;
     }
 

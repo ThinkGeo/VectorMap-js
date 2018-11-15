@@ -3,15 +3,17 @@
  */
 html {
     font-size: 10px;
+    height: 100%;
 }
 
 body div {
     font-size: 1.3rem;
+
 }
 
 body {
     padding-top: 72px;
-    /*font-family: "myFont";*/
+    height: 100%;
 }
 
 /* nav */
@@ -172,24 +174,35 @@ body {
 /*
  * Main content
  */
-
-.main {
-    padding: 20px;
+.container-fluid {
     height: 100%;
 }
 
-#child-page-component .active  {
+.tab-content{
+    height: 91%;
+}
+
+.container-fluid .row {
+    height: 100%;
+}
+
+.main {
+    padding-top: 20px;
+    height: 100%;
+}
+
+#child-page-component .active {
     background-color: #f5f5f5;
     border-bottom: 1px solid #f5f5f5;
 }
 
 #child-page-view {
-    height: 700px;
+    height: 100%;
 }
 
- pre{
-     background-color: #f5f5f5;
- }
+pre {
+    background-color: #f5f5f5;
+}
 
 #loadingImage {
     position: absolute;
@@ -220,7 +233,7 @@ child pages
     font-size: 2rem;
     margin-top: 0;
 }
- 
+
 #child-page-js,
 #child-page-html {
     padding: 0;
@@ -234,7 +247,7 @@ child pages
 
 pre {
     position: relative;
-       padding: 10px 50px; 
+    padding: 10px 50px;
 }
 
 .pre-numbering {
@@ -261,6 +274,3 @@ pre {
 .pre-numbering li {
     margin: 0;
 }
-
- 
- 
