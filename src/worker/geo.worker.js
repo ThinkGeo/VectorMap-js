@@ -20,6 +20,7 @@ import { intersects } from 'ol/extent';
 import GeoLineStyle from "../style/geoLineStyle";
 import Instruction from "ol/render/canvas/Instruction";
 
+
 self.styleJsonCache = {};
 self.vectorTilesData = {};
 
@@ -30,7 +31,6 @@ self.onmessage = function (msg) {
 
     if (debugInfo) {
         var now = new Date().getTime();
-        // console.log("+++" + methodInfo.uid + " " + methodInfo.methodName + ": " + (now - debugInfo.postMessageDateTime));
     }
 
     var method = self[methodInfo.methodName];
@@ -57,6 +57,7 @@ self.initStyleJSON = function (styleJsonInfo, methodInfo) {
 }
 
 self.request = function (requestInfo, methodInfo) {
+    var maxDataZoom = requestInfo.maxDataZoom
     var requestCoord = requestInfo.requestCoord;
     var tileCoord = requestInfo.tileCoord;
     var vectorImageTileCoord = requestInfo.vectorImageTileCoord;
@@ -70,10 +71,11 @@ self.request = function (requestInfo, methodInfo) {
     var requestToken = requestInfo.token;
     var url = requestInfo.url;
 
-    var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
-    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
 
-    if (tileFeatureAndInstrictions) {
+    var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
+    var tileFeatureAndInstructions = self.getTileInstructions(cacheKey, tileCoord);
+
+    if (tileFeatureAndInstructions) {
         var resultData = {
             requestKey: cacheKey,
             status: "succeed",
@@ -90,16 +92,6 @@ self.request = function (requestInfo, methodInfo) {
         postMessage(postMessageData);
     }
     else {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-
-        xhr.responseType = "arraybuffer";
-
-        // Client ID and Client Secret
-        if (requestToken) {
-            xhr.setRequestHeader('Authorization', 'Bearer ' + requestToken);
-        }
-
         var postMessageData = {
             methodInfo: methodInfo,
             messageData: {},
@@ -107,22 +99,47 @@ self.request = function (requestInfo, methodInfo) {
                 postMessageDateTime: new Date().getTime()
             }
         };
-        xhr.onload = function (event) {
-            if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-                var source = undefined;
-                source = /** @type {ArrayBuffer} */ (xhr.response);
-                if (source) {
-                    var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
-                    postMessageData.messageData = resultMessageData;
-                    postMessage(postMessageData);
+
+        if (self.requestResults === undefined) {
+            self.requestResults = new LRUCache(16);
+        }
+        if (self.requestResults.containsKey(requestCoord.toString())) {
+            var resultMessageData = self.createDrawingInstructs(self.requestResults.get(requestCoord.toString()), tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
+            postMessageData.messageData = resultMessageData;
+            postMessage(postMessageData);
+        }
+        else {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "arraybuffer";
+            // Client ID and Client Secret
+            if (requestToken) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + requestToken);
+            }
+
+            xhr.onload = function (event) {
+                if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+                    var source = undefined;
+                    source = /** @type {ArrayBuffer} */ (xhr.response);
+                    if (source) {
+                        // save response to cache;
+                        if (maxDataZoom === requestCoord[0]) {
+                            self.requestResults.set(requestCoord.toString(), source);
+                            while (self.requestResults.canExpireCache()) {
+                                self.requestResults.pop();
+                            }
+                        }
+
+                        var resultMessageData = self.createDrawingInstructs(source, tileCoord[0], formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
+                        postMessageData.messageData = resultMessageData;
+                        postMessage(postMessageData);
+                    }
                 }
             }
+            xhr.send();
         }
-        xhr.send();
     }
-
 }
-
 
 self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let replayGroupInfo = createReplayGroupInfo["replayGroupInfo"];
@@ -141,9 +158,12 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     };
 
     var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
-    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
+    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, tileCoord);
     if (tileFeatureAndInstrictions === undefined) {
         debugger;
+    }
+    if (requestCoord[0] === tileCoord[0]) {
+        self.removeTileInstructions(cacheKey);
     }
     let features = tileFeatureAndInstrictions[0];
     let instructs = tileFeatureAndInstrictions[1];
@@ -315,7 +335,7 @@ self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, reque
     var homologousTilesInstructions = CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, tileCoord[0]);
     let cacheKey = requestCoord + "," + zoom;
     self.saveTileInstructions(cacheKey, featuresAndInstructions[0], homologousTilesInstructions);
-    var tileFeatureAndInstrictions = self.getTileInstrictions(cacheKey, tileCoord);
+    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, tileCoord);
 
     if (tileFeatureAndInstrictions === undefined) {
         debugger;
@@ -690,7 +710,7 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     self.vectorTilesData[cacheKey] = homologousTilesInstructions;
 
     if (self.features === undefined) {
-        self.features = new LRUCache(1024);
+        self.features = new LRUCache(16);
     }
     if (self.features.containsKey(cacheKey)) {
         self.features.replace(cacheKey, features);
@@ -705,7 +725,7 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     }
 }
 
-self.getTileInstrictions = function (cacheKey, tileCoord) {
+self.getTileInstructions = function (cacheKey, tileCoord) {
     let featuresAndInstructs = undefined;
     if (self.features && self.features.containsKey(cacheKey)) {
         if (self.vectorTilesData && self.vectorTilesData[cacheKey]) {
@@ -714,5 +734,12 @@ self.getTileInstrictions = function (cacheKey, tileCoord) {
     }
 
     return featuresAndInstructs;
+}
+
+self.removeTileInstructions = function (cacheKey) {
+    if (self.features && self.features.containsKey(cacheKey)) {
+        self.features.remove(cacheKey);
+        delete self.vectorTilesData[cacheKey];
+    }
 }
 

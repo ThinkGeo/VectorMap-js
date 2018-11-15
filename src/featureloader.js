@@ -96,7 +96,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
             minimalist: format.minimalist,
             maxDataZoom: format.maxDataZoom,
             formatId: getUid(format),
-            layerName: format.layerName,
+            layerName: format.getLayerName(),
             token: vectorTileSource.token,
             vectorTileDataCahceSize: format["vectorTileDataCahceSize"],
             tileRange: this.tileRange,
@@ -113,6 +113,8 @@ export function loadFeaturesXhr(url, format, success, failure) {
               loadEventInfo.tile.workerId = methodInfo.workerId;
               if (data.status === "succeed") {
                 let tileKey = loadEventInfo.tile.tileCoord + "";
+                // features and instructions has been cached in web worker, the proceess of createReplay will take place in web worker. 
+                // we just need to check the signal that the data is ready.
                 loadEventInfo.successFunction.call(loadEventInfo.tile, {}, format.readProjection({}), format.getLastExtent())
               }
             }

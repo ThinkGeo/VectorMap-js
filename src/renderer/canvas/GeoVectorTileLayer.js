@@ -185,7 +185,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     h = currentTilePixelSize[1] * currentScale / oversampling;
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     this.renderedTiles.push(tile);
-                    console.log("renderedTile" + tile.tileCoord);
                 }
             }
 
@@ -222,7 +221,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         const replays = IMAGE_REPLAYS[layer.getRenderMode()];
         // Add a condition: the replayGroup has been created.
         if (replays && replayState.renderedTileRevision !== revision && replayState.replayGroupCreated) {
-            console.log("renderTileImage_" + tile.tileCoord);
 
             replayState.renderedTileRevision = revision;
             const tileCoord = tile.wrappedTileCoord;
@@ -478,7 +476,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                         tile["replayCreated"] = true;
                         tile.setState(TileState.LOADED);
-                        console.log("CreateReplay Event:" + tile.tileCoord + "|" + sourceTile.tileCoord);
 
                     }
                     replayState.replayGroupCreated = false;

@@ -9,18 +9,6 @@ class WorkerManager {
     }
 
     initWorkers() {
-
-        // var dataObj = "(" + workerFunction + ")();";
-        // var blob = new Blob([dataObj.replace('"use strict";', '')]);
-        // var blobURL = (window.URL ? URL : webkitURL).createObjectURL(blob, {
-        //     type: 'application/javascript; charset=utf-8'
-        // });
-
-        // var worker = new Worker(blobURL);
-
-        // worker.onmessage = function (e) {
-        //     console.log('Worker said: ', e.data); // message received from worker
-        // };
         let callbacks = this.workerCallback;
         var worker = new Worker();
         worker.onmessage = function (e) {
