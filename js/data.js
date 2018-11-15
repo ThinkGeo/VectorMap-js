@@ -19,8 +19,8 @@ const menuData = [{
         jsPath: './example/js/imagery-with-labels.js'
     }, {
         title: 'Retina maps ',
-        htmlPath: './example/html/RoundedPoint.html',
-        jsPath: './example/js/RoundedPoint.js'
+        htmlPath: './example/html/retina-maps.html',
+        jsPath: './example/js/retina-maps.js'
     }
     ]
 }, {
