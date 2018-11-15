@@ -67190,7 +67190,7 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
+        
         if (opt_wrapS !== undefined) {
             gl.texParameteri(
                 ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
@@ -70814,27 +70814,13 @@ function olInit() {
             }
             
             var type  = geometry.getType();
-            var lines;
-            lines = this.text_.split('\n');
-            if(type == 'Point' && lines.length < 2 && this.text_.length > 16){
-                var textArray = this.text_.split(' ');
-                if(textArray.length > 2){
-                    lines = [];
-                    for(var i = 0; i < textArray.length; i += 2){
-                        lines.push(textArray[i] + ' ' + (textArray[i+1] || ''));
-                    }
-                }
-            }
+            var lines = this.text_.split('\n');            
             
             var pathLength;
             var startM;
             var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
-            if(!lines.includes('North Beckley Avenue')){
-                // return
-            }
-
             var labelWidth = 0;
             var labelHeight = 0;
             for(var i = 0; i < lines.length; i++){
@@ -70847,7 +70833,7 @@ function olInit() {
             var anchorY = Math.round(labelHeight * this.textBaseline_ - this.offsetY_);
             var flatCoordinatesToPixel = map.getPixelFromCoordinate(flatCoordinates);
 
-            if(type == 'LineString' && !this.label){
+            if(false && type == 'LineString' && !this.label){
                 pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
                 startM = pathLength * this.textAlign_;
                 
@@ -70918,9 +70904,9 @@ function olInit() {
                 extent = [minX, minY, maxX, maxY]; 
             }
 
-            if(!this.renderDeclutter_(extent, feature)){
-                return;
-            }
+            // if(!this.renderDeclutter_(extent, feature)){
+            //     return;
+            // }
             // declutter duplicate label end
 
             var i, ii, j, jj, currX, currY, charArr, charInfo; 
@@ -70931,6 +70917,7 @@ function olInit() {
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
             
+            // var textSize = this.getTextSize_(lines);
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
                 var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
@@ -70940,7 +70927,7 @@ function olInit() {
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
 
-                if(type == 'LineString' && !this.label){
+                if(false && type == 'LineString' && !this.label){
                     var lineStringCoordinates = geometry.getFlatCoordinates();
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
@@ -71015,13 +71002,38 @@ function olInit() {
                         }
                         currX += this.width;
                     }
+                }else if(this.label){
+                    var image = this.label;
+                    var width = image.width;
+                    var height = image.height;
+
+                    this.anchorX = Math.round(width * this.textAlign_ - this.offsetX_);
+                    this.anchorY = Math.round(height * this.textBaseline_ - this.offsetY_);
+                    this.originX = 0;
+                    this.originY = 0;
+                    this.height = height;
+                    this.width = width - lineWidth;
+                    this.imageHeight = height;
+                    this.imageWidth = width;
+
+                    var currentImage;
+                    if (this.images_.length === 0) {
+                        this.images_.push(image);
+                    } else {
+                        currentImage = this.images_[this.images_.length - 1];
+                        if (ol.getUid(currentImage) != ol.getUid(image)) {
+                            this.groupIndices.push(this.indices.length);
+                            this.images_.push(image);
+                        }
+                    }
+                    this.drawText_(flatCoordinates, offset, end, stride);                    
                 }else{
                     for (j = 0, jj = charArr.length; j < jj; ++j) {
                         charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
     
                         if (charInfo) {
                             var image = charInfo.image;
-    
+
                             this.anchorX = anchorX - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
@@ -71115,7 +71127,7 @@ function olInit() {
                     ctx.font = /** @type {string} */ (state.font);
                     ctx.fillStyle = state.fillColor;
                     ctx.strokeStyle = state.strokeColor;
-                    // ctx.lineWidth = state.lineWidth;
+                    ctx.lineWidth = state.lineWidth;                    
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
                     ctx.lineJoin = /** @type {string} */ (state.lineJoin);
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
@@ -71132,8 +71144,9 @@ function olInit() {
                         /** @type {number} */(state.scale), 0, 0);
                     }
 
-                    //Draw the character on the canvas
+                    // Draw the character on the canvas
                     if (state.strokeColor) {
+                        // FIXME: disable the stroke of text to fit background of map for empty data on ocean
                         ctx.strokeText(char, x, y);
                     }
                     if (state.fillColor) {
@@ -71237,9 +71250,9 @@ function olInit() {
             this.offsetX_ = textStyle.getOffsetX() || 0;
             this.offsetY_ = textStyle.getOffsetY() || 0;
             this.rotateWithView = !!textStyle.getRotateWithView();
-            this.rotation = textStyle.getRotation() || 0;
-            
+            this.rotation = textStyle.getRotation() || 0;            
             this.currAtlas_ = this.getAtlas_(state);
+
             this.label = textStyle.label;
         }
     };

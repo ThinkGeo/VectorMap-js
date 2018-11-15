@@ -746,6 +746,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
             gl.uniform1f(locations.u_opacity, opacity);
 
+            // fix for WebGL not to unpremultiply
+            if(this instanceof (<any>ol.render).webgl.PolygonReplay){
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+                gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            }
+
             // draw!
             var result;
             if (featureCallback === undefined) {                
