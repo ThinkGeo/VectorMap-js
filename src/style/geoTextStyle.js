@@ -219,7 +219,7 @@ class GeoTextStyle extends GeoStyle {
             if (flatCoordinates === undefined) { return false; }
         }
         else {
-            let labelInfo = this.getLabelInfo(text, textStyle);
+            let labelInfo = this.getLabelInfo(text, textStyle, frameState);
             let labelWidth = labelInfo.labelWidth;
             let labelHeight = labelInfo.labelHeight;
             let scale = labelInfo.scale;
@@ -240,8 +240,8 @@ class GeoTextStyle extends GeoStyle {
             }
 
             let textLabelingStrategy = new Constructor();
-            let tmpLabelWidth = labelWidth / window.devicePixelRatio;
-            let tmpLabelHeight = labelHeight / window.devicePixelRatio;
+            let tmpLabelWidth = labelWidth / frameState.pixelRatio;
+            let tmpLabelHeight = labelHeight / frameState.pixelRatio;
 
             switch (geometryType) {
                 case GeometryType.POINT:
@@ -273,7 +273,7 @@ class GeoTextStyle extends GeoStyle {
             if (flatCoordinates === undefined) { return false; }
 
             if (typeof WorkerGlobalScope === "undefined") {
-                var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
+                var labelImage = this.getImage(textStyle, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths, frameState.pixelRatio);
 
                 if (labelImage === undefined) {
                     return false;
@@ -287,7 +287,7 @@ class GeoTextStyle extends GeoStyle {
         return true;
     }
 
-    getLabelInfo(text, textState) {
+    getLabelInfo(text, textState, frameState) {
         let key = text
         if (!this.labelInfos.containsKey(key)) {
             let font = textState.getFont();
@@ -299,7 +299,7 @@ class GeoTextStyle extends GeoStyle {
             let numLines = lines.length;
             let textScale = textState.getScale();
             textScale = textScale === undefined ? 1 : textScale;
-            let scale = textScale * window.devicePixelRatio;
+            let scale = textScale * frameState.pixelRatio;
             let widths = [];
             let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
             let lineHeight = this.charWidths["lineHeight"];
@@ -382,7 +382,7 @@ class GeoTextStyle extends GeoStyle {
         return width;
     }
 
-    getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths) {
+    getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths, pixelRatio) {
         var key = this.uid !== undefined ? this.uid : getUid(this);
         key += lines.toString();
         if (!labelCache.containsKey(key)) {
@@ -490,7 +490,7 @@ class GeoTextStyle extends GeoStyle {
         return labelCache.get(key);
     }
 
-    drawMask(context, x, y, width, height) {
+    drawMask(context, x, y, width, height, pixelRatio) {
         var fill = undefined;
         var stroke = undefined;
         if (this.maskColor) {
@@ -529,7 +529,7 @@ class GeoTextStyle extends GeoStyle {
                 break;
             case "circle":
             case "Circle":
-                this.drawCircle(context, x, y, width, height, fill, stroke);
+                this.drawCircle(context, x, y, width, height, fill, stroke, pixelRatio);
                 break;
         }
     }
@@ -603,7 +603,7 @@ class GeoTextStyle extends GeoStyle {
         }
     };
 
-    drawCircle(context, x, y, width, height, fill, stroke) {
+    drawCircle(context, x, y, width, height, fill, stroke, pixelRatio) {
         context.canvas.width = context.canvas.width > context.canvas.height ? context.canvas.width : context.canvas.height;
         context.canvas.height = context.canvas.width;
         var radius = 0;
@@ -619,7 +619,7 @@ class GeoTextStyle extends GeoStyle {
             context.fill();
         }
         if (stroke) {
-            context.lineWidth = stroke.getWidth() * window.devicePixelRatio;
+            context.lineWidth = stroke.getWidth() * pixelRatio;
             context.strokeStyle = stroke.getColor();
             context.stroke();
         }

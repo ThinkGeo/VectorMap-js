@@ -152,9 +152,11 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let bufferedExtent = createReplayGroupInfo["bufferedExtent"];
     let squaredTolerance = createReplayGroupInfo["squaredTolerance"];
     let coordinateToPixelTransform = createReplayGroupInfo["coordinateToPixelTransform"];
+    let pixelRatio = createReplayGroupInfo["pixelRatio"]
 
     let frameState = {
-        coordinateToPixelTransform: coordinateToPixelTransform
+        coordinateToPixelTransform: coordinateToPixelTransform,
+        pixelRatio: pixelRatio
     };
 
     var cacheKey = requestCoord.join(",") + "," + tileCoord[0];

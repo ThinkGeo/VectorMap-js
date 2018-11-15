@@ -425,7 +425,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         squaredTolerance: squaredTolerance,
                         sourceTileExtent: sourceTileExtent,
                         bufferedExtent: bufferedExtent,
-                        coordinateToPixelTransform: frameState.coordinateToPixelTransform
+                        coordinateToPixelTransform: frameState.coordinateToPixelTransform,
+                        pixelRatio:frameState.pixelRatio
                     };
                     let createReplayGroupCallback = function (data, methodInfo) {
                         let replaysByZIndex = data["replays"];

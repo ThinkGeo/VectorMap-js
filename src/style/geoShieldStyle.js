@@ -120,7 +120,7 @@ class GeoShieldStyle extends GeoStyle {
 
             if (typeof WorkerGlobalScope === "undefined") {
                 let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
+
                 for (let i = 0; i < chars.length; i++) {
                     this.charWidths[chars[i]] = measureTextWidth(this.font, chars[i]);
                 }
@@ -128,6 +128,7 @@ class GeoShieldStyle extends GeoStyle {
                 for (let i = 0; i <= 9; i++) {
                     this.charWidths[i] = measureTextWidth(this.font, i);
                 }
+                this.charWidths["lineHeight"] = measureTextHeight(this.font);
             }
         }
     }
@@ -203,7 +204,7 @@ class GeoShieldStyle extends GeoStyle {
 
         this.textStyle.setText(featureText);
 
-        let labelInfo = this.getLabelInfo(featureText);
+        let labelInfo = this.getLabelInfo(featureText, options.frameState);
 
         let flatCoordinates = this.setLabelPosition(feature, resolution, labelInfo, options.strategyTree, options.frameState);
         if (flatCoordinates === undefined || flatCoordinates.length < 2) {
@@ -232,7 +233,7 @@ class GeoShieldStyle extends GeoStyle {
         return [this.style];
     }
 
-    getLabelInfo(text) {
+    getLabelInfo(text, frameState) {
         let key = text;
         if (!this.labelInfos.containsKey(key)) {
             let font = this.formatFont(this.textStyle.getFont());
@@ -241,7 +242,7 @@ class GeoShieldStyle extends GeoStyle {
             let fillState = this.textStyle.getFill();
             let strokeState = this.textStyle.getStroke();
 
-            let pixelRatio = window.devicePixelRatio;
+            let pixelRatio = frameState.pixelRatio;
             let scale = this.textStyle.getScale();
             scale = (scale ? scale : 1) * pixelRatio;
 
@@ -256,7 +257,7 @@ class GeoShieldStyle extends GeoStyle {
             let width = this.getEstimatedWidth(font, lines, widths);
             let renderWidth = width + strokeWidth;
 
-            let lineHeight = measureTextHeight(font);
+            let lineHeight = this.charWidths["lineHeight"];
             let height = lineHeight * numLines;
 
             // if (this.dx) { this.textStyle.setOffsetX(this.dx + height / 2); }
@@ -281,13 +282,6 @@ class GeoShieldStyle extends GeoStyle {
         }
         return this.labelInfos.get(key);
     }
-
-
-
-
-
-
-
 
     setShiledImageIcon() {
         if (this.iconSrc !== undefined) {
