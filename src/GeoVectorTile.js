@@ -13,7 +13,14 @@ class GeoVectorTile extends VectorTile {
             this.loader_(null, NaN, null);
         }
     }
-   
+    disposeInternal() {
+        this.features_ = null;
+        this.replayGroups_ = {};
+        this.state = TileState.ABORT;
+        this.changed();
+        super.disposeInternal();
+    }
+
 }
 
 export default GeoVectorTile;
