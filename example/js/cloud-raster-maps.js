@@ -15,6 +15,7 @@ const apiKey = '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: `${url.light}?apiKey=${apiKey}`,
+        tileSize: 512,
     }),
     layerName: 'light'
 });
