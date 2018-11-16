@@ -2,23 +2,23 @@ const menuData = [{
     dataTarget: 'base-Maps',
     styleName: 'Base Maps',
     subitems: [{
-        title: 'Cloud vector maps',
+        title: 'Cloud Vector Maps',
         htmlPath: './html/cloud-vector-maps.html',
         jsPath: './js/cloud-vector-maps.js'
     }, {
-        title: 'Cloud raster maps',
+        title: 'Cloud Raster Maps',
         htmlPath: './html/cloud-raster-maps.html',
         jsPath: './js/cloud-raster-maps.js'
     }, {
-        title: 'Satellite with labels ',
+        title: 'Satellite with Labels ',
         htmlPath: './html/satellite-with-labels.html',
         jsPath: './js/satellite-with-labels.js'
     }, {
-        title: 'Imagery with labels  ',
+        title: 'Imagery with Labels  ',
         htmlPath: './html/imagery-with-labels.html',
         jsPath: './js/imagery-with-labels.js'
     }, {
-        title: 'Retina maps ',
+        title: 'Retina Maps ',
         htmlPath: './html/retina-maps.html',
         jsPath: './js/retina-maps.js'
     }
@@ -28,72 +28,68 @@ const menuData = [{
     styleName: 'Statistics',
     subitems: [{
         title: 'Heatmap KML',
-        htmlPath: './katie/Demo/Lines.html',
-        jsPath: './../katie/Demo/js/Lines.js'
+        htmlPath: './html/heatmap-KML.html',
+        jsPath: './js/heatmap-KML.js'
     }, {
         title: 'Heatmap JSON',
-        htmlPath: './katie/Demo/LineStrip.html',
-        jsPath: './../katie/Demo/js/LineStrip.js'
+        htmlPath: './html/heatmap-json,js.html',
+        jsPath: './js/heatmap-json,js.js'
     }, {
         title: 'Contour Line',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/contour-line.html',
+        jsPath: './js/contour-line.js'
     }, {
         title: 'Contour Plane',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/contour-plane.html',
+        jsPath: './js/contour-plane.js'
     }, {
         title: 'Scatter',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/scatter.html',
+        jsPath: './js/scatter.js'
     }, {
         title: 'Pie Chart',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/pie-chart.html',
+        jsPath: './js/pie-chart.js'
     }, {
         title: 'AQI Radar',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/AQI-radar.html',
+        jsPath: './js/AQI-radar.js'
     }, {
         title: 'Cluster Envelope',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/cluster-envelope.html',
+        jsPath: './js/cluster-envelope.js'
     }, {
         title: 'Hexagon',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/hexagon.html',
+        jsPath: './js/hexagon.js'
     }, {
         title: 'Average Round Trip Commute Time',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/LineLoop.html',
+        jsPath: './js/LineLoop.js'
     }]
 }, {
     dataTarget: 'styling',
     styleName: 'Styling',
     subitems: [{
-        title: 'Styling vector layer',
-        htmlPath: './html/styling-lines.html',
-        jsPath: './js/styling-lines.js'
-    }, {
-        title: 'Styling points',
+        title: 'Styling Points',
         htmlPath: './html/styling-points.html',
         jsPath: './js/styling-points.js'
     }, {
-        title: 'Styling lines',
+        title: 'Styling Lines',
         htmlPath: './html/styling-lines.html',
         jsPath: './js/styling-lines.js'
     }, {
-        title: 'Styling polygons',
+        title: 'Styling Polygons',
         htmlPath: './html/styling-polygons.html',
         jsPath: './js/styling-polygons.js'
     }, {
-        title: 'Labeling features',
-        htmlPath: './html/TexturedQaud_Clamp_Mirror.html',
-        jsPath: './js/TexturedQaud_Clamp_Mirror.js'
+        title: 'Labeling Features',
+        htmlPath: './html/labeling-features.html',
+        jsPath: './js/labeling-features.js'
     }, {
-        title: 'Marking places',
-        htmlPath: './html/MultiTexture.html',
-        jsPath: './js/MultiTexture.js'
+        title: 'Marking Places',
+        htmlPath: './html/marking-places.html',
+        jsPath: './js/marking-places.js'
     }]
 }, {
     dataTarget: 'vector-data',
@@ -131,7 +127,7 @@ const menuData = [{
     dataTarget: 'thinkGeo-cloud',
     styleName: 'ThinkGeo Cloud',
     subitems: [{
-        title: 'Elevation along path ',
+        title: 'Elevation along Path ',
         htmlPath: './judy/PixiJS/html/line1.html',
         jsPath: './judy/PixiJS/js/line1.js'
     }, {
@@ -139,7 +135,7 @@ const menuData = [{
         htmlPath: './judy/PixiJS/html/line2.html',
         jsPath: './judy/PixiJS/js/line2.js'
     }, {
-        title: 'Color creation ',
+        title: 'Color Creation ',
         htmlPath: './judy/PixiJS/html/line3.html',
         jsPath: './judy/PixiJS/js/line3.js'
     }]

@@ -1,4 +1,4 @@
- 
+
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -13,24 +13,37 @@ const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
         apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'      // please go to https://cloud.thinkgeo.com to create
     });
 
+var pointLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/Frisco-zoning.json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(238,153,34,0.402)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: '#48D1CC',
+            width: 2
+        }),
+        image: new ol.style.Circle({
+            radius: 4,
+            fill: new ol.style.Fill({
+                color: '#48D1CC'
+            })
+        })
+    })
+});
+
+
+
 let map = new ol.Map({
-    layers: [worldstreets],
+    layers: [worldstreets, pointLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        zoom: 4,
+        center: ol.proj.fromLonLat([-96.79620, 33.15423]),
+        zoom: 12,
     }),
 });
 
-let layer = new ol.layer.Vector({
-    source: new ol.source.Vector({ wrapX: false })
-})
-let drawPolygon = new ol.interaction.Draw({
-    type: 'Polygon',
-    source: layer.getSource()
-})
-
-map.addLayer(layer);
-
-map.addInteraction(drawPolygon);
 
