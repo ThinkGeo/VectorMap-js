@@ -70,7 +70,7 @@ const menuData = [{
 }, {
     dataTarget: 'styling',
     styleName: 'Styling',
-    subitems: [  {
+    subitems: [{
         title: 'Styling Points',
         htmlPath: './html/styling-points.html',
         jsPath: './js/styling-points.js'
@@ -84,12 +84,12 @@ const menuData = [{
         jsPath: './js/styling-polygons.js'
     }, {
         title: 'Labeling Features',
-        htmlPath: './html/TexturedQaud_Clamp_Mirror.html',
-        jsPath: './js/TexturedQaud_Clamp_Mirror.js'
+        htmlPath: './html/labeling-features.html',
+        jsPath: './js/labeling-features.js'
     }, {
         title: 'Marking Places',
-        htmlPath: './html/MultiTexture.html',
-        jsPath: './js/MultiTexture.js'
+        htmlPath: './html/marking-places.html',
+        jsPath: './js/marking-places.js'
     }]
 }, {
     dataTarget: 'vector-data',
