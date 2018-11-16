@@ -120,6 +120,7 @@ class GeoTextStyle extends GeoStyle {
         this.style = new Style({
             text: textStyle
         });
+        textStyle.charWidths = this.charWidths;
 
         if (this.textAligns.indexOf(this.align) >= 0) {
             textStyle.setTextAlign(this.align);

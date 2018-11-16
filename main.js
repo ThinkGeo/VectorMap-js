@@ -4,8 +4,7 @@ import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/vectorTile'
 import MVT from 'ol/format/MVT'
 import { GEOLOCATION } from 'ol/has';
-import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill';
+import { Fill, Style, Text } from 'ol/style.js';
 import { createXYZ } from 'ol/tilegrid';
 import TileDebug from 'ol/source/TileDebug'
 import Tile from 'ol/layer/Tile'
@@ -15,7 +14,8 @@ import { FALSE } from 'ol/functions';
 
 
 var view = new View({
-  center: [-10775718.490585351, 3868389.0226015863],
+  // center: [-10775718.490585351, 3868389.0226015863],
+  center: [260965.34981156138, 6250626.159234417],
   zoom: 14,
   // maxZoom: 19,
   maxResolution: 40075016.68557849 / 512
@@ -44,11 +44,29 @@ var tilegrid = new Tile({
   })
 })
 
+var style = new Style({
+  text: new Text({
+    font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
+    placement: 'line',
+    fill: new Fill({
+      color: '#cccccc'
+    })
+  })
+});
+
+
 var vectorTileLayer = new VectorTileLayer({
   source: new VectorTileSource({
-    format: new MVT(),
+    format: new MVT({
+      layers: ["road_name"]
+    }),
     url: "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~"
-  })
+  }),
+  style: function (feature) {
+    style.getText().setText(feature.get('name'));
+    return style;
+  },
+  declutter: true
 })
 var map = new Map({
   layers: [geoVectorTileLayer],

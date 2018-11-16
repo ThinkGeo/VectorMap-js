@@ -24,6 +24,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
     constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
         super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
         this.labelInfoCache = new LRUCache();
+        this.charWidths = {};
     }
 
     replay_(context, transform, skippedFeaturesHash, instructions, snapToPixel, featureCallback, opt_hitExtent) {
@@ -639,13 +640,16 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         if (!widths) {
             this.widths_[font] = widths = {};
         }
+        var charWidths = this.charWidths[font];
+
         this.instructions.push([CanvasInstruction.DRAW_CHARS,
             begin, end, baseline, declutterGroup,
         textState.overflow, fillKey, textState.maxAngle,
         function (text) {
             var width = widths[text];
             if (!width) {
-                width = widths[text] = measureTextWidth(font, text);
+                // width = widths[text] = measureTextWidth(font, text);
+                width = widths[text] = getEstimatedWidth(font, [text], charWidths, [], undefined);
             }
             return width * textScale * pixelRatio;
         },
@@ -657,7 +661,8 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         function (text) {
             var width = widths[text];
             if (!width) {
-                width = widths[text] = measureTextWidth(font, text);
+                // width = widths[text] = measureTextWidth(font, text);
+                width = widths[text] = getEstimatedWidth(font, [text], charWidths, [], undefined);
             }
             return width * textScale;
         },
@@ -745,6 +750,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                 '';
             this.label = textStyle.label;
             this.labelPosition = textStyle.labelPosition;
+            this.charWidths[textState.font] = textStyle.charWidths;
         }
     }
 
@@ -795,4 +801,29 @@ export function measureTextWidths(font, lines, widths) {
     }
     return width;
 }
+
+export function getEstimatedWidth(font, lines, charWidths, widths, letterSpacing) {
+    let numLines = lines.length;
+    let width = 0;
+    let currentWidth, i;
+    for (i = 0; i < numLines; ++i) {
+        currentWidth = 0;
+        for (let j = 0; j < lines[i].length; j++) {
+            let charWidth = charWidths[lines[i][j]];
+            if (charWidth) {
+                currentWidth += charWidth;
+            }
+            else {
+                currentWidth += charWidths["W"];
+            }
+        }
+        if (letterSpacing) {
+            currentWidth = currentWidth + (lines[i].length - 1) * letterSpacing;
+        }
+        width = Math.max(width, currentWidth);
+        widths.push(currentWidth);
+    }
+    return width;
+}
+
 export default GeoCanvasTextReplay
