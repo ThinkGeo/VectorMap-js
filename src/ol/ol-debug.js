@@ -67396,8 +67396,17 @@ function olInit() {
         var rotation = /** @type {number} */ (-this.rotation);
         var scale = /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
-        var cos = Math.cos(rotation);
-        var sin = Math.sin(rotation);
+        
+        var cos1, cos2, sin1, sin2;
+        if(this.previousAngle !== undefined){
+            cos1 = Math.cos(rotation + this.previousAngle);
+            sin1 = Math.sin(rotation + this.previousAngle);
+            sin2 = Math.sin(rotation + this.previousAngle);
+            cos2 = Math.cos(rotation + this.previousAngle);
+        }else{
+            cos1 = cos2 = Math.cos(rotation);
+            sin1 = sin2 = Math.sin(rotation);
+        }
         var numIndices = this.indices.length;
         var numVertices = this.vertices.length;
         var i, n, offsetX, offsetY, x, y;
@@ -67422,8 +67431,8 @@ function olInit() {
             offsetY = -scale * (height - anchorY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
+            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;            
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67434,8 +67443,8 @@ function olInit() {
             offsetY = -scale * (height - anchorY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
+            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67446,8 +67455,8 @@ function olInit() {
             offsetY = scale * anchorY;
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
+            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67458,8 +67467,8 @@ function olInit() {
             offsetY = scale * anchorY;
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
+            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -70821,6 +70830,10 @@ function olInit() {
             var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
+            if(!this.text_.includes('Tom Landry Freeway')){
+                return
+            }
+
             var labelWidth = 0;
             var labelHeight = 0;
             for(var i = 0; i < lines.length; i++){
@@ -70916,8 +70929,8 @@ function olInit() {
 
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-            
-            // var textSize = this.getTextSize_(lines);
+            var resolution = map.frameState_.currentResolution;
+
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
                 var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
@@ -70927,13 +70940,22 @@ function olInit() {
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
 
-                if(false && type == 'LineString' && !this.label){
+                if(type == 'LineString' && !this.label){
                     var lineStringCoordinates = geometry.getFlatCoordinates();
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
                     var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
                     
-                    var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
+                    if (reverse) {
+                        offset = endLineString - 2;
+                        stride = -2;
+                    }else{
+                        offset = 0;
+                    }
+
+                    // FIXME: fix the offset from setting
+                    // var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
+                    // offset = 0;
                     var numChars = charArr.length;
                     var x1 = lineStringCoordinates[offset];
                     var y1 = lineStringCoordinates[offset + 1];
@@ -70941,43 +70963,52 @@ function olInit() {
                     var x2 = lineStringCoordinates[offset];
                     var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
-                    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            
-                    var chunk = '';
-                    // var chunkLength = 0;
+                    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+                    var startM = 0;                    
+                    var charFlatCoordinates = [x1, y1];
                     var data, index, previousAngle;
+
                     for (var j = 0; j < numChars; ++j) {
                         charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
                         if (charInfo) {
-
                             index = reverse ? numChars - j - 1 : j;
                             var char = charArr[index];
-                            chunk = reverse ? char + chunk : chunk + char;
-                            // var charLength = measure(chunk) - chunkLength;
                             var charLength = glyphAtlas.width[char];
-                            // chunkLength += charLength;
                             var charM = startM + charLength / 2;
-                            while (offset < endLineString - stride && segmentM + segmentLength < charM) {
+
+                            while ((reverse? offset > 2: offset < endLineString - stride) 
+                                    && segmentM + segmentLength < charM) {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
                                 x2 = lineStringCoordinates[offset];
                                 y2 = lineStringCoordinates[offset + 1];
                                 segmentM += segmentLength;
-                                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
-                            // var segmentPos = charM - segmentM;
+
                             var angle = Math.atan2(y2 - y1, x2 - x1);
+                            
                             if (reverse) {
-                                angle += angle > 0 ? -Math.PI : Math.PI;
+                                // angle += angle > 0 ? -Math.PI : Math.PI;
                             }
+                            if(previousAngle !== undefined && angle !== previousAngle){
+                                // angle = 0
+                                // angle = previousAngle + angle;
+                                // currX = this.anchorX*Math.cos(previousAngle) - this.anchorY*Math.sin(previousAngle);
+                                // currY = this.anchorX*Math.sin(previousAngle) + this.anchorY*Math.cos(previousAngle);
+                                // angle = previousAngle - angle
+                                // charFlatCoordinates = [x1, y1];
+                                this.previousAngle = previousAngle;
+                            }
+                            
                             this.rotation = -angle;
-                            previousAngle = angle;
+                            previousAngle = angle;                            
                             startM += charLength;
-
                             var image = charInfo.image;
-
-                            this.anchorX = anchorX - currX;
+                            
+                            // FIXME: using anchorX to fit the setting
+                            this.anchorX = 0 - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
                             this.originY = charInfo.offsetY;
@@ -70986,7 +71017,8 @@ function olInit() {
                                 glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
                             this.imageHeight = image.height;
                             this.imageWidth = image.width;
-    
+                            this.rotateWithView = true;
+
                             var currentImage;
                             if (this.images_.length === 0) {
                                 this.images_.push(image);
@@ -70997,8 +71029,7 @@ function olInit() {
                                     this.images_.push(image);
                                 }
                             }
-                            this.drawText_([lineStringCoordinates[0], lineStringCoordinates[1]], 0, 2, stride);
-                            // this.drawText_(flatCoordinates, 0, 2, stride);
+                            this.drawText_(charFlatCoordinates, 0, 2, 2);
                         }
                         currX += this.width;
                     }

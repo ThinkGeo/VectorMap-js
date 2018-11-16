@@ -692,7 +692,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
                 tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
             
-            if (this.lineStringReplay) {
+            if (this instanceof (<any>ol.render).webgl.LineStringReplay || this.lineStringReplay) {
                 tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
                 tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
                 tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
@@ -708,12 +708,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 gl.stencilFunc(gl.ALWAYS, 1, 255);
                 gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
 
-                this.lineStringReplay.replay(context,
-                    center, resolution, rotation, size, pixelRatio,
-                    opacity, skippedFeaturesHash,
-                    featureCallback, oneByOne, opt_hitExtent);
+                // this.lineStringReplay.replay(context,
+                //     center, resolution, rotation, size, pixelRatio,
+                //     opacity, skippedFeaturesHash,
+                //     featureCallback, oneByOne, opt_hitExtent);
 
-                gl.stencilMask(0);
+                // gl.stencilMask(0);
                 // FIXME Eric
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
@@ -765,7 +765,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             // disable the vertex attrib arrays
             this.shutDownProgram(gl, locations);
 
-            if (this.lineStringReplay) {
+            if (this instanceof (<any>ol.render).webgl.LineStringReplay || this.lineStringReplay) {
                 if (!tmpStencil) {
                     gl.disable(gl.STENCIL_TEST);
                 }
@@ -775,6 +775,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 gl.stencilMask(/** @type {number} */ (tmpStencilMask));
                 gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
                     /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+                // gl.stencilMask(0);
             }
 
             return result;
