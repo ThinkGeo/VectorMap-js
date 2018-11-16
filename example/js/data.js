@@ -28,44 +28,44 @@ const menuData = [{
     styleName: 'Statistics',
     subitems: [{
         title: 'Heatmap KML',
-        htmlPath: './katie/Demo/Lines.html',
-        jsPath: './../katie/Demo/js/Lines.js'
+        htmlPath: './html/heatmap-KML.html',
+        jsPath: './js/heatmap-KML.js'
     }, {
         title: 'Heatmap JSON',
-        htmlPath: './katie/Demo/LineStrip.html',
-        jsPath: './../katie/Demo/js/LineStrip.js'
+        htmlPath: './html/heatmap-json,js.html',
+        jsPath: './js/heatmap-json,js.js'
     }, {
         title: 'Contour Line',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/contour-line.html',
+        jsPath: './js/contour-line.js'
     }, {
         title: 'Contour Plane',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/contour-plane.html',
+        jsPath: './js/contour-plane.js'
     }, {
         title: 'Scatter',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/scatter.html',
+        jsPath: './js/scatter.js'
     }, {
         title: 'Pie Chart',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/pie-chart.html',
+        jsPath: './js/pie-chart.js'
     }, {
         title: 'AQI Radar',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/AQI-radar.html',
+        jsPath: './js/AQI-radar.js'
     }, {
         title: 'Cluster Envelope',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/cluster-envelope.html',
+        jsPath: './js/cluster-envelope.js'
     }, {
         title: 'Hexagon',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/hexagon.html',
+        jsPath: './js/hexagon.js'
     }, {
         title: 'Average Round Trip Commute Time',
-        htmlPath: './katie/Demo/LineLoop.html',
-        jsPath: './../katie/Demo/js/LineLoop.js'
+        htmlPath: './html/LineLoop.html',
+        jsPath: './js/LineLoop.js'
     }]
 }, {
     dataTarget: 'styling',
