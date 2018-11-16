@@ -5,13 +5,7 @@ WebFont.load({
     }
 });
 
-
-let map1xLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~",// please go to https://cloud.thinkgeo.com to create
-    }),
-});
+ 
 
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
@@ -23,14 +17,7 @@ let map2xLayer = new ol.layer.Tile({
 });
 
 
-let map1x = new ol.Map({
-    layers: [map1xLayer],
-    target: 'map@1x',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        zoom: 4,
-    }),
-});
+ 
 
 let map2x = new ol.Map({
     layers: [map2xLayer],

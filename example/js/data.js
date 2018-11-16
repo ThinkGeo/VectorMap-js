@@ -2,23 +2,23 @@ const menuData = [{
     dataTarget: 'base-Maps',
     styleName: 'Base Maps',
     subitems: [{
-        title: 'Cloud vector maps',
+        title: 'Cloud Vector Maps',
         htmlPath: './html/cloud-vector-maps.html',
         jsPath: './js/cloud-vector-maps.js'
     }, {
-        title: 'Cloud raster maps',
+        title: 'Cloud Raster Maps',
         htmlPath: './html/cloud-raster-maps.html',
         jsPath: './js/cloud-raster-maps.js'
     }, {
-        title: 'Satellite with labels ',
+        title: 'Satellite with Labels ',
         htmlPath: './html/satellite-with-labels.html',
         jsPath: './js/satellite-with-labels.js'
     }, {
-        title: 'Imagery with labels  ',
+        title: 'Imagery with Labels  ',
         htmlPath: './html/imagery-with-labels.html',
         jsPath: './js/imagery-with-labels.js'
     }, {
-        title: 'Retina maps ',
+        title: 'Retina Maps ',
         htmlPath: './html/retina-maps.html',
         jsPath: './js/retina-maps.js'
     }
@@ -70,28 +70,24 @@ const menuData = [{
 }, {
     dataTarget: 'styling',
     styleName: 'Styling',
-    subitems: [{
-        title: 'Styling vector layer',
-        htmlPath: './html/styling-lines.html',
-        jsPath: './js/styling-lines.js'
-    }, {
-        title: 'Styling points',
+    subitems: [  {
+        title: 'Styling Points',
         htmlPath: './html/styling-points.html',
         jsPath: './js/styling-points.js'
     }, {
-        title: 'Styling lines',
+        title: 'Styling Lines',
         htmlPath: './html/styling-lines.html',
         jsPath: './js/styling-lines.js'
     }, {
-        title: 'Styling polygons',
+        title: 'Styling Polygons',
         htmlPath: './html/styling-polygons.html',
         jsPath: './js/styling-polygons.js'
     }, {
-        title: 'Labeling features',
+        title: 'Labeling Features',
         htmlPath: './html/TexturedQaud_Clamp_Mirror.html',
         jsPath: './js/TexturedQaud_Clamp_Mirror.js'
     }, {
-        title: 'Marking places',
+        title: 'Marking Places',
         htmlPath: './html/MultiTexture.html',
         jsPath: './js/MultiTexture.js'
     }]
@@ -131,7 +127,7 @@ const menuData = [{
     dataTarget: 'thinkGeo-cloud',
     styleName: 'ThinkGeo Cloud',
     subitems: [{
-        title: 'Elevation along path ',
+        title: 'Elevation along Path ',
         htmlPath: './judy/PixiJS/html/line1.html',
         jsPath: './judy/PixiJS/js/line1.js'
     }, {
@@ -139,7 +135,7 @@ const menuData = [{
         htmlPath: './judy/PixiJS/html/line2.html',
         jsPath: './judy/PixiJS/js/line2.js'
     }, {
-        title: 'Color creation ',
+        title: 'Color Creation ',
         htmlPath: './judy/PixiJS/html/line3.html',
         jsPath: './judy/PixiJS/js/line3.js'
     }]
