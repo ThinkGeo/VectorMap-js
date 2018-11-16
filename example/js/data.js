@@ -3,24 +3,24 @@ const menuData = [{
     styleName: 'Base Maps',
     subitems: [{
         title: 'Cloud vector maps',
-        htmlPath: './example/html/cloud-vector-maps.html',
-        jsPath: './example/js/cloud-vector-maps.js'
+        htmlPath: './html/cloud-vector-maps.html',
+        jsPath: './js/cloud-vector-maps.js'
     }, {
         title: 'Cloud raster maps',
-        htmlPath: './example/html/cloud-raster-maps.html',
-        jsPath: './example/js/cloud-raster-maps.js'
+        htmlPath: './html/cloud-raster-maps.html',
+        jsPath: './js/cloud-raster-maps.js'
     }, {
         title: 'Satellite with labels ',
-        htmlPath: './example/html/satellite-with-labels.html',
-        jsPath: './example/js/satellite-with-labels.js'
+        htmlPath: './html/satellite-with-labels.html',
+        jsPath: './js/satellite-with-labels.js'
     }, {
         title: 'Imagery with labels  ',
-        htmlPath: './example/html/imagery-with-labels.html',
-        jsPath: './example/js/imagery-with-labels.js'
+        htmlPath: './html/imagery-with-labels.html',
+        jsPath: './js/imagery-with-labels.js'
     }, {
         title: 'Retina maps ',
-        htmlPath: './example/html/retina-maps.html',
-        jsPath: './example/js/retina-maps.js'
+        htmlPath: './html/retina-maps.html',
+        jsPath: './js/retina-maps.js'
     }
     ]
 }, {
@@ -72,28 +72,28 @@ const menuData = [{
     styleName: 'Styling',
     subitems: [{
         title: 'Styling vector layer',
-        htmlPath: './example/html/styling-lines.html',
-        jsPath: './example/js/styling-lines.js'
+        htmlPath: './html/styling-lines.html',
+        jsPath: './js/styling-lines.js'
     }, {
         title: 'Styling points',
-        htmlPath: './example/html/styling-points.html',
-        jsPath: './example/js/styling-points.js'
+        htmlPath: './html/styling-points.html',
+        jsPath: './js/styling-points.js'
     }, {
         title: 'Styling lines',
-        htmlPath: './example/html/styling-lines.html',
-        jsPath: './example/js/styling-lines.js'
+        htmlPath: './html/styling-lines.html',
+        jsPath: './js/styling-lines.js'
     }, {
         title: 'Styling polygons',
-        htmlPath: './example/html/styling-polygons.html',
-        jsPath: './example/js/styling-polygons.js'
+        htmlPath: './html/styling-polygons.html',
+        jsPath: './js/styling-polygons.js'
     }, {
         title: 'Labeling features',
-        htmlPath: './example/html/TexturedQaud_Clamp_Mirror.html',
-        jsPath: './example/js/TexturedQaud_Clamp_Mirror.js'
+        htmlPath: './html/TexturedQaud_Clamp_Mirror.html',
+        jsPath: './js/TexturedQaud_Clamp_Mirror.js'
     }, {
         title: 'Marking places',
-        htmlPath: './example/html/MultiTexture.html',
-        jsPath: './example/js/MultiTexture.js'
+        htmlPath: './html/MultiTexture.html',
+        jsPath: './js/MultiTexture.js'
     }]
 }, {
     dataTarget: 'vector-data',
