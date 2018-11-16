@@ -12,6 +12,8 @@ const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
     {
         apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'      // please go to https://cloud.thinkgeo.com to create
     });
+const test = new ol.mapsuite.VectorTileLayer('Frisco-school-poi.json');
+
 
 let map = new ol.Map({
     layers: [worldstreets],
@@ -22,15 +24,4 @@ let map = new ol.Map({
     }),
 });
 
-let layer = new ol.layer.Vector({
-    source: new ol.source.Vector({ wrapX: false })
-})
-let drawPoint = new ol.interaction.Draw({
-    type: 'Point',
-    source: layer.getSource()
-})
-
-map.addLayer(layer);
-
-map.addInteraction(drawPoint);
 
