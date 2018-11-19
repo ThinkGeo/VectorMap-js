@@ -211,41 +211,114 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                         const text = /** @type {string} */ (instruction[12]);
                         const textKey = /** @type {string} */ (instruction[13]);
                         const textScale = /** @type {number} */ (instruction[14]);
+                        const ignored = (instruction[15]);
+                        const displayedTextLength = instruction[16];
 
-                        const declutterGroups = [];
-                        const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
-                        const textLength = measure(text);
-                        if (overflow || textLength <= pathLength) {
-                            // The original logical is create label image --> declutterGroup --> draw label image to context
-                            // The newest logical is  create label info and create image instruction --> declutterGroup --> create label image --> draw label image to context
+                        if (!ignored) {
+                            const declutterGroups = [];
+                            const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
+                            let textLength = undefined;
 
-                            let labelInstructions = [];
-                            let labelIndex = 0;
+                            if (displayedTextLength) {
+                                textLength = displayedTextLength;
+                            }
+                            else {
+                                textLength = measure(text);
+                                instruction[16] = textLength;
+                            }
+                            if (overflow || textLength <= pathLength) {
+                                // The original logical is create label image --> declutterGroup --> draw label image to context
+                                // The newest logical is  create label info and create image instruction --> declutterGroup --> create label image --> draw label image to context
+                                let labelInstructions = [];
+                                let labelIndex = 0;
 
-                            if (currentResolution < 1) {
-                                var distance = 220 * ratio;
-                                var tmpLength = pathLength - textLength;
-                                var centerPoint = tmpLength / 2;
-                                var leftPoint = centerPoint;
-                                var rightPoint = centerPoint;
-                                var pointArray = [];
-                                pointArray.push(centerPoint);
+                                if (currentResolution < 1) {
+                                    var distance = 220 * ratio;
+                                    var tmpLength = pathLength - textLength;
+                                    var centerPoint = tmpLength / 2;
+                                    var leftPoint = centerPoint;
+                                    var rightPoint = centerPoint;
+                                    var pointArray = [];
+                                    pointArray.push(centerPoint);
 
-                                while (leftPoint > ((textLength / 2) + distance)) {
-                                    leftPoint = leftPoint - distance;
-                                    pointArray.push(leftPoint);
+                                    while (leftPoint > ((textLength / 2) + distance)) {
+                                        leftPoint = leftPoint - distance;
+                                        pointArray.push(leftPoint);
+                                    }
+                                    while (rightPoint < ((pathLength - textLength / 2) - distance)) {
+                                        rightPoint = rightPoint + distance;
+                                        pointArray.push(rightPoint);
+                                    }
+
+                                    for (var len = 0; len < pointArray.length; len++) {
+                                        let tempDeclutterGroup;
+                                        if (declutterGroup) {
+                                            tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
+                                        }
+                                        var startM = pointArray[len];
+                                        let parts = drawTextOnPath(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
+                                        if (parts) {
+                                            let c, cc, chars, label, part;
+                                            if (strokeKey) {
+                                                for (c = 0, cc = parts.length; c < cc; ++c) {
+                                                    part = parts[c]; // x, y, anchorX, rotation, chunk
+                                                    chars = /** @type {string} */ (part[4]);
+
+                                                    let labelInfo = undefined;
+                                                    if (tempDeclutterGroup) {
+                                                        labelInfo = this.getImageInfo(chars, textKey, "", strokeKey);
+                                                        labelInstructions[labelIndex] = {
+                                                            chars: chars,
+                                                            textKey: textKey,
+                                                            fillKey: fillKey,
+                                                            strokeKey: ""
+                                                        }
+                                                        labelIndex += 1;
+                                                    }
+                                                    else {
+                                                        labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
+                                                    }
+
+                                                    anchorX = /** @type {number} */ (part[2]) + strokeWidth;
+                                                    anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
+                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], defaultPadding, null, null);
+                                                }
+                                            }
+
+                                            if (fillKey) {
+                                                for (c = 0, cc = parts.length; c < cc; ++c) {
+                                                    part = parts[c];
+                                                    chars = /** @type {string} */ (part[4]);
+                                                    let labelInfo = undefined;
+                                                    if (tempDeclutterGroup) {
+                                                        labelInfo = this.getImageInfo(chars, textKey, fillKey, "");
+                                                        labelInstructions[labelIndex] = {
+                                                            chars: chars,
+                                                            textKey: textKey,
+                                                            fillKey: fillKey,
+                                                            strokeKey: ""
+                                                        }
+                                                        labelIndex += 1;
+                                                    }
+                                                    else {
+                                                        labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, "");
+                                                    }
+                                                    anchorX = /** @type {number} */ (part[2]);
+                                                    anchorY = baseline * labelInfo["height"] - offsetY;
+                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], defaultPadding, null, null);
+                                                }
+                                            }
+                                            declutterGroups.push(tempDeclutterGroup);
+                                        }
+                                    }
                                 }
-                                while (rightPoint < ((pathLength - textLength / 2) - distance)) {
-                                    rightPoint = rightPoint + distance;
-                                    pointArray.push(rightPoint);
-                                }
-
-                                for (var len = 0; len < pointArray.length; len++) {
+                                else {
                                     let tempDeclutterGroup;
                                     if (declutterGroup) {
                                         tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
                                     }
-                                    var startM = pointArray[len];
+                                    let textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
+                                    let startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
                                     let parts = drawTextOnPath(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
                                     if (parts) {
                                         let c, cc, chars, label, part;
@@ -255,6 +328,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                                                 chars = /** @type {string} */ (part[4]);
 
                                                 let labelInfo = undefined;
+
                                                 if (tempDeclutterGroup) {
                                                     labelInfo = this.getImageInfo(chars, textKey, "", strokeKey);
                                                     labelInstructions[labelIndex] = {
@@ -264,13 +338,14 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                                                         strokeKey: ""
                                                     }
                                                     labelIndex += 1;
+
                                                 }
                                                 else {
                                                     labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
                                                 }
-
                                                 anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                                                 anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
+
                                                 this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], defaultPadding, null, null);
                                             }
                                         }
@@ -301,79 +376,19 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                                         declutterGroups.push(tempDeclutterGroup);
                                     }
                                 }
+
+                                for (let d = 0; d < declutterGroups.length; d++) {
+                                    let targetDeclutterGroup = declutterGroups[d];
+                                    if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
+                                        let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
+                                        // if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
+                                        this.renderDeclutterChar_(targetDeclutterGroup, feature);
+                                        // }
+                                    }
+                                }
                             }
                             else {
-                                let tempDeclutterGroup;
-                                if (declutterGroup) {
-                                    tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
-                                }
-                                let textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
-                                let startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
-                                let parts = drawTextOnPath(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
-                                if (parts) {
-                                    let c, cc, chars, label, part;
-                                    if (strokeKey) {
-                                        for (c = 0, cc = parts.length; c < cc; ++c) {
-                                            part = parts[c]; // x, y, anchorX, rotation, chunk
-                                            chars = /** @type {string} */ (part[4]);
-
-                                            let labelInfo = undefined;
-
-                                            if (tempDeclutterGroup) {
-                                                labelInfo = this.getImageInfo(chars, textKey, "", strokeKey);
-                                                labelInstructions[labelIndex] = {
-                                                    chars: chars,
-                                                    textKey: textKey,
-                                                    fillKey: fillKey,
-                                                    strokeKey: ""
-                                                }
-                                                labelIndex += 1;
-
-                                            }
-                                            else {
-                                                labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
-                                            }
-                                            anchorX = /** @type {number} */ (part[2]) + strokeWidth;
-                                            anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-
-                                            this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], defaultPadding, null, null);
-                                        }
-                                    }
-
-                                    if (fillKey) {
-                                        for (c = 0, cc = parts.length; c < cc; ++c) {
-                                            part = parts[c];
-                                            chars = /** @type {string} */ (part[4]);
-                                            let labelInfo = undefined;
-                                            if (tempDeclutterGroup) {
-                                                labelInfo = this.getImageInfo(chars, textKey, fillKey, "");
-                                                labelInstructions[labelIndex] = {
-                                                    chars: chars,
-                                                    textKey: textKey,
-                                                    fillKey: fillKey,
-                                                    strokeKey: ""
-                                                }
-                                                labelIndex += 1;
-                                            }
-                                            else {
-                                                labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, "");
-                                            }
-                                            anchorX = /** @type {number} */ (part[2]);
-                                            anchorY = baseline * labelInfo["height"] - offsetY;
-                                            this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], defaultPadding, null, null);
-                                        }
-                                    }
-                                    declutterGroups.push(tempDeclutterGroup);
-                                }
-                            }
-                        }
-                        for (let d = 0; d < declutterGroups.length; d++) {
-                            let targetDeclutterGroup = declutterGroups[d];
-                            if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
-                                let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
-                                // if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
-                                this.renderDeclutterChar_(targetDeclutterGroup, feature);
-                                // }
+                                instruction[15] = true;
                             }
                         }
                     }
@@ -779,7 +794,6 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                             let labelInfo = declutterData[3];
                             let labelImage = this.getImage(labelInfo["text"], labelInfo["textKey"], labelInfo["fillKey"], labelInfo["strokeKey"]);
                             declutterData[3] = labelImage;
-
                             drawImage.apply(undefined, declutterData);
                         }
                     }

@@ -607,10 +607,10 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 delete context["quickZoom"]
                 if (animatingOrInteracting) {
                     if (context["currentResolution"] !== undefined && context["currentResolution"] !== frameState.viewState.resolution) {
-                        context["quickZoom"] = true;
+                        // context["quickZoom"] = true;
                     }
-                    context["currentResolution"] = frameState.viewState.resolution
                 }
+                context["currentResolution"] = frameState.viewState.resolution
 
                 replayDeclutter(declutterReplays, context, rotation, snapToPixel);
             }
