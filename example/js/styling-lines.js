@@ -8,42 +8,82 @@ WebFont.load({
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
 
-const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
-    {
-        apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'      // please go to https://cloud.thinkgeo.com to create
-    });
-
-var pointLayer = new ol.layer.Vector({
-    source: new ol.source.Vector({
-        url: '../data/Frisco-road.json',
-        format: new ol.format.GeoJSON()
+//base map style 
+const baseMapStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: '#f3b600'
     }),
-    style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255, 255, 255, 0.6)',
+        width: 2
+    }),
+    text: new ol.style.Text({
+        font: '16px Calibri,sans-serif',
         fill: new ol.style.Fill({
-            color: 'rgba(255,255,255,0.2)'
+            color: '#990100'
         }),
         stroke: new ol.style.Stroke({
-            color: '#ffcc33',
+            color: '#fff',
+            width: 3
+        }),
+    })
+})
+
+//river style
+const riverStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: '#4e81a5'
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#4e81a5',
+        width: 2
+    }),
+    text: new ol.style.Text({
+        font: '14px Calibri,sans-serif',
+        fill: new ol.style.Fill({
+            color: '#f00'
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(255, 255, 255, 0.5)',
             width: 2
         }),
-        image: new ol.style.Circle({
-            radius: 4,
-            fill: new ol.style.Fill({
-                color: '#ffcc33'
-            })
-        })
     })
+})
+
+let baseMapLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/europe.json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: function (feature) {
+        baseMapStyle.getText().setText(feature.get('NAME'));
+        return baseMapStyle;
+    }
 });
 
-
+let riverLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/river.json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: function (feature) {
+        riverStyle.getText().setText(feature.get('name'));
+        return riverStyle;
+    }
+});
 
 let map = new ol.Map({
-    layers: [worldstreets, pointLayer],
+    layers: [baseMapLayer, riverLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 33.16423]),
-        zoom: 12,
+        center: ol.proj.fromLonLat([18.79620, 50.55423]),
+        zoom: 7,
     }),
 });
+
+ 
+
+
+
 
 

@@ -7,43 +7,108 @@ WebFont.load({
 });
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
-
-const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
-    {
-        apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'      // please go to https://cloud.thinkgeo.com to create
-    });
-
-var pointLayer = new ol.layer.Vector({
-    source: new ol.source.Vector({
-        url: '../data/Frisco-zoning.json',
-        format: new ol.format.GeoJSON()
+ 
+//base map style 
+const baseMapStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgb(103, 183, 220)'
     }),
-    style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255, 255, 255, 0.6)',
+        width: 2
+    }),
+    text: new ol.style.Text({
+        font: '16px Calibri,sans-serif',
         fill: new ol.style.Fill({
-            color: 'rgba(238,153,34,0.402)'
+            color: '#f4755d'
         }),
         stroke: new ol.style.Stroke({
-            color: '#48D1CC',
-            width: 2
+            color: '#fff',
+            width: 3
         }),
-        image: new ol.style.Circle({
-            radius: 4,
-            fill: new ol.style.Fill({
-                color: '#48D1CC'
-            })
-        })
     })
+})
+
+//highlight style
+const highlightStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: '#f4755d'
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#627ce3',
+        width: 2
+    }),
+    text: new ol.style.Text({
+        font: '16px Calibri,sans-serif',
+        fill: new ol.style.Fill({
+            color: 'rgb(103, 183, 220)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+        }),
+    })
+})
+
+let baseMapLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/countries.json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: function (feature) {
+        baseMapStyle.getText().setText(feature.get('name'));
+        return baseMapStyle;
+    }
 });
 
-
-
 let map = new ol.Map({
-    layers: [worldstreets, pointLayer],
+    layers: [baseMapLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 33.15423]),
-        zoom: 12,
+        zoom: 2,
     }),
 });
+
+let featureOverlay = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    map: map,
+    style: function (feature) {
+        highlightStyle.getText().setText(feature.get('name'));
+        return highlightStyle;
+    }
+})
+
+let highlight;
+
+const displayFeatureInfo = function (pixel) {
+    let feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+        return feature;
+    });
+
+    if (feature !== highlight) {
+        if (highlight) {
+            featureOverlay.getSource().removeFeature(highlight);
+        }
+        if (feature) {
+            featureOverlay.getSource().addFeature(feature);
+        }
+        highlight = feature;
+    }
+}
+
+map.on('pointermove', function (evt) {
+    if (evt.dragging) {
+        return;
+    }
+    let pixel = map.getEventPixel(evt.originalEvent);
+    displayFeatureInfo(pixel);
+});
+
+map.on('click', function (evt) {
+    displayFeatureInfo(evt.pixel);
+});
+
+
 
 

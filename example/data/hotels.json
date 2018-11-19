@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "hotels",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } },
+"features": [
+{ "type": "Feature", "properties": { "NAME": "Holiday Inn", "ADDRESS": "3400 Parkwood Blvd", "ROOMS": 121 }, "geometry": { "type": "Point", "coordinates": [ -10777541.426251012831926, 3909686.870596440974623 ] } },
+{ "type": "Feature", "properties": { "NAME": "Hilton Garden Inn", "ADDRESS": "7550 Gaylord Pkwy", "ROOMS": 102 }, "geometry": { "type": "Point", "coordinates": [ -10777861.033355308696628, 3908868.868046201765537 ] } },
+{ "type": "Feature", "properties": { "NAME": "Sheraton", "ADDRESS": "5444 State Highway 121", "ROOMS": 168 }, "geometry": { "type": "Point", "coordinates": [ -10780293.463213533163071, 3906931.123171238228679 ] } },
+{ "type": "Feature", "properties": { "NAME": "Comfort Inn and Suites", "ADDRESS": "4220 Preston Rd", "ROOMS": 61 }, "geometry": { "type": "Point", "coordinates": [ -10776227.478681650012732, 3910471.644798124209046 ] } },
+{ "type": "Feature", "properties": { "NAME": "Embassy Suites & Conference Center", "ADDRESS": "7600 John Q. Hammons Dr", "ROOMS": 330 }, "geometry": { "type": "Point", "coordinates": [ -10777729.905757339671254, 3908552.03748497646302 ] } },
+{ "type": "Feature", "properties": { "NAME": "Homewood Suites", "ADDRESS": "3240 Parkwood Boulevard", "ROOMS": 117 }, "geometry": { "type": "Point", "coordinates": [ -10777436.038351383060217, 3909448.241397516336292 ] } },
+{ "type": "Feature", "properties": { "NAME": "Hampton Inn & Suites", "ADDRESS": "3199 Parkwood Blvd", "ROOMS": 105 }, "geometry": { "type": "Point", "coordinates": [ -10777680.340368119999766, 3909280.856687052175403 ] } },
+{ "type": "Feature", "properties": { "NAME": "Home 2 Suites", "ADDRESS": "2000 Parkwood Blvd", "ROOMS": 122 }, "geometry": { "type": "Point", "coordinates": [ -10777440.281492434442043, 3908072.583519847597927 ] } },
+{ "type": "Feature", "properties": { "NAME": "Aloft Frisco", "ADDRESS": "3202 Parkwood Dr", "ROOMS": 136 }, "geometry": { "type": "Point", "coordinates": [ -10777444.342694297432899, 3909318.109506818000227 ] } },
+{ "type": "Feature", "properties": { "NAME": "Westin", "ADDRESS": "1549 Legacy Dr", "ROOMS": 301 }, "geometry": { "type": "Point", "coordinates": [ -10780339.72832659445703, 3907479.226699104532599 ] } },
+{ "type": "Feature", "properties": { "NAME": "Hyatt House", "ADDRESS": "2875 Parkwood Blvd", "ROOMS": 132 }, "geometry": { "type": "Point", "coordinates": [ -10777622.28726071678102, 3908848.358258790336549 ] } },
+{ "type": "Feature", "properties": { "NAME": "Omni Hotel", "ADDRESS": "11 Cowboys Way", "ROOMS": 301 }, "geometry": { "type": "Point", "coordinates": [ -10778799.338398022577167, 3909858.74393821042031 ] } },
+{ "type": "Feature", "properties": { "NAME": "Drury Inn", "ADDRESS": "2880 Dallas Pkwy", "ROOMS": 176 }, "geometry": { "type": "Point", "coordinates": [ -10778152.840631280094385, 3908760.012845300137997 ] } },
+{ "type": "Feature", "properties": { "NAME": "Hotel Indigo", "ADDRESS": "2985 Avenue of the Stars", "ROOMS": 110 }, "geometry": { "type": "Point", "coordinates": [ -10777826.086470302194357, 3908962.539279647637159 ] } }
+]
+}
