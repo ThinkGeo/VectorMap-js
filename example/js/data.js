@@ -32,8 +32,8 @@ const menuData = [{
         jsPath: './js/heatmap-KML.js'
     }, {
         title: 'Heatmap JSON',
-        htmlPath: './html/heatmap-json,js.html',
-        jsPath: './js/heatmap-json,js.js'
+        htmlPath: './html/heatmap-json.html',
+        jsPath: './js/heatmap-json.js'
     }, {
         title: 'Contour Line',
         htmlPath: './html/contour-line.html',

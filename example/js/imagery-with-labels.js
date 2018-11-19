@@ -5,20 +5,16 @@ WebFont.load({
     }
 });
 
- 
-
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
     apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~', // please go to https://cloud.thinkgeo.com to create
     visible:true
 });
-
 
 let imageryLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'
     }),
 });
-
 
 let map = new ol.Map({
     layers: [imageryLayer, imageryLabeLayer],
