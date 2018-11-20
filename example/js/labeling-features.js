@@ -22,6 +22,7 @@ const blockMapStyle = new ol.style.Style({
         fill: new ol.style.Fill({
             color: '#525255'
         }),
+        placement: 'line',
         stroke: new ol.style.Stroke({
             color: '#fff',
             width: 3

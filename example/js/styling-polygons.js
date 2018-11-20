@@ -65,7 +65,7 @@ let map = new ol.Map({
     layers: [baseMapLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 33.15423]),
+        center: ol.proj.fromLonLat([132.570481, -4.927630]),
         zoom: 2,
     }),
 });

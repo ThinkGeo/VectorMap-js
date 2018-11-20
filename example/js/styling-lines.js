@@ -43,9 +43,10 @@ const riverStyle = new ol.style.Style({
         fill: new ol.style.Fill({
             color: '#f00'
         }),
+        placement: 'line',
         stroke: new ol.style.Stroke({
-            color: 'rgba(255, 255, 255, 0.5)',
-            width: 2
+            color: '#fff',
+            width: 3
         }),
     })
 })
