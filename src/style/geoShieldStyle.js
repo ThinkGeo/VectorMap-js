@@ -528,7 +528,7 @@ class GeoShieldStyle extends GeoStyle {
     setStarIcon() {
         let fill = undefined;
         let stroke = undefined;
-        let radius = this.iconSize * 0.5;
+        let radius = this.iconSize * 0.5 * window.devicePixelRatio;
 
         if (this.iconColor) {
             fill = new Fill(({ color: this.convertSymbolColor }));
