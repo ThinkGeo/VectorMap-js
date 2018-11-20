@@ -6,6 +6,7 @@ import ViewHint from 'ol/ViewHint';
 import TileState from 'ol/TileState';
 import { equivalent as equivalentProjection } from 'ol/proj';
 import { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
+import RenderEventType from 'ol/render/EventType';
 import { createCanvasContext2D } from 'ol/dom';
 import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
 import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
@@ -619,7 +620,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
               /** @type {number} */(offsetX), /** @type {number} */(offsetY));
             }
         }
-        super.postCompose(context, frameState, layerState);
+        this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, undefined);
     }
 
 

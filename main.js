@@ -15,8 +15,8 @@ import { FALSE } from 'ol/functions';
 
 var view = new View({
   // center: [-10775718.490585351, 3868389.0226015863],
-  center: [260965.34981156138, 6250626.159234417],
-  zoom: 14,
+  center: [260637.765211225, 6249780.338744789],
+  zoom: 19,
   // maxZoom: 19,
   maxResolution: 40075016.68557849 / 512
 });
@@ -69,7 +69,7 @@ var vectorTileLayer = new VectorTileLayer({
   declutter: true
 })
 var map = new Map({
-  layers: [geoVectorTileLayer],
+  layers: [geoVectorTileLayer,tilegrid],
   target: 'map',
   view: view
 });
