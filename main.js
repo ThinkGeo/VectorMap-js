@@ -16,7 +16,7 @@ import { FALSE } from 'ol/functions';
 var view = new View({
   // center: [-10775718.490585351, 3868389.0226015863],
   center: [260637.765211225, 6249780.338744789],
-  zoom: 19,
+  zoom: 14,
   // maxZoom: 19,
   maxResolution: 40075016.68557849 / 512
 });
@@ -56,20 +56,18 @@ var style = new Style({
 
 
 var vectorTileLayer = new VectorTileLayer({
+  updateWhileAnimating: true,
+  updateWhileInteracting: true,
   source: new VectorTileSource({
     format: new MVT({
       layers: ["road_name"]
     }),
     url: "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~"
   }),
-  style: function (feature) {
-    style.getText().setText(feature.get('name'));
-    return style;
-  },
   declutter: true
 })
 var map = new Map({
-  layers: [geoVectorTileLayer,tilegrid],
+  layers: [geoVectorTileLayer],
   target: 'map',
   view: view
 });
