@@ -64,8 +64,8 @@ const menuData = [{
         jsPath: './js/hexagon.js'
     }, {
         title: 'Average Round Trip Commute Time',
-        htmlPath: './html/LineLoop.html',
-        jsPath: './js/LineLoop.js'
+        htmlPath: './html/trip-commute-time.html',
+        jsPath: './js/trip-commute-time.js'
     }]
 }, {
     dataTarget: 'styling',
