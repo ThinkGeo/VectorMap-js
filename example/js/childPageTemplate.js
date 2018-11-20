@@ -8,9 +8,15 @@ const childPageTemplate = ` <div id="child-page-title">
       <li class="nav-item">
         <a class="nav-link "  data-toggle="tab" href="#child-page-html">Html</a>
     </li>
-      <li class="nav-item">
+      <li class="nav-item mr-auto">
         <a class="nav-link "  data-toggle="tab" href="#child-page-js">JavaScript</a>
     </li>
+    <li class="nav-item">
+      <a  class="nav-link" href="https://codepen.io" target="_blank">
+        <img src="./images/edit-icon.png">
+        Edit</a>
+    </li>
+ 
  
 </ul>
 <div class="tab-content">

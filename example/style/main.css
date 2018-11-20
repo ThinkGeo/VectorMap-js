@@ -25,7 +25,7 @@ body {
 }
 
 .bg-dark {
-    background: #2d3c4d !important;
+    background: #2d3747 !important;
 }
 
 .navbar-brand {
@@ -49,6 +49,22 @@ body {
     font-size: 1.2rem;
 }
 
+.navbar-nav {
+    flex-direction: row;
+    margin-right: 0.6rem
+}
+
+.navbar-nav li {
+    margin-right: 1.4rem;
+}
+
+.navbar-nav li a {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+
+
 /* left content */
 .sidebar {
     position: fixed;
@@ -62,7 +78,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
+    background-color: #425067;
     border-right: 1px solid #eee;
 }
 
@@ -73,16 +89,18 @@ body {
 /*Sidebar search*/
 
 .container-fluid .form-inline {
-    margin-top: 10px;
-    position: relative;
+    position: absolute;
+    bottom: 1.3em;
+    width: 100%;
+    padding: 0 0.75rem;
 }
 
 #sidebar-search {
-    width: 90% !important;
     border-radius: 0;
     font-size: 1.5rem;
-    margin-left: 5%;
     height: 30px;
+    width: 100%;
+    margin: 0 !important;
 }
 
 .sidebar hr {
@@ -95,7 +113,7 @@ body {
 
 .container-fluid form i {
     position: absolute;
-    right: 10%;
+    right: 6%;
     top: 9px;
     color: rgb(73, 80, 87);
     font-size: 1.2rem
@@ -104,7 +122,7 @@ body {
 /* Sidebar navigation */
 
 .nav-sidebar a {
-    color: #2d3c4d;
+    color: #f5f5f5;
 }
 
 #menu-bar>li>a {
@@ -116,7 +134,7 @@ body {
 }
 
 .nav-sidebar li {
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #404b62;
     width: 100%;
     padding: .75rem 1.25rem;
     margin-bottom: 0;
@@ -134,7 +152,7 @@ body {
 .sub-menu .active,
 .sub-menu .active:hover,
 .sub-menu .active:focus {
-    background-color: #E4E2E2;
+    background-color: #48bb8f;
 }
 
 .nav>li>a:hover {
@@ -142,10 +160,12 @@ body {
 }
 
 .sidebar>.nav>li:hover {
-    background-color: #eee;
+    background-color: #f5f5f5;
 }
 
-
+.sidebar>.nav>li:hover a {
+    color: #425067;
+}
 
 .arrow:before {
     font-family: FontAwesome;
@@ -178,7 +198,7 @@ body {
     height: 100%;
 }
 
-.tab-content{
+.tab-content {
     height: 91%;
 }
 
@@ -227,6 +247,15 @@ child pages
 #child-page-title {
     width: 100%;
     height: auto;
+}
+
+.nav-tabs .nav-link {
+    font-size: 1.6rem !important
+}
+
+.nav-link img{
+    width: 1.6rem;
+    height: 1.6rem;
 }
 
 #child-page-title h4 {

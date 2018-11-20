@@ -32,30 +32,34 @@
 
 <body>
     <nav class="navbar   bg-dark  fixed-top">
-        <a class="navbar-brand" href="#"> </a>
-        <span class="navbar-text">
+        <a class="navbar-brand" href="https://thinkgeo.com/"> </a>
+<span class="navbar-text mr-auto">
             <h4>Vector Map for JavaScript</h4>
             <h6>Ultimate collection of JavaScript mapping components for jQuery, Angular, React, and Vue.</h6>
         </span>
-        <ul>
-            <li>GitHub</li>
-            <li>Getting Started</li>
-            <li>Cloud Service</li>
-
+        <ul class="navbar-nav   ">
+            <li class="nav-item">
+                <a href="https://github.com/ThinkGeo/VectorMap-js">GitHub</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://cloud.thinkgeo.com to create">Getting Started</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://cloud.thinkgeo.com to create">Cloud Service</a>
+            </li>
         </ul>
     </nav>
     <div class="container-fluid">
         <div class="row justify-content-end">
             <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="menu-bar" class="nav nav-sidebar">
+                </ul>
                 <form class="form-inline mt-2 mt-md-0">
                     <input class="form-control mr-sm-2" id="sidebar-search" type="text" placeholder="search" aria-label="Search" />
-                    <hr />
                     <div id="search" aria-hidden="true">
                         <i class="fa fa-search"></i>
                     </div>
                 </form>
-                <ul id="menu-bar" class="nav nav-sidebar">
-                </ul>
             </div>
             <div class="col-sm-9  col-md-10   main" id="content"></div>
         </div>
