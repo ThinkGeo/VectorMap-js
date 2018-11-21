@@ -38,14 +38,15 @@ let map = new ol.Map({
     })
 });
 
-document.getElementById('btn-group').addEventListener('click', (e) => {
-    const nodeList = document.querySelectorAll('#btn-group button');
+document.getElementById('wrap').addEventListener('click', (e) => {
+    const nodeList = document.querySelectorAll('#wrap div');
     for (let node of nodeList) {
-        node.style.backgroundColor = '#ffffff';
+        node.style.borderColor = '#ffffff';
     }
-    if (e.target.type == 'button') {
-        e.target.style.backgroundColor = '#efefef';
+    if (e.target.nodeName == 'DIV') {
+        e.target.style.borderColor = '#FF5722';
         chnageLayer(e);
+
     }
 })
 
@@ -53,11 +54,11 @@ document.getElementById('btn-group').addEventListener('click', (e) => {
 const chnageLayer = function (e) {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
-        if (layers[i].get("layerName") == e.target.value) {
+        if (layers[i].get("layerName") == e.target.getAttribute("value")) {
+
             layers[i].setVisible(true);
         } else {
             layers[i].setVisible(false);
         }
     }
 }
-
