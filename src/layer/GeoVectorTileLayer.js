@@ -23,6 +23,7 @@ import GeoVectorTile from '../GeoVectorTile';
 import TreeNode from '../tree/treeNode';
 import Tree from '../tree/tree';
 import WorkerManager from "../worker/workerManager";
+import { createTileGridByXYZ } from "../geoTileGrid";
 
 class GeoVectorTileLayer extends VectorTileLayer {
     constructor(stylejson, opt_options) {
@@ -242,7 +243,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
         return format;
     }
     createVectorTileGrid() {
-        return createXYZ({ tileSize: 512, maxZoom: 22 });
+        return createTileGridByXYZ({ tileSize: 512, maxZoom: 22 })
     }
 
     getVariables(variablesJson) {

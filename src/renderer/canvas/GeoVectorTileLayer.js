@@ -161,6 +161,10 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                     oversampling = this.oversampling_;
                 }
+                var canvasSize = document.getElementById("canvasSize");
+                if (canvasSize) {
+                    canvasSize.innerHTML = width + "|" + height + "<br/>:tilePixelSize" + tilePixelSize + ",oversampling:" + oversampling + "<br/>tileRangeW:" + tileRange.getWidth() + ",tileRangeH" + tileRange.getHeight()
+                }
             }
 
             this.renderedTiles.length = 0;

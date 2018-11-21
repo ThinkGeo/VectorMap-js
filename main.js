@@ -6,11 +6,13 @@ import MVT from 'ol/format/MVT'
 import { GEOLOCATION } from 'ol/has';
 import { Fill, Style, Text } from 'ol/style.js';
 import { createXYZ } from 'ol/tilegrid';
+import { createTileGridByXYZ } from "./src/geoTileGrid";
 import TileDebug from 'ol/source/TileDebug'
 import Tile from 'ol/layer/Tile'
 import light from './thinkgeo-world-streets-light';
 import { fromLonLat } from 'ol/proj'
 import { FALSE } from 'ol/functions';
+import GeoTileGrid from "./src/geoTileGrid";
 
 
 var view = new View({
@@ -40,7 +42,7 @@ var geoVectorTileLayer = new GeoVectorTileLayer(light, {
 var tilegrid = new Tile({
   source: new TileDebug({
     projection: "EPSG:3857",
-    tileGrid: createXYZ({ tileSize: 512, maxZoom: 22 })
+    tileGrid: createTileGridByXYZ({ tileSize: 512, maxZoom: 22 })
   })
 })
 
@@ -67,9 +69,9 @@ var vectorTileLayer = new VectorTileLayer({
   declutter: true
 })
 var map = new Map({
-  layers: [geoVectorTileLayer],
+  layers: [geoVectorTileLayer,tilegrid],
   target: 'map',
-  view: view
+  view: view,
 });
 
 window["map"] = map;
