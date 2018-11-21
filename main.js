@@ -42,7 +42,7 @@ var geoVectorTileLayer = new GeoVectorTileLayer(light, {
 var tilegrid = new Tile({
   source: new TileDebug({
     projection: "EPSG:3857",
-    tileGrid: createTileGridByXYZ({ tileSize: 512, maxZoom: 22 })
+    tileGrid: createXYZ({ tileSize: 512, maxZoom: 22 })
   })
 })
 

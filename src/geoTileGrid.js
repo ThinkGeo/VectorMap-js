@@ -61,9 +61,6 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
     return resolutions;
 }
 
-
-
-
 class GeoTileGrid extends TileGrid {
     constructor(options) {
         super(options);
