@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
-const apiKey ='73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~';
+const apiKey ='v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
 

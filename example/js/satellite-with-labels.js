@@ -7,13 +7,13 @@ WebFont.load({
 const satelliteLabelStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json";
 
 let satelliteLabeLayer = new ol.mapsuite.VectorTileLayer(satelliteLabelStyle, {
-    apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~' // please go to https://cloud.thinkgeo.com to create
+    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~' // please go to https://cloud.thinkgeo.com to create
 });
 
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg"
-            + "?apiKey=73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~",
+            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
     }),
 });
 

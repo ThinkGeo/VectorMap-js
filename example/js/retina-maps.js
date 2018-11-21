@@ -10,7 +10,7 @@ WebFont.load({
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x2/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~",// please go to https://cloud.thinkgeo.com to create
+            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",// please go to https://cloud.thinkgeo.com to create
         tileSize: 512,
         tilePixelRatio: 2
     }),

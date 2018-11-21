@@ -20,7 +20,7 @@ WebFont.load({
 const styleJson = {
     light: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
-const apiKey = '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 
 let vectorLayer = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,

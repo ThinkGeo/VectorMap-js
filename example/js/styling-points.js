@@ -10,7 +10,7 @@ const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/li
 
 const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
     {
-        apiKey: '73u5e1NSIPmm9eDIqf6pjh0DoW2nyH2A4oJfDJW4bJE~'      // please go to https://cloud.thinkgeo.com to create
+        apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'      // please go to https://cloud.thinkgeo.com to create
     });
 
 let pointLayer = new ol.layer.Vector({

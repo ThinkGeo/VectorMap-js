@@ -96,68 +96,68 @@ const menuData = [{
     styleName: 'Vector Data',
     subitems: [{
         title: 'Vector Tile',
-        htmlPath: './katie/Demo/Click_PickObject.html',
-        jsPath: './katie/Demo/js/Click_PickObject.js'
+        htmlPath: './html/vector-tile.html',
+        jsPath: './js/vector-tile.js'
     }, {
         title: 'GeoJSON ',
-        htmlPath: './katie/Demo/Click_MoveObject.html',
-        jsPath: './katie/Demo/js/Click_MoveObject.js'
+        htmlPath: './html/geojson.html',
+        jsPath: './js/geojson.js'
     }, {
         title: 'KML ',
-        htmlPath: './katie/Demo/Click_ChangeColor.html',
-        jsPath: './katie/Demo/js/Click_ChangeColor.js'
+        htmlPath: './html/KML.html',
+        jsPath: './js/KML.js'
     }, {
         title: 'WFS ',
-        htmlPath: './katie/Demo/Click_ChangeColor.html',
-        jsPath: './katie/Demo/js/Click_ChangeColor.js'
+        htmlPath: './html/WFS.html',
+        jsPath: './js/WFS.js'
     }, {
         title: 'WKT ',
-        htmlPath: './katie/Demo/Click_ChangeColor.html',
-        jsPath: './katie/Demo/js/Click_ChangeColor.js'
+        htmlPath: './html/WKT.html',
+        jsPath: './js/WKT.js'
     }, {
         title: 'GML ',
-        htmlPath: './katie/Demo/Click_ChangeColor.html',
-        jsPath: './katie/Demo/js/Click_ChangeColor.js'
+        htmlPath: './html/GML.html',
+        jsPath: './js/GML.js'
     }, {
         title: 'GPX ',
-        htmlPath: './katie/Demo/Click_ChangeColor.html',
-        jsPath: './katie/Demo/js/Click_ChangeColor.js'
+        htmlPath: './html/GPX.html',
+        jsPath: './js/GPX.js'
     }]
 }, {
     dataTarget: 'thinkGeo-cloud',
     styleName: 'ThinkGeo Cloud',
     subitems: [{
         title: 'Elevation along Path ',
-        htmlPath: './judy/PixiJS/html/line1.html',
-        jsPath: './judy/PixiJS/js/line1.js'
+        htmlPath: './html/elevation.html',
+        jsPath: './js/elevation.js'
     }, {
         title: 'Reverse Geocoding',
-        htmlPath: './judy/PixiJS/html/line2.html',
-        jsPath: './judy/PixiJS/js/line2.js'
+        htmlPath: './html/reverce-geocoding.html',
+        jsPath: './js/reverce-geocoding.js'
     }, {
         title: 'Color Creation ',
-        htmlPath: './judy/PixiJS/html/line3.html',
-        jsPath: './judy/PixiJS/js/line3.js'
+        htmlPath: './html/color-creation.html',
+        jsPath: './js/color-creation.js'
     }]
 }, {
     dataTarget: 'JavaScript-frameworks',
     styleName: 'JavaScript frameworks',
     subitems: [{
         title: 'JQuery',
-        htmlPath: './judy/PixiJS/html/event1.html',
-        jsPath: './judy/PixiJS/js/event1.js'
+        htmlPath: './html/event1.html',
+        jsPath: './js/event1.js'
     }, {
         title: 'Angular JS',
-        htmlPath: './judy/PixiJS/html/event2.html',
-        jsPath: './judy/PixiJS/js/event2.js'
+        htmlPath: './html/event2.html',
+        jsPath: './js/event2.js'
     }, {
         title: 'React JS',
-        htmlPath: './judy/PixiJS/html/event3.html',
-        jsPath: './judy/PixiJS/js/event3.js'
+        htmlPath: './html/event3.html',
+        jsPath: './js/event3.js'
     }, {
         title: 'Vue.JS',
-        htmlPath: './judy/PixiJS/html/event4.html',
-        jsPath: './judy/PixiJS/js/event4.js'
+        htmlPath: './html/event4.html',
+        jsPath: './js/event4.js'
     }]
 },];
 export default menuData;
