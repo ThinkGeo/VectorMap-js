@@ -4112,4 +4112,3 @@ var light =
             }
         ]
     }
-export default light;

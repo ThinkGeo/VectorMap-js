@@ -31,5 +31,3 @@ var geosjonStyle =
         ]
     }]
 }
-
-export default geosjonStyle;

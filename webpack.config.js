@@ -1,10 +1,13 @@
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './main.js',
+  entry: './src/index.js',
   devtool: 'inline-source-map',
   output: {
-    filename: 'bundle.js'
+    filename: 'vectormap.js',
+    library: 'ol',
+    libraryTarget: 'umd',
+    libraryExport: 'default'
   },
   mode: 'development',
   module: {
