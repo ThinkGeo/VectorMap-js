@@ -29,7 +29,7 @@ body {
 }
 
 .navbar-brand {
-    background-image: url(../images/logo.png);
+    background-image: url(../image/logo.png);
     height: 72px;
     width: 72px;
     padding: 0;
@@ -51,19 +51,20 @@ body {
 
 .navbar-nav {
     flex-direction: row;
-    margin-right: 0.6rem
+    margin-right: 0.6rem;
+    color: #ffffff;
+    font-size: 1.5rem;
 }
 
 .navbar-nav li {
-    margin-right: 1.4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .navbar-nav li a {
     font-size: 1.5rem;
     color: #ffffff;
 }
-
-
 
 /* left content */
 .sidebar {
@@ -253,7 +254,7 @@ child pages
     font-size: 1.6rem !important
 }
 
-.nav-link img{
+.nav-link img {
     width: 1.6rem;
     height: 1.6rem;
 }

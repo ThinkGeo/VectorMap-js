@@ -132,8 +132,8 @@ const menuData = [{
         jsPath: './js/elevation.js'
     }, {
         title: 'Reverse Geocoding',
-        htmlPath: './html/reverce-geocoding.html',
-        jsPath: './js/reverce-geocoding.js'
+        htmlPath: './html/reverse-geocoding.html',
+        jsPath: './js/reverse-geocoding.js'
     }, {
         title: 'Color Creation ',
         htmlPath: './html/color-creation.html',

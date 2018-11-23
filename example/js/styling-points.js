@@ -23,7 +23,7 @@ let pointLayer = new ol.layer.Vector({
             anchor: [0, 0],
             anchorXUnits: 'fraction',
             anchorYUnits: 'pixels',
-            src: '../images/school.png'
+            src: '../image/school.png'
         })
     })
 });

@@ -34,7 +34,7 @@ const pointStyle = new ol.style.Style({
     image: new ol.style.Icon({
         anchor: [1, 1],
         offset: [0, 3],
-        src: '../images/hotel.png',
+        src: '../image/hotel.png',
     }),
     text: new ol.style.Text({
         font: '12px Calibri,sans-serif',

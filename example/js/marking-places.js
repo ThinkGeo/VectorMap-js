@@ -48,7 +48,7 @@ let iconStyle = new Style({
         anchor: [0, 0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: '../images/point.png'
+        src: '../image/point.png'
     })
 });
 

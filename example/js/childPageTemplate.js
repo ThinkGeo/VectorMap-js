@@ -13,7 +13,7 @@ const childPageTemplate = ` <div id="child-page-title">
     </li>
     <li class="nav-item">
       <a  class="nav-link" href="https://codepen.io" target="_blank">
-        <img src="./images/edit-icon.png">
+        <img src="./image/edit-icon.png">
         Edit</a>
     </li>
  

@@ -10,19 +10,7 @@ var intervalDistanceUnit = "Feet";
 
 window.app = {};
 const app = window.app;
-app.drawPointControl = function (opt_options) {
-  const options = opt_options || {};
-  const button = document.createElement('button');
-  button.className = 'point';
-  const this_ = this;
-  const element = document.createElement('div');
-  element.className = 'drawpoint ol-unselectable ol-control';
-  element.appendChild(button);
-  ol.control.Control.call(this, {
-    element: element,
-    target: options.target
-  });
-};
+ 
 
 app.drawLineControl = function (opt_options) {
   const options = opt_options || {};
@@ -51,7 +39,6 @@ app.drawPolygonControl = function (opt_options) {
     target: options.target
   });
 };
-ol.inherits(app.drawPointControl, ol.control.Control);
 ol.inherits(app.drawLineControl, ol.control.Control);
 ol.inherits(app.drawPolygonControl, ol.control.Control);
 
@@ -95,19 +82,19 @@ var styles = {
   'waypoint-selected': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../images/waypoint.png'
+      src: '../image/waypoint.png'
     })
   }),
   'start': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../images/start.png'
+      src: '../image/start.png'
     })
   }),
   'end': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../images/end.png'
+      src: '../image/end.png'
     })
   }),
   'route': new ol.style.Style({
@@ -129,20 +116,12 @@ var createVector = function () {
   });
 }
 
-if (document.body.offsetWidth < 767) {
-  zoom = 15
-} else {
-  zoom = 16
-}
-
 var map = new ol.Map({
   controls: ol.control.defaults({
     attributionOptions: {
       collapsible: false
     }
   }).extend([
-    new app.drawPointControl()
-  ]).extend([
     new app.drawLineControl()
   ]).extend([
     new app.drawPolygonControl()
@@ -151,8 +130,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([-121.64325200613075, 47.6966203898931]),
-    //extent: [],
-    zoom: zoom
+    zoom: 16
   })
 });
 
@@ -180,67 +158,8 @@ function disableZoom(e) {
     })
   }
 }
-
-var drawPointElevation = function (feature) {
-
-  var apiInstance = new GisServerApis.ElevationApi();
-  var array = feature.getGeometry().getCoordinates();
-    var lat = array[1];
-    var lon = array[0];
-  var opts = {
-    'srid': 3857,
-    'elevationUnit': "Feet"
-  };
-  var callback = function (error, data, response) {
-    if (error) {
-
-    } else {
-      var value = data.data.elevation;
-      var datas = [{
-        x: 1,
-        y: value
-      }]
-      var chartdata = {
-        originaldata: datas,
-        labels: [1],
-        datasets: [{
-          fill: false,
-          backgroundColor: 'rgb(255, 159, 64)',
-          borderColor: 'rgb(255, 159, 64)',
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(151,187,205,1)',
-          data: datas
-        }]
-      };
-      drawChart(chartdata);
-
-    }
-  };
-  apiInstance.getElevationOfPointV1(lat, lon, opts, callback);
-}
-
-$(".drawpoint").click(function () {
-  $("#side-bar-point").show();
-  $('#side-bar').hide();
-  $('#side-bar-p').hide();
-  clear();
-  drawChart(null);
-  map.removeInteraction(draw);
-  draw = new ol.interaction.Draw({
-    source: source,
-    type: 'Point'
-  })
-  map.addInteraction(draw);
-  draw.on('drawend', function (feature) {
-    var featurePoint = feature.feature;
-    featurePoint.set('type', 'waypoint-selected');
-    drawPointElevation(featurePoint);
-  })
-});
-
+ 
 var drawLineElevation = function (feature) {
-
   var apiInstance = new GisServerApis.ElevationApi();
   var line = feature.getGeometry();
   $("#IntervalDistance").html(parseInt(line.getLength() / $("#samples-number").val()) + " (feet)")
@@ -624,47 +543,33 @@ $(initChart(), drawChart());
   $('#IntervalDistanceLine').show(),
  
 $(function () {
-  $(".point").click(function () {
-    $(this).css({
-      "background": "url('../images/add_point_on.png')",
-      "background-size": "100% 100%"
-    });
-    $(".line").css({
-      "background": "url('../images/draw_line_off.png')",
-      "background-size": "100% 100%"
-    });
-    $(".Polygon").css({
-      "background": "url('../images/draw_polygon_off.png')",
-      "background-size": "100% 100%"
-    });
-    $('.error-tip').css('display', 'none');
-  });
+ 
   $(".line").click(function () {
     $(".point").css({
-      "background": "url('../images/add_point_off.png')",
+      "background": "url('../image/add_point_off.png')",
       "background-size": "100% 100%"
     });
     $(this).css({
-      "background": "url('../images/draw_line_on.png')",
+      "background": "url('../image/draw_line_on.png')",
       "background-size": "100% 100%"
     });
     $(".Polygon").css({
-      "background": "url('../images/draw_polygon_off.png')",
+      "background": "url('../image/draw_polygon_off.png')",
       "background-size": "100% 100%"
     });
     $('.error-tip').css('display', 'none');
   });
   $(".Polygon").click(function () {
     $(".point").css({
-      "background": "url('../images/add_point_off.png')",
+      "background": "url('../image/add_point_off.png')",
       "background-size": "100% 100%"
     });
     $(".line").css({
-      "background": "url('../images/draw_line_off.png')",
+      "background": "url('../image/draw_line_off.png')",
       "background-size": "100% 100%"
     });
     $(this).css({
-      "background": "url('../images/draw_polygon_on.png')",
+      "background": "url('../image/draw_polygon_on.png')",
       "background-size": "100% 100%"
     });
     $('.error-tip').css('display', 'none');
@@ -675,15 +580,15 @@ $(".buttonClear").click(function () {
   clear();
   drawChart(null);
   $(".point").css({
-    "background": "url('../images/add_point_off.png')",
+    "background": "url('../image/add_point_off.png')",
     "background-size": "100% 100%"
   });
   $(".line").css({
-    "background": "url('../images/draw_line_off.png')",
+    "background": "url('../image/draw_line_off.png')",
     "background-size": "100% 100%"
   });
   $(".Polygon").css({
-    "background": "url('../images/draw_polygon_off.png')",
+    "background": "url('../image/draw_polygon_off.png')",
     "background-size": "100% 100%"
   });
   $('.error-tip').css('display', 'none');
