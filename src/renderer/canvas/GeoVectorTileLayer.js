@@ -306,7 +306,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             replayState.renderedRenderOrder == renderOrder) {
             return;
         }
-
+        // console.log("createReplayGroup_" + tile.tileCoord.toString());
         const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
         const sourceTileGrid = source.getTileGrid();
         const tileGrid = source.getTileGridForProjection(projection);
@@ -326,6 +326,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), originalReplayGroup);
                 replayState.replayGroupCreated = true;
                 tile["replayCreated"] = true;
+                sourceTile["replayCreated"] = true;
             }
             else {
                 const sourceTileCoord = sourceTile.tileCoord;
@@ -385,23 +386,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                 };
 
-                const featuresAndInstructs = sourceTile.getFeatures();
-
-                let features = undefined;
-                let instructs = undefined;
-                if (featuresAndInstructs === undefined) {
-                    features = [];
-                    instructs = [];
-                }
-                else {
-                    features = featuresAndInstructs[0];
-                    instructs = featuresAndInstructs[1];
-                }
-
-                if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
-                    features.sort(renderOrder);
-                }
-
                 var workerManager = source.getWorkerManager();
                 if (workerManager) {
 
@@ -440,10 +424,13 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         coordinateToPixelTransform: frameState.coordinateToPixelTransform,
                         pixelRatio: frameState.pixelRatio
                     };
+
+
                     let createReplayGroupCallback = function (data, methodInfo) {
                         let replaysByZIndex = data["replays"];
                         let featuresInfo = data["features"];
                         let mainDrawingInstructs = data["mainDrawingInstructs"];
+                        // console.log("createReplayGroupCallback" + tile.tileCoord.toString());
 
                         let features = {};
                         for (let featureId in featuresInfo) {
@@ -488,14 +475,31 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         }
                         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                         tile["replayCreated"] = true;
+                        sourceTile["replayCreated"] = true;
                         tile.setState(TileState.LOADED);
 
                     }
                     replayState.replayGroupCreated = false;
+                    // console.log(sourceTileCoord.toString() + "|" + tile.tileCoord.toString());
                     workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", createReplayGroupMethodInfo, createReplayGroupCallback, undefined);
                 }
                 else {
-                    // 
+                    const featuresAndInstructs = sourceTile.getFeatures();
+
+                    let features = undefined;
+                    let instructs = undefined;
+                    if (featuresAndInstructs === undefined) {
+                        features = [];
+                        instructs = [];
+                    }
+                    else {
+                        features = featuresAndInstructs[0];
+                        instructs = featuresAndInstructs[1];
+                    }
+
+                    if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
+                        features.sort(renderOrder);
+                    }
                     for (let i = 0, ii = instructs.length; i < ii; ++i) {
                         const featureIndex = instructs[i][0];
                         const feature = features[featureIndex];
@@ -524,6 +528,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                     sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                     tile["replayCreated"] = true;
+                    sourceTile["replayCreated"] = true;
                 }
             }
         }

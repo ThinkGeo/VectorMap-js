@@ -712,17 +712,19 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     self.vectorTilesData[cacheKey] = homologousTilesInstructions;
 
     if (self.features === undefined) {
-        self.features = new LRUCache(16);
+        self.features = new LRUCache(64);
     }
     if (self.features.containsKey(cacheKey)) {
         self.features.replace(cacheKey, features);
     }
     else {
+        // TODO: the condition for clearing the cache is that the tile is released. 
         self.features.set(cacheKey, features);
         while (this.features.canExpireCache()) {
             const lastKey = self.features.peekLastKey();
             self.features.remove(lastKey);
             delete self.vectorTilesData[lastKey]
+            // console.log("remove" + lastKey);
         }
     }
 }

@@ -133,7 +133,7 @@ class VectorImageTile extends Tile {
                         this.sourceTileListenerKeys_.push(
                             listen(sourceTile, EventType.CHANGE, handleTileChange));
                     }
-                    if (sourceTile && (!useLoadedOnly || sourceTile.getState() == TileState.LOADED)) {
+                    if (sourceTile && (!useLoadedOnly || sourceTile.getState() == TileState.LOADED && sourceTile["replayCreated"])) {
                         sourceTile.consumers++;
                         this.tileKeys.push(sourceTileKey);
                     }

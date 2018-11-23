@@ -1,4 +1,5 @@
 let layer = new ol.mapsuite.VectorTileLayer(light, {
+    multithread: true
 });
 
 var geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
@@ -16,7 +17,7 @@ var tilegrid = new ol.layer.Tile({
 var view = new ol.View({
     // center: [-10775718.490585351, 3868389.0226015863],
     center: [260637.765211225, 6249780.338744789],
-    zoom: 6,
+    zoom: 4,
     // maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
