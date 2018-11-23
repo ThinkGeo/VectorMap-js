@@ -1,6 +1,5 @@
 import { ReplayGroupCustom } from "./webgl/replayGroupCustom";
 
-
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorTileLayer as { new(p: ol.layer.VectorTile): any; }) {
     constructor(layer: ol.layer.VectorTile) {
         super(layer);
@@ -237,7 +236,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             // (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
         }
         if (declutterReplays) {
-            this.declutterTree_.clear();
+            // this.declutterTree_.clear();
         }
         let tiles = this.renderedTiles;
         let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
@@ -379,7 +378,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             else {
                 var replayGroup = new ReplayGroupCustom(
                     0, sharedExtent, layer.getRenderBuffer(), this.declutterTree_);
-               
+                    
                 // let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
                 let squaredTolerance = (<any>ol).renderer.vector.getSquaredTolerance(resolution, pixelRatio);
                 let strategyTree = (<any>ol).ext.rbush(9);
@@ -553,7 +552,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     };
 
                     // reuse replayGroup of source Tile to reduce the memory.
-                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);                    
+                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);                             
                     source.getGeoFormat().workerManager.postMessage(sourceTile.tileCoord + (<any>ol).getUid(callabck), "createReplay", messageData, callabck, sourceTile.workerId);
                     replayState.renderedRevision = revision;
                     replayState.renderedTileLoaded = false;

@@ -28032,7 +28032,6 @@ function olInit() {
      * @return {number} My end.
      */
     ol.render.canvas.Replay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, end, stride, closed, skipFirst) {
-
         var myEnd = this.coordinates.length;
         var extent = this.getBufferedMaxExtent();
         if (skipFirst) {
@@ -30992,8 +30991,13 @@ function olInit() {
             var polygonReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.POLYGON);
             polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-            polygonReplay.drawPolygon(geometry, feature);
-        }
+            debugger
+            // polygonReplay.drawPolygon(geometry, feature);
+            // used in webgl calculate           
+            var ends = geometry.getEnds();
+            var flatCoordinates = geometry.getFlatCoordinates();
+            polygonReplay.appendFlatCoordinates(flatCoordinates, 0, ends, 2, true);            
+       }
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
@@ -67396,17 +67400,8 @@ function olInit() {
         var rotation = /** @type {number} */ (-this.rotation);
         var scale = /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
-        
-        var cos1, cos2, sin1, sin2;
-        if(this.previousAngle !== undefined){
-            cos1 = Math.cos(rotation + this.previousAngle);
-            sin1 = Math.sin(rotation + this.previousAngle);
-            sin2 = Math.sin(rotation + this.previousAngle);
-            cos2 = Math.cos(rotation + this.previousAngle);
-        }else{
-            cos1 = cos2 = Math.cos(rotation);
-            sin1 = sin2 = Math.sin(rotation);
-        }
+        var cos = Math.cos(rotation);
+        var sin = Math.sin(rotation);        
         var numIndices = this.indices.length;
         var numVertices = this.vertices.length;
         var i, n, offsetX, offsetY, x, y;
@@ -67431,8 +67426,8 @@ function olInit() {
             offsetY = -scale * (height - anchorY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
-            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;            
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;            
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67443,8 +67438,8 @@ function olInit() {
             offsetY = -scale * (height - anchorY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
-            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67455,8 +67450,8 @@ function olInit() {
             offsetY = scale * anchorY;
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
-            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67467,8 +67462,8 @@ function olInit() {
             offsetY = scale * anchorY;
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos1 - offsetY * sin1;
-            this.vertices[numVertices++] = offsetX * sin2 + offsetY * cos2;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -69122,28 +69117,41 @@ function olInit() {
         var minCoords = this.getMinCoords_(outerRing);     
         var minYCoords = this.getMinCoords_(outerRing);     
 
-        if(false && window.test){
-            console.log('flatCoordinates:');
+        if(window.test){
+            // console.log('flatCoordinates:');
+            var flatCoordinates = [-18027654.9536536, 2636840.02951925,-18027953.9073781, 2636618.53042918,-18027786.3120998, 2637031.99779214,-18027750.0752679, 2637411.01872729,-18027609.6576414, 2637607.9161804,-18027124.9902783, 2637534.07941713,-18027179.3454706, 2637095.98767865,-18027378.6478794, 2636938.47449871,-18027654.9536536, 2636840.02951925]
+            // var arr = [];
+            // for(var k = 0; k < flatCoordinates.length; k += 2){
+            //     arr.push(`(${flatCoordinates[k]}, ${flatCoordinates[k+1]})`);
+            // }
+            // console.log(JSON.stringify(arr));
+            
+            
+            
             var flatCoordinatesArray = [];
-            for(var i = 0; i < flatCoordinates.length; i+=2){
+            for(var i = 0; i < flatCoordinates.length; i+=2){         
                 flatCoordinatesArray.push(ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326'));
             }
             console.log(JSON.stringify(flatCoordinatesArray));
 
             window.test = false
-            console.log('-------');
-            for(var i = 0; i < holeFlatCoordinates.length; i++){
-                var holeFlatCoordinatesArray = [];
-                var holeFlatCoordinate = holeFlatCoordinates[i];
-                for(var j = 0; j < holeFlatCoordinate.length; j+=2){
-                    holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
-                }
-                console.log(JSON.stringify(holeFlatCoordinatesArray));
-            } 
+            // console.log('-------');
+            // for(var i = 0; i < holeFlatCoordinates.length; i++){
+            //     var holeFlatCoordinatesArray = [];
+            //     var holeFlatCoordinate = holeFlatCoordinates[i];
+            //     for(var j = 0; j < holeFlatCoordinate.length; j+=2){
+            //         var tmp = ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326');
+            //         if(tmp[0] == 14.15039062499998 && tmp[1] == -12.651058133703486){
+            //             // debugger
+            //         }
+            //         holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
+            //     }
+            //     console.log(JSON.stringify(holeFlatCoordinatesArray));
+            // } 
         }
 
         // Eliminate holes, if there are any
-        if(false && holeFlatCoordinates.length) {
+        if(holeFlatCoordinates.length) {
             var i, ii;
             var holeLists = [];
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
@@ -69920,13 +69928,14 @@ function olInit() {
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
         if (ends.length > 0) {
-            if((ends[0] == 28 && ends[1] == 272)){
-                window.test = true;
-                // return;
-                // debugger
-            }
-
+            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+            // ALASKA  && flatCoordinates[0][0] == 20.59936523437498 && flatCoordinates[0][1] == 5.845545472173114
+            if((flatCoordinates[0] == -18215249.58847064 && flatCoordinates[1] == 10034653.07327794)){
+                // debugger
+                
+                // window.test = true;
+            }
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
             if (outerRing.length) {
@@ -69956,12 +69965,12 @@ function olInit() {
                 // console.log(this.lineStringReplay.vertices);
                 // FIXME Eric
                 var holesTmp = [];
-                for(var i = 0; i < holes.length; i++){
-                    if(holes[i].length >= 8){
-                        holesTmp.push(holes[i]);
-                    }
-                }
-                this.drawCoordinates_(outerRing, holesTmp, stride);
+                // for(var i = 0; i < holes.length; i++){
+                //     if(holes[i].length >= 8){
+                        // holesTmp.push(holes[i]);
+                    // }
+                // }
+                this.drawCoordinates_(outerRing, holes, stride);
             }
         }
     };
@@ -70203,42 +70212,77 @@ function olInit() {
         if(this.lineStringReplay){
             if (strokeStyle) {
                 this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-            } else {
-                if(!window.count){
-                    window.colors = [
-                        [0,0,0,1],
-                        [100,0,0,1],
-                        [0,100,0,1],
-                        [0,0,100,1],
-                        [200,0,0,1],
-                        [0,200,0,1],
-                        [0,0,200,1],
-                        [100,100,0,1],
-                        [0,100,100,1],
-                        [100,0,100,1],
-                        [100,100,100,1],
-                        [200,200,0,1],
-                        [0,200,200,1],
-                        [200,0,200,1],
-                        [200,200,200,1]
-                    ]
-                    window.count = 0;
-                }
-                var test = window.colors[(window.count++) % window.colors.length];
-                if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
-                    // debugger
-                }
-                
-                var nullStrokeStyle = new ol.style.Stroke({
-                    color: test,
-                    lineWidth: 1
-                });  
-                
-                this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
             }
         }
     };
 
+    /**
+     * FIXME: Used for webgl calculation
+     */
+
+    ol.render.webgl.PolygonReplay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, ends, stride, closed) {
+        // var coordinates = [];
+        var ends_ = [];
+        var extent = this.maxExtent;
+        var skipFirst = this.state_.strokeStyle;
+
+        if(!this.webglDrawType){
+            this.webglDrawType = 'polygonReplay';
+            this.webglEnds = [];
+            this.webglFlatCoordinates = [];
+            this.featureIndices = [];
+        }
+        
+        for(var i = 0; i < ends.length; i++){
+            var end = ends[i];
+            var myEnd = this.webglFlatCoordinates.length;
+            
+            if (skipFirst) {
+                offset += stride;
+            }
+            var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+            var nextCoord = [NaN, NaN];
+            var skipped = true;
+    
+            var j, lastRel, nextRel;
+            for (j = offset + stride; j < end; j += stride) {
+                nextCoord[0] = flatCoordinates[j];
+                nextCoord[1] = flatCoordinates[j + 1];
+                nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
+                if (nextRel !== lastRel) {
+                    if (skipped) {
+                        this.webglFlatCoordinates[myEnd++] = lastCoord[0];
+                        this.webglFlatCoordinates[myEnd++] = lastCoord[1];
+                    }
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
+                    skipped = false;
+                } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
+                    skipped = false;
+                } else {
+                    skipped = true;
+                }
+                lastCoord[0] = nextCoord[0];
+                lastCoord[1] = nextCoord[1];
+                lastRel = nextRel;
+            }
+    
+            // Last coordinate equals first or only one point to append:
+            if ((closed && skipped) || j === offset + stride) {
+                this.webglFlatCoordinates[myEnd++] = lastCoord[0];
+                this.webglFlatCoordinates[myEnd++] = lastCoord[1];
+            }
+            offset = end;
+            // ends_.push(myEnd);
+            this.webglEnds.push(myEnd);
+        }
+
+        this.featureIndices.push(this.webglEnds.length);
+        
+        // this.webglFlatCoordinates.push(coordinates);
+    };
     goog.provide('ol.style.Atlas');
 
     goog.require('ol.dom');
@@ -70822,6 +70866,7 @@ function olInit() {
                 default:
             }
             
+            var resolution = map.frameState_.currentResolution;
             var type  = geometry.getType();
             var lines = this.text_.split('\n');            
             
@@ -70830,8 +70875,9 @@ function olInit() {
             var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
-            if(!this.text_.includes('Tom Landry Freeway')){
-                return
+            if(!this.text_.includes('North Beckley Avenue')){
+            // if(!this.text_.includes('Tom Landry Freeway')){
+                // return
             }
 
             var labelWidth = 0;
@@ -70842,21 +70888,38 @@ function olInit() {
                 labelHeight += textSize[1];
             }
 
+            if(this.label){
+                labelWidth = this.label.width;
+                labelHeight = this.label.height;
+            }
+
             var anchorX = Math.round(labelWidth * this.textAlign_ - this.offsetX_);
             var anchorY = Math.round(labelHeight * this.textBaseline_ - this.offsetY_);
             var flatCoordinatesToPixel = map.getPixelFromCoordinate(flatCoordinates);
 
-            if(false && type == 'LineString' && !this.label){
+            if(type == 'LineString' && !this.label){
                 pathLength = ol.geom.flat.length.lineString(geometry.getFlatCoordinates(), offset, end, 2);
                 startM = pathLength * this.textAlign_;
                 
                 var lineStringCoordinates = geometry.getFlatCoordinates();
+                var endLineString = lineStringCoordinates.length;
                 var reverse = lineStringCoordinates[offset] > lineStringCoordinates[lineStringCoordinates.length - stride];
                 // var textSize = this.getTextSize_(lines);                    
                 var lineLength = 0;
                 var x1, x2, y1, y2;
                 var startM_ = 0;
-                var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+                var offset_ = 0, stride = 2;
+                // // var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+                // if (reverse) {
+                //     offset_ = endLineString - 2;
+                //     stride = -2;
+                //     startCoords = [lineStringCoordinates[endLineString - 2], lineStringCoordinates[endLineString - 1]];
+                // }else{
+                //     offset_ = 0;
+                //     startCoords = [lineStringCoordinates[0], lineStringCoordinates[1]];
+                // }
+
+                // var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
 
                 var minX = lineStringCoordinates[offset_];
                 var minY = lineStringCoordinates[offset_ + 1];
@@ -70884,42 +70947,66 @@ function olInit() {
                     
                     x2 = lineStringCoordinates[j];
                     y2 = lineStringCoordinates[j + 1];
-                    lineLength += Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    lineLength += (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))) / resolution;
                     x1 = x2;
                     y1 = y2;
                 }
 
+                if(j >= lineStringCoordinates.length && lineLength < labelWidth){
+                    return;
+                }
+                // while ((reverse? offset_ > 2: offset_ < endLineString - stride) && lineLength < labelWidth) {                
+                //     offset_ += stride;
+                    
+                //     if(lineStringCoordinates[offset_] < minX){
+                //         minX = lineStringCoordinates[offset_];
+                //     }else if(lineStringCoordinates[offset_] > maxX){
+                //         maxX = lineStringCoordinates[offset_];
+                //     }
+
+                //     if(lineStringCoordinates[offset_ + 1] < minY){
+                //         minY = lineStringCoordinates[offset_ + 1];
+                //     }else if(lineStringCoordinates[offset_ + 1] > maxY){
+                //         maxY = lineStringCoordinates[offset_ + 1];
+                //     }
+
+                //     x2 = lineStringCoordinates[offset_];
+                //     y2 = lineStringCoordinates[offset_ + 1];
+                //     lineLength += (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))) / resolution;
+                //     x1 = x2;
+                //     y1 = y2;
+                // }
+
                 var minCoordinatesToPixel = map.getPixelFromCoordinate([minX, minY]);
                 var maxCoordinatesToPixel = map.getPixelFromCoordinate([maxX, maxY]);
 
-                extent = [minCoordinatesToPixel[0] - anchorX, minCoordinatesToPixel[1] + labelWidth + labelHeight - anchorY, 
-                            maxCoordinatesToPixel[0] + labelWidth + labelHeight + anchorX, maxCoordinatesToPixel[1] + anchorY];                
+                // extent = [minX, minY, maxX, maxY];     
+                extent = [minCoordinatesToPixel[0], maxCoordinatesToPixel[1], 
+                            maxCoordinatesToPixel[0], minCoordinatesToPixel[1]];                
                
-                var array = [];
-                min = map.getCoordinateFromPixel([extent[0], extent[1]]);
-                max = map.getCoordinateFromPixel([extent[2], extent[3]]);
-                
-                extent = [min[0], min[1], max[0], max[1]];
+                // var array = [];
+                // // min = map.getCoordinateFromPixel([extent[0], extent[1]]);
+                // // max = map.getCoordinateFromPixel([extent[2], extent[3]]);
                 // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[2], extent[1]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[0], extent[3]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
-                
+
                 // console.log(JSON.stringify(array))
                 // console.log('-----', JSON.stringify(ol.proj.transform(flatCoordinates, 'EPSG:3857', 'EPSG:4326')))                
-            }else{
-                var minX = flatCoordinatesToPixel[0] - anchorX;
+            }else{                
+                var minX = flatCoordinatesToPixel[0];
                 var minY = flatCoordinatesToPixel[1] + labelHeight - anchorY;
-                var maxX = flatCoordinatesToPixel[0] + labelWidth - anchorX;
+                var maxX = flatCoordinatesToPixel[0] + labelWidth;
                 var maxY = flatCoordinatesToPixel[1] - anchorY;
                 
                 extent = [minX, minY, maxX, maxY]; 
             }
 
-            // if(!this.renderDeclutter_(extent, feature)){
-            //     return;
-            // }
+            if(!this.renderDeclutter_(extent, feature)){
+                return;
+            }
             // declutter duplicate label end
 
             var i, ii, j, jj, currX, currY, charArr, charInfo; 
@@ -70929,7 +71016,6 @@ function olInit() {
 
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-            var resolution = map.frameState_.currentResolution;
 
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
@@ -70945,12 +71031,15 @@ function olInit() {
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
                     var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
-                    
+                    var startCoords;
+
                     if (reverse) {
                         offset = endLineString - 2;
                         stride = -2;
+                        startCoords = [lineStringCoordinates[endLineString - 2], lineStringCoordinates[endLineString - 1]];
                     }else{
                         offset = 0;
+                        startCoords = [lineStringCoordinates[0], lineStringCoordinates[1]];
                     }
 
                     // FIXME: fix the offset from setting
@@ -70987,26 +71076,27 @@ function olInit() {
                                 segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
 
-                            var angle = Math.atan2(y2 - y1, x2 - x1);
+                            // var angle = Math.atan2(y2 - y1, x2 - x1);
+                            var angle = Math.atan2(y2 - startCoords[1], x2 - startCoords[0]);
                             
                             if (reverse) {
                                 // angle += angle > 0 ? -Math.PI : Math.PI;
                             }
                             if(previousAngle !== undefined && angle !== previousAngle){
+                                // return
                                 // angle = 0
                                 // angle = previousAngle + angle;
                                 // currX = this.anchorX*Math.cos(previousAngle) - this.anchorY*Math.sin(previousAngle);
                                 // currY = this.anchorX*Math.sin(previousAngle) + this.anchorY*Math.cos(previousAngle);
                                 // angle = previousAngle - angle
                                 // charFlatCoordinates = [x1, y1];
-                                this.previousAngle = previousAngle;
+                                // this.previousAngle = previousAngle;
                             }
                             
-                            this.rotation = -angle;
-                            previousAngle = angle;                            
+                            this.rotation = -angle;                          
                             startM += charLength;
                             var image = charInfo.image;
-                            
+                            // previousAngle = angle
                             // FIXME: using anchorX to fit the setting
                             this.anchorX = 0 - currX;
                             this.anchorY = anchorY - currY;
@@ -71121,8 +71211,7 @@ function olInit() {
         });
 
         return [textWidth, textHeight];
-    };
-
+    };    
 
     /**
      * @private
@@ -102104,7 +102193,7 @@ function olInit() {
             var vectorTileCache = null;
             vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
-            if (self.vectorTilesData[formatId] === undefined) {                
+            if (self.vectorTilesData[formatId] === undefined) {     
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
             vectorTileCache = self.vectorTilesData[formatId];
@@ -102272,7 +102361,7 @@ function olInit() {
             // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
             
             // transform.length = 0;
-            
+
             return { 'replays': replayGroup.replaysByZIndex_, features: mainFeatures, instructs: mainDrawingInstructs };
         }
         
