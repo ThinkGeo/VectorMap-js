@@ -300,7 +300,7 @@ class GeoTextStyle extends GeoStyle {
             let numLines = lines.length;
             let textScale = textState.getScale();
             textScale = textScale === undefined ? 1 : textScale;
-            let scale = textScale * window.devicePixelRatio;
+            let scale = textScale * frameState.pixelRatio;;
             let widths = [];
             let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
             let lineHeight = this.charWidths["lineHeight"];
