@@ -564,6 +564,30 @@ ol.xml.getAllTextContent = _ol_xml$getAllTextContent;
 ol.xml.parse = _ol_xml$parse;
 
 
+// custome ol mmethod
+import { zoomByDelta as $ol$interaction$Interaction$zoomByDelta } from 'ol/interaction/Interaction';
+
+ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZoom_(map) {
+    var view = map.getView();
+    if (view.getAnimating()) {
+        view.cancelAnimations();
+    }
+    var maxDelta = 1;
+
+    var delta = this.delta_ / 100;
+
+    delta *= 20;
+    delta /= 100;
+
+    console.log(delta);
+    var delta = Math.min(Math.max(delta, -maxDelta), maxDelta);
+    $ol$interaction$Interaction$zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
+    this.mode_ = undefined;
+    this.delta_ = 0;
+    this.lastAnchor_ = null;
+    this.startTime_ = undefined;
+    this.timeoutId_ = undefined;
+};
 
 // ol.mapsiute namespace
 import GeoVectorTileLayer from "./layer/GeoVectorTileLayer";

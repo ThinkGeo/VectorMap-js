@@ -110,7 +110,7 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
                 });
 
             // Get drawing instructions for drawing features;
-            let drawinginstructions = this.getDrawingInstructions(features, frameState.viewState.zoom);
+            let drawinginstructions = this.getDrawingInstructions(features, Math.round(frameState.viewState.zoom));
 
             for (let i = 0, ii = drawinginstructions.length; i < ii; ++i) {
                 render(drawinginstructions[i][0], drawinginstructions[i][1]);
@@ -159,12 +159,11 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
         if (vectorSource.loading) {
             return instructs;
         }
-        const cacheTrees = vectorLayer.styleJsonCache.geoStyleGroupByZoom[zoom].undefined;
+        const cacheTrees = vectorLayer.styleJsonCache.geoStyleGroupByZoom[Math.round(zoom)].undefined;
         let instructsCache = [];
         let features = [];
         if (cacheTrees && cacheTrees.length > 0) {
             let features = vectorSource.getFeatures();
-            debugger;
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];;
 
