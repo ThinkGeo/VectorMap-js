@@ -156,8 +156,8 @@ const menuData = [{
         jsPath: './js/event3.js'
     }, {
         title: 'Vue.JS',
-        htmlPath: './html/event4.html',
-        jsPath: './js/event4.js'
+        htmlPath: './html/vue.html',
+        jsPath: './js/vue.js'
     }]
 },];
 export default menuData;

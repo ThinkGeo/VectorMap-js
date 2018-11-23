@@ -91,11 +91,4 @@ let map = new ol.Map({
 
 
 
-// let map = new ol.Map({
-//     layers: [satelliteLabeLayer],
-//     target: 'map',
-//     view: new ol.View({
-//         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-//         zoom: 4,
-//     }),
-// });
+ 
