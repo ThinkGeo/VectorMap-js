@@ -1,16 +1,3 @@
-
-
-new Vue({
-    el: '#lines',
-    data: {
-        selected: 'A',
-        options: [
-            { text: 'One', value: 'A' },
-            { text: 'Two', value: 'B' },
-            { text: 'Three', value: 'C' }
-        ]
-    }
-})
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -57,7 +44,7 @@ const pointStyle = new ol.style.Style({
             color: '#fff',
             width: 3
         }),
-     
+
     })
 })
 
@@ -97,9 +84,21 @@ let map = new ol.Map({
 
 
 
-
-
-
-
-
-
+new Vue({
+    el: '#lines',
+    data: {
+        fontSize: 12,
+        fontFamily: 'Calibri',
+        fillColor: '#525255',
+        placement: 'line'
+    },
+    methods: {
+        refresh: function () {
+            let text = blockMapStyle.getText();
+            text.setFont(`${this.fontSize}px ${this.fontFamily},sans-serif`);
+            text.getFill().setColor(this.fillColor);
+            text.setPlacement(this.placement)
+            blockMapLayer.setStyle(blockMapStyle)
+        }
+    }
+})
