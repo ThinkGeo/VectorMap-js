@@ -56,7 +56,7 @@ var map = new ol.Map({
     
     target: 'map',
     layers: [
-        geoVectorLayer, tilegrid
+        layer, tilegrid
     ],
     view: view
 });

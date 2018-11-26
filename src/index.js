@@ -575,9 +575,13 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZ
     var maxDelta = 1;
 
     var delta = this.delta_ / 100;
-
-    delta *= 20;
-    delta /= 100;
+    if (delta > 0) {
+        delta = delta * 2 - 1;
+    }
+    else {
+        delta = delta * 2 + 1;
+    }
+    delta *= 0.15;
 
     console.log(delta);
     var delta = Math.min(Math.max(delta, -maxDelta), maxDelta);
@@ -588,6 +592,40 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZ
     this.startTime_ = undefined;
     this.timeoutId_ = undefined;
 };
+
+ol.control.Zoom.prototype.zoomByDelta_ = function (delta) {
+    var map = this.getMap();
+    var view = map.getView();
+    if (!view) {
+        // the map does not have a view, so we can't act
+        // upon it
+        return;
+    }
+    var currentResolution = view.getResolution();
+    if (currentResolution) {
+        var oldZoom = view.getZoom();
+        // MapSuite:
+        if (oldZoom !== undefined) {
+            var zoom = Math.round(oldZoom);
+            zoom = zoom + delta;
+            delta = zoom - oldZoom;
+        }
+        var newResolution = view.constrainResolution(currentResolution, delta);
+        if (this.duration_ > 0) {
+            if (view.getAnimating()) {
+                view.cancelAnimations();
+            }
+            view.animate({
+                resolution: newResolution,
+                duration: this.duration_,
+                easing: ol.easing.easeOut
+            });
+        } else {
+            view.setResolution(newResolution);
+        }
+    }
+};
+
 
 // ol.mapsiute namespace
 import GeoVectorTileLayer from "./layer/GeoVectorTileLayer";
