@@ -315,17 +315,17 @@ class GeoVectorTileLayer extends VectorTileLayer {
     }
 }
 
-Map.prototype.createRenderer = function createRenderer() {
-    var renderer = new CanvasMapRenderer(this);
-    renderer.registerLayerRenderers([
-        CanvasImageLayerRenderer,
-        CanvasTileLayerRenderer,
-        CanvasVectorLayerRenderer,
-        CanvasVectorTileLayerRenderer,
-        GeoCanvasVectorTileLayerRenderer
-    ]);
-    return renderer;
-};
+// Map.prototype.createRenderer = function createRenderer() {
+//     var renderer = new CanvasMapRenderer(this);
+//     renderer.registerLayerRenderers([
+//         CanvasImageLayerRenderer,
+//         CanvasTileLayerRenderer,
+//         CanvasVectorLayerRenderer,
+//         CanvasVectorTileLayerRenderer,
+//         GeoCanvasVectorTileLayerRenderer
+//     ]);
+//     return renderer;
+// };
 
 TileQueue.prototype.handleTileChange = function (event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);

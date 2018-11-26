@@ -283,17 +283,4 @@ class GeoVectorLayer extends VectorLayer {
     }
 }
 
-Map.prototype.createRenderer = function createRenderer() {
-    var renderer = new CanvasMapRenderer(this);
-    renderer.registerLayerRenderers([
-        CanvasImageLayerRenderer,
-        CanvasTileLayerRenderer,
-        CanvasVectorLayerRenderer,
-        CanvasVectorTileLayerRenderer,
-        GeoCanvasVectorTileLayerRenderer,
-        GeoCanvasVectorLayerRenderer
-    ]);
-    return renderer;
-};
-
 export default GeoVectorLayer;

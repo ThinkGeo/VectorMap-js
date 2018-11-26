@@ -583,7 +583,6 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZ
     }
     delta *= 0.15;
 
-    console.log(delta);
     var delta = Math.min(Math.max(delta, -maxDelta), maxDelta);
     $ol$interaction$Interaction$zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     this.mode_ = undefined;
@@ -626,6 +625,34 @@ ol.control.Zoom.prototype.zoomByDelta_ = function (delta) {
     }
 };
 
+import TileQueue from "ol/TileQueue";
+import TileState from "ol/TileState";
+import { listen, unlisten } from 'ol/events';
+import EventType from "ol/events/EventType";
+
+TileQueue.prototype.handleTileChange = function (event) {
+    const tile = /** @type {import("./Tile.js").default} */ (event.target);
+    const state = tile.getState();
+    if (state === TileState.LOADED || state === TileState.ERROR ||
+        state === TileState.EMPTY || state === TileState.ABORT ||
+        state === TileState.CANCEL) {
+        if (tile.isGeoVectorTile) {
+            if (tile.replayCreated) {
+                unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
+            }
+        }
+        else {
+            unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
+        }
+
+        const tileKey = tile.getKey();
+        if (tileKey in this.tilesLoadingKeys_) {
+            delete this.tilesLoadingKeys_[tileKey];
+            --this.tilesLoading_;
+        }
+        this.tileChangeCallback_();
+    }
+}
 
 // ol.mapsiute namespace
 import GeoVectorTileLayer from "./layer/GeoVectorTileLayer";
@@ -634,5 +661,27 @@ import GeoVectorLayer from "./layer/GeoVector";
 ol.mapsuite = {};
 ol.mapsuite.VectorTileLayer = GeoVectorTileLayer;
 ol.mapsuite.VectorLayer = GeoVectorLayer;
+
+import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
+import CanvasTileLayerRenderer from './renderer/canvas/TileLayer';
+import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer';
+import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer';
+import GeoCanvasVectorTileLayerRenderer from "./renderer/canvas/GeoVectorTileLayer";
+import GeoCanvasVectorLayerRenderer from "./renderer/canvas/GeoVectorLayer";
+
+ol.Map.prototype.createRenderer = function createRenderer() {
+    var renderer = new ol.renderer.canvas.Map(this);
+    renderer.registerLayerRenderers([
+        CanvasImageLayerRenderer,
+        CanvasTileLayerRenderer,
+        CanvasVectorLayerRenderer,
+        CanvasVectorTileLayerRenderer,
+        GeoCanvasVectorTileLayerRenderer,
+        GeoCanvasVectorLayerRenderer
+    ]);
+    return renderer;
+};
+
+
 
 export default ol;
