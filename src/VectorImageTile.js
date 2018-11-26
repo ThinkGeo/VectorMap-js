@@ -259,7 +259,10 @@ class VectorImageTile extends Tile {
         if (this.state == TileState.LOADING) {
             this.tileKeys.forEach(function (sourceTileKey) {
                 const sourceTile = this.getTile(sourceTileKey);
-                if (sourceTile.state == TileState.IDLE) {
+                sourceTile.vectorImageTileCoord = this.tileCoord;
+                sourceTile.tileRange = this.tileRange;
+                if (sourceTile.state == TileState.IDLE || sourceTile.state == TileState.CANCEL) {
+                    sourceTile.state = TileState.IDLE
                     sourceTile.setLoader(this.loader_);
                     sourceTile.load();
                 }
@@ -267,7 +270,8 @@ class VectorImageTile extends Tile {
                     const key = listen(sourceTile, EventType.CHANGE, function (e) {
                         const state = sourceTile.getState();
                         if (state == TileState.LOADED ||
-                            state == TileState.ERROR) {
+                            state == TileState.ERROR ||
+                            state == TileState.CANCEL) {
                             const uid = getUid(sourceTile);
                             if (state == TileState.ERROR) {
                                 errorSourceTiles[uid] = true;
@@ -296,8 +300,16 @@ class VectorImageTile extends Tile {
     finishLoading_() {
         let loaded = this.tileKeys.length;
         let empty = 0;
+        // MapSuite
+        let cancel = 0;
         for (let i = loaded - 1; i >= 0; --i) {
             const state = this.getTile(this.tileKeys[i]).getState();
+
+            // MapSuite 
+            if (state == TileState.CANCEL) {
+                ++cancel;
+                break;
+            }
             if (state != TileState.LOADED) {
                 --loaded;
             }
@@ -305,7 +317,12 @@ class VectorImageTile extends Tile {
                 ++empty;
             }
         }
-        if (loaded == this.tileKeys.length) {
+        // MapSuite
+        if (cancel) {
+            this.setState(TileState.CANCEL);
+        }
+
+        else if (loaded == this.tileKeys.length) {
             this.loadListenerKeys_.forEach(unlistenByKey);
             this.loadListenerKeys_.length = 0;
             this.setState(TileState.LOADED);

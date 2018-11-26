@@ -1,11 +1,11 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid} from 'ol/util.js';
+import { getUid } from 'ol/util.js';
 import ImageState from 'ol/ImageState';
 import Observable from 'ol/Observable';
 import TileState from 'ol/TileState';
-import {listen} from 'ol/events';
+import { listen } from 'ol/events';
 import EventType from 'ol/events/EventType';
 import SourceState from 'ol/source/State';
 
@@ -42,7 +42,7 @@ class LayerRenderer extends Observable {
        * @param {import("../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
        */
-      function(zoom, tileRange) {
+      function (zoom, tileRange) {
         /**
          * @param {import("../Tile.js").default} tile Tile.
          */
@@ -66,7 +66,7 @@ class LayerRenderer extends Observable {
    * @return {T|void} Callback result.
    * @template T
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {}
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) { }
 
   /**
    * @return {import("../layer/Layer.js").default} Layer.
@@ -137,7 +137,7 @@ class LayerRenderer extends Observable {
        * @param {import("../PluggableMap.js").default} map Map.
        * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
        */
-      const postRenderFunction = function(tileSource, map, frameState) {
+      const postRenderFunction = function (tileSource, map, frameState) {
         const tileSourceKey = getUid(tileSource).toString();
         if (tileSourceKey in frameState.usedTiles) {
           tileSource.expireCache(frameState.viewState.projection,
@@ -146,7 +146,7 @@ class LayerRenderer extends Observable {
       }.bind(null, tileSource);
 
       frameState.postRenderFunctions.push(
-        /** @type {import("../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
+        /** @type {import("../PluggableMap.js").PostRenderFunction} */(postRenderFunction)
       );
     }
   }
@@ -221,7 +221,11 @@ class LayerRenderer extends Observable {
         for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
           if (currentZ - z <= preload) {
             tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-            if (tile.getState() == TileState.IDLE) {
+            // mapsuite: for cancel.
+            tile.tileRange = tileRange;
+
+            if (tile.getState() == TileState.IDLE || tile.getState() == TileState.CANCEL) {
+              tile.state = TileState.IDLE;
               wantedTiles[tile.getKey()] = true;
               if (!tileQueue.isKeyQueued(tile.getKey())) {
                 tileQueue.enqueue([tile, tileSourceKey,

@@ -107,6 +107,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     continue;
                 }
                 tile = this.getTile(z, x, y, pixelRatio, projection, frameState);
+                // for cancel.
+                tile.tileRange = tileRange;
                 if (this.isTileToDraw_(tile)) {
                     const uid = getUid(this);
                     if (tile.getState() == TileState.LOADED) {
@@ -541,7 +543,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         const tileState = tile.getState();
         const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
         // Tile Loaded and replay has been created.
-        return tileState == TileState.LOADED || tile.replayCreated ||
+        return tileState == TileState.LOADED || tile.replayCreated || tileState == TileState.CANCEL ||
             tileState == TileState.EMPTY ||
             tileState == TileState.ERROR && !useInterimTilesOnError;
     }

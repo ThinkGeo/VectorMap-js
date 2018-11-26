@@ -117,6 +117,9 @@ export function loadFeaturesXhr(url, format, success, failure) {
                 // we just need to check the signal that the data is ready.
                 loadEventInfo.successFunction.call(loadEventInfo.tile, {}, format.readProjection({}), format.getLastExtent())
               }
+              else if (data.status === "cancel") {
+                loadEventInfo.tile.setState(TileState.CANCEL);
+              }
             }
           }
           workerManager.postMessage(getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
