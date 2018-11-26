@@ -14,25 +14,28 @@
 <body>
     <div id="map" style="width:100%;height:80%;background:#fdeeb0 "></div>
     <div id="lines">
-        <button v-on:click="refresh">refresh</button>
         <br>
         <label>FontSize: </label>
         <input type="number" v-model="fontSize">
+        <br>
+        <br>
         <label>Text: </label>
         <select v-model="fontFamily">
             <option value="Calibri">Calibri</option>
             <option value="sans-serif">sans-serif</option>
         </select>
         <br>
+        <br>
         <label>FillColor: </label>
         <input type="text" v-model="fillColor">
         <br />
+        <br>
         <label>placement: </label>
         <select v-model="placement">
             <option value="line">line</option>
             <option value="point">point</option>
         </select>
-        <br />
+        <button v-on:click="refresh">refresh</button>
     </div>
     </div>
 

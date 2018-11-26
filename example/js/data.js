@@ -144,8 +144,8 @@ const menuData = [{
     styleName: 'JavaScript frameworks',
     subitems: [{
         title: 'JQuery',
-        htmlPath: './html/event1.html',
-        jsPath: './js/event1.js'
+        htmlPath: './html/jquery.html',
+        jsPath: './js/Jquery.js'
     }, {
         title: 'Angular JS',
         htmlPath: './html/event2.html',
