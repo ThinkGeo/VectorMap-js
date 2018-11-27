@@ -5,7 +5,7 @@ import { isEmpty } from "ol/obj"
 import { transform2D } from "ol/geom/flat/transform";
 import { setFromArray } from "ol/transform";
 import { getUid } from 'ol/util.js';
-import { intersects, createOrUpdateEmpty } from 'ol/extent';
+import { intersects, createOrUpdateEmpty, extendCoordinate, createOrUpdate, extend, createEmpty } from 'ol/extent';
 import { equals } from 'ol/array';
 import CanvasInstruction from 'ol/render/canvas/Instruction.js';
 import { lineStringLength } from 'ol/geom/flat/length.js';
@@ -13,12 +13,18 @@ import { drawTextOnPath } from 'ol/geom/flat/textpath.js';
 import { matchingChunk } from 'ol/geom/flat/straightchunk';
 
 import { TEXT_ALIGN } from 'ol/render/replay.js';
-import {
-    setFromArray as transformSetFromArray
-} from 'ol/transform.js';
 import { drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
 
 import { asColorLike } from 'ol/colorlike.js';
+import {
+    create as createTransform,
+    compose as composeTransform,
+    apply as applyTransform,
+    setFromArray as transformSetFromArray
+} from 'ol/transform.js';
+
+const tmpExtent = createEmpty();
+const tmpTransform = createTransform();
 
 class GeoCanvasTextReplay extends CanvasTextReplay {
     constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
@@ -187,7 +193,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                         this.replayImage_(context,
                             pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
                             declutterGroup, height, opacity, originX, originY, rotation, scale,
-                            snapToPixel, width, padding,
+                            true, width, padding,
                             backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
                             backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
                     }
@@ -803,6 +809,102 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             }
         }
     };
+
+
+    replayImage_(
+        context,
+        x,
+        y,
+        image,
+        anchorX,
+        anchorY,
+        declutterGroup,
+        height,
+        opacity,
+        originX,
+        originY,
+        rotation,
+        scale,
+        snapToPixel,
+        width,
+        padding,
+        fillInstruction,
+        strokeInstruction
+    ) {
+        const fillStroke = fillInstruction || strokeInstruction;
+        anchorX *= scale;
+        anchorY *= scale;
+        x -= anchorX;
+        y -= anchorY;
+
+        const w = (width + originX > image.width) ? image.width - originX : width;
+        const h = (height + originY > image.height) ? image.height - originY : height;
+        const boxW = padding[3] + w * scale + padding[1];
+        const boxH = padding[0] + h * scale + padding[2];
+        const boxX = x - padding[3];
+        const boxY = y - padding[0];
+
+        /** @type {import("../../coordinate.js").Coordinate} */
+        let p1;
+        /** @type {import("../../coordinate.js").Coordinate} */
+        let p2;
+        /** @type {import("../../coordinate.js").Coordinate} */
+        let p3;
+        /** @type {import("../../coordinate.js").Coordinate} */
+        let p4;
+        if (fillStroke || rotation !== 0) {
+            p1 = [boxX, boxY];
+            p2 = [boxX + boxW, boxY];
+            p3 = [boxX + boxW, boxY + boxH];
+            p4 = [boxX, boxY + boxH];
+        }
+
+        let transform = null;
+        if (rotation !== 0) {
+            const centerX = x + anchorX;
+            const centerY = y + anchorY;
+            transform = composeTransform(tmpTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+
+            createOrUpdateEmpty(tmpExtent);
+            extendCoordinate(tmpExtent, applyTransform(tmpTransform, p1));
+            extendCoordinate(tmpExtent, applyTransform(tmpTransform, p2));
+            extendCoordinate(tmpExtent, applyTransform(tmpTransform, p3));
+            extendCoordinate(tmpExtent, applyTransform(tmpTransform, p4));
+        } else {
+            createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
+        }
+        const canvas = context.canvas;
+        const strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
+        const intersects =
+            tmpExtent[0] - strokePadding <= canvas.width && tmpExtent[2] + strokePadding >= 0 &&
+            tmpExtent[1] - strokePadding <= canvas.height && tmpExtent[3] + strokePadding >= 0;
+
+        if (snapToPixel) {
+            x = Math.ceil(x);
+            y = Math.ceil(y);
+        }
+
+        if (declutterGroup) {
+            if (!intersects && declutterGroup[4] == 1) {
+                return;
+            }
+            extend(declutterGroup, tmpExtent);
+            const declutterArgs = intersects ?
+                [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
+                null;
+            if (declutterArgs && fillStroke) {
+                declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
+            }
+            declutterGroup.push(declutterArgs);
+        } else if (intersects) {
+            if (fillStroke) {
+                this.replayTextBackground_(context, p1, p2, p3, p4,
+              /** @type {Array<*>} */(fillInstruction),
+              /** @type {Array<*>} */(strokeInstruction));
+            }
+            drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
+        }
+    }
 }
 
 export function measureTextWidths(font, lines, widths) {
