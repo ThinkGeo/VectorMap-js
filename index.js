@@ -54,7 +54,9 @@ view.on("change:resolution", function (e) {
 var map = new ol.Map({
     target: 'map',
     layers: [
-        layer,tilegrid
+        layer
     ],
-    view: view
+    view: view,
+    loadTilesWhileInteracting: true,
+    loadTilesWhileAnimating: true
 });
