@@ -432,7 +432,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         let replaysByZIndex = data["replays"];
                         let featuresInfo = data["features"];
                         let mainDrawingInstructs = data["mainDrawingInstructs"];
-                        // console.log("createReplayGroupCallback" + tile.tileCoord.toString());
 
                         let features = {};
                         for (let featureId in featuresInfo) {
@@ -476,13 +475,18 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             zIndexKeys[r] = true;
                         }
                         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+
+                        // For wrappedTileCoord set originalReplayGroup
+                        if (sourceTile.tileCoord.toString() !== tile.tileCoord.toString()) {
+                            sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);
+                        }
                         tile["replayCreated"] = true;
                         sourceTile["replayCreated"] = true;
                         tile.setState(TileState.LOADED);
 
                     }
                     replayState.replayGroupCreated = false;
-                    // console.log(sourceTileCoord.toString() + "|" + tile.tileCoord.toString());
+
                     workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", createReplayGroupMethodInfo, createReplayGroupCallback, undefined);
                 }
                 else {
