@@ -161,7 +161,7 @@ self.request = function (requestInfo, methodInfo) {
                 requestKey: cacheKey,
                 status: "cancel",
             };
-    
+
 
             postMessageData.messageData = resultMessageData;
 
@@ -239,7 +239,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     if (tileFeatureAndInstrictions === undefined) {
         debugger;
     }
-    if (requestCoord[0] === tileCoord[0]) {
+    if (requestCoord[0] === tileCoord[0] && tileCoord[0] > 3) {
         self.removeTileInstructions(cacheKey);
     }
     let features = tileFeatureAndInstrictions[0];

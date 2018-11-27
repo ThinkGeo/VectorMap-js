@@ -36,10 +36,9 @@ var vectorTileLayer = new ol.layer.VectorTile({
 
 
 var view = new ol.View({
-    // center: [-10775718.490585351, 3868389.0226015863],
-    center: [260637.765211225, 6249780.338744789],
+    center: [-10775718.490585351, 3868389.0226015863],
     zoom: 4,
-    // maxZoom: 19,
+    maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
 var zoom = view.getZoom();
@@ -53,10 +52,9 @@ view.on("change:resolution", function (e) {
 });
 
 var map = new ol.Map({
-    
     target: 'map',
     layers: [
-        layer, tilegrid
+        layer,tilegrid
     ],
     view: view
 });
