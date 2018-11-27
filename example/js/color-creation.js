@@ -1,60 +1,25 @@
 
-// // const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
-// // let getURL = `https://cloud.thinkgeo.com/api/v1/color/scheme/analogous/ffff00/10?apikey=${apiKey}`;
+const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 
-// // let jqxhr = $.get(getURL, function (data) {
-// //    console.log(data)
-// // });
+const output = function (data) {
+
+    $('#output').html("");
+    let outputData = [];
+    if (data.colors) {
+        outputData = data.colors
+    } else {
+        data.forEach(function (val) {
+            val.colors.forEach(function (color) {
+                outputData.push(color)
+            })
+        });
+    }
+
+    return outputData;
+}
 
 
-// const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
-// const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
-
-// const output = function (data) {
-
-//     $('#output').html("");
-//     let str = '';
-//     if (data.colors) {
-//         data.colors.forEach(function (color) {
-//             str+=`<span class="output-color"  style=" background:#${color} ">#${color}</span> `;
-//         })
-//     } else {
-//         data.forEach(function (val) {
-//             str += `<div>base coler: <span class="output-color"  style=" background:#${val.baseColor} ">#${val.baseColor}</span> </div>`;
-//             val.colors.forEach(function (color) {
-//                 str+=`<span class="output-color"  style=" background:#${color} ">#${color}</span> `;
-//             })
-//         });
-//     }
-//     $('#output').html(str);
-// }
-
-// $('button').click(function () {
-//     let options = {
-//         category: $('select#category option:selected').val(),
-//         radio: $('input:radio:checked').val(),
-//         color: $('#color').val(),
-//         numbur: $('#number').val(),
-//     }
-//     let getURL
-
-//     if (options.radio == 'random') {
-//         getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
-//     } else {
-//         getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
-//     }
-
-//     let jqxhr = $.get(getURL, function (data) {
-//         if (data.status=='success'){
-//             output(data.data)
-//         } 
-//     });
-
-//     jqxhr.fail(function (data) {
-//         window.alert('No results');
-//     })
-
-// });
 
 WebFont.load({
     custom: {
@@ -63,17 +28,66 @@ WebFont.load({
     }
 });
 
-let rules=[
+let color=[]
 
-]
- 
+let styles = {
+    'XXXS': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[19]}`
+        })
+    }),
+    'XXS': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[17]}`
+        })
+    }),
+    'XS': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[15]}`
+        })
+    }),
+    'S': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[13]}`
+        })
+    }),
+    'M': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[11]}`
+        }),
+    }),
+    'L': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[9]}`
+        }),
+    }),
+    'XL': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[7]}`
+        })
+    }),
+    'XXL': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[5]}`
+        })
+    }),
+    'XXXL': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[3]}`
+        })
+    }),
+    'XXXXL': new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: `#${color[0]}`
+        })
+    }),
+
+}
+
 //base map style 
 const baseMapStyle = new ol.style.Style({
-    fill: new ol.style.Fill({
-        color: '#f3b600'
-    }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255, 255, 255, 0.6)',
+        color: 'rgba(256, 256, 256, 1)',
         width: 2
     }),
     text: new ol.style.Text({
@@ -88,13 +102,6 @@ const baseMapStyle = new ol.style.Style({
     })
 })
 
-var styleFunction = function (feature) {
-    return styles[feature.getGeometry().getType()];
-};
-
- 
- 
-
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
         url: '../data/europe.json',
@@ -102,18 +109,135 @@ let baseMapLayer = new ol.layer.Vector({
     }),
     style: function (feature) {
         baseMapStyle.getText().setText(feature.get('NAME'));
+      
         return baseMapStyle;
     }
 });
-
  
 
+const layerStyle= function (feature) {
+        let population = Number(feature.get('POP2005'))
+        if (population < 10000) {
+            return styles.XXXS
+        } else if (population > 10000 && population < 50000) {
+            return styles.XXS
+        } else if (population > 50000 && population < 100000) {
+            return styles.XS
+        } else if (population > 100000 && population < 500000) {
+            return styles.S
+        } else if (population > 500000 && population < 1000000) {
+            return styles.M
+        } else if (population > 1000000 && population < 5000000) {
+            return styles.L
+        } else if (population > 5000000 && population < 10000000) {
+            return styles.XL
+        } else if (population > 10000000 && population < 50000000) {
+            return styles.XXL
+        } else if (population > 50000000 && population < 100000000) {
+            return styles.XXXL
+        } else if (population > 100000000) {
+            return styles.XXXXL
+        }
+    }
+
+
+
+let colorLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/europe.json',
+        format: new ol.format.GeoJSON(),
+    }),
+    style: layerStyle
+
+})
+
 let map = new ol.Map({
-    layers: [baseMapLayer],
+    layers: [colorLayer, baseMapLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        zoom: 7,
+        zoom: 3,
     }),
 });
 
+$('button').click(function () {
+    let options = {
+        category: $('select#category option:selected').val(),
+        radio: $('input:radio:checked').val(),
+        color: $('#color').val(),
+        numbur: 20,
+    }
+    let getURL
+
+    if (options.radio == 'random') {
+        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
+    } else {
+        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
+    }
+
+    let jqxhr = $.get(getURL, function (data) {
+        if (data.status == 'success') {
+             color = output(data.data);
+            console.log(color);
+            styles = {
+                'XXXS': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[19]}`
+                    })
+                }),
+                'XXS': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[17]}`
+                    })
+                }),
+                'XS': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[15]}`
+                    })
+                }),
+                'S': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[13]}`
+                    })
+                }),
+                'M': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[11]}`
+                    }),
+                }),
+                'L': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[9]}`
+                    }),
+                }),
+                'XL': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[7]}`
+                    })
+                }),
+                'XXL': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[5]}`
+                    })
+                }),
+                'XXXL': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[3]}`
+                    })
+                }),
+                'XXXXL': new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: `#${color[0]}`
+                    })
+                }),
+
+            }
+            colorLayer.setStyle(layerStyle)
+        }
+    });
+
+    jqxhr.fail(function (data) {
+        window.alert('No results');
+    })
+
+});
