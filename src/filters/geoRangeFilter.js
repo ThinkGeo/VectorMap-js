@@ -1,13 +1,13 @@
 import GeoFilter from "./geoFilter";
 import GeoFilterItem from "./geoFilterItem";
 
- class GeoRangeFilter extends GeoFilter {
+class GeoRangeFilter extends GeoFilter {
 
     constructor(filterItems) {
         super(filterItems);
-        this.ranges=[];
-        this.allowedValues=[];
-        this.disallowedValues=[];
+        this.ranges = [];
+        this.allowedValues = [];
+        this.disallowedValues = [];
     }
 
     initializeCore() {
@@ -62,10 +62,15 @@ import GeoFilterItem from "./geoFilterItem";
     matchFeatureCore(feature, zoom) {
         let currentValue;
         if (this.replacedValueToIndex) {
-            currentValue = feature.properties[this.key];
+            currentValue = feature.propertiesIndex[this.key];
         }
         else {
-            currentValue = feature.properties[this.key];
+            if (feature.properties !== undefined) {
+                currentValue = feature.properties[this.key];
+            }
+            else {
+                currentValue = feature.get(this.key)
+            }
         }
 
         return this.isInRange(+currentValue);

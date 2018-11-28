@@ -22,7 +22,12 @@ class GeoStringAttributeFilter extends GeoFilter {
             currentExpectedValues = this.expectedValueIndexs;
         }
         else {
-            currentValue = feature.properties[this.key];
+            if (feature.properties !== undefined) {
+                currentValue = feature.properties[this.key];
+            }
+            else {
+                currentValue = feature.get(this.key)
+            }
             currentExpectedValues = this.expectedValues;
         }
 

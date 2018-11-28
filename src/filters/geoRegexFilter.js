@@ -1,7 +1,7 @@
-import GeoFilter  from "./geoFilter";
-import GeoFilterItem  from "./geoFilterItem";
+import GeoFilter from "./geoFilter";
+import GeoFilterItem from "./geoFilterItem";
 
- class GeoRegexFilter extends GeoFilter {
+class GeoRegexFilter extends GeoFilter {
 
     constructor(filterItems) {
         super(filterItems);
@@ -18,10 +18,15 @@ import GeoFilterItem  from "./geoFilterItem";
     matchFeatureCore(feature, zoom) {
         let currentValue;
         if (this.replacedValueToIndex) {
-            currentValue = feature.properties[this.key];
+            currentValue = feature.propertiesIndex[this.key];
         }
         else {
-            currentValue = feature.properties[this.key];
+            if (feature.properties !== undefined) {
+                currentValue = feature.properties[this.key];
+            }
+            else {
+                currentValue = feature.get(this.key)
+            }
         }
 
         if (!currentValue) {

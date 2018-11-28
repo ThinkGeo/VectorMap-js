@@ -2,7 +2,7 @@ import GeoFilter from "./geoFilter";
 import GeoFilterItem from "./geoFilterItem";
 import GeoRangeFilter from "./geoRangeFilter";
 
- class GeoZoomFilter extends GeoRangeFilter {
+class GeoZoomFilter extends GeoRangeFilter {
     constructor(filterItems) {
         super(filterItems);
     }
