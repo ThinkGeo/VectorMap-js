@@ -179,6 +179,7 @@ class GeoVectorLayer extends VectorLayer {
 
     createSource(sourceJson) {
         var sourceType = sourceJson["type"].toLowerCase();
+        var dataProjection = sourceJson["dataProjection"]
         var format = undefined;
         if (sourceType === "geojson") {
             format = new GeoJSON();
@@ -208,6 +209,10 @@ class GeoVectorLayer extends VectorLayer {
         else if (sourceType === "wfs") {
             // Format is GeoJSON.
             format = new GeoJSON();
+        }
+
+        if (dataProjection !== undefined) {
+           format["dataProjection"] = dataProjection;
         }
 
         var source = new GeoVectorSource({

@@ -84,7 +84,14 @@ export function loadFeaturesXhr(url, format, success, failure) {
                         source = /** @type {ArrayBuffer} */ (xhr.response);
                     }
                     if (source) {
-                        const features = format.readFeatures(source, { featureProjection: projection })
+                        let features = [];
+                        if (format.dataProjection !== undefined) {
+                            features = format.readFeatures(source, { featureProjection: projection, dataProjection: format.dataProjection })
+                        }
+                        else {
+                            features = format.readFeatures(source, { featureProjection: projection })
+                        }
+
                         success.call(this, features, format.readProjection(source), format.getLastExtent());
                     } else {
                         failure.call(this);
