@@ -33,11 +33,12 @@ const geosjonStyle =
     }, {
         "id": "country_name",
         "style": [{
-            "text-name": "",
+            "text-name": "name",
             "text-wrap-width": 20,
             "text-fill": "#496588",
             "text-halo-fill": "rgba(255, 255, 255, 0.5)",
             "text-halo-radius": 2,
+            "text-font": "oblique 600 16px Arial, Helvetica, sans-serif"
 
         }
         ]

@@ -144,14 +144,14 @@ const menuData = [{
         jsPath: './js/Jquery.js'
     }, {
         title: 'Angular ',
-        htmlPath: './html/event2.html',
-        jsPath: './js/event2.js'
+        htmlPath: './html/angular.html',
+        jsPath: './js/angular/angular.js'
     }, {
         title: 'React JS',
         htmlPath: './html/react.html',
         jsPath: './js/react.js'
     }, {
-        title: 'Vue',
+        title: 'Vue JS',
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]

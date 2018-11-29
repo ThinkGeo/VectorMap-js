@@ -11,7 +11,7 @@ const geosjonStyle =
         "id": "country",
         "style": [
             {
-                "line-color": "rgba(0, 0, 255, 1.0)",
+                "line-color": "#ff00ff",
                 "line-width": 2,
             },
         ]
