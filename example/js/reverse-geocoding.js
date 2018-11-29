@@ -53,9 +53,10 @@ const popUp = function (address, centerCoordinate) {
         center: ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]),
         duration: 2000
     });
+    let addressArr = address.split(",");
     overlay.setPosition(ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]));
     map.addOverlay(overlay)
-    content.innerHTML = `<p>${address}</p><code>`
+    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '')  + '</p>'
 }
 
 const reverseGeocode = function () {
@@ -75,8 +76,10 @@ const reverseGeocode = function () {
 
     let jqxhr =$.get(getURL, function (data) {
         if (data.data.bestMatchLocation) {
-            let address = data.data.bestMatchLocation.data.address
+            let address = data.data.bestMatchLocation.data.address;
+            
             popUp(address, centerCoordinate)
+            
         }else{
             window.alert('No results found');
         }

@@ -6,109 +6,82 @@ WebFont.load({
 });
 
 
-
 const styleJson = {
-    light: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json'
-};
-const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
+    light: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
+}
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
-
-//base layer 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
     layerName: 'light'
 });
 
-//nearby layer
-
-let nearbyLayer = new ol.layer.Vector({
-    source: new ol.source.Vector({ features: [] }),
-    style: function (feature) {
-        let key = feature.get('type');
-        let style = styles[key];
-        if (!style) {
-            style = new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 1],
-                    src: 'images/' + key + '.png'
-                }),
-                text: new ol.style.Text({
-                    font: '14px Arial',
-                    text: '',
-                    fill: new ol.style.Fill({ color: 'black' }),
-                    stroke: new ol.style.Stroke({ color: 'white', width: 1 })
-                })
-            });
-            styles[key] = style;
-        }
-        let textStyle = style.getText();
-        if (textStyle) {
-            textStyle.setText(feature.get('text'));
-        }
-        return style;
-    }
+let view = new ol.View({
+    center: ol.proj.fromLonLat([-96.804616, 33.120202]),
+    zoom: 15,
 })
 
-
-//map
 let map = new ol.Map({
-    layers: [light, nearbyLayer],
+    layers: [light],
     target: 'map',
-    view: new ol.View({
-        center: [-10780491.18, 3915906.38],
-        zoom: 15,
-        maxZoom: 19,
-    })
+    view: view
 });
 
-const addLayer=function(){
-    
+
+//   Elements that make up the popup.
+
+const container = document.getElementById('popup');
+const content = document.getElementById('popup-content');
+const closer = document.getElementById('popup-closer');
+
+let overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 2000
+    }
+});
+
+closer.onclick = function () {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+};
+
+const popUp = function (address, centerCoordinate) {
+    view.animate({
+        center: centerCoordinate ,
+        duration: 2000
+    });
+    let addressArr = address.split(",");
+    overlay.setPosition(centerCoordinate);
+    map.addOverlay(overlay)
+    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '') + '</p>'
 }
 
-
-const styles = {
-    searchRadius: new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: [0, 0, 255, 0.5],
-            width: 1
-        }),
-        fill: new ol.style.Fill({ color: [0, 0, 255, 0.1] })
-    }),
-    bestMatchLocation: new ol.style.Style({
-        image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            src: 'image/point.png'
-        })
-    }),
-}
+const reverseGeocode = function (coordinate) {
 
 
-const getNearby = function (coordinate) {
-    let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&Srid=3857&Lang=en&SearchRadius=500&SearchRadiusUnit=Meter&MaxResults=20&PlaceCategories=Common&VerboseResults=true`;
+    const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
+    let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&Srid=3857`;
+
     let jqxhr = $.get(getURL, function (data) {
-        console.log(data);
+        if (data.data.bestMatchLocation) {
+            let address = data.data.bestMatchLocation.data.address;
+
+            popUp(address, coordinate)
+
+        } else {
+            window.alert('No results found');
+        }
     });
+
+    jqxhr.fail(function (data) {
+        window.alert('The decimal degree latitude value you provided was out of range.');
+    })
 }
 
-const renderSearchCircle = function (coordinate) {
-    let view = _map.getView();
-    let projection = view.getProjection();
-    let resolutionAtEquator = view.getResolution();
-    let center = coordinate;
-    let pointResolution = ol.proj.getPointResolution(projection, resolutionAtEquator, center);
-    let resolutionFactor = resolutionAtEquator / pointResolution;
-    let radiusInMeter = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
-    let feature = new ol.Feature({
-        geometry: new ol.geom.Circle(center, radiusInMeter),
-        type: 'searchRadius'
-    });
-    addFeature(feature);
-}
-
-
-
-
-map.on('click', function (evt) {
-    getNearby(evt.coordinate)
-})
+map.addEventListener('click', function (evt) {
+    let coordinate = evt.coordinate
+    reverseGeocode(coordinate)
+});

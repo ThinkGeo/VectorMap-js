@@ -9,23 +9,52 @@ const geosjonStyle =
     },
     "styles": [{
         "id": "country",
-        "filter": "name='Simme'",
-        "style": [{
-            "line-color": "#f0eee8",
-            "line-width": 10
-        }
+        "style": [
+            {
+                "line-color": "#635B5A",
+                "line-width": 1,
+            },
         ]
-    }],
+    },
+    {
+        "id": "continent",
+        "style": [{
+            "filter": "name='South Dakota,Tennessee,Texas,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming'",
+            "style": [
+                {
+                    "polygon-fill": "#4c79c1",
+                }
+            ]
+        },
+            {
+                "filter": "name='Alabama,Alaska,Arizona,Arkansas,California,Colorado,Connecticut,Delaware,District of Columbia,Florida,Georgia,Hawaii,Idaho,Illinois,Indiana,Iowa,Kansas,Kentucky,Louisiana,Maine,Maryland'",
+                "style": [
+                    {
+                        "polygon-fill": "rgb(121, 166, 238)",
+                    }
+                ]
+            },{
+                "filter": "name='Massachusetts,Michigan,Minnesota,Mississippi,Missouri,Montana,Nebraska,Nevada,New Hampshire,New Jersey,New Mexico,New York,North Carolina,North Dakota,Ohio,Oklahoma,Oregon,Pennsylvania,Rhode Island,South Carolina'",
+                "style": [
+                    {
+                        "polygon-fill": "#25529a"
+                    }
+                ]
+            }
+        ]
+    }
+
+    ],
     "sources": [{
         "id": "countries_source",
-        "url": "../data/2012-02-10.kml",
+        "url": "../data/map.kml",
         "type": "KML"
     }],
     "layers": [{
         "id": "worldstreets_layers",
         "source": "countries_source",
         "styles": [
-            "country"
+            "continent", "country"
         ]
     }]
 }
@@ -37,13 +66,10 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 })
 
 let view = new ol.View({
-    center: [876970.8463461736, 5859807.853963373],
-    zoom: 10,
+    center: ol.proj.fromLonLat([-96.79620, 37.79423]),
+    zoom: 5,
     maxZoom: 19,
-    maxResolution: 40075016.68557849 / 512
 });
-
- 
 
 let map = new ol.Map({
     target: 'map',

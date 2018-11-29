@@ -18,7 +18,7 @@ const output = function (data) {
 
     return outputData;
 }
-
+ 
 
 
 WebFont.load({
@@ -28,7 +28,7 @@ WebFont.load({
     }
 });
 
-let color=[]
+let color = ["641615", "7C1B1A", "93201F", "AB2624", "C22B28", "D43533", "D94D4A", "65153C", "7C1A4A", "931F58", "AB2567", "C22A75", "D33583", "D84C91", "641563", "7C1A7A", "931F91", "AB24A9", "C228C0", "D433D1"]
 
 let styles = {
     'XXXS': new ol.style.Style({
@@ -156,7 +156,7 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        zoom: 3,
+        zoom: 5,
     }),
 });
 

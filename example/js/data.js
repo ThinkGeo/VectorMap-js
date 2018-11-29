@@ -115,10 +115,6 @@ const menuData = [{
         htmlPath: './html/WKT.html',
         jsPath: './js/WKT.js'
     }, {
-        title: 'GML ',
-        htmlPath: './html/GML.html',
-        jsPath: './js/GML.js'
-    }, {
         title: 'GPX ',
         htmlPath: './html/GPX.html',
         jsPath: './js/GPX.js'
@@ -141,21 +137,21 @@ const menuData = [{
     }]
 }, {
     dataTarget: 'JavaScript-frameworks',
-    styleName: 'JavaScript frameworks',
+    styleName: 'JavaScript Frameworks',
     subitems: [{
         title: 'JQuery',
         htmlPath: './html/jquery.html',
         jsPath: './js/Jquery.js'
     }, {
-        title: 'Angular JS',
+        title: 'Angular ',
         htmlPath: './html/event2.html',
         jsPath: './js/event2.js'
     }, {
-        title: 'React JS',
+        title: 'React',
         htmlPath: './html/event3.html',
         jsPath: './js/event3.js'
     }, {
-        title: 'Vue.JS',
+        title: 'Vue',
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]
