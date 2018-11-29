@@ -152,8 +152,8 @@ const menuData = [{
         jsPath: './js/event2.js'
     }, {
         title: 'React JS',
-        htmlPath: './html/event3.html',
-        jsPath: './js/event3.js'
+        htmlPath: './html/react.html',
+        jsPath: './js/react.js'
     }, {
         title: 'Vue.JS',
         htmlPath: './html/vue.html',
