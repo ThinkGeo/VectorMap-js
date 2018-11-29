@@ -199,7 +199,7 @@ class GeoTextStyle extends GeoStyle {
 
         this.style.getText().setText(featureText);
 
-        if (this.setLabelPosition(featureText, feature, resolution, this.style.getText(), options.strategyTree, options.frameState)) {
+        if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             var featureZindex = feature["tempTreeZindex"];
             if (featureZindex === undefined) {
                 featureZindex = 0;
@@ -249,7 +249,7 @@ class GeoTextStyle extends GeoStyle {
                     flatCoordinates = feature.getFlatCoordinates();
                     break;
                 case GeometryType.MULTI_POINT:
-                    flatCoordinates = feature.getCenter();
+                    flatCoordinates = feature.getFlatCoordinates();
                     break;
                 case GeometryType.LINE_STRING:
                     flatCoordinates = /** @type {ol.geom.LineString} */ (feature).getFlatMidpoint();
@@ -264,7 +264,7 @@ class GeoTextStyle extends GeoStyle {
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (feature).getFlatInteriorPoint();
                     break;
                 case GeometryType.MULTI_POLYGON:
-                    let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (feature).getFlatMidpoint();
+                    let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (feature).getFlatInteriorPoints();
                     break;
                 default:
             }
