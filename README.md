@@ -191,7 +191,7 @@ Besides loading the traditional KML, GeoJSON, bitmap tiles etc., __`VectorMap.js
 Map Suite vector styling schema - [Vector StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) is designed for you to specify data sources, layers and how to define and apply styles to layers. Please check the demo from "[Predefined open source styles](https://github.com/ThinkGeo/WorldStreets-Styles)" or check related documentation at https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/. 
 
 
-## Browser Suport
+## Browser Support
 __VectorMap.js__ is officially supported and tested on the last two versions of these browsers:
 
 * __Mac OS__: Chrome, Firefox, and Safari
