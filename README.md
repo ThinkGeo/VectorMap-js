@@ -201,5 +201,6 @@ __VectorMap.js__ is officially supported and tested on the last two versions of 
 
 __VectorMap.js__ should also run in any brower with HTML5 support.
 
+
 ## License
 __VectorMap.js__ is licensed under the [Apache 2.0](https://github.com/ThinkGeo/MapSuiteGisEditor/blob/master/LICENSE). 
