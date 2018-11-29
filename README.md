@@ -1,6 +1,6 @@
 
 # VectorMap.js 
-[![Build Status](https://travis-ci.org/GitHubAdmin-ThinkGeo/vectormap.svg?branch=master)](https://travis-ci.org/GitHubAdmin-ThinkGeo/vectormap-js)
+[![Build Status](https://travis-ci.org/ThinkGeo/vectormap.svg?branch=master)](https://travis-ci.org/ThinkGeo/vectormap-js)
 
 HTML5, WebGL Vector mapping library with any vector data – EsriJSON, GML, GPX, GeoJSON, KML, Vector Tile (MVT), WFS, WKT or WMS, can be beautifully rendered with CSS similar style file – [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) schema. It’s an extension of [OpenLayers](https://openlayers.org/ "OpenLayers"), and fits any requirements in browsers and mobile devices. 
 
