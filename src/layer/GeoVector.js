@@ -184,7 +184,6 @@ class GeoVectorLayer extends VectorLayer {
             format = new GeoJSON();
         }
         else if (sourceType === "esrijson") {
-            // TODO: testing
             format = new EsriJSON();
         }
         else if (sourceType === "topojson") {
@@ -195,12 +194,10 @@ class GeoVectorLayer extends VectorLayer {
             format = new IGC();
         }
         else if (sourceType === "polyline") {
-            // TODO: testing
             format = new Polyline();
         }
         else if (sourceType === "wkt") {
-            // TODO: testing
-            format = new WMT();
+            format = new WKT();
         }
         else if (sourceType === "gpx") {
             format = new GPX();
@@ -208,10 +205,9 @@ class GeoVectorLayer extends VectorLayer {
         else if (sourceType === "kml") {
             format = new KML();
         }
-        else if(sourceType==="wfs")
-        {
+        else if (sourceType === "wfs") {
             // Format is GeoJSON.
-            format= new GeoJSON();
+            format = new GeoJSON();
         }
 
         var source = new GeoVectorSource({
