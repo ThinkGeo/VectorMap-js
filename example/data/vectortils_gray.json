@@ -18,7 +18,20 @@
             "text-name": "name",
             "text-halo-fill": "#fff",
             "text-halo-radius": 3,
-            "text-font": "200 14px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif"
+            "style": [
+                {
+                    "filter": "zoom<=1",
+                    "text-font": "200 18px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif"
+                },
+                {
+                    "filter": "zoom>=2;zoom<=3",
+                    "text-font": "200 25px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif"
+                },
+                {
+                    "filter": "zoom>=4",
+                    "text-font": "200 30px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif"
+                }
+            ]
         },
         {
             "id": "state_label",
