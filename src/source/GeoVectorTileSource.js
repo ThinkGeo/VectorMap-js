@@ -175,15 +175,7 @@ class GeoVectorTileSource extends VectorTile {
 
         return createReplayGroupFunctions;
     }
-    getApplyTileInstrictions(cacheKey, vectorImageTileCoord) {
-        let featuresAndInstructs = undefined;
-        if (this.applyFeatures.containsKey(cacheKey)) {
-            if (this.applyInstructionsCache[cacheKey]) {
-                featuresAndInstructs = [this.applyFeatures.get(cacheKey), this.applyInstructionsCache[cacheKey][vectorImageTileCoord] === undefined ? [] : this.applyInstructionsCache[cacheKey][vectorImageTileCoord]];
-            }
-        }
-        return featuresAndInstructs;
-    }
+  
     saveApplyTileInstructions(cacheKey, features, homologousTilesInstructions) {
         this.applyInstructionsCache[cacheKey] = homologousTilesInstructions;
 

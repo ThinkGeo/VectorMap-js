@@ -494,7 +494,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         features = featuresAndInstructs[0];
                         instructs = featuresAndInstructs[1];
                     }
-
+                    var inbox = 0;
+                    var out = 0;
                     for (let i = 0, ii = instructs.length; i < ii; ++i) {
                         const featureIndex = instructs[i][0];
                         const feature = features[featureIndex];
@@ -513,14 +514,20 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             feature.extent_ = null;
                         }
                         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                            inbox++;
                             render.call(renderer, feature, geoStyle);
                         }
+                        else {
+                            out++;
+                        }
                     }
+                    console.log(tile.tileCoord + "|inbox" + inbox + "|out" + out + "|count" + (inbox + out));
                     replayState.replayGroupCreated = true;
                     replayGroup.finish();
                     for (const r in replayGroup.getReplays()) {
                         zIndexKeys[r] = true;
                     }
+                    console.log(sourceTile.tileCoord.toString() + "|" + sourceTile.ol_uid + "|" + tile.tileCoord.toString());
                     sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                     tile["replayCreated"] = true;
                     sourceTile["replayCreated"] = true;
@@ -529,7 +536,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 if (sourceTile.tileCoord[0] !== tile.tileCoord[0]) {
                     // Use current zoom level style draw the features from previous zoom level
                     let sourceTileCoordAndStyleZ = sourceTile.tileCoord.toString() + "," + tile.tileCoord[0];
-                    let newFeatureAndInstructs = source.getApplyTileInstrictions(sourceTileCoordAndStyleZ, tile.tileCoord)
+                    let newFeatureAndInstructs = sourceTile.getApplyTileInstrictions(tile.tileCoord[0]);
+
                     if (newFeatureAndInstructs === undefined) {
                         // 
                         var hasRequested = source.registerCreateReplayGroupEvent(sourceTileCoordAndStyleZ, createReplayGroupFunction);
@@ -538,16 +546,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             let features = featuresAndInstructs[0];
                             let geoFormat = source.getGeoFormat();
                             newFeatureAndInstructs = geoFormat.getInstructions(features, { featureProjection: projection, tileCoord: tile.tileCoord });
-                            var getFeatureTileRangeFunction = function (featureExtent, z) {
-                                var tileGrid = source.getTileGrid();
-                                return tileGrid.getTileRangeForExtentAndZ(featureExtent, z)
-                            }
+                            sourceTile.saveApplyTileInstructions(newFeatureAndInstructs, tile.tileCoord[0]);
 
-                            var homologousTilesInstructions = geoFormat.CreateInstructionsForHomologousTiles(newFeatureAndInstructs, sourceTile.tileCoord, tile.tileCoord[0], getFeatureTileRangeFunction);
-                            
-                            source.saveApplyTileInstructions(sourceTileCoordAndStyleZ, newFeatureAndInstructs[0], homologousTilesInstructions);
-
-                            newFeatureAndInstructs = source.getApplyTileInstrictions(sourceTileCoordAndStyleZ, tile.tileCoord)
                             // foreach createReplayGroup Event
                             var createReplayGroupFunctions = source.getCreateReplayGroupEvent(sourceTileCoordAndStyleZ);
                             if (createReplayGroupFunctions) {
