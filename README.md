@@ -1,6 +1,5 @@
 
-# VectorMap.js 
-<img src="https://img.shields.io/npm/dt/vectormap-js.svg">[![Build Status](https://travis-ci.org/ThinkGeo/vectormap.svg?branch=master)](https://travis-ci.org/ThinkGeo/vectormap-js)
+# VectorMap.js <img src="https://img.shields.io/npm/dt/vectormap-js.svg">  [![Build Status](https://travis-ci.org/ThinkGeo/vectormap.svg?branch=master)](https://travis-ci.org/ThinkGeo/vectormap-js)
 HTML5, WebGL Vector mapping library with any vector data – EsriJSON, GML, GPX, GeoJSON, KML, Vector Tile (MVT), WFS, WKT or WMS, can be beautifully rendered with CSS similar style file – [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) schema. It’s an extension of [OpenLayers](https://openlayers.org/ "OpenLayers"), and fits any requirements in browsers and mobile devices. 
 
 With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://openlayers.org/ "OpenLayers"), as well as any plugins or extensions created based on [OpenLayers](https://openlayers.org/ "OpenLayers"), for example, the "[3rd party libraries](http://openlayers.org/3rd-party/)" published on https://openlayers.org. With the help of them, you can easily create any styled map and put it anywhere, and build a customized geocoding or routings from other providers.
