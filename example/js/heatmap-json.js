@@ -36,7 +36,7 @@ $.ajax({
             layers: [satelliteLayer],
             target: 'map',
             view: new ol.View({
-                center: ol.proj.fromLonLat([120.15886859566, 30.235956526643]),
+                center: ol.proj.fromLonLat([120.10886859566, 30.235956526643]),
                 zoom: 14,
                 minZoom: 2
             })

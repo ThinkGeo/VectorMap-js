@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
- 
+
 const url = {
     light: 'https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png',
     dark: 'https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png'
@@ -42,9 +42,11 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll('#wrap div');
     for (let node of nodeList) {
         node.style.borderColor = '#ffffff';
+        node.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0)';
     }
     if (e.target.nodeName == 'DIV') {
-        e.target.style.borderColor = '#FF5722';
+        e.target.style.borderColor = '#e2e4e7';
+        e.target.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0.19)';
         chnageLayer(e);
 
     }

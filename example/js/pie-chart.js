@@ -7,7 +7,7 @@ WebFont.load({
 
 const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
+const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
@@ -15,7 +15,7 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
 
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png"
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
             + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
         tileSize: 512,
     }),
@@ -40,7 +40,7 @@ let pieChartOvery = (id, data, pt) => {
         series: [{
             name: 'Browser',
             type: 'pie',
-            radius: '22%',
+            radius: '40%',
             data: data,
             itemStyle: {
                 emphasis: {
@@ -62,7 +62,7 @@ let pieChartOvery = (id, data, pt) => {
     });
 }
 
-for (let i = 0; i < 8; i++) {
+for (let i = 0; i < 12; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `pieChart${i}`;
     aqiDiv.style = "height:22vh;width:30vh";
@@ -72,51 +72,96 @@ for (let i = 0; i < 8; i++) {
 //simulated data 
 let data1 = [{
     value: 20,
-    name: 'Chrome'
+    name: 'Chrome',
+    itemStyle: {
+        color: '#f70c04'
+    }
 }, {
     value: 100,
-    name: 'IE9+'
+    name: 'IE9+',
+    itemStyle: {
+        color: '#f98e03'
+    }
 }, {
     value: 120,
-    name: 'IE8-'
+    name: 'IE8-',
+    itemStyle: {
+        color: '#c23531'
+    }
 }, {
     value: 135,
-    name: 'Safari'
+    name: 'Safari',
+    itemStyle: {
+        color: '#f8ef04'
+    }
 }, {
     value: 300,
-    name: 'Firefox'
+    name: 'Firefox',
+    itemStyle: {
+        color: '#1206f9'
+    }
 }];
 let data2 = [{
+    value: 2000,
+    name: 'Chrome',
+    itemStyle: {
+        color: '#f70c04'
+    }
+}, {
     value: 800,
-    name: 'Chrome'
+    name: 'IE9+',
+    itemStyle: {
+        color: '#f98e03'
+    }
 }, {
-    value: 500,
-    name: 'IE9+'
+    value: 400,
+    name: 'IE8-',
+    itemStyle: {
+        color: '#c23531'
+    }
 }, {
-    value: 100,
-    name: 'IE8-'
+    value: 135,
+    name: 'Safari',
+    itemStyle: {
+        color: '#f8ef04'
+    }
 }, {
-    value: 300,
-    name: 'Safari'
-}, {
-    value: 200,
-    name: 'Firefox'
+    value: 1200,
+    name: 'Firefox',
+    itemStyle: {
+        color: '#1206f9'
+    }
 }];
 let data3 = [{
-    value: 335,
-    name: 'Chrome'
+    value: 1850,
+    name: 'Chrome',
+    itemStyle: {
+        color: '#f70c04'
+    }
 }, {
-    value: 500,
-    name: 'IE9+'
+    value: 750,
+    name: 'IE9+',
+    itemStyle: {
+        color: '#f98e03'
+    }
 }, {
-    value: 225,
-    name: 'IE8-'
+    value: 260,
+    name: 'IE8-',
+    itemStyle: {
+        color: '#c23531'
+    }
 }, {
-    value: 300,
-    name: 'Safari'
+    value: 200,
+    name: 'Safari',
+    itemStyle: {
+        color: '#f8ef04'
+    }
 }, {
     value: 1000,
-    name: 'Firefox'
+    name: 'Firefox',
+    itemStyle: {
+        color: '#1206f9'
+    }
 }];
 
 map.addOverlay(pieChartOvery("pieChart0", data1, ol.proj.fromLonLat([-117.954940, 34.053272])));
@@ -127,5 +172,12 @@ map.addOverlay(pieChartOvery("pieChart4", data3, ol.proj.fromLonLat([-95.586778,
 map.addOverlay(pieChartOvery("pieChart5", data2, ol.proj.fromLonLat([-77.569200, 38.857395])))
 map.addOverlay(pieChartOvery("pieChart6", data1, ol.proj.fromLonLat([-84.204942, 33.724955])))
 map.addOverlay(pieChartOvery("pieChart7", data3, ol.proj.fromLonLat([-87.412950, 41.902827])))
+
+map.addOverlay(pieChartOvery("pieChart8", data3, ol.proj.fromLonLat([-122.447229, 37.765230])))
+map.addOverlay(pieChartOvery("pieChart9", data2, ol.proj.fromLonLat([-80.569200, 25.857395])))
+map.addOverlay(pieChartOvery("pieChart10", data1, ol.proj.fromLonLat([-93.204942, 44.324955])))
+map.addOverlay(pieChartOvery("pieChart11", data3, ol.proj.fromLonLat([-93.0262950, 44.902827])))
+
+
 map.getView().setZoom(5);
-map.getView().setCenter(ol.proj.fromLonLat([-100.940014, 40.431607]));
+map.getView().setCenter(ol.proj.fromLonLat([-95.940014, 38.431607]));

@@ -22,19 +22,21 @@ let satelliteLayer = new ol.layer.Tile({
 });
 
 let map = new ol.Map({
-    layers: [satelliteLayer],
+    layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
-        center: [11877713.642017495, 4671206.770222437],
+        center: ol.proj.fromLonLat([-92.954940, 32.806366]),
         zoom: 4
     })
 });
+
+
 
 //AQI layer
 let AQIlayer = (id, data, color, pt) => {
     var lineStyle = {
         normal: {
-            width: 1,
+            width: 2,
             opacity: 0.5
         }
     };
@@ -187,4 +189,4 @@ map.addOverlay(AQIlayer("AQIChart5", data3, "#C23531", ol.proj.fromLonLat([-77.5
 map.addOverlay(AQIlayer("AQIChart6", data4, "#38A700", ol.proj.fromLonLat([-84.204942, 33.724955])))
 map.addOverlay(AQIlayer("AQIChart7", data2, "#FA00FA", ol.proj.fromLonLat([-87.412950, 41.902827])))
 map.getView().setZoom(5);
-map.getView().setCenter(ol.proj.fromLonLat([-100.940014, 40.431607]));
+map.getView().setCenter(ol.proj.fromLonLat([-95.940014, 38.431607]));

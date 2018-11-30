@@ -87,7 +87,7 @@ __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
 __Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control with one vector layer created. 
 ```javascript
 <script>
-    var worldstreetsStyle = "http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+    var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
     var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
             apiKey:'your-ThinkGeo-Cloud-Service-key'

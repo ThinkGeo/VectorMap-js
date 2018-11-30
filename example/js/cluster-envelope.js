@@ -25,8 +25,8 @@ let map = new ol.Map({
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([120.1188869566, 30.235956526643]),
-        zoom: 3
+        center: ol.proj.fromLonLat([10.1188869566, 45.235956526643]),
+        zoom: 5
     })
 })
 
@@ -36,7 +36,7 @@ const getStyle = function (feature, resolution) {
     let size = feature.get('features').length;
     let style = styleCache[size];
     if (!style) {
-        let color = size > 25 ? "248, 128, 0" : size > 8 ? "248, 192, 0" : "128, 192, 64";
+        let color = size > 8 ? "248, 128, 0" : size > 2 ? "248, 192, 0" : "128, 192, 64";
         let radius = Math.max(8, Math.min(size * 0.75, 20));
         style = styleCache[size] = [new ol.style.Style({
             image: new ol.style.Circle({

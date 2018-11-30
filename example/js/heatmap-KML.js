@@ -37,8 +37,8 @@ let map = new ol.Map({
     layers: [worldStreetLayer, heatMapLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([149.704275, -19.037667]),
-        zoom: 2,
+        center: ol.proj.fromLonLat([149.704275, -15.037667]),
+        zoom: 4,
         minZoom: 2
     })
 });

@@ -1,5 +1,6 @@
 const childPageTemplate = ` <div id="child-page-title">
-    <h4></h4>
+    <h1></h1>
+    <p><p>
 </div>
 <ul class="nav nav-tabs" id="child-page-component" role="tablist">
      <li class="nav-item">
@@ -11,10 +12,11 @@ const childPageTemplate = ` <div id="child-page-title">
       <li class="nav-item mr-auto">
         <a class="nav-link "  data-toggle="tab" href="#child-page-js">JavaScript</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" id="codepen">
       <a  class="nav-link" href="https://codepen.io" target="_blank">
+        Open in: 
         <img src="./image/edit-icon.png">
-        Edit</a>
+       </a>
     </li>
  
  
@@ -37,8 +39,10 @@ const ShowHandleFuns = class {
         this.htmlPath = childPageObj.htmlPath;
         this.jsPath = childPageObj.jsPath;
         this.title = childPageObj.title;
+        this.comments = childPageObj.comments;
         let childPageClickButtonsParent = document.querySelector('#child-page-component');
-        document.querySelector('#child-page-title>h4').innerText = this.title;
+        document.querySelector('#child-page-title>h1').innerText = this.title;
+        document.querySelector('#child-page-title>p').innerText = this.comments;
     }
 
     showCodeFun(div, path) {

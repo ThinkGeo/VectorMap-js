@@ -22,7 +22,7 @@ let satelliteLayer = new ol.layer.Tile({
 });
 
 let map = new ol.Map({
-    layers: [satelliteLayer],
+    layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([102.957672, 38.034109]),
@@ -63,15 +63,6 @@ xhr.onreadystatechange = function () {
                 trigger: 'item'
             },
             openlayers: {},
-            legend: {
-                orient: 'vertical',
-                y: 'top',
-                x: 'right',
-                data: ['pm2.5'],
-                textStyle: {
-                    color: '#fff'
-                }
-            },
             series: [
                 {
                     name: 'pm2.5',
@@ -87,7 +78,7 @@ xhr.onreadystatechange = function () {
                             show: false
                         },
                         emphasis: {
-                            show: true
+                            show: false
                         }
                     },
                     itemStyle: {

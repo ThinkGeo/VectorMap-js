@@ -39,7 +39,7 @@ const geosjonStyle =
     }]
 }
 const styleJson = {
-    light: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
+    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
 const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 

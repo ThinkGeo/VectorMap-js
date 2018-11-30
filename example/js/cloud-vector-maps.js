@@ -7,8 +7,8 @@ WebFont.load({
 
 
 const styleJson = {
-    light: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
-    dark: 'http://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json'
+    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
+    dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json'
 }
 const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 
@@ -38,11 +38,12 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll('#wrap div');
     for (let node of nodeList) {
         node.style.borderColor = '#ffffff';
+        node.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0)';
     }
     if (e.target.nodeName == 'DIV') {
-        e.target.style.borderColor = '#FF5722';
+        e.target.style.borderColor = '#e2e4e7';
+        e.target.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0.19)';
         chnageLayer(e);
-      
     }
 })
 

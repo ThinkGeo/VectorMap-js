@@ -20,8 +20,8 @@ let map = new ol.Map({
     layers: [imageryLayer, imageryLabeLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        zoom: 4,
+        center: ol.proj.fromLonLat([-96.79620, 35.79423]),
+        zoom: 5,
         minZoom: 3,
         maxZoom: 8
     }),
