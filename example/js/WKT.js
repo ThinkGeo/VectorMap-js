@@ -11,7 +11,7 @@ const geosjonStyle =
         "id": "country",
         "style": [
             {
-                "polygon-fill": "#f12f6e",
+                "polygon-fill": "rgba(241,47,110,0.5)"
             },
         ]
     },
@@ -47,8 +47,8 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 })
 
 let view = new ol.View({
-    center: ol.proj.fromLonLat([-96.79620, 37.79423]),
-    zoom: 5,
+    center: ol.proj.fromLonLat([-86.79620, 32.79423]),
+    zoom: 7,
     maxZoom: 19,
 });
 
