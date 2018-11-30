@@ -162,7 +162,6 @@ self.request = function (requestInfo, methodInfo) {
                 status: "cancel",
             };
 
-
             postMessageData.messageData = resultMessageData;
 
             var xhr = new XMLHttpRequest();
@@ -220,7 +219,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let replayGroupInfo = createReplayGroupInfo["replayGroupInfo"];
     let resolution = replayGroupInfo[2];
     let requestCoord = createReplayGroupInfo["requestCoord"];
-    let tileCoord = createReplayGroupInfo["tileCoord"];
+    let sourceTileCoord = createReplayGroupInfo["sourceTileCoord"];
     let tileProjectionInfo = createReplayGroupInfo["tileProjectionInfo"];
     let projectInfo = createReplayGroupInfo["projectInfo"];
     let sourceTileExtent = createReplayGroupInfo["sourceTileExtent"];
@@ -228,24 +227,31 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let squaredTolerance = createReplayGroupInfo["squaredTolerance"];
     let coordinateToPixelTransform = createReplayGroupInfo["coordinateToPixelTransform"];
     let pixelRatio = createReplayGroupInfo["pixelRatio"]
+    let vectorImageTileCoord = createReplayGroupInfo["vectorImageTileCoord"];
+    let formatId = createReplayGroupInfo["formatId"];
 
     let frameState = {
         coordinateToPixelTransform: coordinateToPixelTransform,
         pixelRatio: pixelRatio
     };
 
-    var cacheKey = requestCoord.join(",") + "," + tileCoord[0];
-    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, tileCoord);
+    var cacheKey = requestCoord.join(",") + "," + sourceTileCoord[0];
+    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, sourceTileCoord);
     if (tileFeatureAndInstrictions === undefined) {
         debugger;
     }
-    if (requestCoord[0] === tileCoord[0] && tileCoord[0] > 3) {
-        self.removeTileInstructions(cacheKey);
+    if (sourceTileCoord.toString() != vectorImageTileCoord.toString()) {
+        console.log("=====requestCoord:" + requestCoord + " sourceTileCoord:" + sourceTileCoord + " vectorImageTileCoord:" + vectorImageTileCoord);
+        let newFeatureAndInstructs = self.getApplyTileInstructions(sourceTileCoord, vectorImageTileCoord[0]);
+        if (newFeatureAndInstructs === undefined) {
+            newFeatureAndInstructs = self.createApplyTileInstructions(tileFeatureAndInstrictions[0], formatId, vectorImageTileCoord[0]);
+            self.saveApplyTileInstructions(newFeatureAndInstructs, sourceTileCoord, vectorImageTileCoord[0]);
+        }
+        tileFeatureAndInstrictions = newFeatureAndInstructs;
     }
     let features = tileFeatureAndInstrictions[0];
     let instructs = tileFeatureAndInstrictions[1];
     let strategyTree = rbush(9);
-
 
     let tileProjection = new Projection({
         code: 'EPSG:3857',
@@ -351,6 +357,155 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
 // Method
 
+self.saveApplyTileInstructions = function (newFeatureAndInstructs, sourceTileCoord, vectorImageTileZoom) {
+    let key = sourceTileCoord + "," + vectorImageTileZoom;
+    if (self.applyFeatures === undefined) {
+        self.applyFeatures = new LRUCache(16);
+    }
+    self.applyFeatures.set(key, newFeatureAndInstructs);
+}
+
+self.getApplyTileInstructions = function (sourceTileCoord, vectorImageTileZoom) {
+    if (self.applyFeatures === undefined) {
+        return;
+    }
+    else {
+        var key = sourceTileCoord + "," + vectorImageTileZoom;
+        if (self.applyFeatures.containsKey(key)) {
+            return self.applyFeatures.get(key);
+        }
+    }
+}
+
+self.createApplyTileInstructions = function (features, formatId, vectorImageTileZoom) {
+    const outputFeatures = [];
+    var styleJsonCache = self.styleJsonCache[formatId];
+    var zoomMatchedGeoStylesGroupByLayerId = styleJsonCache.geoStyleGroupByZoom[vectorImageTileZoom];
+    if (!zoomMatchedGeoStylesGroupByLayerId) {
+        return [[], []];
+    }
+
+    var instructsCache = [];
+    var featureIndex = -1;
+    for (var pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
+        let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[pbfLayerName];
+        if (cacheTrees && cacheTrees.length > 0) {
+            for (let i = 0; i < features.length; i++) {
+                let feature = features[i];
+                if (feature.get(this.layerName) === pbfLayerName) {
+                    let matchedFeature = undefined;
+                    for (let j = 0; j < cacheTrees.length; j++) {
+
+                        let cacheTree = cacheTrees[j];
+                        let treeIndex = cacheTree.treeIndex;
+                        if (instructsCache[treeIndex] === undefined) {
+                            instructsCache[treeIndex] = {
+                                min: 10,
+                                max: -10
+                            };
+                        }
+                        let matchedNode;
+
+                        let checkNodeMatched = function (node) {
+                            let styleJsonCacheItem = node.data;
+                            let matched = false;
+                            if (styleJsonCacheItem.filterGroup.length > 0) {
+                                for (let i = 0; i < styleJsonCacheItem.filterGroup.length; i++) {
+                                    let filters = styleJsonCacheItem.filterGroup[i];
+                                    let groupMatched = true;
+                                    for (let j = 0; j < filters.length; j++) {
+                                        let filter = filters[j];
+                                        if (!filter.matchOLFeature(feature, vectorImageTileZoom)) {
+                                            groupMatched = false;
+                                            break;
+                                        }
+                                    }
+                                    if (groupMatched) {
+                                        matched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else {
+                                matched = true;
+                            }
+
+                            return matched;
+                        };
+                        let selectNode = function (node) {
+                            matchedNode = node.data;
+                        };
+                        cacheTree.traverseNode(checkNodeMatched, selectNode);
+                        if (matchedNode) {
+                            if (matchedFeature === undefined) {
+                                matchedFeature = feature;
+                                outputFeatures.push(feature);
+                                featureIndex += 1;
+                            }
+
+                            let zindex;
+                            if (cacheTree.root.data.zIndex) {
+                                zindex = feature.get(cacheTree.root.data.zIndex);
+                            }
+                            if (isNaN(zindex)) {
+                                zindex = 0;
+                            }
+
+                            if (instructsCache[treeIndex][zindex] === undefined) {
+                                instructsCache[treeIndex][zindex] = [];
+                                if (zindex < instructsCache[treeIndex]["min"]) {
+                                    instructsCache[treeIndex]["min"] = zindex;
+                                }
+                                if (zindex > instructsCache[treeIndex]["max"]) {
+                                    instructsCache[treeIndex]["max"] = zindex;
+                                }
+                            }
+
+                            instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
+                            feature.extent_ = undefined;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+    }
+
+    let instructs = [];
+    for (let i = 0; i < instructsCache.length; i++) {
+        let instructsInOneTree = instructsCache[i];
+        if (instructsInOneTree) {
+            for (let j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
+                let instructsInOneZIndex = instructsInOneTree[j];
+                if (instructsInOneZIndex) {
+                    let childrenInstructs = [];
+                    for (let h = 0; h < instructsInOneZIndex.length; h++) {
+                        let instruct = instructsInOneZIndex[h];
+                        var feature = outputFeatures[instruct[0]];
+                        feature.styleId = feature.styleId ? feature.styleId : {}
+                        if (instruct[1].geoStyle) {
+                            feature.styleId[instruct[1].geoStyle.id] = 0;
+                            instructs.push([instruct[0], instruct[1].geoStyle, i]);
+                        }
+
+                        if (instruct[1].childrenGeoStyles) {
+                            for (let k = 0; k < instruct[1].childrenGeoStyles.length; k++) {
+                                feature.styleId[instruct[1].childrenGeoStyles[k].id] = 1;
+                                childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k], i]);
+                            }
+                        }
+                    }
+                    Array.prototype.push.apply(instructs, childrenInstructs);
+                }
+            }
+        }
+    }
+    return [outputFeatures, instructs]
+}
 
 self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
     if (!styles) {
@@ -403,8 +558,6 @@ self.createChildrenNode = function (currentNode, item, zoom) {
         }
     }
 }
-
-
 
 self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
     var featuresAndInstructions = self.readFeaturesAndInstructions(source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);

@@ -25,6 +25,7 @@ import { listen } from 'ol/events';
 import Instruction from "ol/render/canvas/Instruction";
 import { ORDER } from 'ol/render/replay';
 import { format } from 'ol/coordinate';
+import EventType from 'ol/events/EventType';
 
 const IMAGE_REPLAYS = {
     'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -198,6 +199,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
+                    console.log(tile.tileCoord + " | " + tile.tileKeys)
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     this.renderedTiles.push(tile);
                 }
@@ -264,6 +266,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 translateTransform(transform, -tileExtent[0], -tileExtent[3]);
                 const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
                     tile.tileCoord.toString()));
+                console.log("++++replay:" + sourceTile.tileCoord + " | " + tile.tileCoord)
                 replayGroup.replay(context, transform, 0, {}, true, replays);
             }
         }
@@ -345,7 +348,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
             let strategyTree = rbush(9);
 
-
             /**
              * @param {import("../../Feature.js").FeatureLike} feature Feature.
              * @this {CanvasVectorTileLayerRenderer}
@@ -382,44 +384,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
             var workerManager = source.getWorkerManager();
             if (workerManager) {
-
-                let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
-
-                if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-                    // projected tile extent
-                    tileProjection.setWorldExtent(sourceTileExtent);
-                    // tile extent in tile pixel space
-                    tileProjection.setExtent(sourceTile.getExtent());
-                }
-
-                let tileProjectionInfo = {};
-                for (let name in tileProjection) {
-                    if (typeof tileProjection[name] !== "function") {
-                        tileProjectionInfo[name] = tileProjection[name];
-                    }
-                }
-                let projectInfo = {};
-                for (let name in projection) {
-                    if (typeof projection[name] !== "function") {
-                        projectInfo[name] = projection[name];
-                    }
-                }
-
                 let rendererSelf = this;
-                let createReplayGroupMethodInfo = {
-                    replayGroupInfo: replayGroupInfo,
-                    requestCoord: requestCoord,
-                    tileCoord: sourceTileCoord,
-                    tileProjectionInfo: tileProjectionInfo,
-                    projectInfo: projectInfo,
-                    squaredTolerance: squaredTolerance,
-                    sourceTileExtent: sourceTileExtent,
-                    bufferedExtent: bufferedExtent,
-                    coordinateToPixelTransform: frameState.coordinateToPixelTransform,
-                    pixelRatio: frameState.pixelRatio
-                };
-
-
+                let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
                 let createReplayGroupCallback = function (data, methodInfo) {
                     let replaysByZIndex = data["replays"];
                     let featuresInfo = data["features"];
@@ -472,13 +438,47 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     if (sourceTile.tileCoord.toString() !== tile.tileCoord.toString()) {
                         sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);
                     }
+                    console.log("replayCreated" + tile.tileCoord + " | " + tile.tileKeys)
                     tile["replayCreated"] = true;
                     sourceTile["replayCreated"] = true;
+                    // The apply tile didn't enqueue, so it has no events that refresh the map.
+                    listen(tile, EventType.CHANGE, frameState.tileQueue.handleTileChange, frameState.tileQueue);
                     tile.setState(TileState.LOADED);
-
                 }
-                replayState.replayGroupCreated = false;
 
+                if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                    // projected tile extent
+                    tileProjection.setWorldExtent(sourceTileExtent);
+                    // tile extent in tile pixel space
+                    tileProjection.setExtent(sourceTile.getExtent());
+                }
+                let tileProjectionInfo = {};
+                for (let name in tileProjection) {
+                    if (typeof tileProjection[name] !== "function") {
+                        tileProjectionInfo[name] = tileProjection[name];
+                    }
+                }
+                let projectInfo = {};
+                for (let name in projection) {
+                    if (typeof projection[name] !== "function") {
+                        projectInfo[name] = projection[name];
+                    }
+                }
+                let createReplayGroupMethodInfo = {
+                    replayGroupInfo: replayGroupInfo,
+                    formatId: getUid(source.getGeoFormat()),
+                    requestCoord: requestCoord,
+                    sourceTileCoord: sourceTileCoord,
+                    tileProjectionInfo: tileProjectionInfo,
+                    projectInfo: projectInfo,
+                    squaredTolerance: squaredTolerance,
+                    sourceTileExtent: sourceTileExtent,
+                    bufferedExtent: bufferedExtent,
+                    coordinateToPixelTransform: frameState.coordinateToPixelTransform,
+                    pixelRatio: frameState.pixelRatio,
+                    vectorImageTileCoord: tile.tileCoord
+                };
+                replayState.replayGroupCreated = false;
                 workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", createReplayGroupMethodInfo, createReplayGroupCallback, undefined);
             }
             else {

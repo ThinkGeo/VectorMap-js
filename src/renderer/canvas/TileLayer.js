@@ -1,14 +1,14 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import {getUid} from 'ol/util';
+import { getUid } from 'ol/util';
 import LayerType from 'ol/LayerType';
 import TileRange from 'ol/TileRange';
 import TileState from 'ol/TileState';
 import ViewHint from 'ol/ViewHint';
-import {createCanvasContext2D} from 'ol/dom';
-import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from 'ol/extent';
-import {create as createTransform, compose as composeTransform} from 'ol/transform';
+import { createCanvasContext2D } from 'ol/dom';
+import { containsExtent, createEmpty, equals, getIntersection, isEmpty } from 'ol/extent';
+import { create as createTransform, compose as composeTransform } from 'ol/transform';
 
 import IntermediateCanvasRenderer from './IntermediateCanvas';
 
@@ -99,8 +99,8 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     return tileState == TileState.LOADED ||
-        tileState == TileState.EMPTY ||
-        tileState == TileState.ERROR && !useInterimTilesOnError;
+      tileState == TileState.EMPTY ||
+      tileState == TileState.ERROR && !useInterimTilesOnError;
   }
 
   /**
@@ -218,10 +218,10 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
     if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
       this.newTiles_ ||
-          !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
-          this.renderedRevision != sourceRevision ||
-          oversampling != this.oversampling_ ||
-          !animatingOrInteracting && renderedResolution != this.renderedResolution
+      !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
+      this.renderedRevision != sourceRevision ||
+      oversampling != this.oversampling_ ||
+      !animatingOrInteracting && renderedResolution != this.renderedResolution
     )) {
 
       const context = this.context;
@@ -245,7 +245,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
       this.renderedTiles.length = 0;
       /** @type {Array<number>} */
       const zs = Object.keys(tilesToDrawByZ).map(Number);
-      zs.sort(function(a, b) {
+      zs.sort(function (a, b) {
         if (a === z) {
           return 1;
         } else if (b === z) {
@@ -375,7 +375,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
  * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasTileLayerRenderer['handles'] = function(layer) {
+CanvasTileLayerRenderer['handles'] = function (layer) {
   return layer.getType() === LayerType.TILE;
 };
 
@@ -386,8 +386,8 @@ CanvasTileLayerRenderer['handles'] = function(layer) {
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
  * @return {CanvasTileLayerRenderer} The layer renderer.
  */
-CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasTileLayerRenderer(/** @type {import("../../layer/Tile.js").default} */ (layer));
+CanvasTileLayerRenderer['create'] = function (mapRenderer, layer) {
+  return new CanvasTileLayerRenderer(/** @type {import("../../layer/Tile.js").default} */(layer));
 };
 
 

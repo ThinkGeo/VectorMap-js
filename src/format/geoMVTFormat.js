@@ -196,7 +196,6 @@ class GeoMVTFormat extends MVT {
 
         var featureIndex = -1;
 
-        let pbfLayerNamesWithGeoStyle = [];
         for (let pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
             let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[pbfLayerName];
             if (cacheTrees && cacheTrees.length > 0) {
