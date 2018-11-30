@@ -144,6 +144,10 @@ const menuData = [{
         title: 'GPX ',
         htmlPath: './html/GPX.html',
         jsPath: './js/GPX.js'
+    },{
+        title: 'Projection ',
+        htmlPath: './html/projection.html',
+        jsPath: './js/projection.js'
     }]
 }, {
     dataTarget: 'thinkGeo-cloud',
