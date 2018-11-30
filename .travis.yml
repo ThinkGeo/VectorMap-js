@@ -1,7 +1,18 @@
 language: node_js
+sudo: false
 node_js:
-  - "7"
-install:
-    - npm install
+- "6"
+- "8"
+- "10"
+- "11"
+addons:
+  chrome: stable
+env:
+  - NPM_SCRIPT=build
+matrix:
+  include:
+    # Run browser tests only on one Node.js version to save time.
+    - node_js: "8"
+      env: NPM_SCRIPT=build
 script:
-  npm run build
+  - npm run $NPM_SCRIPT
