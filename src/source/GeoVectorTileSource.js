@@ -28,6 +28,10 @@ class GeoVectorTileSource extends VectorTile {
         this.features = new LRUCache(4);
         this.clientId = options.clientId;
         this.clientSecret = options.clientSecret;
+
+        this.applyFeatures = new LRUCache(4);
+        this.applyInstructionsCache = [];
+        this.registerCreateReplayGroup = {};
     }
 
     // Add "isGeoVectorTile" for VectorTImageTile
@@ -105,9 +109,7 @@ class GeoVectorTileSource extends VectorTile {
 
     registerTileLoadEvent(tile, successFunction, failureFunction) {
         var hasRequested = true;
-
         let requestKey = tile.requestCoord.join(",") + "," + tile.tileCoord[0];
-
         let loadEventInfo = {
             tile: tile,
             successFunction: successFunction,
@@ -130,7 +132,6 @@ class GeoVectorTileSource extends VectorTile {
 
         return tileLoadEventInfos;
     }
-
     saveTileInstructions(cacheKey, features, homologousTilesInstructions) {
         this.instructionsCache[cacheKey] = homologousTilesInstructions;
 
@@ -146,7 +147,6 @@ class GeoVectorTileSource extends VectorTile {
             }
         }
     }
-
     getTileInstrictions(cacheKey, tileCoord) {
         let featuresAndInstructs = undefined;
         if (this.features.containsKey(cacheKey)) {
@@ -157,6 +157,44 @@ class GeoVectorTileSource extends VectorTile {
 
         return featuresAndInstructs;
     }
+
+
+    registerCreateReplayGroupEvent(sourceTileCoordAndStyleZ, createReplayGroupFunction) {
+        let hasCreated = true;
+        if (this.registerCreateReplayGroup[sourceTileCoordAndStyleZ] === undefined) {
+            this.registerCreateReplayGroup[sourceTileCoordAndStyleZ] = [];
+            hasCreated = false;
+        }
+
+        this.registerCreateReplayGroup[sourceTileCoordAndStyleZ].push(createReplayGroupFunction);
+        return hasCreated;
+    }
+    getCreateReplayGroupEvent(sourceTileCoordAndStyleZ) {
+        let createReplayGroupFunctions = this.registerCreateReplayGroup[sourceTileCoordAndStyleZ]
+        delete this.registerCreateReplayGroup[sourceTileCoordAndStyleZ];
+
+        return createReplayGroupFunctions;
+    }
+    getApplyTileInstrictions(cacheKey, vectorImageTileCoord) {
+        let featuresAndInstructs = undefined;
+        if (this.applyFeatures.containsKey(cacheKey)) {
+            if (this.applyInstructionsCache[cacheKey]) {
+                featuresAndInstructs = [this.applyFeatures.get(cacheKey), this.applyInstructionsCache[cacheKey][vectorImageTileCoord] === undefined ? [] : this.applyInstructionsCache[cacheKey][vectorImageTileCoord]];
+            }
+        }
+        return featuresAndInstructs;
+    }
+    saveApplyTileInstructions(cacheKey, features, homologousTilesInstructions) {
+        this.applyInstructionsCache[cacheKey] = homologousTilesInstructions;
+
+        if (this.applyFeatures.containsKey(cacheKey)) {
+            this.applyFeatures.replace(cacheKey, features);
+        }
+        else {
+            this.applyFeatures.set(cacheKey, features);
+        }
+    }
+
 
     setWorkerManager(workerManager) {
         this.workerManager = workerManager;

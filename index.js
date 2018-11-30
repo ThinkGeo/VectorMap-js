@@ -1,5 +1,5 @@
 let layer = new ol.mapsuite.VectorTileLayer(light, {
-    multithread: true
+    multithread: false
 });
 
 var geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
@@ -54,9 +54,8 @@ view.on("change:resolution", function (e) {
 var map = new ol.Map({
     target: 'map',
     layers: [
-        layer
+        layer,tilegrid
     ],
     view: view,
-    loadTilesWhileInteracting: true,
-    loadTilesWhileAnimating: true
+
 });

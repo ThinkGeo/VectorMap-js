@@ -63,8 +63,8 @@ export function loadFeaturesXhr(url, format, success, failure) {
       var sendRequest = true;
 
       // Try get cached features and instrictions;
-      let cacheKey = this.requestCoord + "," + this.tileCoord[0];
-      var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(cacheKey, this.tileCoord);
+      let requestCoordAndStyleZ = this.requestCoord + "," + this.tileCoord[0];
+      var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(requestCoordAndStyleZ, this.tileCoord);
 
       if (tileFeatureAndInstrictions) {
         success.call(this, tileFeatureAndInstrictions,
@@ -161,20 +161,20 @@ export function loadFeaturesXhr(url, format, success, failure) {
                   var homologousTilesInstructions = format.CreateInstructionsForHomologousTiles(featuresAndInstructions, this.requestCoord, this.tileCoord[0]);
 
                   // Save the homologousTilesInstructions to source
-                  vectorTileSource.saveTileInstructions(cacheKey, featuresAndInstructions[0], homologousTilesInstructions);
+                  vectorTileSource.saveTileInstructions(requestCoordAndStyleZ, featuresAndInstructions[0], homologousTilesInstructions);
 
                   // Get tile load Event
-                  var tileLoadEventInfos = vectorTileSource.getTileLoadEvent(cacheKey)
+                  var tileLoadEventInfos = vectorTileSource.getTileLoadEvent(requestCoordAndStyleZ)
 
                   for (let i = 0; i < tileLoadEventInfos.length; i++) {
                     let loadEventInfo = tileLoadEventInfos[i];
-                    var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(cacheKey, loadEventInfo.tile.tileCoord);
+                    var tileFeatureAndInstrictions = vectorTileSource.getTileInstrictions(requestCoordAndStyleZ, loadEventInfo.tile.tileCoord);
                     loadEventInfo.successFunction.call(loadEventInfo.tile, tileFeatureAndInstrictions, format.readProjection(source), format.getLastExtent())
                   }
                 }
                 else {
                   // Get tile load Event
-                  var tileLoadEventInfos = vectorTileSource.getTileLoadEvent(cacheKey)
+                  var tileLoadEventInfos = vectorTileSource.getTileLoadEvent(requestCoordAndStyleZ)
                   for (let i = 0; i < tileLoadEventInfos.length; i++) {
                     let loadEventInfo = tileLoadEventInfos[i];
                     loadEventInfo.successFunction.call(loadEventInfo.tile, featuresAndInstructions, format.readProjection(source), format.getLastExtent())

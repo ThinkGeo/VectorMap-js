@@ -313,10 +313,11 @@ class GeoMVTFormat extends MVT {
         return [outputFeatures, instructs];
     }
 
-    CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, zoom) {
+    CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, zoom, getFeatureTileRangeFunction) {
         let subTileCachedInstruct = {};
         let offsetZ = zoom - requestCoord[0];
         let tileSize = 4096 / Math.pow(2, offsetZ);
+
         let tileRange = this.getTileRange(requestCoord, zoom);
 
         let features = featuresAndInstructions[0];
@@ -329,12 +330,18 @@ class GeoMVTFormat extends MVT {
             let feature = features[instruct[0]];
 
             let featureExtent = feature.getExtent();
-
-            let featureTileRange = this.getFeatureTileRange(featureExtent, 4096, tileSize, requestCoord, offsetZ);
+            let featureTileRange = undefined;
+            if (getFeatureTileRangeFunction !== undefined) {
+                let featureRange = getFeatureTileRangeFunction(featureExtent, zoom);
+                featureTileRange = [featureRange.minX, featureRange.minY, featureRange.maxX, featureRange.maxY]
+            }
+            else {
+                featureTileRange = this.getFeatureTileRange(featureExtent, 4096, tileSize, requestCoord, offsetZ);
+            }
 
             for (let x = tileRange[0] > featureTileRange[0] ? tileRange[0] : featureTileRange[0], xx = featureTileRange[2] > tileRange[2] ? tileRange[2] : featureTileRange[2]; x <= xx; x++) {
                 for (let y = tileRange[1] > featureTileRange[1] ? tileRange[1] : featureTileRange[1], yy = featureTileRange[3] > tileRange[3] ? tileRange[3] : featureTileRange[3]; y <= yy; y++) {
-                    let tileKey = "" + [zoom, x, y];
+                    let tileKey = zoom + "," + x + "," + y
                     if (subTileCachedInstruct[tileKey] === undefined) {
                         subTileCachedInstruct[tileKey] = [];
                     }

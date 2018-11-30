@@ -21,6 +21,11 @@ class GeoVectorTile extends VectorTile {
         super.disposeInternal();
     }
 
+    getApplyTileInstrictions(zoom)
+    {
+        
+    }
+
 }
 
 export default GeoVectorTile;
