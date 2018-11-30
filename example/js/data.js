@@ -188,7 +188,7 @@ const menuData = [{
         jsPath: './js/react.js'
     }, {
         comments :'',
-        title: 'Vue JS',
+        title: 'Vue.JS',
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]

@@ -8,14 +8,22 @@
     <title>Vue</title>
     <!-- style sheet for vectormap.js -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css">
-    </link>
-    <style>
+    <style rel="stylesheet" type="text/css">
         #lines{
             position: absolute;
             right: 0;
             top: 0;
             background: #fff;
             padding: 1rem
+        }
+
+        #lines label{
+            display: inline-block;
+            width: 90px;
+        }
+
+        #lines select{
+            width: 173px;
         }
     </style>
 </head>
@@ -38,13 +46,13 @@
         <input type="text" v-model="fillColor">
         <br />
         <br>
-        <label>placement: </label>
+        <label>Placement: </label>
         <select v-model="placement">
             <option value="line">line</option>
             <option value="point">point</option>
         </select>
         <br> <br>
-        <button v-on:click="refresh">refresh</button>
+        <button v-on:click="refresh">Refresh</button>
     </div>
      
 
