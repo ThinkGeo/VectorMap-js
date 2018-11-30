@@ -11,11 +11,11 @@ const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/li
 //base map style 
 const baseMapStyle = new ol.style.Style({
     fill: new ol.style.Fill({
-        color: 'rgb(103, 183, 220)'
+        color: '#0b72d2'
     }),
     stroke: new ol.style.Stroke({
         color: 'rgba(255, 255, 255, 0.6)',
-        width: 2
+        width: 0.6
     }),
     text: new ol.style.Text({
         font: '16px Calibri,sans-serif',
@@ -65,8 +65,8 @@ let map = new ol.Map({
     layers: [baseMapLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([132.570481, -4.927630]),
-        zoom: 2,
+        center: ol.proj.fromLonLat([2.570481, 26.927630]),
+        zoom: 2.5,
     }),
 });
 
