@@ -76,7 +76,7 @@ let clusterSource = new ol.source.Cluster({
 let clusterLayer = new ol.layer.AnimatedCluster({
     name: 'Cluster',
     source: clusterSource,
-    style: getStyle
+    style: getStyle 
 });
 
 map.addLayer(clusterLayer);
