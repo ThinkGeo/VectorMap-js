@@ -30,7 +30,7 @@ let map = new ol.Map({
     layers: [vectorLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+        center: ol.proj.fromLonLat([-96.810008, 33.128337]),
         zoom: 12,
         minZoom: 2
     })
@@ -38,7 +38,7 @@ let map = new ol.Map({
 
 
 let iconFeature = new Feature({
-    geometry: new Point(ol.proj.fromLonLat([-96.79620, 32.79423])),
+    geometry: new Point(ol.proj.fromLonLat([-96.810008, 33.128337])),
     name: 'Thinkgeo'
 });
 
@@ -98,3 +98,7 @@ map.on('pointermove', function (e) {
     let hit = map.hasFeatureAtPixel(pixel);
     document.getElementById('map').style.cursor = hit ? 'pointer' : '';
 });
+
+window.onload = function () {
+    popup.setPosition([-10776840.794252742, 3912350.9692977965]);
+};
