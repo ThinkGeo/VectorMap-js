@@ -60,6 +60,10 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="215px" height="215px" alt="">
         </a>
     </div>
+    
+<center class="half">
+     <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="215px" height="215px" alt=""> <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="215px" height="215px" alt=""><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="215px" height="215px" alt="">
+</center>
 
 
 ## Install
