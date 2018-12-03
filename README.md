@@ -60,6 +60,8 @@ __Elevation along Path__  - [View It Online](https://thinkgeo.github.io/vectorma
 
 <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg">
 
+__All Samples__  - [View It Online](https://thinkgeo.github.io/vectormapsample)
+
 ## Install
 
 > The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript, and have some experience of any front-end development editor, such as [Visual Studio Code](https://code.visualstudio.com/), [Webstorm](https://www.jetbrains.com/webstorm/), [Sublime Text](https://www.sublimetext.com/) or some similars. if you are totally new to frontend development, the easiest way to try out this library which is the "[Hello World](https://codepen.io/thinkgeo/pen/BGjbRG)" example on CodePen. Feel free to open it in another tab and follow along as we go through some features.
