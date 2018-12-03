@@ -161,10 +161,6 @@ class GeoTextStyle extends GeoStyle {
             // TODO: invalid inputs.
             this.textTransform = this.textTransforms[0];
         }
-
-        if (this.placementType) {
-            textStyle.setPlacement(this.placementType);
-        }
     }
 
     getConvertedStyleCore(feature, resolution, options) {
