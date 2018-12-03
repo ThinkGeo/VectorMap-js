@@ -1,4 +1,4 @@
-const geosjonStyle =
+let geosjonStyle =
 {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
@@ -46,7 +46,9 @@ const geosjonStyle =
     "sources": [{
         "id": "countries_source",
         "url": "../data/countries.json",
-        "type": "GeoJSON"
+        "type": "GeoJSON",
+        // "dataProjection":null,
+        // "featureProjection":"EPSG:3857"
     }],
     "layers": [{
         "id": "worldstreets_layers",
@@ -57,16 +59,20 @@ const geosjonStyle =
     }]
 }
 
-// proj4.defs("ESRI:54010","+proj=eck6 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
-// proj4.defs("EPSG:4326","+proj=longlat +datum=WGS84 +no_defs");
-proj4.defs("ESRI:54003","+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +datum=WGS84 +units=m +no_defs");
+let light = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~`,
+        tileSize: 512,
+    }),
+    layerName: 'light'
+});
 
+proj4.defs("ESRI:54003","+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +datum=WGS84 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
-
-
 let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
-    multithread: false
+    multithread: false,
+    
 })
 
 let projection=document.getElementById('projection');
@@ -77,12 +83,12 @@ projection.onchange = function() {
 let map = new ol.Map({
     target: 'map',
     layers: [
-        geoVectorLayer
+        light
     ],
     view: new ol.View({
-        projection: 'EPSG:3857',
+        // projection: 'EPSG:3857',
         center: [0, 0],
-        zoom: 2
+        zoom: 1.5
     })
 });
 
@@ -92,23 +98,11 @@ function updateViewProjection() {
     var newView = new ol.View({
       projection: newProj,
       center: ol.extent.getCenter(newProjExtent || [0, 0, 0, 0]),
-      zoom: 0,
+      zoom: 1.5,
       extent: newProjExtent || undefined
     });
     map.setView(newView);
-
-    // Example how to prevent double occurrence of map by limiting layer extent
-    // if (newProj == ol.proj.get('EPSG:3857')) {
-    //   layers['bng'].setExtent([-1057216, 6405988, 404315, 8759696]);
-    // } else {
-    //   layers['bng'].setExtent(undefined);
-    // }
   }
-
-
-  /**
-   * Handle change event.
-   */
   projection.onchange = function() {
     updateViewProjection();
   };
