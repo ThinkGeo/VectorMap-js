@@ -7,9 +7,10 @@ const createTemplate = (dataTarget, styleName, subitems) =>
 const createTemplateLi = (subitems) => {
     let str = '';
     subitems.map((val) => {
-       //#endregion
+        //#endregion
         str += `<li><a href="#${val.replace(/\s+/g, "")}"><span class="sub-arrow">${val}</span></a>
-        </li>`});
+        </li>`
+    });
     return str;
 }
 
@@ -23,8 +24,17 @@ const generatorMenubar = (data) => {
         str += createTemplate(obj.dataTarget, obj.styleName, subitem);
     }
     $('#menu-bar').html(str);
-    $('#menu-bar>ul:nth-child(2)').addClass('show');
-    $('#menu-bar>ul:nth-child(2)>li:first-child').addClass('active');
-}
+    if(!window.location.href.split('/#')[1]){//no item active
+        $('#menu-bar>ul:nth-child(2)').addClass('show');
+        $('#menu-bar>ul:nth-child(2)>li:first-child').addClass('active');
+    } else {
+        let mapTitle = window.location.href.split('/#')[1];
+        let currentNavItem = $(`a[href='#${mapTitle}']`);
+        currentNavItem.parent().parent().addClass('show');
+        currentNavItem.parent().addClass('active');
+    }
+};
 
-export { generatorMenubar };
+export {
+    generatorMenubar
+};
