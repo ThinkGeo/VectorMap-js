@@ -26,11 +26,11 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
-        </a> |   <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
             <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="210" height="210" alt="">
         </a> |<a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="210" height="210" alt="">
-        </a> |<a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
+        </a> <a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="210" height="210" alt="">
         </a> |
 
