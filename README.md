@@ -16,11 +16,11 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 ## Examples:
 __Cloud Vector Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps)  
 
-<img src="https://thinkgeo.com/image/gallery/LightMap.png">
+<img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png">
 
 __Cloud Raster Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps)
 
-<img src="https://thinkgeo.com/image/gallery/DarkMap.png">
+<img src=https://thinkgeo.github.io/vectormapsample/image/DarkMap.png">
 
 __Hybrid Map__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels)
 
