@@ -3,7 +3,7 @@
     "background":"#fff",
     "styles": [
         {
-            "id": "marine_label",
+            "id": "marine_label", 
             "filter": "layerName='marine_label'",
             "text-fill": "#111",
             "text-name": "name",
