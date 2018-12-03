@@ -42,12 +42,12 @@
             background-color: white;
             -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
             filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-            padding: 15px;
+            padding: 10px;
             border-radius: 10px;
             border: 1px solid #cccccc;
             bottom: 12px;
             left: -50px;
-            min-width: 280px;
+            min-width: 500px;
         }
         .ol-popup:after, .ol-popup:before {
             top: 100%;
@@ -84,12 +84,15 @@
             bottom: -62px;
             left: 36px;
         }
+        #popup-content p{
+            display: inline-block;
+        }
     </style>
 </head>
 
 <body>
     <div id="floating-panel">
-        <input id="latlng" type="text" placeholder="33.120202,-96.804616">
+        <input id="latlng" type="text" placeholder="34.051400,-118.239700">
         <input id="submit" type="button" value="Reverse Geocode">
     </div>
     <div id="map" style="width:100%;height:100%">

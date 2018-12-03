@@ -156,39 +156,38 @@ class StreetMap extends React.Component {
                     <div>
                         <label>
                             Marine Name Font Style:
-                            <select onChange={this.marineNameFontFamilyHandleChange}>
-                                <option value="oblique">oblique</option>
-                                <option value="normal">normal</option>
-                            </select>
                         </label>
+                        <select onChange={this.marineNameFontFamilyHandleChange}>
+                            <option value="oblique">oblique</option>
+                            <option value="normal">normal</option>
+                        </select>
                     </div>
 
                     <div>
                         <label>
                             Road Number Text Mask Type:
-                            <select onChange={this.maskTypeHandleChange}>
-                                <option value="rectangle">rectangle</option>
-                                <option value="default">default</option>
-                                <option value="roundedCorners">roundedCorners</option>
-                                <option value="roundedEnds">roundedEnds</option>
-                                <option value="circle">circle</option>
-                            </select>
                         </label>
+                        <select onChange={this.maskTypeHandleChange}>
+                            <option value="rectangle">rectangle</option>
+                            <option value="default">default</option>
+                            <option value="roundedCorners">roundedCorners</option>
+                            <option value="roundedEnds">roundedEnds</option>
+                            <option value="circle">circle</option>
+                        </select>
                     </div>
 
                     <div>
                         <label>
                             Country Name Halo Color:
-                            <input type="text" value={this.state.countryNameHalo} onChange={this.countryNameHaloHandleChange} />
                         </label>
+                        <input type="text" value={this.state.countryNameHalo} onChange={this.countryNameHaloHandleChange} />
                     </div>
 
                     <div>
                         <label>
                             POI size:
-                            <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
-                            px
                         </label>
+                        <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
                     </div>
 
                     <div>

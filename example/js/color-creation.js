@@ -88,7 +88,7 @@ let styles = {
 const baseMapStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
         color: 'rgba(256, 256, 256, 1)',
-        width: 2
+        width: 1
     }),
     text: new ol.style.Text({
         font: '16px Calibri,sans-serif',

@@ -56,8 +56,6 @@ const geosjonStyle = {
     }]
 }
 
-
-
 let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 })

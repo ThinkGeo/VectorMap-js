@@ -17,7 +17,7 @@ let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
 });
 
 let view = new ol.View({
-    center: ol.proj.fromLonLat([-96.804616, 33.120202]),
+    center: ol.proj.fromLonLat([-118.239700, 34.051400]),
     zoom: 15,
 })
 
@@ -34,7 +34,7 @@ const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
 
-let overlay =  new ol.Overlay({
+let overlay = new ol.Overlay({
     element: container,
     autoPan: true,
     autoPanAnimation: {
@@ -56,7 +56,7 @@ const popUp = function (address, centerCoordinate) {
     let addressArr = address.split(",");
     overlay.setPosition(ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]));
     map.addOverlay(overlay)
-    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '')  + '</p>'
+    content.innerHTML = '<p>' + (addressArr[0] ? (addressArr[0] + ',') : '') + '</p><p style="margin-left:2px">' + (addressArr[1] ? addressArr[1] + ',' : '') + ' ' + (addressArr[2] || '') + '</p>'
 }
 
 const reverseGeocode = function () {
@@ -74,13 +74,13 @@ const reverseGeocode = function () {
     const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
     let getURL = `${baseURL}${centerCoordinate[1]},${centerCoordinate[0]}?apikey=${apiKey}`;
 
-    let jqxhr =$.get(getURL, function (data) {
+    let jqxhr = $.get(getURL, function (data) {
         if (data.data.bestMatchLocation) {
             let address = data.data.bestMatchLocation.data.address;
-            
+
             popUp(address, centerCoordinate)
-            
-        }else{
+
+        } else {
             window.alert('No results found');
         }
     });
