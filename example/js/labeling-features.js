@@ -1,19 +1,6 @@
+ 
 
-<<<<<<< HEAD
-=======
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-    }
-});
-
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
-
-<<<<<<< HEAD
->>>>>>> 265652ec7fd432c015014a229c93c73467003628
-=======
->>>>>>> 265652ec7fd432c015014a229c93c73467003628
+ 
 const geosjonStyle = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
