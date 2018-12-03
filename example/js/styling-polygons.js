@@ -17,7 +17,7 @@ const baseMapStyle = new ol.style.Style({
             width: 3
         }),
     })
-})
+});
 
 //highlight style
 const highlightStyle = new ol.style.Style({
@@ -38,7 +38,7 @@ const highlightStyle = new ol.style.Style({
             width: 3
         }),
     })
-})
+});
 
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
@@ -67,7 +67,7 @@ let highlightLayer = new ol.layer.Vector({
         highlightStyle.getText().setText(feature.get('name'));
         return highlightStyle;
     }
-})
+});
 
 let highlight;
 
@@ -85,7 +85,7 @@ const displayFeatureInfo = function (pixel) {
         }
         highlight = feature;
     }
-}
+};
 
 map.on('pointermove', function (evt) {
     if (evt.dragging) {
