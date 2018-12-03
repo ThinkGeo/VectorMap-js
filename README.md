@@ -13,54 +13,54 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-## Examples:
-__Cloud Vector Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps)  
+## Examples - [View It Online](https://thinkgeo.github.io/vectormapsample):
 
-<img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png">
+   <div style="float: left>
+        <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="215px" height="215px" alt="">
+        </a>
+    </div>
+    <div style="float: left>
+        <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="215px" height="215px" alt="">
+        </a>
+    </div>
+    <div style="float: left ;">
+        <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="215px" height="215px" alt="">
+        </a>
+    </div>
+    <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
+    <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
+     <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
+     <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
+     <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
+     <div style="float: left">
+        <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="215px" height="215px" alt="">
+        </a>
+    </div>
 
-__Cloud Raster Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps)
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png">
-
-__Hybrid Map__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels)
-
-<img src="https://thinkgeo.com/image/gallery/HybridMap.png">
-
-__Average Round Trip Commute Time__ - [View It Online](https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime) 
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg">
-
-
-__Heatmap with JSON__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON)
-
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg">
-
-
-__Styling Lines__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON)
-
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg">
-
-
-__Styling Polygons__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#StylingPolygons) 
-
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylepolygons.jpg">
-
-
-__Vector Tile__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#VectorTile)
-
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg">
-
-
-__Elevation along Path__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#ElevationalongPath)
-
-
-<img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg">
-
-__All Samples__  - [View It Online](https://thinkgeo.github.io/vectormapsample)
 
 ## Install
 
