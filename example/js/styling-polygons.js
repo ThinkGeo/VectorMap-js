@@ -60,7 +60,7 @@ let map = new ol.Map({
     }),
 });
 
-let featureOverlay = new ol.layer.Vector({
+let highlightLayer = new ol.layer.Vector({
     source: new ol.source.Vector(),
     map: map,
     style: function (feature) {
@@ -78,10 +78,10 @@ const displayFeatureInfo = function (pixel) {
 
     if (feature !== highlight) {
         if (highlight) {
-            featureOverlay.getSource().removeFeature(highlight);
+            highlightLayer.getSource().removeFeature(highlight);
         }
         if (feature) {
-            featureOverlay.getSource().addFeature(feature);
+            highlightLayer.getSource().addFeature(feature);
         }
         highlight = feature;
     }
