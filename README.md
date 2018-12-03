@@ -22,7 +22,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
             <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> |
+        </a> 
 	
 	
 
