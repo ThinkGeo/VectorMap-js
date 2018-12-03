@@ -20,7 +20,7 @@ __Cloud Vector Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsa
 
 __Cloud Raster Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps)
 
-<img src=https://thinkgeo.github.io/vectormapsample/image/DarkMap.png">
+<img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png">
 
 __Hybrid Map__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels)
 
