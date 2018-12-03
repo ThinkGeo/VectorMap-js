@@ -58,19 +58,7 @@ let geosjonStyle =
         ]
     }]
 }
-proj4.defs("ESRI:54003","+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +datum=WGS84 +units=m +no_defs");
-proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
-ol.proj.proj4.register(proj4);
-var proj54009 = ol.proj.get('ESRI:54009');
-proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
-let light = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~`,
-        tileSize: 512,
-    }),
-    layerName: 'light'
-});
 
 proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
           '+b=6371000 +units=m +no_defs');
@@ -87,8 +75,6 @@ let sphereMollweideProjection = new ol.proj.Projection({
 let sphereMillerProjection = new ol.proj.Projection({
     code: 'ESRI:54003',
 });
-
-
 let mercatorView=new ol.View({
     center: [0, 0],
     projection: 'EPSG:3857',
