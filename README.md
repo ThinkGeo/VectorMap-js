@@ -14,15 +14,15 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
 ## Examples:
-__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc) ([Edit On CodePen](https://codepen.io/thinkgeo/pen/BGjbRG))
+__Cloud Vector Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps)  
 
 <img src="https://thinkgeo.com/image/gallery/LightMap.png">
 
-__Dark Map__  - [View It Online](https://maps.thinkgeo.com/?id=38de0c3315677eca2b05d2b8dfe11a99)
+__Cloud Raster Maps__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps)
 
 <img src="https://thinkgeo.com/image/gallery/DarkMap.png">
 
-__Hybrid Map__  - [View It Online](https://maps.thinkgeo.com/?id=49bca9b0bbc306e0da6d740b1ca992b2)
+__Hybrid Map__  - [View It Online](https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels)
 
 <img src="https://thinkgeo.com/image/gallery/HybridMap.png">
 
