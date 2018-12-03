@@ -46,7 +46,9 @@ let geosjonStyle =
     "sources": [{
         "id": "countries_source",
         "url": "../data/countries.json",
-        "type": "GeoJSON"
+        "type": "GeoJSON",
+        "dataProjection":"EPSG:4326",
+        "featureProjection":""
     }],
     "layers": [{
         "id": "worldstreets_layers",
@@ -70,113 +72,80 @@ let light = new ol.layer.Tile({
     layerName: 'light'
 });
 
-// let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
-//     multithread: false,
-//     // visible:false
-// })
+proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
+          '+b=6371000 +units=m +no_defs');
+proj4.defs("ESRI:54003","+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +datum=WGS84 +units=m +no_defs");
+    ol.proj.proj4.register(proj4);
 
-let projection=document.getElementById('projection');
-projection.onchange = function() {
-    updateViewProjection();
-};
-
-let map = new ol.Map({
-    target: 'map',
-    layers: [
-        // geoVectorLayer
-        light
-    ],
-    view: new ol.View({
-        center: [0, 0],
-        zoom: 2
-    })
-});
 let sphereMollweideProjection = new ol.proj.Projection({
     code: 'ESRI:53009',
     extent: [-9009954.605703328, -9009954.605703328,
-      9009954.605703328, 9009954.605703328],
-    worldExtent: [-179, -89.99, 179, 89.99]
-  });
+        9009954.605703328, 9009954.605703328],
+    worldExtent: [-179, -89.99, 179, 89.99],
+    zoom:0
+});
+let sphereMillerProjection = new ol.proj.Projection({
+    code: 'ESRI:54003',
+});
+
+
+let mercatorView=new ol.View({
+    center: [0, 0],
+    projection: 'EPSG:3857',
+    zoom: 1
+});
+let mollweideView=new ol.View({
+    center: [0, 0],
+    projection: sphereMollweideProjection,
+    resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
+    zoom: 1
+})
+let millerView=new ol.View({
+    center: [0, 0],
+    projection: sphereMillerProjection,
+    resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
+    zoom: 1
+})
+
+let equirectangularView=new ol.View({
+    center: [0, 0],
+    projection: 'EPSG:4326',
+    zoom: 1
+});
+
+var map = new ol.Map({
+    keyboardEventTarget: document,
+    layers: [],
+    target: 'map'
+});
+
 let updateViewProjection=()=> {
-    var newProj = ol.proj.get(projection.value);
-    var newProjExtent = newProj.getExtent();
-    newView = new ol.View({
-        projection: newProj,
-        center: ol.extent.getCenter(newProjExtent || [0, 0, 0, 0]),
-        zoom: 2,
-        extent: newProjExtent || undefined
+    map.getLayers().getArray().forEach(layer => {
+        map.removeLayer(layer);
     });
+    geosjonStyle.sources[0].featureProjection=projection.value
+    map.addLayer(
+        new ol.mapsuite.VectorLayer(geosjonStyle, {
+            multithread: false,
+            // visible:false
+        })
+    )
+    let newView=null;
+    switch (projection.value){
+        case 'EPSG:4326':newView=equirectangularView;break;
+        case 'EPSG:3857':newView=mercatorView;break;
+        case 'ESRI:54003':newView=millerView;break;
+        case 'ESRI:54009':{
+            new ol.Graticule({
+                map: map,
+            });
+            newView=mollweideView;
+            break;
+        }
+    }
     map.setView(newView);
 }
 projection.onchange = function() {
     updateViewProjection();
 };
 updateViewProjection();
-
-/////////////////////////////////////////////////////////
-//////////geojson 
-/////////////////////////////////////////////////////////
-
-// proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +
-//           '+b=6371000 +units=m +no_defs');
-// proj4.defs("ESRI:54003","+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +datum=WGS84 +units=m +no_defs");
-//     ol.proj.proj4.register(proj4);
-
-// let sphereMollweideProjection = new ol.proj.Projection({
-//     code: 'ESRI:53009',
-//     extent: [-9009954.605703328, -9009954.605703328,
-//         9009954.605703328, 9009954.605703328],
-//     worldExtent: [-179, -89.99, 179, 89.99]
-// });
-// let mercatorView=new ol.View({
-//     center: [0, 0],
-//     projection: 'EPSG:3857',
-//     zoom: 0
-// });
-// let mollweideView=new ol.View({
-//     center: [0, 0],
-//     projection: sphereMollweideProjection,
-//     // resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
-//     zoom: 0
-// })
-// let millerView=new ol.View({
-//     center: [0, 0],
-//     projection: sphereMollweideProjection,
-//     // resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
-//     zoom: 0
-// })
-
-// let equirectangularView=new ol.View({
-//     center: [0, 0],
-//     projection: 'EPSG:4326',
-//     zoom: 0
-// });
-
-
-
-// var map = new ol.Map({
-//     keyboardEventTarget: document,
-//     layers: [
-//         geoVectorLayer
-//     ],
-//     target: 'map',
-//     view: mollweideView
-// });
-// new ol.Graticule({
-//     map: map
-// });
-
-// let updateViewProjection=()=> {
-//     let newView=null;
-//     switch (projection.value){
-//         case 'EPSG:4326':newView=equirectangularView;break;
-//         case 'EPSG:3857':newView=mercatorView;break;
-//         case 'ESRI:54003':newView=millerView;break;
-//         case 'ESRI:54009':newView=mollweideView;break;
-//     }
-//     map.setView(newView);
-// }
-// projection.onchange = function() {
-//     updateViewProjection();
-// };
-// updateViewProjection();
