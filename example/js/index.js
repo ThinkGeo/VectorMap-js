@@ -6,7 +6,6 @@ import menuData from './data';
 generatorMenubar(menuData);
 addChildPage(document.getElementById('content'));
 
-
 if (window.location.hash) {
     for (let obj of menuData) {
         for (let sub of obj.subitems) {
@@ -15,12 +14,11 @@ if (window.location.hash) {
             }
          }
     }
-
 } else {
     loadChildPage(menuData[0].subitems[0]);
 }
 
-//click the li, addclass active.
+//click the li, addClass active.
 let sidebarClickHandle = () => {
     $('#menu-bar>ul>li').on('click', function () {
         $('#menu-bar>ul>li').removeClass('active');
@@ -31,7 +29,6 @@ let sidebarClickHandle = () => {
             if (obj.styleName === styleName) {
                 for (let sub of obj.subitems) {
                     if (sub.title === title) {
-                        console.log(sub)
                         loadChildPage(sub);
                         break;
                     }
