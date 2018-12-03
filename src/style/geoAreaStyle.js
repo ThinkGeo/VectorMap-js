@@ -84,7 +84,9 @@ class GeoAreaStyle extends GeoStyle {
     }
 
     GetTransformedCoordinates(feature) {
-        let tmpFlatCoordinates = feature.getFlatCoordinates();
+        let geometryFeature = feature.getGeometry();
+        
+        let tmpFlatCoordinates = geometryFeature.getFlatCoordinates();
         let tmpCoordinates = [[]];
         let index = 0;
         for (let i = 0; i < tmpFlatCoordinates.length; i += 2) {
@@ -131,7 +133,8 @@ class GeoAreaStyle extends GeoStyle {
                     this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
                 }
 
-                let tmpFlatCoordinates = feature.getFlatCoordinates();
+                let geometryFeature = feature.getGeometry();
+                let tmpFlatCoordinates = geometryFeature.getFlatCoordinates();
                 let newFlatCoordinates = translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim(), undefined);
 
                 let tmpCoordinates = [[]];

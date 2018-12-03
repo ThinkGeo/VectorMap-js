@@ -96,9 +96,10 @@ class GeoPointStyle extends GeoStyle {
         if (typeof WorkerGlobalScope !== "undefined") {
             return true;
         }
+        let geometryFeature = feature.getGeometry();
         if (this.pointType === "glyph") {
             if (this.glyph && this.glyphName) {
-                this.textStyle.labelPosition = feature.getFlatCoordinates();
+                this.textStyle.labelPosition = geometryFeature.getFlatCoordinates();
             }
         }
 

@@ -337,7 +337,8 @@ class GeoLineStyle extends GeoStyle {
         }
 
         if (this.onewaySymbol) {
-            let flatCoordinates = feature.getFlatCoordinates();
+            let geometryFeature = feature.getGeometry();
+            let flatCoordinates = geometryFeature.getFlatCoordinates();
             let longest = 0;
             let longestIndex;
             for (let i = 0; i <= flatCoordinates.length - 4; i += 2) {
@@ -368,7 +369,8 @@ class GeoLineStyle extends GeoStyle {
     }
 
     getGeometry(feature) {
-        let tmpFlatCoordinates = feature.getFlatCoordinates();
+        let geometryFeature = feature.getGeometry();
+        let tmpFlatCoordinates = geometryFeature.getFlatCoordinates();
         let tmpCoordinates = [];
         for (let i = 0; i < tmpFlatCoordinates.length; i += 2) {
             tmpCoordinates.push([tmpFlatCoordinates[i], tmpFlatCoordinates[i + 1]]);
