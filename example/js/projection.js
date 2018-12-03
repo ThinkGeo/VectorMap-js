@@ -104,11 +104,12 @@ var map = new ol.Map({
     layers: [],
     target: 'map'
 });
-
+let graticule= new ol.Graticule();
 let updateViewProjection=()=> {
     map.getLayers().getArray().forEach(layer => {
         map.removeLayer(layer);
     });
+    graticule.setMap(null);
     geosjonStyle.sources[0].featureProjection=projection.value
     map.addLayer(
         new ol.mapsuite.VectorLayer(geosjonStyle, {
@@ -122,9 +123,7 @@ let updateViewProjection=()=> {
         case 'EPSG:3857':newView=mercatorView;break;
         case 'ESRI:54003':newView=millerView;break;
         case 'ESRI:54009':{
-            new ol.Graticule({
-                map: map,
-            });
+            graticule.setMap(map);
             newView=mollweideView;
             break;
         }
