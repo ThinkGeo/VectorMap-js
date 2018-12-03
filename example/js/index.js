@@ -31,7 +31,6 @@ let sidebarClickHandle = () => {
             if (obj.styleName === styleName) {
                 for (let sub of obj.subitems) {
                     if (sub.title === title) {
-                        console.log(sub)
                         loadChildPage(sub);
                         break;
                     }

@@ -247,6 +247,15 @@ pre {
 child pages
 */
 
+#codepen a{
+    color: #b7b7b8 !important
+}
+
+#codepen .nav-link:hover {
+     border-width: 0px;
+     color: #444444 !important
+ }
+
 #child-page-title {
     width: 100%;
     height: auto;
