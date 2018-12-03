@@ -55,6 +55,17 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="215px" height="215px" alt="">
         </a>
     </div>
+    
+ 
+| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="215px" height="215px" alt="">
+       </a> |  <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="215px" height="215px" alt="">
+        </a> |    <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="215px" height="215px" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="215px" height="215px" alt="">
+        </a> |
+| 稍微长一点的文本 | 短文本 | 中等文本 |稍微长一点的文本 |
 
 
 ## Install
