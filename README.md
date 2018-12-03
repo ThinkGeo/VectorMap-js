@@ -23,14 +23,14 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
         </a> |
-|  <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="215px" height="215px" alt="">
+  <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
         </a> |   <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="210" height="210" alt="">
         </a> |<a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="210" height="210" alt="">
         </a> |
 
 
