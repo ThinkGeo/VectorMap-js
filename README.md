@@ -15,57 +15,23 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Examples - [View It Online](https://thinkgeo.github.io/vectormapsample):
 
-   <div style="float: left>
-        <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="215px" height="215px" alt="">
-        </a>
-    </div>
-    <div style="float: left>
-        <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="215px" height="215px" alt="">
-        </a>
-    </div>
-    <div style="float: left ;">
-        <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="215px" height="215px" alt="">
-        </a>
-    </div>
-    <div style="float: left">
-        <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="215px" height="215px" alt="">
-        </a>
-    </div>
-    <div style="float: left">
-        <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="215px" height="215px" alt="">
-        </a>
-    </div>
-     <div style="float: left">
-        <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="215px" height="215px" alt="">
-        </a>
-    </div>
-     <div style="float: left">
-        <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="215px" height="215px" alt="">
-        </a>
-    </div>
-     <div style="float: left">
-        <a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="215px" height="215px" alt="">
-        </a>
-    </div>
-    
- 
-| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="215px" height="215px" alt="">
+| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
        </a> |  <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
         </a> |    <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="215px" height="215px" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
         </a> |
-| 稍微长一点的文本 | 短文本 | 中等文本 |稍微长一点的文本 |
+|  <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="215px" height="215px" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="215px" height="215px" alt="">
+        </a> |   <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="215px" height="215px" alt="">
+        </a> |<a href="https://thinkgeo.github.io/vectormapsample/#VectorTile">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-vectortile.jpg" width="215px" height="215px" alt="">
+        </a> |
 
 
 ## Install
