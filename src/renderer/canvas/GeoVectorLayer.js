@@ -4,7 +4,7 @@ import { containsExtent, buffer, containsCoordinate, equals, getIntersection, ge
 import { getUid } from 'ol/util.js';
 import ViewHint from 'ol/ViewHint.js';
 import EventType from 'ol/events/EventType.js';
-import CanvasReplayGroup from 'ol/render/canvas/ReplayGroup.js';
+import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
 import { defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance } from 'ol/renderer/vector.js';
 import rbush from 'rbush';
 import CanvasLayerRenderer from './Layer';
@@ -72,7 +72,7 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
 
         this.dirty_ = false;
 
-        const replayGroup = new CanvasReplayGroup(
+        const replayGroup = new GeoCanvasReplayGroup(
             getRenderTolerance(resolution, pixelRatio), extent, resolution,
             pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
         vectorSource.loadFeatures(extent, resolution, projection);
