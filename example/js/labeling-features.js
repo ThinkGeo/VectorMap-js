@@ -1,4 +1,16 @@
 
+<<<<<<< HEAD
+=======
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
+    }
+});
+
+const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
+
+>>>>>>> 265652ec7fd432c015014a229c93c73467003628
 const geosjonStyle = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
@@ -10,7 +22,7 @@ const geosjonStyle = {
         {
             "id": "block_boundary",
             "style": [{
-                    "filter": "zoom>=0;zoom<=22;",
+                    "filter": "zoom>=0;zoom<=19;",
                     "line-width": 2,
                     "line-color": "a59f80",
                 }
@@ -26,7 +38,7 @@ const geosjonStyle = {
                 "text-force-horizontal-for-line": false,
                 "style": [
                     {
-                        "filter": "zoom>=3;zoom<=22;",
+                        "filter": "zoom>=3;zoom<=19;",
                         "text-font": "oblique 600 16px Arial, Helvetica, sans-serif",
                     }
                 ]
@@ -53,14 +65,14 @@ let blockMapLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 })
 
-
-
 let map = new ol.Map({
     layers: [blockMapLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.820787, 33.098294]),
         zoom: 17,
+        minZoom:0,
+        maxZoom:19
     }),
 });
 

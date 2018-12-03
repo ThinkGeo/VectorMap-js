@@ -13,19 +13,19 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-## Examples:
+## Examples - [View It Online](https://thinkgeo.github.io/vectormapsample):
 
-__Light Map__  - [View It Online](https://maps.thinkgeo.com/?id=bfffbab0fbc991422dcceae808171cdc) ([Edit On CodePen](https://codepen.io/thinkgeo/pen/BGjbRG))
+| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
+ </a> | <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
+        </a> | 
+	
+	
+| <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt=""></a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt=""></a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
+ <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="210" height="210" alt=""></a> | 
 
-<img src="https://thinkgeo.com/image/gallery/LightMap.png">
-
-__Dark Map__  - [View It Online](https://maps.thinkgeo.com/?id=38de0c3315677eca2b05d2b8dfe11a99)
-
-<img src="https://thinkgeo.com/image/gallery/DarkMap.png">
-
-__Hybrid Map__  - [View It Online](https://maps.thinkgeo.com/?id=49bca9b0bbc306e0da6d740b1ca992b2)
-
-<img src="https://thinkgeo.com/image/gallery/HybridMap.png">
 
 ## Install
 

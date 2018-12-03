@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vector Tilea</title>
-    <!-- style sheet for vectormap.js -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css">
     </link>
     <style>
@@ -21,21 +20,19 @@
 
 <body>
     <select name="projection" id="projection">
-        <option value="ESRI:54010">Eckert6</option>
-        <option value="EPSG:4326">Equirectangular</option>
         <option value="EPSG:3857">Mercator</option>
+        <option value="ESRI:54009">Mollweide</option>
+        <option value="EPSG:4326">Equirectangular</option>
         <option value="ESRI:54003">Miller</option>
-        <!-- <option value="EPSG:9840">Orthographic</option> -->
     </select>
     <div id="map" style="width:100%;height:100%;background: #aac7ee "></div>
-    <!-- latest minified version of vectormap.js -->
+
     <script src="../dist//vectormap.js"></script>
 
-    <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4-src.js" type="text/javascript"></script>
     <script src="../js/projection.js"></script>
 
 </body>
 
-</html>
+</html> 

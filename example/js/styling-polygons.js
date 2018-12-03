@@ -1,5 +1,4 @@
  
- 
 //base map style 
 const baseMapStyle = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -19,7 +18,7 @@ const baseMapStyle = new ol.style.Style({
             width: 3
         }),
     })
-})
+});
 
 //highlight style
 const highlightStyle = new ol.style.Style({
@@ -40,7 +39,7 @@ const highlightStyle = new ol.style.Style({
             width: 3
         }),
     })
-})
+});
 
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
@@ -62,14 +61,14 @@ let map = new ol.Map({
     }),
 });
 
-let featureOverlay = new ol.layer.Vector({
+let highlightLayer = new ol.layer.Vector({
     source: new ol.source.Vector(),
     map: map,
     style: function (feature) {
         highlightStyle.getText().setText(feature.get('name'));
         return highlightStyle;
     }
-})
+});
 
 let highlight;
 
@@ -80,14 +79,14 @@ const displayFeatureInfo = function (pixel) {
 
     if (feature !== highlight) {
         if (highlight) {
-            featureOverlay.getSource().removeFeature(highlight);
+            highlightLayer.getSource().removeFeature(highlight);
         }
         if (feature) {
-            featureOverlay.getSource().addFeature(feature);
+            highlightLayer.getSource().addFeature(feature);
         }
         highlight = feature;
     }
-}
+};
 
 map.on('pointermove', function (evt) {
     if (evt.dragging) {

@@ -8,161 +8,155 @@
     <title>Elevation along Path</title>
     <!-- style sheet for vectormap.js -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css">
-    </link>
-    <style>
-        /* #map{
-            width:100%;
-            height:70%;
-            position: relative;
-        }
-        #chart{
+    <style rel="stylesheet" type="text/css">
+        #map {
             width: 100%;
-            height: 28%;
-            margin-top: 10px;
+            height: calc(100vh * 3 / 5);
+            background-color: #fff;
         }
-        .btn-group{
+
+        #chart {
+            width: 100%;
+            margin-top: 0px;
             position: absolute;
-            right:1em;
-            top:0.5em;
-            z-index: 1000;
+            height: calc(100vh * 2 / 5);
+            top: calc(100vh * 3/ 5);
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
-        .btn-group button{
-            width: 26px;
-            height: 26px;
-            padding: 0;
+
+        #side-bar {
+            float: right;
+            position: absolute;
+            bottom: calc(100vh * 2 / 5);
+            right: 0;
         }
-     */
-#map {
-width: 100%;
-height: calc(100vh * 3 / 5);
-background-color: #fff;
-}
-#chart{
-width: 100%;
-margin-top: 0px;
-position: absolute;
-height: calc(100vh * 2 / 5);
-top: calc(100vh * 3/ 5);
-bottom: 0;
-left: 0;
-right: 0;
-}
-#side-bar {
-float: right;
-position: absolute;
-bottom: calc(100vh * 2 / 5);
-right: 0;
-}
-#buttonClear {
-float: right;
-}
-.point{
-display: block;
-background-color: #fff;
-background:url('../image/add_point_off.png') scroll top right transparent;
-background-size:100% 100%;
-background-repeat: no-repeat;
-border-style:none;
-border:0px;
-}
-.line{
-background-color: #fff;
-background:url('../image/draw_line_off.png');
-background-size:100% 100%;
-border-style:none;
-border:0px;
-}
-.Polygon{
-background-color: #fff;
-background:url('../image/draw_polygon_off.png');
-background-size:100% 100%;
-border-style:none;
-border:0px;
-}
-.drawpoint{
-position: absolute;
-top: 5px;
-right:67px;
-}
-.drawline{
-position: absolute;
-top: 5px;
-right:35px;
-}
-.drawPolygon{
-position: absolute;
-top: 5px;
-right: 3px;
-}
-.pg{
-position: absolute;
-}
-.loading-spinner {
-position: fixed;
-display: block;
-width: 100px;
-height: 100px;
-left: 50%;
-top: 50%;
-margin-left: -50px;
-margin-top: -50px;
-}
-.loading-spinner i {
-color: #ccc;
-}
 
-.modal-backdrop.in {
-filter: alpha(opacity=50);
-opacity: .5;
-}
+        #buttonClear {
+            float: right;
+        }
 
-.progress {
-position: absolute;
-width: 24px;
-left:10px;
-height: calc(100vh * 2 / 5);
-bottom: calc(100vh * 2 / 5);
-margin-bottom: 0px;
-background: linear-gradient(to bottom, red, orange, yellow, green, blue);
-filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#00ff00', GradientType=1);
-}
-.amount {
-position: absolute;
-height: 100%;
-transition: all 0.8s;
-background: gray;
-width: 0;
-}
-.progress:before {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: 10;
-line-height: 31px;
-}
+        .point {
+            display: block;
+            background-color: #fff;
+            background: url('../image/add_point_off.png') scroll top right transparent;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            border-style: none;
+            border: 0px;
+        }
 
-#lowElevation{
-position: absolute;
-left:33px;
-bottom: calc(100vh * 2/ 5);
-}
-#highElevation{
-position: absolute;
-left:33px;
-bottom: calc(100vh * 3/ 5);
+        .line {
+            background-color: #fff;
+            background: url('../image/draw_line_off.png');
+            background-size: 100% 100%;
+            border-style: none;
+            border: 0px;
+        }
 
-}
-#side-bar{
-background-color: #fff;
-}
-#side-bar-p{
-right: 0px;
-background-color: #fff;
-position: absolute;
-bottom: calc(100vh * 2/ 5);
-}
+        .Polygon {
+            background-color: #fff;
+            background: url('../image/draw_polygon_off.png');
+            background-size: 100% 100%;
+            border-style: none;
+            border: 0px;
+        }
+
+        .drawpoint {
+            position: absolute;
+            top: 5px;
+            right: 67px;
+        }
+
+        .drawline {
+            position: absolute;
+            top: 5px;
+            right: 35px;
+        }
+
+        .drawPolygon {
+            position: absolute;
+            top: 5px;
+            right: 3px;
+        }
+
+        .pg {
+            position: absolute;
+        }
+
+        .loading-spinner {
+            position: fixed;
+            display: block;
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            top: 50%;
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+
+        .loading-spinner i {
+            color: #ccc;
+        }
+
+        .modal-backdrop.in {
+            filter: alpha(opacity=50);
+            opacity: .5;
+        }
+
+        .progress {
+            position: absolute;
+            width: 24px;
+            left: 10px;
+            height: calc(100vh * 2 / 5);
+            bottom: calc(100vh * 2 / 5);
+            margin-bottom: 0px;
+            background: linear-gradient(to bottom, red, orange, yellow, green, blue);
+            filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#00ff00', GradientType=1);
+        }
+
+        .amount {
+            position: absolute;
+            height: 100%;
+            transition: all 0.8s;
+            background: gray;
+            width: 0;
+        }
+
+        .progress:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            line-height: 31px;
+        }
+
+        #lowElevation {
+            position: absolute;
+            left: 33px;
+            bottom: calc(100vh * 2/ 5);
+        }
+
+        #highElevation {
+            position: absolute;
+            left: 33px;
+            bottom: calc(100vh * 3/ 5);
+
+        }
+
+        #side-bar {
+            background-color: #fff;
+        }
+
+        #side-bar-p {
+            right: 0px;
+            background-color: #fff;
+            position: absolute;
+            bottom: calc(100vh * 2/ 5);
+        }
     </style>
 </head>
 
@@ -211,7 +205,6 @@ bottom: calc(100vh * 2/ 5);
     <script src="../js/thinkgeo.gis.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
     <script src="../js/elevation.js"></script>
-
 </body>
 
 </html>
