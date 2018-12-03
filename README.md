@@ -20,19 +20,19 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
             <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
         </a> 
 	
 	
 
-| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
+| <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#WFS">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-wfs.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> 
 	
 	
