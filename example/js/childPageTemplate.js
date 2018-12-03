@@ -3,14 +3,14 @@ const childPageTemplate = ` <div id="child-page-title">
     <p><p>
 </div>
 <ul class="nav nav-tabs" id="child-page-component" role="tablist">
-     <li class="nav-item">
+     <li class="nav-item map">
         <a class="nav-link active"  data-toggle="tab" href="#child-page-view">View</a>
     </li>
-      <li class="nav-item">
-        <a class="nav-link "  data-toggle="tab" href="#child-page-html">Html</a>
+      <li class="nav-item html">
+        <a class="nav-link"  data-toggle="tab" href="#child-page-html">Html</a>
     </li>
-      <li class="nav-item mr-auto">
-        <a class="nav-link "  data-toggle="tab" href="#child-page-js">JavaScript</a>
+      <li class="nav-item js mr-auto">
+        <a class="nav-link"  data-toggle="tab" href="#child-page-js">JavaScript</a>
     </li>
     <li class="nav-item" id="codepen">
       <a  class="nav-link" href="https://codepen.io" target="_blank">
@@ -18,8 +18,6 @@ const childPageTemplate = ` <div id="child-page-title">
         <img src="./image/edit-icon.png">
        </a>
     </li>
- 
- 
 </ul>
 <div class="tab-content">
     <div id="child-page-view" class="tab-pane fade show active">
@@ -40,7 +38,6 @@ const ShowHandleFuns = class {
         this.jsPath = childPageObj.jsPath;
         this.title = childPageObj.title;
         this.comments = childPageObj.comments;
-        let childPageClickButtonsParent = document.querySelector('#child-page-component');
         document.querySelector('#child-page-title>h1').innerText = this.title;
         document.querySelector('#child-page-title>p').innerText = this.comments;
     }
@@ -114,33 +111,39 @@ const loadChildPage = (childPageObj) => {
     //for queryselect
     const [viewDivId, htmlDivId, jsDivId] = ['#child-page-view', '#child-page-html', '#child-page-js'];
     const [viewDiv, htmlDiv, jsDiv] = [document.querySelector(viewDivId),
-    document.querySelector(htmlDivId),
-    document.querySelector(jsDivId)];
+        document.querySelector(htmlDivId),
+        document.querySelector(jsDivId)
+    ];
 
     const showHandlefun = new ShowHandleFuns(childPageObj);
-
-    showHandlefun.showHtmlViewFun(viewDiv);
     const childPageClickButtonsParent = document.querySelector('#child-page-component');
-    childPageClickButtonsParent.addEventListener('click', (event) => {
-        let eleAHerf = event.target.getAttribute('href');
-        switch (eleAHerf) {
-            case viewDivId: {
+    const navLinkArr = childPageClickButtonsParent.querySelector('.nav-link.active');
+    switch (navLinkArr.text) { //judge which page is shown, update the view or code in the .tab-pane
+        case 'View':
+            {
                 showHandlefun.showHtmlViewFun(viewDiv);
-                break;
             }
-            case htmlDivId: {
-                showHandlefun.showHtmlCodeFun(htmlDiv)
-                break;
+        case 'Html':
+            {
+                showHandlefun.showHtmlCodeFun(htmlDiv);
             }
-            case jsDivId: {
+        case 'JavaScript':
+            {
                 showHandlefun.showJsCodeFun(jsDiv);
-                break;
             }
-            default: {
-                return;
-            }
-        }
+    }
+    $('.nav-item.map').on('shown.bs.tab', function (e) {
+        showHandlefun.showHtmlViewFun(viewDiv);
     });
-}
+    $('.nav-item.html').on('shown.bs.tab', function (e) {
+        showHandlefun.showHtmlCodeFun(htmlDiv);
+    });
+    $('.nav-item.js').on('shown.bs.tab', function (e) {
+        showHandlefun.showJsCodeFun(jsDiv);
+    });
+};
 
-export { addChildPage, loadChildPage };
+export {
+    addChildPage,
+    loadChildPage
+};
