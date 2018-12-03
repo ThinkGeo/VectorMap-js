@@ -179,12 +179,24 @@ class GeoVectorLayer extends VectorLayer {
 
     createSource(sourceJson) {
         var sourceType = sourceJson["type"].toLowerCase();
-        var dataProjection = sourceJson["dataProjection"]
         var format = undefined;
+
+        var options = {};
+        if (sourceJson["dataProjection"] !== undefined) {
+            options["dataProjection"] = sourceJson["dataProjection"];
+        }
+        if (sourceJson["featureProjection"] !== undefined) {
+            options["featureProjection"] = sourceJson["featureProjection"];
+        }
+        if (sourceJson["extent"] !== undefined) {
+            options["extent"] = sourceJson["extent"];
+        }
+
         if (sourceType === "geojson") {
-            format = new GeoJSON();
+            format = new GeoJSON(options);
         }
         else if (sourceType === "esrijson") {
+
             format = new EsriJSON();
         }
         else if (sourceType === "topojson") {
@@ -208,11 +220,7 @@ class GeoVectorLayer extends VectorLayer {
         }
         else if (sourceType === "wfs") {
             // Format is GeoJSON.
-            format = new GeoJSON();
-        }
-
-        if (dataProjection !== undefined) {
-           format["dataProjection"] = dataProjection;
+            format = new GeoJSON(options);
         }
 
         var source = new GeoVectorSource({
