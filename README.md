@@ -18,11 +18,12 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 | <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
  </a> | <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
             <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
-        </a> |    <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
             <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
         </a> |
+	
 |<a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
