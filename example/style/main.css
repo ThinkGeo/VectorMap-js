@@ -334,6 +334,7 @@ child pages
 #child-page-js pre {
     border-radius: 0;
     height: 100%;
+    margin-bottom: 0;
 }
 
 pre {
