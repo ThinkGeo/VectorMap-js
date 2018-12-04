@@ -102,7 +102,11 @@ let equirectangularView=new ol.View({
 });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 var map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+=======
+let map = new ol.Map({
+>>>>>>> e83c2f1eaf3f024627e9f1ba336bb2763c1ea46d
 =======
 let map = new ol.Map({
 >>>>>>> e83c2f1eaf3f024627e9f1ba336bb2763c1ea46d
