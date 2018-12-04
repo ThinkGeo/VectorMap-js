@@ -1,0 +1,52 @@
+@media (max-width: 1100px){
+    .navbar-nav{
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    body{
+        padding-top: 48px;
+    }
+
+    .navbar{
+        height: 48px;
+    }
+
+    .navbar-brand{
+        height: 48px;
+        width: 48px;
+        background-size: 48px;
+    }
+
+    .navbar-text h4{
+        font-size: 1.4rem;
+    }
+
+    .sidebar {
+        top: 48px;
+        width: 100%;
+        height: 500px;
+        max-height: 80vh;
+    }
+
+    .main {
+        padding-left: 0;
+    }
+
+    .navbar-text h6 {
+        display: none;
+    }
+
+    .navbar-text h4 {
+        margin-bottom: 0;
+    }
+
+    .navbar-toggler {
+        display: inline-block;
+    }
+
+    .collapse:not(.show) {
+        display: none;
+    }
+}

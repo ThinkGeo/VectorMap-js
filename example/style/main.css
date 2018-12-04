@@ -49,6 +49,20 @@ body {
     font-size: 1.2rem;
 }
 
+.navbar-toggler{
+    border: 1px solid #ffffff3d;
+    color: #ffffffe3;
+    display: none;
+}
+
+.navbar-toggler:focus{
+    outline: none;
+}
+
+.navbar-toggler span{
+    font-size: 2rem;
+}
+
 .navbar-nav {
     flex-direction: row;
     margin-right: 0.6rem;
@@ -73,6 +87,7 @@ body {
     top: 72px;
     bottom: 0;
     left: 0;
+    z-index: 2;
     display: block;
     padding-top: 10px;
     padding-left: 0;
@@ -84,6 +99,10 @@ body {
     border-right: 1px solid #eee;
 }
 
+.sidebar.collapse{
+    display: block;
+}
+
 .sidebar .style-name {
     padding-left: 5%;
 }
@@ -92,7 +111,7 @@ body {
 
 .container-fluid .form-inline {
     position: absolute;
-    bottom: 1.3em;
+    bottom: 15px;
     width: 100%;
     padding: 0 0.75rem;
 }
@@ -123,6 +142,14 @@ body {
 
 /* Sidebar navigation */
 
+.nav-sidebar{
+    position: absolute;
+    top: 0;
+    overflow: auto;
+    width: 100%;
+    max-height: calc(100% - 60px);
+}
+
 .nav-sidebar a {
     color: #2d3e50;
     display: inline-block;
@@ -135,6 +162,10 @@ body {
 
 #menu-bar>li>a {
     font-size: 1.4rem;
+}
+
+#menu-bar>ul{
+    width: 100%;
 }
 
 .nav-sidebar li {
@@ -203,7 +234,7 @@ body {
 }
 
 .tab-content {
-    height: 85%;
+    height: calc(100% - 86px);
 }
 
 .container-fluid .row {
@@ -293,11 +324,14 @@ child pages
 #child-page-html {
     padding: 0;
     background-color: #ffffff;
+    height: 100%;
+    z-index: 1;
 }
 
 #child-page-html pre,
 #child-page-js pre {
     border-radius: 0;
+    height: 100%;
 }
 
 pre {
