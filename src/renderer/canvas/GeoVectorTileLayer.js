@@ -109,6 +109,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     continue;
                 }
                 tile = this.getTile(z, x, y, pixelRatio, projection, frameState);
+
                 // for cancel.
                 tile.tileRange = tileRange;
                 if (this.isTileToDraw_(tile)) {
@@ -199,7 +200,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
-                    console.log(tile.tileCoord + " | " + tile.tileKeys)
+
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     this.renderedTiles.push(tile);
                 }
@@ -266,7 +267,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 translateTransform(transform, -tileExtent[0], -tileExtent[3]);
                 const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
                     tile.tileCoord.toString()));
-                console.log("++++replay:" + sourceTile.tileCoord + " | " + tile.tileCoord)
                 replayGroup.replay(context, transform, 0, {}, true, replays);
             }
         }
@@ -280,7 +280,10 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection);
             }
         }
-        return tile;
+
+        let drawingTile = this.getDrawingTile(tile, pixelRatio, projection, frameState);
+
+        return drawingTile;
     }
 
     getTileSuper(z, x, y, pixelRatio, projection) {
@@ -296,8 +299,18 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 this.newTiles_ = true;
             }
         }
-        if (!this.isDrawableTile_(tile)) {
+        return tile;
+    }
+
+    getDrawingTile(tile, pixelRatio, projection, frameState) {
+        if (!this.isTileToDraw_(tile)) {
             tile = tile.getInterimTile();
+            if (tile.getState() === TileState.LOADED) {
+                this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection, frameState);
+                if (this.context) {
+                    this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */(tile), pixelRatio, projection);
+                }
+            }
         }
         return tile;
     }
@@ -312,7 +325,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             replayState.renderedRenderOrder == renderOrder) {
             return;
         }
-        // console.log("createReplayGroup_" + tile.tileCoord.toString());
         const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
         const sourceTileGrid = source.getTileGrid();
         const tileGrid = source.getTileGridForProjection(projection);
@@ -438,7 +450,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     if (sourceTile.tileCoord.toString() !== tile.tileCoord.toString()) {
                         sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);
                     }
-                    console.log("replayCreated" + tile.tileCoord + " | " + tile.tileKeys)
                     tile["replayCreated"] = true;
                     sourceTile["replayCreated"] = true;
                     // The apply tile didn't enqueue, so it has no events that refresh the map.
@@ -521,13 +532,11 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                             out++;
                         }
                     }
-                    console.log(tile.tileCoord + "|inbox" + inbox + "|out" + out + "|count" + (inbox + out));
                     replayState.replayGroupCreated = true;
                     replayGroup.finish();
                     for (const r in replayGroup.getReplays()) {
                         zIndexKeys[r] = true;
                     }
-                    console.log(sourceTile.tileCoord.toString() + "|" + sourceTile.ol_uid + "|" + tile.tileCoord.toString());
                     sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
                     tile["replayCreated"] = true;
                     sourceTile["replayCreated"] = true;
