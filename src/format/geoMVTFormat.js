@@ -39,149 +39,170 @@ class GeoMVTFormat extends MVT {
     readFeaturesAndInstructions(source, opt_options) {
         const features = [];
         const tileCoord = opt_options["tileCoord"];
-        let zoomMatchedGeoStylesGroupByLayerId = this.styleJsonCache.geoStyleGroupByZoom[tileCoord[0]];
-        if (!zoomMatchedGeoStylesGroupByLayerId) {
-            return [[], []];
-        }
+        const defaultStyle = opt_options["defaultStyle"];
+        if (defaultStyle) {
+            const layers = this.layers_;
+            const pbf = new PBF(/** @type {ArrayBuffer} */(source));
+            const pbfLayers = pbf.readFields(layersPBFReader, {});
+            /** @type {Array<import("../Feature.js").FeatureLike>} */
+            for (const name in pbfLayers) {
+                if (layers && layers.indexOf(name) == -1) {
+                    continue;
+                }
+                const pbfLayer = pbfLayers[name];
 
-        let pbfLayerNamesWithGeoStyle = [];
-        for (let pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
-            pbfLayerNamesWithGeoStyle.push(pbfLayerName);
-        }
-
-        let instructsCache = [];
-
-        const layers = this.layers_;
-
-        var featureIndex = -1;
-        const pbf = new PBF(/** @type {ArrayBuffer} */(source));
-        const pbfLayers = pbf.readFields(layersPBFReader, {});
-        /** @type {Array<import("../Feature.js").FeatureLike>} */
-        for (const name in pbfLayers) {
-            if (layers && layers.indexOf(name) == -1) {
-                continue;
-            }
-            if (pbfLayerNamesWithGeoStyle.indexOf(name) === -1) {
-                continue;
-            }
-
-            const pbfLayer = pbfLayers[name];
-
-            let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[name];
-
-            if (cacheTrees && cacheTrees.length > 0) {
-                for (let i = 0; i < pbfLayer.length; i++) {
+                for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
                     const rawFeature = readRawFeature(pbf, pbfLayer, i);
-                    let feature;
+                    features.push(this.createFeature_(pbf, rawFeature));
+                }
+                this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+            }
+            return [features, []];
+        }
+        else {
 
-                    for (let j = 0; j < cacheTrees.length; j++) {
-                        let cacheTree = cacheTrees[j];
-                        let treeIndex = cacheTree.treeIndex;
-                        if (instructsCache[treeIndex] === undefined) {
-                            instructsCache[treeIndex] = {
-                                min: 10,
-                                max: -10
-                            };
-                        }
-                        let matchedNode;
+            let zoomMatchedGeoStylesGroupByLayerId = this.styleJsonCache.geoStyleGroupByZoom[tileCoord[0]];
+            if (!zoomMatchedGeoStylesGroupByLayerId) {
+                return [[], []];
+            }
 
-                        let checkNodeMatched = function (node) {
-                            let styleJsonCacheItem = node.data;
-                            let matched = false;
-                            if (styleJsonCacheItem.filterGroup.length > 0) {
-                                for (let i = 0; i < styleJsonCacheItem.filterGroup.length; i++) {
-                                    let filters = styleJsonCacheItem.filterGroup[i];
-                                    let groupMatched = true;
-                                    for (let j = 0; j < filters.length; j++) {
-                                        let filter = filters[j];
-                                        if (!filter.matchOLFeature(rawFeature, tileCoord[0])) {
-                                            groupMatched = false;
+            let pbfLayerNamesWithGeoStyle = [];
+            for (let pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
+                pbfLayerNamesWithGeoStyle.push(pbfLayerName);
+            }
+
+            let instructsCache = [];
+
+            const layers = this.layers_;
+
+            var featureIndex = -1;
+            const pbf = new PBF(/** @type {ArrayBuffer} */(source));
+            const pbfLayers = pbf.readFields(layersPBFReader, {});
+            /** @type {Array<import("../Feature.js").FeatureLike>} */
+            for (const name in pbfLayers) {
+                if (layers && layers.indexOf(name) == -1) {
+                    continue;
+                }
+                if (pbfLayerNamesWithGeoStyle.indexOf(name) === -1) {
+                    continue;
+                }
+
+                const pbfLayer = pbfLayers[name];
+
+                let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[name];
+
+                if (cacheTrees && cacheTrees.length > 0) {
+                    for (let i = 0; i < pbfLayer.length; i++) {
+                        const rawFeature = readRawFeature(pbf, pbfLayer, i);
+                        let feature;
+
+                        for (let j = 0; j < cacheTrees.length; j++) {
+                            let cacheTree = cacheTrees[j];
+                            let treeIndex = cacheTree.treeIndex;
+                            if (instructsCache[treeIndex] === undefined) {
+                                instructsCache[treeIndex] = {
+                                    min: 10,
+                                    max: -10
+                                };
+                            }
+                            let matchedNode;
+
+                            let checkNodeMatched = function (node) {
+                                let styleJsonCacheItem = node.data;
+                                let matched = false;
+                                if (styleJsonCacheItem.filterGroup.length > 0) {
+                                    for (let i = 0; i < styleJsonCacheItem.filterGroup.length; i++) {
+                                        let filters = styleJsonCacheItem.filterGroup[i];
+                                        let groupMatched = true;
+                                        for (let j = 0; j < filters.length; j++) {
+                                            let filter = filters[j];
+                                            if (!filter.matchOLFeature(rawFeature, tileCoord[0])) {
+                                                groupMatched = false;
+                                                break;
+                                            }
+                                        }
+                                        if (groupMatched) {
+                                            matched = true;
                                             break;
                                         }
                                     }
-                                    if (groupMatched) {
-                                        matched = true;
-                                        break;
+                                }
+                                else {
+                                    matched = true;
+                                }
+
+                                return matched;
+                            };
+                            let selectNode = function (node) {
+                                matchedNode = node.data;
+                            };
+                            cacheTree.traverseNode(checkNodeMatched, selectNode);
+                            if (matchedNode) {
+                                if (feature === undefined) {
+                                    feature = this.createFeature_(pbf, rawFeature);
+                                    features.push(feature);
+                                    featureIndex += 1;
+                                }
+
+                                let zindex;
+                                if (cacheTree.root.data.zIndex) {
+                                    zindex = rawFeature.properties[cacheTree.root.data.zIndex];
+                                    feature.properties_[cacheTree.root.data.zIndex] = zindex;
+                                }
+                                if (isNaN(zindex)) {
+                                    zindex = 0;
+                                }
+
+                                if (instructsCache[treeIndex][zindex] === undefined) {
+                                    instructsCache[treeIndex][zindex] = [];
+                                    if (zindex < instructsCache[treeIndex]["min"]) {
+                                        instructsCache[treeIndex]["min"] = zindex;
+                                    }
+                                    if (zindex > instructsCache[treeIndex]["max"]) {
+                                        instructsCache[treeIndex]["max"] = zindex;
+                                    }
+                                }
+
+                                instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
+                                feature.extent_ = undefined;
+                            }
+                        }
+                    }
+                }
+                this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+            }
+            let instructs = [];
+
+            for (let i = 0; i < instructsCache.length; i++) {
+                let instructsInOneTree = instructsCache[i];
+                if (instructsInOneTree) {
+                    for (let j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
+                        let instructsInOneZIndex = instructsInOneTree[j];
+                        if (instructsInOneZIndex) {
+                            let childrenInstructs = [];
+                            for (let h = 0; h < instructsInOneZIndex.length; h++) {
+                                let instruct = instructsInOneZIndex[h];
+                                var feature = features[instruct[0]];
+                                feature.styleId = feature.styleId ? feature.styleId : {}
+                                if (instruct[1].geoStyle) {
+                                    feature.styleId[instruct[1].geoStyle.id] = 0;
+                                    instructs.push([instruct[0], instruct[1].geoStyle, i]);
+                                }
+
+                                if (instruct[1].childrenGeoStyles) {
+                                    for (let k = 0; k < instruct[1].childrenGeoStyles.length; k++) {
+                                        feature.styleId[instruct[1].childrenGeoStyles[k].id] = 1;
+                                        childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k], i]);
                                     }
                                 }
                             }
-                            else {
-                                matched = true;
-                            }
-
-                            return matched;
-                        };
-                        let selectNode = function (node) {
-                            matchedNode = node.data;
-                        };
-                        cacheTree.traverseNode(checkNodeMatched, selectNode);
-                        if (matchedNode) {
-                            if (feature === undefined) {
-                                feature = this.createFeature_(pbf, rawFeature);
-                                features.push(feature);
-                                featureIndex += 1;
-                            }
-
-                            let zindex;
-                            if (cacheTree.root.data.zIndex) {
-                                zindex = rawFeature.properties[cacheTree.root.data.zIndex];
-                                feature.properties_[cacheTree.root.data.zIndex] = zindex;
-                            }
-                            if (isNaN(zindex)) {
-                                zindex = 0;
-                            }
-
-                            if (instructsCache[treeIndex][zindex] === undefined) {
-                                instructsCache[treeIndex][zindex] = [];
-                                if (zindex < instructsCache[treeIndex]["min"]) {
-                                    instructsCache[treeIndex]["min"] = zindex;
-                                }
-                                if (zindex > instructsCache[treeIndex]["max"]) {
-                                    instructsCache[treeIndex]["max"] = zindex;
-                                }
-                            }
-
-                            instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
-                            feature.extent_ = undefined;
+                            Array.prototype.push.apply(instructs, childrenInstructs);
                         }
                     }
                 }
             }
-            this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+            return [features, instructs];
         }
-        let instructs = [];
-
-        for (let i = 0; i < instructsCache.length; i++) {
-            let instructsInOneTree = instructsCache[i];
-            if (instructsInOneTree) {
-                for (let j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
-                    let instructsInOneZIndex = instructsInOneTree[j];
-                    if (instructsInOneZIndex) {
-                        let childrenInstructs = [];
-                        for (let h = 0; h < instructsInOneZIndex.length; h++) {
-                            let instruct = instructsInOneZIndex[h];
-                            var feature = features[instruct[0]];
-                            feature.styleId = feature.styleId ? feature.styleId : {}
-                            if (instruct[1].geoStyle) {
-                                feature.styleId[instruct[1].geoStyle.id] = 0;
-                                instructs.push([instruct[0], instruct[1].geoStyle, i]);
-                            }
-
-                            if (instruct[1].childrenGeoStyles) {
-                                for (let k = 0; k < instruct[1].childrenGeoStyles.length; k++) {
-                                    feature.styleId[instruct[1].childrenGeoStyles[k].id] = 1;
-                                    childrenInstructs.push([instruct[0], instruct[1].childrenGeoStyles[k], i]);
-                                }
-                            }
-                        }
-                        Array.prototype.push.apply(instructs, childrenInstructs);
-                    }
-                }
-            }
-        }
-
-        // return features ;
-        return [features, instructs];
     }
 
     getInstructions(features, opt_options) {
@@ -312,7 +333,7 @@ class GeoMVTFormat extends MVT {
         return [outputFeatures, instructs];
     }
 
-    CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, zoom, getFeatureTileRangeFunction) {
+    CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, zoom, getFeatureTileRangeFunction, defaultStyle) {
         let subTileCachedInstruct = {};
         let offsetZ = zoom - requestCoord[0];
         let tileSize = 4096 / Math.pow(2, offsetZ);
@@ -322,29 +343,43 @@ class GeoMVTFormat extends MVT {
         let features = featuresAndInstructions[0];
         let instructs = featuresAndInstructions[1];
 
-        if (instructs === undefined) {
-        }
-        for (let i = 0; i < instructs.length; i++) {
-            let instruct = instructs[i];
-            let feature = features[instruct[0]];
-
-            let featureExtent = feature.getExtent();
-            let featureTileRange = undefined;
-            if (getFeatureTileRangeFunction !== undefined) {
-                let featureRange = getFeatureTileRangeFunction(featureExtent, zoom);
-                featureTileRange = [featureRange.minX, featureRange.minY, featureRange.maxX, featureRange.maxY]
-            }
-            else {
-                featureTileRange = this.getFeatureTileRange(featureExtent, 4096, tileSize, requestCoord, offsetZ);
-            }
-
-            for (let x = tileRange[0] > featureTileRange[0] ? tileRange[0] : featureTileRange[0], xx = featureTileRange[2] > tileRange[2] ? tileRange[2] : featureTileRange[2]; x <= xx; x++) {
-                for (let y = tileRange[1] > featureTileRange[1] ? tileRange[1] : featureTileRange[1], yy = featureTileRange[3] > tileRange[3] ? tileRange[3] : featureTileRange[3]; y <= yy; y++) {
-                    let tileKey = zoom + "," + x + "," + y
-                    if (subTileCachedInstruct[tileKey] === undefined) {
-                        subTileCachedInstruct[tileKey] = [];
+        if (defaultStyle) {
+            if (features) {
+                for (let x = tileRange[0], xx = tileRange[2]; x <= xx; x++) {
+                    for (let y = tileRange[1], yy = tileRange[3]; y <= yy; y++) {
+                        let tileKey = zoom + "," + x + "," + y
+                        if (subTileCachedInstruct[tileKey] === undefined) {
+                            subTileCachedInstruct[tileKey] = [];
+                        }
                     }
-                    subTileCachedInstruct[tileKey].push(instruct);
+                }
+            }
+        }
+        else {
+            if (instructs === undefined) {
+            }
+            for (let i = 0; i < instructs.length; i++) {
+                let instruct = instructs[i];
+                let feature = features[instruct[0]];
+
+                let featureExtent = feature.getExtent();
+                let featureTileRange = undefined;
+                if (getFeatureTileRangeFunction !== undefined) {
+                    let featureRange = getFeatureTileRangeFunction(featureExtent, zoom);
+                    featureTileRange = [featureRange.minX, featureRange.minY, featureRange.maxX, featureRange.maxY]
+                }
+                else {
+                    featureTileRange = this.getFeatureTileRange(featureExtent, 4096, tileSize, requestCoord, offsetZ);
+                }
+
+                for (let x = tileRange[0] > featureTileRange[0] ? tileRange[0] : featureTileRange[0], xx = featureTileRange[2] > tileRange[2] ? tileRange[2] : featureTileRange[2]; x <= xx; x++) {
+                    for (let y = tileRange[1] > featureTileRange[1] ? tileRange[1] : featureTileRange[1], yy = featureTileRange[3] > tileRange[3] ? tileRange[3] : featureTileRange[3]; y <= yy; y++) {
+                        let tileKey = zoom + "," + x + "," + y
+                        if (subTileCachedInstruct[tileKey] === undefined) {
+                            subTileCachedInstruct[tileKey] = [];
+                        }
+                        subTileCachedInstruct[tileKey].push(instruct);
+                    }
                 }
             }
         }

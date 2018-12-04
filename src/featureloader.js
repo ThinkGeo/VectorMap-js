@@ -103,7 +103,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
             tileCoordWithSourceCoord: this.tileCoordWithSourceCoord,
             vectorImageTileCoord: this.vectorImageTileCoord,
             tileExtent: tileExtent,
-            tileResolution: tileResolution
+            tileResolution: tileResolution,
           };
           let loadedCallback = function (data, methodInfo) {
             let requestKey = data.requestKey;
@@ -153,12 +153,12 @@ export function loadFeaturesXhr(url, format, success, failure) {
               }
               if (source) {
                 // Get the all feature in the request tile and the instructions of the tile zoom
-                var featuresAndInstructions = format.readFeaturesAndInstructions(source, { featureProjection: projection, tileCoord: this.tileCoord });
+                var featuresAndInstructions = format.readFeaturesAndInstructions(source, { featureProjection: projection, tileCoord: this.tileCoord, defaultStyle: vectorTileSource.defaultStyle });
 
                 var isOverMaxDataZoom = vectorTileSource.maxDataZoom < this.tileCoord[0];
                 if (isOverMaxDataZoom) {
                   // Segment instructions to homologous cells.
-                  var homologousTilesInstructions = format.CreateInstructionsForHomologousTiles(featuresAndInstructions, this.requestCoord, this.tileCoord[0]);
+                  var homologousTilesInstructions = format.CreateInstructionsForHomologousTiles(featuresAndInstructions, this.requestCoord, this.tileCoord[0],vectorTileSource.defaultStyle);
 
                   // Save the homologousTilesInstructions to source
                   vectorTileSource.saveTileInstructions(requestCoordAndStyleZ, featuresAndInstructions[0], homologousTilesInstructions);

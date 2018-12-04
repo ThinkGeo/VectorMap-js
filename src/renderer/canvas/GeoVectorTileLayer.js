@@ -507,31 +507,59 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                     var inbox = 0;
                     var out = 0;
-                    for (let i = 0, ii = instructs.length; i < ii; ++i) {
-                        const featureIndex = instructs[i][0];
-                        const feature = features[featureIndex];
 
-                        let geoStyle = instructs[i][1];
-
-                        if (reproject && !feature["projected"]) {
-                            if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-                                // projected tile extent
-                                tileProjection.setWorldExtent(sourceTileExtent);
-                                // tile extent in tile pixel space
-                                tileProjection.setExtent(sourceTile.getExtent());
+                    if (source.defaultStyle) {
+                        for (let i = 0, ii = features.length; i < ii; ++i) {
+                            const feature = features[i];
+                            if (reproject && !feature["projected"]) {
+                                if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                                    // projected tile extent
+                                    tileProjection.setWorldExtent(sourceTileExtent);
+                                    // tile extent in tile pixel space
+                                    tileProjection.setExtent(sourceTile.getExtent());
+                                }
+                                feature.getGeometry().transform(tileProjection, projection);
+                                feature["projected"] = true;
+                                feature.extent_ = null;
                             }
-                            feature.getGeometry().transform(tileProjection, projection);
-                            feature["projected"] = true;
-                            feature.extent_ = null;
-                        }
-                        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-                            inbox++;
-                            render.call(renderer, feature, geoStyle);
-                        }
-                        else {
-                            out++;
+                            if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                                inbox++;
+                                render.call(renderer, feature, undefined);
+                            }
+                            else {
+                                out++;
+                            }
                         }
                     }
+                    else {
+                        for (let i = 0, ii = instructs.length; i < ii; ++i) {
+                            const featureIndex = instructs[i][0];
+                            const feature = features[featureIndex];
+
+                            let geoStyle = instructs[i][1];
+
+                            if (reproject && !feature["projected"]) {
+                                if (tileProjection.getUnits() == Units.TILE_PIXELS) {
+                                    // projected tile extent
+                                    tileProjection.setWorldExtent(sourceTileExtent);
+                                    // tile extent in tile pixel space
+                                    tileProjection.setExtent(sourceTile.getExtent());
+                                }
+                                feature.getGeometry().transform(tileProjection, projection);
+                                feature["projected"] = true;
+                                feature.extent_ = null;
+                            }
+                            if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+                                inbox++;
+                                render.call(renderer, feature, geoStyle);
+                            }
+                            else {
+                                out++;
+                            }
+                        }
+                    }
+
+
                     replayState.replayGroupCreated = true;
                     replayGroup.finish();
                     for (const r in replayGroup.getReplays()) {
@@ -542,7 +570,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     sourceTile["replayCreated"] = true;
                 }
 
-                if (sourceTile.tileCoord[0] !== tile.tileCoord[0]) {
+                if (sourceTile.tileCoord[0] !== tile.tileCoord[0] && !source.defaultStyle) {
                     // Use current zoom level style draw the features from previous zoom level
                     let sourceTileCoordAndStyleZ = sourceTile.tileCoord.toString() + "," + tile.tileCoord[0];
                     let newFeatureAndInstructs = sourceTile.getApplyTileInstrictions(tile.tileCoord[0]);

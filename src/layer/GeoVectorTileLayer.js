@@ -29,6 +29,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
     constructor(stylejson, opt_options) {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
+        options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
@@ -39,6 +40,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
         this.clientId = options["clientId"];
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
+        this.defaultStyle = options["defaultStyle"];
 
         if (this.multithread && window.Worker) {
             this.workerManager = new WorkerManager();
@@ -55,8 +57,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
         LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
         this.type = LayerType.GEOVECTORTILE;
-
-
     }
 
     isStyleJsonUrl(styleJson) {
@@ -101,68 +101,74 @@ class GeoVectorTileLayer extends VectorTileLayer {
             var sourceId = layerJson["source"];
 
             var source = this.getGeoSource(sourceId);
+
             if (source) {
                 this.setSource(source);
 
-                // Set the layer background
-                if (this.background) {
-                    let backgroundColor = GeoStyle.toRGBAColor(this.background);
-                    if (backgroundColor) {
-                        this["background"] = backgroundColor;
-                    }
+                if (this.defaultStyle) {
+                    source.defaultStyle = true;
                 }
+                else {
 
-                let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["styles"];
-                let minZoom = 0;
-                let maxZoom = 22;
-
-
-                // this is the column name of pbflayer name, 
-                let layerName = "layerName"
-
-                // Create a StyleJsonCache
-                // let styleJsonCache = createStyleJsonCache( )
-                let styleJsonCache = new StyleJsonCache();
-
-                let styleIdIndex = 0;
-                for (let styleId of styleIds) {
-
-                    // Select style json object by style id.
-                    let styleJson;
-                    for (let index = 0; index < styleJsons.length; index++) {
-                        if (styleJsons[index].id === styleId) {
-                            styleJson = styleJsons[index];
+                    // Set the layer background
+                    if (this.background) {
+                        let backgroundColor = GeoStyle.toRGBAColor(this.background);
+                        if (backgroundColor) {
+                            this["background"] = backgroundColor;
                         }
                     }
 
-                    if (styleJson) {
-                        styleJsonCache.styleJson[styleId] = styleJson;
-                        let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
+                    let styleJsons = styleJson["styles"];
+                    let styleIds = layerJson["styles"];
+                    let minZoom = 0;
+                    let maxZoom = 22;
 
-                        for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
-                            let treeNode = new TreeNode(item);
-                            this.createChildrenNode(treeNode, item, zoom);
-                            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                    // this is the column name of pbflayer name, 
+                    let layerName = "layerName"
+
+                    // Create a StyleJsonCache
+                    // let styleJsonCache = createStyleJsonCache( )
+                    let styleJsonCache = new StyleJsonCache();
+
+                    let styleIdIndex = 0;
+                    for (let styleId of styleIds) {
+
+                        // Select style json object by style id.
+                        let styleJson;
+                        for (let index = 0; index < styleJsons.length; index++) {
+                            if (styleJsons[index].id === styleId) {
+                                styleJson = styleJsons[index];
+                            }
                         }
 
-                        styleIdIndex += 1;
-                    }
-                }
-                let geoFormat = source.getGeoFormat();
-                geoFormat.setStyleJsonCache(styleJsonCache);
+                        if (styleJson) {
+                            styleJsonCache.styleJson[styleId] = styleJson;
+                            let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
 
-                if (this.workerManager) {
-                    let messageData = {
-                        formatId: getUid(geoFormat),
-                        styleJson: styleJsonCache.styleJson,
-                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfos
-                    };
-                    for (let i = 0; i < this.workerManager.workerCount; i++) {
-                        this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
-                    }
+                            for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                                let treeNode = new TreeNode(item);
+                                this.createChildrenNode(treeNode, item, zoom);
+                                styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                            }
 
-                    source.setWorkerManager(this.workerManager);
+                            styleIdIndex += 1;
+                        }
+                    }
+                    let geoFormat = source.getGeoFormat();
+                    geoFormat.setStyleJsonCache(styleJsonCache);
+
+                    if (this.workerManager) {
+                        let messageData = {
+                            formatId: getUid(geoFormat),
+                            styleJson: styleJsonCache.styleJson,
+                            geoTextStyleInfos: styleJsonCache.geoTextStyleInfos
+                        };
+                        for (let i = 0; i < this.workerManager.workerCount; i++) {
+                            this.workerManager.postMessage(getUid(messageData), "initStyleJSON", messageData, undefined, i);
+                        }
+
+                        source.setWorkerManager(this.workerManager);
+                    }
                 }
             }
         }
@@ -312,41 +318,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
             }
         }
         return false;
-    }
-}
-
-// Map.prototype.createRenderer = function createRenderer() {
-//     var renderer = new CanvasMapRenderer(this);
-//     renderer.registerLayerRenderers([
-//         CanvasImageLayerRenderer,
-//         CanvasTileLayerRenderer,
-//         CanvasVectorLayerRenderer,
-//         CanvasVectorTileLayerRenderer,
-//         GeoCanvasVectorTileLayerRenderer
-//     ]);
-//     return renderer;
-// };
-
-TileQueue.prototype.handleTileChange = function (event) {
-    const tile = /** @type {import("./Tile.js").default} */ (event.target);
-    const state = tile.getState();
-    if (state === TileState.LOADED || state === TileState.ERROR ||
-        state === TileState.EMPTY || state === TileState.ABORT) {
-        if (tile.isGeoVectorTile) {
-            if (tile.replayCreated) {
-                unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
-            }
-        }
-        else {
-            unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
-        }
-
-        const tileKey = tile.getKey();
-        if (tileKey in this.tilesLoadingKeys_) {
-            delete this.tilesLoadingKeys_[tileKey];
-            --this.tilesLoading_;
-        }
-        this.tileChangeCallback_();
     }
 }
 
