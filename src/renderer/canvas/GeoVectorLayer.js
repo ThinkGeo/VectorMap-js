@@ -90,6 +90,12 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
                 }
                 Array.prototype.push.apply(styles, ol4Styles);
             }
+            else {
+                const styleFunction = feature.getStyleFunction() || vectorLayer.getStyleFunction();
+                if (styleFunction) {
+                    styles = styleFunction(feature, resolution);
+                }
+            }
             if (styles) {
                 const dirty = this.renderFeature(
                     feature, resolution, pixelRatio, styles, replayGroup);
@@ -109,12 +115,21 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
                     features[getUid(feature)] = feature;
                 });
 
-            // Get drawing instructions for drawing features;
-            let drawinginstructions = this.getDrawingInstructions(features, Math.round(frameState.viewState.zoom));
-
-            for (let i = 0, ii = drawinginstructions.length; i < ii; ++i) {
-                render(drawinginstructions[i][0], drawinginstructions[i][1]);
+            if (vectorSource.defaultStyle) {
+                for(let featureId in features)
+                {
+                    render(features[featureId]);
+                }
             }
+            else {
+                // Get drawing instructions for drawing features;
+                let drawinginstructions = this.getDrawingInstructions(features, Math.round(frameState.viewState.zoom));
+
+                for (let i = 0, ii = drawinginstructions.length; i < ii; ++i) {
+                    render(drawinginstructions[i][0], drawinginstructions[i][1]);
+                }
+            }
+
         } else {
             vectorSource.forEachFeatureInExtent(extent, render);
         }

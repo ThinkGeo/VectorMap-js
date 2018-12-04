@@ -31,12 +31,14 @@ class GeoVectorLayer extends VectorLayer {
     constructor(stylejson, opt_options) {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
+        options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
         super(options)
 
         this.proxy = options["proxy"];
         this.clientId = options["clientId"];
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
+        this.defaultStyle = options["defaultStyle"];
 
         this.styleJson = null;
         if (this.isStyleJsonUrl(stylejson)) {
@@ -100,42 +102,47 @@ class GeoVectorLayer extends VectorLayer {
                     }
                 }
 
-                let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["styles"];
-                let minZoom = 0;
-                let maxZoom = 22;
-
-                let layerName = "layerName"
-
-                // Create a StyleJsonCache
-                // let styleJsonCache = createStyleJsonCache( )
-                let styleJsonCache = new StyleJsonCache();
-
-                let styleIdIndex = 0;
-                for (let styleId of styleIds) {
-
-                    // Select style json object by style id.
-                    let styleJson;
-                    for (let index = 0; index < styleJsons.length; index++) {
-                        if (styleJsons[index].id === styleId) {
-                            styleJson = styleJsons[index];
-                        }
-                    }
-
-                    if (styleJson) {
-                        styleJsonCache.styleJson[styleId] = styleJson;
-                        let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
-
-                        for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
-                            let treeNode = new TreeNode(item);
-                            this.createChildrenNode(treeNode, item, zoom);
-                            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                        }
-
-                        styleIdIndex += 1;
-                    }
+                if (this.defaultStyle) {
+                    source.defaultStyle = true;
                 }
-                this.styleJsonCache = styleJsonCache;
+                else
+                {
+                    let styleJsons = styleJson["styles"];
+                    let styleIds = layerJson["styles"];
+                    let minZoom = 0;
+                    let maxZoom = 22;
+    
+                    let layerName = "layerName"
+    
+                    // Create a StyleJsonCache
+                    let styleJsonCache = new StyleJsonCache();
+    
+                    let styleIdIndex = 0;
+                    for (let styleId of styleIds) {
+    
+                        // Select style json object by style id.
+                        let styleJson;
+                        for (let index = 0; index < styleJsons.length; index++) {
+                            if (styleJsons[index].id === styleId) {
+                                styleJson = styleJsons[index];
+                            }
+                        }
+    
+                        if (styleJson) {
+                            styleJsonCache.styleJson[styleId] = styleJson;
+                            let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
+    
+                            for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                                let treeNode = new TreeNode(item);
+                                this.createChildrenNode(treeNode, item, zoom);
+                                styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                            }
+    
+                            styleIdIndex += 1;
+                        }
+                    }
+                    this.styleJsonCache = styleJsonCache;
+                }
             }
         }
     }
