@@ -241,7 +241,6 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
         debugger;
     }
     if (sourceTileCoord.toString() != vectorImageTileCoord.toString()) {
-        console.log("=====requestCoord:" + requestCoord + " sourceTileCoord:" + sourceTileCoord + " vectorImageTileCoord:" + vectorImageTileCoord);
         let newFeatureAndInstructs = self.getApplyTileInstructions(sourceTileCoord, vectorImageTileCoord[0]);
         if (newFeatureAndInstructs === undefined) {
             newFeatureAndInstructs = self.createApplyTileInstructions(tileFeatureAndInstrictions[0], formatId, vectorImageTileCoord[0]);
@@ -952,7 +951,6 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
             const lastKey = self.features.peekLastKey();
             self.features.remove(lastKey);
             delete self.vectorTilesData[lastKey]
-            // console.log("remove" + lastKey);
         }
     }
 }
