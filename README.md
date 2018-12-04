@@ -1,5 +1,5 @@
 
-# VectorMap.js <a href="https://circleci.com/gh/vuejs/vue/tree/dev"><img src="https://img.shields.io/circleci/project/github/vuejs/vue/dev.svg" alt="Build Status"></a> <a href="https://npmcharts.com/compare/vectormap-js?minimal=true&interval=7"><img src="https://img.shields.io/npm/dm/vectormap-js.svg" alt="Downloads"></a> <a href="https://www.npmjs.com/package/vectormap-js"><img src="https://img.shields.io/npm/l/vectormap-js.svg" alt="License"></a>
+# VectorMap.js [![Build Status](https://travis-ci.org/ThinkGeo/VectorMap-js.svg?branch=develop)](https://travis-ci.org/ThinkGeo/VectorMap-js) <a href="https://npmcharts.com/compare/vectormap-js?minimal=true&interval=7"><img src="https://img.shields.io/npm/dm/vectormap-js.svg" alt="Downloads"></a> <a href="https://www.npmjs.com/package/vectormap-js"><img src="https://img.shields.io/npm/v/vectormap-js.svg" alt="Version"></a>
 HTML5, WebGL Vector map JavaScript library with any vector data – EsriJSON, GML, GPX, GeoJSON, KML, Vector Tile (MVT), WFS, WKT or WMS, can be beautifully rendered with CSS similar style file – [StyleJSON](https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/) schema. It’s an extension of [OpenLayers](https://openlayers.org/ "OpenLayers"), and fits any requirements in browsers and mobile devices. 
 
 With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://openlayers.org/ "OpenLayers"), as well as any plugins or extensions created based on [OpenLayers](https://openlayers.org/ "OpenLayers"), for example, the "[3rd party libraries](http://openlayers.org/3rd-party/)" published on https://openlayers.org. With the help of them, you can easily create any styled map and put it anywhere, and build a customized geocoding or routings from other providers.
@@ -20,11 +20,25 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
             <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | 
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
+        </a> 
 	
 	
-| <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt=""></a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt=""></a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingPolygons">
- <img src="https://thinkgeo.github.io/vectormapsample/image/ector-map-stylepolygons.jpg" width="210" height="210" alt=""></a> | 
+
+| <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#WFS">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-wfs.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
+        </a> 
+	
+	
+ 
+	
+
 
 
 ## Install
