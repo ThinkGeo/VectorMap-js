@@ -1,5 +1,4 @@
- 
-//base map style 
+ //base map style 
 const baseMapStyle = new ol.style.Style({
     fill: new ol.style.Fill({
         color: '#0b72d2'

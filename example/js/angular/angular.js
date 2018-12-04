@@ -112,7 +112,11 @@
 /*! no static exports found */
 /***/ (function (module, exports) {
 
+<<<<<<< HEAD
             module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<form id=\"lines\" #form=\"ngForm\" (submit)=\"refresh(form.value)\">\n  <label>FontSize: </label>\n  <input type=\"number\" name=\"fontSize\" ngModel placeholder=\"14\">\n  <br>\n  <br>\n  <label>Text: </label>\n  <select name=\"fontFamily\" ngModel   >\n    <option   value=\"Calibri\">Calibri</option>\n    <option value=\"sans-serif\">sans-serif</option>\n  </select>\n  <br>\n  <br>\n  <label>FillColor: </label>\n  <input type=\"text\" placeholder=\"#000\" name=\"fillColor\" ngModel >\n  <br />\n  <br>\n  <label>Placement: </label>\n  <select name=\"placement\" ngModel >\n    <option  value=\"line\">line</option>\n    <option value=\"point\">point</option>\n  </select>\n  <br> <br>\n\n  <button type=\"submit\">Refresh</button>\n</form>\n\n<div id=\"map\"></div>\n\n\n<router-outlet></router-outlet>"
+=======
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<form id=\"lines\" #form=\"ngForm\" (submit)=\"refresh(form.value)\">\n  <label>FontSize: </label>\n  <input type=\"number\" name=\"fontSize\" ngModel placeholder=\"14\">\n  <br>\n  <label>Text: </label>\n  <select name=\"fontFamily\" ngModel   >\n    <option   value=\"Calibri\">Calibri</option>\n    <option value=\"Sans-Serif\">Sans-Serif</option>\n  </select>\n <br>\n  <label>FillColor: </label>\n  <input type=\"text\" placeholder=\"#000\" name=\"fillColor\" ngModel >\n  <br />\n <label>Placement: </label>\n  <select name=\"placement\" ngModel >\n    <option  value=\"line\">Line</option>\n    <option value=\"point\">Point</option>\n  </select>\n  <br> \n  <button type=\"submit\">Refresh</button>\n</form>\n\n<div id=\"map\"></div>\n\n\n<router-outlet></router-outlet>"
+>>>>>>> e83c2f1eaf3f024627e9f1ba336bb2763c1ea46d
 
             /***/
 }),
@@ -131,6 +135,7 @@
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 
 
+<<<<<<< HEAD
             var AppComponent = /** @class */ (function () {
                 function AppComponent() {
                 }
@@ -202,6 +207,76 @@
 
             /***/
 }),
+=======
+var AppComponent = /** @class */ (function () {
+    function AppComponent() {
+    }
+    AppComponent.prototype.ngAfterViewInit = function () {
+        var _this = this;
+        //block  map style 
+        this.blockMapStyle = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: '#afaeb1'
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#a59f80',
+                width: 2
+            }),
+            text: new ol.style.Text({
+                font: '14px Calibri,Sans-Serif',
+                fill: new ol.style.Fill({
+                    color: '#525255'
+                }),
+                placement: 'line',
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 3
+                }),
+            })
+        });
+        this.blockMapLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: './data/label.json',
+                format: new ol.format.GeoJSON()
+            }),
+            style: function (feature) {
+                _this.blockMapStyle.getText().setText(feature.get('NAME'));
+                return _this.blockMapStyle;
+            }
+        });
+        var map = new ol.Map({
+            layers: [this.blockMapLayer],
+            target: 'map',
+            view: new ol.View({
+                center: ol.proj.fromLonLat([-96.820787, 33.098294]),
+                zoom: 17,
+            }),
+        });
+    };
+    AppComponent.prototype.refresh = function (formValue) {
+        console.log(formValue);
+        var text = this.blockMapStyle.getText();
+        text.setFont((formValue.fontSize || 14) + "px " + (formValue.fontFamily || 'Sans-Serif') + ",Sans-Serif");
+        text.getFill().setColor(formValue.fillColor || '#000');
+        text.setPlacement(formValue.placement || 'line');
+        this.blockMapLayer.setStyle(this.blockMapStyle);
+    };
+    AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-root',
+            template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
+            styles: [__webpack_require__(/*! ./app.component.css */ "./src/app/app.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], AppComponent);
+    return AppComponent;
+}());
+
+;
+
+
+/***/ }),
+>>>>>>> e83c2f1eaf3f024627e9f1ba336bb2763c1ea46d
 
 /***/ "./src/app/app.module.ts":
 /*!*******************************!*\

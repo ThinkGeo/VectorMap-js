@@ -1,4 +1,3 @@
-
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],

@@ -4,25 +4,25 @@ let geosjonStyle =
     "version": 1.3,
     "owner": "ThinkGeo LLC",
     "time": "2018/06/09",
-    "background": "#aac6ee",
+    "background": "#02BFFF",
     "variables": {},
     "styles": [{
             "id": "country",
             "style": [{
                 "filter": "zoom>=0;zoom<=22;",
-                "polygon-fill": "#64748e"
+                "polygon-fill": "#02BFFF"
             }]
         },
         {
             "id": "country_boundary",
             "style": [{
                     "filter": "zoom>=0;zoom<=3;",
-                    "line-width": 2,
+                    "line-width": 1,
                     "line-color": "rgba(255, 255, 255, 0.4)",
                 },
                 {
                     "filter": "zoom>=4;zoom<=22;",
-                    "line-width": 3,
+                    "line-width": 1,
                     "line-color": "rgba(255, 255, 255, 0.6)",
                 }
             ]
@@ -30,10 +30,10 @@ let geosjonStyle =
             "id": "country_name",
             "style": [{
                 "text-name": "name",
-                "text-wrap-width": 20,
+                "text-wrap-width": 1,
                 "text-fill": "#496588",
                 "text-halo-fill": "rgba(255, 255, 255, 0.5)",
-                "text-halo-radius": 2,
+                "text-halo-radius": 1,
                 "style": [
                     {
                         "filter": "zoom>=3;zoom<=22;",
@@ -69,52 +69,66 @@ let sphereMollweideProjection = new ol.proj.Projection({
     code: 'ESRI:53009',
     extent: [-9009954.605703328, -9009954.605703328,
         9009954.605703328, 9009954.605703328],
-    worldExtent: [-179, -89.99, 179, 89.99],
-    zoom:0
+    worldExtent: [-179, -89.99, 179, 89.99]
 });
 let sphereMillerProjection = new ol.proj.Projection({
     code: 'ESRI:54003',
+    extent: [-9009954.605703328, -9009954.605703328,
+        9009954.605703328, 9009954.605703328],
+    worldExtent: [-179, -89.99, 179, 89.99]
 });
 let mercatorView=new ol.View({
-    center: [0, 0],
+    center: ol.proj.fromLonLat([10.051631,30.179598]),
     projection: 'EPSG:3857',
-    zoom: 1
+    zoom: 2.4
 });
 let mollweideView=new ol.View({
     center: [0, 0],
     projection: sphereMollweideProjection,
     resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
-    zoom: 1
+    zoom: 1.2
 })
 let millerView=new ol.View({
-    center: [0, 0],
+    center:ol.proj.fromLonLat([10.051631,26.179598]),
     projection: sphereMillerProjection,
     resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
-    zoom: 1
+    zoom: 1.2
 })
 
 let equirectangularView=new ol.View({
     center: [0, 0],
     projection: 'EPSG:4326',
-    zoom: 1
+    zoom: 2.4
 });
 
+<<<<<<< HEAD
 var map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+=======
+let map = new ol.Map({
+>>>>>>> e83c2f1eaf3f024627e9f1ba336bb2763c1ea46d
     keyboardEventTarget: document,
     layers: [],
-    target: 'map'
+    target: 'map',
+
 });
-let graticule= new ol.Graticule();
+let graticule=new ol.Graticule(
+    {
+        'map':map,
+        'strokeStyle': new ol.style.Stroke({
+            color: 'rgba(255,255,255,0.9)',
+            width: 1,
+            lineDash: [0.5, 4]
+        }),
+    }
+);
 let updateViewProjection=()=> {
     map.getLayers().getArray().forEach(layer => {
         map.removeLayer(layer);
     });
-    graticule.setMap(null);
     geosjonStyle.sources[0].featureProjection=projection.value
     map.addLayer(
         new ol.mapsuite.VectorLayer(geosjonStyle, {
             multithread: false,
-            // visible:false
         })
     )
     let newView=null;
@@ -122,11 +136,7 @@ let updateViewProjection=()=> {
         case 'EPSG:4326':newView=equirectangularView;break;
         case 'EPSG:3857':newView=mercatorView;break;
         case 'ESRI:54003':newView=millerView;break;
-        case 'ESRI:54009':{
-            graticule.setMap(map);
-            newView=mollweideView;
-            break;
-        }
+        case 'ESRI:54009':newView=mollweideView;break;
     }
     map.setView(newView);
 }
