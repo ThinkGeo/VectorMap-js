@@ -1,16 +1,16 @@
-const childPageTemplate = ` <div id="child-page-title">
+const childPageTemplate = ` <div id="child-page-title" class="pl-md-0 pl-3">
     <h1></h1>
     <p><p>
 </div>
 <ul class="nav nav-tabs" id="child-page-component" role="tablist">
      <li class="nav-item map">
-        <a class="nav-link active"  data-toggle="tab" href="#child-page-view">View</a>
+        <a class="nav-link active" data-toggle="tab" href="#child-page-view">View</a>
     </li>
       <li class="nav-item html">
-        <a class="nav-link"  data-toggle="tab" href="#child-page-html">Html</a>
+        <a class="nav-link" data-toggle="tab" href="#child-page-html">Html</a>
     </li>
       <li class="nav-item js mr-auto">
-        <a class="nav-link"  data-toggle="tab" href="#child-page-js">JavaScript</a>
+        <a class="nav-link" data-toggle="tab" href="#child-page-js">JavaScript</a>
     </li>
     <li class="nav-item" id="codepen">
       <a  class="nav-link" href="https://codepen.io" target="_blank">
@@ -53,7 +53,7 @@ const ShowHandleFuns = class {
                         let str = reader.result;
                         str = str.replace(/\</gm, '&lt;');
                         str = str.replace(/\>/gm, '&gt;');
-                        let preCode = `<pre style="height: ${window.innerHeight - 200}px"><code> ${str}
+                        let preCode = `<pre><code> ${str}
                               </code></pre>`;
                         div.innerHTML = preCode;
                         (() => {
