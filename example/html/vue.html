@@ -24,6 +24,7 @@
             width: 82px;
             color: #5f6b78;
             text-align: right;
+            margin: 12px 0;
         }
 
         #lines select {
@@ -74,6 +75,7 @@
         #lines button:focus{
             outline: 0;
         }
+        
         #lines button:active {
             -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
             box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
@@ -92,24 +94,21 @@
         <label>FontSize: </label>
         <input type="number" v-model="fontSize">
         <br>
-        <br>
         <label>Text: </label>
         <select v-model="fontFamily">
             <option value="Calibri">Calibri</option>
             <option value="sans-serif">Sans-Serif</option>
         </select>
         <br>
-        <br>
         <label>FillColor: </label>
         <input type="text" v-model="fillColor">
-        <br />
         <br>
         <label>Placement: </label>
         <select v-model="placement">
             <option value="line">Line</option>
             <option value="point">Point</option>
         </select>
-        <br> <br>
+        <br>
         <div>
             <button v-on:click="refresh">Refresh</button>
         </div>
