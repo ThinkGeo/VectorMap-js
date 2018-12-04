@@ -54,4 +54,8 @@
     .collapsing {
         height: 0px;
     }
+
+    .main {
+        max-height: calc(100vh - 5px - 48px);
+    }
 }

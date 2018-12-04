@@ -246,6 +246,8 @@ body {
     padding-left: 340px;
     height: 100%;
     width: 100%;
+    max-height: calc(100vh - 5px - 72px);
+    overflow: hidden;
 }
 
 #child-page-component .active {
