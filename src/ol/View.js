@@ -1,25 +1,25 @@
 /**
  * @module ol/View
  */
-import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {getUid} from './util.js';
-import {VOID} from './functions.js';
-import {createExtent, none as centerNone} from './centerconstraint.js';
+import { DEFAULT_TILE_SIZE } from './tilegrid/common.js';
+import { getUid } from './util.js';
+import { VOID } from './functions.js';
+import { createExtent, none as centerNone } from './centerconstraint.js';
 import BaseObject from './Object.js';
-import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
-import {createSnapToZero, createSnapToN, none as rotationNone, disable} from './rotationconstraint.js';
+import { createSnapToResolutions, createSnapToPower } from './resolutionconstraint.js';
+import { createSnapToZero, createSnapToN, none as rotationNone, disable } from './rotationconstraint.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
-import {linearFindNearest} from './array.js';
-import {assert} from './asserts.js';
-import {add as addCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual} from './coordinate.js';
-import {inAndOut} from './easing.js';
-import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
+import { linearFindNearest } from './array.js';
+import { assert } from './asserts.js';
+import { add as addCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual } from './coordinate.js';
+import { inAndOut } from './easing.js';
+import { getForViewAndSize, getCenter, getHeight, getWidth, isEmpty } from './extent.js';
 import GeometryType from './geom/GeometryType.js';
-import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
-import {clamp, modulo} from './math.js';
-import {assign} from './obj.js';
-import {createProjection, METERS_PER_UNIT} from './proj.js';
+import { fromExtent as polygonFromExtent } from './geom/Polygon.js';
+import { clamp, modulo } from './math.js';
+import { assign } from './obj.js';
+import { createProjection, METERS_PER_UNIT } from './proj.js';
 import Units from './proj/Units.js';
 
 
@@ -258,18 +258,20 @@ var View = /*@__PURE__*/(function (BaseObject) {
      */
     this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
+    this.progressiveZoom = opt_options.progressiveZoom !== undefined ? opt_options.progressiveZoom : true
+
     this.applyOptions_(options);
   }
 
-  if ( BaseObject ) View.__proto__ = BaseObject;
-  View.prototype = Object.create( BaseObject && BaseObject.prototype );
+  if (BaseObject) View.__proto__ = BaseObject;
+  View.prototype = Object.create(BaseObject && BaseObject.prototype);
   View.prototype.constructor = View;
 
   /**
    * Set up the view with the given options.
    * @param {ViewOptions} options View options.
    */
-  View.prototype.applyOptions_ = function applyOptions_ (options) {
+  View.prototype.applyOptions_ = function applyOptions_(options) {
 
     /**
      * @type {Object<string, *>}
@@ -355,7 +357,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {ViewOptions} newOptions New options to be applied.
    * @return {ViewOptions} New options updated with the current view state.
    */
-  View.prototype.getUpdatedOptions_ = function getUpdatedOptions_ (newOptions) {
+  View.prototype.getUpdatedOptions_ = function getUpdatedOptions_(newOptions) {
     var options = assign({}, this.options_);
 
     // preserve resolution (or zoom)
@@ -407,7 +409,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    *     the animation completed without being cancelled.
    * @api
    */
-  View.prototype.animate = function animate (var_args) {
+  View.prototype.animate = function animate(var_args) {
     var arguments$1 = arguments;
 
     var animationCount = arguments.length;
@@ -494,7 +496,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {boolean} The view is being animated.
    * @api
    */
-  View.prototype.getAnimating = function getAnimating () {
+  View.prototype.getAnimating = function getAnimating() {
     return this.hints_[ViewHint.ANIMATING] > 0;
   };
 
@@ -503,7 +505,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {boolean} The view is being interacted with.
    * @api
    */
-  View.prototype.getInteracting = function getInteracting () {
+  View.prototype.getInteracting = function getInteracting() {
     return this.hints_[ViewHint.INTERACTING] > 0;
   };
 
@@ -511,7 +513,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * Cancel any ongoing animations.
    * @api
    */
-  View.prototype.cancelAnimations = function cancelAnimations () {
+  View.prototype.cancelAnimations = function cancelAnimations() {
     this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
     for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
       var series = this.animations_[i];
@@ -525,7 +527,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
   /**
    * Update all animations.
    */
-  View.prototype.updateAnimations_ = function updateAnimations_ () {
+  View.prototype.updateAnimations_ = function updateAnimations_() {
     if (this.updateAnimationKey_ !== undefined) {
       cancelAnimationFrame(this.updateAnimationKey_);
       this.updateAnimationKey_ = undefined;
@@ -607,7 +609,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {import("./coordinate.js").Coordinate} anchor Rotation anchor.
    * @return {import("./coordinate.js").Coordinate|undefined} Center for rotation and anchor.
    */
-  View.prototype.calculateCenterRotate = function calculateCenterRotate (rotation, anchor) {
+  View.prototype.calculateCenterRotate = function calculateCenterRotate(rotation, anchor) {
     var center;
     var currentCenter = this.getCenter();
     if (currentCenter !== undefined) {
@@ -623,7 +625,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {import("./coordinate.js").Coordinate} anchor Zoom anchor.
    * @return {import("./coordinate.js").Coordinate|undefined} Center for resolution and anchor.
    */
-  View.prototype.calculateCenterZoom = function calculateCenterZoom (resolution, anchor) {
+  View.prototype.calculateCenterZoom = function calculateCenterZoom(resolution, anchor) {
     var center;
     var currentCenter = this.getCenter();
     var currentResolution = this.getResolution();
@@ -639,7 +641,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @private
    * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
-  View.prototype.getSizeFromViewport_ = function getSizeFromViewport_ () {
+  View.prototype.getSizeFromViewport_ = function getSizeFromViewport_() {
     var size = [100, 100];
     var selector = '.ol-viewport[data-view="' + getUid(this) + '"]';
     var element = document.querySelector(selector);
@@ -657,7 +659,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {import("./coordinate.js").Coordinate|undefined} Constrained center.
    * @api
    */
-  View.prototype.constrainCenter = function constrainCenter (center) {
+  View.prototype.constrainCenter = function constrainCenter(center) {
     return this.constraints_.center(center);
   };
 
@@ -669,7 +671,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number|undefined} Constrained resolution.
    * @api
    */
-  View.prototype.constrainResolution = function constrainResolution (resolution, opt_delta, opt_direction) {
+  View.prototype.constrainResolution = function constrainResolution(resolution, opt_delta, opt_direction) {
     var delta = opt_delta || 0;
     var direction = opt_direction || 0;
     return this.constraints_.resolution(resolution, delta, direction);
@@ -682,7 +684,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number|undefined} Constrained rotation.
    * @api
    */
-  View.prototype.constrainRotation = function constrainRotation (rotation, opt_delta) {
+  View.prototype.constrainRotation = function constrainRotation(rotation, opt_delta) {
     var delta = opt_delta || 0;
     return this.constraints_.rotation(rotation, delta);
   };
@@ -693,7 +695,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.getCenter = function getCenter () {
+  View.prototype.getCenter = function getCenter() {
     return (
       /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(ViewProperty.CENTER))
     );
@@ -702,7 +704,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
   /**
    * @return {Constraints} Constraints.
    */
-  View.prototype.getConstraints = function getConstraints () {
+  View.prototype.getConstraints = function getConstraints() {
     return this.constraints_;
   };
 
@@ -710,7 +712,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {Array<number>=} opt_hints Destination array.
    * @return {Array<number>} Hint.
    */
-  View.prototype.getHints = function getHints (opt_hints) {
+  View.prototype.getHints = function getHints(opt_hints) {
     if (opt_hints !== undefined) {
       opt_hints[0] = this.hints_[0];
       opt_hints[1] = this.hints_[1];
@@ -730,7 +732,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {import("./extent.js").Extent} Extent.
    * @api
    */
-  View.prototype.calculateExtent = function calculateExtent (opt_size) {
+  View.prototype.calculateExtent = function calculateExtent(opt_size) {
     var size = opt_size || this.getSizeFromViewport_();
     var center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenter());
     assert(center, 1); // The view center is not defined
@@ -747,7 +749,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number} The maximum resolution of the view.
    * @api
    */
-  View.prototype.getMaxResolution = function getMaxResolution () {
+  View.prototype.getMaxResolution = function getMaxResolution() {
     return this.maxResolution_;
   };
 
@@ -756,7 +758,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number} The minimum resolution of the view.
    * @api
    */
-  View.prototype.getMinResolution = function getMinResolution () {
+  View.prototype.getMinResolution = function getMinResolution() {
     return this.minResolution_;
   };
 
@@ -765,7 +767,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number} The maximum zoom level.
    * @api
    */
-  View.prototype.getMaxZoom = function getMaxZoom () {
+  View.prototype.getMaxZoom = function getMaxZoom() {
     return /** @type {number} */ (this.getZoomForResolution(this.minResolution_));
   };
 
@@ -774,8 +776,8 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number} zoom The maximum zoom level.
    * @api
    */
-  View.prototype.setMaxZoom = function setMaxZoom (zoom) {
-    this.applyOptions_(this.getUpdatedOptions_({maxZoom: zoom}));
+  View.prototype.setMaxZoom = function setMaxZoom(zoom) {
+    this.applyOptions_(this.getUpdatedOptions_({ maxZoom: zoom }));
   };
 
   /**
@@ -783,7 +785,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number} The minimum zoom level.
    * @api
    */
-  View.prototype.getMinZoom = function getMinZoom () {
+  View.prototype.getMinZoom = function getMinZoom() {
     return /** @type {number} */ (this.getZoomForResolution(this.maxResolution_));
   };
 
@@ -792,8 +794,8 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number} zoom The minimum zoom level.
    * @api
    */
-  View.prototype.setMinZoom = function setMinZoom (zoom) {
-    this.applyOptions_(this.getUpdatedOptions_({minZoom: zoom}));
+  View.prototype.setMinZoom = function setMinZoom(zoom) {
+    this.applyOptions_(this.getUpdatedOptions_({ minZoom: zoom }));
   };
 
   /**
@@ -801,7 +803,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {import("./proj/Projection.js").default} The projection of the view.
    * @api
    */
-  View.prototype.getProjection = function getProjection () {
+  View.prototype.getProjection = function getProjection() {
     return this.projection_;
   };
 
@@ -811,7 +813,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.getResolution = function getResolution () {
+  View.prototype.getResolution = function getResolution() {
     return /** @type {number|undefined} */ (this.get(ViewProperty.RESOLUTION));
   };
 
@@ -821,7 +823,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {Array<number>|undefined} The resolutions of the view.
    * @api
    */
-  View.prototype.getResolutions = function getResolutions () {
+  View.prototype.getResolutions = function getResolutions() {
     return this.resolutions_;
   };
 
@@ -833,7 +835,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    *     the given size.
    * @api
    */
-  View.prototype.getResolutionForExtent = function getResolutionForExtent (extent, opt_size) {
+  View.prototype.getResolutionForExtent = function getResolutionForExtent(extent, opt_size) {
     var size = opt_size || this.getSizeFromViewport_();
     var xResolution = getWidth(extent) / size[0];
     var yResolution = getHeight(extent) / size[1];
@@ -846,7 +848,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number=} opt_power Power.
    * @return {function(number): number} Resolution for value function.
    */
-  View.prototype.getResolutionForValueFunction = function getResolutionForValueFunction (opt_power) {
+  View.prototype.getResolutionForValueFunction = function getResolutionForValueFunction(opt_power) {
     var power = opt_power || 2;
     var maxResolution = this.maxResolution_;
     var minResolution = this.minResolution_;
@@ -856,7 +858,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
        * @param {number} value Value.
        * @return {number} Resolution.
        */
-      function(value) {
+      function (value) {
         var resolution = maxResolution / Math.pow(power, value * max);
         return resolution;
       });
@@ -868,7 +870,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.getRotation = function getRotation () {
+  View.prototype.getRotation = function getRotation() {
     return /** @type {number} */ (this.get(ViewProperty.ROTATION));
   };
 
@@ -878,7 +880,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number=} opt_power Power.
    * @return {function(number): number} Value for resolution function.
    */
-  View.prototype.getValueForResolutionFunction = function getValueForResolutionFunction (opt_power) {
+  View.prototype.getValueForResolutionFunction = function getValueForResolutionFunction(opt_power) {
     var power = opt_power || 2;
     var maxResolution = this.maxResolution_;
     var minResolution = this.minResolution_;
@@ -888,7 +890,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
        * @param {number} resolution Resolution.
        * @return {number} Value.
        */
-      function(resolution) {
+      function (resolution) {
         var value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
         return value;
       });
@@ -898,7 +900,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number} pixelRatio Pixel ratio for center rounding.
    * @return {State} View state.
    */
-  View.prototype.getState = function getState (pixelRatio) {
+  View.prototype.getState = function getState(pixelRatio) {
     var center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
     var projection = this.getProjection();
     var resolution = /** @type {number} */ (this.getResolution());
@@ -925,7 +927,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number|undefined} Zoom.
    * @api
    */
-  View.prototype.getZoom = function getZoom () {
+  View.prototype.getZoom = function getZoom() {
     var zoom;
     var resolution = this.getResolution();
     if (resolution !== undefined) {
@@ -940,7 +942,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number|undefined} The zoom level for the provided resolution.
    * @api
    */
-  View.prototype.getZoomForResolution = function getZoomForResolution (resolution) {
+  View.prototype.getZoomForResolution = function getZoomForResolution(resolution) {
     var offset = this.minZoom_ || 0;
     var max, zoomFactor;
     if (this.resolutions_) {
@@ -965,7 +967,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {number} The view resolution for the provided zoom level.
    * @api
    */
-  View.prototype.getResolutionForZoom = function getResolutionForZoom (zoom) {
+  View.prototype.getResolutionForZoom = function getResolutionForZoom(zoom) {
     return /** @type {number} */ (this.constrainResolution(
       this.maxResolution_, zoom - this.minZoom_, 0));
   };
@@ -980,7 +982,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {FitOptions=} opt_options Options.
    * @api
    */
-  View.prototype.fit = function fit (geometryOrExtent, opt_options) {
+  View.prototype.fit = function fit(geometryOrExtent, opt_options) {
     var options = opt_options || {};
     var size = options.size;
     if (!size) {
@@ -1082,7 +1084,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {import("./pixel.js").Pixel} position Position on the view to center on.
    * @api
    */
-  View.prototype.centerOn = function centerOn (coordinate, size, position) {
+  View.prototype.centerOn = function centerOn(coordinate, size, position) {
     // calculate rotated position
     var rotation = this.getRotation();
     var cosAngle = Math.cos(-rotation);
@@ -1104,7 +1106,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
   /**
    * @return {boolean} Is defined.
    */
-  View.prototype.isDef = function isDef () {
+  View.prototype.isDef = function isDef() {
     return !!this.getCenter() && this.getResolution() !== undefined;
   };
 
@@ -1114,7 +1116,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
    * @api
    */
-  View.prototype.rotate = function rotate (rotation, opt_anchor) {
+  View.prototype.rotate = function rotate(rotation, opt_anchor) {
     if (opt_anchor !== undefined) {
       var center = this.calculateCenterRotate(rotation, opt_anchor);
       this.setCenter(center);
@@ -1128,7 +1130,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.setCenter = function setCenter (center) {
+  View.prototype.setCenter = function setCenter(center) {
     this.set(ViewProperty.CENTER, center);
     if (this.getAnimating()) {
       this.cancelAnimations();
@@ -1140,7 +1142,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number} delta Delta.
    * @return {number} New value.
    */
-  View.prototype.setHint = function setHint (hint, delta) {
+  View.prototype.setHint = function setHint(hint, delta) {
     this.hints_[hint] += delta;
     this.changed();
     return this.hints_[hint];
@@ -1152,7 +1154,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.setResolution = function setResolution (resolution) {
+  View.prototype.setResolution = function setResolution(resolution) {
     this.set(ViewProperty.RESOLUTION, resolution);
     if (this.getAnimating()) {
       this.cancelAnimations();
@@ -1165,7 +1167,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @observable
    * @api
    */
-  View.prototype.setRotation = function setRotation (rotation) {
+  View.prototype.setRotation = function setRotation(rotation) {
     this.set(ViewProperty.ROTATION, rotation);
     if (this.getAnimating()) {
       this.cancelAnimations();
@@ -1177,7 +1179,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @param {number} zoom Zoom level.
    * @api
    */
-  View.prototype.setZoom = function setZoom (zoom) {
+  View.prototype.setZoom = function setZoom(zoom) {
     this.setResolution(this.getResolutionForZoom(zoom));
   };
 
@@ -1190,7 +1192,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
  * @param {*} returnValue Return value.
  */
 function animationCallback(callback, returnValue) {
-  setTimeout(function() {
+  setTimeout(function () {
     callback(returnValue);
   }, 0);
 }
@@ -1247,7 +1249,7 @@ export function createResolutionConstraint(options) {
     var size = !extent ?
       // use an extent that can fit the whole world if need be
       360 * METERS_PER_UNIT[Units.DEGREES] /
-            projection.getMetersPerUnit() :
+      projection.getMetersPerUnit() :
       Math.max(getWidth(extent), getHeight(extent));
 
     var defaultMaxResolution = size / DEFAULT_TILE_SIZE / Math.pow(
@@ -1286,8 +1288,10 @@ export function createResolutionConstraint(options) {
     resolutionConstraint = createSnapToPower(
       zoomFactor, maxResolution, maxZoom - minZoom);
   }
-  return {constraint: resolutionConstraint, maxResolution: maxResolution,
-    minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor};
+  return {
+    constraint: resolutionConstraint, maxResolution: maxResolution,
+    minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor
+  };
 }
 
 

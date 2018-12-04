@@ -1,5 +1,5 @@
 let layer = new ol.mapsuite.VectorTileLayer(light, {
-    multithread: true
+    multithread: false
 });
 
 var geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
@@ -39,7 +39,8 @@ var view = new ol.View({
     center: [-10775718.490585351, 3868389.0226015863],
     zoom: 4,
     maxZoom: 19,
-    maxResolution: 40075016.68557849 / 512
+    maxResolution: 40075016.68557849 / 512,
+    progressiveZoom: true
 });
 var zoom = view.getZoom();
 document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
@@ -57,5 +58,5 @@ var map = new ol.Map({
         layer
     ],
     view: view,
-
+    loadTilesWhileInteracting: true
 });

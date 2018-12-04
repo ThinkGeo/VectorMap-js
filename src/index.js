@@ -259,7 +259,7 @@ import { createFromCapabilitiesMatrixSet as _ol_tilegrid_WMTS$createFromCapabili
 import { createXYZ as _ol_tilegrid$createXYZ } from 'ol/tilegrid';
 import { inherits as _ol$inherits } from 'ol';
 import { getUid as _ol$getUid } from 'ol';
-import $ol$View from 'ol/View';
+import $ol$View from './ol/View';
 import $ol$WebGLMap from 'ol/WebGLMap';
 import { getAllTextContent as _ol_xml$getAllTextContent } from 'ol/xml';
 import { parse as _ol_xml$parse } from 'ol/xml';
@@ -572,19 +572,26 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZ
     if (view.getAnimating()) {
         view.cancelAnimations();
     }
-    var maxDelta = 1;
+    if (view.progressiveZoom) {
+        var maxDelta = 1;
 
-    var delta = this.delta_ / 100;
-    if (delta > 0) {
-        delta = delta * 2 - 1;
+        var delta = this.delta_ / 100;
+        if (delta > 0) {
+            delta = delta * 2 - 1;
+        }
+        else {
+            delta = delta * 2 + 1;
+        }
+        delta *= 0.15;
+
+        var delta = Math.min(Math.max(delta, -maxDelta), maxDelta);
+        $ol$interaction$Interaction$zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     }
     else {
-        delta = delta * 2 + 1;
+        var maxDelta = 1;
+        var delta = Math.min(Math.max(this.delta_, -maxDelta), maxDelta);
+        $ol$interaction$Interaction$zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     }
-    delta *= 0.15;
-
-    var delta = Math.min(Math.max(delta, -maxDelta), maxDelta);
-    $ol$interaction$Interaction$zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     this.mode_ = undefined;
     this.delta_ = 0;
     this.lastAnchor_ = null;
@@ -602,14 +609,21 @@ ol.control.Zoom.prototype.zoomByDelta_ = function (delta) {
     }
     var currentResolution = view.getResolution();
     if (currentResolution) {
-        var oldZoom = view.getZoom();
-        // MapSuite:
-        if (oldZoom !== undefined) {
-            var zoom = Math.round(oldZoom);
-            zoom = zoom + delta;
-            delta = zoom - oldZoom;
+        var newResolution;
+        if (view.progressiveZoom) {
+            var oldZoom = view.getZoom();
+            // MapSuite:
+            if (oldZoom !== undefined) {
+                var zoom = Math.round(oldZoom);
+                zoom = zoom + delta;
+                delta = zoom - oldZoom;
+            }
+            newResolution = view.constrainResolution(currentResolution, delta);
         }
-        var newResolution = view.constrainResolution(currentResolution, delta);
+        else {
+            newResolution = view.constrainResolution(currentResolution, delta);
+        }
+
         if (this.duration_ > 0) {
             if (view.getAnimating()) {
                 view.cancelAnimations();
