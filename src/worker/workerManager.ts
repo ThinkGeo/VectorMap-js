@@ -38,8 +38,9 @@ export class WorkerManager {
                     let messageData = e.data["messageData"];
                     let uid = methodInfo.uid;
                     let callback = callbacks[uid];                    
-                    if(methodInfo.methodName === 'createReplay'){
+                    if(false && methodInfo.methodName === 'createReplay'){
                         let replays = messageData.replays[0];
+                        
                         (<any>window).webglManager.postMessage({
                             replays: replays,
                             uid: uid,

@@ -25244,7 +25244,7 @@ function olInit() {
      * @protected
      */
     ol.renderer.Layer.prototype.scheduleExpireCache = function (frameState, tileSource) {
-        if (tileSource.canExpireCache()) {
+        if (tileSource.canExpireCache()) {           
             /**
              * @param {ol.source.Tile} tileSource Tile source.
              * @param {ol.PluggableMap} map Map.
@@ -25260,7 +25260,7 @@ function olInit() {
 
             frameState.postRenderFunctions.push(
           /** @type {ol.PostRenderFunction} */(postRenderFunction)
-            );
+            );            
         }
     };
 
@@ -26562,6 +26562,7 @@ function olInit() {
             return;
         }
 
+        this.focus_ = frameState.focus;
         var context = this.context_;
         var gl = context.getGL();
         var pixelRatio = frameState.pixelRatio;
@@ -26574,11 +26575,12 @@ function olInit() {
         } else {
             // context.clearRect(0, 0, width, height);
         }
-        
+
         gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
+        // gl.enable(gl.BLEND);
 
-        var rotation = frameState.viewState.rotation;
+        // var rotation = frameState.viewState.rotation;
 
         this.calculateMatrices2D(frameState);
 
@@ -26587,10 +26589,10 @@ function olInit() {
         var layerStatesArray = frameState.layerStatesArray;
         ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
-        if (rotation) {
+        // if (rotation) {
             // context.save();
             // ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
-        }
+        // }
 
         var viewResolution = frameState.viewState.resolution;
         var i, ii, layer, layerRenderer, layerState;
@@ -26607,9 +26609,9 @@ function olInit() {
             }
         }
 
-        if (rotation) {
+        // if (rotation) {
             // context.restore();
-        }
+        // }
 
         // FIXME Texture
         // if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
@@ -28032,7 +28034,6 @@ function olInit() {
      * @return {number} My end.
      */
     ol.render.canvas.Replay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, end, stride, closed, skipFirst) {
-
         var myEnd = this.coordinates.length;
         var extent = this.getBufferedMaxExtent();
         if (skipFirst) {
@@ -30991,8 +30992,17 @@ function olInit() {
         if (fillStyle || strokeStyle) {
             var polygonReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.POLYGON);
+            
+            // debugger
             polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+            
             polygonReplay.drawPolygon(geometry, feature);
+
+            // used in webgl calculate
+            // var ends = geometry.getEnds();
+            // var flatCoordinates = geometry.getFlatCoordinates();
+            // polygonReplay.appendFlatCoordinates(flatCoordinates, 0, ends, 2, true); 
+            // polygonReplay.startIndicesFeature.push(feature);           
         }
         var textStyle = style.getText();
         if (textStyle) {
@@ -66725,7 +66735,9 @@ function olInit() {
             this.state_.lineDashOffset = strokeStyleLineDashOffset ?
                 strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
             strokeStyleColor = strokeStyle.getColor();
-            if (strokeStyleColor) {
+            // if (!(strokeStyleColor instanceof CanvasGradient) &&
+            //     !(strokeStyleColor instanceof CanvasPattern)) {
+            if(strokeStyleColor){
                 strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
                     return i != 3 ? c / 255 : c;
                 }) || ol.render.webgl.defaultStrokeStyle;
@@ -66740,7 +66752,9 @@ function olInit() {
             strokeStyleWidth = 0;
         }
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (fillStyleColor) {
+        // if (!(fillStyleColor instanceof CanvasGradient) &&
+        //     !(fillStyleColor instanceof CanvasPattern)) {
+        if(fillStyleColor){
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
@@ -67188,7 +67202,7 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
+        
         if (opt_wrapS !== undefined) {
             gl.texParameteri(
                 ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
@@ -67395,7 +67409,7 @@ function olInit() {
         var scale = /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
-        var sin = Math.sin(rotation);
+        var sin = Math.sin(rotation);        
         var numIndices = this.indices.length;
         var numVertices = this.vertices.length;
         var i, n, offsetX, offsetY, x, y;
@@ -67421,7 +67435,7 @@ function olInit() {
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;            
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -68668,7 +68682,9 @@ function olInit() {
         this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
             strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
         var strokeStyleColor = strokeStyle.getColor();
-        if (strokeStyleColor) {
+        // if (!(strokeStyleColor instanceof CanvasGradient) &&
+        //     !(strokeStyleColor instanceof CanvasPattern)) {
+        if(strokeStyleColor){
             strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultStrokeStyle;
@@ -69106,17 +69122,38 @@ function olInit() {
         // Initialize the outer ring
         this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
         var maxCoords = this.getMaxCoords_(outerRing);     
-        var maxYCoords = this.getMaxCoords_(outerRing);     
-        var minCoords = this.getMinCoords_(outerRing);     
-        var minYCoords = this.getMinCoords_(outerRing);     
+        // var maxYCoords = this.getMaxCoords_(outerRing);     
+        // var minCoords = this.getMinCoords_(outerRing);     
+        // var minYCoords = this.getMinCoords_(outerRing);     
 
-        if(false && window.test){
+        if(window.test){
             console.log('flatCoordinates:');
+            // var flatCoordinates = [-18027654.9536536, 2636840.02951925,-18027953.9073781, 2636618.53042918,-18027786.3120998, 2637031.99779214,-18027750.0752679, 2637411.01872729,-18027609.6576414, 2637607.9161804,-18027124.9902783, 2637534.07941713,-18027179.3454706, 2637095.98767865,-18027378.6478794, 2636938.47449871,-18027654.9536536, 2636840.02951925]
+            // var arr = [];
+            // for(var k = 0; k < flatCoordinates.length; k += 2){
+            //     arr.push(`(${flatCoordinates[k]}, ${flatCoordinates[k+1]})`);
+            // }
+            // console.log(JSON.stringify(arr));
+            
+            if(!window.features){
+                window.features = [];
+            }
+
+            
             var flatCoordinatesArray = [];
-            for(var i = 0; i < flatCoordinates.length; i+=2){
+            for(var i = 0; i < flatCoordinates.length; i+=2){         
                 flatCoordinatesArray.push(ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326'));
             }
-            console.log(JSON.stringify(flatCoordinatesArray));
+            // console.log(JSON.stringify(flatCoordinatesArray));
+
+            window.features.push({
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [flatCoordinatesArray]
+                }            
+            })
 
             window.test = false
             console.log('-------');
@@ -69124,14 +69161,31 @@ function olInit() {
                 var holeFlatCoordinatesArray = [];
                 var holeFlatCoordinate = holeFlatCoordinates[i];
                 for(var j = 0; j < holeFlatCoordinate.length; j+=2){
+                    var tmp = ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326');
+                    if(tmp[0] == 14.15039062499998 && tmp[1] == -12.651058133703486){
+                        // debugger
+                    }
                     holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
                 }
-                console.log(JSON.stringify(holeFlatCoordinatesArray));
+                // console.log(JSON.stringify(holeFlatCoordinatesArray));
+
+
+                window.features.push({
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [holeFlatCoordinatesArray]
+                    }            
+                })
             } 
+
+
+            console.log(JSON.stringify(window.features));
         }
 
         // Eliminate holes, if there are any
-        if(false && holeFlatCoordinates.length) {
+        if(holeFlatCoordinates.length) {
             var i, ii;
             var holeLists = [];
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
@@ -69143,16 +69197,6 @@ function olInit() {
                 this.processFlatCoordinates_(holeFlatCoordinates[i],
                     stride, holeList.list, holeList.rtree, false);
                 
-                
-                // FIXME Eric
-                // var maxCoords_hole = this.getMaxCoords_(holeList.list);     
-                // var maxYCoords_hole = this.getMaxYCoords_(holeList.list);     
-                // var minCoords_hole = this.getMinCoords_(holeList.list); 
-                // var minYCoords_hole = this.getMinYCoords_(holeList.list); 
-                // if(maxCoords_hole[0] <= minCoords[0] || minCoords_hole[0] >= maxCoords[0]
-                //     || maxYCoords_hole[1] <= minYCoords[1] || minYCoords_hole[1] >= maxYCoords[1]){
-                //     continue;
-                // }
                 holeLists.push(holeList);
                 this.classifyPoints_(holeList.list, holeList.rtree, true);
                 holeList.maxCoords = this.getMaxCoords_(holeList.list);
@@ -69907,13 +69951,7 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
-        if (ends.length > 0) {
-            if((ends[0] == 28 && ends[1] == 272)){
-                window.test = true;
-                // return;
-                // debugger
-            }
-
+        if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
@@ -69936,20 +69974,13 @@ function olInit() {
                 }
                 if(this.lineStringReplay){
                     this.lineStringReplay.setPolygonStyle(feature);
-
                     this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
                 
-                // Austrilia
-                // console.log(this.lineStringReplay.vertices);
-                // FIXME Eric
-                var holesTmp = [];
+                this.drawCoordinates_(outerRing, [], stride);
                 for(var i = 0; i < holes.length; i++){
-                    if(holes[i].length >= 8){
-                        holesTmp.push(holes[i]);
-                    }
+                    this.drawCoordinates_(holes[i], [], stride);
                 }
-                this.drawCoordinates_(outerRing, holesTmp, stride);
             }
         }
     };
@@ -70174,13 +70205,36 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function (fillStyle, strokeStyle) {
         var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-        if (fillStyleColor) {
-            fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {
-                return i != 3 ? c / 255 : c;
-            }) || ol.render.webgl.defaultFillStyle;
+        // if (!(fillStyleColor instanceof CanvasGradient) &&
+        //     !(fillStyleColor instanceof CanvasPattern)) {
+        if(fillStyleColor){
+            // FIXME replace it with other ways,maybe gl.BLEND
+            var strColor = ol.color.asArray(fillStyleColor);
+            if(+strColor[3] !== 1){
+                const A1 = +strColor[3];
+                const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
+                const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
+                const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
+                const A3 = 1;
+                strColor[0] = R3.toString();
+                strColor[1] = G3.toString();
+                strColor[2] = B3.toString();
+                strColor[3] = A3.toString();
+            }
+        
+            fillStyleColor = strColor.map((val, index) => {
+                if (index !== 3) return + val / 255;
+        
+                return +val;
+            });
+
+            // fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
+            //     return i != 3 ? c / 255 : c;
+            // }) || ol.render.webgl.defaultFillStyle;
         } else {
             fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
+        
         if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
             this.state_.fillColor = fillStyleColor;
             this.state_.changed = true;
@@ -70190,42 +70244,79 @@ function olInit() {
         if(this.lineStringReplay){
             if (strokeStyle) {
                 this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-            } else {
-                if(!window.count){
-                    window.colors = [
-                        [0,0,0,1],
-                        [100,0,0,1],
-                        [0,100,0,1],
-                        [0,0,100,1],
-                        [200,0,0,1],
-                        [0,200,0,1],
-                        [0,0,200,1],
-                        [100,100,0,1],
-                        [0,100,100,1],
-                        [100,0,100,1],
-                        [100,100,100,1],
-                        [200,200,0,1],
-                        [0,200,200,1],
-                        [200,0,200,1],
-                        [200,200,200,1]
-                    ]
-                    window.count = 0;
-                }
-                var test = window.colors[(window.count++) % window.colors.length];
-                if( test[0] == 0 && test[1] == 0 && test[2] == 100 ){
-                    // debugger
-                }
-                
-                var nullStrokeStyle = new ol.style.Stroke({
-                    color: test,
-                    lineWidth: 1
-                });  
-                
-                this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
             }
         }
     };
 
+    /**
+     * FIXME: Used for webgl calculation
+     */
+
+    ol.render.webgl.PolygonReplay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, ends, stride, closed) {
+        var ends_ = [];
+        var extent = this.maxExtent;
+        var skipFirst = this.state_.strokeStyle;        
+        
+        if(!this.webglDrawType){
+            this.webglDrawType = 'polygonReplay';
+            this.webglEnds = [];
+            this.webglFlatCoordinates = [];
+            this.featureIndices = [];
+            this.styleIndices = [];
+        }
+
+        if (this.state_.changed) {
+            this.styleIndices.push(this.webglEnds.length);
+            this.state_.changed = false;
+        } 
+
+        this.featureIndices.push(this.webglEnds.length);         
+        var myEnd = this.webglFlatCoordinates.length;
+
+        for(var i = 0; i < ends.length; i++){
+            var end = ends[i];
+            
+            if (skipFirst) {
+                offset += stride;
+            }
+            var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+            var nextCoord = [NaN, NaN];
+            var skipped = true;
+    
+            var j, lastRel, nextRel;
+            for (j = offset + stride; j < end; j += stride) {
+                nextCoord[0] = flatCoordinates[j];
+                nextCoord[1] = flatCoordinates[j + 1];
+                nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
+                if (nextRel !== lastRel) {
+                    if (skipped) {
+                        this.webglFlatCoordinates[myEnd++] = lastCoord[0];
+                        this.webglFlatCoordinates[myEnd++] = lastCoord[1];
+                    }
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
+                    skipped = false;
+                } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
+                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
+                    skipped = false;
+                } else {
+                    skipped = true;
+                }
+                lastCoord[0] = nextCoord[0];
+                lastCoord[1] = nextCoord[1];
+                lastRel = nextRel;
+            }
+    
+            // Last coordinate equals first or only one point to append:
+            if ((closed && skipped) || j === offset + stride) {
+                this.webglFlatCoordinates[myEnd++] = lastCoord[0];
+                this.webglFlatCoordinates[myEnd++] = lastCoord[1];
+            }
+            offset = end;
+            this.webglEnds.push(myEnd);
+        }        
+    };
     goog.provide('ol.style.Atlas');
 
     goog.require('ol.dom');
@@ -70809,25 +70900,17 @@ function olInit() {
                 default:
             }
             
+            var resolution = map.frameState_.currentResolution;
             var type  = geometry.getType();
-            var lines;
-            lines = this.text_.split('\n');
-            if(type == 'Point' && lines.length < 2 && this.text_.length > 16){
-                var textArray = this.text_.split(' ');
-                if(textArray.length > 2){
-                    lines = [];
-                    for(var i = 0; i < textArray.length; i += 2){
-                        lines.push(textArray[i] + ' ' + (textArray[i+1] || ''));
-                    }
-                }
-            }
+            var lines = this.text_.split('\n');            
             
             var pathLength;
             var startM;
             var extent = [Infinity, Infinity, -Infinity, -Infinity];
 
             // declutter duplicate label
-            if(!lines.includes('North Beckley Avenue')){
+            if(!this.text_.includes('North Beckley Avenue')){
+            // if(!this.text_.includes('Tom Landry Freeway')){
                 // return
             }
 
@@ -70839,6 +70922,11 @@ function olInit() {
                 labelHeight += textSize[1];
             }
 
+            if(this.label){
+                labelWidth = this.label.width;
+                labelHeight = this.label.height;
+            }
+
             var anchorX = Math.round(labelWidth * this.textAlign_ - this.offsetX_);
             var anchorY = Math.round(labelHeight * this.textBaseline_ - this.offsetY_);
             var flatCoordinatesToPixel = map.getPixelFromCoordinate(flatCoordinates);
@@ -70848,12 +70936,24 @@ function olInit() {
                 startM = pathLength * this.textAlign_;
                 
                 var lineStringCoordinates = geometry.getFlatCoordinates();
+                var endLineString = lineStringCoordinates.length;
                 var reverse = lineStringCoordinates[offset] > lineStringCoordinates[lineStringCoordinates.length - stride];
                 // var textSize = this.getTextSize_(lines);                    
                 var lineLength = 0;
                 var x1, x2, y1, y2;
                 var startM_ = 0;
-                var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+                var offset_ = 0, stride = 2;
+                // // var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
+                // if (reverse) {
+                //     offset_ = endLineString - 2;
+                //     stride = -2;
+                //     startCoords = [lineStringCoordinates[endLineString - 2], lineStringCoordinates[endLineString - 1]];
+                // }else{
+                //     offset_ = 0;
+                //     startCoords = [lineStringCoordinates[0], lineStringCoordinates[1]];
+                // }
+
+                // var offset_ = lineStringCoordinates.indexOf(flatCoordinates[0]); 
 
                 var minX = lineStringCoordinates[offset_];
                 var minY = lineStringCoordinates[offset_ + 1];
@@ -70881,34 +70981,58 @@ function olInit() {
                     
                     x2 = lineStringCoordinates[j];
                     y2 = lineStringCoordinates[j + 1];
-                    lineLength += Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    lineLength += (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))) / resolution;
                     x1 = x2;
                     y1 = y2;
                 }
 
+                if(j >= lineStringCoordinates.length && lineLength < labelWidth){
+                    return;
+                }
+                // while ((reverse? offset_ > 2: offset_ < endLineString - stride) && lineLength < labelWidth) {                
+                //     offset_ += stride;
+                    
+                //     if(lineStringCoordinates[offset_] < minX){
+                //         minX = lineStringCoordinates[offset_];
+                //     }else if(lineStringCoordinates[offset_] > maxX){
+                //         maxX = lineStringCoordinates[offset_];
+                //     }
+
+                //     if(lineStringCoordinates[offset_ + 1] < minY){
+                //         minY = lineStringCoordinates[offset_ + 1];
+                //     }else if(lineStringCoordinates[offset_ + 1] > maxY){
+                //         maxY = lineStringCoordinates[offset_ + 1];
+                //     }
+
+                //     x2 = lineStringCoordinates[offset_];
+                //     y2 = lineStringCoordinates[offset_ + 1];
+                //     lineLength += (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))) / resolution;
+                //     x1 = x2;
+                //     y1 = y2;
+                // }
+
                 var minCoordinatesToPixel = map.getPixelFromCoordinate([minX, minY]);
                 var maxCoordinatesToPixel = map.getPixelFromCoordinate([maxX, maxY]);
 
-                extent = [minCoordinatesToPixel[0] - anchorX, minCoordinatesToPixel[1] + labelWidth + labelHeight - anchorY, 
-                            maxCoordinatesToPixel[0] + labelWidth + labelHeight + anchorX, maxCoordinatesToPixel[1] + anchorY];                
+                // extent = [minX, minY, maxX, maxY];     
+                extent = [minCoordinatesToPixel[0], maxCoordinatesToPixel[1], 
+                            maxCoordinatesToPixel[0], minCoordinatesToPixel[1]];                
                
-                var array = [];
-                min = map.getCoordinateFromPixel([extent[0], extent[1]]);
-                max = map.getCoordinateFromPixel([extent[2], extent[3]]);
-                
-                extent = [min[0], min[1], max[0], max[1]];
+                // var array = [];
+                // // min = map.getCoordinateFromPixel([extent[0], extent[1]]);
+                // // max = map.getCoordinateFromPixel([extent[2], extent[3]]);
                 // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[2], extent[1]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[0], extent[3]], 'EPSG:3857', 'EPSG:4326'));
                 // array.push(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326'));
-                
+
                 // console.log(JSON.stringify(array))
                 // console.log('-----', JSON.stringify(ol.proj.transform(flatCoordinates, 'EPSG:3857', 'EPSG:4326')))                
-            }else{
-                var minX = flatCoordinatesToPixel[0] - anchorX;
+            }else{                
+                var minX = flatCoordinatesToPixel[0];
                 var minY = flatCoordinatesToPixel[1] + labelHeight - anchorY;
-                var maxX = flatCoordinatesToPixel[0] + labelWidth - anchorX;
+                var maxX = flatCoordinatesToPixel[0] + labelWidth;
                 var maxY = flatCoordinatesToPixel[1] - anchorY;
                 
                 extent = [minX, minY, maxX, maxY]; 
@@ -70926,7 +71050,8 @@ function olInit() {
 
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-            
+            var pixelRatio = map.frameState_.pixelRatio;
+
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
                 var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
@@ -70941,8 +71066,20 @@ function olInit() {
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
                     var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
-                    
-                    var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
+                    var startCoords;
+
+                    if (reverse) {
+                        offset = endLineString - 2;
+                        stride = -2;
+                        startCoords = [lineStringCoordinates[endLineString - 2], lineStringCoordinates[endLineString - 1]];
+                    }else{
+                        offset = 0;
+                        startCoords = [lineStringCoordinates[0], lineStringCoordinates[1]];
+                    }
+
+                    // FIXME: fix the offset from setting
+                    // var offset = lineStringCoordinates.indexOf(flatCoordinates[0]);
+                    // offset = 0;
                     var numChars = charArr.length;
                     var x1 = lineStringCoordinates[offset];
                     var y1 = lineStringCoordinates[offset + 1];
@@ -70950,43 +71087,53 @@ function olInit() {
                     var x2 = lineStringCoordinates[offset];
                     var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
-                    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            
-                    var chunk = '';
-                    // var chunkLength = 0;
+                    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+                    var startM = 0;                    
+                    var charFlatCoordinates = [x1, y1];
                     var data, index, previousAngle;
+
                     for (var j = 0; j < numChars; ++j) {
                         charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
                         if (charInfo) {
-
                             index = reverse ? numChars - j - 1 : j;
                             var char = charArr[index];
-                            chunk = reverse ? char + chunk : chunk + char;
-                            // var charLength = measure(chunk) - chunkLength;
                             var charLength = glyphAtlas.width[char];
-                            // chunkLength += charLength;
                             var charM = startM + charLength / 2;
-                            while (offset < endLineString - stride && segmentM + segmentLength < charM) {
+
+                            while ((reverse? offset > 2: offset < endLineString - stride) 
+                                    && segmentM + segmentLength < charM) {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
                                 x2 = lineStringCoordinates[offset];
                                 y2 = lineStringCoordinates[offset + 1];
                                 segmentM += segmentLength;
-                                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
-                            // var segmentPos = charM - segmentM;
-                            var angle = Math.atan2(y2 - y1, x2 - x1);
+
+                            // var angle = Math.atan2(y2 - y1, x2 - x1);
+                            var angle = Math.atan2(y2 - startCoords[1], x2 - startCoords[0]);
+                            
                             if (reverse) {
-                                angle += angle > 0 ? -Math.PI : Math.PI;
+                                // angle += angle > 0 ? -Math.PI : Math.PI;
                             }
-                            this.rotation = -angle;
-                            previousAngle = angle;
+                            if(previousAngle !== undefined && angle !== previousAngle){
+                                // return
+                                // angle = 0
+                                // angle = previousAngle + angle;
+                                // currX = this.anchorX*Math.cos(previousAngle) - this.anchorY*Math.sin(previousAngle);
+                                // currY = this.anchorX*Math.sin(previousAngle) + this.anchorY*Math.cos(previousAngle);
+                                // angle = previousAngle - angle
+                                // charFlatCoordinates = [x1, y1];
+                                // this.previousAngle = previousAngle;
+                            }
+                            
+                            this.rotation = -angle;                          
                             startM += charLength;
-
                             var image = charInfo.image;
-
-                            this.anchorX = anchorX - currX;
+                            // previousAngle = angle
+                            // FIXME: using anchorX to fit the setting
+                            this.anchorX = 0 - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
                             this.originY = charInfo.offsetY;
@@ -70995,7 +71142,8 @@ function olInit() {
                                 glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
                             this.imageHeight = image.height;
                             this.imageWidth = image.width;
-    
+                            this.rotateWithView = true;
+
                             var currentImage;
                             if (this.images_.length === 0) {
                                 this.images_.push(image);
@@ -71006,18 +71154,42 @@ function olInit() {
                                     this.images_.push(image);
                                 }
                             }
-                            this.drawText_([lineStringCoordinates[0], lineStringCoordinates[1]], 0, 2, stride);
-                            // this.drawText_(flatCoordinates, 0, 2, stride);
+                            this.drawText_(charFlatCoordinates, 0, 2, 2);
                         }
                         currX += this.width;
                     }
+                }else if(this.label){
+                    var image = this.label;
+                    var width = image.width;
+                    var height = image.height;
+
+                    this.anchorX = Math.round(width * this.textAlign_ - this.offsetX_);
+                    this.anchorY = Math.round(height * this.textBaseline_ - this.offsetY_);
+                    this.originX = 0;
+                    this.originY = 0;
+                    this.height = height;
+                    this.width = width - lineWidth;
+                    this.imageHeight = height / pixelRatio;
+                    this.imageWidth = width / pixelRatio;
+
+                    var currentImage;
+                    if (this.images_.length === 0) {
+                        this.images_.push(image);
+                    } else {
+                        currentImage = this.images_[this.images_.length - 1];
+                        if (ol.getUid(currentImage) != ol.getUid(image)) {
+                            this.groupIndices.push(this.indices.length);
+                            this.images_.push(image);
+                        }
+                    }
+                    this.drawText_(flatCoordinates, offset, end, stride);                    
                 }else{
                     for (j = 0, jj = charArr.length; j < jj; ++j) {
                         charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
     
                         if (charInfo) {
                             var image = charInfo.image;
-    
+
                             this.anchorX = anchorX - currX;
                             this.anchorY = anchorY - currY;
                             this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
@@ -71074,8 +71246,7 @@ function olInit() {
         });
 
         return [textWidth, textHeight];
-    };
-
+    };    
 
     /**
      * @private
@@ -71111,7 +71282,7 @@ function olInit() {
                     ctx.font = /** @type {string} */ (state.font);
                     ctx.fillStyle = state.fillColor;
                     ctx.strokeStyle = state.strokeColor;
-                    // ctx.lineWidth = state.lineWidth;
+                    ctx.lineWidth = state.lineWidth;                    
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
                     ctx.lineJoin = /** @type {string} */ (state.lineJoin);
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
@@ -71128,8 +71299,9 @@ function olInit() {
                         /** @type {number} */(state.scale), 0, 0);
                     }
 
-                    //Draw the character on the canvas
+                    // Draw the character on the canvas
                     if (state.strokeColor) {
+                        // FIXME: disable the stroke of text to fit background of map for empty data on ocean
                         ctx.strokeText(char, x, y);
                     }
                     if (state.fillColor) {
@@ -71233,9 +71405,9 @@ function olInit() {
             this.offsetX_ = textStyle.getOffsetX() || 0;
             this.offsetY_ = textStyle.getOffsetY() || 0;
             this.rotateWithView = !!textStyle.getRotateWithView();
-            this.rotation = textStyle.getRotation() || 0;
-            
+            this.rotation = textStyle.getRotation() || 0;            
             this.currAtlas_ = this.getAtlas_(state);
+
             this.label = textStyle.label;
         }
     };
@@ -75544,7 +75716,7 @@ function olInit() {
             } else {
                 var vectorImageTile = this.pop();
                 // BufferCache in webgl
-                if(tile.tileKeys.length){
+                if(vectorImageTile.tileKeys.length){
                     var vectorTile = vectorImageTile.sourceTiles_[tile.tileKeys.toString()];
                     var replayGroups = vectorTile.replayGroups_;
                     
@@ -97460,7 +97632,6 @@ function olInit() {
             var flatCoordinates = [];
             var ends = [];
             readRawGeometry_(pbf, rawFeature, flatCoordinates, ends, offset);
-
             var geometryType = ol.format.MVT.getGeometryType_(type, ends.length);
 
             feature = new ol.render.Feature(geometryType, flatCoordinates, ends, values, id);
@@ -102027,7 +102198,7 @@ function olInit() {
         }
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
-            var styleJsonCache = self.styleJsonCache[formatId];            
+            var styleJsonCache = self.styleJsonCache[formatId];                        
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
@@ -102056,9 +102227,10 @@ function olInit() {
             var vectorTileCache = null;
             vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
-            if (self.vectorTilesData[formatId] === undefined) {                
+            if (self.vectorTilesData[formatId] === undefined) {     
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
+            
             vectorTileCache = self.vectorTilesData[formatId];
             vectorTileCache.highWaterMark = vectorTileDataCahceSize;
             while (vectorTileCache.canExpireCache()) {
@@ -102185,6 +102357,7 @@ function olInit() {
             if(!vectorTileData){
                 return false;
             }
+            
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -102224,7 +102397,7 @@ function olInit() {
             // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
             
             // transform.length = 0;
-            
+
             return { 'replays': replayGroup.replaysByZIndex_, features: mainFeatures, instructs: mainDrawingInstructs };
         }
         

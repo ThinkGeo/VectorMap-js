@@ -698,7 +698,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
                 tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
             
-            if (this instanceof (<any>ol.render).webgl.LineStringReplay || this.lineStringReplay) {
+            if (this.lineStringReplay) {
                 tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
                 tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
                 tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
@@ -755,7 +755,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             // fix for WebGL not to unpremultiply
             if(this instanceof (<any>ol.render).webgl.PolygonReplay){
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-                gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+                // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             }
 
             // draw!
@@ -764,14 +764,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 this.drawReplay(gl, context, skippedFeaturesHash, false);
             } else {
                 // draw feature by feature for the hit-detection
-                result = this.drawHitDetectionReplay(context, context, skippedFeaturesHash,
+                result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash,
                 featureCallback, oneByOne, opt_hitExtent);
             }
 
             // disable the vertex attrib arrays
             this.shutDownProgram(gl, locations);
+            // context.bindBuffer(gl.ARRAY_BUFFER, null);
+            // context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-            if (this instanceof (<any>ol.render).webgl.LineStringReplay || this.lineStringReplay) {
+            if (this.lineStringReplay) {
                 if (!tmpStencil) {
                     gl.disable(gl.STENCIL_TEST);
                 }

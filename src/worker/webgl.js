@@ -17,14 +17,13 @@ export function webglCaculate(){
             delete replay.webglCoordinates;
           }else if(replay.webglDrawType === 'polygonReplay'){
             webglPolygonIndex = getWebglIndexObj(replay);
-
-            // replay.indices = webglPolygonIndex.
-
-            delete replay.webglEnds;
-            // delete replay.webglStyle;
-            delete replay.webglCoordinates;
+            delete replay['webglEnds'];
+            delete replay['webglFlatCoordinates'];
+            delete replay['featureIndices'];
+            delete replay['styleIndices'];
+            delete replay['webglDrawType'];
           }
-      }
+      }      
 
       postMessage({
         webglPolygonIndex,
@@ -37,77 +36,44 @@ export function webglCaculate(){
     
     // polygon
     function getWebglIndexObj(data) {
-      let {
-        webglFlatCoordinates,
-        webglEnds,
-        featureIndices    
-      } = data;
-debugger
-      let obj = {
-          indexArr: [],
-          coordinatesIndexArr: [],
-        //   colorArr: []
-      }
-      let featureIndex = 0;
-      let featureoffset = 0;
-      
-      for (let i = 0, prev = 0, lastIndex = 0, index = [], length = webglEnds.length; i < length; i++) {
-        let end = webglEnds[i];
-        let tempIndex = getPolygonIndex(webglFlatCoordinates.slice(prev, end));
-        let t1 = (prev - lastIndex) * 2;
-        let t2 = (end - lastIndex) * 2;
-        featureIndex += end;
-        if(featureIndex === featureIndices){
-            var tmpIndex = data.startIndices.length + tempIndex.length
-            data.startIndices.push(tmpIndex);
-            // replay.startIndicesFeature.push(feature);
-            if (data.state_.changed) {
-                data.styleIndices_.push(tmpIndex);
-                data.state_.changed = false;
+        let {
+            webglFlatCoordinates,
+            webglEnds,
+            featureIndices,
+            styleIndices    
+        } = data;
+        let offset = 0;
+        let styleOffset = 0;
+        // debugger      
+        for (var i = 0, prev = 0, index = [], length = webglEnds.length; i < length; i++) {
+            let end = webglEnds[i];
+            let tempIndex = earcut(webglFlatCoordinates.slice(prev, end));
+
+            if(i === featureIndices[offset]){
+                data.startIndices.push(index.length);
+                offset += 1;
             }
-            featureoffset += 1;
+
+            if(i === styleIndices[styleOffset]){
+                data.styleIndices_.push(index.length);
+                styleOffset += 1;
+            }
+
+            if (tempIndex.length > 0) {
+                tempIndex = tempIndex.map(val => val + prev / 2);
+                index.push(...tempIndex);  
+            }
+            prev = end;            
         }
 
-        // let webglColor = colorStrToWebglColor(webglStyle[i].color);
-        while (t1 < t2) {
-        //     color.push(...webglColor);
-            t1 += 4;
+        data.indices = index;
+        
+        for(let i = 0; i < webglFlatCoordinates.length; i += 2){
+            webglFlatCoordinates[i] -= data.origin[0];
+            webglFlatCoordinates[i + 1] -= data.origin[1];
         }
-    
-        if (tempIndex.length > 0 || i === length -1) {
-            tempIndex = tempIndex.map(val => val + (prev - lastIndex) / 2);
-            index.push(...tempIndex);
-            if (i === length - 1) {
-                obj.indexArr.push([...index]);
-                // obj.colorArr.push(new Float32Array([...color]));
-                obj.coordinatesIndexArr.push(webglFlatCoordinates.slice.apply(webglFlatCoordinates, [lastIndex, end]));                 
-                lastIndex = end;
-                index.length = 0;
-                // color.length = 0;
-            }
-        }
-        prev = end;
-      }
-      
-      obj.indexArr.map((item, index) => {
-        var indices = item.map(val => data.vertices.length / 2 + val);
-        data.indices.push(...indices);
-        var coordinates = obj.coordinatesIndexArr[index];
-        data.vertices.push(...coordinates);
 
-        index !== 0 && data.startIndices.push(indices.length);
-        // replay.startIndicesFeature.push(feature);
-        if (data.state_.changed) {
-            data.styleIndices_.push(indices.length);
-            data.state_.changed = false;
-        }
-      })
-    //   return obj;
-    }
-    
-    function getPolygonIndex(coordinates) {
-        let arr = earcut(coordinates);
-        return arr;
+        data.vertices = webglFlatCoordinates; 
     }
     
     function colorStrToWebglColor(str) {
