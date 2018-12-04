@@ -124,20 +124,22 @@ body {
 
 .nav-sidebar a {
     color: #2d3e50;
+    display: inline-block;
+    width: 100%;
+    height: 3.75rem;
+    line-height: 3.75rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
 }
 
 #menu-bar>li>a {
     font-size: 1.4rem;
 }
 
-.nav-sidebar>li>a {
-    padding-left: 0;
-}
-
 .nav-sidebar li {
     border-bottom: 1px solid #e2e4e7;
     width: 100%;
-    padding: .75rem 1.25rem;
+    padding: 0rem;
     margin-bottom: 0;
 }
 
