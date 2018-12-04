@@ -28,9 +28,9 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 | <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
  </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#WFS">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-wfs.jpg" width="210" height="210" alt="">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-projection.jpg" width="210" height="210" alt="">
         </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> 
