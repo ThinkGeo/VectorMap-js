@@ -118,29 +118,9 @@ const loadChildPage = (childPageObj) => {
     const showHandlefun = new ShowHandleFuns(childPageObj);
     const childPageClickButtonsParent = document.querySelector('#child-page-component');
     const navLinkArr = childPageClickButtonsParent.querySelector('.nav-link.active');
-    switch (navLinkArr.text) { //judge which page is shown, update the view or code in the .tab-pane
-        case 'View':
-            {
-                showHandlefun.showHtmlViewFun(viewDiv);
-            }
-        case 'Html':
-            {
-                showHandlefun.showHtmlCodeFun(htmlDiv);
-            }
-        case 'JavaScript':
-            {
-                showHandlefun.showJsCodeFun(jsDiv);
-            }
-    }
-    $('.nav-item.map').on('shown.bs.tab', function (e) {
-        showHandlefun.showHtmlViewFun(viewDiv);
-    });
-    $('.nav-item.html').on('shown.bs.tab', function (e) {
-        showHandlefun.showHtmlCodeFun(htmlDiv);
-    });
-    $('.nav-item.js').on('shown.bs.tab', function (e) {
-        showHandlefun.showJsCodeFun(jsDiv);
-    });
+    showHandlefun.showHtmlViewFun(viewDiv);
+    showHandlefun.showHtmlCodeFun(htmlDiv);
+    showHandlefun.showJsCodeFun(jsDiv);
 };
 
 export {
