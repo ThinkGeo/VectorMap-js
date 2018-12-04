@@ -26,7 +26,9 @@ let vectorLayer = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
 });
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [vectorLayer],
     target: 'map',
     view: new ol.View({
@@ -69,7 +71,7 @@ let popup = new Overlay({
     element: element,
     positioning: 'bottom-center',
     stopEvent: true,
-    offset: [20, 0]
+     offset: [20, 0]
 });
 map.addOverlay(popup);
 
@@ -80,8 +82,6 @@ map.on('click', function (evt) {
             return feature;
         });
     if (feature) {
-        let coordinates = feature.getGeometry().getCoordinates();
-        popup.setPosition(coordinates);
         element.classList.contains('hidden') ? element.classList.remove('hidden') : element.classList.add('hidden');
     } else {
         element.classList.add('hidden');
@@ -100,5 +100,6 @@ map.on('pointermove', function (e) {
 });
 
 window.onload = function () {
-    popup.setPosition([-10776840.794252742, 3912350.9692977965]);
+    document.getElementById("popup").classList.remove('hidden');
+    popup.setPosition(ol.proj.fromLonLat([-96.810008, 33.128337]));
 };

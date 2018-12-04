@@ -21,7 +21,9 @@ let view = new ol.View({
     zoom: 15,
 })
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [light],
     target: 'map',
     view: view
@@ -31,6 +33,7 @@ let map =  new ol.Map({                         loadTilesWhileAnimating: true,  
 //   Elements that make up the popup.
 
 const container = document.getElementById('popup');
+container.classList.remove('hidden');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
 
@@ -56,7 +59,7 @@ const popUp = function (address, centerCoordinate) {
     let addressArr = address.split(",");
     overlay.setPosition(centerCoordinate);
     map.addOverlay(overlay)
-    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '') + '</p>'
+    content.innerHTML = '<p>' + (addressArr[0] || '')+' ,' + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '') + '</p>'
 }
 
 const reverseGeocode = function (coordinate) {

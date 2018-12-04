@@ -66,10 +66,10 @@
             background-color: #428bca;
         }
 
-        #submit:focus{
+        #submit:focus {
             outline: 0;
         }
-        
+
         #submit:active {
             -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
             box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
@@ -85,7 +85,7 @@
             border: 1px solid #cccccc;
             bottom: 12px;
             left: -50px;
-            min-width: 500px;
+            min-width: 290px;
         }
 
         .ol-popup:after,
@@ -130,8 +130,8 @@
             left: 36px;
         }
 
-        #popup-content p {
-            display: inline-block;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -143,7 +143,7 @@
     </div>
     <div id="map" style="width:100%;height:100%">
     </div>
-    <div id="popup" class="ol-popup">
+    <div id="popup" class="ol-popup hidden">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
         <div id="popup-content"></div>
         <div class="icon">
@@ -151,9 +151,17 @@
         </div>
     </div>
     <!-- latest minified version of vectormap.js -->
-   <script src="../dist/vectormap.js"></script>
+    <script src="../dist/vectormap.js"></script>
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+    <script>
+        WebFont.load({
+            custom: {
+                families: ['vectormap-icons'],
+                urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
+            }
+        });
+    </script>
     <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
     <script src="../js/reverse-geocoding.js"></script>
 

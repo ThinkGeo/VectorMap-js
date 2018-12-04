@@ -1,13 +1,6 @@
 let streetMap;
 
 function renderStreetMap() {
-    WebFont.load({
-        custom: {
-            families: ["vectormap-icons"],
-            urls: ['https://cdn.thinkgeo.com/vectormap-icons/2.0.0-beta004/vectormap-icons.css']
-        }
-    });
-
     let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
         'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
     });

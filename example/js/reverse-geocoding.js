@@ -1,11 +1,3 @@
-WebFont.load({
-    custom: {
-        families: ['vectormap-icons'],
-        urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
-    }
-});
-
-
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
@@ -21,7 +13,9 @@ let view = new ol.View({
     zoom: 15,
 })
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [light],
     target: 'map',
     view: view
@@ -31,6 +25,7 @@ let map =  new ol.Map({                         loadTilesWhileAnimating: true,  
 //   Elements that make up the popup.
 
 const container = document.getElementById('popup');
+container.classList.remove('hidden');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
 
@@ -56,7 +51,7 @@ const popUp = function (address, centerCoordinate) {
     let addressArr = address.split(",");
     overlay.setPosition(ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]));
     map.addOverlay(overlay)
-    content.innerHTML = '<p>' + (addressArr[0] ? (addressArr[0] + ',') : '') + '</p><p style="margin-left:2px">' + (addressArr[1] ? addressArr[1] + ',' : '') + ' ' + (addressArr[2] || '') + '</p>'
+    content.innerHTML = '<p>' + (addressArr[0] || '') + ' ,' + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '') + '</p>'
 }
 
 const reverseGeocode = function () {
@@ -90,6 +85,8 @@ const reverseGeocode = function () {
     })
 }
 
+
 document.getElementById('submit').addEventListener('click', function () {
     reverseGeocode()
 });
+

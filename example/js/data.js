@@ -72,12 +72,12 @@ const menuData = [{
         htmlPath: './html/cluster-envelope.html',
         jsPath: './js/cluster-envelope.js'
     }, {
-            comments: 'ol.source.HexBin aggregates features on hexagonal grid. Hexagonal binning (heatmaps) provide a convenient way to visualize density.',
+        comments: 'ol.source.HexBin aggregates features on hexagonal grid. Hexagonal binning (heatmaps) provide a convenient way to visualize density.',
         title: 'Hexagon',
         htmlPath: './html/hexagon.html',
         jsPath: './js/hexagon.js'
     }, {
-         comments: 'Average round trip commute time',
+        comments: 'Average round trip commute time',
         title: 'Average Round Trip Commute Time',
         htmlPath: './html/trip-commute-time.html',
         jsPath: './js/trip-commute-time.js'
@@ -86,27 +86,27 @@ const menuData = [{
     dataTarget: 'styling',
     styleName: 'Styling',
     subitems: [{
-        comments: '',
+        comments: 'Styling Points with Map Suite StyleJSON ',
         title: 'Styling Points',
         htmlPath: './html/styling-points.html',
         jsPath: './js/styling-points.js'
     }, {
-        comments: '',
+        comments: 'Styling Lines with Map Suite StyleJSON',
         title: 'Styling Lines',
         htmlPath: './html/styling-lines.html',
         jsPath: './js/styling-lines.js'
     }, {
-        comments: '',
+        comments: 'Styling Polygons with Map Suite StyleJSON',
         title: 'Styling Polygons',
         htmlPath: './html/styling-polygons.html',
         jsPath: './js/styling-polygons.js'
     }, {
-        comments: '',
+        comments: 'Styling Label with Map Suite StyleJSON',
         title: 'Labeling Features',
         htmlPath: './html/labeling-features.html',
         jsPath: './js/labeling-features.js'
     }, {
-        comments: '',
+        comments: 'Uses an overlay to create a popup.',
         title: 'Marking Places',
         htmlPath: './html/marking-places.html',
         jsPath: './js/marking-places.js'
@@ -115,37 +115,37 @@ const menuData = [{
     dataTarget: 'vector-data',
     styleName: 'Vector Data',
     subitems: [{
-        comments: '',
+        comments: 'Example of vector data with Map Suite StyleJSON.',
         title: 'Vector Tile',
         htmlPath: './html/vector-tile.html',
         jsPath: './js/vector-tile.js'
     }, {
-        comments: '',
+        comments: 'Example of GeoJSON features with Map Suite StyleJSON.',
         title: 'GeoJSON ',
         htmlPath: './html/geojson.html',
         jsPath: './js/geojson.js'
     }, {
-        comments: '',
+        comments: 'Example of KML features with Map Suite StyleJSON.',
         title: 'KML ',
         htmlPath: './html/KML.html',
         jsPath: './js/KML.js'
     }, {
-        comments: '',
+        comments: 'Example of WFS features with Map Suite StyleJSON.',
         title: 'WFS ',
         htmlPath: './html/WFS.html',
         jsPath: './js/WFS.js'
     }, {
-        comments: '',
+        comments: 'Example of WKT features with Map Suite StyleJSON.',
         title: 'WKT ',
         htmlPath: './html/WKT.html',
         jsPath: './js/WKT.js'
     }, {
-        comments: '',
+        comments: 'Example of GPX features with Map Suite StyleJSON.',
         title: 'GPX ',
         htmlPath: './html/GPX.html',
         jsPath: './js/GPX.js'
     }, {
-        comments: '',
+        comments: 'Different coordinate systems display maps',
         title: 'Projection ',
         htmlPath: './html/projection.html',
         jsPath: './js/projection.js'
@@ -154,17 +154,17 @@ const menuData = [{
     dataTarget: 'thinkGeo-cloud',
     styleName: 'ThinkGeo Cloud',
     subitems: [{
-        comments: '',
+        comments: 'Get the elevation of points along a line.',
         title: 'Elevation along Path ',
         htmlPath: './html/elevation.html',
         jsPath: './js/elevation.js'
     }, {
-        comments: '',
+        comments: 'Reverse geocode a point.',
         title: 'Reverse Geocoding',
         htmlPath: './html/reverse-geocoding.html',
         jsPath: './js/reverse-geocoding.js'
     }, {
-        comments: '',
+        comments: 'Get a family of colors based on different options.',
         title: 'Color Utilities ',
         htmlPath: './html/color-creation.html',
         jsPath: './js/color-creation.js'
@@ -173,22 +173,22 @@ const menuData = [{
     dataTarget: 'JavaScript-frameworks',
     styleName: 'JavaScript Frameworks',
     subitems: [{
-        comments: '',
+        comments: 'Support the JQuery',
         title: 'JQuery',
         htmlPath: './html/jquery.html',
         jsPath: './js/Jquery.js'
     }, {
-        comments: '',
+        comments: 'Support the Angular',
         title: 'Angular ',
         htmlPath: './html/angular.html',
         jsPath: './js/angular/angular.js'
     }, {
-        comments: '',
+        comments: 'Support the React JS',
         title: 'React JS',
         htmlPath: './html/react.html',
         jsPath: './js/react.js'
     }, {
-        comments: '',
+        comments: 'Support the React Vue.JS',
         title: 'Vue.JS',
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
