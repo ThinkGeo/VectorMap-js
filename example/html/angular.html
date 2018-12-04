@@ -16,21 +16,78 @@
         }
 
         #lines {
+            z-index: 1;
             position: absolute;
             right: 0;
             top: 0;
             background: #fff;
-            padding: 1rem;
-            z-index: 1;
+            padding: 0.6rem!important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
+            border-bottom-left-radius: 5px;
         }
 
-        #lines label{
+        #lines label {
             display: inline-block;
-            width: 85px;
+            width: 82px;
+            color: #5f6b78;
+            text-align: right;
+            margin: 12px 0;
+            padding-right: 5px;
         }
 
-        #lines select{
-            width: 173px;
+        #lines select {
+            width: 196px;
+        }
+
+        #lines input,
+        #lines select {
+            padding: 3px 12px;
+            line-height: 1.42857;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        #lines input:focus,
+        #lines select:focus {
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+
+        #lines button {
+            margin-left: calc(50% - 37.5px);
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid #357ebd;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #428bca;
+        }
+
+        #lines button:focus {
+            outline: 0;
+        }
+
+        #lines button:active {
+            -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
         }
     </style>
 </head>
