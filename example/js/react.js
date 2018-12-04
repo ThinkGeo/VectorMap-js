@@ -28,8 +28,8 @@ class StreetMap extends React.Component {
         super(props);
         this.state = {
             countryNameHalo: 'rgba(255, 255, 255, 0.5)',
-            fontFamily:'oblique',
-            maskType: 'rectangle',
+            fontFamily:'Oblique',
+            maskType: 'Rectangle',
             poiSize:'22',
             json: {
                 styles: []
@@ -158,8 +158,8 @@ class StreetMap extends React.Component {
                             Marine Name Font Style:
                         </label>
                         <select onChange={this.marineNameFontFamilyHandleChange}>
-                            <option value="oblique">oblique</option>
-                            <option value="normal">normal</option>
+                            <option value="Oblique">Oblique</option>
+                            <option value="Normal">Normal</option>
                         </select>
                     </div>
 
@@ -168,11 +168,11 @@ class StreetMap extends React.Component {
                             Road Number Text Mask Type:
                         </label>
                         <select onChange={this.maskTypeHandleChange}>
-                            <option value="rectangle">rectangle</option>
-                            <option value="default">default</option>
-                            <option value="roundedCorners">roundedCorners</option>
-                            <option value="roundedEnds">roundedEnds</option>
-                            <option value="circle">circle</option>
+                            <option value="Rectangle">Rectangle</option>
+                            <option value="Default">Default</option>
+                            <option value="RoundedCorners">RoundedCorners</option>
+                            <option value="RoundedEnds">RoundedEnds</option>
+                            <option value="Circle">Circle</option>
                         </select>
                     </div>
 
@@ -185,7 +185,7 @@ class StreetMap extends React.Component {
 
                     <div>
                         <label>
-                            POI size:
+                            POI Size:
                         </label>
                         <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
                     </div>

@@ -108,7 +108,7 @@ module.exports = "#map{\r\n    width: 100%;\r\n    height: 100%;\r\n    backgrou
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<form id=\"lines\" #form=\"ngForm\" (submit)=\"refresh(form.value)\">\n  <label>FontSize: </label>\n  <input type=\"number\" name=\"fontSize\" ngModel placeholder=\"14\">\n  <br>\n  <br>\n  <label>Text: </label>\n  <select name=\"fontFamily\" ngModel   >\n    <option   value=\"Calibri\">Calibri</option>\n    <option value=\"sans-serif\">sans-serif</option>\n  </select>\n  <br>\n  <br>\n  <label>FillColor: </label>\n  <input type=\"text\" placeholder=\"#000\" name=\"fillColor\" ngModel >\n  <br />\n  <br>\n  <label>Placement: </label>\n  <select name=\"placement\" ngModel >\n    <option  value=\"line\">line</option>\n    <option value=\"point\">point</option>\n  </select>\n  <br> <br>\n\n  <button type=\"submit\">Refresh</button>\n</form>\n\n<div id=\"map\"></div>\n\n\n<router-outlet></router-outlet>"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<form id=\"lines\" #form=\"ngForm\" (submit)=\"refresh(form.value)\">\n  <label>FontSize: </label>\n  <input type=\"number\" name=\"fontSize\" ngModel placeholder=\"14\">\n  <br>\n  <br>\n  <label>Text: </label>\n  <select name=\"fontFamily\" ngModel   >\n    <option   value=\"Calibri\">Calibri</option>\n    <option value=\"Sans-Serif\">Sans-Serif</option>\n  </select>\n  <br>\n  <br>\n  <label>FillColor: </label>\n  <input type=\"text\" placeholder=\"#000\" name=\"fillColor\" ngModel >\n  <br />\n  <br>\n  <label>Placement: </label>\n  <select name=\"placement\" ngModel >\n    <option  value=\"line\">Line</option>\n    <option value=\"point\">Point</option>\n  </select>\n  <br> <br>\n\n  <button type=\"submit\">Refresh</button>\n</form>\n\n<div id=\"map\"></div>\n\n\n<router-outlet></router-outlet>"
 
 /***/ }),
 
@@ -141,7 +141,7 @@ var AppComponent = /** @class */ (function () {
                 width: 2
             }),
             text: new ol.style.Text({
-                font: '14px Calibri,sans-serif',
+                font: '14px Calibri,Sans-Serif',
                 fill: new ol.style.Fill({
                     color: '#525255'
                 }),
@@ -174,7 +174,7 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.refresh = function (formValue) {
         console.log(formValue);
         var text = this.blockMapStyle.getText();
-        text.setFont((formValue.fontSize || 14) + "px " + (formValue.fontFamily || 'sans-serif') + ",sans-serif");
+        text.setFont((formValue.fontSize || 14) + "px " + (formValue.fontFamily || 'Sans-Serif') + ",Sans-Serif");
         text.getFill().setColor(formValue.fillColor || '#000');
         text.setPlacement(formValue.placement || 'line');
         this.blockMapLayer.setStyle(this.blockMapStyle);
