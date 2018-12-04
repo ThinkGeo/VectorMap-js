@@ -13,9 +13,9 @@
             position: absolute;
             top: 10px;
             left: 50%;
-            margin-left: -180px;
+            margin-left: -170px;
             padding: 5px;
-            width: 350px;
+            width: 330px;
             z-index: 5;
             background-color: #fff;
             border: 1px solid rgb(185, 185, 185);
@@ -132,6 +132,17 @@
 
         .hidden {
             display: none;
+        }
+
+        @media only screen and (max-device-width: 767px) {
+            #floating-panel {
+                margin-left: -110px;
+                width: 230px;
+            }
+
+            #latlng{
+                width: 185px;
+            }
         }
     </style>
 </head>

@@ -27,12 +27,9 @@
             margin: 12px 0;
         }
 
-        #lines select {
-            width: 196px;
-        }
-
         #lines input,
         #lines select {
+            width: 143px;
             padding: 3px 12px;
             line-height: 1.42857;
             color: #555;
@@ -45,6 +42,10 @@
             -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        #lines select {
+            width: 169px;
         }
 
         #lines input:focus,
@@ -62,7 +63,7 @@
             font-size: 14px;
             font-weight: normal;
             line-height: 1.428571429;
-             text-align: right;
+            text-align: right;
             white-space: nowrap;
             vertical-align: middle;
             cursor: pointer;
@@ -72,10 +73,10 @@
             background-color: #428bca;
         }
 
-        #lines button:focus{
+        #lines button:focus {
             outline: 0;
         }
-        
+
         #lines button:active {
             -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
             box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
@@ -83,7 +84,16 @@
 
         #lines div {
             width: 100%;
-             text-align: right;
+            text-align: right;
+        }
+
+        @media only screen and (max-device-width: 767px) {
+            /* #lines input,
+            #lines select {
+                display: block;
+                text-align: left;
+                margin-bottom: 3px;
+            } */
         }
     </style>
 </head>
@@ -117,7 +127,7 @@
 
 
     <!-- latest minified version of vectormap.js -->
-   <script src="../dist/vectormap.js"></script>
+    <script src="../dist/vectormap.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>

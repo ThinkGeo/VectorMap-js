@@ -26,6 +26,9 @@
             margin: 3px 0;
         }
 
+        .jscolor{
+            width: 90px;
+        }
 
         #user-input input,
         #user-input select {
@@ -57,7 +60,7 @@
             margin-bottom: 0;
             font-weight: normal;
             line-height: 1.428571429;
-             text-align: right;
+            text-align: right;
             white-space: nowrap;
             vertical-align: middle;
             cursor: pointer;
@@ -78,7 +81,7 @@
 
         #user-input div {
             width: 100%;
-             text-align: right;
+            text-align: right;
         }
     </style>
 </head>
@@ -93,16 +96,18 @@
             <option value="tetrad">Tetrad</option>
             <option value="triad">Triad</option>
         </select>
-        <input type="radio" name="radio" value="random" /> <label>Random</label> 
-        <input type="radio" name="radio" checked value="specific" /> <label> Specific Color: </label> <input class="jscolor" id="color"
-            value="ab2567">
-
+        <br>
+        <input type="radio" name="radio" value="random" /> <label>Random</label>
+        <br>
+        <input type="radio" name="radio" checked value="specific" /> <label> Specific Color: </label> <input class="jscolor"
+            id="color" value="ab2567">
+        <br>
         <button id="generate">Generate</button>
     </div>
     <div id="map" style="width:100%;height:100%;background: #aac7ee "></div>
 
     <!-- latest minified version of vectormap.js -->
-   <script src="../dist/vectormap.js"></script>
+    <script src="../dist/vectormap.js"></script>
 
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>

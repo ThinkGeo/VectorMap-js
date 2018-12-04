@@ -21,7 +21,7 @@
             right: 0;
             top: 0;
             background: #fff;
-            padding: 0.6rem!important;
+            padding: 0.6rem !important;
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
             border-bottom-left-radius: 5px;
         }
@@ -35,12 +35,9 @@
             padding-right: 5px;
         }
 
-        #lines select {
-            width: 196px;
-        }
-
         #lines input,
         #lines select {
+            width: 100px;
             padding: 3px 12px;
             line-height: 1.42857;
             color: #555;
@@ -55,6 +52,10 @@
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         }
 
+        #lines select {
+            width: 126px;
+        }
+        
         #lines input:focus,
         #lines select:focus {
             border-color: #66afe9;
@@ -64,14 +65,15 @@
         }
 
         #lines button {
-            margin-left: calc(50% - 37.5px);
+            margin-left: calc(100% - 70px);
+            margin-right: 0;
             display: inline-block;
             padding: 6px 12px;
             margin-bottom: 0;
             font-size: 14px;
             font-weight: normal;
             line-height: 1.428571429;
-             text-align: right;
+            text-align: right;
             white-space: nowrap;
             vertical-align: middle;
             cursor: pointer;
@@ -94,7 +96,7 @@
 
 <body>
     <app-root></app-root>
-   <script src="../dist/vectormap.js"></script>
+    <script src="../dist/vectormap.js"></script>
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
 
