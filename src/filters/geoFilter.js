@@ -1,8 +1,6 @@
 import GeoFilterItem from "./geoFilterItem";
 
 class GeoFilter {
-
-
     constructor(filterItems) {
         this.filterItems = filterItems || [];
         this.replacedValueToIndex = false;

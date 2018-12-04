@@ -11,10 +11,8 @@ import CanvasInstruction from 'ol/render/canvas/Instruction.js';
 import { lineStringLength } from 'ol/geom/flat/length.js';
 import { drawTextOnPath } from 'ol/geom/flat/textpath.js';
 import { matchingChunk } from 'ol/geom/flat/straightchunk';
-
 import { TEXT_ALIGN } from 'ol/render/replay.js';
 import { drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
-
 import { asColorLike } from 'ol/colorlike.js';
 import {
     create as createTransform,
@@ -83,7 +81,6 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
 
         var currentResolution = context["currentResolution"];
         var ratio = window.devicePixelRatio * 1.194328566955879 / currentResolution;
-
 
         let /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ feature;
         let x, y;

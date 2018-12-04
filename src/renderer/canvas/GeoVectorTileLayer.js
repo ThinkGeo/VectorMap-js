@@ -137,7 +137,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     tileGrid.forEachTileCoordParentTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
                 }
-
             }
         }
 
@@ -149,7 +148,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
             oversampling != this.oversampling_ ||
             !animatingOrInteracting && renderedResolution != this.renderedResolution
         )) {
-
             const context = this.context;
             if (context) {
                 const tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);

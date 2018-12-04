@@ -2,7 +2,6 @@ import { TextLabelingStrategy } from "./textLabelingStrategy";
 import { GeoTextStyle } from "./geoTextStyle";
 import GeometryType from "ol/geom/GeometryType";
 
-
 class DetectTextLabelingStrategy extends TextLabelingStrategy {
     constructor() {
         super();
@@ -29,7 +28,6 @@ class DetectTextLabelingStrategy extends TextLabelingStrategy {
 
         return flatCoordinates;
     }
-
 
     movePointLabel(flatCoordinates, width, height, resolution, textStyle, grid, frameState) {
         let gridSize = 50;

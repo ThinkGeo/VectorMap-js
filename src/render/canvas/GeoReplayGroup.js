@@ -8,7 +8,6 @@ import CanvasLineStringReplay from 'ol/render/canvas/LineStringReplay.js';
 import CanvasPolygonReplay from 'ol/render/canvas/PolygonReplay.js';
 import GeoCanvasTextReplay from './GeoTextReplay';
 
-
 const BATCH_CONSTRUCTORS = {
     'Circle': CanvasPolygonReplay,
     'Default': CanvasReplay,
@@ -52,7 +51,6 @@ class GeoCanvasReplayGroup extends CanvasReplayGroup {
         }
         return replay;
     }
-
 }
 
 export default GeoCanvasReplayGroup;

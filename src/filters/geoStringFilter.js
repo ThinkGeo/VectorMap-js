@@ -2,7 +2,6 @@ import GeoFilter from "./geoFilter";
 import GeoFilterItem from "./geoFilterItem";
 
 class GeoStringAttributeFilter extends GeoFilter {
-
     constructor(filterItems) {
         super(filterItems);
     }

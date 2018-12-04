@@ -158,7 +158,6 @@ class GeoVectorTileSource extends VectorTile {
         return featuresAndInstructs;
     }
 
-
     registerCreateReplayGroupEvent(sourceTileCoordAndStyleZ, createReplayGroupFunction) {
         let hasCreated = true;
         if (this.registerCreateReplayGroup[sourceTileCoordAndStyleZ] === undefined) {
@@ -187,7 +186,6 @@ class GeoVectorTileSource extends VectorTile {
         }
     }
 
-
     setWorkerManager(workerManager) {
         this.workerManager = workerManager;
     }
@@ -212,21 +210,6 @@ class GeoVectorTileSource extends VectorTile {
         }.bind(this);
         xhr.send(content);
     }
-
-
-    // UNDO: the zoom boundary
-    // getTileGridForProjection(projection) {
-    //     const code = projection.getCode();
-    //     let tileGrid = this.tileGrids_[code];
-    //     if (!tileGrid) {
-    //         // A tile grid that matches the tile size of the source tile grid is more
-    //         // likely to have 1:1 relationships between source tiles and rendered tiles.
-    //         const sourceTileGrid = this.tileGrid;
-    //         tileGrid = this.tileGrids_[code] = createTileGridForProjection(projection, undefined,
-    //             sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
-    //     }
-    //     return tileGrid;
-    // }
 }
 
 export default GeoVectorTileSource;

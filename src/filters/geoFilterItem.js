@@ -1,12 +1,10 @@
 export class GeoFilterItem {
-
     constructor(key, operator, value) {
         this.key = key;
         this.operator = operator;
         this.value = value;
         this.operatorRegex = new RegExp("[<>!=]+", "g");
     }
-    
 }
 
 GeoFilterItem["operatorRegex"] = function () {

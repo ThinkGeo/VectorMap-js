@@ -2,7 +2,6 @@ import GeoFilter from "./geoFilter";
 import GeoFilterItem from "./geoFilterItem";
 
 class GeoRangeFilter extends GeoFilter {
-
     constructor(filterItems) {
         super(filterItems);
         this.ranges = [];
@@ -113,7 +112,6 @@ class GeoRangeFilter extends GeoFilter {
         return null;
     }
 }
-
 
 GeoRangeFilter["getRange"] = function (ranges, value) {
     for (let i = 0; i < ranges.length; i++) {

@@ -2,7 +2,6 @@ import MVT from './MVT';
 import PBF from 'pbf';
 import LRUCache from 'ol/structs/LRUCache'
 
-
 class GeoMVTFormat extends MVT {
     constructor(styleJSonCache, opt_options) {
         const options = opt_options ? opt_options : {};
@@ -60,7 +59,6 @@ class GeoMVTFormat extends MVT {
             return [features, []];
         }
         else {
-
             let zoomMatchedGeoStylesGroupByLayerId = this.styleJsonCache.geoStyleGroupByZoom[tileCoord[0]];
             if (!zoomMatchedGeoStylesGroupByLayerId) {
                 return [[], []];
@@ -88,9 +86,7 @@ class GeoMVTFormat extends MVT {
                 }
 
                 const pbfLayer = pbfLayers[name];
-
                 let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[name];
-
                 if (cacheTrees && cacheTrees.length > 0) {
                     for (let i = 0; i < pbfLayer.length; i++) {
                         const rawFeature = readRawFeature(pbf, pbfLayer, i);
@@ -106,7 +102,6 @@ class GeoMVTFormat extends MVT {
                                 };
                             }
                             let matchedNode;
-
                             let checkNodeMatched = function (node) {
                                 let styleJsonCacheItem = node.data;
                                 let matched = false;
@@ -214,9 +209,7 @@ class GeoMVTFormat extends MVT {
         }
 
         let instructsCache = [];
-
         var featureIndex = -1;
-
         for (let pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
             let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[pbfLayerName];
             if (cacheTrees && cacheTrees.length > 0) {
@@ -337,9 +330,7 @@ class GeoMVTFormat extends MVT {
         let subTileCachedInstruct = {};
         let offsetZ = zoom - requestCoord[0];
         let tileSize = 4096 / Math.pow(2, offsetZ);
-
         let tileRange = this.getTileRange(requestCoord, zoom);
-
         let features = featuresAndInstructions[0];
         let instructs = featuresAndInstructions[1];
 

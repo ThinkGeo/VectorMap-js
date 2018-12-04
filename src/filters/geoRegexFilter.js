@@ -2,7 +2,6 @@ import GeoFilter from "./geoFilter";
 import GeoFilterItem from "./geoFilterItem";
 
 class GeoRegexFilter extends GeoFilter {
-
     constructor(filterItems) {
         super(filterItems);
     }
@@ -11,7 +10,6 @@ class GeoRegexFilter extends GeoFilter {
         let value = this.filterItems[0].value;
         value = value.slice(2, value.length - 1);
         this.regex = new RegExp(value, "g");
-
         this.key = this.filterItems[0].key;
     }
 
