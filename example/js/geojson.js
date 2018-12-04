@@ -9,19 +9,19 @@ const geosjonStyle = {
             "id": "country",
             "style": [{
                 "filter": "zoom>=0;zoom<=22;",
-                "polygon-fill": "#64748e"
+                "polygon-fill": "#0073ba"
             }]
         },
         {
             "id": "country_boundary",
             "style": [{
                     "filter": "zoom>=0;zoom<=3;",
-                    "line-width": 2,
+                    "line-width": 1,
                     "line-color": "rgba(255, 255, 255, 0.4)",
                 },
                 {
                     "filter": "zoom>=4;zoom<=22;",
-                    "line-width": 3,
+                    "line-width": 2,
                     "line-color": "rgba(255, 255, 255, 0.6)",
                 }
             ]
@@ -31,7 +31,7 @@ const geosjonStyle = {
                 "text-name": "name",
                 "text-wrap-width": 20,
                 "text-fill": "#496588",
-                "text-halo-fill": "rgba(255, 255, 255, 0.5)",
+                "text-halo-fill": "#b1dff5",
                 "text-halo-radius": 2,
                 "style": [
                     {
@@ -61,14 +61,16 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 })
 
 let view = new ol.View({
-    center: ol.proj.fromLonLat([-10.79620, 32.79423]),
-    zoom: 1,
+    center: ol.proj.fromLonLat([18.79620, 45.55423]),   
+     zoom: 4,
     minZoom: 1,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
         geoVectorLayer

@@ -253,12 +253,12 @@ child pages
 */
 
 #codepen a{
-    color: #b7b7b8 !important
+    opacity: 0.6;
 }
 
 #codepen .nav-link:hover {
      border-width: 0px;
-     color: #444444 !important
+     opacity: 1;
  }
 
 #child-page-title {

@@ -17,12 +17,26 @@ const geosjonStyle =
         "id": "Line",
         "style": [
             {
-                "line-color": "#f93376",
+                "line-color": "	#00008B",
                 "line-width": 3,
             },
         ]
+    }, {
+        "id":  "Point",
+        "style": [
+            {
+                "point-type": "symbol",
+                "point-symbol-type": "circle",
+                "point-outline-color": "#ed6c82",
+                "point-outline-width": 2,
+                "point-fill": "#990100",
+                "point-size": 16,
+                
+                 
+            },
+        ]
     },
- 
+
 
     ],
     "sources": [{
@@ -34,7 +48,7 @@ const geosjonStyle =
         "id": "worldstreets_layers",
         "source": "countries_source",
         "styles": [
-            "Line" 
+            "Line", "Point"
         ]
     }]
 }
@@ -55,11 +69,13 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 
 let view = new ol.View({
     center: [-7916041.528716288, 5228379.045749711],
-    zoom: 13,
+    zoom: 14,
     maxZoom: 19,
 });
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
         light, geoVectorLayer

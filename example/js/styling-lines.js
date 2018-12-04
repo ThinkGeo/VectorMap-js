@@ -8,19 +8,19 @@ const baseMapStyle = {
             "id": "country",
             "style": [{
                 "filter": "zoom>=0;zoom<=18;",
-                "polygon-fill": "#f3b600"
+                "polygon-fill": "#25273e"
             }]
         },
         {
             "id": "country_boundary",
             "style": [{
                     "filter": "zoom>=0;zoom<=3;",
-                    "line-width": 2,
+                    "line-width": 1,
                     "line-color": "rgba(255, 255, 255, 0.4)",
                 },
                 {
                     "filter": "zoom>=4;zoom<=18;",
-                    "line-width": 3,
+                    "line-width": 1,
                     "line-color": "rgba(255, 255, 255, 0.6)",
                 }
             ]
@@ -29,12 +29,12 @@ const baseMapStyle = {
             "style": [{
                 "text-name": "NAME",
                 "text-wrap-width": 20,
-                "text-fill": "#990100",
-                "text-halo-fill": "#fff",
-                "text-halo-radius": 3,
+                "text-fill": "#fff",
+                "text-halo-fill": "#ed6c82",
+                "text-halo-radius": 2,
                 "style": [{
                     "filter": "zoom>=3;zoom<=18;",
-                    "text-font": "16px Calibri,sans-serif",
+                    "text-font": "18px Calibri,sans-serif",
                 }]
             }]
         }
@@ -62,18 +62,19 @@ const riverStyle = {
     "styles": [{
         "id": "river",
         "style": [{
-            "line-width": 2,
-            "line-color": "#4e81a5",
+            "line-width": 5,
+            "line-color": "#5482e4",
             "text-force-horizontal-for-line": 0,
         }]
     }, {
         "id": "river_name",
         "style": [{
             "text-name": "name",
-            "text-fill": "#f00",
+            "text-wrap-width": 20,
+            "text-fill": "#990100",
+            "text-halo-fill": "#ed6c82",
             "text-halo-radius": 3,
-            "text-halo-fill": "#fff",
-            "text-font": "14px Calibri,sans-serif"
+            "text-font": "18px Calibri,sans-serif"
         }]
     }],
     "sources": [{
@@ -100,7 +101,9 @@ let riverLayer = new ol.mapsuite.VectorLayer(riverStyle, {
     multithread: false
 });
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [baseMapLayer,riverLayer],
     target: 'map',
     view: new ol.View({

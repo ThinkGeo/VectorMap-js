@@ -24,29 +24,32 @@ const geosjonStyle = {
         "point-type": "glyph",
         "point-glyph": "vectormap-icons",
         "point-fill": "#439c3c",
-        "point-size": 24,
+        "point-size": 36,
         "point-outline-color": "#ffffff",
         "point-outline-width": 3,
         "point-fill": "#ff6666",
+        "point-mask-outline-width": 1,
+        "point-glyph-mask-type": "circle",
+        "point-glyph-mask-color": "#ffffff",
         "style": [{
             "filter": "SUBTYPE=2",
-            "point-fill": "#ff6666",
+            "point-fill": "#FF0000",
             "point-glyph-name": "\ue0aa"
 
         }, {
             "filter": "SUBTYPE=3",
-            "point-fill": "#66d9ff",
+            "point-fill": "#000080",
             "point-glyph-name": "\ue0a8"
 
         }, {
             "filter": "SUBTYPE=5",
-            "point-fill": "#6666ff",
+            "point-fill": "#4B0080",
             "point-glyph-name": "\ue0ab"
-            }, {
-                "filter": "SUBTYPE=7",
-                "point-fill": "#66ff8c",
-                "point-glyph-name": "\ue0ab"
-            }]
+        }, {
+            "filter": "SUBTYPE=7",
+            "point-fill": "#800000",
+            "point-glyph-name": "\ue0ab"
+        }]
     },
     {
         "id": "poi_name",
@@ -71,7 +74,7 @@ const geosjonStyle = {
         "id": "worldstreets_layers",
         "source": "school_source",
         "styles": [
-            "poi_icon","poi_name"
+            "poi_icon", "poi_name"
         ]
     }]
 }
@@ -80,7 +83,9 @@ let pointLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 })
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [worldstreets, pointLayer],
     target: 'map',
     view: new ol.View({
