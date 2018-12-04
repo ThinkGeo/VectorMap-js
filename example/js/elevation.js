@@ -10,7 +10,7 @@ var intervalDistanceUnit = "Feet";
 
 window.app = {};
 const app = window.app;
- 
+
 
 app.drawLineControl = function (opt_options) {
   const options = opt_options || {};
@@ -44,17 +44,18 @@ ol.inherits(app.drawPolygonControl, ol.control.Control);
 
 $(function () {
   var defaultClient = GisServerApis.ApiClient.instance;
-    defaultClient.basePath = "https://cloud3.thinkgeo.com";
+  defaultClient.basePath = "https://cloud3.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
   APIKey.apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
 });
 
- let satelliteLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
-    }),
+let satelliteLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg"
+      + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+    tileSize: 512,
+  }),
 });
 
 
@@ -117,6 +118,8 @@ var createVector = function () {
 }
 
 var map = new ol.Map({
+  loadTilesWhileAnimating: true,
+  loadTilesWhileInteracting: true,
   controls: ol.control.defaults({
     attributionOptions: {
       collapsible: false
@@ -145,9 +148,9 @@ map.addInteraction(new ol.interaction.DragPan({
 }));
 
 var mapEle = document.getElementById("map");
- 
- 
- 
+
+
+
 
 function disableZoom(e) {
   var e = e || window.event;
@@ -158,7 +161,7 @@ function disableZoom(e) {
     })
   }
 }
- 
+
 var drawLineElevation = function (feature) {
   var apiInstance = new GisServerApis.ElevationApi();
   var line = feature.getGeometry();
@@ -199,7 +202,7 @@ var drawLineElevation = function (feature) {
     });
 
     var callback = function (error, data, response) {
-      if (error) {} else {
+      if (error) { } else {
         var coordinates = feature.getGeometry().getLastCoordinate();
         addFeature(new ol.Feature({
           geometry: new ol.geom.Point(coordinates),
@@ -538,43 +541,43 @@ var drawChart = function (data, grades) {
 
 
 $(initChart(), drawChart());
- $('#side-bar-point').hide(),
+$('#side-bar-point').hide(),
   $('#side-bar-p').hide(),
   $('#IntervalDistanceLine').show(),
- 
-$(function () {
- 
-  $(".line").click(function () {
-    $(".point").css({
-      "background": "url('../image/add_point_off.png')",
-      "background-size": "100% 100%"
+
+  $(function () {
+
+    $(".line").click(function () {
+      $(".point").css({
+        "background": "url('../image/add_point_off.png')",
+        "background-size": "100% 100%"
+      });
+      $(this).css({
+        "background": "url('../image/draw_line_on.png')",
+        "background-size": "100% 100%"
+      });
+      $(".Polygon").css({
+        "background": "url('../image/draw_polygon_off.png')",
+        "background-size": "100% 100%"
+      });
+      $('.error-tip').css('display', 'none');
     });
-    $(this).css({
-      "background": "url('../image/draw_line_on.png')",
-      "background-size": "100% 100%"
+    $(".Polygon").click(function () {
+      $(".point").css({
+        "background": "url('../image/add_point_off.png')",
+        "background-size": "100% 100%"
+      });
+      $(".line").css({
+        "background": "url('../image/draw_line_off.png')",
+        "background-size": "100% 100%"
+      });
+      $(this).css({
+        "background": "url('../image/draw_polygon_on.png')",
+        "background-size": "100% 100%"
+      });
+      $('.error-tip').css('display', 'none');
     });
-    $(".Polygon").css({
-      "background": "url('../image/draw_polygon_off.png')",
-      "background-size": "100% 100%"
-    });
-    $('.error-tip').css('display', 'none');
   });
-  $(".Polygon").click(function () {
-    $(".point").css({
-      "background": "url('../image/add_point_off.png')",
-      "background-size": "100% 100%"
-    });
-    $(".line").css({
-      "background": "url('../image/draw_line_off.png')",
-      "background-size": "100% 100%"
-    });
-    $(this).css({
-      "background": "url('../image/draw_polygon_on.png')",
-      "background-size": "100% 100%"
-    });
-    $('.error-tip').css('display', 'none');
-  });
-});
 
 $(".buttonClear").click(function () {
   clear();

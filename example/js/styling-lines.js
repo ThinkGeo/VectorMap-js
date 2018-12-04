@@ -100,7 +100,7 @@ let riverLayer = new ol.mapsuite.VectorLayer(riverStyle, {
     multithread: false
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [baseMapLayer,riverLayer],
     target: 'map',
     view: new ol.View({

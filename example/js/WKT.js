@@ -54,7 +54,7 @@ let view = new ol.View({
 
 
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
         light, geoVectorLayer,

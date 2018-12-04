@@ -47,13 +47,17 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 let view = new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
-    zoom: 12
+    zoom: 12,
+    progressiveZoom: false,
+
 });
 
 let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
-        satelliteLayer,geoVectorLayer
+        satelliteLayer, geoVectorLayer
     ],
     view: view,
     loadTilesWhileInteracting: true,

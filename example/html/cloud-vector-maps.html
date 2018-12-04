@@ -28,7 +28,7 @@
             width: 70px;
             height: 70px;
             z-index: 1000;
-            border: 1px solid #ffffff;
+            border: 2px solid transparent;
             margin-bottom: 5px;
             cursor: pointer;
         }
@@ -46,14 +46,14 @@
 <body>
     <div id="map">
         <div id="wrap">
-<div class="thumb thumb-light" style="  border: 1px solid #e2e4e7;box-shadow: 0 0 16px 1px rgba(0,0,0,0.19) " value="light">
+            <div class="thumb thumb-light" style="  border: 2px solid #ffffff; " value="light">
             </div>
             <div class="thumb thumb-dark" value="dark">
             </div>
         </div>
     </div>
     <!-- latest minified version of vectormap.js -->
-    <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
+   <script src="../dist/vectormap.js"></script>
 
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>

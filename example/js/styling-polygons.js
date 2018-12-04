@@ -52,7 +52,7 @@ let baseMapLayer = new ol.layer.Vector({
     }
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [baseMapLayer],
     target: 'map',
     view: new ol.View({

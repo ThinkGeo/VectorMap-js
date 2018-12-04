@@ -25,15 +25,19 @@ let dark = new ol.layer.Tile({
         url: `${url.dark}?apiKey=${apiKey}`,
     }),
     visible: false,
+    tileSize: 512,
     layerName: 'dark'
 });
 
 let map = new ol.Map({
     layers: [light, dark],
     target: 'map',
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
         zoom: 4,
+        progressiveZoom: false,
         minZoom: 2
     })
 });
@@ -41,17 +45,13 @@ let map = new ol.Map({
 document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll('#wrap div');
     for (let node of nodeList) {
-        node.style.borderColor = '#ffffff';
-        node.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0)';
+        node.style.borderColor = 'transparent';
     }
     if (e.target.nodeName == 'DIV') {
-        e.target.style.borderColor = '#e2e4e7';
-        e.target.style.boxShadow = '0 0 16px 1px rgba(0,0,0,0.19)';
+        e.target.style.borderColor = '#ffffff';
         chnageLayer(e);
-
     }
 })
-
 
 const chnageLayer = function (e) {
     let layers = map.getLayers().getArray();

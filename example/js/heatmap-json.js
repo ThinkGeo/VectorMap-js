@@ -32,13 +32,17 @@ $.ajax({
                 return seg.coord.concat([1]);
             });
         }));
-        let map = new ol.Map({
+        let map =  new ol.Map({                         
+            loadTilesWhileAnimating: true,                         
+            loadTilesWhileInteracting: true,
             layers: [satelliteLayer],
             target: 'map',
             view: new ol.View({
                 center: ol.proj.fromLonLat([120.10886859566, 30.235956526643]),
                 zoom: 14,
-                minZoom: 2
+                minZoom: 2,
+                progressiveZoom: false,
+
             })
         });
         var vectorSource = new ol.source.Vector()

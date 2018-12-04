@@ -99,7 +99,7 @@ let equirectangularView=new ol.View({
     zoom: 1
 });
 
-var map = new ol.Map({
+var map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     keyboardEventTarget: document,
     layers: [],
     target: 'map'

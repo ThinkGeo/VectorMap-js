@@ -21,7 +21,9 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,                         
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
@@ -38,7 +40,6 @@ let pieChartOvery = (id, data, pt) => {
             formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         series: [{
-            name: 'Browser',
             type: 'pie',
             radius: '40%',
             data: data,
@@ -65,7 +66,7 @@ let pieChartOvery = (id, data, pt) => {
 for (let i = 0; i < 12; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `pieChart${i}`;
-    aqiDiv.style = "height:22vh;width:30vh";
+    aqiDiv.style = "height:22vh;width:32vh";
     document.querySelector("#pieChart").appendChild(aqiDiv)
 }
 
@@ -74,93 +75,93 @@ let data1 = [{
     value: 20,
     name: 'Chrome',
     itemStyle: {
-        color: '#f70c04'
+        color: '#fe0100'
     }
 }, {
     value: 100,
     name: 'IE9+',
     itemStyle: {
-        color: '#f98e03'
+        color: '#f9ff00'
     }
 }, {
     value: 120,
     name: 'IE8-',
     itemStyle: {
-        color: '#c23531'
+        color: '#a4e601'
     }
 }, {
     value: 135,
     name: 'Safari',
     itemStyle: {
-        color: '#f8ef04'
+        color: '#1e86fe'
     }
 }, {
     value: 300,
     name: 'Firefox',
     itemStyle: {
-        color: '#1206f9'
+        color: '#75f0fd'
     }
 }];
 let data2 = [{
     value: 2000,
     name: 'Chrome',
     itemStyle: {
-        color: '#f70c04'
+        color: '#fe0100'
     }
 }, {
     value: 800,
     name: 'IE9+',
     itemStyle: {
-        color: '#f98e03'
+        color: '#f9ff00'
     }
 }, {
     value: 400,
     name: 'IE8-',
     itemStyle: {
-        color: '#c23531'
+        color: '#a4e601'
     }
 }, {
     value: 135,
     name: 'Safari',
     itemStyle: {
-        color: '#f8ef04'
+        color: '#1e86fe'
     }
 }, {
     value: 1200,
     name: 'Firefox',
     itemStyle: {
-        color: '#1206f9'
+        color: '#75f0fd'
     }
 }];
 let data3 = [{
     value: 1850,
     name: 'Chrome',
     itemStyle: {
-        color: '#f70c04'
+        color: '#fe0100'
     }
 }, {
     value: 750,
     name: 'IE9+',
     itemStyle: {
-        color: '#f98e03'
+        color: '#f9ff00'
     }
 }, {
     value: 260,
     name: 'IE8-',
     itemStyle: {
-        color: '#c23531'
+        color: '#a4e601'
     }
 }, {
     value: 200,
     name: 'Safari',
     itemStyle: {
-        color: '#f8ef04'
+        color: '#1e86fe'
     }
 }, {
     value: 1000,
     name: 'Firefox',
     itemStyle: {
-        color: '#1206f9'
+        color: '#75f0fd'
     }
 }];
 

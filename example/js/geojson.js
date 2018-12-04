@@ -68,7 +68,7 @@ let view = new ol.View({
     maxResolution: 40075016.68557849 / 512
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
         geoVectorLayer

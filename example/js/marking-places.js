@@ -26,7 +26,7 @@ let vectorLayer = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [vectorLayer],
     target: 'map',
     view: new ol.View({

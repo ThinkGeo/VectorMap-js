@@ -26,11 +26,15 @@ let vector = new ol.layer.Vector({
 });
 
 let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [satelliteLayer, vector],
     target: 'map',
     view: new ol.View({
         center: [11877713.642017495, 4671206.770222437],
-        zoom: 4
+        zoom: 4,
+        progressiveZoom: false,
+
     })
 });
 

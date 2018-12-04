@@ -7,7 +7,9 @@ WebFont.load({
 
 var layer = new ol.mapsuite.VectorTileLayer('../data/vectortils_gray.json');
 
-var map = new ol.Map({
+var map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [layer],
     target: 'map',
     view: new ol.View({

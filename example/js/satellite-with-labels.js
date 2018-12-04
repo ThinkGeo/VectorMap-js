@@ -18,7 +18,9 @@ let satelliteLayer = new ol.layer.Tile({
 });
 
 
-let map = new ol.Map({
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                        
+     loadTilesWhileInteracting: true,
     layers: [satelliteLayer, satelliteLabeLayer],
     target: 'map',
     view: new ol.View({

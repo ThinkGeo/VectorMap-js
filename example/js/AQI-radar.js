@@ -13,15 +13,9 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
-let satelliteLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
-        tileSize: 512,
-    }),
-});
-
-let map = new ol.Map({
+let map =  new ol.Map({
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
@@ -37,7 +31,7 @@ let AQIlayer = (id, data, color, pt) => {
     var lineStyle = {
         normal: {
             width: 2,
-            opacity: 0.5
+            opacity: 0.7
         }
     };
 
@@ -65,7 +59,7 @@ let AQIlayer = (id, data, color, pt) => {
                 max: 100
             }],
             shape: 'circle',
-            radius: 30,
+            radius: 50,
 
             splitNumber: 5,
             name: {
@@ -120,7 +114,7 @@ let AQIlayer = (id, data, color, pt) => {
 for (let i = 0; i < 8; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `AQIChart${i}`;
-    aqiDiv.style = "height:22vh;width:20vh";
+    aqiDiv.style = "height:200px;width:200px";
     document.querySelector("#AQIChart").appendChild(aqiDiv)
 }
 

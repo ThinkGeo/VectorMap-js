@@ -73579,7 +73579,7 @@ function olInit() {
      * The map is the core component of OpenLayers. For a map to render, a view,
      * one or more layers, and a target container are needed:
      *
-     *     var map = new ol.Map({
+     *     var map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
      *       view: new ol.View({
      *         center: [0, 0],
      *         zoom: 1

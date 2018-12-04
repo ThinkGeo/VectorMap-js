@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
- 
+
 
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
@@ -17,13 +17,17 @@ let map2xLayer = new ol.layer.Tile({
 });
 
 
- 
+
 
 let map2x = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [map2xLayer],
     target: 'map@2x',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
         zoom: 4,
+        progressiveZoom: false,
+
     }),
 });

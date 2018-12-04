@@ -73,7 +73,9 @@ let blockMapLayer = new ol.layer.Vector({
 });
 
 
-let map = new ol.Map({
+let map =  new ol.Map({                         
+    oadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [blockMapLayer, pointLayer],
     target: 'map',
     view: new ol.View({

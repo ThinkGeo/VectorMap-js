@@ -55,7 +55,7 @@ let blockMapLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 })
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [blockMapLayer],
     target: 'map',
     view: new ol.View({

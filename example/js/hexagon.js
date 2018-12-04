@@ -1,32 +1,21 @@
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-    }
-});
-
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
-
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
-
-let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
-    'apiKey': apiKey,
-});
-
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png"
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
             + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
         tileSize: 512,
     }),
 });
 
 let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
         zoom: 5,
-        center: [166326, 5992663]
+        center: [166326, 5992663],
+        progressiveZoom: false,
+
     })
 })
 
@@ -72,9 +61,9 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    if (f.get('features').length > max) color ='#00f';
-    else if (f.get('features').length > min) color = '#f00';
-    else color = [7, 157, 157, 1];
+    if (f.get('features').length > max) color = '#00e1fc';
+    else if (f.get('features').length > min) color = '#a4e601';
+    else color = [238, 72, 77, 1];
     return [new ol.style.Style({
         fill: new ol.style.Fill({
             color: color
@@ -93,7 +82,7 @@ const reset = function () {
     });
     layer = new ol.layer.Vector({
         source: hexbin,
-        opacity: 0.5,
+        opacity: 0.7,
         style: styleFn,
         renderMode: 'image'
     });

@@ -1,18 +1,3 @@
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-    }
-});
-
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
-
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
-
-let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
-    'apiKey': apiKey,
-});
-
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
@@ -21,7 +6,9 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({

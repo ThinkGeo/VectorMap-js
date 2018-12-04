@@ -12,7 +12,7 @@ function renderStreetMap() {
         'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
     });
 
-    streetMap = new ol.Map({
+    streetMap =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
         layers: [layer],
         target: 'map',
         view: new ol.View({

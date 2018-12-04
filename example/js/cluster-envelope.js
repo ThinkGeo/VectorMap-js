@@ -22,11 +22,15 @@ let satelliteLayer = new ol.layer.Tile({
 });
 
 let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([10.1188869566, 45.235956526643]),
-        zoom: 5
+        zoom: 5,
+        progressiveZoom: false,
+
     })
 })
 
@@ -37,12 +41,12 @@ const getStyle = function (feature, resolution) {
     let style = styleCache[size];
     if (!style) {
         let color = size > 8 ? "248, 128, 0" : size > 2 ? "248, 192, 0" : "128, 192, 64";
-        let radius = Math.max(8, Math.min(size * 0.75, 20));
+        let radius = Math.max(8, Math.min(size * 1.5, 20));
         style = styleCache[size] = [new ol.style.Style({
             image: new ol.style.Circle({
-                radius: radius + 2,
+                radius: radius + 3,
                 stroke: new ol.style.Stroke({
-                    color: "rgba(" + color + ",0.3)",
+                    color: "rgba(" + color + ",0.4)",
                     width: 4
                 })
             })
@@ -51,7 +55,7 @@ const getStyle = function (feature, resolution) {
             image: new ol.style.Circle({
                 radius: radius,
                 fill: new ol.style.Fill({
-                    color: "rgba(" + color + ",0.6)"
+                    color: "rgba(" + color + ",0.8)"
                 })
             }),
             text: new ol.style.Text({
@@ -76,7 +80,7 @@ let clusterSource = new ol.source.Cluster({
 let clusterLayer = new ol.layer.AnimatedCluster({
     name: 'Cluster',
     source: clusterSource,
-    style: getStyle 
+    style: getStyle
 });
 
 map.addLayer(clusterLayer);

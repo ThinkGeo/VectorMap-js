@@ -33,7 +33,7 @@ heatMapLayer.getSource().on('addfeature', function (event) {
     event.feature.set('weight', magnitude - 5);
 });
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [worldStreetLayer, heatMapLayer],
     target: 'map',
     view: new ol.View({

@@ -13,18 +13,6 @@
             position: relative;
         }
 
-        .map_label {
-            position: absolute;
-            top: 15px;
-            left: 43%;
-            z-index: 1000;
-            background: #ffffffa2;
-            padding: 5px 10px 5px 10px;
-            font-weight: 600;
-            color: rgb(71, 71, 71);
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-        }
-
         .aqiChart {
             background-color: rgba(255, 255, 255, .8);
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
@@ -55,7 +43,6 @@
 
 <body>
     <div id="map" style="width:100%;height:100%">
-        <div class="map_label">Atmospheric analysis in some states of the United States</div>
         <ul class="aqiChart">
             <li><i style="background-color: #38A700"></i> Atlanta</li>
             <li><i style="background-color: #FA00FA"></i> Chincago</li>
@@ -70,7 +57,7 @@
     <div id="AQIChart">
     </div>
     <!-- latest minified version of vectormap.js -->
-    <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
+   <script src="../dist/vectormap.js"></script>
 
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>

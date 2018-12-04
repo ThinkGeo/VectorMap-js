@@ -13,19 +13,13 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
-let satelliteLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
-        tileSize: 512,
-    }),
-});
-
-let map = new ol.Map({
+let map =  new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
     layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([102.957672, 38.034109]),
+        center: ol.proj.fromLonLat([118.957672, 38.034109]),
         zoom: 5,
         minZoom: 2
     })

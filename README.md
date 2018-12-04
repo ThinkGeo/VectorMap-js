@@ -90,7 +90,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
         {
             apiKey:'your-ThinkGeo-Cloud-Service-key'
         });
-    let map = new ol.Map({
+    let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
         layers: [worldstreets],
         target: 'map',
         view: new ol.View({
@@ -139,7 +139,7 @@ After all the above steps completed, your HTML page should be:
         <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
-        <script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
+       <script src="../dist/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
         <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
@@ -160,7 +160,7 @@ After all the above steps completed, your HTML page should be:
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'      // please go to https://cloud.thinkgeo.com to create
             });
-            let map = new ol.Map({
+            let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
                 layers: [worldstreets],
                 target: 'map',
                 view: new ol.View({

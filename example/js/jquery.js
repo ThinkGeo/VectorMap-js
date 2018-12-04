@@ -21,7 +21,7 @@ let view = new ol.View({
     zoom: 15,
 })
 
-let map = new ol.Map({
+let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
     layers: [light],
     target: 'map',
     view: view
