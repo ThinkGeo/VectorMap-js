@@ -12,35 +12,74 @@
         #floating-panel {
             position: absolute;
             top: 10px;
-            left: 25%;
-            z-index: 5;
-            background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
-            text-align: center;
-            font-family: 'Roboto','sans-serif';
-            line-height: 30px;
-            padding-left: 10px;
-        }
-        #floating-panel {
-            position: absolute;
-            top: 5px;
             left: 50%;
             margin-left: -180px;
+            padding: 5px;
             width: 350px;
             z-index: 5;
             background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
+            border: 1px solid rgb(185, 185, 185);
+            text-align: center;
+            font-family: 'Roboto', 'sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
         }
+
         #latlng {
             width: 225px;
+            padding: 3px 12px;
+            line-height: 1.42857;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         }
+
+        #latlng:focus {
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+
+        #submit {
+            display: inline-block;
+            padding: 2px 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid #357ebd;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #428bca;
+        }
+
+        #submit:focus{
+            outline: 0;
+        }
+        
+        #submit:active {
+            -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
+        }
+
         .ol-popup {
             position: absolute;
             background-color: white;
-            -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-            filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
             padding: 10px;
             border-radius: 10px;
             border: 1px solid #cccccc;
@@ -48,7 +87,9 @@
             left: -50px;
             min-width: 500px;
         }
-        .ol-popup:after, .ol-popup:before {
+
+        .ol-popup:after,
+        .ol-popup:before {
             top: 100%;
             border: solid transparent;
             content: " ";
@@ -57,33 +98,39 @@
             position: absolute;
             pointer-events: none;
         }
+
         .ol-popup:after {
             border-top-color: white;
             border-width: 10px;
             left: 48px;
             margin-left: -10px;
         }
+
         .ol-popup:before {
             border-top-color: #cccccc;
             border-width: 11px;
             left: 48px;
             margin-left: -11px;
         }
+
         .ol-popup-closer {
             text-decoration: none;
             position: absolute;
             top: 2px;
             right: 8px;
         }
+
         .ol-popup-closer:after {
             content: "✖";
         }
-        .icon{
+
+        .icon {
             position: absolute;
             bottom: -62px;
             left: 36px;
         }
-        #popup-content p{
+
+        #popup-content p {
             display: inline-block;
         }
     </style>
