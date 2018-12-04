@@ -1,7 +1,4 @@
- 
-
- 
-const geosjonStyle = {
+ const geosjonStyle = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
