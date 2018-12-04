@@ -697,7 +697,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var gl = context.getGL();
             var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
                 tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
-            
+
             if (this.lineStringReplay) {
                 tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
                 tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
