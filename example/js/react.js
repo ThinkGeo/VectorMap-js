@@ -155,7 +155,7 @@ class StreetMap extends React.Component {
                 <div className="controlPanel">
                     <div>
                         <label>
-                            Marine Name Font Style:
+                            Marine Name Font-Style:
                         </label>
                         <select onChange={this.marineNameFontFamilyHandleChange}>
                             <option value="Oblique">Oblique</option>
@@ -165,7 +165,7 @@ class StreetMap extends React.Component {
 
                     <div>
                         <label>
-                            Road Number Text Mask Type:
+                            Road Number Mask-Type:
                         </label>
                         <select onChange={this.maskTypeHandleChange}>
                             <option value="Rectangle">Rectangle</option>
@@ -178,7 +178,7 @@ class StreetMap extends React.Component {
 
                     <div>
                         <label>
-                            Country Name Halo Color:
+                            Country Name Halo-Color:
                         </label>
                         <input type="text" value={this.state.countryNameHalo} onChange={this.countryNameHaloHandleChange} />
                     </div>
@@ -190,7 +190,7 @@ class StreetMap extends React.Component {
                         <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
                     </div>
 
-                    <div>
+                    <div className="refresh-btn">
                         <button onClick={this.clickRefresh}>Refresh</button>
                     </div>
                 </div>
