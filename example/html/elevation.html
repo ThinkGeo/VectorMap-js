@@ -11,7 +11,7 @@
     <style rel="stylesheet" type="text/css">
         #map {
             width: 100%;
-            height: calc(100vh * 3 / 5);
+            height: 60vh;
             background-color: #fff;
         }
 
@@ -19,22 +19,82 @@
             width: 100%;
             margin-top: 0px;
             position: absolute;
-            height: calc(100vh * 2 / 5);
-            top: calc(100vh * 3/ 5);
+            height: 40vh;
+            top: 60vh;
             bottom: 0;
             left: 0;
             right: 0;
         }
 
-        #side-bar {
-            float: right;
-            position: absolute;
-            bottom: calc(100vh * 2 / 5);
+        #side-bar,
+        #side-bar-p {
             right: 0;
+            background-color: #fff;
+            position: absolute;
+            bottom: 40vh;
+            padding: 0.6rem;
+            box-shadow: -2px -2px 4px rgba(0, 0, 0, .2);
+            border-top-left-radius: 5px;
         }
 
-        #buttonClear {
-            float: right;
+        #side-bar input,
+        #side-bar-p input{
+            line-height: 1.42857;
+            color: #555;
+            background-color: #fff;
+        }
+
+        #side-bar-p input{
+            padding: 3px 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        #side-bar-p input:focus {
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+
+        #side-bar input:focus,
+        #side-bar-p input:focus {
+            border-color: #66afe9;
+            outline: 0;
+        }
+
+        #side-bar label,
+        #side-bar-p label{
+            display: inline-block;
+            width: 165px;
+            color: #5f6b78;
+            margin: 10px 0;
+        }
+
+        .btn-wrap{
+            width: 100%;
+            text-align: center;
+        }
+
+        .buttonClear {
+            display: inline-block;
+            padding: 2px 10px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid #357ebd;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #428bca;
         }
 
         .point {
@@ -109,8 +169,8 @@
             position: absolute;
             width: 24px;
             left: 10px;
-            height: calc(100vh * 2 / 5);
-            bottom: calc(100vh * 2 / 5);
+            height: 40vh;
+            bottom: 40vh;
             margin-bottom: 0px;
             background: linear-gradient(to bottom, red, orange, yellow, green, blue);
             filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#00ff00', GradientType=1);
@@ -137,25 +197,18 @@
         #lowElevation {
             position: absolute;
             left: 33px;
-            bottom: calc(100vh * 2/ 5);
+            bottom: 40vh;
         }
 
         #highElevation {
             position: absolute;
             left: 33px;
-            bottom: calc(100vh * 3/ 5);
+            bottom: 60vh;
 
         }
 
-        #side-bar {
-            background-color: #fff;
-        }
-
-        #side-bar-p {
-            right: 0px;
-            background-color: #fff;
-            position: absolute;
-            bottom: calc(100vh * 2/ 5);
+        #samples-number{
+            width: 100%;
         }
     </style>
 </head>
@@ -167,31 +220,31 @@
     <div id="chart">
         <canvas id="chartContainer"></canvas>
     </div>
-    <div id="side-bar" class="col-md-4 col-7">
-        <div id="numberSamples" class="row justify-content-end margin-0 ">
-            <div class="col-8 col-md-6">
-                <label for="samples-number" class="control-label">Number of Samples:</label>
+    <div id="side-bar">
+        <div id="numberSamples">
+            <div>
+                <label for="samples-number">Number of Samples:</label>
             </div>
-            <div class="col-4  col-md-6 ">
+            <div>
                 <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
             </div>
             <label for="samples-number" class="control-label  col-7 col-md-6">Interval Distance:</label>
-            <span class="col-5 col-md-6 " id="IntervalDistance">100 (feet) </span>
-            <div class=" col-6  align-self-end">
-                <button tabindex="4" class="buttonClear btn-sm btn-block btn btn-primary">Clear</button>
+            <span id="IntervalDistance">100 (feet) </span>
+            <div class="btn-wrap">
+                <button tabindex="4" class="buttonClear">Clear</button>
             </div>
         </div>
     </div>
     <div id="side-bar-p">
-        <div id="numberSamplesp" class=" ">
-            <div class=" ">
-                <label for="samples-number-p" class="control-label col-6 ">Interval Distance(feet):</label>
+        <div id="numberSamplesp">
+            <div>
+                <label for="samples-number-p" class="control-label">Interval Distance(feet):</label>
             </div>
-            <div class=" ">
+            <div>
                 <input type="number" name="samples-number-p" id="samples-number-p" step="100" min="100" value="1000">
             </div>
-            <div class="  ">
-                <button tabindex="4" class="buttonClear btn-sm btn-block btn btn-primary">Clear</button>
+            <div class="btn-wrap">
+                <button tabindex="4" class="buttonClear">Clear</button>
             </div>
         </div>
 
