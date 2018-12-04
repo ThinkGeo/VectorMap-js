@@ -69,6 +69,7 @@ body {
 /* left content */
 .sidebar {
     position: fixed;
+    width: 320px;
     top: 72px;
     bottom: 0;
     left: 0;
@@ -211,7 +212,9 @@ body {
 
 .main {
     padding-top: 20px;
+    padding-left: 340px;
     height: 100%;
+    width: 100%;
 }
 
 #child-page-component .active {
