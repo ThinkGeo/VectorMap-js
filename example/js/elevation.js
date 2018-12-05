@@ -54,7 +54,6 @@ let satelliteLayer = new ol.layer.Tile({
   source: new ol.source.XYZ({
     url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg"
       + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
-    tileSize: 512,
   }),
 });
 
@@ -118,8 +117,6 @@ var createVector = function () {
 }
 
 var map = new ol.Map({
-  loadTilesWhileAnimating: true,
-  loadTilesWhileInteracting: true,
   controls: ol.control.defaults({
     attributionOptions: {
       collapsible: false
@@ -167,16 +164,15 @@ var drawLineElevation = function (feature) {
   var line = feature.getGeometry();
   $("#IntervalDistance").html(parseInt(line.getLength() / $("#samples-number").val()) + " (feet)")
   if (line.getLength() > 5000) {
-    $('#error-tip').text('The test distance is too long and the input is invalid. Please re-enter!')
-    $('.error-tip').css({
-      'display': 'block'
-    })
+    window.alert('The test distance is too long and the input is invalid. Please re-enter!');
+    clear();
     map.removeInteraction(
       new ol.interaction.Draw({
         source: source,
         type: 'LineString'
-      }));
-    clear();
+      })
+    );
+
   } else {
 
     var format = new ol.format.WKT();
@@ -265,7 +261,12 @@ $(".drawline").click(function () {
     type: 'LineString'
   })
   map.addInteraction(draw);
+  draw.on('drawstart', function (feature) {
+    clear();
+  })
+
   draw.on('drawend', function (feature) {
+    clear();
     featureLine = feature.feature;
     featureLine.set('type', 'route');
     drawLineElevation(featureLine);
@@ -298,16 +299,9 @@ var drawPolygonElevation = function (feature, interval) {
   var polygon = feature.getGeometry();
   var area = polygon.getArea();
   if (area < 200000) {
-    $('#error-tip').text('The test Area is too small and the input is invalid. Please re-enter!')
-    $('.error-tip').css({
-      'display': 'block'
-    })
-    map.removeInteraction(
-      new ol.interaction.Draw({
-        source: source,
-        type: 'LineString'
-      }));
-    clear();
+    window.alert('The test Area is too small and the input is invalid. Please re-enter!');
+    
+ 
   } else {
 
     var format = new ol.format.WKT();
@@ -398,6 +392,9 @@ $(".drawPolygon").click(function () {
     type: 'Polygon'
   });
   map.addInteraction(draw);
+  draw.on('drawstart', function (feature) {
+    clear();
+  })
   draw.on('drawend', function (feature) {
     featurePolygon = feature.feature;
     featurePolygon.set('type', 'route');

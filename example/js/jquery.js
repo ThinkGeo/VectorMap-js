@@ -18,11 +18,11 @@ let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
 
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
-    zoom: 15,
+    zoom: 16,
 })
 
-let map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [light],
     target: 'map',
@@ -53,13 +53,14 @@ closer.onclick = function () {
 
 const popUp = function (address, centerCoordinate) {
     view.animate({
-        center: centerCoordinate ,
+        center: centerCoordinate,
         duration: 2000
     });
     let addressArr = address.split(",");
     overlay.setPosition(centerCoordinate);
-    map.addOverlay(overlay)
-    content.innerHTML = '<p>' + (addressArr[0] || '')+' ,' + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ' ' + (addressArr[2] || '') + '</p>'
+    map.addOverlay(overlay);
+    let length = addressArr.length;
+    content.innerHTML = '<p>' + (addressArr[0] || '') + ' ,' + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
 }
 
 const reverseGeocode = function (coordinate) {
