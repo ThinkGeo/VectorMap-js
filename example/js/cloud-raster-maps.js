@@ -17,20 +17,20 @@ let light = new ol.layer.Tile({
         url: `${url.light}?apiKey=${apiKey}`,
         tileSize: 512,
     }),
+    visible: false,
     layerName: 'light'
 });
 
 let dark = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: `${url.dark}?apiKey=${apiKey}`,
+        tileSize: 512,
     }),
-    visible: false,
-    tileSize: 512,
     layerName: 'dark'
 });
 
 let map = new ol.Map({
-    layers: [light, dark],
+    layers: [dark, light,],
     target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
