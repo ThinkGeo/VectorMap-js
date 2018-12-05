@@ -71,16 +71,28 @@ export function createSnapToPower(power, maxResolution, opt_maxLevel) {
     // }
 
     // MapSuite:
-    function (resolution, delta, direction) {
+    function (resolution, delta, direction, progressiveZoom) {
       if (resolution !== undefined) {
-        var offset = -direction / 2;
-        var oldLevel =
-          Math.log(maxResolution / resolution) / Math.log(power) + offset;
-        var newLevel = Math.max(oldLevel + delta, 0);
-        if (opt_maxLevel !== undefined) {
-          newLevel = Math.min(newLevel, opt_maxLevel);
+        if (progressiveZoom) {
+          var offset = -direction / 2;
+          var oldLevel =
+            Math.log(maxResolution / resolution) / Math.log(power) + offset;
+          var newLevel = Math.max(oldLevel + delta, 0);
+          if (opt_maxLevel !== undefined) {
+            newLevel = Math.min(newLevel, opt_maxLevel);
+          }
+          return maxResolution / Math.pow(power, newLevel);
         }
-        return maxResolution / Math.pow(power, newLevel);
+        else {
+          var offset = -direction / 2 + 0.5;
+          var oldLevel = Math.floor(
+            Math.log(maxResolution / resolution) / Math.log(power) + offset);
+          var newLevel = Math.max(oldLevel + delta, 0);
+          if (opt_maxLevel !== undefined) {
+            newLevel = Math.min(newLevel, opt_maxLevel);
+          }
+          return maxResolution / Math.pow(power, newLevel);
+        }
       } else {
         return undefined;
       }

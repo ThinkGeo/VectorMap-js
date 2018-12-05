@@ -674,7 +674,7 @@ var View = /*@__PURE__*/(function (BaseObject) {
   View.prototype.constrainResolution = function constrainResolution(resolution, opt_delta, opt_direction) {
     var delta = opt_delta || 0;
     var direction = opt_direction || 0;
-    return this.constraints_.resolution(resolution, delta, direction);
+    return this.constraints_.resolution(resolution, delta, direction,this.progressiveZoom);
   };
 
   /**
