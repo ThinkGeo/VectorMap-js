@@ -599,6 +599,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         if (geometry.getType() === GeometryType.POLYGON) {
             stride = 3;
         }
+        end = flatCoordinates.length;
         end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
         this.beginGeometry(geometry, feature);
         if (textState.backgroundFill || textState.backgroundStroke) {

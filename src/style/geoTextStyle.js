@@ -261,6 +261,13 @@ class GeoTextStyle extends GeoStyle {
                     break;
                 case GeometryType.MULTI_POLYGON:
                     let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (feature).getFlatInteriorPoints();
+                    flatCoordinates=[];
+                    for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+                        if ( interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
+                          flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+                        }
+                      }
+
                     break;
                 default:
             }

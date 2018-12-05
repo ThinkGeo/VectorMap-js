@@ -17,7 +17,7 @@ export class TextLabelingStrategy {
     }
 
     isOverlapping(flatCoordinates, width, height, margin, minDistance, minPadding, spacing, strategyTree, frameState) {
-        if (flatCoordinates === undefined) { return true; }
+        if (flatCoordinates === undefined || flatCoordinates.length === 0) { return true; }
 
         let distance = (margin ? margin : 0) + (minDistance ? minDistance : 0) + (minPadding ? minPadding : 0) + (spacing ? spacing : 0);
 
