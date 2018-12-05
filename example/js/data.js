@@ -2,7 +2,7 @@ const menuData = [{
     dataTarget: 'base-Maps',
     styleName: 'Base Maps',
     subitems: [{
-        comments: "Example of  using  mapsuite.VectorTileLayer",
+        comments: "Example of  using  cloud vector data",
         title: 'Cloud Vector Maps',
         htmlPath: './html/cloud-vector-maps.html',
         jsPath: './js/cloud-vector-maps.js'
@@ -17,7 +17,7 @@ const menuData = [{
         htmlPath: './html/satellite-with-labels.html',
         jsPath: './js/satellite-with-labels.js'
     }, {
-        comments: 'Example of imagery map with labels using stylejson',
+        comments: 'Viirs city lights 2012 with labels',
         title: 'Imagery with Labels  ',
         htmlPath: './html/imagery-with-labels.html',
         jsPath: './js/imagery-with-labels.js'
@@ -86,22 +86,22 @@ const menuData = [{
     dataTarget: 'styling',
     styleName: 'Styling',
     subitems: [{
-        comments: 'Styling Points with Map Suite StyleJSON ',
+        comments: 'Styling Frisco school poi with Map Suite StyleJSON ',
         title: 'Styling Points',
         htmlPath: './html/styling-points.html',
         jsPath: './js/styling-points.js'
     }, {
-        comments: 'Styling Lines with Map Suite StyleJSON',
+        comments: 'Styling rivers of europe with Map Suite StyleJSON',
         title: 'Styling Lines',
         htmlPath: './html/styling-lines.html',
         jsPath: './js/styling-lines.js'
     }, {
-        comments: 'Styling Polygons with Map Suite StyleJSON',
+        comments: 'Styling polygons with Map Suite StyleJSON',
         title: 'Styling Polygons',
         htmlPath: './html/styling-polygons.html',
         jsPath: './js/styling-polygons.js'
     }, {
-        comments: 'Styling Label with Map Suite StyleJSON',
+        comments: 'Styling Label of Frisco block  with Map Suite StyleJSON',
         title: 'Labeling Features',
         htmlPath: './html/labeling-features.html',
         jsPath: './js/labeling-features.js'
@@ -120,27 +120,27 @@ const menuData = [{
         htmlPath: './html/vector-tile.html',
         jsPath: './js/vector-tile.js'
     }, {
-        comments: 'Example of GeoJSON features with Map Suite StyleJSON.',
+        comments: 'Example of GeoJSON features with labels.',
         title: 'GeoJSON ',
         htmlPath: './html/geojson.html',
         jsPath: './js/geojson.js'
     }, {
-        comments: 'Example of KML features with Map Suite StyleJSON.',
+        comments: 'Rendering KML with a vector source.',
         title: 'KML ',
         htmlPath: './html/KML.html',
         jsPath: './js/KML.js'
     }, {
-        comments: 'Example of WFS features with Map Suite StyleJSON.',
+        comments: 'EThis example loads new features from GeoServer WFS.',
         title: 'WFS ',
         htmlPath: './html/WFS.html',
         jsPath: './js/WFS.js'
     }, {
-        comments: 'Example of WKT features with Map Suite StyleJSON.',
+        comments: 'Create features from geometries in WKT (Well Known Text) format..',
         title: 'WKT ',
         htmlPath: './html/WKT.html',
         jsPath: './js/WKT.js'
     }, {
-        comments: 'Example of GPX features with Map Suite StyleJSON.',
+        comments: 'Example of using the GPX source..',
         title: 'GPX ',
         htmlPath: './html/GPX.html',
         jsPath: './js/GPX.js'
@@ -154,17 +154,17 @@ const menuData = [{
     dataTarget: 'thinkGeo-cloud',
     styleName: 'ThinkGeo Cloud',
     subitems: [{
-        comments: 'Get the elevation of points along a line.',
+        comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.`,
         title: 'Elevation along Path ',
         htmlPath: './html/elevation.html',
         jsPath: './js/elevation.js'
     }, {
-        comments: 'Reverse geocode a point.',
+            comments: 'Reverse geocode a point <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
         title: 'Reverse Geocoding',
         htmlPath: './html/reverse-geocoding.html',
         jsPath: './js/reverse-geocoding.js'
     }, {
-        comments: 'Get a family of colors based on different options.',
+            comments: 'Get a family of colors based on different options <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
         title: 'Color Utilities ',
         htmlPath: './html/color-creation.html',
         jsPath: './js/color-creation.js'

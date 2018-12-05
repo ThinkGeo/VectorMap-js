@@ -39,7 +39,7 @@ const ShowHandleFuns = class {
         this.title = childPageObj.title;
         this.comments = childPageObj.comments;
         document.querySelector('#child-page-title>h1').innerText = this.title;
-        document.querySelector('#child-page-title>p').innerText = this.comments;
+        document.querySelector('#child-page-title>p').innerHTML = this.comments;
     }
 
     showCodeFun(div, path) {
