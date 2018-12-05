@@ -35,6 +35,14 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> 
 	
+| <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-color.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ImagerywithLabels">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-pie.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#Projection">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-gpx.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
+            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+        </a> 
 	
  
 	
