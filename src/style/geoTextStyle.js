@@ -258,16 +258,18 @@ class GeoTextStyle extends GeoStyle {
                     break;
                 case GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (feature).getFlatInteriorPoint();
+                    if (!textStyle.overflow && flatCoordinates[2] / resolution < tmpLabelWidth) {
+                        flatCoordinates = undefined;
+                    }
                     break;
                 case GeometryType.MULTI_POLYGON:
                     let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (feature).getFlatInteriorPoints();
-                    flatCoordinates=[];
+                    flatCoordinates = [];
                     for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-                        if ( interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
-                          flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+                        if (textStyle.overflow || interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
+                            flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
                         }
-                      }
-
+                    }
                     break;
                 default:
             }

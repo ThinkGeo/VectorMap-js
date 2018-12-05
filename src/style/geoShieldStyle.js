@@ -694,6 +694,9 @@ class GeoShieldStyle extends GeoStyle {
                 break;
             case GeometryType.POLYGON:
                 flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
+                if (!textStyle.overflow && flatCoordinates[2] / resolution < tmpLabelWidth) {
+                    flatCoordinates = undefined;
+                }
                 break;
             case GeometryType.MULTI_POLYGON:
                 let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
