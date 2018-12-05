@@ -12609,11 +12609,26 @@ function olInit() {
      * @param {Array.<number>=} opt_dest Destination.
      * @return {Array.<number>} Transformed coordinates.
      */
-    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest, extent, isLineString) {
         var dest = opt_dest ? opt_dest : [];
         var i = 0;
         var j, k;
+
         for (j = offset; j < end; j += stride) {
+            if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+                // fix the coordinates that out of extent
+                if(flatCoordinates[j] < extent[0]){
+                    flatCoordinates[j] =  extent[0];
+                }else if(flatCoordinates[j] > extent[2]){
+                    flatCoordinates[j] =  extent[2];
+                }
+
+                if(flatCoordinates[j + 1] < extent[1]){
+                    flatCoordinates[j + 1] =  extent[1];
+                }else if(flatCoordinates[j + 1] > extent[3]){
+                    flatCoordinates[j + 1] =  extent[3];
+                }
+            }
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
             for (k = j + 2; k < j + stride; ++k) {
@@ -12623,6 +12638,7 @@ function olInit() {
         if (opt_dest && dest.length != i) {
             dest.length = i;
         }
+
         return dest;
     };
 
@@ -26562,7 +26578,7 @@ function olInit() {
             return;
         }
 
-        this.focus_ = frameState.focus;
+        //this.focus_ = frameState.focus;
         var context = this.context_;
         var gl = context.getGL();
         var pixelRatio = frameState.pixelRatio;
@@ -30794,9 +30810,10 @@ function olInit() {
     ol.renderer.vector.renderFeature_ = function (
         replayGroup, feature, style, squaredTolerance) {
         var geometry = style.getGeometryFunction()(feature);
+
         if (!geometry) {
             return;
-        }
+        }        
         var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
         var renderer = style.getRenderer();
         if (renderer) {
@@ -30991,18 +31008,10 @@ function olInit() {
         var strokeStyle = style.getStroke();
         if (fillStyle || strokeStyle) {
             var polygonReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.POLYGON);
-            
-            // debugger
-            polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-            
-            polygonReplay.drawPolygon(geometry, feature);
+                style.getZIndex(), ol.render.ReplayType.POLYGON); 
 
-            // used in webgl calculate
-            // var ends = geometry.getEnds();
-            // var flatCoordinates = geometry.getFlatCoordinates();
-            // polygonReplay.appendFlatCoordinates(flatCoordinates, 0, ends, 2, true); 
-            // polygonReplay.startIndicesFeature.push(feature);           
+            polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
+            polygonReplay.drawPolygon(geometry, feature);
         }
         var textStyle = style.getText();
         if (textStyle) {
@@ -68329,6 +68338,8 @@ function olInit() {
     ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature) {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var stride = lineStringGeometry.getStride();
+        var extent = feature.getExtent();
+
         if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
             flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                 stride, -this.origin[0], -this.origin[1]);
@@ -68354,6 +68365,7 @@ function olInit() {
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
+        var extent = feature.getExtent();
         if (ends.length > 1) {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
@@ -68389,17 +68401,8 @@ function olInit() {
         }
         this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
         if (holeFlatCoordinates.length) {
-            var i, ii, deleteIndexArray = [];
+            var i, ii;
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-                var end = holeFlatCoordinates[i].length;
-                var lastCoord = end - stride;
-                var offset = 0;
-
-                // FIXME Eric
-                if (holeFlatCoordinates[i][offset] === holeFlatCoordinates[i][lastCoord] &&
-                    holeFlatCoordinates[i][offset + 1] === holeFlatCoordinates[i][lastCoord + 1] && (end - offset) / stride <= 3) {
-                        continue;
-                    }
                 if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0,
                     holeFlatCoordinates[i].length, stride)) {
                     holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
@@ -68547,7 +68550,7 @@ function olInit() {
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
         } else {
-            //Draw by style groups to minimize drawElements() calls.
+            // Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
             end = this.startIndices[this.startIndices.length - 1];
             for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -68555,9 +68558,19 @@ function olInit() {
                 nextStyle = this.styles_[i];
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                 this.drawElements(gl, context, start, end);
-                gl.clear(gl.DEPTH_BUFFER_BIT);
+                // gl.clear(gl.DEPTH_BUFFER_BIT);
                 end = start;
             }
+
+            // for (i = 0; i < this.styleIndices_.length; ++i) {
+            //     start = this.styleIndices_[i];
+            //     end = i !== (this.styleIndices_.length - 1) ? this.styleIndices_[i + 1] 
+            //         : this.startIndices[this.startIndices.length - 1];
+            //     nextStyle = this.styles_[i];
+            //     this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+            //     this.drawElements(gl, context, start, end);
+            //     gl.clear(gl.DEPTH_BUFFER_BIT);
+            // }
         }
         if (!hitDetection) {
             gl.disable(gl.DEPTH_TEST);
@@ -68685,9 +68698,26 @@ function olInit() {
         // if (!(strokeStyleColor instanceof CanvasGradient) &&
         //     !(strokeStyleColor instanceof CanvasPattern)) {
         if(strokeStyleColor){
-            strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
-                return i != 3 ? c / 255 : c;
-            }) || ol.render.webgl.defaultStrokeStyle;
+            // strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
+            //     return i != 3 ? c / 255 : c;
+            // }) || ol.render.webgl.defaultStrokeStyle;
+
+            var strColor = ol.color.asArray(strokeStyleColor) || ol.render.webgl.defaultStrokeStyle;
+            if(+strColor[3] !== 1){
+                const A1 = +strColor[3];
+                const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
+                const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
+                const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
+                const A3 = 1;
+                strColor[0] = R3.toFixed(6).toString();
+                strColor[1] = G3.toFixed(6).toString();
+                strColor[2] = B3.toFixed(6).toString();
+                strColor[3] = A3.toString();
+            }
+        
+            strokeStyleColor = strColor.map((val, index) => {
+                return index !== 3 ? val / 255 : +val;
+            });
         } else {
             strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
         }
@@ -69141,8 +69171,12 @@ function olInit() {
 
             
             var flatCoordinatesArray = [];
-            for(var i = 0; i < flatCoordinates.length; i+=2){         
-                flatCoordinatesArray.push(ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326'));
+            for(var i = 0; i < flatCoordinates.length; i+=2){ 
+                var transformedCoordinates = ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326');
+                if(transformedCoordinates[0] == 39.50683593750001 && transformedCoordinates[1] == 67.25505812564364){
+                    debugger
+                }
+                flatCoordinatesArray.push(transformedCoordinates);
             }
             // console.log(JSON.stringify(flatCoordinatesArray));
 
@@ -69156,32 +69190,32 @@ function olInit() {
             })
 
             window.test = false
-            console.log('-------');
-            for(var i = 0; i < holeFlatCoordinates.length; i++){
-                var holeFlatCoordinatesArray = [];
-                var holeFlatCoordinate = holeFlatCoordinates[i];
-                for(var j = 0; j < holeFlatCoordinate.length; j+=2){
-                    var tmp = ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326');
-                    if(tmp[0] == 14.15039062499998 && tmp[1] == -12.651058133703486){
-                        // debugger
-                    }
-                    holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
-                }
-                // console.log(JSON.stringify(holeFlatCoordinatesArray));
+            // console.log('-------');
+            // for(var i = 0; i < holeFlatCoordinates.length; i++){
+            //     var holeFlatCoordinatesArray = [];
+            //     var holeFlatCoordinate = holeFlatCoordinates[i];
+            //     for(var j = 0; j < holeFlatCoordinate.length; j+=2){
+            //         var tmp = ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326');
+            //         if(tmp[0] == 14.15039062499998 && tmp[1] == -12.651058133703486){
+            //             // debugger
+            //         }
+            //         holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
+            //     }
+            //     // console.log(JSON.stringify(holeFlatCoordinatesArray));
 
 
-                window.features.push({
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [holeFlatCoordinatesArray]
-                    }            
-                })
-            } 
+            //     window.features.push({
+            //         "type": "Feature",
+            //         "properties": {},
+            //         "geometry": {
+            //             "type": "Polygon",
+            //             "coordinates": [holeFlatCoordinatesArray]
+            //         }            
+            //     })
+            // } 
 
 
-            console.log(JSON.stringify(window.features));
+            // console.log(JSON.stringify(window.features));
         }
 
         // Eliminate holes, if there are any
@@ -69281,7 +69315,7 @@ function olInit() {
                 Math.max(p0.y, p1.y)]);
                 p0 = p1;
             }
-            segments.push(this.insertItem_(p1, start, list));
+            segments.push(this.insertItem_(p1, start, list));            
             extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
             Math.max(p0.y, p1.y)]);
         }
@@ -69951,17 +69985,19 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
+        var extent = feature.getExtent();
         if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                stride, -this.origin[0], -this.origin[1]);
+                stride, -this.origin[0], -this.origin[1], undefined, extent);
+
             if (outerRing.length) {
                 var holes = [];
                 var i, ii, holeFlatCoords;
                 for (i = 1, ii = ends.length; i < ii; ++i) {
                     if (ends[i] !== ends[i - 1]) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                            ends[i], stride, -this.origin[0], -this.origin[1]);
+                            ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent);
                         holes.push(holeFlatCoords);
                     }
                 }
@@ -69976,11 +70012,11 @@ function olInit() {
                     this.lineStringReplay.setPolygonStyle(feature);
                     this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
-                
+
                 this.drawCoordinates_(outerRing, [], stride);
                 for(var i = 0; i < holes.length; i++){
                     this.drawCoordinates_(holes[i], [], stride);
-                }
+                }                 
             }
         }
     };
@@ -70101,7 +70137,7 @@ function olInit() {
         if (!hitDetection) {
             gl.disable(gl.DEPTH_TEST);
             gl.clear(gl.DEPTH_BUFFER_BIT);
-            //Restore GL parameters.
+            // Restore GL parameters.
             gl.depthMask(tmpDepthMask);
             gl.depthFunc(tmpDepthFunc);
         }
@@ -70216,16 +70252,14 @@ function olInit() {
                 const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
                 const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
                 const A3 = 1;
-                strColor[0] = R3.toString();
-                strColor[1] = G3.toString();
-                strColor[2] = B3.toString();
+                strColor[0] = R3.toFixed(6).toString();
+                strColor[1] = G3.toFixed(6).toString();
+                strColor[2] = B3.toFixed(6).toString();
                 strColor[3] = A3.toString();
             }
         
             fillStyleColor = strColor.map((val, index) => {
-                if (index !== 3) return + val / 255;
-        
-                return +val;
+                return index !== 3 ? val / 255 : +val;
             });
 
             // fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
@@ -70251,7 +70285,6 @@ function olInit() {
     /**
      * FIXME: Used for webgl calculation
      */
-
     ol.render.webgl.PolygonReplay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, ends, stride, closed) {
         var ends_ = [];
         var extent = this.maxExtent;
@@ -71158,7 +71191,7 @@ function olInit() {
                         }
                         currX += this.width;
                     }
-                }else if(this.label){
+                }else if(false && this.label){
                     var image = this.label;
                     var width = image.width;
                     var height = image.height;
@@ -100062,7 +100095,7 @@ function olInit() {
                     return false;
                 }
                 this.style.getText().setText(featureText);
-                if (this.setLabelPosition(featureText, feature, resolution, this.style.getText(), options.strategyTree, options.frameState)) {
+                if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
                     return true;
                 }
                 return false;
@@ -102033,7 +102066,6 @@ function olInit() {
             if (method) {
                 var resultMessageData = method(messageData, methodInfo);
                 if (resultMessageData) {
-
                     var postMessageData = {
                         methodInfo: methodInfo,
                         messageData: resultMessageData,
@@ -102198,7 +102230,7 @@ function olInit() {
         }
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
-            var styleJsonCache = self.styleJsonCache[formatId];                        
+            var styleJsonCache = self.styleJsonCache[formatId];  
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
@@ -102317,7 +102349,7 @@ function olInit() {
                 }
             };
 
-            var requestTileCoord = messageData[1]
+            var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
 
             var tileProjection = new ol.proj.Projection({
@@ -102357,7 +102389,7 @@ function olInit() {
             if(!vectorTileData){
                 return false;
             }
-            
+
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
             var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -102369,6 +102401,9 @@ function olInit() {
 
             var strategyTree = ol.ext.rbush(9);
 
+            var tileGrid = new ol.source.XYZ().getTileGrid();
+            var bbox = tileGrid.getTileCoordExtent(requestTileCoord);
+
             if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
@@ -102377,12 +102412,12 @@ function olInit() {
                         var geoStyle = geoStyles[geoStyleId];
                         var featureInfo = features[instructs[i][0]]
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
-                        var cloneEnds = featureInfo.ends_.slice(0);
+                        var cloneEnds = featureInfo.ends_.slice(0);                        
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
 
-                        feature.extent_ = null;
-                        feature["styleId"] = geoStyleId;
+                        feature.extent_ = bbox;
+                        feature["styleId"] = geoStyleId;                       
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform } }, instructs[i]);
                     }
                 }

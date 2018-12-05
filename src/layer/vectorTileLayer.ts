@@ -760,7 +760,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             // draw!
             var result;
-            if (featureCallback === undefined) {                
+            if (featureCallback === undefined) { 
                 this.drawReplay(gl, context, skippedFeaturesHash, false);
             } else {
                 // draw feature by feature for the hit-detection

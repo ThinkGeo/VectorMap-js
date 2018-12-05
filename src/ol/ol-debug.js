@@ -68550,27 +68550,27 @@ function olInit() {
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
         } else {
-            //Draw by style groups to minimize drawElements() calls.
+            // Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
-            // end = this.startIndices[this.startIndices.length - 1];
-            // for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+            end = this.startIndices[this.startIndices.length - 1];
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+                start = this.styleIndices_[i];
+                nextStyle = this.styles_[i];
+                this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+                this.drawElements(gl, context, start, end);
+                // gl.clear(gl.DEPTH_BUFFER_BIT);
+                end = start;
+            }
+
+            // for (i = 0; i < this.styleIndices_.length; ++i) {
             //     start = this.styleIndices_[i];
+            //     end = i !== (this.styleIndices_.length - 1) ? this.styleIndices_[i + 1] 
+            //         : this.startIndices[this.startIndices.length - 1];
             //     nextStyle = this.styles_[i];
             //     this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
             //     this.drawElements(gl, context, start, end);
             //     gl.clear(gl.DEPTH_BUFFER_BIT);
-            //     end = start;
             // }
-
-            for (i = 0; i < this.styleIndices_.length; ++i) {
-                start = this.styleIndices_[i];
-                end = i !== (this.styleIndices_.length - 1) ? this.styleIndices_[i + 1] 
-                    : this.startIndices[this.startIndices.length - 1];
-                nextStyle = this.styles_[i];
-                this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-                this.drawElements(gl, context, start, end);
-                gl.clear(gl.DEPTH_BUFFER_BIT);
-            }
         }
         if (!hitDetection) {
             gl.disable(gl.DEPTH_TEST);
