@@ -48,6 +48,7 @@ const popUp = function (address, centerCoordinate) {
         center: ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]),
         duration: 2000
     });
+    console.log(address)
     let addressArr = address.split(",");
     overlay.setPosition(ol.proj.fromLonLat([centerCoordinate[1], centerCoordinate[0]]));
     map.addOverlay(overlay)
@@ -67,8 +68,8 @@ const reverseGeocode = function () {
         });
     }
     const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
-    let getURL = `${baseURL}${centerCoordinate[1]},${centerCoordinate[0]}?apikey=${apiKey}`;
-
+    let getURL = `${baseURL}${centerCoordinate[1]},${centerCoordinate[0]}?apikey=${apiKey}&Srid=4326`;
+ 
     let jqxhr = $.get(getURL, function (data) {
         if (data.data.bestMatchLocation) {
             let address = data.data.bestMatchLocation.data.address;

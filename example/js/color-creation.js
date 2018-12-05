@@ -151,7 +151,9 @@ let colorLayer = new ol.layer.Vector({
 
 })
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map =  new ol.Map({                         
+    loadTilesWhileAnimating: true,                         
+    loadTilesWhileInteracting: true,
     layers: [colorLayer, baseMapLayer],
     target: 'map',
     view: new ol.View({
@@ -178,7 +180,6 @@ $('button').click(function () {
     let jqxhr = $.get(getURL, function (data) {
         if (data.status == 'success') {
              color = output(data.data);
-            console.log(color);
             styles = {
                 'XXXS': new ol.style.Style({
                     fill: new ol.style.Fill({
