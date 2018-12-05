@@ -204,26 +204,35 @@ class GeoVectorLayer extends VectorLayer {
         }
         else if (sourceType === "esrijson") {
 
-            format = new EsriJSON();
+            format = new EsriJSON(options);
         }
         else if (sourceType === "topojson") {
             // TODO: support "layers", http://openlayers.org/en/latest/examples/topojson.html?q=topojson.
-            format = new TopoJSON();
+            format = new TopoJSON(options);
         }
         else if (sourceType === "igc") {
-            format = new IGC();
+            format = new IGC(options);
         }
         else if (sourceType === "polyline") {
-            format = new Polyline();
+            format = new Polyline(options);
         }
         else if (sourceType === "wkt") {
-            format = new WKT();
+            format = new WKT(options);
+            // The options of WKT format didn't have projection.
+            if(options["dataProjection"])
+            {
+                format.dataProjection= options["dataProjection"]
+            }
+            if(options["featureProjection"])
+            {
+                format.featureProjection= options["featureProjection"]
+            }
         }
         else if (sourceType === "gpx") {
-            format = new GPX();
+            format = new GPX(options);
         }
         else if (sourceType === "kml") {
-            format = new KML();
+            format = new KML(options);
         }
         else if (sourceType === "wfs") {
             // Format is GeoJSON.
