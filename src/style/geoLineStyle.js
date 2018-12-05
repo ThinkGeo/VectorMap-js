@@ -54,7 +54,7 @@ class GeoLineStyle extends GeoStyle {
             this.lineJoin = styleJson["line-join"];
             this.miterLimit = styleJson["line-miterlimit"];
             this.offset = styleJson["line-offset"];
-            this.opacity = styleJson["line-opacity"] | 1;
+            this.opacity = styleJson["line-opacity"];
             this.width = styleJson["line-width"];
             this.lineCapInner = styleJson["line-cap-inner"];
             this.colorInner = styleJson["line-color-inner"];

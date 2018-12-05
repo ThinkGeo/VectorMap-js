@@ -21,10 +21,10 @@ class GeoAreaStyle extends GeoStyle {
             this.gamma = styleJson["polygon-gamma"] ? styleJson["polygon-gamma"] : true;
             this.geometryTransform = styleJson["polygon-geometry-transform"];
             this.hatchStyle = styleJson["polygon-hatch-style"];
-            this.opacity = styleJson["polygon-opacity"] | 1;
+            this.opacity = styleJson["polygon-opacity"];
             this.outlineColor = styleJson["polygon-outline-color"];
             this.outlineDashArray = styleJson["polygon-outline-dasharray"];
-            this.outlineOpacity = styleJson["polygon-outline-opacity"] | 1;
+            this.outlineOpacity = styleJson["polygon-outline-opacity"];
             this.outlineWidth = styleJson["polygon-outline-width"];
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
@@ -85,7 +85,7 @@ class GeoAreaStyle extends GeoStyle {
 
     GetTransformedCoordinates(feature) {
         let geometryFeature = feature.getGeometry();
-        
+
         let tmpFlatCoordinates = geometryFeature.getFlatCoordinates();
         let tmpCoordinates = [[]];
         let index = 0;

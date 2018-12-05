@@ -97,7 +97,7 @@ class GeoShieldStyle extends GeoStyle {
 
             this.numericFormat = styleJson["shield-numeric-format"];
 
-            this.opacity = styleJson["shield-opacity"] | 1;
+            this.opacity = styleJson["shield-opacity"];
 
             this.orientation = styleJson["shield-orientation"];
 

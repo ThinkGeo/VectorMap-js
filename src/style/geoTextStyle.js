@@ -67,7 +67,7 @@ class GeoTextStyle extends GeoStyle {
             this.minPadding = styleJson["text-min-padding"];
             this.name = styleJson["text-name"];
 
-            this.opacity = styleJson["text-opacity"] | 1;
+            this.opacity = styleJson["text-opacity"];
             this.rotateAngle = styleJson["text-rotate-angle"];
             this.placements = styleJson["text-placements"] | ["U,B,L,R"];
             this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
@@ -501,12 +501,12 @@ class GeoTextStyle extends GeoStyle {
         var stroke = undefined;
         if (this.maskColor) {
             fill = new Fill();
-            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ? this.opacity : 1));
+            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ));
         }
         if (this.maskOutlineColor && this.maskOutlineWidth) {
             stroke = new Stroke();
             if (this.maskOutlineColor) {
-                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ? this.opacity : 1));
+                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ));
             }
             if (this.maskOutlineWidth) {
                 stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);

@@ -28,7 +28,7 @@ class GeoPointStyle extends GeoStyle {
             this.dx = styleJson["point-dx"];
             this.dy = styleJson["point-dy"];
             this.pointFile = styleJson["point-file"];
-            this.opacity = styleJson["point-opacity"] | 1;
+            this.opacity = styleJson["point-opacity"];
             this.symbolType = styleJson["point-symbol-type"];
             this.transform = styleJson["point-transform"];
             this.pointType = styleJson["point-type"];
@@ -197,13 +197,13 @@ class GeoPointStyle extends GeoStyle {
 
         if (this.glyphMaskColor) {
             fill = new Fill();
-            fill.setColor(GeoStyle.toRGBAColor(this.glyphMaskColor, this.opacity ? this.opacity : 1));
+            fill.setColor(GeoStyle.toRGBAColor(this.glyphMaskColor, this.opacity));
         }
 
         if (this.glyphMaskOutlineColor && this.glyphMaskOutlineWidth) {
             stroke = new Stroke();
             if (this.glyphMaskOutlineColor) {
-                stroke.setColor(GeoStyle.toRGBAColor(this.glyphMaskOutlineColor, this.opacity ? this.opacity : 1));
+                stroke.setColor(GeoStyle.toRGBAColor(this.glyphMaskOutlineColor, this.opacity));
             }
             if (this.glyphMaskOutlineWidth) {
                 stroke.setWidth(this.glyphMaskOutlineWidth ? this.glyphMaskOutlineWidth : 0);
