@@ -89,7 +89,7 @@ body {
     left: 0;
     z-index: 2;
     display: block;
-    padding-top: 10px;
+    padding-top: 20px;
     padding-left: 0;
     padding-right: 0;
     overflow-x: hidden;
@@ -115,6 +115,8 @@ body {
     width: 100%;
     padding: 0 0.75rem;
 }
+
+ 
 
 #sidebar-search {
     border-radius: 0;
@@ -143,6 +145,7 @@ body {
 /* Sidebar navigation */
 
 .nav-sidebar{
+    margin-top: 10px;
     position: absolute;
     top: 0;
     overflow: auto;
@@ -161,7 +164,7 @@ body {
 }
 
 #menu-bar>li>a {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
 }
 
 #menu-bar>ul{
