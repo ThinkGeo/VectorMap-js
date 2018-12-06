@@ -421,8 +421,8 @@ class GeoTextStyle extends GeoStyle {
             if (strokeState) {
                 context.strokeStyle = strokeState.getColor();
                 context.lineWidth = strokeWidth * (SAFARI ? scale : 1);
-                context.lineCap = strokeState.getLineCap();
-                context.lineJoin = strokeState.getLineJoin();
+                context.lineCap = strokeState.getLineCap() || "round";
+                context.lineJoin = strokeState.getLineJoin() || "round";
                 context.miterLimit = strokeState.getMiterLimit();
                 let lineDash = strokeState.getLineDash();
                 lineDash = lineDash ? lineDash.slice() : defaultLineDash;
@@ -501,12 +501,12 @@ class GeoTextStyle extends GeoStyle {
         var stroke = undefined;
         if (this.maskColor) {
             fill = new Fill();
-            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ));
+            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity));
         }
         if (this.maskOutlineColor && this.maskOutlineWidth) {
             stroke = new Stroke();
             if (this.maskOutlineColor) {
-                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ));
+                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity));
             }
             if (this.maskOutlineWidth) {
                 stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);
