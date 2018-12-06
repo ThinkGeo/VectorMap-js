@@ -10,7 +10,8 @@ const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
     dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json'
 }
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~' // please go to https://cloud.thinkgeo.com to create
 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,

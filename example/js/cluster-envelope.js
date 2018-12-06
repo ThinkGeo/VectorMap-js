@@ -1,17 +1,4 @@
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-    }
-});
-
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
-
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
-
-let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
-    'apiKey': apiKey,
-});
+ const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({

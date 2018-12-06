@@ -12,27 +12,23 @@ const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/da
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
-
-let satelliteLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
-        tileSize: 512,
-    }),
-});
-
+ 
 let vector = new ol.layer.Vector({
-    source: null
+    source: null,
+    style: function (feature) {
+        textStyle.getText().setText(feature.get('symbol'));
+        return textStyle;
+    }
 });
 
-let map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [satelliteLayer, vector],
+    layers: [worldStreetLayer, vector],
     target: 'map',
     view: new ol.View({
-        center: [11877713.642017495, 4671206.770222437],
-        zoom: 4,
+        center: [11877713.642017495, 3471206.770222437],
+        zoom: 5,
         progressiveZoom: false,
 
     })
@@ -72,14 +68,30 @@ $.get("../data/rainfall.json", function (result) {
 
     let styleFunc = function (feature) {
         let color = feature.get("color");
+        let text = feature.get("symbol");
         color = "rgba(" + color + ")";
         return new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: color,
                 width: 2
             }),
+            text: new ol.style.Text({
+                text: text,
+                placement: 'line',
+                font: '20px  Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: color,
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                }),
+            })
         })
     };
+
+ 
+ 
     vector.setSource(vectorSource);
     vector.setStyle(styleFunc);
     vector.setOpacity(0.8);

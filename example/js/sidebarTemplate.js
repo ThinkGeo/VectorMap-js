@@ -7,7 +7,6 @@ const createTemplate = (dataTarget, styleName, subitems) =>
 const createTemplateLi = (subitems) => {
     let str = '';
     subitems.map((val) => {
-        //#endregion
         str += `<li><a href="#${val.replace(/\s+/g, "")}"><span class="sub-arrow">${val}</span></a>
         </li>`
     });

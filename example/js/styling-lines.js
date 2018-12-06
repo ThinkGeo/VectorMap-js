@@ -1,4 +1,4 @@
-const baseMapStyle = {
+const baseMapStyleJson = {
     "id": "europe",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -53,7 +53,7 @@ const baseMapStyle = {
     }]
 };
 
-const riverStyle = {
+const riverStyleJson = {
     "id": "river_style",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -93,11 +93,11 @@ const riverStyle = {
     }]
 };
 
-let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyle, {
+let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyleJson, {
     multithread: false
 });
 
-let riverLayer = new ol.mapsuite.VectorLayer(riverStyle, {
+let riverLayer = new ol.mapsuite.VectorLayer(riverStyleJson, {
     multithread: false
 });
 
