@@ -2,10 +2,10 @@
  * @module ol/render/canvas/ReplayGroup
  */
 import CanvasReplayGroup from "./ReplayGroup";
-import CanvasReplay from 'ol/render/canvas/Replay.js';
-import CanvasImageReplay from 'ol/render/canvas/ImageReplay.js';
-import CanvasLineStringReplay from 'ol/render/canvas/LineStringReplay.js';
-import CanvasPolygonReplay from 'ol/render/canvas/PolygonReplay.js';
+import CanvasReplay from '../../ol/render/canvas/Replay.js';
+import CanvasImageReplay from '../../ol/render/canvas/ImageReplay.js';
+import CanvasLineStringReplay from '../../ol/render/canvas/LineStringReplay.js';
+import CanvasPolygonReplay from '../../ol/render/canvas/PolygonReplay.js';
 import GeoCanvasTextReplay from './GeoTextReplay';
 
 const BATCH_CONSTRUCTORS = {

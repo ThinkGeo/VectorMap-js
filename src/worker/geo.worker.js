@@ -229,6 +229,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     let pixelRatio = createReplayGroupInfo["pixelRatio"]
     let vectorImageTileCoord = createReplayGroupInfo["vectorImageTileCoord"];
     let formatId = createReplayGroupInfo["formatId"];
+    let minimalist = createReplayGroupInfo["minimalist"];
 
     let frameState = {
         coordinateToPixelTransform: coordinateToPixelTransform,
@@ -303,7 +304,10 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
         if (styles) {
             const dirty = self.renderFeature(feature, squaredTolerance, styles, replayGroup);
-            drawingFeatures[getUid(feature)] = feature;
+            if (!minimalist)
+            {
+                drawingFeatures[getUid(feature)] = feature;
+            }
         }
     };
 

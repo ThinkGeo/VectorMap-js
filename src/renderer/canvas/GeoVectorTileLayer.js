@@ -485,7 +485,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     bufferedExtent: bufferedExtent,
                     coordinateToPixelTransform: frameState.coordinateToPixelTransform,
                     pixelRatio: frameState.pixelRatio,
-                    vectorImageTileCoord: tile.tileCoord
+                    vectorImageTileCoord: tile.tileCoord,
+                    minimalist: layer.minimalist
                 };
                 replayState.replayGroupCreated = false;
                 workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", createReplayGroupMethodInfo, createReplayGroupCallback, undefined);

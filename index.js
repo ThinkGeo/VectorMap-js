@@ -1,5 +1,5 @@
 let layer = new ol.mapsuite.VectorTileLayer(light, {
-    multithread: false
+    multithread: true
 });
 
 var geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {

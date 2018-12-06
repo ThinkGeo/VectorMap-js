@@ -1,25 +1,29 @@
 /**
  * @module ol/render/canvas/Replay
  */
-import {getUid} from '../../util.js';
-import {equals, reverseSubArray} from '../../array.js';
-import {asColorLike} from '../../colorlike.js';
-import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
-  createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
+import { getUid } from '../../util.js';
+import { equals, reverseSubArray } from '../../array.js';
+import { asColorLike } from '../../colorlike.js';
+import {
+  buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
+  createOrUpdateEmpty, extend, extendCoordinate, intersects
+} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
-import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
-import {lineStringLength} from '../../geom/flat/length.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
-import {transform2D} from '../../geom/flat/transform.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
-import {isEmpty} from '../../obj.js';
+import { inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray } from '../../geom/flat/inflate.js';
+import { lineStringLength } from '../../geom/flat/length.js';
+import { drawTextOnPath } from '../../geom/flat/textpath.js';
+import { transform2D } from '../../geom/flat/transform.js';
+import { CANVAS_LINE_DASH } from '../../has.js';
+import { isEmpty } from '../../obj.js';
 import VectorContext from '../VectorContext.js';
-import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
+import {
+  drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
-  defaultLineDash, defaultLineCap} from '../canvas.js';
+  defaultLineDash, defaultLineCap
+} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
-import {TEXT_ALIGN} from '../replay.js';
+import { TEXT_ALIGN } from '../replay.js';
 import {
   create as createTransform,
   compose as composeTransform,
@@ -161,8 +165,8 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
 
   }
 
-  if ( VectorContext ) CanvasReplay.__proto__ = VectorContext;
-  CanvasReplay.prototype = Object.create( VectorContext && VectorContext.prototype );
+  if (VectorContext) CanvasReplay.__proto__ = VectorContext;
+  CanvasReplay.prototype = Object.create(VectorContext && VectorContext.prototype);
   CanvasReplay.prototype.constructor = CanvasReplay;
 
   /**
@@ -174,7 +178,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
    */
-  CanvasReplay.prototype.replayTextBackground_ = function replayTextBackground_ (context, p1, p2, p3, p4, fillInstruction, strokeInstruction) {
+  CanvasReplay.prototype.replayTextBackground_ = function replayTextBackground_(context, p1, p2, p3, p4, fillInstruction, strokeInstruction) {
     context.beginPath();
     context.moveTo.apply(context, p1);
     context.lineTo.apply(context, p2);
@@ -186,7 +190,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
       this.fill_(context);
     }
     if (strokeInstruction) {
-      this.setStrokeStyle_(context, /** @type {Array<*>} */ (strokeInstruction));
+      this.setStrokeStyle_(context, /** @type {Array<*>} */(strokeInstruction));
       context.stroke();
     }
   };
@@ -211,7 +215,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
    */
-  CanvasReplay.prototype.replayImage_ = function replayImage_ (
+  CanvasReplay.prototype.replayImage_ = function replayImage_(
     context,
     x,
     y,
@@ -276,8 +280,8 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
     var canvas = context.canvas;
     var strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
     var intersects =
-        tmpExtent[0] - strokePadding <= canvas.width && tmpExtent[2] + strokePadding >= 0 &&
-        tmpExtent[1] - strokePadding <= canvas.height && tmpExtent[3] + strokePadding >= 0;
+      tmpExtent[0] - strokePadding <= canvas.width && tmpExtent[2] + strokePadding >= 0 &&
+      tmpExtent[1] - strokePadding <= canvas.height && tmpExtent[3] + strokePadding >= 0;
 
     if (snapToPixel) {
       x = Math.round(x);
@@ -299,8 +303,8 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
     } else if (intersects) {
       if (fillStroke) {
         this.replayTextBackground_(context, p1, p2, p3, p4,
-          /** @type {Array<*>} */ (fillInstruction),
-          /** @type {Array<*>} */ (strokeInstruction));
+          /** @type {Array<*>} */(fillInstruction),
+          /** @type {Array<*>} */(strokeInstruction));
       }
       drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
     }
@@ -311,9 +315,9 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {Array<number>} dashArray Dash array.
    * @return {Array<number>} Dash array with pixel ratio applied
    */
-  CanvasReplay.prototype.applyPixelRatio = function applyPixelRatio (dashArray) {
+  CanvasReplay.prototype.applyPixelRatio = function applyPixelRatio(dashArray) {
     var pixelRatio = this.pixelRatio;
-    return pixelRatio == 1 ? dashArray : dashArray.map(function(dash) {
+    return pixelRatio == 1 ? dashArray : dashArray.map(function (dash) {
       return dash * pixelRatio;
     });
   };
@@ -328,7 +332,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @protected
    * @return {number} My end.
    */
-  CanvasReplay.prototype.appendFlatCoordinates = function appendFlatCoordinates (flatCoordinates, offset, end, stride, closed, skipFirst) {
+  CanvasReplay.prototype.appendFlatCoordinates = function appendFlatCoordinates(flatCoordinates, offset, end, stride, closed, skipFirst) {
 
     var myEnd = this.coordinates.length;
     var extent = this.getBufferedMaxExtent();
@@ -380,7 +384,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {Array<number>} replayEnds Replay ends.
    * @return {number} Offset.
    */
-  CanvasReplay.prototype.drawCustomCoordinates_ = function drawCustomCoordinates_ (flatCoordinates, offset, ends, stride, replayEnds) {
+  CanvasReplay.prototype.drawCustomCoordinates_ = function drawCustomCoordinates_(flatCoordinates, offset, ends, stride, replayEnds) {
     for (var i = 0, ii = ends.length; i < ii; ++i) {
       var end = ends[i];
       var replayEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
@@ -393,7 +397,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
   /**
    * @inheritDoc.
    */
-  CanvasReplay.prototype.drawCustom = function drawCustom (geometry, feature, renderer) {
+  CanvasReplay.prototype.drawCustom = function drawCustom(geometry, feature, renderer) {
     this.beginGeometry(geometry, feature);
     var type = geometry.getType();
     var stride = geometry.getStride();
@@ -419,7 +423,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
         /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates() :
         geometry.getFlatCoordinates();
       offset = this.drawCustomCoordinates_(flatCoordinates, 0,
-        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
+        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */(geometry).getEnds(),
         stride, replayEnds);
       this.instructions.push([CanvasInstruction.CUSTOM,
         replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
@@ -444,7 +448,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
-  CanvasReplay.prototype.beginGeometry = function beginGeometry (geometry, feature) {
+  CanvasReplay.prototype.beginGeometry = function beginGeometry(geometry, feature) {
     this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
     this.instructions.push(this.beginGeometryInstruction1_);
     this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
@@ -454,13 +458,13 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
   /**
    * FIXME empty description for jsdoc
    */
-  CanvasReplay.prototype.finish = function finish () {};
+  CanvasReplay.prototype.finish = function finish() { };
 
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    */
-  CanvasReplay.prototype.fill_ = function fill_ (context) {
+  CanvasReplay.prototype.fill_ = function fill_(context) {
     if (this.alignFill_) {
       var origin = applyTransform(this.renderedTransform_, [0, 0]);
       var repeatSize = 512 * this.pixelRatio;
@@ -478,7 +482,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {Array<*>} instruction Instruction.
    */
-  CanvasReplay.prototype.setStrokeStyle_ = function setStrokeStyle_ (context, instruction) {
+  CanvasReplay.prototype.setStrokeStyle_ = function setStrokeStyle_(context, instruction) {
     context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
@@ -486,7 +490,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
     context.miterLimit = /** @type {number} */ (instruction[5]);
     if (CANVAS_LINE_DASH) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
-      context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
+      context.setLineDash(/** @type {Array<number>} */(instruction[6]));
     }
   };
 
@@ -494,7 +498,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
-  CanvasReplay.prototype.renderDeclutter_ = function renderDeclutter_ (declutterGroup, feature) {
+  CanvasReplay.prototype.renderDeclutter_ = function renderDeclutter_(declutterGroup, feature) {
     if (declutterGroup && declutterGroup.length > 5) {
       var groupCount = declutterGroup[4];
       if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
@@ -540,7 +544,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  CanvasReplay.prototype.replay_ = function replay_ (
+  CanvasReplay.prototype.replay_ = function replay_(
     context,
     transform,
     skippedFeaturesHash,
@@ -593,14 +597,21 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
-          if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
-            i = /** @type {number} */ (instruction[2]);
-          } else if (opt_hitExtent !== undefined && !intersects(
-            opt_hitExtent, feature.getGeometry().getExtent())) {
-            i = /** @type {number} */ (instruction[2]) + 1;
-          } else {
+          // MapSuite: for minimalist we didn't post back feautres.
+          if (feature === undefined) {
             ++i;
           }
+          else {
+            if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
+              i = /** @type {number} */ (instruction[2]);
+            } else if (opt_hitExtent !== undefined && !intersects(
+              opt_hitExtent, feature.getGeometry().getExtent())) {
+              i = /** @type {number} */ (instruction[2]) + 1;
+            } else {
+              ++i;
+            }
+          }
+
           break;
         case CanvasInstruction.BEGIN_PATH:
           if (pendingFill > batchSize) {
@@ -660,7 +671,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
           image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
-              (instruction[3]);
+            (instruction[3]);
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
@@ -733,9 +744,9 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                   this.replayImage_(context,
-                    /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
+                    /** @type {number} */(part[0]), /** @type {number} */(part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */(part[3]), textScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
@@ -747,9 +758,9 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
                   this.replayImage_(context,
-                    /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
+                    /** @type {number} */(part[0]), /** @type {number} */(part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */(part[3]), textScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
@@ -823,7 +834,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
             context.stroke();
             pendingStroke = 0;
           }
-          this.setStrokeStyle_(context, /** @type {Array<*>} */ (instruction));
+          this.setStrokeStyle_(context, /** @type {Array<*>} */(instruction));
           ++i;
           break;
         case CanvasInstruction.STROKE:
@@ -856,7 +867,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    *     to skip.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  CanvasReplay.prototype.replay = function replay (context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
+  CanvasReplay.prototype.replay = function replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
     this.viewRotation_ = viewRotation;
     this.replay_(context, transform,
       skippedFeaturesHash, this.instructions, snapToPixel, undefined, undefined);
@@ -875,7 +886,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  CanvasReplay.prototype.replayHitDetection = function replayHitDetection (
+  CanvasReplay.prototype.replayHitDetection = function replayHitDetection(
     context,
     transform,
     viewRotation,
@@ -891,7 +902,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
   /**
    * Reverse the hit detection instructions.
    */
-  CanvasReplay.prototype.reverseHitDetectionInstructions = function reverseHitDetectionInstructions () {
+  CanvasReplay.prototype.reverseHitDetectionInstructions = function reverseHitDetectionInstructions() {
     var hitDetectionInstructions = this.hitDetectionInstructions;
     // step 1 - reverse array
     hitDetectionInstructions.reverse();
@@ -917,7 +928,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
   /**
    * @inheritDoc
    */
-  CanvasReplay.prototype.setFillStrokeStyle = function setFillStrokeStyle (fillStyle, strokeStyle) {
+  CanvasReplay.prototype.setFillStrokeStyle = function setFillStrokeStyle(fillStyle, strokeStyle) {
     var state = this.state;
     if (fillStyle) {
       var fillStyleColor = fillStyle.getColor();
@@ -970,7 +981,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @return {Array<*>} Fill instruction.
    */
-  CanvasReplay.prototype.createFill = function createFill (state, geometry) {
+  CanvasReplay.prototype.createFill = function createFill(state, geometry) {
     var fillStyle = state.fillStyle;
     /** @type {Array<*>} */
     var fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
@@ -984,7 +995,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
    */
-  CanvasReplay.prototype.applyStroke = function applyStroke (state) {
+  CanvasReplay.prototype.applyStroke = function applyStroke(state) {
     this.instructions.push(this.createStroke(state));
   };
 
@@ -992,7 +1003,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../canvas.js").FillStrokeState} state State.
    * @return {Array<*>} Stroke instruction.
    */
-  CanvasReplay.prototype.createStroke = function createStroke (state) {
+  CanvasReplay.prototype.createStroke = function createStroke(state) {
     return [
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
@@ -1006,7 +1017,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
-  CanvasReplay.prototype.updateFillStyle = function updateFillStyle (state, createFill, geometry) {
+  CanvasReplay.prototype.updateFillStyle = function updateFillStyle(state, createFill, geometry) {
     var fillStyle = state.fillStyle;
     if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
       if (fillStyle !== undefined) {
@@ -1020,7 +1031,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../canvas.js").FillStrokeState} state State.
    * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
-  CanvasReplay.prototype.updateStrokeStyle = function updateStrokeStyle (state, applyStroke) {
+  CanvasReplay.prototype.updateStrokeStyle = function updateStrokeStyle(state, applyStroke) {
     var strokeStyle = state.strokeStyle;
     var lineCap = state.lineCap;
     var lineDash = state.lineDash;
@@ -1029,12 +1040,12 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
     var lineWidth = state.lineWidth;
     var miterLimit = state.miterLimit;
     if (state.currentStrokeStyle != strokeStyle ||
-        state.currentLineCap != lineCap ||
-        (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
-        state.currentLineDashOffset != lineDashOffset ||
-        state.currentLineJoin != lineJoin ||
-        state.currentLineWidth != lineWidth ||
-        state.currentMiterLimit != miterLimit) {
+      state.currentLineCap != lineCap ||
+      (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
+      state.currentLineDashOffset != lineDashOffset ||
+      state.currentLineJoin != lineJoin ||
+      state.currentLineWidth != lineWidth ||
+      state.currentMiterLimit != miterLimit) {
       if (strokeStyle !== undefined) {
         applyStroke.call(this, state);
       }
@@ -1052,7 +1063,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
-  CanvasReplay.prototype.endGeometry = function endGeometry (geometry, feature) {
+  CanvasReplay.prototype.endGeometry = function endGeometry(geometry, feature) {
     this.beginGeometryInstruction1_[2] = this.instructions.length;
     this.beginGeometryInstruction1_ = null;
     this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
@@ -1069,7 +1080,7 @@ var CanvasReplay = /*@__PURE__*/(function (VectorContext) {
    * @return {import("../../extent.js").Extent} The buffered rendering extent.
    * @protected
    */
-  CanvasReplay.prototype.getBufferedMaxExtent = function getBufferedMaxExtent () {
+  CanvasReplay.prototype.getBufferedMaxExtent = function getBufferedMaxExtent() {
     if (!this.bufferedMaxExtent_) {
       this.bufferedMaxExtent_ = clone(this.maxExtent);
       if (this.maxLineWidth > 0) {

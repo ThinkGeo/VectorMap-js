@@ -30,11 +30,12 @@ class GeoVectorTileLayer extends VectorTileLayer {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
         options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
+        options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
 
-        this.minimalist = options.minimalist === undefined ? true : options.minimalist;
+        this.minimalist = options["minimalist"];
         this.maxDataZoom = options.maxDataZoom === undefined ? 14 : options.maxDataZoom;
         this.proxy = options["proxy"];
         this.clientId = options["clientId"];
