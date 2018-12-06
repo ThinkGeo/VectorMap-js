@@ -13,17 +13,16 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
-let map =  new ol.Map({
-    loadTilesWhileAnimating: true,                         
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-92.954940, 32.806366]),
-        zoom: 4
+        center: ol.proj.fromLonLat([-95.940014, 33.431607]),
+        zoom: 5
     })
 });
-
 
 
 //AQI layer
@@ -182,5 +181,3 @@ map.addOverlay(AQIlayer("AQIChart4", data2, "#D48265", ol.proj.fromLonLat([-95.5
 map.addOverlay(AQIlayer("AQIChart5", data3, "#C23531", ol.proj.fromLonLat([-77.569200, 38.857395])))
 map.addOverlay(AQIlayer("AQIChart6", data4, "#38A700", ol.proj.fromLonLat([-84.204942, 33.724955])))
 map.addOverlay(AQIlayer("AQIChart7", data2, "#FA00FA", ol.proj.fromLonLat([-87.412950, 41.902827])))
-map.getView().setZoom(5);
-map.getView().setCenter(ol.proj.fromLonLat([-95.940014, 38.431607]));
