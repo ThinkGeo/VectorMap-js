@@ -15,20 +15,20 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
 
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
+            "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
         tileSize: 512,
     }),
 });
 
-let map =  new ol.Map({
+let map = new ol.Map({
     loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,                         
+    loadTilesWhileInteracting: true,
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
-        center: [11877713.642017495, 4671206.770222437],
-        zoom: 4
+        center: ol.proj.fromLonLat([-95.940014, 36.031607]),
+        zoom: 5
     })
 });
 
@@ -178,7 +178,3 @@ map.addOverlay(pieChartOvery("pieChart8", data3, ol.proj.fromLonLat([-122.447229
 map.addOverlay(pieChartOvery("pieChart9", data2, ol.proj.fromLonLat([-80.569200, 25.857395])))
 map.addOverlay(pieChartOvery("pieChart10", data1, ol.proj.fromLonLat([-93.204942, 44.324955])))
 map.addOverlay(pieChartOvery("pieChart11", data3, ol.proj.fromLonLat([-93.0262950, 44.902827])))
-
-
-map.getView().setZoom(5);
-map.getView().setCenter(ol.proj.fromLonLat([-95.940014, 38.431607]));
