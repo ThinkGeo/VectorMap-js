@@ -17,7 +17,7 @@ const menuData = [{
         htmlPath: './html/satellite-with-labels.html',
         jsPath: './js/satellite-with-labels.js'
     }, {
-        comments: 'Overlapping the labels from Vector tile on global light map at night since 2012, it helps dig geography, polulation and more. ',
+        comments: 'Overlapping the labels from Vector tile on global light raster map from NASA at night since 2012, it helps dig geography, polulation and more. ',
         title: 'Imagery with Labels  ',
         htmlPath: './html/imagery-with-labels.html',
         jsPath: './js/imagery-with-labels.js'
@@ -31,47 +31,47 @@ const menuData = [{
     dataTarget: 'statistics',
     styleName: 'Statistics',
     subitems: [{
-        comments: 'Global seismic distribution map in 2012',
+        comments: 'The distribution of global earthquake above 5 till 2012 is graphically presentated with heat map. The data is read from a *.kml file.',
         title: 'Heatmap with KML',
         htmlPath: './html/heatmap-KML.html',
         jsPath: './js/heatmap-KML.js'
     }, {
-        comments: 'Map of pedestrian flow in hangzhou subway',
+        comments: 'The statistics of road congestion is graphically presentated with heat map. The data is read from a geojson file. ',
         title: 'Heatmap with GeoJSON',
         htmlPath: './html/heatmap-json.html',
         jsPath: './js/heatmap-json.js'
     }, {
-        comments: 'Rainfall distribution in China at 17:00 on oct 16 , 2018',
+        comments: 'The statistics of rainfall distribution in China at 17:00 on oct 16, 2018 is converted into isoline map. ',
         title: 'Contour Line',
         htmlPath: './html/contour-line.html',
         jsPath: './js/contour-line.js'
     }, {
-        comments: 'Rainfall distribution in China at 17:00 on oct 16 , 2018',
+        comments: 'The statistics of rainfall distribution in China at 17:00 on oct 16, 2018 is converted into isoline panel map.',
         title: 'Contour Plane',
         htmlPath: './html/contour-plane.html',
         jsPath: './js/contour-plane.js'
     }, {
-        comments: "PM2.5 in China's major cities",
+        comments: "A bubble map show how the PM2.5 in China's major cities is.",
         title: 'Scatter',
         htmlPath: './html/scatter.html',
         jsPath: './js/scatter.js'
     }, {
-        comments: 'Browser share analysis for some U.S. states',
+        comments: 'The statistics of what percentage of borsers (IE8-, IE9+, Safari, Chrome and Firefox) are in some U.S. states in 2012.',
         title: 'Pie Chart',
         htmlPath: './html/pie-chart.html',
         jsPath: './js/pie-chart.js'
     }, {
-        comments: 'Atmospheric analysis in some states of the United States',
+        comments: 'The analysis of atmospheric in some states of the United States are geographically shown up. ',
         title: 'AQI Radar',
         htmlPath: './html/AQI-radar.html',
         jsPath: './js/AQI-radar.js'
     }, {
-        comments: 'This example shows how to do clustering on point features.',
+        comments: 'An example shows how to display huge point data on the map with cluster strategy.',
         title: 'Cluster Envelope',
         htmlPath: './html/cluster-envelope.html',
         jsPath: './js/cluster-envelope.js'
     }, {
-        comments: 'ol.source.HexBin aggregates features on hexagonal grid. Hexagonal binning (heatmaps) provide a convenient way to visualize density.',
+        comments: 'Features in data are aggregated on hexagonal grid. Hexagonal binning (heatmaps) provide a convenient way to visualize density.',
         title: 'Hexagon',
         htmlPath: './html/hexagon.html',
         jsPath: './js/hexagon.js'
@@ -105,7 +105,7 @@ const menuData = [{
         htmlPath: './html/labeling-features.html',
         jsPath: './js/labeling-features.js'
     }, {
-        comments: 'Uses an overlay to create a popup.',
+        comments: 'Mark the places with the detailed description in popup.',
         title: 'Marking Places',
         htmlPath: './html/marking-places.html',
         jsPath: './js/marking-places.js'
@@ -193,4 +193,4 @@ const menuData = [{
         jsPath: './js/vue.js'
     }]
 }, ];
-export default menuData;
+export default menuData
