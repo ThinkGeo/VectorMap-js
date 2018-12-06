@@ -26,24 +26,38 @@ const geosjonStyle =
                 }
             ]
         },
-            {
-                "filter": "name='Alabama,Alaska,Arizona,Arkansas,California,Colorado,Connecticut,Delaware,District of Columbia,Florida,Georgia,Hawaii,Idaho,Illinois,Indiana,Iowa,Kansas,Kentucky,Louisiana,Maine,Maryland'",
-                "style": [
-                    {
-                        "polygon-fill": "rgb(121, 166, 238)",
-                    }
-                ]
-            },{
-                "filter": "name='Massachusetts,Michigan,Minnesota,Mississippi,Missouri,Montana,Nebraska,Nevada,New Hampshire,New Jersey,New Mexico,New York,North Carolina,North Dakota,Ohio,Oklahoma,Oregon,Pennsylvania,Rhode Island,South Carolina'",
-                "style": [
-                    {
-                        "polygon-fill": "#25529a"
-                    }
-                ]
-            }
+        {
+            "filter": "name='Alabama,Alaska,Arizona,Arkansas,California,Colorado,Connecticut,Delaware,District of Columbia,Florida,Georgia,Hawaii,Idaho,Illinois,Indiana,Iowa,Kansas,Kentucky,Louisiana,Maine,Maryland'",
+            "style": [
+                {
+                    "polygon-fill": "rgb(121, 166, 238)",
+                }
+            ]
+        }, {
+            "filter": "name='Massachusetts,Michigan,Minnesota,Mississippi,Missouri,Montana,Nebraska,Nevada,New Hampshire,New Jersey,New Mexico,New York,North Carolina,North Dakota,Ohio,Oklahoma,Oregon,Pennsylvania,Rhode Island,South Carolina'",
+            "style": [
+                {
+                    "polygon-fill": "#25529a"
+                }
+            ]
+        }
         ]
+    }, {
+        "id": "continent_name",
+        "style": [{
+            "text-name": "name",
+            "text-wrap-width": 20,
+            "text-fill": "#496588",
+            "text-halo-fill": "#b1dff5",
+            "text-halo-radius": 2,
+            "style": [
+                {
+                    "filter": "zoom>=0;zoom<=22;",
+                    "text-font": "oblique 600 16px Arial, Helvetica, sans-serif",
+                }
+            ]
+        }]
     }
-
     ],
     "sources": [{
         "id": "countries_source",
@@ -54,7 +68,7 @@ const geosjonStyle =
         "id": "worldstreets_layers",
         "source": "countries_source",
         "styles": [
-            "continent", "country"
+            "continent", "country","continent_name"
         ]
     }]
 }
@@ -71,7 +85,8 @@ let view = new ol.View({
     maxZoom: 19,
 });
 
-let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+let map = new ol.Map({
+    loadTilesWhileAnimating: true, loadTilesWhileInteracting: true,
     target: 'map',
     layers: [
         geoVectorLayer
