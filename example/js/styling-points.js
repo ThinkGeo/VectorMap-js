@@ -1,9 +1,8 @@
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
 
-const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle,
-    {
-        apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'      // please go to https://cloud.thinkgeo.com to create
-    });
+const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
+    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~' // please go to https://cloud.thinkgeo.com to create
+});
 
 
 const geosjonStyle = {
@@ -13,48 +12,48 @@ const geosjonStyle = {
     "background": "#aac6ee",
     "variables": {},
     "styles": [{
-        "id": "poi_icon",
-        "point-type": "glyph",
-        "point-glyph": "vectormap-icons",
-        "point-fill": "#439c3c",
-        "point-size": 36,
-        "point-outline-color": "#ffffff",
-        "point-outline-width": 3,
-        "point-fill": "#ff6666",
-        "point-mask-outline-width": 1,
-        "point-glyph-mask-type": "circle",
-        "point-glyph-mask-color": "#ffffff",
-        "style": [{
-            "filter": "SUBTYPE=2",
-            "point-fill": "#FF0000",
-            "point-glyph-name": "\ue0aa"
+            "id": "poi_icon",
+            "point-type": "glyph",
+            "point-glyph": "vectormap-icons",
+            "point-fill": "#439c3c",
+            "point-size": 36,
+            "point-outline-color": "#ffffff",
+            "point-outline-width": 3,
+            "point-fill": "#ff6666",
+            "point-mask-outline-width": 1,
+            "point-glyph-mask-type": "circle",
+            "point-glyph-mask-color": "#5dc33f",
+            "style": [{
+                "filter": "SUBTYPE=2",
+                "point-fill": "#FF0000",
+                "point-glyph-name": "\ue0aa"
 
-        }, {
-            "filter": "SUBTYPE=3",
-            "point-fill": "#000080",
-            "point-glyph-name": "\ue0a8"
+            }, {
+                "filter": "SUBTYPE=3",
+                "point-fill": "#000080",
+                "point-glyph-name": "\ue0a8"
 
-        }, {
-            "filter": "SUBTYPE=5",
-            "point-fill": "#4B0080",
-            "point-glyph-name": "\ue0ab"
-        }, {
-            "filter": "SUBTYPE=7",
-            "point-fill": "#800000",
-            "point-glyph-name": "\ue0ab"
-        }]
-    },
-    {
-        "id": "poi_name",
-        "style": [{
-            "text-name": "NAME",
-            "text-wrap-width": 40,
-            "text-fill": "#496588",
-            "text-halo-fill": "rgba(255, 255, 255, 0.5)",
-            "text-halo-radius": 2,
-            "text-font": "oblique 600 10px Arial, Helvetica, sans-serif",
-        }]
-    }
+            }, {
+                "filter": "SUBTYPE=5",
+                "point-fill": "#4B0080",
+                "point-glyph-name": "\ue0ab"
+            }, {
+                "filter": "SUBTYPE=7",
+                "point-fill": "#800000",
+                "point-glyph-name": "\ue0ab"
+            }]
+        },
+        {
+            "id": "poi_name",
+            "style": [{
+                "text-name": "NAME",
+                "text-wrap-width": 40,
+                "text-fill": "#496588",
+                "text-halo-fill": "rgba(255, 255, 255, 0.5)",
+                "text-halo-radius": 2,
+                "text-font": "oblique 600 10px Arial, Helvetica, sans-serif",
+            }]
+        }
     ],
     "sources": [{
         "id": "school_source",
@@ -86,5 +85,3 @@ let map = new ol.Map({
         zoom: 14,
     }),
 });
-
-
