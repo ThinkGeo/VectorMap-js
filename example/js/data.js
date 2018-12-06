@@ -2,32 +2,31 @@ const menuData = [{
     dataTarget: 'base-Maps',
     styleName: 'Base Maps',
     subitems: [{
-        comments: "Example of  using  cloud vector data",
+        comments: "A set of beautiful Open Map Styles for vector tiles to generate a beautiful vector-based map in browsers and on mobile devices.",
         title: 'Cloud Vector Maps',
         htmlPath: './html/cloud-vector-maps.html',
         jsPath: './js/cloud-vector-maps.js'
     }, {
-        comments: 'Example of  using cloud raster source',
+        comments: 'Shows how to consume the raster-tile based services from any providers via XYZ, WMS, WMTS etc.',
         title: 'Cloud Raster Maps',
         htmlPath: './html/cloud-raster-maps.html',
         jsPath: './js/cloud-raster-maps.js'
     }, {
-        comments: 'Example of  satellite map with labels using stylejson ',
+        comments: 'Shows how to draw the labels from Vector Tile and overlap them correctly on the top of a satallite map.',
         title: 'Satellite with Labels ',
         htmlPath: './html/satellite-with-labels.html',
         jsPath: './js/satellite-with-labels.js'
     }, {
-        comments: 'Viirs city lights 2012 with labels',
+        comments: 'Overlapping the labels from Vector tile on global light map at night since 2012, it helps dig geography, polulation and more. ',
         title: 'Imagery with Labels  ',
         htmlPath: './html/imagery-with-labels.html',
         jsPath: './js/imagery-with-labels.js'
     }, {
-        comments: 'Example of Retina / HiDPI mercator tiles (512x512px) available as XYZ.',
+        comments: 'Displays basemaps at higher resolutions on retina devices. In this example, the map tiles are requested with \'@2x\' parameter.',
         title: 'Retina Maps ',
         htmlPath: './html/retina-maps.html',
         jsPath: './js/retina-maps.js'
-    }
-    ]
+    }]
 }, {
     dataTarget: 'statistics',
     styleName: 'Statistics',
@@ -159,12 +158,12 @@ const menuData = [{
         htmlPath: './html/elevation.html',
         jsPath: './js/elevation.js'
     }, {
-            comments: 'Reverse geocode a point <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+        comments: 'Reverse geocode a point <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
         title: 'Reverse Geocoding',
         htmlPath: './html/reverse-geocoding.html',
         jsPath: './js/reverse-geocoding.js'
     }, {
-            comments: 'Get a family of colors based on different options <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+        comments: 'Get a family of colors based on different options <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
         title: 'Color Utilities ',
         htmlPath: './html/color-creation.html',
         jsPath: './js/color-creation.js'
@@ -193,5 +192,5 @@ const menuData = [{
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]
-},];
+}, ];
 export default menuData;
