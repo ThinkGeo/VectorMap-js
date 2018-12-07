@@ -46,7 +46,7 @@ const addFeatures = function (nb) {
 // Vector source
 let source = new ol.source.Vector();
 // add 2000 features
-addFeatures(2000);
+addFeatures(2000); 
 
 // Interaction to move the source features
 let modify = new ol.interaction.Modify({

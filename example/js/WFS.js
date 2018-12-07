@@ -1,4 +1,5 @@
-const geosjonStyle =
+//style json
+const styleJson =
 {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
@@ -16,7 +17,6 @@ const geosjonStyle =
             },
         ]
     },
-
     ],
     "sources": [{
         "id": "countries_source",
@@ -33,6 +33,7 @@ const geosjonStyle =
     }]
 }
 
+//Base map layer
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg"
@@ -40,10 +41,11 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
-let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
+let geoVectorLayer = new ol.mapsuite.VectorLayer(styleJson, {
     multithread: false
 })
 
+//Create view
 let view = new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
@@ -52,6 +54,7 @@ let view = new ol.View({
 
 });
 
+//create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

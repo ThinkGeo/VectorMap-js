@@ -82,19 +82,19 @@ var styles = {
   'waypoint-selected': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../image/waypoint.png'
+      src: 'https://thinkgeo.github.io/vectormapsample/image/waypoint.png'
     })
   }),
   'start': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../image/start.png'
+      src: 'https://thinkgeo.github.io/vectormapsample/image/start.png'
     })
   }),
   'end': new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
-      src: '../image/end.png'
+      src: 'https://thinkgeo.github.io/vectormapsample/image/end.png'
     })
   }),
   'route': new ol.style.Style({
@@ -546,30 +546,30 @@ $('#side-bar-point').hide(),
 
     $(".line").click(function () {
       $(".point").css({
-        "background": "url('../image/add_point_off.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/add_point_off.png')",
         "background-size": "100% 100%"
       });
       $(this).css({
-        "background": "url('../image/draw_line_on.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_line_on.png')",
         "background-size": "100% 100%"
       });
       $(".Polygon").css({
-        "background": "url('../image/draw_polygon_off.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_polygon_off.png')",
         "background-size": "100% 100%"
       });
       $('.error-tip').css('display', 'none');
     });
     $(".Polygon").click(function () {
       $(".point").css({
-        "background": "url('../image/add_point_off.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/add_point_off.png')",
         "background-size": "100% 100%"
       });
       $(".line").css({
-        "background": "url('../image/draw_line_off.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_line_off.png')",
         "background-size": "100% 100%"
       });
       $(this).css({
-        "background": "url('../image/draw_polygon_on.png')",
+        "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_polygon_on.png')",
         "background-size": "100% 100%"
       });
       $('.error-tip').css('display', 'none');
@@ -580,15 +580,15 @@ $(".buttonClear").click(function () {
   clear();
   drawChart(null);
   $(".point").css({
-    "background": "url('../image/add_point_off.png')",
+    "background": "url('https://thinkgeo.github.io/vectormapsample/image/add_point_off.png')",
     "background-size": "100% 100%"
   });
   $(".line").css({
-    "background": "url('../image/draw_line_off.png')",
+    "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_line_off.png')",
     "background-size": "100% 100%"
   });
   $(".Polygon").css({
-    "background": "url('../image/draw_polygon_off.png')",
+    "background": "url('https://thinkgeo.github.io/vectormapsample/image/draw_polygon_off.png')",
     "background-size": "100% 100%"
   });
   $('.error-tip').css('display', 'none');

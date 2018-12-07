@@ -3,7 +3,7 @@ const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/li
 const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 });
-
+ 
 
 const geosjonStyle = {
     "id": "Frisco-school-poi",

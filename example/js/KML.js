@@ -94,4 +94,4 @@ let map = new ol.Map({
     view: view,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true
-});
+}); 

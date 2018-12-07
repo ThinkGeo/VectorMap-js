@@ -45,7 +45,7 @@ let geosjonStyle =
     ],
     "sources": [{
         "id": "countries_source",
-        "url": "../data/countries.json",
+        "url": "https://thinkgeo.github.io/vectormapsample/data/countries.json",
         "type": "GeoJSON",
         "dataProjection": "EPSG:4326",
         "featureProjection": ""
@@ -124,7 +124,7 @@ let updateViewProjection = () => {
     geosjonStyle.sources[0].featureProjection = projection.value
     map.addLayer(
         new ol.mapsuite.VectorLayer(geosjonStyle, {
-            multithread: false,
+            multithread: false, 
         })
     )
     let newView = null;
