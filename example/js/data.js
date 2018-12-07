@@ -129,7 +129,7 @@ const menuData = [{
         htmlPath: './html/KML.html',
         jsPath: './js/KML.js'
     }, {
-        comments: 'EThis example loads new features from GeoServer WFS.',
+        comments: 'This example loads new features from GeoServer WFS.',
         title: 'WFS ',
         htmlPath: './html/WFS.html',
         jsPath: './js/WFS.js'
@@ -192,5 +192,5 @@ const menuData = [{
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]
-},];
+}, ];
 export default menuData
