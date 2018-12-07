@@ -76,8 +76,8 @@ const menuData = [{
         htmlPath: './html/hexagon.html',
         jsPath: './js/hexagon.js'
     }, {
-        comments: 'Bubble – Round Trip Time',
-        title: 'Average Round Trip Commute Time',
+        title: 'Bubble – Round Trip Time',
+        comments: 'Average Round Trip Commute Time',
         htmlPath: './html/trip-commute-time.html',
         jsPath: './js/trip-commute-time.js'
     }]

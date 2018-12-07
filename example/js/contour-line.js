@@ -5,14 +5,16 @@ WebFont.load({
     }
 });
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
+//base layer
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
- 
+
+//heatmap layer
 let vector = new ol.layer.Vector({
     source: null,
     style: function (feature) {
@@ -21,6 +23,7 @@ let vector = new ol.layer.Vector({
     }
 });
 
+//create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -34,6 +37,7 @@ let map = new ol.Map({
     })
 });
 
+// Convert the json  to geoson
 $.get("../data/rainfall.json", function (result) {
     let geojson = {
         "type": "FeatureCollection",
@@ -66,6 +70,7 @@ $.get("../data/rainfall.json", function (result) {
         features: (new ol.format.GeoJSON()).readFeatures(geojson)
     });
 
+    //style of line 
     let styleFunc = function (feature) {
         let color = feature.get("color");
         let text = feature.get("symbol");
@@ -89,9 +94,6 @@ $.get("../data/rainfall.json", function (result) {
             })
         })
     };
-
- 
- 
     vector.setSource(vectorSource);
     vector.setStyle(styleFunc);
     vector.setOpacity(0.8);

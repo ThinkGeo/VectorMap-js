@@ -1,7 +1,7 @@
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
@@ -70,7 +70,7 @@ const reverseGeocode = function () {
         });
     }
     const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
-    let getURL = `${baseURL}${centerCoordinate[1]},${centerCoordinate[0]}?apikey=${apiKey}&Srid=4326`;
+    let getURL = `${baseURL}${centerCoordinate[0]},${centerCoordinate[1]}?apikey=${apiKey}&Srid=4326`;
 
     let jqxhr = $.get(getURL, function (data) {
         if (data.data.bestMatchLocation) {

@@ -5,13 +5,15 @@ WebFont.load({
     }
 });
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
 
+// base map layer
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
+//heatmap layer
 let heatMapLayer = new ol.layer.Heatmap({
     source: new ol.source.Vector({
         url: '../data/2012_Earthquakes_Mag5.xml',
@@ -21,8 +23,9 @@ let heatMapLayer = new ol.layer.Heatmap({
     }),
     blur: 15,
     radius: 10
-});
+}); 
 
+//add heatmap layer feature
 heatMapLayer.getSource().on('addfeature', function(event) {
     // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
     // standards-violating <magnitude> tag in each Placemark.  We extract it from
@@ -32,6 +35,7 @@ heatMapLayer.getSource().on('addfeature', function(event) {
     event.feature.set('weight', magnitude - 5);
 });
 
+//creat map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
