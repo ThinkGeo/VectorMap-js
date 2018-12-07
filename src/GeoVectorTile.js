@@ -1,6 +1,7 @@
 import VectorTile from 'ol/VectorTile';
 import TileState from 'ol/TileState';
 import LRUCache from 'ol/structs/LRUCache';
+import { getUid } from 'ol/util';
 
 class GeoVectorTile extends VectorTile {
     constructor(tileCoord, state, src, format, tileLoadFunction) {
@@ -20,6 +21,22 @@ class GeoVectorTile extends VectorTile {
         this.features_ = null;
         this.replayGroups_ = {};
         this.applyFeatures.clear()
+        if (this.requestCoord.toString() === this.tileCoord.toString()) {
+            let source = this.format_.getSource();
+            let workerManager = source.getWorkerManager();
+            if (workerManager) {
+                // post dispose message/
+                var disposeInfo = {
+                    sourceTileCoord: this.tileCoord,
+                    requestCoord: this.requestCoord,
+                    maxDataZoom: source.maxDataZoom
+                }
+                workerManager.postMessage(getUid(disposeInfo), "disposeSourceTile", disposeInfo, undefined, undefined);
+            }
+            else {
+                // TODO: dispose cache for single thread.
+            }
+        }
         this.state = TileState.ABORT;
         this.changed();
         super.disposeInternal();

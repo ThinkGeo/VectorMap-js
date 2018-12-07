@@ -304,8 +304,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
         if (styles) {
             const dirty = self.renderFeature(feature, squaredTolerance, styles, replayGroup);
-            if (!minimalist)
-            {
+            if (!minimalist) {
                 drawingFeatures[getUid(feature)] = feature;
             }
         }
@@ -356,6 +355,18 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
 
     return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
+}
+
+self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
+    var sourceTileCoord = disposeSourceTileInfo["sourceTileCoord"];
+    var requestCoord = disposeSourceTileInfo["requestCoord"];
+    var maxDataZoom = disposeSourceTileInfo["maxDataZoom"];
+    if (self.features) {
+        let cacheKey = sourceTileCoord + "," + sourceTileCoord[0];
+        if (self.features.containsKey(cacheKey)) {
+            self.removeTileInstructions(cacheKey);
+        }
+    }
 }
 
 // Method
@@ -951,11 +962,11 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     else {
         // TODO: the condition for clearing the cache is that the tile is released. 
         self.features.set(cacheKey, features);
-        while (this.features.canExpireCache()) {
-            const lastKey = self.features.peekLastKey();
-            self.features.remove(lastKey);
-            delete self.vectorTilesData[lastKey]
-        }
+        // while (this.features.canExpireCache()) {
+        //     const lastKey = self.features.peekLastKey();
+        //     self.features.remove(lastKey);
+        //     delete self.vectorTilesData[lastKey]
+        // }
     }
 }
 
