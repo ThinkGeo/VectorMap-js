@@ -76,8 +76,8 @@ const menuData = [{
         htmlPath: './html/hexagon.html',
         jsPath: './js/hexagon.js'
     }, {
-        title: 'Bubble – Round Trip Time',
-        comments: 'Average Round Trip Commute Time',
+        comments: 'The statistics of average round trip commute time in cities of United States.',
+        title: 'Bubble Map',
         htmlPath: './html/trip-commute-time.html',
         jsPath: './js/trip-commute-time.js'
     }]
@@ -129,7 +129,7 @@ const menuData = [{
         htmlPath: './html/KML.html',
         jsPath: './js/KML.js'
     }, {
-        comments: 'EThis example loads new features from GeoServer WFS.',
+        comments: 'This example loads new features from GeoServer WFS.',
         title: 'WFS ',
         htmlPath: './html/WFS.html',
         jsPath: './js/WFS.js'
@@ -192,5 +192,5 @@ const menuData = [{
         htmlPath: './html/vue.html',
         jsPath: './js/vue.js'
     }]
-},];
+}, ];
 export default menuData
