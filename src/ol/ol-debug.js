@@ -12613,7 +12613,7 @@ function olInit() {
         var dest = opt_dest ? opt_dest : [];
         var i = 0;
         var j, k;
-        if(isLineString){
+
             function segmentsIntr_1(a, b, c, d){  
                 var denominator = (b[1] - a[1])*(d[0] - c[0]) - (a[0] - b[0])*(c[1] - d[1]); 
                 if (denominator==0) { 
@@ -12633,55 +12633,55 @@ function olInit() {
                 } 
                 return false
             }          
-            let bottomLeft=ol.extent.getBottomLeft(extent);
-            let bottomRight=ol.extent.getBottomRight(extent);
-            let topLeft=ol.extent.getTopLeft(extent);
-            let topRight=ol.extent.getTopRight(extent);
-    
-            let startCoord=flatCoordinates.slice(0,2);
-            // for(let i=2;i<flatCoordinates.length;i+=2){
-            //     let coord=[flatCoordinates[i],flatCoordinates[i+1]]
-            //     if(!ol.extent.containsCoordinate(extent,startCoord)&&ol.extent.containsCoordinate(extent,coord)){
-            //         flatCoordinates= flatCoordinates.slice(i);
-            //         break;
-            //     }else if(ol.extent.containsCoordinate(extent,startCoord)&&!ol.extent.containsCoordinate(extent,coord)){
-            //         flatCoordinates=flatCoordinates.slice(0,i);
-            //         break;
-            //     }
-            // }
-            // for(let i=2;i<flatCoordinates.length;i+=2){
-            //     let coord=[flatCoordinates[i],flatCoordinates[i+1]]
-            //     if(!ol.extent.containsCoordinate(extent,coord)){
-            //         let lastCoord=[flatCoordinates[i-2],flatCoordinates[i-1]];
-            //         if(segmentsIntr_1(bottomLeft,topLeft,lastCoord,coord)){
-            //             flatCoordinates.splice(i,2,...segmentsIntr_1(topLeft,bottomLeft,lastCoord,coord))
-            //         }
-            //         if(segmentsIntr_1(bottomRight,bottomLeft,coord,lastCoord)){
-            //             flatCoordinates.splice(i,2,...segmentsIntr_1(bottomRight,bottomLeft,coord,lastCoord))
-            //         }
-            //         if(segmentsIntr_1(topRight,topLeft,coord,lastCoord)){
-            //             flatCoordinates.splice(i,2,...segmentsIntr_1(topRight,topLeft,coord,lastCoord))
-            //         }
-            //         if(segmentsIntr_1(bottomRight,topRight,lastCoord,coord)){
-            //             flatCoordinates.splice(i,2,...segmentsIntr_1(bottomRight,topRight,lastCoord,coord))
-            //         }
-            //     }
-            // }
-        }
         for (j = offset; j < end; j += stride) {
+
             if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
                 // fix the coordinates that out of extent
-                if(flatCoordinates[j] < extent[0]){
-                    flatCoordinates[j] =  extent[0];
-                }else if(flatCoordinates[j] > extent[2]){
-                    flatCoordinates[j] =  extent[2];
+                if(!isLineString){
+                    if(flatCoordinates[j] < extent[0]){
+                        flatCoordinates[j] =  extent[0];
+                    }else if(flatCoordinates[j] > extent[2]){
+                        flatCoordinates[j] =  extent[2];
+                    }
+    
+                    if(flatCoordinates[j + 1] < extent[1]){
+                        flatCoordinates[j + 1] =  extent[1];
+                    }else if(flatCoordinates[j + 1] > extent[3]){
+                        flatCoordinates[j + 1] =  extent[3];
+                    }
+                }else{
+                    let bottomLeft=ol.extent.getBottomLeft(extent);
+                    let bottomRight=ol.extent.getBottomRight(extent);
+                    let topLeft=ol.extent.getTopLeft(extent);
+                    let topRight=ol.extent.getTopRight(extent);
+            
+                    let startCoord=flatCoordinates.slice(0,2);
+                    let coord=[flatCoordinates[j],flatCoordinates[j+1]]
+                    // if(!ol.extent.containsCoordinate(extent,startCoord)&&ol.extent.containsCoordinate(extent,coord)){
+                    //     flatCoordinates= flatCoordinates.slice(j);
+                    //     break;
+                    // }else if(ol.extent.containsCoordinate(extent,startCoord)&&!ol.extent.containsCoordinate(extent,coord)){
+                    //     flatCoordinates=flatCoordinates.slice(0,j);
+                    //     break;
+                    // }
+                    if(!ol.extent.containsCoordinate(extent,coord)){
+                        let lastCoord=[flatCoordinates[j-2],flatCoordinates[j-1]];
+                        if(segmentsIntr_1(bottomLeft,topLeft,lastCoord,coord)){
+                            flatCoordinates.splice(j,2,...segmentsIntr_1(topLeft,bottomLeft,lastCoord,coord))
+                        }
+                        if(segmentsIntr_1(bottomRight,bottomLeft,coord,lastCoord)){
+                            flatCoordinates.splice(j,2,...segmentsIntr_1(bottomRight,bottomLeft,coord,lastCoord))
+                        }
+                        if(segmentsIntr_1(topRight,topLeft,coord,lastCoord)){
+                            flatCoordinates.splice(j,2,...segmentsIntr_1(topRight,topLeft,coord,lastCoord))
+                        }
+                        if(segmentsIntr_1(bottomRight,topRight,lastCoord,coord)){
+                            flatCoordinates.splice(j,2,...segmentsIntr_1(bottomRight,topRight,lastCoord,coord))
+                        }
+                    }
+                    
                 }
-
-                if(flatCoordinates[j + 1] < extent[1]){
-                    flatCoordinates[j + 1] =  extent[1];
-                }else if(flatCoordinates[j + 1] > extent[3]){
-                    flatCoordinates[j + 1] =  extent[3];
-                }
+               
             }
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
@@ -68393,56 +68393,9 @@ function olInit() {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var stride = lineStringGeometry.getStride();
         var extent = feature.getExtent();
-        let startCoord=flatCoordinates.slice(0,2);
-        function segmentsIntr_1(a, b, c, d){  
-            var denominator = (b[1] - a[1])*(d[0] - c[0]) - (a[0] - b[0])*(c[1] - d[1]); 
-            if (denominator==0) { 
-                return false; 
-            } 
-            var x = ( (b[0] - a[0]) * (d[0] - c[0]) * (c[1] - a[1]) 
-             + (b[1]- a[1]) * (d[1] - c[0]) * a[0] 
-             - (d[1] - c[1]) * (b[0] - a[0]) * c[0] ) / denominator ; 
-            var y = -( (b[1] - a[1]) * (d[1] - c[1]) * (c[0] - a[0]) 
-             + (b[0] - a[0]) * (d[1] - c[1]) * a[1]
-             - (d[0] - c[0]) * (b[1] - a[1]) * c[1] ) / denominator;  
-            if (  
-            (x - a[0]) * (x - b[0]) <= 0 && (y - a[1]) * (y - b[1]) <= 0 
-             && (x - c[0]) * (x - d[0]) <= 0 && (y - c[1]) * (y - d[1]) <= 0 
-            ){ 
-                return [x,y]
-            } 
-            return false
-        }  
-        let bottomLeft=ol.extent.getBottomLeft(extent);
-        let bottomRight=ol.extent.getBottomRight(extent);
-        let topLeft=ol.extent.getTopLeft(extent);
-        let topRight=ol.extent.getTopRight(extent);
-        for(let i=2;i<flatCoordinates.length;i+=2){
-            let coord=[flatCoordinates[i],flatCoordinates[i+1]]
-            if(!ol.extent.containsCoordinate(extent,coord)){
-                let lastCoord=[flatCoordinates[i-2],flatCoordinates[i-1]];
-                if(segmentsIntr_1(bottomLeft,topLeft,lastCoord,coord)){
-                    flatCoordinates.splice(i,2,...segmentsIntr_1(topLeft,bottomLeft,lastCoord,coord))
-                    // console.log('left:'+segmentsIntr_(bottomLeft,topLeft,coord,lastCoord),'lastcoord:'+lastCoord);
-                }
-                if(segmentsIntr_1(bottomLeft,bottomRight,coord,lastCoord)){
-                    flatCoordinates.splice(i,2,...segmentsIntr_1(bottomRight,bottomLeft,coord,lastCoord))
-                    // console.log(segmentsIntr_1(bottomLeft,bottomRight,coord,lastCoord));
-                    // console.log(coord)
-                }
-                if(segmentsIntr_1(topLeft,topRight,lastCoord,coord)){
-                    flatCoordinates.splice(i,2,...segmentsIntr_1(topLeft,topRight,lastCoord,coord))
-                    console.log(segmentsIntr_1(topLeft,topRight,coord,lastCoord));
-                    console.log(coord)
-                }
-                if(segmentsIntr_1(bottomRight,topRight,coord,lastCoord)){
-                    flatCoordinates.splice(i,2,...segmentsIntr_1(bottomRight,topRight,coord,lastCoord))
-                }
-            }
-        }
         if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
             flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                stride, -this.origin[0], -this.origin[1]);
+                stride, -this.origin[0], -this.origin[1],undefined,extent,true);
             if (this.state_.changed) {
                 this.styleIndices_.push(this.indices.length);
                 this.state_.changed = false;
@@ -68451,8 +68404,6 @@ function olInit() {
             this.startIndicesFeature.push(feature);
             this.drawCoordinates_(
                 flatCoordinates, 0, flatCoordinates.length, stride);
-        }else{
-
         }
     };
 
