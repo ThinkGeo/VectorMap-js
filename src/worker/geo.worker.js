@@ -361,10 +361,18 @@ self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
     var sourceTileCoord = disposeSourceTileInfo["sourceTileCoord"];
     var requestCoord = disposeSourceTileInfo["requestCoord"];
     var maxDataZoom = disposeSourceTileInfo["maxDataZoom"];
+    // Remove the feature and Instructions of source tile.
     if (self.features) {
         let cacheKey = sourceTileCoord + "," + sourceTileCoord[0];
         if (self.features.containsKey(cacheKey)) {
             self.removeTileInstructions(cacheKey);
+        }
+    }
+    // Remove the apply feature and Instructions of source tile
+    if (self.applyFeatures) {
+        let cacheKey = sourceTileCoord.toString();
+        if (self.applyFeatures.containsKey(cacheKey)) {
+            self.reomveApplyTileInstructions(cacheKey);
         }
     }
 }
@@ -372,11 +380,19 @@ self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
 // Method
 
 self.saveApplyTileInstructions = function (newFeatureAndInstructs, sourceTileCoord, vectorImageTileZoom) {
-    let key = sourceTileCoord + "," + vectorImageTileZoom;
+    let key = sourceTileCoord.toString();
     if (self.applyFeatures === undefined) {
         self.applyFeatures = new LRUCache(16);
     }
-    self.applyFeatures.set(key, newFeatureAndInstructs);
+    if (self.applyFeatures.containsKey(key)) {
+        let cacheItem = self.applyFeatures.get(key);
+        cacheItem[vectorImageTileZoom] = newFeatureAndInstructs;
+    }
+    else {
+        let cacheItem = {};
+        cacheItem[vectorImageTileZoom] = newFeatureAndInstructs;
+        self.applyFeatures.set(key, cacheItem);
+    }
 }
 
 self.getApplyTileInstructions = function (sourceTileCoord, vectorImageTileZoom) {
@@ -384,9 +400,21 @@ self.getApplyTileInstructions = function (sourceTileCoord, vectorImageTileZoom) 
         return;
     }
     else {
-        var key = sourceTileCoord + "," + vectorImageTileZoom;
+        var key = sourceTileCoord.toString();
         if (self.applyFeatures.containsKey(key)) {
-            return self.applyFeatures.get(key);
+            return self.applyFeatures.get(key)[vectorImageTileZoom];
+        }
+    }
+}
+
+self.reomveApplyTileInstructions = function (sourceTileCoord) {
+    if (self.applyFeatures === undefined) {
+        return;
+    }
+    else {
+        var key = sourceTileCoord.toString();
+        if (self.applyFeatures.containsKey(key)) {
+            self.applyFeatures.remove(key);
         }
     }
 }
