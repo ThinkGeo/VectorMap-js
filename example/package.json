@@ -14,9 +14,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/TroyYang/StyleJsonDemo/issues"
+    "url": ""
   },
-  "homepage": "https://gitlab.com/TroyYang/StyleJsonDemo#README",
+  "homepage": "",
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-core": "^6.23.1",
