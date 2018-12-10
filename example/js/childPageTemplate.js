@@ -13,7 +13,7 @@ const childPageTemplate = ` <div id="child-page-title" class="pl-md-0 pl-3">
         <a class="nav-link" data-toggle="tab" href="#child-page-js">JavaScript</a>
     </li>
     <li class="nav-item" id="codepen">
-      <a  class="nav-link" href="https://codepen.io" target="_blank">
+      <a  class="nav-link" href="" target="_blank">
         Open in: 
         <img src="./image/edit-icon.png">
        </a>
@@ -38,8 +38,10 @@ const ShowHandleFuns = class {
         this.jsPath = childPageObj.jsPath;
         this.title = childPageObj.title;
         this.comments = childPageObj.comments;
+        this.codePenUrl = childPageObj.codePenUrl
         document.querySelector('#child-page-title>h1').innerText = this.title;
         document.querySelector('#child-page-title>p').innerHTML = this.comments;
+        document.querySelector('#codepen>a').href = this.codePenUrl;
     }
 
     showCodeFun(div, path) {
