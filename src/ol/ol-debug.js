@@ -12649,26 +12649,32 @@ function olInit() {
                     }
                 }else{
                     let startCoord= [flatCoordinates[0], flatCoordinates[1]];
-                    // if(!ol.extent.containsXY(extent, flatCoordinates[j],flatCoordinates[j+1])){
-                    //     continue;
-                    //     startCoord=[flatCoordinates[j],flatCoordinates[j+1]];
-                    // }
-                    if(!ol.extent.containsXY(extent, flatCoordinates[0],flatCoordinates[1])&&!ol.extent.containsXY(extent, flatCoordinates[j],flatCoordinates[j+1])){
-                        if(!ol.extent.containsXY(extent, flatCoordinates[j+2],flatCoordinates[j+3])){
+                    let coord=[];
+                    let len=flatCoordinates.length;
+                    if(!ol.extent.containsXY(extent, flatCoordinates[0],flatCoordinates[1])){
+                        if(flatCoordinates[j+3]&&!ol.extent.containsXY(extent, flatCoordinates[j+2],flatCoordinates[j+3])){
+                            continue;
+                        }
+                        if(!ol.extent.containsXY(extent, flatCoordinates[len-1],flatCoordinates[len-2])&&!ol.extent.containsXY(extent, flatCoordinates[len-3],flatCoordinates[len-4])){
                             continue;
                         }
                         startCoord=[flatCoordinates[j],flatCoordinates[j+1]];
-                    }else if(ol.extent.containsXY(extent, flatCoordinates[0],flatCoordinates[1])&&!ol.extent.containsXY(extent, flatCoordinates[j],flatCoordinates[j+1])){
+                        coord=[flatCoordinates[j+2],flatCoordinates[j+3]];
+                        console.log('out '+ol.extent.containsXY(extent, flatCoordinates[j],flatCoordinates[j+1]),ol.extent.containsXY(extent, flatCoordinates[j+2],flatCoordinates[j+3]))
+                        console.log(startCoord,coord)
+                    }else{
                         if(!ol.extent.containsXY(extent, flatCoordinates[j-1],flatCoordinates[j-2])){
                             continue;
                         }
                         startCoord=[flatCoordinates[j],flatCoordinates[j+1]];
+                        coord=[flatCoordinates[j-2],flatCoordinates[j-1]];
+                        console.log('in '+ol.extent.containsXY(extent, flatCoordinates[j],flatCoordinates[j+1]),ol.extent.containsXY(extent, flatCoordinates[j-2],flatCoordinates[j-1]))
+                        console.log(startCoord,coord)
                     }
                     let bottomLeft=ol.extent.getBottomLeft(extent);
                     let bottomRight=ol.extent.getBottomRight(extent);
                     let topLeft=ol.extent.getTopLeft(extent);
                     let topRight=ol.extent.getTopRight(extent);
-                    let coord=[flatCoordinates[j+2],flatCoordinates[j+3]]
                     if(segmentsIntr_1(bottomLeft,topLeft,startCoord,coord)){
                         flatCoordinates.splice(j,2,...segmentsIntr_1(bottomLeft,topLeft,startCoord,coord));
                     }
