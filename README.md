@@ -161,7 +161,7 @@ After all the above steps completed, your HTML page should be:
         <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
-       <script src="../dist/vectormap.js"></script>
+       <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
         <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
