@@ -58,10 +58,10 @@ Load from CDN in your project:
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.js"></script>
 ```
 
 ### NPM
@@ -93,10 +93,10 @@ __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and relate
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.js"></script>
 ```
  
 __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
@@ -158,7 +158,7 @@ After all the above steps completed, your HTML page should be:
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- style sheet for vectormap.js -->
-        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css"></link>
+        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
        <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.js"></script>
