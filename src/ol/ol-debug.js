@@ -12635,9 +12635,13 @@ function olInit() {
             return false
         }   
 
-        var startCoord = [flatCoordinates[0], flatCoordinates[1]];
+        var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
         var isStartIn = ol.extent.containsXY(extent, startCoord[0],startCoord[1]);
         var lineFlag = false;
+        var bottomLeft = ol.extent.getBottomLeft(extent);
+        var bottomRight = ol.extent.getBottomRight(extent);
+        var topLeft = ol.extent.getTopLeft(extent);
+        var topRight = ol.extent.getTopRight(extent);
 
         for (j = offset; j < end; j += stride) {
             if(!isLineString){
@@ -12654,26 +12658,28 @@ function olInit() {
                         flatCoordinates[j + 1] =  extent[3];
                     }
                 }
-            }else{
-                let len = flatCoordinates.length;
+            }else if(extent){
                 if(!isStartIn){
-                    // if(flatCoordinates[j+3]&&!ol.extent.containsXY(extent, flatCoordinates[j+2],flatCoordinates[j+3])){
-                    //     continue;
-                    // }
-                    // if(!ol.extent.containsXY(extent, flatCoordinates[len-1],flatCoordinates[len-2])&&!ol.extent.containsXY(extent, flatCoordinates[len-3],flatCoordinates[len-4])){
-                    //     continue;
-                    // }
-                    // startCoord=[flatCoordinates[j],flatCoordinates[j+1]];
-                    // coord=[flatCoordinates[j+2],flatCoordinates[j+3]];
+                    if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+                        if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
+                            var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+                            var prevCoord = [flatCoordinates[j + 2], flatCoordinates[j + 3]];                        
+                            var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
+                                                    segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
+                                                    segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
+                                                    segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);
+                            if(intersectionPoint){
+                                flatCoordinates[j] = intersectionPoint[0];
+                                flatCoordinates[j + 1] = intersectionPoint[1];    
+                            }
+                        }else{
+                            continue;
+                        }
+                    }
                 }else{
                     if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
                         var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-                        var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]]
-                        let bottomLeft=ol.extent.getBottomLeft(extent);
-                        let bottomRight=ol.extent.getBottomRight(extent);
-                        let topLeft=ol.extent.getTopLeft(extent);
-                        let topRight=ol.extent.getTopRight(extent);
-
+                        var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
                         var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
                                                 segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
                                                 segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
@@ -12688,6 +12694,7 @@ function olInit() {
             }
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
+
             for (k = j + 2; k < j + stride; ++k) {
                 dest[i++] = flatCoordinates[k];
             }
@@ -12699,6 +12706,7 @@ function olInit() {
         if (opt_dest && dest.length != i) {
             dest.length = i;
         }
+
         return dest;
     };
 
@@ -68401,7 +68409,7 @@ function olInit() {
         var extent = feature.getExtent();
         if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
             flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                stride, -this.origin[0], -this.origin[1],undefined,extent,true);
+                stride, -this.origin[0], -this.origin[1], undefined, extent, true);
             
             if (this.state_.changed) {
                 this.styleIndices_.push(this.indices.length);
@@ -68430,7 +68438,7 @@ function olInit() {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
                     var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
-                        stride, -this.origin[0], -this.origin[1],undefined,extent,true);
+                        stride, -this.origin[0], -this.origin[1], undefined, extent, true);
                     this.drawCoordinates_(
                         lineString, 0, lineString.length, stride);
                 }
@@ -102351,7 +102359,14 @@ function olInit() {
             var coordinateToPixelTransform = messageData[8];
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-
+            if((window).count == undefined){
+                (window).count = 0;
+            }
+            if((window).count > 3){
+                (window).count += 1;
+                // return;
+            }
+            (window).count += 1;
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
