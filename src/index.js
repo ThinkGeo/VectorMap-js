@@ -564,6 +564,10 @@ ol.xml.getAllTextContent = _ol_xml$getAllTextContent;
 ol.xml.parse = _ol_xml$parse;
 
 
+// export ol/events/listenOnce
+import { listenOnce } from "ol/events";
+ol.events.listenOnce = listenOnce;
+
 // custome ol mmethod
 import { zoomByDelta as $ol$interaction$Interaction$zoomByDelta } from 'ol/interaction/Interaction';
 
