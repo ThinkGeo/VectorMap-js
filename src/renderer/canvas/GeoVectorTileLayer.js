@@ -354,10 +354,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                 const tileProjection = sourceTile.getProjection();
                 let reproject = false;
-                if (!equivalentProjection(projection, tileProjection)) {
-                    reproject = true;
-                    sourceTile.setProjection(projection);
-                }
+
                 replayState.dirty = false;
                 const replayGroup = new GeoCanvasReplayGroup(0, sharedExtent, resolution,
                     pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
@@ -405,6 +402,9 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     let rendererSelf = this;
                     let geoStyles = source.getGeoFormat().styleJsonCache.geoStyles;
                     let createReplayGroupCallback = function (data, methodInfo) {
+                        if (!equivalentProjection(projection, tileProjection)) {
+                            reproject = true;
+                        }
                         let replaysByZIndex = data["replays"];
                         let featuresInfo = data["features"];
                         let mainDrawingInstructs = data["mainDrawingInstructs"];
@@ -453,9 +453,10 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
 
                         // For wrappedTileCoord set originalReplayGroup
-                        if (!isInterim && sourceTile.tileCoord.toString() !== tile.tileCoord.toString()) {
-                            sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);
+                        if (!isInterim && tile.wrappedTileCoord.toString() !== tile.tileCoord.toString()) {
+                            sourceTile.setReplayGroup(layer, tile.wrappedTileCoord.toString(), replayGroup);
                         }
+
                         tile["replayCreated"] = true;
                         sourceTile["replayCreated"] = true;
                         // The apply tile didn't enqueue, so it has no events that refresh the map.
@@ -469,6 +470,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         // tile extent in tile pixel space
                         tileProjection.setExtent(sourceTile.getExtent());
                     }
+                 
                     let tileProjectionInfo = {};
                     for (let name in tileProjection) {
                         if (typeof tileProjection[name] !== "function") {
@@ -500,6 +502,10 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     workerManager.postMessage(getUid(createReplayGroupCallback), "createReplayGroup", createReplayGroupMethodInfo, createReplayGroupCallback, undefined);
                 }
                 else {
+                    if (!equivalentProjection(projection, tileProjection)) {
+                        reproject = true;
+                        sourceTile.setProjection(projection);
+                    }
                     let renderer = this;
                     var createReplayGroupFunction = function (featuresAndInstructs) {
                         let features = undefined;
