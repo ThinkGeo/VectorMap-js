@@ -724,7 +724,33 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
 
-            // var webglContext = context.webglContext;
+            // recalculate the verctices of text for resolution changed
+            // fix for WebGL not to unpremultiply
+            if(this instanceof (<any>ol.render).webgl.TextReplay){
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    
+                if(!Number.isInteger( frameState.viewState.zoom)){
+                    var startIndicesFeature = this.startIndicesFeature;
+                    for(var i = 0; i < startIndicesFeature.length; i++){
+                        var feature = startIndicesFeature[i];
+                        var geometry = feature.getGeometry();
+                        if(feature.getType() == 'LineString' && feature.isCurve){
+                            this.drawText(geometry, feature);
+                            var startIndices = this.startIndices;
+                            var start = startIndices[i] / 6 * 32;
+                            var end = (startIndices[i + 1] || this.indices.length) / 6 *32;
+                            var num = end - start;
+                            // replace the indices and vertices
+                            this.vertices_.splice(start, num, ...this.vertices);
+                            this.vertices.length = 0;
+                        }
+                    }
+    
+                    this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
+                    this.indices.length = 0;
+                }
+            }
+            
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
@@ -750,13 +776,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
             gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-            gl.uniform1f(locations.u_opacity, opacity);
-
-            // fix for WebGL not to unpremultiply
-            if(this instanceof (<any>ol.render).webgl.PolygonReplay){
-                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-                // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            }
+            gl.uniform1f(locations.u_opacity, opacity);            
 
             // draw!
             var result;
@@ -770,8 +790,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             // disable the vertex attrib arrays
             this.shutDownProgram(gl, locations);
-            // context.bindBuffer(gl.ARRAY_BUFFER, null);
-            // context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
             if (this.lineStringReplay) {
                 if (!tmpStencil) {
@@ -787,7 +805,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             return result;
-        };       
+        };
 
         (<any>ol).renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function (coordinate, frameState, hitTolerance, callback, thisArg) {
             var resolution = frameState.viewState.resolution;
