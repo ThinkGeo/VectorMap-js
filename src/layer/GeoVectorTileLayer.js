@@ -235,7 +235,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 format: format,
                 projection: "EPSG:3857",
                 tileGrid: this.createVectorTileGrid(),
-                cacheSize: 64,
+                cacheSize: 128,
                 multithread: this.multithread,
                 minimalist: this.minimalist,
                 maxDataZoom: this.maxDataZoom
