@@ -31,6 +31,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
         options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
         options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
+        options["cacheSize"] = options["cacheSize"] === undefined ? 64 : options["cacheSize"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
@@ -42,6 +43,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
         this.clientSecret = options["clientSecret"];
         this.apiKey = options["apiKey"];
         this.defaultStyle = options["defaultStyle"];
+        this.cacheSize = options["cacheSize"];
 
         if (this.multithread && window.Worker) {
             this.workerManager = new WorkerManager();
@@ -235,7 +237,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 format: format,
                 projection: "EPSG:3857",
                 tileGrid: this.createVectorTileGrid(),
-                cacheSize: 64,
+                cacheSize: this.cacheSize,
                 multithread: this.multithread,
                 minimalist: this.minimalist,
                 maxDataZoom: this.maxDataZoom

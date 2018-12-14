@@ -564,6 +564,11 @@ ol.xml.getAllTextContent = _ol_xml$getAllTextContent;
 ol.xml.parse = _ol_xml$parse;
 
 
+// export ol/events/listenOnce
+import { listenOnce, listen, unlisten } from 'ol/events';
+ol.events.listenOnce = listenOnce;
+ol.events.listen = listen;
+
 // custome ol mmethod
 import { zoomByDelta as $ol$interaction$Interaction$zoomByDelta } from 'ol/interaction/Interaction';
 
@@ -641,7 +646,6 @@ ol.control.Zoom.prototype.zoomByDelta_ = function (delta) {
 
 import TileQueue from "ol/TileQueue";
 import TileState from "ol/TileState";
-import { listen, unlisten } from 'ol/events';
 import EventType from "ol/events/EventType";
 
 TileQueue.prototype.handleTileChange = function (event) {
