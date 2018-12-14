@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
+const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";
 
 //block  map style 
 const blockMapStyle = new ol.style.Style({

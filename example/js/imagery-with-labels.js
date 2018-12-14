@@ -1,7 +1,7 @@
 
 //Label featuer
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
-    apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~', // please go to https://cloud.thinkgeo.com to create
+    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~', // please go to https://cloud.thinkgeo.com to create
     visible:true
 });
 
