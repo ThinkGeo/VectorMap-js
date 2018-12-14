@@ -30962,6 +30962,15 @@ function olInit() {
                 style.getZIndex(), ol.render.ReplayType.TEXT);
             textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             textReplay.drawText(geometry, feature);
+
+            if(textReplay.extent && !replayGroup.renderDeclutter_(textReplay.extent, feature)){
+                var indicesNum = textReplay.text_.length * 6;
+                var verticesNum = textReplay.text_.length * 32;
+                textReplay.indices.splice(-indicesNum);
+                textReplay.vertices.splice(-verticesNum);
+                textReplay.startIndices.pop();
+                textReplay.startIndicesFeature.pop();
+            }
         }
     };
 
@@ -67498,7 +67507,9 @@ function olInit() {
         var sin = Math.sin(rotation);        
         var numIndices = this.indices.length;
         var numVertices = this.vertices.length;
-        var i, n, offsetX, offsetY, x, y;
+        var i, n, offsetX, offsetY, x, y, relativeX, relativeY;
+        var charX = flatCoordinates[i];
+        var charY = flatCoordinates[i + 1];
         for (i = offset; i < end; i += stride) {
             x = flatCoordinates[i] - this.origin[0];
             y = flatCoordinates[i + 1] - this.origin[1];
@@ -67518,22 +67529,39 @@ function olInit() {
             // bottom-left corner
             offsetX = -scale * anchorX;
             offsetY = -scale * (height - anchorY);
+            relativeX = offsetX * cos - offsetY * sin;
+            relativeY = offsetX * sin + offsetY * cos;    
+            // if(!this.extent){
+            //     this.extent = [x + relativeX, y + relativeY, x + relativeX, y + relativeY];
+            // }else {
+                (charX + relativeX < this.extent[0]) && (this.extent[0] = charX + relativeX);
+                (charX + relativeX > this.extent[2]) && (this.extent[2] = charX + relativeX);
+                (charY + relativeY < this.extent[1]) && (this.extent[1] = charY + relativeY);
+                (charY + relativeY > this.extent[3]) && (this.extent[3] = charY + relativeY);
+
+            // }
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;            
+            this.vertices[numVertices++] = relativeX;
+            this.vertices[numVertices++] = relativeY;            
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
             this.vertices[numVertices++] = rotateWithView;
-
+            
             // bottom-right corner
             offsetX = scale * (width - anchorX);
             offsetY = -scale * (height - anchorY);
+            relativeX = offsetX * cos - offsetY * sin;
+            relativeY = offsetX * sin + offsetY * cos;
+            (charX + relativeX < this.extent[0]) && (this.extent[0] = charX + relativeX);
+                (charX + relativeX > this.extent[2]) && (this.extent[2] = charX + relativeX);
+                (charY + relativeY < this.extent[1]) && (this.extent[1] = charY + relativeY);
+                (charY + relativeY > this.extent[3]) && (this.extent[3] = charY + relativeY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = relativeX;
+            this.vertices[numVertices++] = relativeY;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67542,10 +67570,16 @@ function olInit() {
             // top-right corner
             offsetX = scale * (width - anchorX);
             offsetY = scale * anchorY;
+            relativeX = offsetX * cos - offsetY * sin;
+            relativeY = offsetX * sin + offsetY * cos;
+            (charX + relativeX < this.extent[0]) && (this.extent[0] = charX + relativeX);
+                (charX + relativeX > this.extent[2]) && (this.extent[2] = charX + relativeX);
+                (charY + relativeY < this.extent[1]) && (this.extent[1] = charY + relativeY);
+                (charY + relativeY > this.extent[3]) && (this.extent[3] = charY + relativeY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = relativeX;
+            this.vertices[numVertices++] = relativeY;
             this.vertices[numVertices++] = (originX + width) / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -67554,10 +67588,16 @@ function olInit() {
             // top-left corner
             offsetX = -scale * anchorX;
             offsetY = scale * anchorY;
+            relativeX = offsetX * cos - offsetY * sin;
+            relativeY = offsetX * sin + offsetY * cos;
+            (charX + relativeX < this.extent[0]) && (this.extent[0] = charX + relativeX);
+                (charX + relativeX > this.extent[2]) && (this.extent[2] = charX + relativeX);
+                (charY + relativeY < this.extent[1]) && (this.extent[1] = charY + relativeY);
+                (charY + relativeY > this.extent[3]) && (this.extent[3] = charY + relativeY);      
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = relativeX;
+            this.vertices[numVertices++] = relativeY;
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = originY / imageHeight;
             this.vertices[numVertices++] = opacity;
@@ -70980,7 +71020,9 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
         this.text_ = feature.text_ || this.text_;
+        
         if (this.text_) {
+            this.extent = ol.extent.createOrUpdateEmpty();
             var flatCoordinates = null;
             var offset = 0;
             var end = 2;
@@ -71024,12 +71066,13 @@ function olInit() {
                 window.tests = 0;
             }
 
-                if(!this.text_.includes('Tom Landry Freeway')){
-                    // return
+                if(!this.text_.includes('Julius S')){
+                    // if(!this.text_.includes('Tom Landry Freeway')){
+                    return
                 }
 
-                if(window.tests > 0){
-                    // window.tests += 1;
+                if(window.tests < 2){
+                    window.tests += 1;
                     // return;
                 }
                 window.tests += 1;
@@ -71191,7 +71234,9 @@ function olInit() {
                         currX += this.width;
                     }
                 }
-            }
+            }  
+            // console.log(this.extent);
+                                 
         }
     };
 
@@ -71517,6 +71562,28 @@ function olInit() {
     };
     ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
 
+    /**
+     * @private
+     * @param {Array.<string>} lines Label to draw split to lines.
+     * @return {Array.<number>} Size of the label in pixels.
+     */
+    ol.render.webgl.ReplayGroup.prototype.renderDeclutter_ = function (extent, feature) {
+        var box = {
+            minX: extent[0],
+            minY: extent[1],
+            maxX: extent[2],
+            maxY: extent[3],
+            value: feature,
+        }
+
+        if(!this.declutterTree.collides(box)){
+            this.declutterTree.insert(box);
+            
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * @param {ol.style.Style} style Style.
