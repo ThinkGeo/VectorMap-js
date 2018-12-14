@@ -3051,16 +3051,13 @@
             "text-font": "13px Arial, Helvetica, sans-serif"
         }]
     }],
-    "sources": [{
-        "id": "worldstreets_source",
-        "url": "http://54.177.171.109/v1/world-streets/v2/{z}/{x}/{y}.mvt",
-        "type": "MVT"
-    }, 
-    {
-        "id": "worldstreets_source_test",
-        "urls": ["https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud2.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud3.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud4.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud5.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud6.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf"],
-        "type": "MVT"
-    }],
+    "sources": [
+        {
+            "id": "worldstreets_source_test",
+            "urls": ["https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud2.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud3.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud4.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud5.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud6.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf"],
+            "type": "MVT"
+        }
+    ],
     "layers": [{
         "id": "worldstreets_layers",
         "source": "worldstreets_source_test",
