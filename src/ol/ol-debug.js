@@ -26665,8 +26665,8 @@ function olInit() {
         var height = Math.round(frameState.size[1] * pixelRatio);
         if (this.canvas_.width != width || this.canvas_.height != height) {
             this.gl_.viewport(0, 0, width, height);
-            this.canvas_.width = width;
-            this.canvas_.height = height;
+            this.canvas_.width = this.canvas_.clientWidth * window.devicePixelRatio;;
+            this.canvas_.height = this.canvas_.clientHeight * window.devicePixelRatio;
         } else {
             // context.clearRect(0, 0, width, height);
         }
@@ -67533,15 +67533,15 @@ function olInit() {
             offsetY = -scale * (height - anchorY);
             relativeX = offsetX * cos - offsetY * sin;
             relativeY = offsetX * sin + offsetY * cos;    
-            // if(!this.extent){
-            //     this.extent = [x + relativeX, y + relativeY, x + relativeX, y + relativeY];
-            // }else {
+            if(!this.extent){
+                this.extent = [x + relativeX, y + relativeY, x + relativeX, y + relativeY];
+            }else {
                 (charX + relativeX < this.extent[0]) && (this.extent[0] = charX + relativeX);
                 (charX + relativeX > this.extent[2]) && (this.extent[2] = charX + relativeX);
                 (charY + relativeY < this.extent[1]) && (this.extent[1] = charY + relativeY);
                 (charY + relativeY > this.extent[3]) && (this.extent[3] = charY + relativeY);
 
-            // }
+            }
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = relativeX;
