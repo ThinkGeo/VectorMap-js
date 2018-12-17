@@ -12634,14 +12634,16 @@ function olInit() {
 
             return false
         }   
-
-        var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-        var isStartIn = ol.extent.containsXY(extent, startCoord[0],startCoord[1]);
-        var lineFlag = false;
-        var bottomLeft = ol.extent.getBottomLeft(extent);
-        var bottomRight = ol.extent.getBottomRight(extent);
-        var topLeft = ol.extent.getTopLeft(extent);
-        var topRight = ol.extent.getTopRight(extent);
+        if(extent){
+            var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+            var isStartIn = ol.extent.containsXY(extent, startCoord[0],startCoord[1]);
+            var lineFlag = false;
+            var bottomLeft = ol.extent.getBottomLeft(extent);
+            var bottomRight = ol.extent.getBottomRight(extent);
+            var topLeft = ol.extent.getTopLeft(extent);
+            var topRight = ol.extent.getTopRight(extent);
+        }
+    
 
         for (j = offset; j < end; j += stride) {
             if(!isLineString){
