@@ -17,13 +17,13 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
 
 //Create  map
 
-let map =  new ol.Map({
+let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [worldStreetLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([118.957672, 38.034109]),
+        center: ol.proj.fromLonLat([-96.79620, 38.79423]),
         zoom: 5,
         minZoom: 2
     })
@@ -32,7 +32,7 @@ let map =  new ol.Map({
 //Process the data
 
 let xhr = new XMLHttpRequest();
-xhr.open("GET", "https://thinkgeo.github.io/vectormapsample/data/scatter.json");
+xhr.open("GET", "../data/scatter.json");
 xhr.onreadystatechange = function () {
     if (xhr.readyState == 4 && xhr.status == 200) {
         let res = JSON.parse(xhr.responseText)
@@ -52,27 +52,30 @@ xhr.onreadystatechange = function () {
             return res;
         };
 
-//style options
+        //style options
 
         var option = {
             title: {
-                sublink: 'http://www.pm25.in',
                 left: 'center',
                 textStyle: {
                     color: '#fff'
                 }
             },
             tooltip: {
-                trigger: 'item'
+                trigger: 'item',
+                formatter: function (obj) {
+                    return `${obj.data.value[2]} Inches`
+                },
+                
             },
             openlayers: {},
             series: [
                 {
-                    name: 'pm2.5',
+                    name: '	Inches',
                     type: 'scatter',
                     data: convertData(data),
                     symbolSize: function (val) {
-                        return val[2] / 10;
+                        return val[2] / 2;
                     },
                     label: {
                         normal: {
@@ -81,12 +84,12 @@ xhr.onreadystatechange = function () {
                             show: false
                         },
                         emphasis: {
-                            show: false
+                            show: true
                         }
                     },
                     itemStyle: {
                         normal: {
-                            color: '#ddb926'
+                            color: '#7FFF00'
                         }
                     }
                 },
@@ -95,9 +98,9 @@ xhr.onreadystatechange = function () {
                     type: 'effectScatter',
                     data: convertData(data.sort(function (a, b) {
                         return b.value - a.value;
-                    }).slice(0, 6)),
+                    }).slice(0, 5)),
                     symbolSize: function (val) {
-                        return val[2] / 10;
+                        return val[2] / 2;
                     },
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -113,7 +116,7 @@ xhr.onreadystatechange = function () {
                     },
                     itemStyle: {
                         normal: {
-                            color: '#f4e925',
+                            color: '#76EE00',
                             shadowBlur: 10,
                             shadowColor: '#333'
                         }
@@ -121,6 +124,10 @@ xhr.onreadystatechange = function () {
                     zlevel: 1
                 }]
         };
+
+        console.log(convertData(data.sort(function (a, b) {
+            return b.value - a.value;
+        }).slice(0, 6)))
         var echartslayer = new ol3Echarts(option, {
             hideOnMoving: false,
             hideOnZooming: false,

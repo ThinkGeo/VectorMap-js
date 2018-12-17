@@ -70,31 +70,53 @@ $.get("../data/rainfall.json", function (result) {
         features: (new ol.format.GeoJSON()).readFeatures(geojson)
     });
 
-    //style of line 
-    let styleFunc = function (feature) {
-        let color = feature.get("color");
-        let text = feature.get("symbol");
-        color = "rgba(" + color + ")";
-        return new ol.style.Style({
-            stroke: new ol.style.Stroke({
+    vector.setSource(vectorSource);
+
+})
+
+//style of line 
+let styleLineFunc = function (feature) {
+    let color = feature.get("color");
+    let text = feature.get("symbol");
+    color = "rgba(" + color + ")";
+    return new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: color,
+            width: 2
+        }),
+        text: new ol.style.Text({
+            text: text,
+            placement: 'line',
+            font: '20px  Calibri,sans-serif',
+            fill: new ol.style.Fill({
                 color: color,
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#fff',
                 width: 2
             }),
-            text: new ol.style.Text({
-                text: text,
-                placement: 'line',
-                font: '20px  Calibri,sans-serif',
-                fill: new ol.style.Fill({
-                    color: color,
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#fff',
-                    width: 2
-                }),
-            })
         })
-    };
-    vector.setSource(vectorSource);
-    vector.setStyle(styleFunc);
-    vector.setOpacity(0.8);
+    })
+};
+
+//style of  plane
+let stylePlaneFunc = function (feature) {
+    let color = feature.get("color");
+    color = "rgba(" + color + ")";
+    return new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: color
+        })
+    })
+};
+
+vector.setStyle(styleLineFunc);
+vector.setOpacity(0.8);
+
+$('#checkbox').change(function () {
+    if ($('#checkbox').prop('checked')) {
+        vector.setStyle(stylePlaneFunc);
+    } else {
+        vector.setStyle(styleLineFunc);
+    }
 })

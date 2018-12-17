@@ -1,6 +1,6 @@
- // base map layer
+// base map layer
 
- let satelliteLayer = new ol.layer.Tile({
+let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
             "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
@@ -55,115 +55,96 @@ let pieChartOvery = (id, data, pt) => {
 for (let i = 0; i < 12; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `pieChart${i}`;
-    aqiDiv.style = "height:22vh;width:32vh";
+    aqiDiv.style = "height:22vh;width:600px";
     document.querySelector("#pieChart").appendChild(aqiDiv)
 }
 
 //simulated data 
-let data1 = [{
+let California = [{
+    value: 4572963,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 5260904,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 7544058,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 8176487,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}];
+let data2 = [{
     value: 20,
-    name: 'Chrome',
+    name: 'Without a high school diploma ',
     itemStyle: {
         color: '#fe0100'
     }
 }, {
     value: 100,
-    name: 'IE9+',
+    name: 'High school diploma',
     itemStyle: {
         color: '#f9ff00'
     }
 }, {
     value: 120,
-    name: 'IE8-',
+    name: `college or associate's degree`,
     itemStyle: {
         color: '#a4e601'
     }
 }, {
     value: 135,
-    name: 'Safari',
+    name: `Bachelor's degree or higher`,
     itemStyle: {
         color: '#1e86fe'
-    }
-}, {
-    value: 300,
-    name: 'Firefox',
-    itemStyle: {
-        color: '#75f0fd'
-    }
-}];
-let data2 = [{
-    value: 2000,
-    name: 'Chrome',
-    itemStyle: {
-        color: '#fe0100'
-    }
-}, {
-    value: 800,
-    name: 'IE9+',
-    itemStyle: {
-        color: '#f9ff00'
-    }
-}, {
-    value: 400,
-    name: 'IE8-',
-    itemStyle: {
-        color: '#a4e601'
-    }
-}, {
-    value: 135,
-    name: 'Safari',
-    itemStyle: {
-        color: '#1e86fe'
-    }
-}, {
-    value: 1200,
-    name: 'Firefox',
-    itemStyle: {
-        color: '#75f0fd'
     }
 }];
 let data3 = [{
-    value: 1850,
-    name: 'Chrome',
+    value: 20,
+    name: 'Without a high school diploma ',
     itemStyle: {
         color: '#fe0100'
     }
 }, {
-    value: 750,
-    name: 'IE9+',
+    value: 100,
+    name: 'High school diploma',
     itemStyle: {
         color: '#f9ff00'
     }
 }, {
-    value: 260,
-    name: 'IE8-',
+    value: 120,
+    name: `college or associate's degree`,
     itemStyle: {
         color: '#a4e601'
     }
 }, {
-    value: 200,
-    name: 'Safari',
+    value: 135,
+    name: `Bachelor's degree or higher`,
     itemStyle: {
         color: '#1e86fe'
     }
-}, {
-    value: 1000,
-    name: 'Firefox',
-    itemStyle: {
-        color: '#75f0fd'
-    }
 }];
 
-map.addOverlay(pieChartOvery("pieChart0", data1, ol.proj.fromLonLat([-117.954940, 34.053272])));
-map.addOverlay(pieChartOvery("pieChart1", data2, ol.proj.fromLonLat([-104.954682, 39.737331])))
-map.addOverlay(pieChartOvery("pieChart2", data1, ol.proj.fromLonLat([-94.268418, 39.062423])))
-map.addOverlay(pieChartOvery("pieChart3", data2, ol.proj.fromLonLat([-96.465684, 32.806366])))
-map.addOverlay(pieChartOvery("pieChart4", data3, ol.proj.fromLonLat([-95.586778, 29.535873])))
-map.addOverlay(pieChartOvery("pieChart5", data2, ol.proj.fromLonLat([-77.569200, 38.857395])))
-map.addOverlay(pieChartOvery("pieChart6", data1, ol.proj.fromLonLat([-84.204942, 33.724955])))
-map.addOverlay(pieChartOvery("pieChart7", data3, ol.proj.fromLonLat([-87.412950, 41.902827])))
-
-map.addOverlay(pieChartOvery("pieChart8", data3, ol.proj.fromLonLat([-122.447229, 37.765230])))
-map.addOverlay(pieChartOvery("pieChart9", data2, ol.proj.fromLonLat([-80.569200, 25.857395])))
-map.addOverlay(pieChartOvery("pieChart10", data1, ol.proj.fromLonLat([-93.204942, 44.324955])))
-map.addOverlay(pieChartOvery("pieChart11", data3, ol.proj.fromLonLat([-93.0262950, 44.902827])))
+map.addOverlay(pieChartOvery("pieChart0", California, ol.proj.fromLonLat([-121.468926, 38.555605])));
+map.addOverlay(pieChartOvery("pieChart1", data2, ol.proj.fromLonLat([-90.450611, 35.265961])))
+// map.addOverlay(pieChartOvery("pieChart2", data1, ol.proj.fromLonLat([-119.23484, 35.675786])))
+// map.addOverlay(pieChartOvery("pieChart3", data2, ol.proj.fromLonLat([-104.940303, 39.885961])))
+// map.addOverlay(pieChartOvery("pieChart4", data3, ol.proj.fromLonLat([-75.640639, 39.725141])))
+// map.addOverlay(pieChartOvery("pieChart5", data2, ol.proj.fromLonLat([-78.871259, 38.455187])))
+// map.addOverlay(pieChartOvery("pieChart6", data1, ol.proj.fromLonLat([-81.956835, 27.985804])))
+// map.addOverlay(pieChartOvery("pieChart7", data3, ol.proj.fromLonLat([-84.754272, 34.126149])))
+// map.addOverlay(pieChartOvery("pieChart8", data3, ol.proj.fromLonLat([-122.447229, 37.765230])))
+// map.addOverlay(pieChartOvery("pieChart9", data2, ol.proj.fromLonLat([-80.569200, 25.857395])))
+// map.addOverlay(pieChartOvery("pieChart10", data1, ol.proj.fromLonLat([-98.813778, 28.468167])))
+// map.addOverlay(pieChartOvery("pieChart11", data3, ol.proj.fromLonLat([-112.982554, 37.003582])))

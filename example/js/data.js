@@ -116,18 +116,19 @@ const menuData = [{
         htmlPath: './html/labeling-features.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
         jsPath: './js/labeling-features.js'
+    },
+    {
+        comments: 'Example of GeoJSON features with labels.',
+        title: 'Style GeoJSON  ',
+        htmlPath: './html/geojson.html',
+        codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMze',
+        jsPath: './js/geojson.js'
     }, {
         comments: 'Rendering KML with a vector source.',
         title: 'KML ',
         htmlPath: './html/KML.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
         jsPath: './js/KML.js'
-    }, {
-        comments: 'Styling Label of Frisco block  with Map Suite StyleJSON',
-        title: 'Labeling Features',
-        htmlPath: './html/labeling-features.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
-        jsPath: './js/labeling-features.js'
     }]
 }, {
     dataTarget: 'popular-use-cases',
@@ -151,7 +152,7 @@ const menuData = [{
         codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVqbw',
         jsPath: './js/contour-line.js'
     }, {
-        comments: "A bubble map show how the PM2.5 in China's major cities is.",
+        comments: "A bubble map show average total yearly precipitation for each the US state.",
         title: 'Scatter',
         htmlPath: './html/scatter.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
