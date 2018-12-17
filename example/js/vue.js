@@ -99,8 +99,8 @@ new Vue({
             let text = blockMapStyle.getText();
             text.setFont(`${this.fontSize}px ${this.fontFamily},sans-serif`);
             text.getFill().setColor(this.fillColor);
-            text.setPlacement(this.placement)
-            blockMapLayer.setStyle(blockMapStyle)
+            text.setPlacement(this.placement);
+            blockMapLayer.setStyle(blockMapStyle);
         }
     }
 })

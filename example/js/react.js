@@ -5,12 +5,14 @@ function renderStreetMap() {
         'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
     });
 
-    streetMap =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+    streetMap = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
         layers: [layer],
         target: 'map',
         view: new ol.View({
             center: ol.proj.fromLonLat([-73.413148, 40.736301]),
-            zoom: 15,
+            zoom: 13.5,
             minZoom: 2,
             maxZoom: 19
         }),
@@ -20,18 +22,18 @@ class StreetMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            countryNameHalo: 'rgba(255, 255, 255, 0.5)',
-            fontFamily:'Oblique',
-            maskType: 'Rectangle',
-            poiSize:'22',
+            parkColor: 'rgba(167, 218, 122, 0.35)',
+            placement: 'Line',
+            maskType: 'Circle',
+            poiSize: '22',
             json: {
                 styles: []
             },
-            newLayer:''
+            newLayer: ''
         };
         this.clickRefresh = this.clickRefresh.bind(this);
-        this.countryNameHaloHandleChange = this.countryNameHaloHandleChange.bind(this);
-        this.marineNameFontFamilyHandleChange = this.marineNameFontFamilyHandleChange.bind(this);
+        this.parkFillColorHandleChange = this.parkFillColorHandleChange.bind(this);
+        this.placementHandleChange = this.placementHandleChange.bind(this);
         this.maskTypeHandleChange = this.maskTypeHandleChange.bind(this);
         this.poiSizeHandleChange = this.poiSizeHandleChange.bind(this);
         this.getJson = this.getJson.bind(this);
@@ -39,40 +41,48 @@ class StreetMap extends React.Component {
 
     componentDidMount() {
         renderStreetMap();
-        this.getJson().then((data)=>{
+        this.getJson().then((data) => {
             this.setState({
                 json: JSON.parse(data)
             });
         });
     }
 
-    countryNameHaloHandleChange(event) {
-        this.setState({countryNameHalo: event.target.value});
+    parkFillColorHandleChange(event) {
+        this.setState({
+            parkColor: event.target.value
+        });
     }
 
-    marineNameFontFamilyHandleChange(event){
-        this.setState({fontFamily: event.target.value});
+    placementHandleChange(event) {
+        this.setState({
+            placement: event.target.value
+        });
     }
 
-    maskTypeHandleChange(event){
-        this.setState({maskType: event.target.value});
+    maskTypeHandleChange(event) {
+        this.setState({
+            maskType: event.target.value
+        });
     }
 
-    poiSizeHandleChange(event){
-        this.setState({poiSize: event.target.value});
+    poiSizeHandleChange(event) {
+        this.setState({
+            poiSize: event.target.value
+        });
     }
 
-    getJson(){
-        let readTextFile = new Promise(function(resolve, reject){
+    getJson() {
+        let readTextFile = new Promise(function (resolve, reject) {
             let file = "../data/light.json";
             var rawFile = new XMLHttpRequest();
             rawFile.overrideMimeType("application/json");
             rawFile.open("GET", file, true);
             rawFile.onreadystatechange = function (ERR) {
-                if(rawFile.readyState === 4){
-                    if(rawFile.status == "200"){
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status == "200") {
                         resolve(rawFile.responseText);
-                    }else{
+                    } else {
                         reject(new Error(ERR));
                     }
                 }
@@ -91,32 +101,45 @@ class StreetMap extends React.Component {
         streetMap.addLayer(newLayer);
     }
 
-    changeFontStyle(){
+    changePlacement(){
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
-        for (let i = 0; i < stylesLength; i++) {
-            if (styles[i].id === 'marine_name') {
-                for(let j = 0; j < styles[i]['style'].length; j++){
-                    let inStyleArr = styles[i]['style'][j].style;
-                    for(let k = 0; k < inStyleArr.length; k++){
-                        inStyleArr[k]['text-font'] = `${this.state.fontFamily} 600 12px Arial, Helvetica, sans-serif`;
+        for(let i = 0; i < stylesLength; i++){
+            if(styles[i].filter.match("layerName='road_name'")){
+                switch (this.state.placement){
+                    case 'Line': 
+                        styles[i]['text-force-horizontal-for-line'] = false;
+                        break;
+                    case 'Point':
+                        styles[i]['text-force-horizontal-for-line'] = true;
+                        styles[i]['text-spacing'] = 5;
+                        styles[i]['text-min-distance'] = 5;
+                        styles[i]['text-min-padding'] = 5;
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
+    }
+
+    changeParkColor(){
+        let styles = this.state.json.styles;
+        let stylesLength = styles.length;
+        for(let i = 0; i < stylesLength; i++){
+            if(styles[i].id === 'landcover'){
+                let length = styles[i]['style'].length;
+                for (let j = 0; j < length; j++) {
+                    let innerStyle = styles[i]['style'];
+                    if(innerStyle[j]['filter'] === "class='park'"){
+                        innerStyle[j]['polygon-fill'] = this.state.parkColor;
                     }
                 }
             }
         }
     }
 
-    changeCountryNameColor(){
-        let styles = this.state.json.styles;
-        let stylesLength = styles.length;
-        for (let i = 0; i < stylesLength; i++) {
-            if (styles[i].id === 'country_name') {
-                styles[i]['text-halo-fill'] = this.state.countryNameHalo;
-            }
-        }
-    }
-
-    changeMaskType(){
+    changeMaskType() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
         for (let i = 0; i < stylesLength; i++) {
@@ -126,7 +149,7 @@ class StreetMap extends React.Component {
         }
     }
 
-    changePoiSize(){
+    changePoiSize() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
         for (let i = 0; i < stylesLength; i++) {
@@ -136,9 +159,9 @@ class StreetMap extends React.Component {
         }
     }
 
-    render() { 
-        this.changeFontStyle();
-        this.changeCountryNameColor();
+    render() {
+        this.changePlacement();
+        this.changeParkColor();
         this.changeMaskType();
         this.changePoiSize();
 
@@ -148,11 +171,11 @@ class StreetMap extends React.Component {
                 <div className="controlPanel">
                     <div>
                         <label>
-                            Marine Name Font-Style:
+                            Road Name Placement:
                         </label>
-                        <select onChange={this.marineNameFontFamilyHandleChange}>
-                            <option value="Oblique">Oblique</option>
-                            <option value="Normal">Normal</option>
+                        <select onChange={this.placementHandleChange}>
+                            <option value="Line">Line</option>
+                            <option value="Point">Point</option>
                         </select>
                     </div>
 
@@ -161,19 +184,19 @@ class StreetMap extends React.Component {
                             Road Number Mask-Type:
                         </label>
                         <select onChange={this.maskTypeHandleChange}>
+                            <option value="Circle">Circle</option>
                             <option value="Rectangle">Rectangle</option>
                             <option value="Default">Default</option>
                             <option value="RoundedCorners">RoundedCorners</option>
                             <option value="RoundedEnds">RoundedEnds</option>
-                            <option value="Circle">Circle</option>
                         </select>
                     </div>
 
                     <div>
                         <label>
-                            Country Name Halo-Color:
+                            Park Color:
                         </label>
-                        <input type="text" value={this.state.countryNameHalo} onChange={this.countryNameHaloHandleChange} />
+                        <input type="text" value={this.state.parkColor} onChange={this.parkFillColorHandleChange} />
                     </div>
 
                     <div>
