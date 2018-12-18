@@ -104,7 +104,7 @@ const baseMapStyle = new ol.style.Style({
 
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
-        url: '../data/europe.json',
+        url: '../data/world-population.geo.json',
         format: new ol.format.GeoJSON()
     }),
     style: function (feature) {
@@ -144,7 +144,7 @@ const layerStyle= function (feature) {
 
 let colorLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
-        url: '../data/europe.json',
+        url: '../data/world-population.geo.json',
         format: new ol.format.GeoJSON(),
     }),
     style: layerStyle
