@@ -1,7 +1,7 @@
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
+            "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
         tileSize: 512,
     }),
 });
@@ -13,40 +13,79 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         zoom: 5,
-        center: [166326, 5992663],
+        center: ol.proj.fromLonLat([-96.79620, 38.79423]),
         progressiveZoom: false,
 
     })
 })
 
-const addFeatures = function (nb) {
-    let ssize = 20; // seed size
-    console.log(map.getSize())
-    let ext = map.getView().calculateExtent(map.getSize());
-    let dx = ext[2] - ext[0];
-    let dy = ext[3] - ext[1];
-    let dl = Math.min(dx, dy);
-    let features = [];
-    for (let i = 0; i < nb / ssize; ++i) {
-        let seed = [ext[0] + dx * Math.random(), ext[1] + dy * Math.random()]
-        for (let j = 0; j < ssize; j++) {
-            let f = new ol.Feature(new ol.geom.Point(
-                [seed[0] + dl / 10 * Math.random(),
-                seed[1] + dl / 10 * Math.random()
-                ]
-            ));
-            f.set('id', i * ssize + j);
-            features.push(f);
+const getJson = () => {
+    let readTextFile = new Promise(function (resolve, reject) {
+        let file = "../data/GeocodingResult.JSON";
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function (ERR) {
+            if (rawFile.readyState === 4) {
+                if (rawFile.status == "200") {
+                    resolve(rawFile.responseText);
+                } else {
+                    reject(new Error(ERR));
+                }
+            }
         }
-    }
-    source.clear();
-    source.addFeatures(features);
-}
+        rawFile.send(null);
+    });
+    return readTextFile;
+};
 
-// Vector source
+// let features;
+// const addFeatures = () => {
+//     getJson().then((data) => {
+//         let result = JSON.parse(data);
+//         for (let i = 0, length = result.length; i < length; i++) {
+//             let point = ol.proj.fromLonLat(result[i].coordinate);
+//             features[i] = new ol.Feature(new ol.geom.Point(point));
+//             features[i].set('id', i);
+//         }
+
+//         source.clear();
+//         source.addFeatures(features);
+//     })
+// }
+
+const addFeatures = function () {
+    // let ssize = 20; // seed size
+    // let dl = 3693437.206739716;
+    let features = [];
+
+    getJson().then((data) => {
+        let result = JSON.parse(data);
+        for (let k = 0, length = result.length; k < length; k++) {
+            let point = ol.proj.fromLonLat(result[k].coordinate);
+            let seed = point;
+            // for (let j = 0; j < ssize; j++) {
+            let f = new ol.Feature(new ol.geom.Point(
+                seed
+            ));
+            // let f = new ol.Feature(new ol.geom.Point(
+            //     [seed[0] + dl / 10 * Math.random(),
+            //         seed[1] + dl / 10 * Math.random()
+            //     ]
+            // ));
+            f.set('id', k);
+            features.push(f);
+            // }
+        }
+        source.clear();
+        source.addFeatures(features);
+    });
+};
+
 let source = new ol.source.Vector();
+// Vector source
 // add 2000 features
-addFeatures(2000); 
+addFeatures();
 
 // Interaction to move the source features
 let modify = new ol.interaction.Modify({
@@ -61,9 +100,15 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    if (f.get('features').length > max) color = '#00e1fc';
-    else if (f.get('features').length > min) color = '#a4e601';
-    else color = [238, 72, 77, 1];
+    if (f.get('features').length > 20) {
+        color = '#00e1fc'; 
+    }
+    else if (f.get('features').length > min) {
+        color = '#a4e601';
+    } 
+    else {
+        color = '#ee484d';
+    } 
     return [new ol.style.Style({
         fill: new ol.style.Fill({
             color: color

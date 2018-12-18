@@ -57,11 +57,9 @@
      return style;
  }
 
-
  // Add 2000 features
- let ext = map.getView().calculateExtent(map.getSize());
  let features = [];
- let getJson = () => {
+ const getJson = () => {
      let readTextFile = new Promise(function (resolve, reject) {
          let file = "../data/GeocodingResult.JSON";
          var rawFile = new XMLHttpRequest();
@@ -89,11 +87,6 @@
          features[i].set('id', i);
      }
 
-    //  for (let i = 0; i < 2000; ++i) {
-    //      features[i] = new ol.Feature(new ol.geom.Point([ext[0] + (ext[2] - ext[0]) * Math.random(), ext[1] + (ext[3] - ext[1]) * Math.random()]));
-    //      features[i].set('id', i);
-    //  }
-
      // Cluster Source
      let clusterSource = new ol.source.Cluster({
          distance: 40,
@@ -110,13 +103,6 @@
      });
      map.addLayer(clusterLayer);
  });
-
- //   for (let i = 0; i < 2000; ++i) {
- //       features[i] = new ol.Feature(new ol.geom.Point([ext[0] + (ext[2] - ext[0]) * Math.random(), ext[1] + (ext[3] - ext[1]) * Math.random()]));
- //       features[i].set('id', i);
- //   }
- //   clusterSource.getSource().clear();
- //   clusterSource.getSource().addFeatures(features);
 
  // Add over interaction that draw hull in a layer
  let vector = new ol.layer.Vector({
