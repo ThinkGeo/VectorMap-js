@@ -153,10 +153,7 @@
     }, {
         "id": "water",
         "filter": "layerName='water'",
-        "style": [{
-            "filter": "zoom>=0;zoom<=19;",
-            "polygon-fill": "@water"
-        }]
+        "polygon-fill": "@water"
     }, {
         "id": "country_boundary",
         "filter": "layerName='admin_boundary';admin_level=2",
@@ -608,6 +605,8 @@
     }, {
         "id": "building",
         "filter": "layerName='building'",
+        "polygon-fill": "@buildingFill"
+    }, {
         "style": [{
             "filter": "zoom=14;class='hospital,hotel,castle,university,civic,stadium'",
             "polygon-fill": "@buildingFill"
@@ -3051,13 +3050,11 @@
             "text-font": "13px Arial, Helvetica, sans-serif"
         }]
     }],
-    "sources": [
-        {
-            "id": "worldstreets_source_test",
-            "urls": ["https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud2.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud4.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud5.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud6.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf"],
-            "type": "MVT"
-        }
-    ],
+    "sources": [{
+        "id": "worldstreets_source_test",
+        "urls": ["https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud2.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud4.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud5.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf", "https://cloud6.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf"],
+        "type": "MVT"
+    }],
     "layers": [{
         "id": "worldstreets_layers",
         "source": "worldstreets_source_test",

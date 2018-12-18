@@ -21,7 +21,7 @@
 
         #lines label {
             display: inline-block;
-            width: 82px;
+            width: 90px;
             color: #5f6b78;
             text-align: right;
             margin: 12px 0;
@@ -101,22 +101,26 @@
 <body>
     <div id="map" style="width:100%;height:100%"></div>
     <div id="lines">
-        <label>FontSize: </label>
+        <label>POI Size: </label>
+        <input type="number" v-model="poiSize">
+        <br>
+        <label>Font Size: </label>
         <input type="number" v-model="fontSize">
         <br>
-        <label>Text: </label>
-        <select v-model="fontFamily">
-            <option value="Calibri">Calibri</option>
-            <option value="sans-serif">Sans-Serif</option>
+        <label>Water Color: </label>
+        <select v-model="waterColor">
+            <option value="#0000CD">#0000CD</option>
+            <option value="#4169E1">#4169E1</option>
+            <option value="#0000FF">#0000FF</option>
+            <option value="#1E90FF">#1E90FF</option>
         </select>
         <br>
-        <label>FillColor: </label>
-        <input type="text" v-model="fillColor">
-        <br>
-        <label>Placement: </label>
-        <select v-model="placement">
-            <option value="line">Line</option>
-            <option value="point">Point</option>
+        <label>Road Color: </label>
+        <select v-model="buildingColor">
+            <option value="#FFD700">#FFD700</option>
+            <option value="#EEC900">#EEC900</option>
+            <option value="#CDAD00">#CDAD00</option>
+            <option value="#8B7500">#8B7500</option>
         </select>
         <br>
         <div>

@@ -16,7 +16,7 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.820787, 33.098294]),
-        zoom: 17,
+        zoom: 16,
     }),
 });
 
@@ -44,26 +44,48 @@ let json
 
 getJson().then((data) => {
     json = JSON.parse(data);
-    console.log(json)
 })
+
+const updatedWater = (poiSize, waterColor, fontSize, buildingColor) => {
+    let styles = json.styles;
+    let stylesLength = styles.length;
+    for (let i = 0; i < stylesLength; i++) {
+        if (styles[i].id === 'poi_icon') {
+            styles[i]['point-size'] = poiSize;
+        } else if (styles[i].id === 'water') {
+            styles[i]['polygon-fill'] = waterColor
+        } else if (styles[i].id === 'motorway_name') {
+            styles[i]['text-font'] = `bold ${fontSize}px Arial, Helvetica, sans-serif`;
+        } else if (styles[i].id === 'building') {
+            styles[i]['polygon-fill'] = buildingColor;
+        }
+    }
+    return json;
+}
+
+const clickRefresh = (json) => {
+    let layers = map.getLayers().getArray();
+    map.removeLayer(layers[0]);
+    let newLayer = new ol.mapsuite.VectorTileLayer(json, {
+        'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+    });
+    map.addLayer(newLayer);
+}
 
 
 
 new Vue({
     el: '#lines',
     data: {
-        fontSize: 12,
-        fontFamily: 'Calibri',
-        fillColor: '#525255',
-        placement: 'line'
+        poiSize: 50,
+        fontSize: 40,
+        waterColor: '#0000CD',
+        buildingColor: '#FFD700'
     },
     methods: {
         refresh: function () {
-            let text = blockMapStyle.getText();
-            text.setFont(`${this.fontSize}px ${this.fontFamily},sans-serif`);
-            text.getFill().setColor(this.fillColor);
-            text.setPlacement(this.placement);
-            blockMapLayer.setStyle(blockMapStyle);
+            let json = updatedWater(this.poiSize, this.waterColor, this.fontSize, this.buildingColor);
+            clickRefresh(json)
         }
     }
 })
