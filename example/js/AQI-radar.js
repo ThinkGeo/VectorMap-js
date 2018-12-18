@@ -24,7 +24,6 @@ let map = new ol.Map({
     })
 });
 
-
 //AQI layer
 let AQIlayer = (id, data, color, pt) => {
     let lineStyle = {
@@ -33,29 +32,23 @@ let AQIlayer = (id, data, color, pt) => {
             opacity: 0.7
         }
     };
- 
+
     let option = {
         backgroundColor: 'transparent',
         radar: {
             indicator: [{
-                name: 'AQI',
+                name: '1970',
                 fontSize: 8,
-                max: 300
+                max: 35
             }, {
-                name: 'PM2.5',
-                max: 250
+                name: '1990',
+                max: 35
             }, {
-                name: 'PM10',
-                max: 300
+                name: '2000',
+                max: 35
             }, {
-                name: 'CO',
-                max: 5
-            }, {
-                name: 'NO2',
-                max: 200
-            }, {
-                name: 'SO2',
-                max: 100
+                name: '2016',
+                max: 35
             }],
             shape: 'circle',
             radius: 50,
@@ -118,66 +111,100 @@ for (let i = 0; i < 8; i++) {
 }
 
 // pie chart
-let data1 = [
-    [55, 9, 56, 0.46, 18, 6, 1],
-    [25, 11, 21, 0.65, 120, 9, 2],
-    [56, 7, 63, 0.3, 40, 5, 3],
-    [33, 7, 29, 0.33, 16, 6, 4],
-    [22, 8, 17, 0.48, 23, 10, 20],
-    [39, 15, 300, 0.61, 29, 13, 21],
-    [94, 69, 114, 2.08, 73, 39, 22],
-    [99, 73, 110, 2.43, 76, 48, 23],
-    [31, 12, 30, 0.5, 32, 16, 24],
-    [42, 27, 43, 1, 150, 22, 25],
-    [154, 117, 157, 3.05, 200, 58, 26],
-    [46, 5, 49, 0.28, 10, 6, 31]
-];
-let data2 = [
-    [26, 37, 27, 1.163, 300, 13, 1],
-    [85, 62, 71, 1.195, 60, 8, 2],
-    [91, 81, 104, 1.041, 56, 40, 10],
-    [84, 39, 60, 0.964, 25, 11, 11],
-    [77, 105, 178, 2.549, 64, 16, 14],
-    [82, 92, 174, 3.29, 0, 13, 29],
-    [300, 116, 188, 3.628, 101, 16, 30],
-    [118, 50, 0, 1.383, 76, 11, 31]
-];
-let data3 = [
-    [91, 45, 125, 0.82, 34, 23, 1],
-    [106, 77, 114, 1.07, 55, 51, 7],
-    [95, 69, 300, 1.28, 74, 50, 13],
-    [116, 87, 131, 1.47, 84, 40, 14],
-    [300, 57, 91, 0.85, 55, 31, 20],
-    [87, 63, 101, 0.9, 56, 41, 21],
-    [104, 77, 119, 1.09, 73, 48, 22],
-    [93, 68, 96, 1.05, 79, 29, 28],
-    [188, 143, 197, 1.66, 99, 51, 29],
-    [174, 131, 174, 1.55, 108, 50, 30],
-    [187, 143, 201, 1.39, 89, 53, 300]
-    [174, 131, 174, 1.55, 108, 50, 30],
-    [300, 187, 201, 1.39, 89, 0, 0]
-];
-let data4 = [
-    [91, 45, 125, 0.82, 150, 23, 1],
-    [300, 150, 114, 1.07, 120, 51, 7],
-    [95, 69, 300, 1.28, 74, 50, 13],
-    [116, 87, 131, 1.47, 84, 40, 14],
-    [300, 57, 91, 0.85, 55, 31, 20],
-    [87, 63, 101, 0.9, 56, 41, 21],
-    [104, 77, 119, 1.09, 73, 48, 22],
-    [300, 68, 96, 1.05, 150, 29, 28],
-    [188, 143, 197, 1.66, 99, 51, 29],
-    [174, 131, 174, 1.55, 108, 50, 30],
-    [187, 143, 201, 1.39, 89, 53, 300]
-    [174, 131, 174, 1.55, 108, 50, 30],
-    [300, 187, 201, 1.39, 89, 0, 0]
-];
+let data_texas = [{
+    value: [52.6, 27.9, 24.3, 17.7, 1],
+    name: 'Less Than A High School Diploma',
+    itemStyle: {
+        normal: {
+            color: '#B3E4A1'
+        }
+    }
+}, {
+    value: [25.1, 25.6, 24.8, 25.087, 2],
+    name: 'High School Diploma Only',
+    itemStyle: {
+        normal: {
+            color: '#F9713C'
+        }
+    }
+}];
 
-map.addOverlay(AQIlayer("AQIChart0", data1, "#B3E4A1", ol.proj.fromLonLat([-117.954940, 34.053272])))
-map.addOverlay(AQIlayer("AQIChart1", data2, "#F9713C", ol.proj.fromLonLat([-104.954682, 39.737331])))
-map.addOverlay(AQIlayer("AQIChart2", data3, "rgb(238, 197, 102)", ol.proj.fromLonLat([-94.268418, 39.062423])))
-map.addOverlay(AQIlayer("AQIChart3", data4, "#80AECC", ol.proj.fromLonLat([-96.465684, 32.806366])))
-map.addOverlay(AQIlayer("AQIChart4", data2, "#D48265", ol.proj.fromLonLat([-95.586778, 29.535873])))
-map.addOverlay(AQIlayer("AQIChart5", data3, "#C23531", ol.proj.fromLonLat([-77.569200, 38.857395])))
-map.addOverlay(AQIlayer("AQIChart6", data4, "#38A700", ol.proj.fromLonLat([-84.204942, 33.724955])))
-map.addOverlay(AQIlayer("AQIChart7", data2, "#FA00FA", ol.proj.fromLonLat([-87.412950, 41.902827])))
+let data_california = [{
+    value: [37.4, 23.8, 23.2, 17.9, 1],
+    name: 'Less Than A High School Diploma',
+    itemStyle: {
+        normal: {
+            color: '#B3E4A1'
+        }
+    }
+}, {
+    value: [32.8, 22.3, 20.1, 20.587, 2],
+    name: 'High School Diploma Only',
+    itemStyle: {
+        normal: {
+            color: '#F9713C'
+        }
+    }
+}]
+
+let data_florida = [{
+    value: [47.4, 25.6, 20.1, 12.824, 1],
+    name: 'Less Than A High School Diploma',
+    itemStyle: {
+        normal: {
+            color: '#B3E4A1'
+        }
+    }
+}, {
+    value: [30.7, 30.1, 28.7, 29.16, 2],
+    name: 'High School Diploma Only',
+    itemStyle: {
+        normal: {
+            color: '#F9713C'
+        }
+    }
+}];
+
+let data_indiana = [{
+    value: [47.1, 24.4, 17.9, 11.924, 1],
+    name: 'Less Than A High School Diploma',
+    itemStyle: {
+        normal: {
+            color: '#B3E4A1'
+        }
+    }
+}, {
+    value: [36.1, 38.2, 37.2, 34.243, 2],
+    name: 'High School Diploma Only',
+    itemStyle: {
+        normal: {
+            color: '#F9713C'
+        }
+    }
+}];
+
+let data_colorado = [{
+    value: [36.1, 15.6, 13.1, 9.016, 1],
+    name: 'Less Than A High School Diploma',
+    itemStyle: {
+        normal: {
+            color: '#B3E4A1'
+        }
+    }
+}, {
+    value: [34.4, 26.5, 23.2, 21.726, 2],
+    name: 'High School Diploma Only',
+    itemStyle: {
+        normal: {
+            color: '#F9713C'
+        }
+    }
+}];
+
+let textColor = "#60acfc";
+
+map.addOverlay(AQIlayer("AQIChart0", data_texas, textColor, ol.proj.fromLonLat([-96.770738, 32.774381])));
+map.addOverlay(AQIlayer("AQIChart1", data_california, textColor, ol.proj.fromLonLat([-120.372090, 37.513988])));
+map.addOverlay(AQIlayer("AQIChart2", data_florida, textColor, ol.proj.fromLonLat([-81.999302, 28.205514])));
+map.addOverlay(AQIlayer("AQIChart3", data_indiana, textColor, ol.proj.fromLonLat([-86.156413, 39.855513])));
+map.addOverlay(AQIlayer("AQIChart4", data_colorado, textColor, ol.proj.fromLonLat([-104.974733, 39.559846])));
