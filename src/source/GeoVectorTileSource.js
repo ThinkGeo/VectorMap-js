@@ -15,9 +15,9 @@ class GeoVectorTileSource extends VectorTile {
     constructor(opt_optins) {
         const options = opt_optins ? opt_optins : {};
         options.tileLoadFunction = options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction;
-
         super(options);
         this.maxDataZoom = options.maxDataZoom;
+        this.apiKey = options.apiKey;
 
         if (options["tileUrlFunction"] === undefined) {
             this.setTileUrlFunction(this.getTileUrlFunction());
@@ -32,6 +32,29 @@ class GeoVectorTileSource extends VectorTile {
         this.applyFeatures = new LRUCache(4);
         this.applyInstructionsCache = [];
         this.registerCreateReplayGroup = {};
+    }
+
+    setUrls(urls) {
+        if (this.apiKey) {
+            for (var i = 0; i < urls.length; i++) {
+                let url = urls[i];
+                if (url.indexOf('apiKey') === -1) {
+                    if (url.indexOf('?') > 0) {
+                        urls[i] = url + '&apiKey=' + this.apiKey;
+                    }
+                    else {
+                        urls[i] = url + '?apiKey=' + this.apiKey;
+                    }
+                }
+            }
+        }
+        this.urls = urls;
+        var key = urls.join('\n');
+        if (this.generateTileUrlFunction_) {
+            this.setTileUrlFunction(this.getTileUrlFunction(), key);
+        } else {
+            this.setKey(key);
+        }
     }
 
     // Add "isGeoVectorTile" for VectorTImageTile
@@ -174,7 +197,7 @@ class GeoVectorTileSource extends VectorTile {
 
         return createReplayGroupFunctions;
     }
-  
+
     saveApplyTileInstructions(cacheKey, features, homologousTilesInstructions) {
         this.applyInstructionsCache[cacheKey] = homologousTilesInstructions;
 

@@ -32,6 +32,8 @@ class GeoVectorTileLayer extends VectorTileLayer {
         options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
         options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
         options["cacheSize"] = options["cacheSize"] === undefined ? 64 : options["cacheSize"];
+        options["urls"] = options["urls"] === undefined ? undefined : options["urls"];
+        options["url"] = options["url"] === undefined ? undefined : options["url"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
@@ -56,6 +58,12 @@ class GeoVectorTileLayer extends VectorTileLayer {
         }
         else {
             this.loadStyleJson(stylejson);
+        }
+
+        if (options.urls) {
+            this.setUrls(options.urls);
+        } else if (options.url) {
+            this.setUrl(options.url);
         }
 
         LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
@@ -103,7 +111,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
             var layerJson = styleJson["layers"][0];
             var sourceId = layerJson["source"];
 
-            var source = this.getGeoSource(sourceId);
+            var source = this.createGeoSource(sourceId);
 
             if (source) {
                 this.setSource(source);
@@ -177,7 +185,15 @@ class GeoVectorTileLayer extends VectorTileLayer {
         }
     }
 
-    getGeoSource(sourceId) {
+    setUrls(urls) {
+        this.getSource().setUrls(urls);
+    }
+
+    setUrl(url) {
+        this.getSource().setUrl(url);
+    }
+
+    createGeoSource(sourceId) {
         if (this.geoSources && this.geoSources[sourceId]) {
             return this.geoSources[sourceId];
         }
@@ -228,7 +244,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
     createVectorTileSource(sourceJson) {
         if (sourceJson["type"] === "MVT") {
-            var format = this.getVectorSourceFormat();
+            var format = this.createVectorSourceFormat();
             var source = new GeoVectorTileSource({
                 tileClass: GeoVectorTile,
                 urls: sourceJson["urls"],
@@ -240,17 +256,19 @@ class GeoVectorTileLayer extends VectorTileLayer {
                 cacheSize: this.cacheSize,
                 multithread: this.multithread,
                 minimalist: this.minimalist,
-                maxDataZoom: this.maxDataZoom
+                maxDataZoom: this.maxDataZoom,
+                apiKey: this.apiKey
             });
             format.setSource(source);
             return source;
         }
     }
-    getVectorSourceFormat() {
+    createVectorSourceFormat() {
         let format = new GeoMVTFormat(undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
 
         return format;
     }
+
     createVectorTileGrid() {
         return createTileGridByXYZ({ tileSize: 512, maxZoom: 22 })
     }
