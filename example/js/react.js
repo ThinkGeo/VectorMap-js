@@ -11,8 +11,8 @@ function renderStreetMap() {
         layers: [layer],
         target: 'map',
         view: new ol.View({
-            center: ol.proj.fromLonLat([-73.413148, 40.736301]),
-            zoom: 13.5,
+            center: ol.proj.fromLonLat([-74.51317, 40.749999]),
+            zoom: 15,
             minZoom: 2,
             maxZoom: 19
         }),
@@ -181,7 +181,7 @@ class StreetMap extends React.Component {
 
                     <div>
                         <label>
-                            Road Number Mask-Type:
+                            Road Number Mask Type:
                         </label>
                         <select onChange={this.maskTypeHandleChange}>
                             <option value="Circle">Circle</option>
