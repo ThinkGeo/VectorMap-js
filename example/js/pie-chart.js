@@ -85,66 +85,195 @@ let California = [{
         color: '#1e86fe'
     }
 }];
-let data2 = [{
-    value: 20,
+let Florida = [{
+    value: 1807386,
     name: 'Without a high school diploma ',
     itemStyle: {
         color: '#fe0100'
     }
 }, {
-    value: 100,
+    value: 4111029,
     name: 'High school diploma',
     itemStyle: {
         color: '#f9ff00'
     }
 }, {
-    value: 120,
+    value: 0245476,
     name: `college or associate's degree`,
     itemStyle: {
         color: '#a4e601'
     }
 }, {
-    value: 135,
+    value: 3929796,
     name: `Bachelor's degree or higher`,
     itemStyle: {
         color: '#1e86fe'
     }
 }];
-let data3 = [{
-    value: 20,
+let Colorado = [{
+    value: 323691,
     name: 'Without a high school diploma ',
     itemStyle: {
         color: '#fe0100'
     }
 }, {
-    value: 100,
+    value: 780033,
     name: 'High school diploma',
     itemStyle: {
         color: '#f9ff00'
     }
 }, {
-    value: 120,
+    value: 1096896,
     name: `college or associate's degree`,
     itemStyle: {
         color: '#a4e601'
     }
 }, {
-    value: 135,
+    value: 1389730,
     name: `Bachelor's degree or higher`,
     itemStyle: {
         color: '#1e86fe'
     }
 }];
 
-map.addOverlay(pieChartOvery("pieChart0", California, ol.proj.fromLonLat([-121.468926, 38.555605])));
-map.addOverlay(pieChartOvery("pieChart1", data2, ol.proj.fromLonLat([-90.450611, 35.265961])))
-// map.addOverlay(pieChartOvery("pieChart2", data1, ol.proj.fromLonLat([-119.23484, 35.675786])))
-// map.addOverlay(pieChartOvery("pieChart3", data2, ol.proj.fromLonLat([-104.940303, 39.885961])))
-// map.addOverlay(pieChartOvery("pieChart4", data3, ol.proj.fromLonLat([-75.640639, 39.725141])))
-// map.addOverlay(pieChartOvery("pieChart5", data2, ol.proj.fromLonLat([-78.871259, 38.455187])))
-// map.addOverlay(pieChartOvery("pieChart6", data1, ol.proj.fromLonLat([-81.956835, 27.985804])))
-// map.addOverlay(pieChartOvery("pieChart7", data3, ol.proj.fromLonLat([-84.754272, 34.126149])))
-// map.addOverlay(pieChartOvery("pieChart8", data3, ol.proj.fromLonLat([-122.447229, 37.765230])))
-// map.addOverlay(pieChartOvery("pieChart9", data2, ol.proj.fromLonLat([-80.569200, 25.857395])))
-// map.addOverlay(pieChartOvery("pieChart10", data1, ol.proj.fromLonLat([-98.813778, 28.468167])))
-// map.addOverlay(pieChartOvery("pieChart11", data3, ol.proj.fromLonLat([-112.982554, 37.003582])))
+let Illinois = [{
+    value: 1008608,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 2287126,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 2487681,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 2834689,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}]
+
+let Georgia = [{
+    value: 932810,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 1850601,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 1867961,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 1938090,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}]
+
+let Texas = [{
+    value: 1008608,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 2287126,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 24873681,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 2834869,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}]
+
+let Dakota = [{
+    value: 38034,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 131086,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 173933,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 134554,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}]
+
+let Mexico = [{
+    value: 517458,
+    name: 'Without a high school diploma ',
+    itemStyle: {
+        color: '#fe0100'
+    }
+}, {
+    value: 1486051,
+    name: 'High school diploma',
+    itemStyle: {
+        color: '#f9ff00'
+    }
+}, {
+    value: 1268116,
+    name: `college or associate's degree`,
+    itemStyle: {
+        color: '#a4e601'
+    }
+}, {
+    value: 1068062,
+    name: `Bachelor's degree or higher`,
+    itemStyle: {
+        color: '#1e86fe'
+    }
+}]
+
+ 
+
+map.addOverlay(pieChartOvery("pieChart0", California, ol.proj.fromLonLat([-119.23484, 35.675786])));
+map.addOverlay(pieChartOvery("pieChart1", Florida, ol.proj.fromLonLat([-81.956835, 27.985804])))
+map.addOverlay(pieChartOvery("pieChart2", Colorado, ol.proj.fromLonLat([-104.940303, 39.885961])))
+map.addOverlay(pieChartOvery("pieChart3", Illinois, ol.proj.fromLonLat([-88.132874, 39.683286])))
+map.addOverlay(pieChartOvery("pieChart4", Georgia, ol.proj.fromLonLat([-84.754272, 34.126149])))
+map.addOverlay(pieChartOvery("pieChart5", Dakota, ol.proj.fromLonLat([-100.144579, 46.843928])))
+map.addOverlay(pieChartOvery("pieChart6", Texas, ol.proj.fromLonLat([-98.813778, 28.468167])))
+map.addOverlay(pieChartOvery("pieChart7", Mexico, ol.proj.fromLonLat([-105.22421, 35.58103])))
+

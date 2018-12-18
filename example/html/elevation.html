@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Elevation along Path </title>
     <!-- style sheet for vectormap.js -->
-    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/1.0.2/vectormap.css">
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.0/vectormap.css">
     <style rel="stylesheet" type="text/css">
         #map {
             width: 100%;
@@ -38,13 +38,13 @@
         }
 
         #side-bar input,
-        #side-bar-p input{
+        #side-bar-p input {
             line-height: 1.42857;
             color: #555;
             background-color: #fff;
         }
 
-        #side-bar-p input{
+        #side-bar-p input {
             padding: 3px 12px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -68,16 +68,16 @@
         }
 
         #side-bar label,
-        #side-bar-p label{
+        #side-bar-p label {
             display: inline-block;
             width: 165px;
             color: #5f6b78;
             margin: 10px 0;
         }
 
-        .btn-wrap{
+        .btn-wrap {
             width: 100%;
-             text-align: right;
+            text-align: right;
         }
 
         .buttonClear {
@@ -87,7 +87,7 @@
             font-size: 14px;
             font-weight: normal;
             line-height: 1.428571429;
-             text-align: right;
+            text-align: right;
             white-space: nowrap;
             vertical-align: middle;
             cursor: pointer;
@@ -100,7 +100,7 @@
         .point {
             display: block;
             background-color: #fff;
-            background: url('https://thinkgeo.github.io/vectormapsample/image/add_point_off.png') scroll top right transparent;
+            background: url('../image/add_point_off.png') scroll top right transparent;
             background-size: 100% 100%;
             background-repeat: no-repeat;
             border-style: none;
@@ -109,19 +109,19 @@
 
         .line {
             background-color: #fff;
-            background: url('https://thinkgeo.github.io/vectormapsample/image/draw_line_off.png');
+            background: url('../image/draw_line_off.png');
             background-size: 100% 100%;
             border-style: none;
             border: 0px;
         }
 
-        /* .Polygon {
+        .Polygon {
             background-color: #fff;
-            background: url('https://thinkgeo.github.io/vectormapsample/image/draw_polygon_off.png');
+            background: url('../image/draw_polygon_off.png');
             background-size: 100% 100%;
             border-style: none;
             border: 0px;
-        } */
+        }
 
         .drawpoint {
             position: absolute;
@@ -132,14 +132,14 @@
         .drawline {
             position: absolute;
             top: 5px;
-            right: 10px;
+            right: 35px;
         }
 
-        /* .drawPolygon {
+        .drawPolygon {
             position: absolute;
             top: 5px;
             right: 3px;
-        } */
+        }
 
         .pg {
             position: absolute;
@@ -204,10 +204,9 @@
             position: absolute;
             left: 33px;
             bottom: 60vh;
-
         }
 
-        #samples-number{
+        #samples-number {
             width: 100%;
         }
     </style>
@@ -235,7 +234,7 @@
             </div>
         </div>
     </div>
-    <!-- <div id="side-bar-p">
+    <div id="side-bar-p">
         <div id="numberSamplesp">
             <div>
                 <label for="samples-number-p" class="control-label">Interval Distance(feet):</label>
@@ -248,16 +247,16 @@
             </div>
         </div>
 
-    </div> -->
+    </div>
     <!-- latest minified version of vectormap.js -->
-   <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
+    <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
 
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="https://thinkgeo.github.io/vectormapsample/js/thinkgeo.gis.js"></script>
+    <script src="../js/thinkgeo.gis.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    <script src="https://thinkgeo.github.io/vectormapsample/js/elevation.js"></script>
+    <script src="../js/elevation.js"></script>
 </body>
 
 </html>

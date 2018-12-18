@@ -9,7 +9,7 @@ let satelliteLabeLayer = new ol.mapsuite.VectorTileLayer(satelliteLabelStyle, {
 //satellite Layer
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud3.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
             "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
         tileSize: 512
     }),
