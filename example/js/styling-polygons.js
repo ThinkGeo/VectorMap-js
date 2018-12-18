@@ -1,6 +1,6 @@
 //basemap style
 const baseMapStyleJson = {
-    "id": " base",
+    "id": "base",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
     "time": "2018/06/09",
