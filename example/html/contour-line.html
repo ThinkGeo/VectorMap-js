@@ -15,9 +15,9 @@
         }
 
         .checkbox {
-            top: 0.3rem;
+            top: 8.3rem;
             right: 1rem;
-            padding: .2rem .6rem;
+            padding: .2rem 0;
             position: absolute;
             color: #fff;
             z-index: 1000;
@@ -27,7 +27,7 @@
             background-color: rgba(255, 255, 255, .8);
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
             position: absolute;
-            top: 1.5rem;
+            top: 0.3rem;
             right: 1rem;
             flex-direction: column;
             font-size: 12px;
@@ -73,9 +73,6 @@
 
 <body>
     <div id="map" style="width:100%;height:100%">
-        <div class="checkbox">
-            <label> Color Fill </label> <input type="checkbox" id="checkbox"   />
-        </div>
         <div class="legend">
             <ul class="rainfall ">
                 <li><i class="lightRain"></i> Light Rain</li>
@@ -84,6 +81,10 @@
                 <li><i class="intenseRain"></i> Intense Rain</li>
                 <li><i class="torrentialRain"></i> Torrential Rain</li>
             </ul>
+        </div>
+
+        <div class="checkbox">
+            <input type="checkbox" id="checkbox" checked /><label> Fill Contours </label>
         </div>
     </div>
 
