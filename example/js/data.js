@@ -164,7 +164,7 @@ const menuData = [{
         codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
         jsPath: './js/pie-chart.js'
     }, {
-        comments: 'The analysis of atmospheric in some states of the United States are geographically shown up. ',
+        comments: 'Educational attainment for adults age 25 and older for some of the U.S., States, and counties, 1970-2016.',
         title: 'AQI Radar',
         htmlPath: './html/AQI-radar.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
