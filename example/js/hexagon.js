@@ -63,12 +63,12 @@ addFeatures();
 let hexbin, layer;
 
 let min, max, maxi;
-max = 20;
-min = 1;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    if (f.get('features').length > 20) {
+    max = 4;
+    min = 1;
+    if (f.get('features').length > max) {
         color = '#00e1fc';
     } else if (f.get('features').length > min) {
         color = '#a4e601';
