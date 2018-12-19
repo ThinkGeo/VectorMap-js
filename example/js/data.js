@@ -170,7 +170,7 @@ const menuData = [{
         codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
         jsPath: './js/AQI-radar.js'
     }, {
-        comments: 'An example shows how to display huge point data on the map with cluster strategy.',
+        comments: 'The U.S. county distribution on the map with cluster strategy.',
         title: 'Cluster Envelope',
         htmlPath: './html/cluster-envelope.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
