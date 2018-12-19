@@ -111,7 +111,7 @@ const menuData = [{
         htmlPath: './html/geojson.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMze',
         jsPath: './js/geojson.js'
-    },{
+    }, {
         comments: 'Styling polygons with Map Suite StyleJSON',
         title: 'Style Polygons',
         htmlPath: './html/styling-polygons.html',
@@ -158,7 +158,7 @@ const menuData = [{
         codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
         jsPath: './js/scatter.js'
     }, {
-        comments: 'The statistics of what percentage of borsers (IE8-, IE9+, Safari, Chrome and Firefox) are in some U.S. states in 2012.',
+        comments: 'Educational attainment for adults age 25 and older for the U.S., States, and counties, 2012-2016.',
         title: 'Pie Chart',
         htmlPath: './html/pie-chart.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
