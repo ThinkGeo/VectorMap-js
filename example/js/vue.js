@@ -55,7 +55,10 @@ const updatedWater = (poiSize, waterColor, fontSize, buildingColor) => {
         } else if (styles[i].id === 'water') {
             styles[i]['polygon-fill'] = waterColor
         } else if (styles[i].id === 'motorway_name') {
-            styles[i]['text-font'] = `bold ${fontSize}px Arial, Helvetica, sans-serif`;
+            let motorwayNameStyle = styles[i].style;
+            for (let j = 0, l = motorwayNameStyle.length; j < l; j++) {
+                motorwayNameStyle[j]['text-font'] = `bold ${fontSize}px Arial, Helvetica, sans-serif`;
+            }
         } else if (styles[i].id === 'building') {
             styles[i]['polygon-fill'] = buildingColor;
         }
@@ -72,13 +75,11 @@ const clickRefresh = (json) => {
     map.addLayer(newLayer);
 }
 
-
-
 new Vue({
     el: '#lines',
     data: {
         poiSize: 50,
-        fontSize: 40,
+        fontSize: 20,
         waterColor: '#0000CD',
         buildingColor: '#FFD700'
     },
