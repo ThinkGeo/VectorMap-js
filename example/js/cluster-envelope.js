@@ -61,8 +61,8 @@
  let features = [];
  const getJson = () => {
      let readTextFile = new Promise(function (resolve, reject) {
-         let file = "../data/GeocodingResult.JSON";
-         var rawFile = new XMLHttpRequest();
+         let file = "../data/CountyGeocodingResult.JSON";
+         let rawFile = new XMLHttpRequest();
          rawFile.overrideMimeType("application/json");
          rawFile.open("GET", file, true);
          rawFile.onreadystatechange = function (ERR) {
