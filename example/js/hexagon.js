@@ -17,7 +17,7 @@ let map = new ol.Map({
         progressiveZoom: false,
 
     })
-})
+});
 
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
@@ -39,76 +39,42 @@ const getJson = () => {
     return readTextFile;
 };
 
-// let features;
-// const addFeatures = () => {
-//     getJson().then((data) => {
-//         let result = JSON.parse(data);
-//         for (let i = 0, length = result.length; i < length; i++) {
-//             let point = ol.proj.fromLonLat(result[i].coordinate);
-//             features[i] = new ol.Feature(new ol.geom.Point(point));
-//             features[i].set('id', i);
-//         }
-
-//         source.clear();
-//         source.addFeatures(features);
-//     })
-// }
-
-const addFeatures = function () {
-    // let ssize = 20; // seed size
-    // let dl = 3693437.206739716;
+let source = new ol.source.Vector();
+const addFeatures = () => {
     let features = [];
-
     getJson().then((data) => {
         let result = JSON.parse(data);
         for (let k = 0, length = result.length; k < length; k++) {
             let point = ol.proj.fromLonLat(result[k].coordinate);
             let seed = point;
-            // for (let j = 0; j < ssize; j++) {
             let f = new ol.Feature(new ol.geom.Point(
                 seed
             ));
-            // let f = new ol.Feature(new ol.geom.Point(
-            //     [seed[0] + dl / 10 * Math.random(),
-            //         seed[1] + dl / 10 * Math.random()
-            //     ]
-            // ));
             f.set('id', k);
             features.push(f);
-            // }
         }
         source.clear();
         source.addFeatures(features);
     });
 };
 
-let source = new ol.source.Vector();
-// Vector source
-// add 2000 features
 addFeatures();
-
-// Interaction to move the source features
-let modify = new ol.interaction.Modify({
-    source: source
-});
-modify.setActive(true);
-map.addInteraction(modify);
 
 let hexbin, layer;
 
 let min, max, maxi;
+max = 20;
+min = 1;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
     if (f.get('features').length > 20) {
-        color = '#00e1fc'; 
-    }
-    else if (f.get('features').length > min) {
+        color = '#00e1fc';
+    } else if (f.get('features').length > min) {
         color = '#a4e601';
-    } 
-    else {
+    } else {
         color = '#ee484d';
-    } 
+    }
     return [new ol.style.Style({
         fill: new ol.style.Fill({
             color: color
@@ -147,5 +113,6 @@ const reset = function () {
 
     // Add layer
     map.addLayer(layer);
-}
+};
+
 reset();
