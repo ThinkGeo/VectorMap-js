@@ -5,17 +5,20 @@ WebFont.load({
     }
 });
 
-var layer = new ol.mapsuite.VectorTileLayer('../data/vectortils_gray.json');
+var layer = new ol.mapsuite.VectorTileLayer('../data/vectortils_gray.json', {
+    'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+});
 
-var map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
+var map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [layer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-98.413148, 38.736301]),
-        zoom: 5,
-        minZoom: 2,
-        maxZoom: 19
+        zoom: 4,
+        minZoom: 0,
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512
     }),
 });
