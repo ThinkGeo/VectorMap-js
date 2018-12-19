@@ -14,14 +14,6 @@
             background: #192a2f
         }
 
-        .checkbox {
-            top: 8.3rem;
-            right: 1rem;
-            padding: .2rem 0;
-            position: absolute;
-            color: #fff;
-            z-index: 1000;
-        }
 
         .legend>ul {
             background-color: rgba(255, 255, 255, .8);
@@ -30,7 +22,7 @@
             top: 0.3rem;
             right: 1rem;
             flex-direction: column;
-            font-size: 12px;
+            font-size: 14px;
             color: #444;
             padding: .2rem .6rem;
             z-index: 1000;
@@ -44,8 +36,8 @@
 
         .legend i {
             display: inline-block;
-            width: .6rem;
-            height: .6rem;
+            width: .8rem;
+            height: .8rem;
             margin-right: .4rem;
         }
 
@@ -80,12 +72,13 @@
                 <li><i class="heavyRain"></i> Heavy Rain</li>
                 <li><i class="intenseRain"></i> Intense Rain</li>
                 <li><i class="torrentialRain"></i> Torrential Rain</li>
+                <div class="checkbox">
+                    <input type="checkbox" id="checkbox" checked /><label> Fill Contours </label>
+                </div>
             </ul>
         </div>
 
-        <div class="checkbox">
-            <input type="checkbox" id="checkbox" checked /><label> Fill Contours </label>
-        </div>
+
     </div>
 
     <script src="../lib/jquery/jquery.min.js"></script>

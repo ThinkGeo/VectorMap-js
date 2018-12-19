@@ -1,207 +1,266 @@
 {
-  "locations": [
-    {
-      "name": "Alabama",
-      "value": 58.3
-    }, {
-      "name": "Alaska",
-      "value": 22.5
-    }, {
-      "name": "Arizona",
-      "value": 13.6
-    }, {
-      "name": "Arkansas",
-      "value": 50.6
-    }, {
-      "name": "California",
-      "value": 22.2
-    }, {
-      "name": "Colorado",
-      "value": 15.9
-    }, {
-      "name": "Connecticut",
-      "value": 50.3
-    }, {
-      "name": "Delaware",
-      "value": 45.7
-    }, {
-      "name": "Florida",
-      "value": 54.5
-    }, {
-      "name": "Georgia",
-      "value": 50.7
-    }, {
-      "name": "Hawaii",
-      "value": 63.7
-    }, {
-      "name": "Idaho",
-      "value": 18.9
-    }, {
-      "name": "Illinois",
-      "value": 39.2
-    }, {
-      "name": "Indiana",
-      "value": 41.7
-    }, {
-      "name": "Iowa",
-      "value": 34.0
-    }, {
-      "name": "Kansas",
-      "value": 28.9
-    }, {
-      "name": "Kentucky",
-      "value": 48.9
-    }, {
-      "name": "Louisiana",
-      "value": 60.1
-    }, {
-      "name": "Maine",
-      "value": 42.2
-    }, {
-      "name": "Maryland",
-      "value": 44.5
-    }, {
-      "name": "Massachusetts",
-      "value": 47.7
-    }, {
-      "name": "Michigan",
-      "value": 38.8
-    }, {
-      "name": "Minnesota",
-      "value": 27.3
-    }, {
-      "name": "Mississippi",
-      "value": 59.0
-    }, {
-      "name": "Missouri",
-      "value": 42.2
-    }, {
-      "name": "Montana",
-      "value": 15.3
-    }, {
-      "name": "Nebraska",
-      "value": 23.6
-    }, {
-      "name": "Nevada",
-      "value": 9.5
-    }, {
-      "name": "New Hampshire",
-      "value": 43.4
-    }, {
-      "name": "New Jersey",
-      "value": 47.1
-    }, {
-      "name": "New Mexico",
-      "value": 14.6
-    }, {
-      "name": "New York",
-      "value": 41.8
-    }, {
-      "name": "North Carolina",
-      "value": 50.3
-    }, {
-      "name": "North Dakota",
-      "value": 17.8
-    }, {
-      "name": "Ohio",
-      "value": 39.1
-    }, {
-      "name": "Oklahoma",
-      "value": 36.5
-    }, {
-      "name": "Oregon",
-      "value": 27.4
-    }, {
-      "name": "Pennsylvania",
-      "value": 42.9
-    }, {
-      "name": "Rhode Island",
-      "value": 47.9
-    }, {
-      "name": "South Carolina",
-      "value": 49.8
-    }, {
-      "name": "South Dakota",
-      "value": 20.1
-    }, {
-      "name": "Tennessee",
-      "value": 54.2
-    }, {
-      "name": "Texas",
-      "value": 28.9
-    }, {
-      "name": "Utah",
-      "value": 12.2
-    }, {
-      "name": "Vermont",
-      "value": 42.7
-    }, {
-      "name": "Virginia",
-      "value": 44.3
-    }, {
-      "name": "Washington",
-      "value": 38.4
-    }, {
-      "name": "West Virginia",
-      "value": 45.2
-    }, {
-      "name": "Wisconsin",
-      "value": 32.6
-    }, {
-      "name": "Wyoming",
-      "value": 12.9
-    } ],
+  "locations": [{
+    "name": "Alabama",
+    "value": 58.3
+  }, {
+    "name": "Alaska",
+    "value": 22.5
+  }, {
+    "name": "Arizona",
+    "value": 13.6
+  }, {
+    "name": "Arkansas",
+    "value": 50.6
+  }, {
+    "name": "California",
+    "value": 22.2
+  }, {
+    "name": "Colorado",
+    "value": 15.9
+  }, {
+    "name": "Connecticut",
+    "value": 50.3
+  }, {
+    "name": "Delaware",
+    "value": 45.7
+  }, {
+    "name": "Florida",
+    "value": 54.5
+  }, {
+    "name": "Georgia",
+    "value": 50.7
+  }, {
+    "name": "Hawaii",
+    "value": 63.7
+  }, {
+    "name": "Idaho",
+    "value": 18.9
+  }, {
+    "name": "Illinois",
+    "value": 39.2
+  }, {
+    "name": "Indiana",
+    "value": 41.7
+  }, {
+    "name": "Iowa",
+    "value": 34.0
+  }, {
+    "name": "Kansas",
+    "value": 28.9
+  }, {
+    "name": "Kentucky",
+    "value": 48.9
+  }, {
+    "name": "Louisiana",
+    "value": 60.1
+  }, {
+    "name": "Maine",
+    "value": 42.2
+  }, {
+    "name": "Maryland",
+    "value": 44.5
+  }, {
+    "name": "Massachusetts",
+    "value": 47.7
+  }, {
+    "name": "Michigan",
+    "value": 38.8
+  }, {
+    "name": "Minnesota",
+    "value": 27.3
+  }, {
+    "name": "Mississippi",
+    "value": 59.0
+  }, {
+    "name": "Missouri",
+    "value": 42.2
+  }, {
+    "name": "Montana",
+    "value": 15.3
+  }, {
+    "name": "Nebraska",
+    "value": 23.6
+  }, {
+    "name": "Nevada",
+    "value": 9.5
+  }, {
+    "name": "New Hampshire",
+    "value": 43.4
+  }, {
+    "name": "New Jersey",
+    "value": 47.1
+  }, {
+    "name": "New Mexico",
+    "value": 14.6
+  }, {
+    "name": "New York",
+    "value": 41.8
+  }, {
+    "name": "North Carolina",
+    "value": 50.3
+  }, {
+    "name": "North Dakota",
+    "value": 17.8
+  }, {
+    "name": "Ohio",
+    "value": 39.1
+  }, {
+    "name": "Oklahoma",
+    "value": 36.5
+  }, {
+    "name": "Oregon",
+    "value": 27.4
+  }, {
+    "name": "Pennsylvania",
+    "value": 42.9
+  }, {
+    "name": "Rhode Island",
+    "value": 47.9
+  }, {
+    "name": "South Carolina",
+    "value": 49.8
+  }, {
+    "name": "South Dakota",
+    "value": 20.1
+  }, {
+    "name": "Tennessee",
+    "value": 54.2
+  }, {
+    "name": "Texas",
+    "value": 28.9
+  }, {
+    "name": "Utah",
+    "value": 12.2
+  }, {
+    "name": "Vermont",
+    "value": 42.7
+  }, {
+    "name": "Virginia",
+    "value": 44.3
+  }, {
+    "name": "Washington",
+    "value": 38.4
+  }, {
+    "name": "West Virginia",
+    "value": 45.2
+  }, {
+    "name": "Wisconsin",
+    "value": 32.6
+  }, {
+    "name": "Wyoming",
+    "value": 12.9
+  }],
   "coordinates": {
-    "Alabama": [-86.279118, 32.361538],
-    "Alaska": [-134.41974, 58.301935],
-    "Arizona": [-112.073844, 33.448457],
-    "Arkansas": [-92.331122, 34.736009],
-    "California": [-121.468926, 38.555605],
-    "Colorado": [-104.984167, 39.7391667],
-    "Connecticut": [-72.677, 41.767],
-    "Delaware": [-75.526755, 39.161921],
-    "Florida": [-81.956835, 27.985804],
-    "Georgia": [-84.39, 33.76],
-    "Hawaii": [-157.826182, 21.30895],
-    "Idaho": [-116.237651, 43.613739],
-    "Illinois": [-89.650373, 39.78325],
-    "Indiana": [-86.147685, 39.790942],
-    "Iowa": [-93.620866, 41.590939],
-    "Kansas": [-95.69, 39.04],
-    "Kentucky": [-84.86311, 38.197274],
-    "Louisiana": [-91.140229, 30.45809],
-    "Maine": [-69.765261, 44.323535],
-    "Maryland": [-76.501157, 38.972945],
-    "Massachusetts": [-71.0275, 42.2352],
-    "Michigan": [-84.5467, 42.7335],
-    "Minnesota": [-93.094, 44.95],
-    "Mississippi": [-90.207, 32.32],
-    "Missouri": [-92.189283, 38.572954],
-    "Montana": [-112.027031, 46.595805],
-    "Nebraska": [-96.675345, 40.809868],
-    "Nevada": [-119.753877, 39.160949],
-    "New Hampshire": [-71.549127, 43.220093],
-    "New Jersey": [-74.756138, 40.221741],
-    "New Mexico": [-105.964575, 35.667231],
-    "New York": [-73.781339, 42.659829],
-    "North Carolina": [-78.638, 35.771],
-    "North Dakota": [-100.779004, 48.813343],
-    "Ohio": [-83.000647, 39.962245],
-    "Oklahoma": [-97.534994, 35.482309],
-    "Oregon": [-123.029159, 44.931109],
-    "Pennsylvania": [-76.875613, 40.269789],
-    "Rhode Island": [-71.422132, 41.82355],
-    "South Carolina": [-81.035, 34],
-    "South Dakota": [-100.336378, 44.367966],
-    "Tennessee": [-100.336378, 44.367966],
-    "Texas": [-86.784, 36.165],
-    "Utah": [-97.75, 30.266667],
-    "Vermont": [-72.57194, 44.26639],
-    "Virginia": [-77.46, 37.54],
-    "Washington": [-122.893077, 47.042418],
-    "West Virginia": [-81.633294, 38.349497],
-    "Wisconsin": [-89.384444, 43.074722],
-    "Wyoming": [-104.802042, 41.145548]
-  
+    "Alabama": [-86.680736, 32.576227],
+
+    "Alaska": [0.314297, 61.308076],
+
+    "Arizona": [-111.930882, 34.167951],
+
+    "Arkansas": [-92.131157, 34.751928],
+
+    "California": [-119.306607, 37.269175],
+
+    "Colorado": [-105.550863, 38.997934],
+
+    "Connecticut": [-72.757507, 41.500765],
+
+    "Delaware": [-75.386594, 39.145324],
+
+    "District of Columbia": [-77.014576, 38.893745],
+
+    "District of Columbia": [-77.014576, 38.893745],
+
+    "Florida": [-83.804601, 27.698638],
+
+    "Georgia": [-83.178297, 32.678208],
+
+    "Hawaii": [-166.599692, 23.691364],
+
+    "Idaho": [-114.143261, 45.494664],
+
+    "Illinois": [-89.266507, 39.73939],
+
+    "Indiana": [-86.441242, 39.766548],
+
+    "Iowa": [-93.389773, 41.938318],
+
+    "Kansas": [-98.320078, 38.498091],
+
+    "Kentucky": [-85.767996, 37.822395],
+
+    "De Soto Parish": [-75.386594, 39.145324],
+
+    "La Salle Parish": [-91.40087, 30.937335],
+
+    "Washington Parish": [-120.882277, 47.273017],
+
+    "Maine": [-68.984684, 45.18849],
+
+    "Maryland": [-77.236966, 38.804821],
+
+    "Massachusetts": [-71.683502, 42.036922],
+
+    "Michigan": [-86.270682, 45.00109],
+
+    "Minnesota": [-93.36129, 46.44186],
+
+    "Mississippi": [-89.876449, 32.567972],
+
+    "Missouri": [-92.436836, 38.304661],
+
+    "Montana": [-110.044424, 46.679508],
+
+    "Nebraska": [-99.680902, 41.50082],
+
+    "Nevada": [-117.022967, 38.502032],
+
+    "New Hampshire": [-71.56614, 44.00123],
+
+    "New Mexico": [-106.026069, 34.166232],
+
+    "New York": [-75.77004, 42.746632],
+
+    "North Carolina": [-79.860994, 35.170518],
+
+    "North Dakota": [-100.301838, 47.467882],
+
+    "Ohio": [-82.669505, 40.365278],
+
+    "Oklahoma": [-98.716732, 35.30905],
+
+    "Oregon": [-120.583402, 44.145446],
+
+    "Pennsylvania": [-77.604677, 41.117936],
+
+    "Rhode Island": [-71.497914, 41.557317],
+
+    "South Carolina": [-80.926614, 33.624497],
+
+    "South Dakota": [-100.247176, 44.212532],
+
+    "Tennessee": [-85.978599, 35.83059],
+
+    "Texas": [-100.076842, 31.168934],
+
+    "Utah": [-111.547228, 39.49968],
+
+    "Vermont": [-72.451472, 43.871754],
+
+    "Virginia": [-79.420915, 38.003386],
+
+    "Virginia Beach city": [-79.420915, 38.003386],
+
+    "Washington": [-120.882277, 47.273017],
+
+    "West Virginia": [-79.420915, 38.003386],
+
+    "Wisconsin": [-89.56949, 44.900771],
+
+    "Wyoming": [-107.553402, 43.000294],
+
+    "Puerto Rico": [-66.583627, 18.199756],
+
+    "Florida Municipio": [-83.804601, 27.698638]
   }
 }

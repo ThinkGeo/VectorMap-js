@@ -4,7 +4,7 @@
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
-            "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+            "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
         tileSize: 512,
     }),
 });
@@ -63,7 +63,7 @@ for (let i = 0; i < 12; i++) {
 //simulated data 
 let California = [{
     value: 4572963,
-    name: `< high school `,
+    name: `Under high  school `,
     itemStyle: {
         color: '#fe0100',
     }
@@ -75,7 +75,7 @@ let California = [{
     }
 }, {
     value: 7544058,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -88,7 +88,7 @@ let California = [{
 }];
 let Florida = [{
     value: 1807386,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -100,7 +100,7 @@ let Florida = [{
     }
 }, {
     value: 0245476,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -113,7 +113,7 @@ let Florida = [{
 }];
 let Colorado = [{
     value: 323691,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -125,7 +125,7 @@ let Colorado = [{
     }
 }, {
     value: 1096896,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -139,7 +139,7 @@ let Colorado = [{
 
 let Illinois = [{
     value: 1008608,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -151,7 +151,7 @@ let Illinois = [{
     }
 }, {
     value: 2487681,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -165,7 +165,7 @@ let Illinois = [{
 
 let Georgia = [{
     value: 932810,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -177,7 +177,7 @@ let Georgia = [{
     }
 }, {
     value: 1867961,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -191,7 +191,7 @@ let Georgia = [{
 
 let Texas = [{
     value: 1008608,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -203,7 +203,7 @@ let Texas = [{
     }
 }, {
     value: 24873681,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -217,7 +217,7 @@ let Texas = [{
 
 let Dakota = [{
     value: 38034,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -229,7 +229,7 @@ let Dakota = [{
     }
 }, {
     value: 173933,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
@@ -243,7 +243,7 @@ let Dakota = [{
 
 let Mexico = [{
     value: 517458,
-    name: '< high school ',
+    name: 'Under high  school ',
     itemStyle: {
         color: '#fe0100'
     }
@@ -255,7 +255,7 @@ let Mexico = [{
     }
 }, {
     value: 1268116,
-    name: `college or associate`,
+    name: `College or associate`,
     itemStyle: {
         color: '#a4e601'
     }
