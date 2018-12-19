@@ -113,6 +113,10 @@ let stylePlaneFunc = function (feature) {
 vector.setStyle(styleLineFunc);
 vector.setOpacity(0.8);
 
+// check the status of checkbox:
+if ($('#checkbox').prop('checked')) {
+    vector.setStyle(stylePlaneFunc);
+}
 $('#checkbox').change(function () {
     if ($('#checkbox').prop('checked')) {
         vector.setStyle(stylePlaneFunc);
