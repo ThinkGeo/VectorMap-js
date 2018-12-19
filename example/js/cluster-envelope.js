@@ -17,7 +17,7 @@
          center: ol.proj.fromLonLat([-96.79620, 38.79423]),
          zoom: 5,
          progressiveZoom: false,
-
+         maxZoom: 19
      })
  })
 
