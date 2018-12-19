@@ -56,7 +56,7 @@ const menuData = [{
     },
     {
         comments: 'Get a family of colors based on different options <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
-        title: 'Find a US Address',
+        title: 'Find an Address in the US',
         htmlPath: './html/find-address.html',
         codePenUrl: '#',
         jsPath: './js/find-address.js'
