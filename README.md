@@ -35,7 +35,7 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
             <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
         </a> 
 	
-| <a href="https://vectormapsamples.thinkgeo.com/#Scatter"><img src="https://vectormapsamples.thinkgeo.com/example/image/scatter.png" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution"><img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
  </a> | <a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
             <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
         </a> | <a href="https://vectormapsamples.thinkgeo.com/#GPX">
