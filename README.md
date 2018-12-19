@@ -15,12 +15,12 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Examples - [View It Online](https://vectormapsamples.thinkgeo.com/):
 
-| <a href="https://vectormapsamples.thinkgeo.com/#CloudVectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#CloudRasterMaps">
+| <a href="https://vectormapsamples.thinkgeo.com/#VectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
             <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#SatellitewithLabels">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
             <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HeatmapwithJSON">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
             <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
         </a> 
 	
