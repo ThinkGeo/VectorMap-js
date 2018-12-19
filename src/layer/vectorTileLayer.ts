@@ -725,32 +725,35 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             // recalculate the verctices of text for resolution changed
-            // fix for WebGL not to unpremultiply
+            // fix for WebGL not to unpremultiply           
             if(this instanceof (<any>ol.render).webgl.TextReplay){
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     
-                if(!Number.isInteger( frameState.viewState.zoom)){
+                if(!Number.isInteger(frameState.viewState.zoom)){
                     var startIndicesFeature = this.startIndicesFeature;
+                    this.declutterTree.clear();
+
                     for(var i = 0; i < startIndicesFeature.length; i++){
                         var feature = startIndicesFeature[i];
                         var geometry = feature.getGeometry();
-                        if(feature.getType() == 'LineString' && feature.isCurve){
+
+                        if(feature.getType() == 'LineString'){
                             this.drawText(geometry, feature);
                             var startIndices = this.startIndices;
                             var start = startIndices[i] / 6 * 32;
-                            var end = (startIndices[i + 1] || this.indices.length) / 6 *32;
-                            var num = end - start;
+                            var num = this.vertices.length;
                             // replace the indices and vertices
                             this.vertices_.splice(start, num, ...this.vertices);
                             this.vertices.length = 0;
                         }
                     }
     
-                    this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
-                    this.indices.length = 0;
+                    if(this.indices.length > 0){                        
+                        this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
+                        this.indices.length = 0;
+                    }
                 }
-            }
-            
+            }             
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
