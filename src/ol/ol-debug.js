@@ -67312,11 +67312,11 @@ function olInit() {
      * @return {WebGLTexture} The texture.
      * @private
      */
-    ol.webgl.Context.createTexture_ = function (gl, opt_wrapS, opt_wrapT) {
+    ol.webgl.Context.createTexture_ = function (gl, opt_wrapS, opt_wrapT, texParameteriType) {
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
         
         if (opt_wrapS !== undefined) {
             gl.texParameteri(
@@ -67357,8 +67357,8 @@ function olInit() {
      * @param {number=} opt_wrapT wrapT.
      * @return {WebGLTexture} The texture.
      */
-    ol.webgl.Context.createTexture = function (gl, image, opt_wrapS, opt_wrapT) {
-        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
+    ol.webgl.Context.createTexture = function (gl, image, opt_wrapS, opt_wrapT, texParameteriType) {
+        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT, texParameteriType);
         gl.texImage2D(
             gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
@@ -67658,7 +67658,7 @@ function olInit() {
                 texture = texturePerImage[uid];
             } else {
                 texture = ol.webgl.Context.createTexture(
-                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
+                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, this.label? gl.NEAREST: gl.LINEAR);
                 texturePerImage[uid] = texture;
             }
             textures[i] = texture;
@@ -67730,6 +67730,11 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
         var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
+        
+        // gl.enable(gl.STENCIL_TEST);
+        // gl.colorMask(false, false, false, false);
+        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+        // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
@@ -67743,6 +67748,11 @@ function olInit() {
                 start = end;
             }
         }
+
+        // gl.colorMask(true, true, true, true);
+        // gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
+        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+        // gl.disable(gl.STENCIL_TEST);
     };
 
 
@@ -71209,7 +71219,7 @@ function olInit() {
                     this.originX = 0;
                     this.originY = 0;
                     this.height = height;
-                    this.width = width - lineWidth;
+                    this.width = width + lineWidth;
                     this.imageHeight = height / pixelRatio;
                     this.imageWidth = width / pixelRatio;
 
@@ -102440,7 +102450,7 @@ function olInit() {
             var instructs = subTileInstructCaches[tileKey];
 
             var strategyTree = ol.ext.rbush(9);
-// debugger
+
             var tileGrid = new ol.source.XYZ().getTileGrid();
             var bbox = tileGrid.getTileCoordExtent(tileCoord);
 

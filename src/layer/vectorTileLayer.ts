@@ -720,7 +720,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 //     featureCallback, oneByOne, opt_hitExtent);
 
                 // gl.stencilMask(0);
-                // FIXME Eric
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
 
