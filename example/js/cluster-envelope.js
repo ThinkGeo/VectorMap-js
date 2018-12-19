@@ -17,7 +17,7 @@
          center: ol.proj.fromLonLat([-96.79620, 38.79423]),
          zoom: 5,
          progressiveZoom: false,
-
+         maxZoom: 19
      })
  })
 
@@ -79,6 +79,7 @@
      return readTextFile;
  }
 
+ let clusterLayer;
  getJson().then((data) => {
      let result = JSON.parse(data);
      for (let i = 0, length = result.length; i < length; i++) {
@@ -96,7 +97,7 @@
      clusterSource.getSource().addFeatures(features);
 
      // Animated cluster layer
-     let clusterLayer = new ol.layer.AnimatedCluster({
+     clusterLayer = new ol.layer.AnimatedCluster({
          name: 'Cluster',
          source: clusterSource,
          style: getStyle
