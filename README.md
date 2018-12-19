@@ -13,35 +13,35 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-## Examples - [View It Online](https://thinkgeo.github.io/VectorMap-js/):
+## Examples - [View It Online](https://vectormapsamples.thinkgeo.com/):
 
-| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#CloudVectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#CloudRasterMaps">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#SatellitewithLabels">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HeatmapwithJSON">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
         </a> 
 	
 	
 
-| <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ImagerywithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#Projection">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-projection.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime"><img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#Projection">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-projection.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#ElevationalongPath">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-elevation.jpg" width="210" height="210" alt="">
         </a> 
 	
-| <a href="https://thinkgeo.github.io/vectormapsample/#ColorUtilities"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-color.jpg" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#PieChart">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-pie.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#GPX">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-gpx.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#ColorUtilities"><img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-color.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#PieChart">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-pie.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#GPX">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
         </a> 
 	
  
