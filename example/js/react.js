@@ -22,7 +22,7 @@ class StreetMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            parkColor: 'rgba(167, 218, 122, 0.35)',
+            parkColor: '#a7da7a59',
             placement: 'Line',
             maskType: 'Circle',
             poiSize: '22',
@@ -196,7 +196,13 @@ class StreetMap extends React.Component {
                         <label>
                             Park Color:
                         </label>
-                        <input type="text" value={this.state.parkColor} onChange={this.parkFillColorHandleChange} />
+                        <select onChange={this.parkFillColorHandleChange}>
+                            <option value="#a7da7a59">#a7da7a59</option>
+                            <option value="#25ff00">#25ff00</option>
+                            <option value="#4ea440">#4ea440</option>
+                            <option value="#a29708">#a29708</option>
+                            <option value="#fe6c00">#fe6c00</option>
+                        </select>
                     </div>
 
                     <div>
