@@ -56,7 +56,7 @@ const menuData = [{
     },
     {
         comments: 'Get a family of colors based on different options <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
-        title: 'Find a US Address',
+        title: "Find an Address in the US",
         htmlPath: './html/find-address.html',
         codePenUrl: '#',
         jsPath: './js/find-address.js'
@@ -72,19 +72,19 @@ const menuData = [{
         jsPath: './js/styling-points.js'
     }, {
         comments: 'This example loads new features from GeoServer WFS.',
-        title: 'WFS ',
+        title: 'Work with WFS ',
         htmlPath: './html/WFS.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOjYV',
         jsPath: './js/WFS.js'
     }, {
         comments: 'Create features from geometries in WKT (Well Known Text) format..',
-        title: 'WKT ',
+        title: 'Work with WKT ',
         htmlPath: './html/WKT.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/ZmgdgL',
         jsPath: './js/WKT.js'
     }, {
         comments: 'Example of using the GPX source..',
-        title: 'GPX ',
+        title: 'Work with GPX ',
         htmlPath: './html/GPX.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/LXwwPm',
         jsPath: './js/GPX.js'
@@ -100,22 +100,10 @@ const menuData = [{
         jsPath: './js/vector-tile.js'
     }, {
         comments: 'Styling rivers of europe with Map Suite StyleJSON',
-        title: 'Styling Lines',
+        title: 'Style Lines',
         htmlPath: './html/styling-lines.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoJGx',
         jsPath: './js/styling-lines.js'
-    }, {
-        comments: 'Styling polygons with Map Suite StyleJSON',
-        title: 'Styling Polygons',
-        htmlPath: './html/styling-polygons.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/qQezZR',
-        jsPath: './js/styling-polygons.js'
-    }, {
-        comments: 'Styling Label of Frisco block  with Map Suite StyleJSON',
-        title: 'Labeling Features',
-        htmlPath: './html/labeling-features.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
-        jsPath: './js/labeling-features.js'
     },
     {
         comments: 'Example of GeoJSON features with labels.',
@@ -123,12 +111,24 @@ const menuData = [{
         htmlPath: './html/geojson.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMze',
         jsPath: './js/geojson.js'
+    },{
+        comments: 'Styling polygons with Map Suite StyleJSON',
+        title: 'Style Polygons',
+        htmlPath: './html/styling-polygons.html',
+        codePenUrl: 'https://codepen.io/thinkgeo/pen/qQezZR',
+        jsPath: './js/styling-polygons.js'
     }, {
         comments: 'Rendering KML with a vector source.',
-        title: 'KML ',
+        title: 'Style KML ',
         htmlPath: './html/KML.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
         jsPath: './js/KML.js'
+    }, {
+        comments: 'Styling Label of Frisco block  with Map Suite StyleJSON',
+        title: 'Labeling Features',
+        htmlPath: './html/labeling-features.html',
+        codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
+        jsPath: './js/labeling-features.js'
     }]
 }, {
     dataTarget: 'popular-use-cases',

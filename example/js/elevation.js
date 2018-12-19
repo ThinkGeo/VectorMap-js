@@ -31,14 +31,15 @@ $(function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
-  APIKey.apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+  APIKey.apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 
 });
 
 let satelliteLayer = new ol.layer.Tile({
   source: new ol.source.XYZ({
     url: "https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
-      "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+      "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
+    tileSize: 512
   }),
 });
 
@@ -116,27 +117,13 @@ var map = new ol.Map({
   })
 });
 
-map.getInteractions().forEach(function (element, index, array) {
-  if (element instanceof ol.interaction.MouseWheelZoom)
-    element.setActive(false);
-})
+
 map.addInteraction(new ol.interaction.DragPan({
   condition: function (event) {
     return event.originalEvent.ctrlKey
   }
 }));
 
-var mapEle = document.getElementById("map");
-
-function disableZoom(e) {
-  var e = e || window.event;
-  if (e.keyCode == 17 && map) {
-    map.getInteractions().forEach(function (element, index, array) {
-      if (element instanceof ol.interaction.MouseWheelZoom)
-        element.setActive(false);
-    });
-  }
-}
 
 var drawLineElevation = function (feature) {
   var apiInstance = new GisServerApis.ElevationApi();
@@ -174,7 +161,7 @@ var drawLineElevation = function (feature) {
     });
 
     var callback = function (error, data, response) {
-      if (error) {} else {
+      if (error) { } else {
         var coordinates = feature.getGeometry().getLastCoordinate();
         addFeature(new ol.Feature({
           geometry: new ol.geom.Point(coordinates),
@@ -254,11 +241,50 @@ $('#samples-number').on('change', function () {
       featureDefault.set('type', 'route');
       addFeature(featureDefault);
     }
-    featureLine.set('type', 'route');
-    addFeature(featureLine);
+ 
+   
   }
 });
 var featureDefault;
+var polygonDefault = function () {
+  var defaultClient = GisServerApis.ApiClient.instance;
+  defaultClient.basePath = "https://cloud1.thinkgeo.com";
+  var APIKey = defaultClient.authentications['API Key'];
+  APIKey.apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
+
+  featureDefault = new ol.Feature({
+    geometry: new ol.geom.LineString([
+      [-13541888.484786397, 6056958.501631321],
+      [-13541864.598215058, 6056894.0078887055],
+      [-13541874.152843593, 6056853.400717429],
+      [-13541881.318814995, 6056812.793546153],
+      [-13541890.87344353, 6056762.631746341],
+      [-13541914.76001487, 6056662.308146716],
+      [-13541888.484786397, 6056607.369032636],
+      [-13541828.76835805, 6056593.037089833],
+      [-13541752.331329763, 6056593.037089833],
+      [-13541661.562358676, 6056595.425746967],
+      [-13541582.736673256, 6056614.535004038],
+      [-13541513.465616373, 6056636.032918244],
+      [-13541475.24710223, 6056633.64426111],
+      [-13541429.862616686, 6056624.089632574],
+      [-13541336.704988463, 6056612.146346904],
+      [-13541265.045274446, 6056597.814404101],
+      [-13541190.996903295, 6056518.988718682],
+      [-13541195.774217563, 6056452.106318932],
+      [-13541183.830931893, 6056380.446604915],
+      [-13541174.276303357, 6056306.398233764],
+      [-13541174.276303357, 6056227.572548345]
+    ])
+  });
+  featureDefault.set('type', 'route');
+  addFeature(featureDefault);
+  drawLineElevation(featureDefault)
+}
+$(
+  polygonDefault()
+);
+
 
 var clear = function () {
   // Clear Elevation Layer.
