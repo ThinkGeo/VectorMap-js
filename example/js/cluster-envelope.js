@@ -13,10 +13,10 @@ let map = new ol.Map({
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 38.79423]),
+        center: ol.proj.fromLonLat([-87.64620, 41.80423]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
-        zoom: 4,
+        zoom: 12,
         progressiveZoom: false,
     })
 })
@@ -61,7 +61,7 @@ const getStyle = function (feature, resolution) {
 let features = [];
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/CountyGeocodingResult.JSON";
+        let file = "../data/crime.json";
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -83,7 +83,7 @@ let clusterLayer;
 getJson().then((data) => {
     let result = JSON.parse(data);
     for (let i = 0, length = result.length; i < length; i++) {
-        let point = ol.proj.fromLonLat(result[i].coordinate);
+        let point = ol.proj.fromLonLat(result[i].geometry.coordinates);
         features[i] = new ol.Feature(new ol.geom.Point(point));
         features[i].set('id', i);
     }

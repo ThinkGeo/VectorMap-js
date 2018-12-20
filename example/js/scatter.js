@@ -37,19 +37,15 @@ let xhr = new XMLHttpRequest();
 xhr.open("GET", "../data/scatter.json");
 xhr.onreadystatechange = function () {
     if (xhr.readyState == 4 && xhr.status == 200) {
-        let res = JSON.parse(xhr.responseText)
-        let data = res.locations;
-        var geoCoordMap = res.coordinates;
+        let data = JSON.parse(xhr.responseText)
         var convertData = function (data) {
             var res = [];
             for (var i = 0; i < data.length; i++) {
-                var geoCoord = geoCoordMap[data[i].name];
-                if (geoCoord) {
-                    res.push({
-                        name: data[i].name,
-                        value: geoCoord.concat(data[i].value)
-                    });
-                }
+                res.push({
+                    name: data[i].name,
+                    value: data[i].coordinate.concat(data[i].value)
+                });
+
             }
             return res;
         };
@@ -66,18 +62,18 @@ xhr.onreadystatechange = function () {
             tooltip: {
                 trigger: 'item',
                 formatter: function (obj) {
-                    return `${obj.data.value[2]} Inches`
+                    return `${obj.data.value[2]} Milli­metres`
                 },
-                
+
             },
             openlayers: {},
             series: [
                 {
-                    name: '	Inches',
+                    name: 'Milli­metres',
                     type: 'scatter',
                     data: convertData(data),
                     symbolSize: function (val) {
-                        return val[2] / 2;
+                        return val[2] / 40;
                     },
                     label: {
                         normal: {
@@ -102,7 +98,7 @@ xhr.onreadystatechange = function () {
                         return b.value - a.value;
                     }).slice(0, 5)),
                     symbolSize: function (val) {
-                        return val[2] / 2;
+                        return val[2] /40;
                     },
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -127,9 +123,7 @@ xhr.onreadystatechange = function () {
                 }]
         };
 
-        console.log(convertData(data.sort(function (a, b) {
-            return b.value - a.value;
-        }).slice(0, 6)))
+
         var echartslayer = new ol3Echarts(option, {
             hideOnMoving: false,
             hideOnZooming: false,

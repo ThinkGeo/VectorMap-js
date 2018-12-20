@@ -650,7 +650,7 @@
           jsPath: './example/js/vector-tile.js'
         }, {
           comments: 'Styling rivers of europe with StyleJSON.',
-          title: 'Style Lines',
+          title: 'Style Lines from GeoJSON',
           htmlPath: './example/html/styling-lines.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoJGx',
           jsPath: './example/js/styling-lines.js'
@@ -663,19 +663,19 @@
           jsPath: './example/js/geojson.js'
         }, {
           comments: 'Styling polygons with  StyleJSON.',
-          title: 'Style Polygons',
+          title: 'Style Polygons from GeoJSON',
           htmlPath: './example/html/styling-polygons.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQezZR',
           jsPath: './example/js/styling-polygons.js'
         }, {
           comments: 'Styling KML with StyleJSON.',
-          title: 'Style KML ',
+          title: 'Style Polygons from KML ',
           htmlPath: './example/html/KML.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
           jsPath: './example/js/KML.js'
         }, {
           comments: 'Styling Label of Frisco block  with StyleJSON',
-          title: 'Labeling Features',
+          title: 'Label Features',
           htmlPath: './example/html/labeling-features.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
           jsPath: './example/js/labeling-features.js'
@@ -702,7 +702,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVqbw',
           jsPath: './example/js/contour-line.js'
         }, {
-          comments: "A bubble map shows average total yearly precipitation in all states of US.",
+          comments: "A bubble map shows average annual precipitation by city in the United States.",
           title: 'Scatter',
           htmlPath: './example/html/scatter.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
@@ -715,18 +715,18 @@
           jsPath: './example/js/pie-chart.js'
         }, {
           comments: 'Educational attainment for adults age 25 and older for some states in US, 1970-2016 ',
-          title: 'AQI Radar',
+          title: 'Radar Map',
           htmlPath: './example/html/AQI-radar.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
           jsPath: './example/js/AQI-radar.js'
         }, {
-          comments: 'The U.S. county distribution with cluster strategy',
+          comments: 'Drug-related crimes of Chicago in 2016 with cluster strategy',
           title: 'Cluster Envelope',
           htmlPath: './example/html/cluster-envelope.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
           jsPath: './example/js/cluster-envelope.js'
         }, {
-            comments: 'The U.S. county distribution with  hexagonal grid.',
+          comments: 'Drug-related crimes of Chicago in 2016 with   hexagonal grid.',
           title: 'Hexagon',
           htmlPath: './example/html/hexagon.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
@@ -748,17 +748,23 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/dwbPoq',
           jsPath: './example/js/Jquery.js'
         }, {
-            comments: 'Shows how VectorMap.js works with React.JS to do some interation with map.',
+          comments: 'Shows how VectorMap.js works with React.JS to do some interation with map.',
           title: 'React JS',
           htmlPath: './example/html/react.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/pqzvRR',
           jsPath: './example/js/react.js'
         }, {
-            comments: 'Shows how VectorMap.js works with Vue.JS to do some interation with map.',
+          comments: 'Shows how VectorMap.js works with Vue.JS to do some interation with map.',
           title: 'Vue.JS',
           htmlPath: './example/html/vue.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',
           jsPath: './example/js/vue.js'
+        }, {
+          comments: '',
+          title: 'Angular',
+          htmlPath: './example/html/find-address.html',
+          codePenUrl: '#',
+          jsPath: './example/js/find-address.js'
         }]
       },];
       exports.default = menuData;

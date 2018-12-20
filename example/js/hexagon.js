@@ -14,8 +14,8 @@ let map = new ol.Map({
     view: new ol.View({
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
-        zoom: 4,
-        center: ol.proj.fromLonLat([-96.79620, 38.79423]),
+        zoom: 10,
+        center: ol.proj.fromLonLat([-87.64620, 41.80423]),
         progressiveZoom: false,
 
     })
@@ -23,7 +23,7 @@ let map = new ol.Map({
 
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/CountyGeocodingResult.JSON";
+        let file = "../data/crime.json";
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -33,7 +33,7 @@ const getJson = () => {
                     resolve(rawFile.responseText);
                 } else {
                     reject(new Error(ERR));
-                }
+                } 
             }
         }
         rawFile.send(null);
@@ -47,7 +47,7 @@ const addFeatures = () => {
     getJson().then((data) => {
         let result = JSON.parse(data);
         for (let k = 0, length = result.length; k < length; k++) {
-            let point = ol.proj.fromLonLat(result[k].coordinate);
+            let point = ol.proj.fromLonLat(result[k].geometry.coordinates);
             let seed = point;
             let f = new ol.Feature(new ol.geom.Point(
                 seed
@@ -68,14 +68,17 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    max = 4;
-    min = 1;
+    const max = 400;
+    const middle=200
+    const min = 1;
     if (f.get('features').length > max) {
-        color = '#00e1fc';
-    } else if (f.get('features').length > min) {
-        color = '#a4e601';
-    } else {
-        color = '#ee484d';
+        color = '#ff3333';
+    } else if (f.get('features').length > middle && f.get('features').length < max) {
+        color = '#ff6666';
+    } else if (f.get('features').length > min && f.get('features').length < middle) { 
+        color = '#ffb3b3';
+    } else{
+        color = '#ffe6e6';
     }
     return [new ol.style.Style({
         fill: new ol.style.Fill({
@@ -85,7 +88,7 @@ const styleFn = function (f, res) {
 }
 // Create HexBin and calculate min/max
 const reset = function () {
-    let size = 40000;
+    let size = 2000;
     if (layer) map.removeLayer(layer);
     let features;
 
