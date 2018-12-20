@@ -12661,8 +12661,8 @@ function olInit() {
                     }
                 }
             }else if(extent){
-                if(isStartIn){                    
-                    if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                          
+                if(isStartIn){
+                    if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
                         var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
                         var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
                         var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
@@ -12674,7 +12674,7 @@ function olInit() {
                             flatCoordinates[j + 1] = intersectionPoint[1];
                             lineFlag = true;
                         }
-                    }                        
+                    }     
                 }else{
                     if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
                         if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
@@ -12687,11 +12687,11 @@ function olInit() {
                             if(intersectionPoint){
                                 flatCoordinates[j] = intersectionPoint[0];
                                 flatCoordinates[j + 1] = intersectionPoint[1];    
-                            }else{
-                                continue;
                             }
+                        }else{
+                            continue;
                         }
-                    }
+                    }                  
                 }
             }
             dest[i++] = flatCoordinates[j] + deltaX;
