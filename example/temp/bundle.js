@@ -714,7 +714,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
           jsPath: './example/js/pie-chart.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older for some states in US, 1970-2016 ',
+          comments: 'Educational attainment for adults age 25 and older for some states in US, 2012-2016 ',
           title: 'Radar Map',
           htmlPath: './example/html/AQI-radar.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
@@ -726,7 +726,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
           jsPath: './example/js/cluster-envelope.js'
         }, {
-          comments: 'Drug-related crimes of Chicago in 2016 with   hexagonal grid.',
+          comments: 'Drug-related crimes of Chicago in 2016 with hexagonal grid.',
           title: 'Hexagon',
           htmlPath: './example/html/hexagon.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
