@@ -1,8 +1,14 @@
+WebFont.load({
+    custom: {
+        families: ['vectormap-icons'],
+        urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
+    }
+});
 
 //Label featuer
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
     apiKey: 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~', // please go to https://cloud.thinkgeo.com to create
-    visible:true
+    visible: true
 });
 
 //image feature
@@ -13,15 +19,17 @@ let imageryLayer = new ol.layer.Tile({
 });
 
 //creat map
-let map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [imageryLayer, imageryLabeLayer],
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 35.79423]),
-        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 3,
         minZoom: 3,
-       
+
     }),
 });
