@@ -59,7 +59,9 @@ let wktVectorLayer = new ol.mapsuite.VectorLayer(WKTstyleJson, {
 //Create view
 let view = new ol.View({
     center: ol.proj.fromLonLat([-86.79620, 32.79423]),
-    maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 6,
+    maxZoom: 19,
+    maxResolution: 40075016.68557849 / 512,
+    zoom: 6,
 });
 
 

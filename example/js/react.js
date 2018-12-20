@@ -12,7 +12,9 @@ function renderStreetMap() {
         target: 'map',
         view: new ol.View({
             center: ol.proj.fromLonLat([-74.51317, 40.749999]),
-            maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 15,
+            maxZoom: 19,
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 15,
             minZoom: 2,
           
         }),

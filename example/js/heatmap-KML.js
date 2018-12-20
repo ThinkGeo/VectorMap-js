@@ -23,10 +23,10 @@ let heatMapLayer = new ol.layer.Heatmap({
     }),
     blur: 15,
     radius: 10
-}); 
+});
 
 //add heatmap layer feature
-heatMapLayer.getSource().on('addfeature', function(event) {
+heatMapLayer.getSource().on('addfeature', function (event) {
     // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
     // standards-violating <magnitude> tag in each Placemark.  We extract it from
     // the Placemark's name instead.
@@ -43,7 +43,9 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([149.704275, -15.037667]),
-        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 3,
         minZoom: 2
     })
 });

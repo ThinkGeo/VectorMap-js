@@ -24,7 +24,9 @@ $.ajax({
             target: 'map',
             view: new ol.View({
                 center: ol.proj.fromLonLat([120.10886859566, 30.235956526643]),
-                maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 13,
+                maxZoom: 19,
+                maxResolution: 40075016.68557849 / 512,
+                zoom: 13,
                 minZoom: 2,
                 progressiveZoom: false,
 

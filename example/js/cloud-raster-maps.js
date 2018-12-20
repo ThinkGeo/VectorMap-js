@@ -36,7 +36,8 @@ let map = new ol.Map({
     loadTilesWhileInteracting: true,
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        maxZoom: 19,maxResolution: 40075016.68557849 / 512,
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512,
         zoom: 3,
         progressiveZoom: false,
         minZoom: 2

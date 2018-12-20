@@ -49,7 +49,9 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(styleJson, {
 let view = new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
-    maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 11,
+    maxZoom: 19,
+    maxResolution: 40075016.68557849 / 512,
+    zoom: 11,
     progressiveZoom: false,
 
 });
