@@ -9,7 +9,7 @@ WebFont.load({
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
 }
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 
 
 
@@ -107,7 +107,7 @@ const popUp = function (address, centerCoordinate) {
 //creat view
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
-    zoom: 17,
+    maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 17,
 })
 
 //creat map

@@ -18,7 +18,7 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-95.940014, 36.031607]),
-        zoom: 5
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 4
     })
 });
 
@@ -31,7 +31,7 @@ let pieChartOvery = (id, data, pt) => {
         },
         series: [{
             type: 'pie',
-            radius: '40%',
+            radius: '35%',
             data: data,
             itemStyle: {
                 emphasis: {
@@ -81,7 +81,7 @@ let California = [{
     }
 }, {
     value: 8176487,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -106,7 +106,7 @@ let Florida = [{
     }
 }, {
     value: 3929796,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -131,7 +131,7 @@ let Colorado = [{
     }
 }, {
     value: 1389730,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -157,7 +157,7 @@ let Illinois = [{
     }
 }, {
     value: 2834689,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -183,7 +183,7 @@ let Georgia = [{
     }
 }, {
     value: 1938090,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -209,7 +209,7 @@ let Texas = [{
     }
 }, {
     value: 2834869,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -235,7 +235,7 @@ let Dakota = [{
     }
 }, {
     value: 134554,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }
@@ -261,7 +261,7 @@ let Mexico = [{
     }
 }, {
     value: 1068062,
-    name: `> Bachelor's degree`,
+    name: `Bachelor degree and above`,
     itemStyle: {
         color: '#1e86fe'
     }

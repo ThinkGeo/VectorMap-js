@@ -1,7 +1,7 @@
 
 //Label featuer
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
-    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~', // please go to https://cloud.thinkgeo.com to create
+    apiKey: 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~', // please go to https://cloud.thinkgeo.com to create
     visible:true
 });
 
@@ -20,8 +20,8 @@ let map =  new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 35.79423]),
-        zoom: 5,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
         minZoom: 3,
-        maxZoom: 8
+       
     }),
 });

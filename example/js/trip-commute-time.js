@@ -3,7 +3,7 @@
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+            + "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
         tileSize: 512,
     }),
 });
@@ -17,7 +17,7 @@ let map =  new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-99.097118, 38.915238]),
-        zoom: 5,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 4,
         minZoom: 2
     })
 })

@@ -605,8 +605,7 @@
     }, {
         "id": "building",
         "filter": "layerName='building'",
-        "polygon-fill": "@buildingFill"
-    }, {
+        "polygon-fill": "@buildingFill",
         "style": [{
             "filter": "zoom=14;class='hospital,hotel,castle,university,civic,stadium'",
             "polygon-fill": "@buildingFill"

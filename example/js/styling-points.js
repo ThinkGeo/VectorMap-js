@@ -1,7 +1,7 @@
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";
 
 const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
-    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~' // please go to https://cloud.thinkgeo.com to create
+    apiKey: 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~' // please go to https://cloud.thinkgeo.com to create
 });
  
 
@@ -82,6 +82,6 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 33.15423]),
-        zoom: 14,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 14,
     }),
 });

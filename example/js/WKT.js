@@ -27,7 +27,7 @@ const WKTstyleJson =
     ],
     "sources": [{
         "id": "countries_source",
-        "url": "https://thinkgeo.github.io/vectormapsample/data/map.wkt",
+        "url": "../data/map.wkt",
         "type": "WKT",
         "dataProjection":"EPSG:4326",
         "featureProjection":"EPSG:3857"
@@ -44,7 +44,7 @@ const WKTstyleJson =
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
 }
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 
 //Base map layer
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
@@ -59,8 +59,7 @@ let wktVectorLayer = new ol.mapsuite.VectorLayer(WKTstyleJson, {
 //Create view
 let view = new ol.View({
     center: ol.proj.fromLonLat([-86.79620, 32.79423]),
-    zoom: 7,
-    maxZoom: 19,
+    maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 6,
 });
 
 

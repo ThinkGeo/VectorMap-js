@@ -81,8 +81,8 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.79620, 37.79423]),
-    zoom: 5,
-    maxZoom: 19,
+    maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 4,
+ 
 });
 
 let map = new ol.Map({

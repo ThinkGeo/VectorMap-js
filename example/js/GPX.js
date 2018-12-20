@@ -41,7 +41,7 @@ const gpxJonStyle =
     ],
     "sources": [{
         "id": "countries_source",
-        "url": "https://thinkgeo.github.io/vectormapsample/data/fells_loop.gpx",
+        "url": "../data/fells_loop.gpx",
         "type": "GPX"
     }],
     "layers": [{
@@ -55,7 +55,7 @@ const gpxJonStyle =
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
 }
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
@@ -69,8 +69,10 @@ let gpxVectorLayer = new ol.mapsuite.VectorLayer(gpxJonStyle, {
 
 let view = new ol.View({
     center: [-7916041.528716288, 5228379.045749711],
-    zoom: 14,
     maxZoom: 19,
+    maxResolution: 40075016.68557849 / 512,
+    zoom: 13,
+   
 });
 
 let map = new ol.Map({

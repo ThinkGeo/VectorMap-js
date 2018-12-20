@@ -6,7 +6,7 @@ WebFont.load({
 });
 
 var layer = new ol.mapsuite.VectorTileLayer('../data/vectortils_gray.json', {
-    'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+    'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 });
 
 var map = new ol.Map({
@@ -16,7 +16,7 @@ var map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([-98.413148, 38.736301]),
-        zoom: 4,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 4,
         minZoom: 0,
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512

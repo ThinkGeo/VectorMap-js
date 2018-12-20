@@ -108,8 +108,9 @@ let map =  new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        zoom: 7,
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 6,
         minZoom: 0,
-        maxZoom: 18
     }),
 });

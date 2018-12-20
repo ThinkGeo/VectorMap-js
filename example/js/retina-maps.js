@@ -3,7 +3,7 @@
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x2/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",// please go to https://cloud.thinkgeo.com to create
+            + "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",// please go to https://cloud.thinkgeo.com to create
         tileSize: 512,
         tilePixelRatio: 2
     }),
@@ -17,7 +17,7 @@ let map2x = new ol.Map({
     target: 'map@2x',
     view: new ol.View({
         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        zoom: 4,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
         progressiveZoom: false,
 
     }),

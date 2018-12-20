@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/dark.json";
 
@@ -27,14 +27,14 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: [11877713.642017495, 4671206.770222437],
-        zoom: 4,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
         progressiveZoom: false,
 
     })
 });
 
 // Convert the json  to geoson
-$.get("https://thinkgeo.github.io/vectormapsample/data/rainfall.json", function (result) {
+$.get("../data/rainfall.json", function (result) {
     let geojson = {
         "type": "FeatureCollection",
         "totalFeatures": result.contours.length,

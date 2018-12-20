@@ -1,7 +1,7 @@
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
-            "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+            "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
         tileSize: 512,
     }),
 });
@@ -12,7 +12,7 @@ let map = new ol.Map({
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
-        zoom: 5,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 4,
         center: ol.proj.fromLonLat([-96.79620, 38.79423]),
         progressiveZoom: false,
 
@@ -21,8 +21,8 @@ let map = new ol.Map({
 
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/GeocodingResult.JSON";
-        var rawFile = new XMLHttpRequest();
+        let file = "../data/CountyGeocodingResult.JSON";
+        let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
         rawFile.onreadystatechange = function (ERR) {
@@ -63,12 +63,12 @@ addFeatures();
 let hexbin, layer;
 
 let min, max, maxi;
-max = 20;
-min = 1;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    if (f.get('features').length > 20) {
+    max = 4;
+    min = 1;
+    if (f.get('features').length > max) {
         color = '#00e1fc';
     } else if (f.get('features').length > min) {
         color = '#a4e601';

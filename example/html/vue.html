@@ -87,14 +87,7 @@
             text-align: right;
         }
 
-        @media only screen and (max-device-width: 767px) {
-            /* #lines input,
-            #lines select {
-                display: block;
-                text-align: left;
-                margin-bottom: 3px;
-            } */
-        }
+       
     </style>
 </head>
 
@@ -104,23 +97,12 @@
         <label>POI Size: </label>
         <input type="number" v-model="poiSize">
         <br>
-        <label>Font Size: </label>
-        <input type="number" v-model="fontSize">
-        <br>
         <label>Water Color: </label>
         <select v-model="waterColor">
             <option value="#0000CD">#0000CD</option>
             <option value="#4169E1">#4169E1</option>
             <option value="#0000FF">#0000FF</option>
             <option value="#1E90FF">#1E90FF</option>
-        </select>
-        <br>
-        <label>Building Color: </label>
-        <select v-model="buildingColor">
-            <option value="#FFD700">#FFD700</option>
-            <option value="#EEC900">#EEC900</option>
-            <option value="#CDAD00">#CDAD00</option>
-            <option value="#8B7500">#8B7500</option>
         </select>
         <br>
         <div>

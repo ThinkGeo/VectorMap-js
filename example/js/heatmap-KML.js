@@ -5,7 +5,7 @@ WebFont.load({
     }
 });
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";
 
 // base map layer
@@ -43,7 +43,7 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([149.704275, -15.037667]),
-        zoom: 4,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 3,
         minZoom: 2
     })
 });

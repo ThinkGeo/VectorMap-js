@@ -1,6 +1,6 @@
 
 const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 
 const output = function (data) {
 
@@ -158,7 +158,8 @@ let map =  new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        zoom: 5,
+        maxZoom: 19,maxResolution: 40075016.68557849 / 512,
+        zoom: 4,
     }),
 });
 

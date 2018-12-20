@@ -2,7 +2,7 @@ let streetMap;
 
 function renderStreetMap() {
     let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
-        'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+        'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
     });
 
     streetMap = new ol.Map({
@@ -12,9 +12,9 @@ function renderStreetMap() {
         target: 'map',
         view: new ol.View({
             center: ol.proj.fromLonLat([-74.51317, 40.749999]),
-            zoom: 15,
+            maxZoom: 19,maxResolution: 40075016.68557849 / 512,zoom: 15,
             minZoom: 2,
-            maxZoom: 19
+          
         }),
     });
 }
@@ -22,7 +22,7 @@ class StreetMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            parkColor: 'rgba(167, 218, 122, 0.35)',
+            parkColor: '#a7da7a59',
             placement: 'Line',
             maskType: 'Circle',
             poiSize: '22',
@@ -101,13 +101,13 @@ class StreetMap extends React.Component {
         streetMap.addLayer(newLayer);
     }
 
-    changePlacement(){
+    changePlacement() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
-        for(let i = 0; i < stylesLength; i++){
-            if(styles[i].filter.match("layerName='road_name'")){
-                switch (this.state.placement){
-                    case 'Line': 
+        for (let i = 0; i < stylesLength; i++) {
+            if (styles[i].filter.match("layerName='road_name'")) {
+                switch (this.state.placement) {
+                    case 'Line':
                         styles[i]['text-force-horizontal-for-line'] = false;
                         break;
                     case 'Point':
@@ -123,15 +123,15 @@ class StreetMap extends React.Component {
         }
     }
 
-    changeParkColor(){
+    changeParkColor() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
-        for(let i = 0; i < stylesLength; i++){
-            if(styles[i].id === 'landcover'){
+        for (let i = 0; i < stylesLength; i++) {
+            if (styles[i].id === 'landcover') {
                 let length = styles[i]['style'].length;
                 for (let j = 0; j < length; j++) {
                     let innerStyle = styles[i]['style'];
-                    if(innerStyle[j]['filter'] === "class='park'"){
+                    if (innerStyle[j]['filter'] === "class='park'") {
                         innerStyle[j]['polygon-fill'] = this.state.parkColor;
                     }
                 }
@@ -196,7 +196,13 @@ class StreetMap extends React.Component {
                         <label>
                             Park Color:
                         </label>
-                        <input type="text" value={this.state.parkColor} onChange={this.parkFillColorHandleChange} />
+                        <select onChange={this.parkFillColorHandleChange}>
+                            <option value="#a7da7a59">#a7da7a59</option>
+                            <option value="#25ff00">#25ff00</option>
+                            <option value="#4ea440">#4ea440</option>
+                            <option value="#a29708">#a29708</option>
+                            <option value="#fe6c00">#fe6c00</option>
+                        </select>
                     </div>
 
                     <div>
