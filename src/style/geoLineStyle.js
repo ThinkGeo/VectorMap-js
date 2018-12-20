@@ -1,6 +1,6 @@
 import GeoStyle from './geoStyle';
-import { Point, LineString, MultiPolygon, LinearRing, Polygon } from 'ol/geom';
-import { Style, Stroke, Fill, Icon } from 'ol/style'
+import { Point, LineString, MultiPolygon, LinearRing, Polygon } from '../ol/geom';
+import { Style, Stroke, Fill, Icon } from '../ol/style'
 
 class GeoLineStyle extends GeoStyle {
     constructor(styleJson) {

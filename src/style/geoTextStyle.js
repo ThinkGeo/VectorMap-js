@@ -1,17 +1,17 @@
 import GeoStyle from "./geoStyle";
-import GeometryType from "ol/geom/GeometryType";
-import { measureTextHeight } from "ol/render/canvas";
-import { measureTextWidth } from 'ol/render/canvas';
-import LRUCache from "ol/structs/LRUCache";
-import { labelCache } from "ol/render/canvas";
-import { getUid } from 'ol/util';
-import { TEXT_ALIGN } from "ol/render/replay";
-import { defaultTextAlign, defaultLineDash } from "ol/render/canvas";
-import { createCanvasContext2D } from "ol/dom";
-import { SAFARI, CANVAS_LINE_DASH } from "ol/has";
+import GeometryType from '../ol/geom/GeometryType';
+import { measureTextHeight } from '../ol/render/canvas';
+import { measureTextWidth } from '../ol/render/canvas';
+import LRUCache from '../ol/structs/LRUCache';
+import { labelCache } from '../ol/render/canvas';
+import { getUid } from '../ol/util';
+import { TEXT_ALIGN } from '../ol/render/replay';
+import { defaultTextAlign, defaultLineDash } from '../ol/render/canvas';
+import { createCanvasContext2D } from '../ol/dom';
+import { SAFARI, CANVAS_LINE_DASH } from '../ol/has';
 
 
-import { Style, Fill, Stroke, Text } from 'ol/style'
+import { Style, Fill, Stroke, Text } from '../ol/style'
 import DetectTextLabelingStrategy from "./detectTextLabelingStrategy";
 import TextLabelingStrategy from "./textLabelingStrategy";
 

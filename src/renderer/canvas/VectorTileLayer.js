@@ -1,22 +1,22 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import { getUid } from 'ol/util';
-import LayerType from 'ol/LayerType';
-import TileState from 'ol/TileState';
-import ViewHint from 'ol/ViewHint';
-import { createCanvasContext2D } from 'ol/dom';
-import { listen, unlisten } from 'ol/events';
-import EventType from 'ol/events/EventType';
+import { getUid } from '../../ol/util';
+import LayerType from '../../ol/LayerType';
+import TileState from '../../ol/TileState';
+import ViewHint from '../../ol/ViewHint';
+import { createCanvasContext2D } from '../../ol/dom';
+import { listen, unlisten } from '../../ol/events';
+import EventType from '../../ol/events/EventType';
 import rbush from 'rbush';
-import { buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects } from 'ol/extent';
-import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
-import { equivalent as equivalentProjection } from 'ol/proj';
-import Units from 'ol/proj/Units';
-import ReplayType from 'ol/render/ReplayType';
-import { labelCache, rotateAtOffset } from 'ol/render/canvas';
-import CanvasReplayGroup, { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
-import { ORDER } from 'ol/render/replay';
+import { buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects } from '../../ol/extent';
+import VectorTileRenderType from '../../ol/layer/VectorTileRenderType';
+import { equivalent as equivalentProjection } from '../../ol/proj';
+import Units from '../../ol/proj/Units';
+import ReplayType from '../../ol/render/ReplayType';
+import { labelCache, rotateAtOffset } from '../../ol/render/canvas';
+import CanvasReplayGroup, { replayDeclutter } from '../../ol/render/canvas/ReplayGroup';
+import { ORDER } from '../../ol/render/replay';
 import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
 import {
   create as createTransform,
@@ -24,7 +24,7 @@ import {
   reset as resetTransform,
   scale as scaleTransform,
   translate as translateTransform
-} from 'ol/transform.js';
+} from '../../ol/transform.js';
 
 import CanvasTileLayerRenderer from './TileLayer';
 

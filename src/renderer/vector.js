@@ -1,10 +1,10 @@
 /**
  * @module ol/renderer/vector
  */
-import {getUid} from 'ol/util';
-import ImageState from 'ol/ImageState';
-import GeometryType from 'ol/geom/GeometryType';
-import ReplayType from 'ol/render/ReplayType';
+import {getUid} from '../ol/util';
+import ImageState from '../ol/ImageState';
+import GeometryType from '../ol/geom/GeometryType';
+import ReplayType from '../ol/render/ReplayType';
 
 
 /**

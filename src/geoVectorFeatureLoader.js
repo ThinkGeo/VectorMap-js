@@ -1,8 +1,8 @@
 /**
  * @module ol/featureloader
  */
-import { VOID } from 'ol/functions.js';
-import FormatType from 'ol/format/FormatType.js';
+import { VOID } from './ol/functions.js';
+import FormatType from './ol/format/FormatType.js';
 
 /**
  * {@link module:ol/source/Vector} sources use a function of this type to

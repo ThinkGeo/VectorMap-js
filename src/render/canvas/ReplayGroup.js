@@ -2,20 +2,20 @@
  * @module ol/render/canvas/ReplayGroup
  */
 
-import { numberSafeCompareFunction } from 'ol/array.js';
+import { numberSafeCompareFunction } from '../../ol/array.js';
 import { createCanvasContext2D } from '../../dom';
-import { buffer, createEmpty, extendCoordinate } from 'ol/extent.js';
-import { transform2D } from 'ol/geom/flat/transform.js';
-import { isEmpty } from 'ol/obj.js';
-import ReplayGroup from 'ol/render/ReplayGroup.js';
-import ReplayType from 'ol/render/ReplayType.js';
-import CanvasReplay from 'ol/render/canvas/Replay.js';
-import CanvasImageReplay from 'ol/render/canvas/ImageReplay.js';
-import CanvasLineStringReplay from 'ol/render/canvas/LineStringReplay.js';
-import CanvasPolygonReplay from 'ol/render/canvas/PolygonReplay.js';
-import CanvasTextReplay from 'ol/render/canvas/TextReplay.js';
-import { ORDER } from 'ol/render/replay.js';
-import { create as createTransform, compose as composeTransform } from 'ol/transform.js';
+import { buffer, createEmpty, extendCoordinate } from '../../ol/extent.js';
+import { transform2D } from '../../ol/geom/flat/transform.js';
+import { isEmpty } from '../../ol/obj.js';
+import ReplayGroup from '../../ol/render/ReplayGroup.js';
+import ReplayType from '../../ol/render/ReplayType.js';
+import CanvasReplay from '../../ol/render/canvas/Replay.js';
+import CanvasImageReplay from '../../ol/render/canvas/ImageReplay.js';
+import CanvasLineStringReplay from '../../ol/render/canvas/LineStringReplay.js';
+import CanvasPolygonReplay from '../../ol/render/canvas/PolygonReplay.js';
+import CanvasTextReplay from '../../ol/render/canvas/TextReplay.js';
+import { ORDER } from '../../ol/render/replay.js';
+import { create as createTransform, compose as composeTransform } from '../../ol/transform.js';
 
 
 /**

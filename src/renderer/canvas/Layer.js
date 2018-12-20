@@ -1,13 +1,13 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
-import {TRUE} from 'ol/functions';
-import RenderEvent from 'ol/render/Event';
-import RenderEventType from 'ol/render/EventType';
-import {rotateAtOffset} from 'ol/render/canvas';
-import CanvasImmediateRenderer from 'ol/render/canvas/Immediate';
-import {create as createTransform, apply as applyTransform, compose as composeTransform} from 'ol/transform';
+import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../ol/extent';
+import {TRUE} from '../../ol/functions';
+import RenderEvent from '../../ol/render/Event';
+import RenderEventType from '../../ol/render/EventType';
+import {rotateAtOffset} from '../../ol/render/canvas';
+import CanvasImmediateRenderer from '../../ol/render/canvas/Immediate';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../ol/transform';
 
 import LayerRenderer from '../Layer';
 

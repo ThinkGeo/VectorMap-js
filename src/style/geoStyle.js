@@ -1,4 +1,4 @@
-import { getUid } from 'ol/util'
+import { getUid } from '../ol/util'
 class GeoStyle {
 
     constructor(styleJson) {

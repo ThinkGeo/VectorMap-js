@@ -1,13 +1,13 @@
 import VectorTile from './VectorTile';
-import { modulo } from 'ol/math';
-import { assert } from 'ol/asserts.js';
-import FormatType from 'ol/format/FormatType';
-import TileState from 'ol/TileState.js';
+import { modulo } from '../ol/math';
+import { assert } from '../ol/asserts.js';
+import FormatType from '../ol/format/FormatType';
+import TileState from '../ol/TileState.js';
 import VectorImageTile, { defaultLoadFunction } from '../VectorImageTile';
 
-import { wrapX } from "ol/tileGrid";
-import { hash, getKeyZXY, withinExtentAndZ } from 'ol/tilecoord';
-import LRUCache from 'ol/structs/LRUCache';
+import { wrapX } from '../ol/tileGrid';
+import { hash, getKeyZXY, withinExtentAndZ } from '../ol/tilecoord';
+import LRUCache from '../ol/structs/LRUCache';
 
 import { createTileGridForProjection } from "../geoTileGrid";
 

@@ -1,14 +1,14 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import { getUid } from 'ol/util';
-import LayerType from 'ol/LayerType';
-import TileRange from 'ol/TileRange';
-import TileState from 'ol/TileState';
-import ViewHint from 'ol/ViewHint';
-import { createCanvasContext2D } from 'ol/dom';
-import { containsExtent, createEmpty, equals, getIntersection, isEmpty } from 'ol/extent';
-import { create as createTransform, compose as composeTransform } from 'ol/transform';
+import { getUid } from '../../ol/util';
+import LayerType from '../../ol/LayerType';
+import TileRange from '../../ol/TileRange';
+import TileState from '../../ol/TileState';
+import ViewHint from '../../ol/ViewHint';
+import { createCanvasContext2D } from '../../ol/dom';
+import { containsExtent, createEmpty, equals, getIntersection, isEmpty } from '../../ol/extent';
+import { create as createTransform, compose as composeTransform } from '../../ol/transform';
 
 import IntermediateCanvasRenderer from './IntermediateCanvas';
 

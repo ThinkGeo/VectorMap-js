@@ -1,8 +1,8 @@
 /**
  * @module ol/format/Feature
  */
-import {assign} from 'ol/obj';
-import {get as getProjection, equivalent as equivalentProjection, transformExtent} from 'ol/proj';
+import {assign} from '../ol/obj';
+import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../ol/proj';
 
 
 /**

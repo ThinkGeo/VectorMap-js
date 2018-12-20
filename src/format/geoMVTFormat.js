@@ -1,6 +1,6 @@
 import MVT from './MVT';
 import PBF from 'pbf';
-import LRUCache from 'ol/structs/LRUCache'
+import LRUCache from '../ol/structs/LRUCache'
 
 class GeoMVTFormat extends MVT {
     constructor(styleJSonCache, opt_options) {

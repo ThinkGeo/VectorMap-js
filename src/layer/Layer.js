@@ -1,15 +1,15 @@
 /**
  * @module ol/layer/Layer
  */
-import {listen, unlistenByKey} from 'ol/events';
-import EventType from 'ol/events/EventType';
-import {getUid} from 'ol/util';
-import {getChangeEventType} from 'ol/Object';
-import BaseLayer from 'ol/layer/Base';
-import LayerProperty from 'ol/layer/Property';
-import {assign} from 'ol/obj';
-import RenderEventType from 'ol/render/EventType';
-import SourceState from 'ol/source/State';
+import {listen, unlistenByKey} from '../ol/events';
+import EventType from '../ol/events/EventType';
+import {getUid} from '../ol/util';
+import {getChangeEventType} from '../ol/Object';
+import BaseLayer from '../ol/layer/Base';
+import LayerProperty from '../ol/layer/Property';
+import {assign} from '../ol/obj';
+import RenderEventType from '../ol/render/EventType';
+import SourceState from '../ol/source/State';
 
 
 /**

@@ -1,31 +1,31 @@
-import { getUid } from 'ol/util';
+import { getUid } from '../../ol/util';
 import CanvasVectorTileLayerRenderer from './VectorTileLayer';
-import LayerType from 'ol/LayerType';
-import { containsExtent, buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects, isEmpty } from 'ol/extent';
-import ViewHint from 'ol/ViewHint';
-import TileState from 'ol/TileState';
-import { equivalent as equivalentProjection } from 'ol/proj';
-import { replayDeclutter } from 'ol/render/canvas/ReplayGroup';
-import RenderEventType from 'ol/render/EventType';
-import { createCanvasContext2D } from 'ol/dom';
+import LayerType from '../../ol/LayerType';
+import { containsExtent, buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects, isEmpty } from '../../ol/extent';
+import ViewHint from '../../ol/ViewHint';
+import TileState from '../../ol/TileState';
+import { equivalent as equivalentProjection } from '../../ol/proj';
+import { replayDeclutter } from '../../ol/render/canvas/ReplayGroup';
+import RenderEventType from '../../ol/render/EventType';
+import { createCanvasContext2D } from '../../ol/dom';
 import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
 import { getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../vector';
-import Units from 'ol/proj/Units';
-import VectorTileRenderType from 'ol/layer/VectorTileRenderType';
+import Units from '../../ol/proj/Units';
+import VectorTileRenderType from '../../ol/layer/VectorTileRenderType';
 import rbush from 'rbush';
-import ReplayType from 'ol/render/ReplayType';
+import ReplayType from '../../ol/render/ReplayType';
 import {
     compose as composeTransform,
     reset as resetTransform,
     scale as scaleTransform,
     translate as translateTransform
-} from 'ol/transform.js';
-import RenderFeature from 'ol/render/Feature';
-import { listen } from 'ol/events';
-import Instruction from "ol/render/canvas/Instruction";
-import { ORDER } from 'ol/render/replay';
-import { format } from 'ol/coordinate';
-import EventType from 'ol/events/EventType';
+} from '../../ol/transform.js';
+import RenderFeature from '../../ol/render/Feature';
+import { listen } from '../../ol/events';
+import Instruction from '../../ol/render/canvas/Instruction';
+import { ORDER } from '../../ol/render/replay';
+import { format } from '../../ol/coordinate';
+import EventType from '../../ol/events/EventType';
 
 const IMAGE_REPLAYS = {
     'image': [ReplayType.POLYGON, ReplayType.CIRCLE,

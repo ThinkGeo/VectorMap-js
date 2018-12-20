@@ -1,18 +1,18 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import { getUid } from 'ol/util.js';
-import LayerType from 'ol/LayerType.js';
-import ViewHint from 'ol/ViewHint.js';
-import { createCanvasContext2D } from 'ol/dom.js';
-import { listen, unlisten } from 'ol/events.js';
-import EventType from 'ol/events/EventType.js';
+import { getUid } from '../../ol/util.js';
+import LayerType from '../../ol/LayerType.js';
+import ViewHint from '../../ol/ViewHint.js';
+import { createCanvasContext2D } from '../../ol/dom.js';
+import { listen, unlisten } from '../../ol/events.js';
+import EventType from '../../ol/events/EventType.js';
 import rbush from 'rbush';
-import { buffer, createEmpty, containsExtent, getWidth } from 'ol/extent.js';
-import RenderEventType from 'ol/render/EventType.js';
-import { labelCache, rotateAtOffset } from 'ol/render/canvas.js';
-import CanvasReplayGroup from 'ol/render/canvas/ReplayGroup.js';
-import { defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from 'ol/renderer/vector.js';
+import { buffer, createEmpty, containsExtent, getWidth } from '../../ol/extent.js';
+import RenderEventType from '../../ol/render/EventType.js';
+import { labelCache, rotateAtOffset } from '../../ol/render/canvas.js';
+import CanvasReplayGroup from '../../ol/render/canvas/ReplayGroup.js';
+import { defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature } from '../../ol/renderer/vector.js';
 
 import CanvasLayerRenderer from './Layer';
 

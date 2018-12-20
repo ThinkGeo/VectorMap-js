@@ -1,12 +1,12 @@
 /**
  * @module ol/source/UrlTile
  */
-import {getUid} from 'ol/util';
-import TileState from 'ol/TileState';
-import {expandUrl, createFromTemplates, nullTileUrlFunction} from 'ol/tileurlfunction';
+import {getUid} from '../ol/util';
+import TileState from '../ol/TileState';
+import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../ol/tileurlfunction';
 import TileSource, {TileSourceEvent} from './Tile';
-import TileEventType from 'ol/source/TileEventType';
-import {getKeyZXY} from 'ol/tilecoord';
+import TileEventType from '../ol/source/TileEventType';
+import {getKeyZXY} from '../ol/tilecoord';
 
 /**
  * @typedef {Object} Options

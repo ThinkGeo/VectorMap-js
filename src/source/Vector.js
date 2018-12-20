@@ -2,23 +2,23 @@
  * @module ol/source/Vector
  */
 
-import { getUid } from 'ol/util.js';
-import Collection from 'ol/Collection.js';
-import CollectionEventType from 'ol/CollectionEventType.js';
-import ObjectEventType from 'ol/ObjectEventType.js';
-import { extend } from 'ol/array.js';
-import { assert } from 'ol/asserts.js';
-import { listen, unlistenByKey } from 'ol/events.js';
-import Event from 'ol/events/Event.js';
-import EventType from 'ol/events/EventType.js';
-import { containsExtent, equals } from 'ol/extent.js';
-import { TRUE, VOID } from 'ol/functions.js';
-import { all as allStrategy } from 'ol/loadingstrategy.js';
-import { isEmpty, getValues } from 'ol/obj.js';
-import SourceState from 'ol/source/State.js';
-import VectorEventType from 'ol/source/VectorEventType.js';
-import RBush from 'ol/structs/RBush.js';
-import { xhr } from 'ol/featureloader.js';
+import { getUid } from '../ol/util.js';
+import Collection from '../ol/Collection.js';
+import CollectionEventType from '../ol/CollectionEventType.js';
+import ObjectEventType from '../ol/ObjectEventType.js';
+import { extend } from '../ol/array.js';
+import { assert } from '../ol/asserts.js';
+import { listen, unlistenByKey } from '../ol/events.js';
+import Event from '../ol/events/Event.js';
+import EventType from '../ol/events/EventType.js';
+import { containsExtent, equals } from '../ol/extent.js';
+import { TRUE, VOID } from '../ol/functions.js';
+import { all as allStrategy } from '../ol/loadingstrategy.js';
+import { isEmpty, getValues } from '../ol/obj.js';
+import SourceState from '../ol/source/State.js';
+import VectorEventType from '../ol/source/VectorEventType.js';
+import RBush from '../ol/structs/RBush.js';
+import { xhr } from '../ol/featureloader.js';
 
 import Source from './Source';
 
@@ -76,9 +76,9 @@ export class VectorSourceEvent extends Event {
  * Example:
  *
  * ```js
- * import {Vector} from 'ol/source';
- * import {GeoJSON} from 'ol/format';
- * import {bbox} from 'ol/loadingstrategy';
+ * import {Vector} from '../ol/source';
+ * import {GeoJSON} from '../ol/format';
+ * import {bbox} from '../ol/loadingstrategy';
  *
  * var vectorSource = new Vector({
  *   format: new GeoJSON(),

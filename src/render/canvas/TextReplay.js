@@ -1,18 +1,18 @@
 /**
  * @module ol/render/canvas/TextReplay
  */
-import { getUid } from 'ol/util.js';
-import { asColorLike } from 'ol/colorlike.js';
-import { createCanvasContext2D } from 'ol/dom.js';
-import { intersects } from 'ol/extent.js';
-import { matchingChunk } from 'ol/geom/flat/straightchunk.js';
-import GeometryType from 'ol/geom/GeometryType.js';
-import { CANVAS_LINE_DASH } from 'ol/has.js';
-import { labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
-import CanvasInstruction from 'ol/render/canvas/Instruction.js';
-import CanvasReplay from 'ol/render/canvas/Replay.js';
-import { TEXT_ALIGN } from 'ol/render/replay.js';
-import TextPlacement from 'ol/style/TextPlacement.js';
+import { getUid } from '../../ol/util.js';
+import { asColorLike } from '../../ol/colorlike.js';
+import { createCanvasContext2D } from '../../ol/dom.js';
+import { intersects } from '../../ol/extent.js';
+import { matchingChunk } from '../../ol/geom/flat/straightchunk.js';
+import GeometryType from '../../ol/geom/GeometryType.js';
+import { CANVAS_LINE_DASH } from '../../ol/has.js';
+import { labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from '../../ol/render/canvas.js';
+import CanvasInstruction from '../../ol/render/canvas/Instruction.js';
+import CanvasReplay from '../../ol/render/canvas/Replay.js';
+import { TEXT_ALIGN } from '../../ol/render/replay.js';
+import TextPlacement from '../../ol/style/TextPlacement.js';
 
 class CanvasTextReplay extends CanvasReplay {
     /**

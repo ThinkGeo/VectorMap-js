@@ -1,25 +1,25 @@
 import CanvasTextReplay from "./TextReplay";
-import LRUCache from "ol/structs/LRUCache";
-import GeometryType from 'ol/geom/GeometryType.js';
-import { isEmpty } from "ol/obj"
-import { transform2D } from "ol/geom/flat/transform";
-import { setFromArray } from "ol/transform";
-import { getUid } from 'ol/util.js';
-import { intersects, createOrUpdateEmpty, extendCoordinate, createOrUpdate, extend, createEmpty } from 'ol/extent';
-import { equals } from 'ol/array';
-import CanvasInstruction from 'ol/render/canvas/Instruction.js';
-import { lineStringLength } from 'ol/geom/flat/length.js';
-import { drawTextOnPath } from 'ol/geom/flat/textpath.js';
-import { matchingChunk } from 'ol/geom/flat/straightchunk';
-import { TEXT_ALIGN } from 'ol/render/replay.js';
-import { drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from 'ol/render/canvas.js';
-import { asColorLike } from 'ol/colorlike.js';
+import LRUCache from '../../ol/structs/LRUCache';
+import GeometryType from '../../ol/geom/GeometryType.js';
+import { isEmpty } from '../../ol/obj';
+import { transform2D } from '../../ol/geom/flat/transform';
+import { setFromArray } from '../../ol/transform';
+import { getUid } from '../../ol/util.js';
+import { intersects, createOrUpdateEmpty, extendCoordinate, createOrUpdate, extend, createEmpty } from '../../ol/extent';
+import { equals } from '../../ol/array';
+import CanvasInstruction from '../../ol/render/canvas/Instruction.js';
+import { lineStringLength } from '../../ol/geom/flat/length.js';
+import { drawTextOnPath } from '../../ol/geom/flat/textpath.js';
+import { matchingChunk } from '../../ol/geom/flat/straightchunk';
+import { TEXT_ALIGN } from '../../ol/render/replay.js';
+import { drawImage, defaultPadding, measureTextWidth, measureTextHeight, defaultTextAlign, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline } from '../../ol/render/canvas.js';
+import { asColorLike } from '../../ol/colorlike.js';
 import {
     create as createTransform,
     compose as composeTransform,
     apply as applyTransform,
     setFromArray as transformSetFromArray
-} from 'ol/transform.js';
+} from '../../ol/transform.js';
 
 const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
