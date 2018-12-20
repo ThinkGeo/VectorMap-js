@@ -13,35 +13,35 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 * [World Streets Vector Tile Schema](https://thinkgeo.gitbooks.io/map-suite-world-streets-data-schema)
 * [Wolrd Street Styles Predefined](https://github.com/ThinkGeo/WorldStreets-Styles/tree/develop)
 
-## Examples - [View It Online](https://thinkgeo.github.io/VectorMap-js/):
+## Examples - [View It Online](https://vectormapsamples.thinkgeo.com/):
 
-| <a href="https://thinkgeo.github.io/vectormapsample/#CloudVectorMaps"><img src="https://thinkgeo.github.io/vectormapsample/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#CloudRasterMaps">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#SatellitewithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#HeatmapwithJSON">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#VectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
         </a> 
 	
 	
 
-| <a href="https://thinkgeo.github.io/vectormapsample/#AverageRoundTripCommuteTime"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-commute.jpg" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ImagerywithLabels">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#Projection">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-projection.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#ElevationalongPath">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-elevation.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime"><img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#FindNearbyPlaces">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/find_nearby.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RenderPOIs">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
         </a> 
 	
-| <a href="https://thinkgeo.github.io/vectormapsample/#ColorUtilities"><img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-color.jpg" width="210" height="210" alt="">
- </a> | <a href="https://thinkgeo.github.io/vectormapsample/#PieChart">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-pie.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#GPX">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-gpx.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://thinkgeo.github.io/vectormapsample/#StylingLines">
-            <img src="https://thinkgeo.github.io/vectormapsample/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+| <a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution"><img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
+ </a> | <a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#GPX">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
+        </a> | <a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
+            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
         </a> 
 	
  
@@ -58,10 +58,10 @@ Load from CDN in your project:
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 ```
 
 ### NPM
@@ -93,10 +93,10 @@ __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and relate
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 ```
  
 __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
@@ -158,10 +158,10 @@ After all the above steps completed, your HTML page should be:
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- style sheet for vectormap.js -->
-        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.css"></link>
+        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
-       <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
+       <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
         <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
