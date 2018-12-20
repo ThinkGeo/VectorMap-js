@@ -96,7 +96,7 @@ class StreetMap extends React.Component {
         let layers = streetMap.getLayers().getArray();
         streetMap.removeLayer(layers[0]);
         let newLayer = new ol.mapsuite.VectorTileLayer(this.state.json, {
-            'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+            'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
         });
         streetMap.addLayer(newLayer);
     }
