@@ -149,9 +149,6 @@ getJson().then(function (data) {
         });
 
         let index = `pieChart${i}`;
-        console.log(index);
-        console.log(stateArr[i]);
-        console.log(ol.proj.fromLonLat(coor));
         map.addOverlay(pieChartOvery(index, stateArr[i], ol.proj.fromLonLat(coor)));
     }
 })
