@@ -41,7 +41,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             // Return false to prevent the rendering of the layer.
             return false;
         }
-
+        // console.log(z);
         let tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
         // Adjust tile cache size according to tile Range, TODO: add a property for that
@@ -74,7 +74,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         tilesToDrawByZ[z] = {};
 
         let findLoadedTiles = this.createLoadedTileFinder(
-            tileSource, projection, tilesToDrawByZ);
+            tileSource, projection, tilesToDrawByZ, tileLayer);
 
         let tmpExtent = this.tmpExtent;
         let tmpTileRange = this.tmpTileRange_;
@@ -101,12 +101,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 if (this.isDrawableTile_(tile)) {
                     let uid = (<any>ol).getUid(this);
                     if (tile.getState() === (<any>ol).TileState.LOADED) {
+                        // console.log(z)
                         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
                         let inTransition = tile.inTransition(uid);
                         if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
                             newTiles = true;
                         }
                     }
+                    
                     if (tile.getAlpha(uid, frameState.time) === 1) {
                         // don't look for alt tiles if alpha is 1
                         continue;
@@ -117,7 +119,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     tile.tileCoord, tmpTileRange, tmpExtent);
                 let covered = false;
                 if (childTileRange) {
-                    covered = findLoadedTiles(z + 1, childTileRange);
+                    covered = findLoadedTiles((z + 1), childTileRange);
                 }
                 if (!covered) {
                     tileGrid.forEachTileCoordParentTileRange(
@@ -126,7 +128,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
 
             }
         }
-
+       
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
         let animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
@@ -187,6 +189,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     this.renderedTiles.push(tile);
                 }
+                
             }
 
             this.renderedRevision = sourceRevision;
@@ -251,6 +254,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 continue;
             }
             let tileCoord = tile.tileCoord;
+            // console.log(tileCoord)
             let worldOffset = tileGrid.getTileCoordExtent(tileCoord)[0] -
                 tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
             let transform = undefined;
@@ -651,4 +655,23 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         workerManager.close();
         (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
     };
+
+    public createLoadedTileFinder(source, projection, tiles, tileLayer) {
+        return (
+            /**
+             * @param {number} zoom Zoom level.
+             * @param {ol.TileRange} tileRange Tile range.
+             * @return {boolean} The tile range is fully loaded.
+             */
+            function (zoom, tileRange) {
+                function callback(tile) {
+                    if (!tiles[zoom]) {
+                        tiles[zoom] = {};
+                    }
+                    tiles[zoom][tile.tileCoord.toString()] = tile;
+                }
+                return source.forEachLoadedTile(projection, zoom, tileRange, callback, tileLayer);
+            });
+    }
+
 }

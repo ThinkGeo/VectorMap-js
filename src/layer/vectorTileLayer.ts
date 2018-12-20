@@ -603,7 +603,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             this.frameState_ = frameState;
             this.renderer_.renderFrame(frameState);
-
             if (frameState) {
                 if (frameState.animate) {
                     this.render();
@@ -805,7 +804,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
                 // gl.stencilMask(0);
             }
-
+            frameState.animate = true;
             return result;
         };
 
