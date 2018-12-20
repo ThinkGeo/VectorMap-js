@@ -234,4 +234,36 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
             }
         );
     }
+    public forEachLoadedTile(projection, z, tileRange, callback, layer) {
+        let tileCache = this.getTileCacheForProjection(projection);
+        if (!tileCache) {
+            return false;
+        }
+
+        let covered = true;
+        let tile, tileCoordKey, loaded;
+        for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+            for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+                tileCoordKey = (<any>ol).tilecoord.getKeyZXY(z, x, y);
+                loaded = false;
+                if (tileCache.containsKey(tileCoordKey)) {
+                    tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
+                    loaded = tile.getState() === (<any>ol).TileState.LOADED;
+                    if (loaded) {
+                        if (layer) {
+                            let replayState = tile.getReplayState(layer);
+                            loaded = replayState.renderedTileLoaded;
+                        }
+                    }
+                    if (loaded) {
+                        loaded = (callback(tile) !== false);
+                    }
+                }
+                if (!loaded) {
+                    covered = false;
+                }
+            }
+        }
+        return covered;
+    }
 }
