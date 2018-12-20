@@ -2,9 +2,9 @@
  * @module ol/Map
  */
 import PluggableMap from './PluggableMap.js';
-import {defaults as defaultControls} from './control/util.js';
-import {defaults as defaultInteractions} from './interaction.js';
-import {assign} from './obj.js';
+import { defaults as defaultControls } from './control/util.js';
+import { defaults as defaultInteractions } from './interaction.js';
+import { assign } from './obj.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import CanvasMapRenderer from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
@@ -69,17 +69,24 @@ var Map = /*@__PURE__*/(function (PluggableMap) {
       options.controls = defaultControls();
     }
     if (!options.interactions) {
-      options.interactions = defaultInteractions();
+
+      // MapSuite: Disable rotation in mobile devices
+      var interactionOption = {};
+      if (navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i)) {
+        interactionOption.altShiftDragRotate = false;
+        interactionOption.pinchRotate = false;
+      }
+      options.interactions = defaultInteractions(interactionOption);
     }
 
     PluggableMap.call(this, options);
   }
 
-  if ( PluggableMap ) Map.__proto__ = PluggableMap;
-  Map.prototype = Object.create( PluggableMap && PluggableMap.prototype );
+  if (PluggableMap) Map.__proto__ = PluggableMap;
+  Map.prototype = Object.create(PluggableMap && PluggableMap.prototype);
   Map.prototype.constructor = Map;
 
-  Map.prototype.createRenderer = function createRenderer () {
+  Map.prototype.createRenderer = function createRenderer() {
     var renderer = new CanvasMapRenderer(this);
     renderer.registerLayerRenderers([
       CanvasImageLayerRenderer,
