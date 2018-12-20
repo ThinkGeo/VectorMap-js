@@ -33,7 +33,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
         options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
         options["cacheSize"] = options["cacheSize"] === undefined ? 64 : options["cacheSize"];
         options["urls"] = options["urls"] === undefined ? undefined : options["urls"];
-        options["url"] = options["url"] === undefined ? undefined : options["url"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
@@ -62,8 +61,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
         if (options.urls) {
             this.setUrls(options.urls);
-        } else if (options.url) {
-            this.setUrl(options.url);
         }
 
         LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
@@ -186,11 +183,13 @@ class GeoVectorTileLayer extends VectorTileLayer {
     }
 
     setUrls(urls) {
-        this.getSource().setUrls(urls);
-    }
-
-    setUrl(url) {
-        this.getSource().setUrl(url);
+        if (Array.isArray(urls)) {
+            this.getSource().setUrls(urls);
+        }
+        else {
+            this.getSource().setUrls([urls]);
+        }
+        return true;
     }
 
     createGeoSource(sourceId) {
