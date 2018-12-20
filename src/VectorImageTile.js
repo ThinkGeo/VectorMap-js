@@ -1,15 +1,15 @@
 /**
  * @module ol/VectorImageTile
  */
-import { getUid } from 'ol/util.js';
-import Tile from 'ol/Tile.js';
-import TileState from 'ol/TileState.js';
-import { createCanvasContext2D } from 'ol/dom.js';
-import { listen, unlistenByKey } from 'ol/events.js';
-import { getHeight, getIntersection, getWidth } from 'ol/extent.js';
-import EventType from 'ol/events/EventType.js';
+import { getUid } from './ol/util.js';
+import Tile from './ol/Tile.js';
+import TileState from './ol/TileState.js';
+import { createCanvasContext2D } from './ol/dom.js';
+import { listen, unlistenByKey } from './ol/events.js';
+import { getHeight, getIntersection, getWidth } from './ol/extent.js';
+import EventType from './ol/events/EventType.js';
 import { loadFeaturesXhr } from './featureloader';
-import { VOID } from 'ol/functions.js';
+import { VOID } from './ol/functions.js';
 
 
 /**

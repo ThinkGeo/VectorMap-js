@@ -1,19 +1,19 @@
 import VectorTileLayer from './VectorTile';
-import LayerType from 'ol/LayerType';
+import LayerType from '../ol/LayerType';
 import GeoVectorTileSource from '../source/geoVectorTileSource';
 import GeoMVTFormat from '../format/geoMVTFormat';
 import GeoStyle from '../style/geoStyle';
 import StyleJsonCache from '../tree/styleJsonCache';
-import { createXYZ } from 'ol/tilegrid';
-import Map from 'ol/Map';
-import TileQueue from "ol/TileQueue";
-import TileState from "ol/TileState";
-import { unlisten } from "ol/events/";
-import EventType from "ol/events/EventType";
-import CanvasMapRenderer from 'ol/renderer/canvas/Map';
-import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
-import CanvasVectorLayerRenderer from 'ol/renderer/canvas/VectorLayer';
-import { getUid } from 'ol/util'
+import { createXYZ } from '../ol/tilegrid';
+import Map from '../ol/Map';
+import TileQueue from '../ol/TileQueue';
+import TileState from '../ol/TileState';
+import { unlisten } from '../ol/events';
+import EventType from '../ol/events/EventType';
+import CanvasMapRenderer from '../ol/renderer/canvas/Map';
+import CanvasImageLayerRenderer from '../ol/renderer/canvas/ImageLayer';
+import CanvasVectorLayerRenderer from '../ol/renderer/canvas/VectorLayer';
+import { getUid } from '../ol/util'
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
 import GeoVectorTileRenderer from '../renderer/canvas/GeoVectorTileLayer';
@@ -33,7 +33,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
         options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
         options["cacheSize"] = options["cacheSize"] === undefined ? 64 : options["cacheSize"];
         options["urls"] = options["urls"] === undefined ? undefined : options["urls"];
-        options["url"] = options["url"] === undefined ? undefined : options["url"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
         this.backgroundWorkerCount = options.backgroundWorkerCount == undefined ? 1 : options.backgroundWorkerCount;
@@ -62,8 +61,6 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
         if (options.urls) {
             this.setUrls(options.urls);
-        } else if (options.url) {
-            this.setUrl(options.url);
         }
 
         LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
@@ -186,11 +183,13 @@ class GeoVectorTileLayer extends VectorTileLayer {
     }
 
     setUrls(urls) {
-        this.getSource().setUrls(urls);
-    }
-
-    setUrl(url) {
-        this.getSource().setUrl(url);
+        if (Array.isArray(urls)) {
+            this.getSource().setUrls(urls);
+        }
+        else {
+            this.getSource().setUrls([urls]);
+        }
+        return true;
     }
 
     createGeoSource(sourceId) {

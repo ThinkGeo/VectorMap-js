@@ -1,31 +1,31 @@
-import LayerType from 'ol/LayerType';
+import LayerType from '../ol/LayerType';
 import GeoStyle from '../style/geoStyle';
-import Map from 'ol/Map';
-import { getUid } from 'ol/util'
+import Map from '../ol/Map';
+import { getUid } from '../ol/util'
 import WorkerManager from "../worker/workerManager";
 import VectorLayer from "./Vector";
 import GeoVectorSource from "../source/GeoVector";
-import GeoJSON from "ol/format/GeoJSON";
+import GeoJSON from '../ol/format/GeoJSON';
 import StyleJsonCache from '../tree/styleJsonCache';
 import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
 import TreeNode from '../tree/treeNode';
 import Tree from '../tree/tree';
-import CanvasMapRenderer from 'ol/renderer/canvas/Map';
-import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
+import CanvasMapRenderer from '../ol/renderer/canvas/Map';
+import CanvasImageLayerRenderer from '../ol/renderer/canvas/ImageLayer';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer';
 import GeoCanvasVectorTileLayerRenderer from "../renderer/canvas/GeoVectorTileLayer";
 import GeoCanvasVectorLayerRenderer from "../renderer/canvas/GeoVectorLayer";
-import ImageCanvas from 'ol/ImageCanvas';
+import ImageCanvas from '../ol/ImageCanvas';
 
-import EsriJSON from "ol/format/EsriJSON";
-import TopoJSON from "ol/format/TopoJSON";
-import IGC from "ol/format/IGC";
-import Polyline from "ol/format/Polyline";
-import WKT from "ol/format/WKT";
-import GPX from "ol/format/GPX";
-import KML from "ol/format/KML";
+import EsriJSON from '../ol/format/EsriJSON';
+import TopoJSON from '../ol/format/TopoJSON';
+import IGC from '../ol/format/IGC';
+import Polyline from '../ol/format/Polyline';
+import WKT from '../ol/format/WKT';
+import GPX from '../ol/format/GPX';
+import KML from '../ol/format/KML';
 
 class GeoVectorLayer extends VectorLayer {
     constructor(stylejson, opt_options) {

@@ -4,21 +4,21 @@ import StyleJsonCacheItem from "../tree/styleJsonCacheItem";
 import TreeNode from "../tree/treeNode";
 import Tree from "../tree/tree";
 import PBF from 'pbf';
-import GeometryType from 'ol/geom/GeometryType';
-import RenderFeature from 'ol/render/Feature';
-import LRUCache from 'ol/structs/LRUCache'
+import GeometryType from '../ol/geom/GeometryType';
+import RenderFeature from '../ol/render/Feature';
+import LRUCache from '../ol/structs/LRUCache'
 import rbush from "rbush";
-import Projection from "ol/proj/Projection";
-import Units from "ol/proj/Units";
+import Projection from '../ol/proj/Projection';
+import Units from '../ol/proj/Units';
 import GeoCanvasReplayGroup from "../render/canvas/GeoReplayGroup";
 import GeoTextStyle from "../style/geoTextStyle";
 import GeoShieldStyle from "../style/geoShieldStyle";
 import GeoPointStyle from "../style/geoPointStyle";
-import { getUid } from "ol/util";
+import { getUid } from '../ol/util';
 import { renderFeature } from '../renderer/vector';
-import { intersects } from 'ol/extent';
+import { intersects } from '../ol/extent';
 import GeoLineStyle from "../style/geoLineStyle";
-import Instruction from "ol/render/canvas/Instruction";
+import Instruction from '../ol/render/canvas/Instruction';
 
 
 self.styleJsonCache = {};

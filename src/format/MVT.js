@@ -3,22 +3,22 @@
  */
 //FIXME Implement projection handling
 
-import {assert} from 'ol/asserts';
+import {assert} from '../ol/asserts';
 import PBF from 'pbf';
-import FeatureFormat, {transformWithOptions} from 'ol/Feature';
-import FormatType from 'ol/format/FormatType';
-import GeometryLayout from 'ol/geom/GeometryLayout';
-import GeometryType from 'ol/geom/GeometryType';
-import LineString from 'ol/geom/LineString';
-import MultiLineString from 'ol/geom/MultiLineString';
-import MultiPoint from 'ol/geom/MultiPoint';
-import MultiPolygon from 'ol/geom/MultiPolygon';
-import Point from 'ol/geom/Point';
-import Polygon from 'ol/geom/Polygon';
-import {linearRingIsClockwise} from 'ol/geom/flat/orient';
-import Projection from 'ol/proj/Projection';
-import Units from 'ol/proj/Units';
-import RenderFeature from 'ol/render/Feature';
+import FeatureFormat, {transformWithOptions} from '../ol/Feature';
+import FormatType from '../ol/format/FormatType';
+import GeometryLayout from '../ol/geom/GeometryLayout';
+import GeometryType from '../ol/geom/GeometryType';
+import LineString from '../ol/geom/LineString';
+import MultiLineString from '../ol/geom/MultiLineString';
+import MultiPoint from '../ol/geom/MultiPoint';
+import MultiPolygon from '../ol/geom/MultiPolygon';
+import Point from '../ol/geom/Point';
+import Polygon from '../ol/geom/Polygon';
+import {linearRingIsClockwise} from '../ol/geom/flat/orient';
+import Projection from '../ol/proj/Projection';
+import Units from '../ol/proj/Units';
+import RenderFeature from '../ol/render/Feature';
 
 
 /**

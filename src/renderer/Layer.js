@@ -1,13 +1,13 @@
 /**
  * @module ol/renderer/Layer
  */
-import { getUid } from 'ol/util.js';
-import ImageState from 'ol/ImageState';
-import Observable from 'ol/Observable';
-import TileState from 'ol/TileState';
-import { listen } from 'ol/events';
-import EventType from 'ol/events/EventType';
-import SourceState from 'ol/source/State';
+import { getUid } from '../ol/util.js';
+import ImageState from '../ol/ImageState';
+import Observable from '../ol/Observable';
+import TileState from '../ol/TileState';
+import { listen } from '../ol/events';
+import EventType from '../ol/events/EventType';
+import SourceState from '../ol/source/State';
 
 class LayerRenderer extends Observable {
 

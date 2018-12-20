@@ -59,3 +59,9 @@
         max-height: calc(100vh - 5px - 48px);
     }
 }
+
+@media (max-width: 350px){
+    .nav-tabs .nav-link{
+        font-size: 1.3rem;
+    }
+}

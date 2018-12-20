@@ -1,10 +1,10 @@
 import GeoStyle from "./geoStyle";
-import { Style, Fill, Stroke, Circle, RegularShape, Icon, Text } from 'ol/style';
-import SAFARI from 'ol/has';
+import { Style, Fill, Stroke, Circle, RegularShape, Icon, Text } from '../ol/style';
+import SAFARI from '../ol/has';
 
-import { measureTextWidths } from 'ol/render/canvas/TextReplay';
-import { measureTextHeight } from 'ol/render/canvas';
-import { createCanvasContext2D } from 'ol/dom';
+import { measureTextWidths } from '../ol/render/canvas/TextReplay';
+import { measureTextHeight } from '../ol/render/canvas';
+import { createCanvasContext2D } from '../ol/dom';
 
 class GeoPointStyle extends GeoStyle {
     constructor(styleJson) {

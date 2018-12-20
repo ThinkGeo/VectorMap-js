@@ -13,9 +13,9 @@
             position: absolute;
             top: 10px;
             left: 50%;
-            margin-left: -170px;
+            margin-left: -118px;
             padding: 5px;
-            width: 330px;
+            width: 236px;
             z-index: 5;
             font-family: 'Cambria', 'sans-serif';
             background-color: #fff;
@@ -109,6 +109,14 @@
             margin-bottom: 8px;
         }
 
+        #popup-content p:nth-child(1) {
+            font-size: 1.2rem;
+        }
+
+        #popup-content p:nth-child(2) {
+            margin-left: 2px;
+        }
+
         .icon {
             position: absolute;
             bottom: -62px;
@@ -117,6 +125,16 @@
 
         .hidden {
             display: none;
+        }
+
+        @media only screen and (max-device-width: 767px) {
+            #popup-content p {
+                font-size: 0.8rem;
+            }
+
+            #popup-content p:nth-child(1) {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>

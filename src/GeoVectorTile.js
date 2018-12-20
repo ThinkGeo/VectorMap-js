@@ -1,7 +1,7 @@
-import VectorTile from 'ol/VectorTile';
-import TileState from 'ol/TileState';
-import LRUCache from 'ol/structs/LRUCache';
-import { getUid } from 'ol/util';
+import VectorTile from './ol/VectorTile';
+import TileState from './ol/TileState';
+import LRUCache from './ol/structs/LRUCache';
+import { getUid } from './ol/util';
 
 class GeoVectorTile extends VectorTile {
     constructor(tileCoord, state, src, format, tileLoadFunction) {

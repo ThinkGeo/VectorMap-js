@@ -1,11 +1,11 @@
 import CanvasVectorLayerRenderer from "./VectorLayer";
-import LayerType from 'ol/LayerType';
-import { containsExtent, buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects, isEmpty, returnOrUpdate, getWidth } from 'ol/extent';
-import { getUid } from 'ol/util.js';
-import ViewHint from 'ol/ViewHint.js';
-import EventType from 'ol/events/EventType.js';
+import LayerType from '../../ol/LayerType';
+import { containsExtent, buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects, isEmpty, returnOrUpdate, getWidth } from '../../ol/extent';
+import { getUid } from '../../ol/util.js';
+import ViewHint from '../../ol/ViewHint.js';
+import EventType from '../../ol/events/EventType.js';
 import GeoCanvasReplayGroup from '../../render/canvas/GeoReplayGroup';
-import { defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance } from 'ol/renderer/vector.js';
+import { defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance } from '../../ol/renderer/vector.js';
 import rbush from 'rbush';
 import CanvasLayerRenderer from './Layer';
 

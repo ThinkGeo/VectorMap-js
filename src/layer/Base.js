@@ -1,10 +1,10 @@
 /**
  * @module ol/layer/Base
  */
-import BaseObject from 'ol/Object';
-import LayerProperty from 'ol/layer/Property';
-import {clamp} from 'ol/math';
-import {assign} from 'ol/obj';
+import BaseObject from '../ol/Object';
+import LayerProperty from '../ol/layer/Property';
+import {clamp} from '../ol/math';
+import {assign} from '../ol/obj';
 
 
 /**

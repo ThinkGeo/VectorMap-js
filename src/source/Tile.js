@@ -2,14 +2,14 @@
  * @module ol/source/Tile
  */
 
-import TileCache from 'ol/TileCache';
-import TileState from 'ol/TileState';
-import Event from 'ol/events/Event';
-import {equivalent} from 'ol/proj';
-import {toSize, scale as scaleSize} from 'ol/size';
+import TileCache from '../ol/TileCache';
+import TileState from '../ol/TileState';
+import Event from '../ol/events/Event';
+import {equivalent} from '../ol/proj';
+import {toSize, scale as scaleSize} from '../ol/size';
 import Source from './Source';
-import {getKeyZXY, withinExtentAndZ} from 'ol/tilecoord';
-import {wrapX, getForProjection as getTileGridForProjection} from 'ol/tilegrid';
+import {getKeyZXY, withinExtentAndZ} from '../ol/tilecoord';
+import {wrapX, getForProjection as getTileGridForProjection} from '../ol/tilegrid';
 
 /**
  * @typedef {Object} Options

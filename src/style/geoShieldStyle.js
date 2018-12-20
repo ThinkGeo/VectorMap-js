@@ -1,16 +1,16 @@
 import GeoStyle from "./geoStyle";
-import LRUCache from "ol/structs/LRUCache";
-import { Style, Fill, Stroke, Text, Icon, RegularShape, Circle } from 'ol/style'
-import { measureTextWidth } from 'ol/render/canvas';
-import { defaultTextAlign, defaultLineDash } from "ol/render/canvas";
-import { TEXT_ALIGN } from "ol/render/replay";
-import { measureTextHeight } from "ol/render/canvas";
-import { SAFARI, CANVAS_LINE_DASH } from "ol/has";
-import GeometryType from "ol/geom/GeometryType";
-import { labelCache } from "ol/render/canvas";
-import { getUid } from 'ol/util';
-import { createCanvasContext2D } from "ol/dom";
-import Point from "ol/geom/Point";
+import LRUCache from '../ol/structs/LRUCache';
+import { Style, Fill, Stroke, Text, Icon, RegularShape, Circle } from '../ol/style'
+import { measureTextWidth } from '../ol/render/canvas';
+import { defaultTextAlign, defaultLineDash } from '../ol/render/canvas';
+import { TEXT_ALIGN } from '../ol/render/replay';
+import { measureTextHeight } from '../ol/render/canvas';
+import { SAFARI, CANVAS_LINE_DASH } from '../ol/has';
+import GeometryType from '../ol/geom/GeometryType';
+import { labelCache } from '../ol/render/canvas';
+import { getUid } from '../ol/util';
+import { createCanvasContext2D } from '../ol/dom';
+import Point from '../ol/geom/Point';
 
 import DetectTextLabelingStrategy from "./detectTextLabelingStrategy";
 import TextLabelingStrategy from "./textLabelingStrategy";

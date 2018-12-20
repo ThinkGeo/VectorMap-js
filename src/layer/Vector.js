@@ -1,11 +1,11 @@
 /**
  * @module ol/layer/Vector
  */
-import LayerType from 'ol/LayerType';
-import Layer from 'ol/layer/Layer';
-import VectorRenderType from 'ol/layer/VectorRenderType';
-import {assign} from 'ol/obj';
-import {createDefaultStyle, toFunction as toStyleFunction} from 'ol/style/Style';
+import LayerType from '../ol/LayerType';
+import Layer from '../ol/layer/Layer';
+import VectorRenderType from '../ol/layer/VectorRenderType';
+import {assign} from '../ol/obj';
+import {createDefaultStyle, toFunction as toStyleFunction} from '../ol/style/Style';
 
 
 /**

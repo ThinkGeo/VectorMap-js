@@ -1,6 +1,6 @@
 import { TextLabelingStrategy } from "./textLabelingStrategy";
 import { GeoTextStyle } from "./geoTextStyle";
-import GeometryType from "ol/geom/GeometryType";
+import GeometryType from '../ol/geom/GeometryType';
 
 class DetectTextLabelingStrategy extends TextLabelingStrategy {
     constructor() {

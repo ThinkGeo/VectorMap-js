@@ -1,11 +1,11 @@
 import GeoStyle from "./geoStyle";
 import GeoBrush from "./geoBrush";
 import GeoBrushType from "./geoBrushType";
-import { transform } from 'ol/transform'
-import { Polygon } from 'ol/geom';
-import { translate } from 'ol/geom/flat/transform';
+import { transform } from '../ol/transform'
+import { Polygon } from '../ol/geom';
+import { translate } from '../ol/geom/flat/transform';
 
-import { Style, Fill, Stroke } from 'ol/style'
+import { Style, Fill, Stroke } from '../ol/style'
 
 class GeoAreaStyle extends GeoStyle {
 

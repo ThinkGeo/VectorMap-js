@@ -1,11 +1,11 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
-import {scale as scaleCoordinate} from 'ol/coordinate.js';
-import {createCanvasContext2D} from 'ol/dom.js';
-import {containsExtent, intersects} from 'ol/extent.js';
+import {scale as scaleCoordinate} from '../../ol/coordinate.js';
+import {createCanvasContext2D} from '../../ol/dom.js';
+import {containsExtent, intersects} from '../../ol/extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {create as createTransform, apply as applyTransform} from 'ol/transform.js';
+import {create as createTransform, apply as applyTransform} from '../../ol/transform.js';
 
 /**
  * @abstract

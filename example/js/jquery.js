@@ -62,7 +62,7 @@ const popUp = function (address, centerCoordinate) {
     overlay.setPosition(centerCoordinate);
     map.addOverlay(overlay);
     let length = addressArr.length;
-    content.innerHTML = '<p style="font-size:1.3rem" >' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
+    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
 }
 
 const reverseGeocode = function (coordinate) {

@@ -1,12 +1,12 @@
-import TileGrid from "ol/tilegrid/TileGrid";
-import { clamp } from 'ol/math.js';
-import { get as getProjection, METERS_PER_UNIT } from 'ol/proj.js';
-import { containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth } from 'ol/extent.js';
-import { toSize } from 'ol/size.js';
-import { DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE } from 'ol/tilegrid/common.js';
-import { extentFromProjection } from "ol/tilegrid";
-import Corner from 'ol/extent/Corner.js';
-import {assign} from 'ol/obj.js';
+import TileGrid from './ol/tilegrid/TileGrid';
+import { clamp } from './ol/math.js';
+import { get as getProjection, METERS_PER_UNIT } from './ol/proj.js';
+import { containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth } from './ol/extent.js';
+import { toSize } from './ol/size.js';
+import { DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE } from './ol/tilegrid/common.js';
+import { extentFromProjection } from './ol/tilegrid';
+import Corner from './ol/extent/Corner.js';
+import {assign} from './ol/obj.js';
 
 
 

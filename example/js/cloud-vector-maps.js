@@ -5,7 +5,6 @@ WebFont.load({
     }
 });
 
-
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
     dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/dark.json'

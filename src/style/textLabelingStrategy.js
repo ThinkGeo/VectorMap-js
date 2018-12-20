@@ -1,5 +1,5 @@
 import { GeoTextStyle } from "./geoTextStyle";
-import { apply as applyTransform } from "ol/transform";
+import { apply as applyTransform } from '../ol/transform';
 
 export class TextLabelingStrategy {
     constructor() {

@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,6 +12,7 @@
         .map {
             position: relative;
         }
+
         .minutes {
             position: absolute;
             bottom: 2rem;
@@ -24,8 +25,8 @@
         }
 
         .minutes p {
-             text-align: right;
-            margin: .4rem 0;
+            text-align: right;
+            margin: .4rem 0.6rem;
         }
 
         .minutes ul {
@@ -98,6 +99,12 @@
             left: 3.5rem;
             margin-left: -11px;
         }
+
+        @media only screen and (max-device-width: 767px) {
+            .minutes ul li {
+                margin: 0 0.3rem;
+            }
+        }
     </style>
 </head>
 
@@ -117,9 +124,9 @@
             <li><span>48 -56</span> <i style="background-color: #E08B1C" data="48 -56"></i></li>
             <li><span>56 -77</span> <i style="background-color: #E22510" data="56 -77"></i></li>
         </ul>
-    </div> 
+    </div>
     <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
+    <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.1/vectormap.js"></script>
 
     <!-- option: Map Suite World Streets Styles -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
@@ -128,4 +135,4 @@
 
 </body>
 
-</html> 
+</html>

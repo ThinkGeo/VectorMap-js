@@ -2,14 +2,14 @@
  * @module ol/source/VectorTile
  */
 
-import TileState from 'ol/TileState';
-import VectorImageTile, {defaultLoadFunction} from 'ol/VectorImageTile';
-import Tile from 'ol/VectorTile';
-import {toSize} from 'ol/size';
-import UrlTile from 'ol/source/UrlTile';
-import {getKeyZXY} from 'ol/tilecoord';
-import {createXYZ, extentFromProjection, createForProjection} from 'ol/tilegrid';
-import {getUid} from 'ol/util'
+import TileState from '../ol/TileState';
+import VectorImageTile, {defaultLoadFunction} from '../ol/VectorImageTile';
+import Tile from '../ol/VectorTile';
+import {toSize} from '../ol/size';
+import UrlTile from '../ol/source/UrlTile';
+import {getKeyZXY} from '../ol/tilecoord';
+import {createXYZ, extentFromProjection, createForProjection} from '../ol/tilegrid';
+import {getUid} from '../ol/util'
 
 /**
  * @typedef {Object} Options

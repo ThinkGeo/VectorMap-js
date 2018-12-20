@@ -2,10 +2,10 @@
  * @module ol/source/Source
  */
 
-import {VOID} from 'ol/functions';
-import BaseObject from 'ol/Object';
-import {get as getProjection} from 'ol/proj';
-import SourceState from 'ol/source/State';
+import {VOID} from '../ol/functions';
+import BaseObject from '../ol/Object';
+import {get as getProjection} from '../ol/proj';
+import SourceState from '../ol/source/State';
 
 
 /**

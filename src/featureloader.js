@@ -1,10 +1,10 @@
 /**
  * @module ol/featureloader
  */
-import { VOID } from 'ol/functions.js';
-import FormatType from 'ol/format/FormatType.js';
-import { getUid } from 'ol/util';
-import TileState from "ol/TileState";
+import { VOID } from './ol/functions.js';
+import FormatType from './ol/format/FormatType.js';
+import { getUid } from './ol/util';
+import TileState from './ol/TileState';
 
 
 /**

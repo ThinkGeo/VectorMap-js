@@ -1,12 +1,12 @@
 /**
  * @module ol/layer/VectorTile
  */
-import LayerType from 'ol/LayerType.js';
-import {assert} from 'ol/asserts.js';
-import TileProperty from 'ol/layer/TileProperty.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorTileRenderType from 'ol/layer/VectorTileRenderType.js';
-import {assign} from 'ol/obj.js';
+import LayerType from '../ol/LayerType.js';
+import {assert} from '../ol/asserts.js';
+import TileProperty from '../ol/layer/TileProperty.js';
+import VectorLayer from '../ol/layer/Vector.js';
+import VectorTileRenderType from '../ol/layer/VectorTileRenderType.js';
+import {assign} from '../ol/obj.js';
 
 
 /**

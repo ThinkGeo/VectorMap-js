@@ -1,4 +1,4 @@
-import { assert } from 'ol/asserts.js';
+import { assert } from '../ol/asserts.js';
 import VectorSource from "./Vector";
 import { xhr } from "../geoVectorFeatureLoader";
 
