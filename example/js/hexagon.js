@@ -88,7 +88,7 @@ const styleFn = function (f, res) {
 }
 // Create HexBin and calculate min/max
 const reset = function () {
-    let size = 2000;
+    let size = 1000;
     if (layer) map.removeLayer(layer);
     let features;
 

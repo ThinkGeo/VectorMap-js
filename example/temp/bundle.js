@@ -708,13 +708,13 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
           jsPath: './example/js/scatter.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older for some states in US, 2012-2016.',
+            comments: 'Educational attainment for adults age 25 and older for popular cities in US in 2016',
           title: 'Pie Chart',
           htmlPath: './example/html/pie-chart.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
           jsPath: './example/js/pie-chart.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older for some states in US, 2012-2016 ',
+            comments: 'Educational attainment for adults age 25 and older  for popular cities in US in 2016 ',
           title: 'Radar Map',
           htmlPath: './example/html/AQI-radar.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',

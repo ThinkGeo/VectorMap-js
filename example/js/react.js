@@ -11,10 +11,10 @@ function renderStreetMap() {
         layers: [layer],
         target: 'map',
         view: new ol.View({
-            center: ol.proj.fromLonLat([-74.51317, 40.749999]),
+            center: ol.proj.fromLonLat([-77.043745, 38.889020]),
             maxZoom: 19,
             maxResolution: 40075016.68557849 / 512,
-            zoom: 15,
+            zoom: 14,
             minZoom: 2,
           
         }),
@@ -27,7 +27,7 @@ class StreetMap extends React.Component {
             parkColor: '#a7da7a59',
             placement: 'Line',
             maskType: 'Circle',
-            poiSize: '22',
+            poiSize: '40',
             json: {
                 styles: []
             },

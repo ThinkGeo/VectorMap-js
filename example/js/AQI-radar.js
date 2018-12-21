@@ -22,7 +22,7 @@ let map = new ol.Map({
         center: ol.proj.fromLonLat([-95.940014, 38.431607]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
-        zoom: 5
+        zoom: 4
     })
 });
 
@@ -108,7 +108,7 @@ for (let i = 0; i < 26; i++) {
 
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/education.geojson";
+        let file = "../data/educationLsee.geojson";
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -130,7 +130,7 @@ let stateArr=[]
 for (let index = 0; index < 26; index++) {
     stateArr.push([]);
 }
-let textColor = "#60acfc";
+let textColor = "#FF69B4";
 getJson().then(function (data) {
     let resultFeatures = JSON.parse(data)['features'];
     for (let i = 0, l = resultFeatures.length; i < l; i++) {
@@ -146,7 +146,7 @@ getJson().then(function (data) {
             name: 'Education',
             itemStyle: {
                 normal: {
-                    color: '#B3E4A1'
+                    color: '#FFD700'
                 }
             }
         });
