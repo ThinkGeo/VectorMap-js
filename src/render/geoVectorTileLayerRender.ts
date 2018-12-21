@@ -187,6 +187,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
+                    tile.transition=z === currentZ
                     this.renderedTiles.push(tile);
                 }
                 
@@ -304,6 +305,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 // context.restore();
                 // clips.push(currentClip);
                 // zs.push(currentZ);
+            }
+
+            var uid = this.ol_uid;
+            var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
+
+            if (alpha !== 1) {
+                frameState.animate = true;
+            } else if (tile.transition) {
+                tile.endTransition(uid);
             }
         }
         
