@@ -15,7 +15,7 @@ let map = new ol.Map({
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 10,
-        center: ol.proj.fromLonLat([-87.64620, 41.81523]),
+        center: ol.proj.fromLonLat([-87.64620, 41.82623]),
         progressiveZoom: false,
 
     })
@@ -33,7 +33,7 @@ const getJson = () => {
                     resolve(rawFile.responseText);
                 } else {
                     reject(new Error(ERR));
-                } 
+                }
             }
         }
         rawFile.send(null);
@@ -68,17 +68,23 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    const max = 400;
-    const middle=200
+    const xxl=400;
+    const xl =300;
+    const max =200;
+    const middle =100
     const min = 1;
-    if (f.get('features').length > max) {
-        color = '#ff3333';
-    } else if (f.get('features').length > middle && f.get('features').length < max) {
-        color = '#ff6666';
-    } else if (f.get('features').length > min && f.get('features').length < middle) { 
-        color = '#ffb3b3';
-    } else{
-        color = '#ffe6e6';
+    if (f.get('features').length > xxl) {
+        color = '#3d0401';
+    } else if (f.get('features').length > xl && f.get('features').length < xxl) {
+        color = '#910902';
+    } else if (f.get('features').length > max && f.get('features').length < xl) {
+        color = '#c40c02';
+    }else if (f.get('features').length > middle && f.get('features').length < max) {
+        color = '#e50e03';
+    } else if (f.get('features').length > min && f.get('features').length < middle) {
+        color = '#fd4a40';
+    }  else {
+        color = '#fd6962';
     }
     return [new ol.style.Style({
         fill: new ol.style.Fill({

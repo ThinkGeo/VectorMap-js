@@ -144,6 +144,7 @@ body {
 
 .nav-sidebar{
     position: absolute;
+    padding-top: 16px;
     top: 0;
     overflow: auto;
     width: 100%;

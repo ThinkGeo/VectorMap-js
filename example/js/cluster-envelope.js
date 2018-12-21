@@ -13,7 +13,7 @@ let map = new ol.Map({
     layers: [satelliteLayer],
     target: 'map',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-87.64620, 41.80423]),
+        center: ol.proj.fromLonLat([-87.640620, 41.75423]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 12,
