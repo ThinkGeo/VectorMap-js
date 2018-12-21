@@ -8,7 +8,6 @@ import { GeoVectorTileLayerRender } from "../render/geoVectorTilelayerRender";
 import { TreeNode } from "../tree/TreeNode";
 import { Tree } from "../tree/tree";
 import { WorkerManager } from "../worker/workerManager";
-import { WebglManager } from "../worker/webglManager";
 import { VectorTileLayerThreadMode } from "../worker/vectorTileLayerThreadMode";
 
 export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.VectorTileOptions): any; }) {
@@ -66,12 +65,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         else {
             this.loadStyleJson(styleJson);
         }
-        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;
-        
-        // create webworker for webgl        
-        if(!(<any>window).webglManager){
-            (<any>window).webglManager = new WebglManager();
-        }
+        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;        
     }
 
     loadStyleJsonAsyn(styleJsonUrl) {
@@ -804,7 +798,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
                 // gl.stencilMask(0);
             }
-            frameState.animate = true;
+
+            // frameState.animate = true;
+            
             return result;
         };
 

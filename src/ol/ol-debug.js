@@ -71080,16 +71080,16 @@ function olInit() {
             var startM;
 
             // declutter duplicate label
-            if(window.tests == undefined){
-                window.tests = 0;
-            }
-                // if(!this.text_.includes('Woodall')){
-                    if(!this.text_.includes('Tom Landry Freeway')){
+                if(window.tests == undefined){
+                    window.tests = 0;
+                }
+                if(!this.text_.includes('Woodall')){
+                    // if(!this.text_.includes('Tom Landry Freeway')){
                 // if(!this.text_.includes('Gaston Avenue')){
                     // return
                 }
 
-                if(window.tests > 0){
+                if(window.tests > 4){
                     window.tests += 1;
                     // return;
                 }
@@ -71107,26 +71107,8 @@ function olInit() {
             
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-            var pixelRatio = map.frameState_.pixelRatio;
-
-            // FIXME: replace it for efficiencyv
-            var lineStringCoordinates, endLineString, reverse;
-            if(type == 'LineString' && !this.label){
-                lineStringCoordinates = geometry.getFlatCoordinates();
-                endLineString = lineStringCoordinates.length;
-                // Keep text upright
-                reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride];   
-                if(reverse){
-                    var tmp = []
-                    for(var index = lineStringCoordinates.length - 1; index > 0 ; index -= 2){
-                        tmp.push(lineStringCoordinates[index - 1], lineStringCoordinates[index]);
-                    }
-
-                    lineStringCoordinates = tmp;
-                    reverse = false;
-                } 
-            }
-
+            var pixelRatio = map.frameState_.pixelRatio;            
+            
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
                 var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
@@ -71137,6 +71119,10 @@ function olInit() {
                 charArr = lines[i].split('');
                 
                 if(type == 'LineString' && !this.label){                    
+                    var lineStringCoordinates = geometry.getFlatCoordinates();
+                    var endLineString = lineStringCoordinates.length;
+                    // Keep text upright
+                    var reverse = lineStringCoordinates[offset] > lineStringCoordinates[endLineString - stride]; 
                     var numChars = charArr.length;
                     var x1 = lineStringCoordinates[offset];
                     var y1 = lineStringCoordinates[offset + 1];
@@ -71167,30 +71153,29 @@ function olInit() {
                                 segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
 
-                            var angle = Math.atan2(y2 - y1, x2 - x1);
-                            
+                            var angle = Math.atan2(y2 - y1, x2 - x1);                            
                             if (reverse) {
                                 angle += angle > 0 ? -Math.PI : Math.PI;
                             }
 
                             startM += charLength;
-                            if(previousAngle !== undefined && angle !== previousAngle){
+                            if(previousAngle !== undefined && angle !== previousAngle){                                
                                 charFlatCoordinates = [x1, y1];
-                                currX = 0;
+                                currX = reverse ? charLength / 2 : 0;
                                 feature.isCurve = true;
                             }
                             
                             this.rotation = -angle;                          
                             var image = charInfo.image;
                             previousAngle = angle;
-                            // FIXME: using anchorX to fit the setting
-                            this.anchorX = reverse ? 0 + currX : 0 - currX;
-                            this.anchorY = anchorY + currY;
-                            this.originX = index === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                            this.originY = charInfo.offsetY;
                             this.height = glyphAtlas.height;
                             this.width = index === 0 || index === charArr.length - 1 ?
                                 glyphAtlas.width[charArr[index]] + lineWidth : glyphAtlas.width[charArr[index]];
+                            // FIXME: using anchorX to fit the setting
+                            this.anchorX = reverse ? 0 + currX + this.width : 0 - currX;
+                            this.anchorY = anchorY + currY;
+                            this.originX = index === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                            this.originY = charInfo.offsetY;
                             this.imageHeight = image.height;
                             this.imageWidth = image.width;
                             this.rotateWithView = true;
