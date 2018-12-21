@@ -605,7 +605,7 @@
           jsPath: './example/js/color-creation.js'
         },
         {
-          comments: 'Convert an adress to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+          comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
           title: "Find an Address in the US",
           htmlPath: './example/html/find-address.html',
           codePenUrl: '#',
@@ -633,7 +633,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/ZmgdgL',
           jsPath: './example/js/WKT.js'
         }, {
-          comments: 'Read features from a GPX file and show them on the map',
+          comments: 'Read features from a GPX file and show them on the map.',
           title: 'Work with GPX ',
           htmlPath: './example/html/GPX.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/LXwwPm',
@@ -668,7 +668,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
           jsPath: './example/js/KML.js'
         }, {
-         comments: 'Label with StyleJSON',
+         comments: 'Label with StyleJSON.',
          title: 'Label Features',
           htmlPath: './example/html/labeling-features.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
@@ -702,19 +702,19 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
           jsPath: './example/js/scatter.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older for popular cities in US in 2016',
+          comments: 'Educational attainment for adults age 25 and older for popular cities in US in 2016.',
           title: 'Pie Chart',
           htmlPath: './example/html/pie-chart.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
           jsPath: './example/js/pie-chart.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older  for popular cities in US in 2016 ',
+          comments: 'Educational attainment for adults age 25 and older  for popular cities in US in 2016. ',
           title: 'Radar Map',
           htmlPath: './example/html/AQI-radar.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
           jsPath: './example/js/AQI-radar.js'
         }, {
-          comments: 'Drug-related crimes of Chicago in 2016 with cluster strategy',
+          comments: 'Drug-related crimes of Chicago in 2016 with cluster strategy.',
           title: 'Cluster Envelope',
           htmlPath: './example/html/cluster-envelope.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
@@ -726,7 +726,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
           jsPath: './example/js/hexagon.js'
         }, {
-            comments: 'The statistics and instensities of average round trip commute time in several major cities of United States',
+            comments: 'The statistics and instensities of average round trip commute time in several major cities of United States.',
           title: 'Commute time in the US',
           htmlPath: './example/html/trip-commute-time.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOLdo',
@@ -748,7 +748,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/pqzvRR',
           jsPath: './example/js/react.js'
         }, {
-          comments: 'Shows how VectorMap.js works with Vue.JS to do some interation with map.',
+            comments: 'Shows how VectorMap.js works with Vue.JS.',
           title: 'Vue.JS',
           htmlPath: './example/html/vue.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',

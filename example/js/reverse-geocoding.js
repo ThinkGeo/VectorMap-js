@@ -109,7 +109,7 @@ let view = new ol.View({
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
-    zoom: 17,
+    zoom: 16,
 })
 
 //creat map
