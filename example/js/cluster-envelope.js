@@ -27,7 +27,27 @@ const getStyle = function (feature, resolution) {
     let size = feature.get('features').length;
     let style = styleCache[size];
     if (!style) {
-        let color = size > 8 ? "248, 128, 0" : size > 2 ? "248, 192, 0" : "128, 192, 64";
+        // let color = size > 8 ? "248, 128, 0" : size > 2 ? "248, 192, 0" : "128, 192, 64";
+        let color;
+        const xxl = 100;
+        const xl = 50;
+        const max = 20;
+        const middle = 10
+        const min = 1;
+        if (size > xxl) {
+            color = '220,20,60';
+        } else if (size > xl && size < xxl || size == xxl) {
+            color = '219,112,147';
+        } else if (size > max && size < xl || size == xl) {
+            color = '215,116,9';
+        } else if (size > middle && size < max || size ==max) {
+            color = '248, 128, 0';
+        } else if (size > min && size < middle || size== middle) {
+            color = "248, 192, 0";
+        } else {
+            color = "128, 192, 64";
+        }
+        
         let radius = Math.max(8, Math.min(size * 1.5, 20));
         style = styleCache[size] = [new ol.style.Style({
             image: new ol.style.Circle({

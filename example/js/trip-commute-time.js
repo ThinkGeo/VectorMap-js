@@ -20,7 +20,8 @@ let map =  new ol.Map({
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 4,
-        minZoom: 2
+        minZoom: 2,
+        progressiveZoom: false,
     })
 })
 

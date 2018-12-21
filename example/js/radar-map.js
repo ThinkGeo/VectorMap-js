@@ -102,7 +102,7 @@ let AQIlayer = (id, data, color, pt) => {
 for (let i = 0; i < 26; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `AQIChart${i}`;
-    aqiDiv.style = "height:200px;width:400px";
+    aqiDiv.style = "height:200px;width:430px";
     document.querySelector("#AQIChart").appendChild(aqiDiv)
 }
 
@@ -130,7 +130,7 @@ let stateArr=[]
 for (let index = 0; index < 26; index++) {
     stateArr.push([]);
 }
-let textColor = "#FF69B4";
+let textColor = "#ffdf34";
 getJson().then(function (data) {
     let resultFeatures = JSON.parse(data)['features'];
     for (let i = 0, l = resultFeatures.length; i < l; i++) {
@@ -146,7 +146,7 @@ getJson().then(function (data) {
             name: 'Education',
             itemStyle: {
                 normal: {
-                    color: '#FFD700'
+                    color: '#ffdf34'
                 }
             }
         });

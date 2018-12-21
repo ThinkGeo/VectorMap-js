@@ -24,10 +24,11 @@ const baseMapStyleJson = {
             "style": [{
                 "text-name": "name",
                 "text-fill": "#ffff28",
-                "text-wrap-width": 15,
+                "text-wrap-width": 10,
+                "text-spacing": 1,
                 "style": [{
                     "filter": "zoom>=0;zoom<=18;",
-                    "text-font": "16px Calibri,sans-serif",
+                    "text-font": "14px Calibri,sans-serif",
                 }]
             }]
         }
@@ -56,7 +57,7 @@ const highlightStyle = new ol.style.Style({
         width: 2
     }),
     text: new ol.style.Text({
-        font: '16px Calibri,sans-serif',
+        font: '14px Calibri,sans-serif',
         fill: new ol.style.Fill({
             color: 'rgb(103, 183, 220)'
         }),

@@ -1,6 +1,6 @@
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
+        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png" +
             "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
         tileSize: 512,
     }),
@@ -68,10 +68,10 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    const xxl=400;
-    const xl =300;
-    const max =200;
-    const middle =100
+    const xxl=251;
+    const xl =150;
+    const max =100;
+    const middle =50
     const min = 1;
     if (f.get('features').length > xxl) {
         color = '#3d0401';

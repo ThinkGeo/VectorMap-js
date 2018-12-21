@@ -21,6 +21,7 @@ let map2x = new ol.Map({
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
         progressiveZoom: false,
+        
 
     }),
 });

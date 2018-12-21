@@ -710,9 +710,9 @@
         }, {
           comments: 'Educational attainment for adults age 25 and older  for popular cities in US in 2016. ',
           title: 'Radar Map',
-          htmlPath: './example/html/AQI-radar.html',
+          htmlPath: './example/html/radar-map.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
-          jsPath: './example/js/AQI-radar.js'
+          jsPath: './example/js/radar-map.js'
         }, {
           comments: 'Drug-related crimes of Chicago in 2016 with cluster strategy.',
           title: 'Cluster Envelope',
