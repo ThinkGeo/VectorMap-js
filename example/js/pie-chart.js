@@ -28,7 +28,7 @@ let pieChartOvery = (id, data, pt) => {
     option = {
         tooltip: {
             trigger: 'item',
-            formatter: "{b} : {c} ({d}%)"
+            formatter: "{b} : {d}%"
         },
         series: [{
             type: 'pie',

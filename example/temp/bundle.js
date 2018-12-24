@@ -586,26 +586,26 @@
         dataTarget: 'ThinkGeo-cloud-services',
         styleName: 'ThinkGeo Cloud Services',
         subitems: [{
-          comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.`,
+          comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.`,
           title: 'Get Elevation Along Path',
           htmlPath: './example/html/elevation.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/mabbKm',
           jsPath: './example/js/elevation.js'
         }, {
-          comments: 'Convert a coordinate to andress via <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+          comments: 'Convert a coordinate to address via <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
           title: 'Find Nearby Places',
           htmlPath: './example/html/reverse-geocoding.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gZYOae',
           jsPath: './example/js/reverse-geocoding.js'
         }, {
-          comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+          comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
           title: 'Generate Color Themes',
           htmlPath: './example/html/color-creation.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/ZVzEgL',
           jsPath: './example/js/color-creation.js'
         },
         {
-          comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">Thinkgeo  Cloud Service</a>.',
+          comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
           title: "Find an Address in the US",
           htmlPath: './example/html/find-address.html',
           codePenUrl: '#',
@@ -655,21 +655,21 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoJGx',
           jsPath: './example/js/styling-lines.js'
         },
-       {
-         comments: 'Render GeoJSON polygons with StyleJSON.',
-         title: 'Style Polygons from GeoJSON',
+        {
+          comments: 'Render GeoJSON polygons with StyleJSON.',
+          title: 'Style Polygons from GeoJSON',
           htmlPath: './example/html/styling-polygons.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQezZR',
           jsPath: './example/js/styling-polygons.js'
         }, {
-         comments: 'Render KML Polygons with StyleJSON.',
-         title: 'Style Polygons from KML ',
+          comments: 'Render KML Polygons with StyleJSON.',
+          title: 'Style Polygons from KML ',
           htmlPath: './example/html/KML.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
           jsPath: './example/js/KML.js'
         }, {
-         comments: 'Label with StyleJSON.',
-         title: 'Label Features',
+          comments: 'Label with StyleJSON.',
+          title: 'Label Features',
           htmlPath: './example/html/labeling-features.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
           jsPath: './example/js/labeling-features.js'
@@ -684,53 +684,53 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/jQgXxm',
           jsPath: './example/js/heatmap-KML.js'
         }, {
-            comments: 'Road congestion statistics are geographically presented with this heat map. The data is from a GeoJSON file. ',
+          comments: 'Road congestion statistics are geographically presented with this heat map. The data is from a GeoJSON file. ',
           title: 'Road Congestion Heatmap',
           htmlPath: './example/html/heatmap-json.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/aQePxX',
           jsPath: './example/js/heatmap-json.js'
         }, {
-            comments: 'The statistics of rainfall distribution in China at 17:00 on Oct 16, 2018',
+          comments: 'The statistics of rainfall distribution in China at 17:00 on Oct 16, 2018',
           title: 'Precipitation Distribution',
           htmlPath: './example/html/contour-line.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVqbw',
           jsPath: './example/js/contour-line.js'
         }, {
-          comments: "A bubble map shows average annual precipitation by city in the United States.",
-          title: 'Scatter',
+          comments: 'The statistics and instensities of average round trip commute time in several major cities of United States.',
+          title: 'Average Commute Times',
+          htmlPath: './example/html/trip-commute-time.html',
+          codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOLdo',
+          jsPath: './example/js/trip-commute-time.js'
+        }, {
+          comments: "Average annual precipitation for major US cities.",
+          title: 'Average Precipitation',
           htmlPath: './example/html/scatter.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
           jsPath: './example/js/scatter.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older for popular cities in US in 2016.',
-          title: 'Pie Chart',
+          comments: 'Education achievement in major US cities for 2016,  ages 25 and older, shown with pie charts.',
+          title: 'Education Achievement - Pie Chart',
           htmlPath: './example/html/pie-chart.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
           jsPath: './example/js/pie-chart.js'
         }, {
-          comments: 'Educational attainment for adults age 25 and older  for popular cities in US in 2016. ',
-          title: 'Radar Map',
+          comments: 'Education achievement in major US cities for 2016,  ages 25 and older, shown as a radar map.',
+          title: 'Education Achievement - Radar',
           htmlPath: './example/html/radar-map.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
           jsPath: './example/js/radar-map.js'
         }, {
-          comments: 'Drug-related crimes of Chicago in 2016 with cluster strategy.',
-          title: 'Cluster Envelope',
+            comments: 'Chicago drug-related crimes in 2016, shown as clustered points.',
+            title: 'Chicago Crime - Clustered Points',
           htmlPath: './example/html/cluster-envelope.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
           jsPath: './example/js/cluster-envelope.js'
         }, {
-          comments: 'Drug-related crimes of Chicago in 2016 with hexagonal grid.',
-          title: 'Hexagon',
+            comments: 'Chicago drug-related crimes in 2016, shown as a hex grid.',
+            title: 'Chicago Crime - Hex Grid',
           htmlPath: './example/html/hexagon.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
           jsPath: './example/js/hexagon.js'
-        }, {
-            comments: 'The statistics and instensities of average round trip commute time in several major cities of United States.',
-          title: 'Commute time in the US',
-          htmlPath: './example/html/trip-commute-time.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOLdo',
-          jsPath: './example/js/trip-commute-time.js'
         }]
       }, {
         dataTarget: 'JavaScript-frameworks',
@@ -742,13 +742,13 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/dwbPoq',
           jsPath: './example/js/Jquery.js'
         }, {
-            comments: 'Shows how VectorMap.js works with Vue.JS.',
+          comments: 'Shows how VectorMap.js works with Vue.JS.',
           title: 'React JS',
           htmlPath: './example/html/react.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/pqzvRR',
           jsPath: './example/js/react.js'
         }, {
-            comments: 'Shows how VectorMap.js works with Vue.JS.',
+          comments: 'Shows how VectorMap.js works with Vue.JS.',
           title: 'Vue.JS',
           htmlPath: './example/html/vue.html',
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',

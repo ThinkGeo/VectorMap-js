@@ -35,9 +35,9 @@ const getStyle = function (feature, resolution) {
         const middle = 10
         const min = 1;
         if (size > xxl) {
-            color = '220,20,60';
+            color = '61,4,1';
         } else if (size > xl && size < xxl || size == xxl) {
-            color = '219,112,147';
+            color = '196,12,2';
         } else if (size > max && size < xl || size == xl) {
             color = '215,116,9';
         } else if (size > middle && size < max || size ==max) {

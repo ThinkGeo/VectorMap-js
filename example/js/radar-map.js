@@ -38,17 +38,17 @@ let AQIlayer = (id, data, color, pt) => {
         backgroundColor: 'transparent',
         radar: {
             indicator: [{
-                name: 'Under high school',
+                name: 'Grade School',
                 fontSize: 8,
                 max: 35
             }, {
-                name: 'High school',
+                name: 'High School',
                 max: 35
             }, {
-                name: 'College',
+                name: 'College 2+ Years',
                 max: 35
             }, {
-                name: 'Bachelor degree and above',
+                name: 'College 4+ Years',
                 max: 35
             }],
             shape: 'circle',
@@ -126,7 +126,7 @@ const getJson = () => {
     return readTextFile;
 }
 
-let stateArr=[]
+let stateArr = []
 for (let index = 0; index < 26; index++) {
     stateArr.push([]);
 }
@@ -155,4 +155,3 @@ getJson().then(function (data) {
     }
 })
 
- 
