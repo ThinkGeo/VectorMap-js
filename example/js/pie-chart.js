@@ -104,28 +104,28 @@ getJson().then(function (data) {
 
         stateArr[i].push({
             value: UHSC,
-            name: `Under high school `,
+            name: `Grade School `,
             itemStyle: {
                 color: '#fe0100',
             }
         });
         stateArr[i].push({
             value: HS,
-            name: 'High school ',
+            name: ' High School ',
             itemStyle: {
                 color: '#f9ff00'
             }
         });
         stateArr[i].push({
             value: Col,
-            name: `College`,
+            name: `College 2+ Years`,
             itemStyle: {
                 color: '#a4e601'
             }
         });
         stateArr[i].push({
             value: bcav,
-            name: `Bachelor degree and above`,
+            name: `College 4+ Years`,
             itemStyle: {
                 color: '#1e86fe'
             }

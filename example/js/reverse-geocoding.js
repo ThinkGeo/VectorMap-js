@@ -28,8 +28,6 @@ let _styles = {
         }),
         fill: new ol.style.Fill({ color: [0, 0, 255, 0.1] })
     }),
-
-
 }
 
 //base map
@@ -154,6 +152,7 @@ const renderSearchCircle = function (radius, coordinate) {
 
 //render best Match
 const renderBestMatchLoaction = function (place, coordinate, address) {
+    console.log(coordinate)
     if (place.data) {
         let wktReader = new ol.format.WKT();
         let feature = wktReader.readFeature(place.data.locationFeatureWellKnownText);
@@ -200,7 +199,7 @@ const renderNearbyResult = function (response) {
 const reverseGeocode = function (coordinate, flag) {
     const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
     let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&SearchRadius=500&MaxResults=20&Srid=3857&VerboseResults=true`;
-
+    
     let jqxhr = $.get(getURL, function (data) {
         if (data.data.bestMatchLocation) {
             let address = data.data.bestMatchLocation.data.address;
