@@ -72,10 +72,8 @@ var Map = /*@__PURE__*/(function (PluggableMap) {
 
       // MapSuite: Disable rotation in mobile devices
       var interactionOption = {};
-      if (navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i)) {
-        interactionOption.altShiftDragRotate = false;
-        interactionOption.pinchRotate = false;
-      }
+      interactionOption.altShiftDragRotate = false;
+      interactionOption.pinchRotate = false;
       options.interactions = defaultInteractions(interactionOption);
     }
 
