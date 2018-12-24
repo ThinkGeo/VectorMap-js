@@ -31,7 +31,14 @@ class GeoVectorTileLayer extends VectorTileLayer {
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
         options["defaultStyle"] = options["defaultStyle"] === undefined ? false : options["defaultStyle"];
         options["minimalist"] = options["minimalist"] === undefined ? true : options["minimalist"];
-        options["cacheSize"] = options["cacheSize"] === undefined ? 64 : options["cacheSize"];
+
+        // Reduce cache size of tile in mobile, workaround for iOS Total canvas memory use exceeds the maximum limit.
+        var defaultCacheSize = 64;
+        if (navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i)) {
+            defaultCacheSize = 16;
+        }
+        options["cacheSize"] = options["cacheSize"] === undefined ? defaultCacheSize : options["cacheSize"];
+
         options["urls"] = options["urls"] === undefined ? undefined : options["urls"];
         super(options);
         this.multithread = options.multithread == undefined ? true : options.multithread
