@@ -166,6 +166,16 @@ class VectorImageTile extends Tile {
     disposeInternal() {
         this.state = TileState.ABORT;
         this.changed();
+
+        // MapSuite : iOS Total canvas memory use exceeds the maximum limit refer to https://github.com/openlayers/openlayers/issues/8956 
+        if (this.context_) {
+            for (const key in this.context_) {
+                const context = this.context_[key];
+                context.canvas.width = context.canvas.height = 0;
+                
+            }
+        }
+
         if (this.interimTile) {
             this.interimTile.dispose();
         }
@@ -185,6 +195,7 @@ class VectorImageTile extends Tile {
         this.loadListenerKeys_.length = 0;
         this.sourceTileListenerKeys_.forEach(unlistenByKey);
         this.sourceTileListenerKeys_.length = 0;
+
         super.disposeInternal();
     }
 
