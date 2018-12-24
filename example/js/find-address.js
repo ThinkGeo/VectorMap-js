@@ -60,7 +60,7 @@ let map = new ol.Map({
     view: view
 });
 
-
+ 
 const geocoderResultNode = document.getElementById('geocoderResult');
 const renderResult = ({ locations }) => {
     if (locations.length > 0) {
@@ -75,17 +75,27 @@ const renderResult = ({ locations }) => {
 }
 
 const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox) => {
+    let source = geocodingLayer.getSource();
+    source.clear();
     coordinates = [parseFloat(coordinatesX),parseFloat(coordinatesY)]
     let feature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat(coordinates)),
         type: 'bestMatchLocation'
     });
-    view.animate({
-        center:  ol.proj.fromLonLat(coordinates),
-        zoom:14,
-        duration: 2000
-    });
+    let format = new ol.format.WKT();
+    let wktFeature =format.readFeature(boundingBox, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+   
+    wktFeature.set('type', 'boundingBox');
     geocodingLayer.getSource().addFeature(feature);
+    geocodingLayer.getSource().addFeature(wktFeature);
+     view.animate({
+        center:  ol.proj.fromLonLat(coordinates),
+        zoom:10,
+        duration: 3000
+    });
 }
 
 //Geocoder address
