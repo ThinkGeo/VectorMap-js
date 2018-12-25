@@ -39,7 +39,8 @@ let map = new ol.Map({
 });
 
 document.getElementById('wrap').addEventListener('click', (e) => {
-    const nodeList = document.querySelectorAll('#wrap div');
+    const nodeList = document.querySelectorAll('geocoderResult a');
+    
     for (let node of nodeList) {
         node.style.borderColor = 'transparent';
     }

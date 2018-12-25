@@ -9,12 +9,6 @@ const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~' // please go to ht
 
 //layer style
 let _styles = {
-    bestMatchLocation: new ol.style.Style({
-        image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            src: '../image/point.png',
-        })
-    }),
     boundingBox: new ol.style.Style({
         stroke: new ol.style.Stroke({
             color: [0, 0, 255, 0.5],
@@ -23,6 +17,10 @@ let _styles = {
         fill: new ol.style.Fill({ color: [0, 0, 255, 0.1] })
     }),
 }
+
+
+let focusIndex = null;
+let resultsLength;
 
 //creat result layer
 const createGeocodingLayer = function () {
@@ -60,42 +58,73 @@ let map = new ol.Map({
     view: view
 });
 
- 
+//render result
+
+//   Elements that make up the popup.
+const container = document.getElementById('popup');
+container.classList.remove('hidden');
+const content = document.getElementById('popup-content');
+const closer = document.getElementById('popup-closer');
+
+let overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 2000
+    }
+});
+
+closer.onclick = function () {
+    overlay.setPosition(undefined);
+    let source = geocodingLayer.getSource();
+    source.clear();
+    closer.blur();
+    return false;
+};
+
+const popUp = function (address, coordinates, type) {
+    overlay.setPosition(ol.proj.fromLonLat(coordinates));
+    map.addOverlay(overlay);
+    content.innerHTML = `<p><span>Address:</span>${address}</p><p><span>Location:</span>${coordinates[1]},${coordinates[0]}</p><p><span>Types:</span>${type}</p>`;
+}
+
 const geocoderResultNode = document.getElementById('geocoderResult');
+
 const renderResult = ({ locations }) => {
+    document.querySelector('.loading').classList.add('hidden');
     if (locations.length > 0) {
+        resultsLength = locations.length;
         let str = '';
+        let i = -1
         for (const item of locations) {
-            str += `<li><a href="#" data-coordinatesX=${item.locationPoint.pointX} data-coordinatesY=${item.locationPoint.pointY}   data-boundingBox="${item.boundingBox}"> ${item.address} </a></li>`
+            i = i + 1;
+            str += `<li><a data-coordinatesX=${item.locationPoint.pointX} data-coordinatesY=${item.locationPoint.pointY} data-index=${i}   data-boundingBox="${item.boundingBox}"" data-type=${item.locationType}> ${item.address} </a></li>`
         }
-        geocoderResultNode.innerHTML = str
+        geocoderResultNode.innerHTML = str;
     } else {
-        geocoderResultNode.innerHTML = `<li><a href="#">no result</a></li>`
+        geocoderResultNode.innerHTML = ''
     }
 }
 
-const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox) => {
+const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, address, type) => {
+    overlay.setPosition(undefined);
     let source = geocodingLayer.getSource();
     source.clear();
-    coordinates = [parseFloat(coordinatesX),parseFloat(coordinatesY)]
-    let feature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.fromLonLat(coordinates)),
-        type: 'bestMatchLocation'
-    });
+    coordinates = [parseFloat(coordinatesX), parseFloat(coordinatesY)];
+    coordinatesCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.08];
     let format = new ol.format.WKT();
-    let wktFeature =format.readFeature(boundingBox, {
+    let wktFeature = format.readFeature(boundingBox, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
-      });
-   
-    wktFeature.set('type', 'boundingBox');
-    geocodingLayer.getSource().addFeature(feature);
-    geocodingLayer.getSource().addFeature(wktFeature);
-     view.animate({
-        center:  ol.proj.fromLonLat(coordinates),
-        zoom:10,
-        duration: 3000
     });
+    wktFeature.set('type', 'boundingBox');
+    geocodingLayer.getSource().addFeature(wktFeature);
+    view.animate({
+        center: ol.proj.fromLonLat(coordinatesCenter),
+        zoom: 10,
+        duration: 2000
+    });
+    popUp(address, coordinates, type);
 }
 
 //Geocoder address
@@ -116,6 +145,7 @@ const geocoder = (val) => {
             return;
         }
         if (timeout) {
+            document.querySelector('.loading').classList.add('hidden');
             return;
         }
         clearTimeout(timer);
@@ -127,28 +157,98 @@ const geocoder = (val) => {
     request.send(null);
 }
 
-//User interaction
-const address = document.getElementById('address')
-address.addEventListener('change', () => {
-    let value = address.value;
-    geocoderResultNode.innerHTML = ''
-    if (value) {
-        geocoder(value)
-    } else {
-        geocoderResultNode.innerHTML = `<li><a href="#">Enter the address</a></li>`
+//Tool function
+const removeClass = () => {
+    const nodeList = document.querySelectorAll('#geocoderResult a');
+    for (let node of nodeList) {
+        node.classList.remove('focus');
     }
-})
+}
 
+const obtainParameter = (target) => {
+    let boundingBox = target.getAttribute('data-boundingBox');
+    let coordinatesX = target.getAttribute('data-coordinatesX');
+    let coordinatesY = target.getAttribute('data-coordinatesY');
+    let address = target.innerText;
+    let type = target.getAttribute('data-type');
+    renderBestMatchLoaction(coordinatesX, coordinatesY, boundingBox, address, type)
+}
+
+const compareFocusIndex = (flag) => {
+    const nodeList = document.querySelectorAll('#geocoderResult a');
+    for (let node of nodeList) {
+        if (Number(node.getAttribute('data-index')) == focusIndex) {
+            if (flag) {
+                node.classList.add('focus')
+                return
+            } else {
+                obtainParameter(node)
+            }
+        }
+    }
+}
+
+const moveFocus = (dir) => {
+    removeClass()
+    if (document.querySelector('.loading').classList.contains('hidden')) {
+        if (focusIndex == null || focusIndex == resultsLength - 1) {
+            focusIndex = 0
+        } else if (focusIndex == -1) {
+            focusIndex = resultsLength - 1
+        } else {
+            focusIndex = focusIndex + dir
+        }
+    }
+    compareFocusIndex(true)
+}
+
+//User interaction
+let timer = null;
+const address = document.getElementById('address')
+address.addEventListener('input', (e) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        overlay.setPosition(undefined);
+        let source = geocodingLayer.getSource();
+        source.clear();
+        let value = address.value;
+        focusIndex = null;
+        if (value) {
+            document.querySelector('.loading').classList.remove('hidden');
+            geocoder(value)
+        } else {
+            geocoderResultNode.innerHTML = ''
+        }
+    }, 200);
+})
 document.getElementById('geocoderResult').addEventListener('click', (e) => {
     let target = e.target;
-    console.log(target.nodeName)
     if (target.nodeName == 'A') {
-        let boundingBox = target.getAttribute('data-boundingBox');
-        let coordinatesX = target.getAttribute('data-coordinatesX');
-        let coordinatesY = target.getAttribute('data-coordinatesY');
-        renderBestMatchLoaction(coordinatesX, coordinatesY, boundingBox)
+        removeClass();
+        e.target.classList.add('focus');
+        focusIndex = Number(target.getAttribute('data-index'));
+        obtainParameter(target)
     }
 })
 
 
-document.querySelector('#geocoder input').focus()
+document.body.addEventListener('keydown', (e) => {
+    switch (e.keyCode) {
+        //up
+        case 38:
+            e.preventDefault();
+            moveFocus(-1);
+            break;
+        // down
+        case 40:
+            e.preventDefault();
+            moveFocus(1);
+            break;
+        case 13:
+            if (focusIndex !== null) {
+                compareFocusIndex(false)
+            }
+            break;
+    }
+})
+
