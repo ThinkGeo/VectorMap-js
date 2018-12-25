@@ -112,6 +112,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                 // for cancel.
                 tile.tileRange = tileRange;
+
                 if (this.isTileToDraw_(tile)) {
                     const uid = getUid(this);
                     if (tile.getState() == TileState.LOADED) {
@@ -310,6 +311,13 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                 }
             }
         }
+        else {
+            const tileState = tile.getState();
+            if (tileState == TileState.LOADED && tile.interimTile !== null) {
+                tile.interimTile.dispose();
+                tile.interimTile = null;
+            }
+        }
         return tile;
     }
 
@@ -470,7 +478,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         // tile extent in tile pixel space
                         tileProjection.setExtent(sourceTile.getExtent());
                     }
-                 
+
                     let tileProjectionInfo = {};
                     for (let name in tileProjection) {
                         if (typeof tileProjection[name] !== "function") {
