@@ -30955,8 +30955,8 @@ function olInit() {
         if (strokeStyle) {
             var lineStringReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.LINE_STRING);
-            lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-            lineStringReplay.drawLineString(geometry, feature);
+            lineStringReplay.setFillStrokeStyle(null, strokeStyle,geometry);
+            lineStringReplay.drawLineString(geometry, feature,strokeStyle);
         }
         var textStyle = style.getText();
         if (textStyle) {
@@ -68502,23 +68502,122 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature) {
+    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature,strokeStyle) {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-        var stride = lineStringGeometry.getStride();
-        var extent = feature.getExtent();
-        if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-            flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                stride, -this.origin[0], -this.origin[1], undefined, extent, true);
-            
-            if (this.state_.changed) {
-                this.styleIndices_.push(this.indices.length);
-                this.state_.changed = false;
+        if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
+            function normalize(x, y) {
+                var m = Math.sqrt(x * x + y * y);
+                return { x: x / m, y: y / m }
+            }        
+            function getPathCoordinate(a_position, a_positionNext, a_positionPrev, a_offset) {
+                var pointss = [];
+                var length = a_position.length;
+                var flag = 1;
+                for (var i = 0; i < length; i += 3) {
+                  var curr = { x: a_position[i], y: a_position[i + 1] }
+                  var next = { x: a_positionNext[i], y: a_positionNext[i + 1] }
+                  var prev = { x: a_positionPrev[i], y: a_positionPrev[i + 1] }
+                  var dir, len = a_offset * flag;
+                  if (curr.x === prev.x && curr.y === prev.y) {
+                    dir = normalize(next.x - curr.x, next.y - curr.y);
+                  }
+                  else if (curr.x === next.x && curr.y === next.y) {
+                    dir = normalize(curr.x - prev.x, curr.y - prev.y)
+                  }
+                  else {
+                    var dir1 = normalize(curr.x - prev.x, curr.y - prev.y)
+                    var dir2 = normalize(next.x - curr.x, next.y - curr.y)
+                    dir = normalize(dir1.x + dir2.x, dir1.y + dir2.y);
+                    var miter = 1.0 / Math.max(dir.x * dir1.x + dir.y * dir1.y, 0.5);
+                    len *= miter;
+                  }
+                  dir = { x: -dir.y * len, y: dir.x * len };
+                  pointss.push(curr.x + dir.x);
+                  pointss.push(curr.y + dir.y);
+                  flag *= -1;
+                }
+                return pointss
             }
-            this.startIndices.push(this.indices.length);
-            this.startIndicesFeature.push(feature);
-            this.drawCoordinates_(
-                flatCoordinates, 0, flatCoordinates.length, stride);
+            function getPathOffset(points, offset) {
+                var len = points.length / 2;
+                var count = len * 3 * 2;
+                var position = [];
+                var positionPrev = [];
+                var positionNext = [];
+                if(len===2 && points[0]===points[2] && points[1]===points[3]){
+                  return [[],[]];
+                }
+                var triangleOffset = 0;
+                for (var i = 0; i < len; i++) {
+                  var i3 = i * 3 * 2;
+                  var i4 = i * 4 * 2;
+                  var pointX = points[2 * i];
+                  var pointY = points[2 * i + 1]
+
+                  position[i3 + 0] = pointX;
+                  position[i3 + 1] = pointY;
+                  position[i3 + 2] = 0;
+                  position[i3 + 3] = pointX;
+                  position[i3 + 4] = pointY;
+                  position[i3 + 5] = 0;
+                  if (i < count - 1) {
+                    var i3p = i3 + 6;
+                    positionNext[i3p + 0] = pointX;
+                    positionNext[i3p + 1] = pointY;
+                    positionNext[i3p + 2] = 0;
+              
+                    positionNext[i3p + 3] = pointX;
+                    positionNext[i3p + 4] = pointY;
+                    positionNext[i3p + 5] = 0;
+                  }
+                  if (i > 0) {
+                    var i3n = i3 - 6;
+                    positionPrev[i3n + 0] = pointX;
+                    positionPrev[i3n + 1] = pointY;
+                    positionPrev[i3n + 2] = 0;
+              
+                    positionPrev[i3n + 3] = pointX;
+                    positionPrev[i3n + 4] = pointY;
+                    positionPrev[i3n + 5] = 0;
+                  }
+                }
+                var end = count - 1;
+                for (i = 0; i < 4; i++) {
+                  positionNext[i] = positionNext[i + 4];
+                  positionPrev[end - i] = positionPrev[end - i - 4];
+                }
+                var coordinates = getPathCoordinate(position, positionNext, positionPrev, offset)
+                return coordinates;
+            };
+            var strokeStyleWidth=strokeStyle.getWidth();
+            var widthHalf =strokeStyleWidth / 2;
+            var tempCoordinates = getPathOffset(flatCoordinates, widthHalf);
+            for(let i=0;i<tempCoordinates.length;i+=4){
+                let railWayChildCoord=tempCoordinates.slice(i,i+4);
+                flatCoordinates=railWayChildCoord;
+                drawLineString_.call(this,flatCoordinates);
+            }
+            return;
         }
+        function drawLineString_(flatCoordinates){
+            // var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+            var stride = lineStringGeometry.getStride();
+            var extent = feature.getExtent();
+            if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+                flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                
+                if (this.state_.changed) {
+                    this.styleIndices_.push(this.indices.length);
+                    this.state_.changed = false;
+                }
+                this.startIndices.push(this.indices.length);
+                this.startIndicesFeature.push(feature);
+                this.drawCoordinates_(
+                    flatCoordinates, 0, flatCoordinates.length, stride);
+            }
+        }
+        drawLineString_.call(this,flatCoordinates)
     };
 
 
@@ -68848,7 +68947,7 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function (fillStyle, strokeStyle) {
+    ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function (fillStyle, strokeStyle,lineStringGeometry) {
         var strokeStyleLineCap = strokeStyle.getLineCap();
         this.state_.lineCap = strokeStyleLineCap !== undefined ?
             strokeStyleLineCap : ol.render.webgl.defaultLineCap;
@@ -68889,6 +68988,11 @@ function olInit() {
             strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
         }
         var strokeStyleWidth = strokeStyle.getWidth();
+        if( lineStringGeometry && 
+            lineStringGeometry.properties_.class === 'rail' && 
+            lineStringGeometry.styleId.includes('c')){
+            strokeStyleWidth = 1;
+        }
         strokeStyleWidth = strokeStyleWidth !== undefined ?
             strokeStyleWidth : ol.render.webgl.defaultLineWidth;
         var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
@@ -68901,7 +69005,8 @@ function olInit() {
             this.state_.lineWidth = strokeStyleWidth;
             this.state_.miterLimit = strokeStyleMiterLimit;
             this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
-        }
+            
+       }
     };
 
     /**
