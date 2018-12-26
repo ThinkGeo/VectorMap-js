@@ -754,7 +754,7 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',
           jsPath: './example/js/vue.js'
         }, {
-            comments: 'Shows how VectorMap.js works with Angular.',
+          comments: 'Shows how VectorMap.js works with Angular.',
           title: 'Angular',
           htmlPath: 'https://maptest.thinkgeo.com/vectormapsamples2/angular/',
           codePenUrl: '#',
