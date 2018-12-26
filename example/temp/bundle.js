@@ -754,11 +754,11 @@
           codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',
           jsPath: './example/js/vue.js'
         }, {
-          comments: '',
+            comments: 'Shows how VectorMap.js works with Angular.',
           title: 'Angular',
-          htmlPath: './example/html/find-address.html',
+          htmlPath: 'https://maptest.thinkgeo.com/vectormapsamples2/angular/',
           codePenUrl: '#',
-          jsPath: './example/js/find-address.js'
+          jsPath: './example/js/angular.js'
         }]
       },];
       exports.default = menuData;
@@ -9810,6 +9810,7 @@
           });
        */
       var loadChildPage = function loadChildPage(childPageObj) {
+        console.log(childPageObj)
         if (!childPageObj.htmlPath || !childPageObj.jsPath) {
           alert('html path or js path is not right!');
           return;
