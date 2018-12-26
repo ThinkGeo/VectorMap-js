@@ -728,8 +728,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     for(var i = 0; i < startIndicesFeature.length; i++){
                         var feature = startIndicesFeature[i];
                         var geometry = feature.getGeometry();
-
-                        if(feature.getType() == 'LineString'){
+                        var type = feature.getType();
+                        if(type == 'LineString' || type == 'MultiLineString'){
                             this.drawText(geometry, feature);
                             var startIndices = this.startIndices;
                             var start = startIndices[i] / 6 * 32;

@@ -12620,7 +12620,7 @@ function olInit() {
                 return false; 
             } 
             var x = ( (b[0] - a[0]) * (d[0] - c[0]) * (c[1] - a[1]) 
-                + (b[1]- a[1]) * (d[1] - c[0]) * a[0] 
+                + (b[1]- a[1]) * (d[0] - c[0]) * a[0] 
                 - (d[1] - c[1]) * (b[0] - a[0]) * c[0] ) / denominator ; 
             var y = -( (b[1] - a[1]) * (d[1] - c[1]) * (c[0] - a[0]) 
                 + (b[0] - a[0]) * (d[1] - c[1]) * a[1]
@@ -12647,8 +12647,9 @@ function olInit() {
 
         for (j = offset; j < end; j += stride) {
             if(!isLineString){
+                var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
                 if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
-                    // fix the coordinates that out of extent
+                    // fix the coordinates that out of extent                    
                     if(flatCoordinates[j] < extent[0]){
                         flatCoordinates[j] =  extent[0];
                     }else if(flatCoordinates[j] > extent[2]){
@@ -12687,11 +12688,13 @@ function olInit() {
                             if(intersectionPoint){
                                 flatCoordinates[j] = intersectionPoint[0];
                                 flatCoordinates[j + 1] = intersectionPoint[1];    
-                            }
+                            }else{
+                                continue;
+                            } 
                         }else{
                             continue;
                         }
-                    }                  
+                    }              
                 }
             }
             dest[i++] = flatCoordinates[j] + deltaX;
@@ -12709,6 +12712,11 @@ function olInit() {
             dest.length = i;
         }
 
+        if(!isLineString && dest[0] != dest[dest.length - 2] || dest[1] != dest[dest.length - 1]){
+            // dest.push(dest[0]);
+            // dest.push(dest[1]);
+        }
+        
         return dest;
     };
 
@@ -67510,6 +67518,8 @@ function olInit() {
      * @protected
      */
     ol.render.webgl.TextureReplay.prototype.drawCoordinates = function (flatCoordinates, offset, end, stride) {
+        this.extent == undefined && (this.extent = ol.extent.createOrUpdateEmpty());
+        this.tmpIndices == undefined && (this.tmpIndices = this.indices) && (this.tmpVertices = this.vertices);
         var anchorX = /** @type {number} */ (this.anchorX);
         var anchorY = /** @type {number} */ (this.anchorY);
         var height = /** @type {number} */ (this.height);
@@ -67525,12 +67535,11 @@ function olInit() {
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
-        var numIndices = this.indices.length;
-        var numVertices = this.vertices.length;
+        var numIndices = this.tmpIndices.length;
+        var numVertices = this.tmpVertices.length;
         var i, n, offsetX, offsetY, x, y, relativeX, relativeY;
         var charX, charY, pixelX, pixelY;
-        var pixelCoordinates
-        !this.extent && (this.extent = ol.extent.createOrUpdateEmpty());
+        var pixelCoordinates;        
 
         for (i = offset; i < end; i += stride) {
             pixelCoordinate = map.getPixelFromCoordinate([flatCoordinates[i], flatCoordinates[i + 1]]);
@@ -67538,7 +67547,7 @@ function olInit() {
             charY = pixelCoordinate[1];
             x = flatCoordinates[i] - this.origin[0];
             y = flatCoordinates[i + 1] - this.origin[1];
-
+            
             // There are 4 vertices per [x, y] point, one for each corner of the
             // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
             // WebGL supported Geometry Shaders (which can emit new vertices), but that
@@ -67561,14 +67570,14 @@ function olInit() {
             (pixelX < this.extent[0]) && (this.extent[0] = pixelX);
             (pixelY > this.extent[3]) && (this.extent[3] = pixelY);   
 
-            this.vertices[numVertices++] = x;
-            this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = relativeX;
-            this.vertices[numVertices++] = relativeY;            
-            this.vertices[numVertices++] = originX / imageWidth;
-            this.vertices[numVertices++] = (originY + height) / imageHeight;
-            this.vertices[numVertices++] = opacity;
-            this.vertices[numVertices++] = rotateWithView;
+            this.tmpVertices[numVertices++] = x;
+            this.tmpVertices[numVertices++] = y;
+            this.tmpVertices[numVertices++] = relativeX;
+            this.tmpVertices[numVertices++] = relativeY;            
+            this.tmpVertices[numVertices++] = originX / imageWidth;
+            this.tmpVertices[numVertices++] = (originY + height) / imageHeight;
+            this.tmpVertices[numVertices++] = opacity;
+            this.tmpVertices[numVertices++] = rotateWithView;
             
             // bottom-right corner
             offsetX = scale * (width - anchorX);
@@ -67580,14 +67589,14 @@ function olInit() {
             (pixelX > this.extent[2]) && (this.extent[2] = pixelX);
             (pixelY > this.extent[3]) && (this.extent[3] = pixelY);
 
-            this.vertices[numVertices++] = x;
-            this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = relativeX;
-            this.vertices[numVertices++] = relativeY;
-            this.vertices[numVertices++] = (originX + width) / imageWidth;
-            this.vertices[numVertices++] = (originY + height) / imageHeight;
-            this.vertices[numVertices++] = opacity;
-            this.vertices[numVertices++] = rotateWithView;
+            this.tmpVertices[numVertices++] = x;
+            this.tmpVertices[numVertices++] = y;
+            this.tmpVertices[numVertices++] = relativeX;
+            this.tmpVertices[numVertices++] = relativeY;
+            this.tmpVertices[numVertices++] = (originX + width) / imageWidth;
+            this.tmpVertices[numVertices++] = (originY + height) / imageHeight;
+            this.tmpVertices[numVertices++] = opacity;
+            this.tmpVertices[numVertices++] = rotateWithView;
 
             // top-right corner
             offsetX = scale * (width - anchorX);
@@ -67599,40 +67608,40 @@ function olInit() {
             (pixelX > this.extent[2]) && (this.extent[2] = pixelX);          
             (pixelY < this.extent[1]) && (this.extent[1] = pixelY);
 
-            this.vertices[numVertices++] = x;
-            this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = relativeX;
-            this.vertices[numVertices++] = relativeY;
-            this.vertices[numVertices++] = (originX + width) / imageWidth;
-            this.vertices[numVertices++] = originY / imageHeight;
-            this.vertices[numVertices++] = opacity;
-            this.vertices[numVertices++] = rotateWithView;
+            this.tmpVertices[numVertices++] = x;
+            this.tmpVertices[numVertices++] = y;
+            this.tmpVertices[numVertices++] = relativeX;
+            this.tmpVertices[numVertices++] = relativeY;
+            this.tmpVertices[numVertices++] = (originX + width) / imageWidth;
+            this.tmpVertices[numVertices++] = originY / imageHeight;
+            this.tmpVertices[numVertices++] = opacity;
+            this.tmpVertices[numVertices++] = rotateWithView;
 
             // top-left corner
             offsetX = -scale * anchorX;
             offsetY = scale * anchorY;
             relativeX = offsetX * cos - offsetY * sin;
             relativeY = offsetX * sin + offsetY * cos;
-            pixelX = charX+relativeX;
-            pixelY = charY -relativeY;
+            pixelX = charX + relativeX;
+            pixelY = charY - relativeY;
             (pixelX < this.extent[0]) && (this.extent[0] = pixelX);        
             (pixelY < this.extent[1]) && (this.extent[1] = pixelY);
 
-            this.vertices[numVertices++] = x;
-            this.vertices[numVertices++] = y;
-            this.vertices[numVertices++] = relativeX;
-            this.vertices[numVertices++] = relativeY;
-            this.vertices[numVertices++] = originX / imageWidth;
-            this.vertices[numVertices++] = originY / imageHeight;
-            this.vertices[numVertices++] = opacity;
-            this.vertices[numVertices++] = rotateWithView;
+            this.tmpVertices[numVertices++] = x;
+            this.tmpVertices[numVertices++] = y;
+            this.tmpVertices[numVertices++] = relativeX;
+            this.tmpVertices[numVertices++] = relativeY;
+            this.tmpVertices[numVertices++] = originX / imageWidth;
+            this.tmpVertices[numVertices++] = originY / imageHeight;
+            this.tmpVertices[numVertices++] = opacity;
+            this.tmpVertices[numVertices++] = rotateWithView;
 
-            this.indices[numIndices++] = n;
-            this.indices[numIndices++] = n + 1;
-            this.indices[numIndices++] = n + 2;
-            this.indices[numIndices++] = n;
-            this.indices[numIndices++] = n + 2;
-            this.indices[numIndices++] = n + 3;
+            this.tmpIndices[numIndices++] = n;
+            this.tmpIndices[numIndices++] = n + 1;
+            this.tmpIndices[numIndices++] = n + 2;
+            this.tmpIndices[numIndices++] = n;
+            this.tmpIndices[numIndices++] = n + 2;
+            this.tmpIndices[numIndices++] = n + 3;
         }
 
         return numVertices;
@@ -67968,22 +67977,30 @@ function olInit() {
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
         this.extent = ol.extent.createOrUpdateEmpty()
-        if(!this.vertices_){
-            this.startIndices.push(this.indices.length);
-            this.startIndicesFeature.push(feature);
-        }
+        // if(!this.vertices_){
+        //     this.startIndices.push(this.indices.length);
+        //     this.startIndicesFeature.push(feature);
+        // }
         var flatCoordinates = pointGeometry.getFlatCoordinates();
         var stride = pointGeometry.getStride();
         this.drawCoordinates(
             flatCoordinates, 0, flatCoordinates.length, stride);
 
-        if(!this.renderDeclutter_(this.extent, feature)){
-            var indicesNum = 6;
-            var verticesNum = 32;            
-            this.indices.splice(-indicesNum);
-            this.vertices.splice(-verticesNum);
-            this.startIndices.pop();
-            this.startIndicesFeature.pop();
+        if(this.renderDeclutter_(this.extent, feature)){
+            // var indicesNum = 6;
+            // var verticesNum = 32;            
+            // this.indices.splice(-indicesNum);
+            // this.vertices.splice(-verticesNum);
+            // this.startIndices.pop();
+            // this.startIndicesFeature.pop();
+            if(!this.vertices_){
+                this.startIndices.push(this.indices.length);
+                this.startIndicesFeature.push(feature);
+            }
+            this.indices = this.indices.concat(this.tmpIndices);
+            this.vertices = this.vertices.concat(this.tmpVertices);
+            this.tmpIndices.length = 0;
+            this.tmpVertices.length = 0;
         }           
     };
 
@@ -69587,7 +69604,7 @@ function olInit() {
                 Math.max(p0.y, p1.y)]);
                 p0 = p1;
             }
-            segments.push(this.insertItem_(p1, start, list));            
+            segments.push(this.insertItem_(p1, start, list));    
             extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
             Math.max(p0.y, p1.y)]);
         }
@@ -70270,7 +70287,9 @@ function olInit() {
                     if (ends[i] !== ends[i - 1]) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
                             ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent);
-                        holes.push(holeFlatCoords);
+                        if(holeFlatCoords.length > 3){
+                            holes.push(holeFlatCoords);
+                        }
                     }
                 }
 
@@ -70285,7 +70304,7 @@ function olInit() {
                     this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
 
-                this.drawCoordinates_(outerRing, [], stride);
+                outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);
                 for(var i = 0; i < holes.length; i++){
                     this.drawCoordinates_(holes[i], [], stride);
                 }                 
@@ -71144,9 +71163,24 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
-        this.text_ = feature.text_ || this.text_;
-        
+        var type  = geometry.getType();
+        if(type === 'MultiLineString'){
+            var ends = geometry.getEnds();
+            for(var k = 0; k < ends.length; k++){
+                var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                var newFeature = new ol.render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                this.drawText(newFeature.getGeometry(), newFeature);
+            }
+
+            return;
+        }
+
+        this.text_ = feature.text_ || this.text_;        
         if (this.text_) {
+            this.tmpVertices = this.vertices.slice(0);
+            this.tmpIndices = this.indices.slice(0);
+            this.tmpImages = this.images_.slice(0);
+            this.tmpGroupIndices = this.groupIndices.slice(0);
             this.extent = ol.extent.createOrUpdateEmpty();
             var flatCoordinates = null;
             var offset = 0;
@@ -71188,42 +71222,34 @@ function olInit() {
                 if(window.tests == undefined){
                     window.tests = 0;
                 }
-                if(!this.text_.includes('Woodall')){
-                    // if(!this.text_.includes('Tom Landry Freeway')){
-                // if(!this.text_.includes('Gaston Avenue')){
+                // if(!this.text_.includes('Woodall')){
+                    if(!(this.text_.includes('Tom Landry Freeway') || this.text_.includes('North Beckley Avenu'))){
+                // if(!this.text_.includes('North Beckley Avenu')){
                     // return
                 }
 
-                if(window.tests > 4){
+                if(window.tests != 2){
                     window.tests += 1;
                     // return;
                 }
                 window.tests += 1;
             // declutter duplicate label end
 
+            feature.isCurve = false;           
             var i, ii, j, jj, currX, currY, charArr, charInfo; 
-            feature.isCurve = false;
-
-            if(!this.vertices_){
-                feature.text_ = this.text_;
-                this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
-            }
-            
             var glyphAtlas = this.currAtlas_;            
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
             var pixelRatio = map.frameState_.pixelRatio;            
-            
+       
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
                 var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-                var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
-                
+                var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);                
                 currX = 0;
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
                 
-                if(type == 'LineString' && !this.label){                    
+                if(!this.label){               
                     var lineStringCoordinates = geometry.getFlatCoordinates();
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
@@ -71248,7 +71274,12 @@ function olInit() {
                             var charLength = glyphAtlas.width[char];
                             var charM = startM + charLength / 2;
 
-                            while (offset < endLineString - stride && segmentM + segmentLength < charM) {
+                            // label exceed the road range
+                            if(offset >= endLineString - stride){
+                                return;
+                            }
+
+                            while (segmentM + segmentLength < charM) {
                                 x1 = x2;
                                 y1 = y2;
                                 offset += stride;
@@ -71258,17 +71289,22 @@ function olInit() {
                                 segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
 
-                            var angle = Math.atan2(y2 - y1, x2 - x1);                            
+                            var angle = Math.atan2(y2 - y1, x2 - x1);     
+                            
+                            if(angle > this.maxAngle_){
+                                return;
+                            }
+                            
                             if (reverse) {
                                 angle += angle > 0 ? -Math.PI : Math.PI;
                             }
 
-                            startM += charLength;
                             if(previousAngle !== undefined && angle !== previousAngle){                                
                                 charFlatCoordinates = [x1, y1];
-                                currX = reverse ? charLength / 2 : 0;
+                                currX = startM - segmentM;
                                 feature.isCurve = true;
                             }
+                            startM += charLength;
                             
                             this.rotation = -angle;                          
                             var image = charInfo.image;
@@ -71286,13 +71322,13 @@ function olInit() {
                             this.rotateWithView = true;
 
                             var currentImage;
-                            if (this.images_.length === 0) {
-                                this.images_.push(image);
+                            if (this.tmpImages.length === 0) {
+                                this.tmpImages.push(image);
                             } else {
-                                currentImage = this.images_[this.images_.length - 1];
+                                currentImage = this.tmpImages[this.tmpImages.length - 1];
                                 if (ol.getUid(currentImage) != ol.getUid(image)) {
-                                    this.groupIndices.push(this.indices.length);
-                                    this.images_.push(image);
+                                    this.tmpGroupIndices.push(this.tmpIndices.length);
+                                    this.tmpImages.push(image);
                                 }
                             }
                             this.drawText_(charFlatCoordinates, 0, 2, stride);
@@ -71314,68 +71350,34 @@ function olInit() {
                     this.imageWidth = width / pixelRatio;
 
                     var currentImage;
-                    if (this.images_.length === 0) {
-                        this.images_.push(image);
+                    if (this.tmpImages.length === 0) {
+                        this.tmpImages.push(image);
                     } else {
-                        currentImage = this.images_[this.images_.length - 1];
+                        currentImage = this.tmpImages[this.tmpImages.length - 1];
                         if (ol.getUid(currentImage) != ol.getUid(image)) {
-                            this.groupIndices.push(this.indices.length);
-                            this.images_.push(image);
+                            this.tmpGroupIndices.push(this.tmpIndices.length);
+                            this.tmpImages.push(image);
                         }
                     }
                     this.drawText_(flatCoordinates, offset, end, stride);                    
-                }else{
-                    for (j = 0, jj = charArr.length; j < jj; ++j) {
-                        charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
-    
-                        if (charInfo) {
-                            var image = charInfo.image;
-
-                            this.anchorX = anchorX - currX;
-                            this.anchorY = anchorY - currY;
-                            this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                            this.originY = charInfo.offsetY;
-                            this.height = glyphAtlas.height;
-                            this.width = j === 0 || j === charArr.length - 1 ?
-                                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-                            this.imageHeight = image.height;
-                            this.imageWidth = image.width;
-    
-                            var currentImage;
-                            if (this.images_.length === 0) {
-                                this.images_.push(image);
-                            } else {
-                                currentImage = this.images_[this.images_.length - 1];
-                                if (ol.getUid(currentImage) != ol.getUid(image)) {
-                                    this.groupIndices.push(this.indices.length);
-                                    this.images_.push(image);
-                                }
-                            }
-                            this.drawText_(flatCoordinates, offset, end, stride);
-                        }
-                        currX += this.width;
-                    }
-                }
-            }  
-
-            if(!this.renderDeclutter_(this.extent, feature)){
-                var indicesNum, verticesNum;
-                if(type == 'LineString' && !this.label){
-                    indicesNum = this.text_.length * 6;
-                    verticesNum = this.text_.length * 32;
-                }else {
-                    indicesNum = 6;
-                    verticesNum = 32;
-                }
-                this.indices.splice(-indicesNum);
-                this.vertices.splice(-verticesNum);
-                this.startIndices.pop();
-                this.startIndicesFeature.pop();
-                if(this.groupIndices.length > 0){
-                    this.groupIndices.pop();
-                    this.images_.pop();
                 }
             }           
+
+            if(this.renderDeclutter_(this.extent, feature)){
+                if(!this.vertices_){
+                    feature.text_ = this.text_;
+                    this.startIndices.push(this.indices.length);
+                    this.startIndicesFeature.push(feature);
+                }
+                this.indices = this.tmpIndices.slice(0);
+                this.vertices = this.tmpVertices.slice(0);
+                this.groupIndices = this.tmpGroupIndices.slice(0);
+                this.images_ = this.tmpImages.slice(0);
+                this.tmpIndices.length = 0;
+                this.tmpVertices.length = 0;
+                this.tmpGroupIndices.length = 0;
+                this.tmpImages.length = 0;
+            }         
         }
     };
 
@@ -71574,6 +71576,7 @@ function olInit() {
             this.currAtlas_ = this.getAtlas_(state);
 
             this.label = textStyle.label;
+            this.maxAngle_ = textStyle.maxAngle_;
         }
     };
 
@@ -102423,14 +102426,14 @@ function olInit() {
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
 
-            // if((window).count == undefined){
-            //     (window).count = 0;
-            // }
-            // if((window).count != 0){
-            //     (window).count += 1;
-            //     return;
-            // }
-            // (window).count += 1;
+            if((window).count == undefined){
+                (window).count = 0;
+            }
+            if((window).count != 2){
+                (window).count += 1;
+                // return;
+            }
+            (window).count += 1;
 
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
