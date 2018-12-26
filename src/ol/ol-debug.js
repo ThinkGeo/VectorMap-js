@@ -68521,6 +68521,106 @@ function olInit() {
      */
     ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature,strokeStyle) {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+        function bearing(seg){
+            var firstPoint = [seg.x1,seg.y1];
+            var secondPoint = [seg.x2,seg.y2];
+            var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
+            angle = angle?angle:angle+0.0001;
+            return angle;
+        }
+        function getSegmentLength(seg) {
+            return Math.sqrt( Math.pow((seg.x2 -seg.x1),2) + Math.pow((seg.y2 -seg.y1),2) );
+         };
+        function getSegmentFromPixel(coordPixel){
+            var segments = [];
+            var seg = null;
+            var ps = null;
+            var pt = null;
+            for( var i = 0; i < coordPixel.length-1; i ++ ){
+                ps = coordPixel[i];
+                pt = coordPixel[ i+1];
+                seg = {
+                    x1:ps[0],
+                    y1:ps[1],
+                    x2:pt[0],
+                    y2:pt[1]
+                }
+                var length = getSegmentLength( seg );
+                var angle = bearing( seg );
+                seg.pixelLength = length;
+                seg.pixelAngle = angle;
+                segments.push( seg );
+            }
+            return segments;
+        }
+        function getNeedPixelFromLine( seg,chaLength ) {
+            var segLen = seg.pixelLength;
+            var num = Math.ceil( segLen / chaLength );
+            var xOper = true;
+            var yOper = false;
+            var xCha = seg.x2 - seg.x1;
+            var yCha = seg.y2 - seg.y1;
+            var xAver = xCha / num ;
+            var yAver = yCha / num ;
+            var pixelArr = [];
+      
+            var xOrig = seg.x1;
+            var yOrin = seg.y1;
+            var xEnd = seg.x2;
+            var yEnd = seg.y2;
+      
+            for( var i = 0; i < num; i++ ) {
+              let x = xAver * i + xOrig;
+               let y = yAver * i + yOrin;
+ 
+               pixelArr.push( x );
+               pixelArr.push( y );
+            }
+            pixelArr.push( seg.x2);
+            pixelArr.push(seg.y2);
+            return pixelArr;
+      
+         }
+        function myCreateSegDirection(coordPxs,chaLength){
+            let coordArr=[];
+            for(let i=0;i<coordPxs.length;i+=2){
+                let coord=[coordPxs[i],coordPxs[i+1]];
+                coordArr.push(coord);
+            }
+            var segments =getSegmentFromPixel( coordArr );
+            var tempLength = 0;
+            var nowSeg = null;
+            var nowLengthFlag = false;
+            var findPixelArr = [];
+            for( var i = 0; i < segments.length; i++ ) {
+               nowLengthFlag = false;
+               nowSeg = segments[i];
+               if( nowSeg.pixelLength < chaLength ) {
+                  tempLength += nowSeg.pixelLength;
+               }
+               else {
+                  nowLengthFlag = true;
+                  var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength );
+                  findPixelArr = findPixelArr.concat( splitPixelArr );
+               }
+               if( nowLengthFlag||( tempLength > chaLength)  ) {
+                  if( tempLength ) {
+                     tempLength = 0;
+                     if( i ) {
+                        findPixelArr.push( segments[i].x2 );
+                        findPixelArr.push( segments[i].y2 );
+     
+                    }
+                  }
+               }
+            }
+            if( findPixelArr.length == 0 ) {
+               var lastSeg = segments[segments.length - 1];
+               findPixelArr.push( lastSeg.x2 );
+               findPixelArr.push( lastSeg.y2 );
+            }
+            return findPixelArr;
+         }
         if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
             function normalize(x, y) {
                 var m = Math.sqrt(x * x + y * y);
@@ -68608,6 +68708,8 @@ function olInit() {
             };
             var strokeStyleWidth=strokeStyle.getWidth();
             var widthHalf =strokeStyleWidth / 2;
+            var strokeStyleLineDash = strokeStyle.getLineDash();
+            flatCoordinates=myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1]);
             var tempCoordinates = getPathOffset(flatCoordinates, widthHalf);
             for(let i=0;i<tempCoordinates.length;i+=4){
                 let railWayChildCoord=tempCoordinates.slice(i,i+4);
@@ -69008,7 +69110,7 @@ function olInit() {
         if( lineStringGeometry && 
             lineStringGeometry.properties_.class === 'rail' && 
             lineStringGeometry.styleId.includes('c')){
-            strokeStyleWidth = 1;
+            strokeStyleWidth = strokeStyleLineDash[0];
         }
         strokeStyleWidth = strokeStyleWidth !== undefined ?
             strokeStyleWidth : ol.render.webgl.defaultLineWidth;
