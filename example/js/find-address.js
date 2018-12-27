@@ -23,10 +23,10 @@ let focusIndex = null;
 let resultsLength;
 
 //creat result layer
-const createGeocodingLayer = function () {
+const createGeocodingLayer = function() {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
-        style: function (feature) {
+        style: function(feature) {
             let key = feature.get('type');
             let style = _styles[key];
             return style;
@@ -69,10 +69,10 @@ const closer = document.getElementById('popup-closer');
 let overlay = new ol.Overlay({
     element: container,
     autoPan: false,
-    
+
 });
 
-closer.onclick = function () {
+closer.onclick = function() {
     overlay.setPosition(undefined);
     let source = geocodingLayer.getSource();
     source.clear();
@@ -80,7 +80,7 @@ closer.onclick = function () {
     return false;
 };
 
-const popUp = function (address, coordinates, type) {
+const popUp = function(address, coordinates, type) {
     overlay.setPosition(ol.proj.fromLonLat(coordinates));
     map.addOverlay(overlay);
     content.innerHTML = `<p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]}</p>`
@@ -109,7 +109,7 @@ const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, addres
     let source = geocodingLayer.getSource();
     source.clear();
     coordinates = [parseFloat(coordinatesX), parseFloat(coordinatesY)];
- 
+
     let format = new ol.format.WKT();
     let wktFeature = format.readFeature(boundingBox, {
         dataProjection: 'EPSG:4326',
@@ -118,18 +118,18 @@ const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, addres
     geocodingLayer.getSource().addFeature(wktFeature);
     if (type === 'Street') {
         view.animate({
-            center: ol.proj.fromLonLat([parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.001]),
-            zoom: 16,
+            center: ol.proj.fromLonLat([parseFloat(coordinatesX), parseFloat(coordinatesY)]),
+            zoom: 18,
             duration: 0
         });
 
     } else {
         wktFeature.set('type', 'boundingBox');
-        view.fit(wktFeature.getGeometry(),{
-            padding:[20,20,20,20]
+        view.fit(wktFeature.getGeometry(), {
+            padding: [20, 20, 20, 20]
         })
     }
- 
+
     popUp(address, coordinates, type);
 }
 
@@ -245,7 +245,7 @@ document.body.addEventListener('keydown', (e) => {
             e.preventDefault();
             moveFocus(-1);
             break;
-        // down
+            // down
         case 40:
             e.preventDefault();
             moveFocus(1);
@@ -257,4 +257,3 @@ document.body.addEventListener('keydown', (e) => {
             break;
     }
 })
-
