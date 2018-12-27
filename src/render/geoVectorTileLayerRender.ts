@@ -507,7 +507,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         source.getGeoFormat().maxDataZoom,
                         source["vectorTileDataCahceSize"],
                         x,
-                        y
+                        y,
+                        frameState["pixelToCoordinateTransform"],
                     ];
                     var rendera = this;
                     let callabck = function (messageData) {
