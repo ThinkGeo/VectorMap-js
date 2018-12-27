@@ -246,6 +246,35 @@ class GeoVectorTileSource extends VectorTile {
         }
         return tileGrid;
     }
+
+    forEachLoadedTile(projection, z, tileRange, callback) {
+        const tileCache = this.getTileCacheForProjection(projection);
+        if (!tileCache) {
+            return false;
+        }
+
+        let covered = true;
+        let tile, tileCoordKey, loaded;
+        for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+            for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+                tileCoordKey = getKeyZXY(z, x, y);
+                loaded = false;
+                if (tileCache.containsKey(tileCoordKey)) {
+                    tile = /** @type {!import("../Tile.js").default} */ (tileCache.get(tileCoordKey));
+                    // MapSuite : add replay created checking
+                    loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
+                    if (loaded) {
+                        loaded = (callback(tile) !== false);
+                    }
+                }
+                if (!loaded) {
+                    covered = false;
+                }
+            }
+        }
+        return covered;
+    }
+
 }
 
 export default GeoVectorTileSource;
