@@ -321,12 +321,20 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         // };
         // ol.inherits((<any>ol.VectorTile), (<any>ol.events).Event);
 
-        (<any>ol).VectorImageTile.prototype.disposeInternal = function () {
+        (<any>ol).VectorImageTile.prototype.disposeInternal = function (context) {
             for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
                 let sourceTileKey = this.tileKeys[i];
                 let sourceTile = this.getTile(sourceTileKey);
                 sourceTile.consumers--;
                 if (sourceTile.consumers == 0) {
+                    // BufferCache in webgl
+                    var vectorTile = this.sourceTiles_[sourceTileKey];
+                    var replayGroups = vectorTile.replayGroups_;
+                    
+                    for(var key in replayGroups){
+                        replayGroups[key].getDeleteResourcesFunction(context)();
+                    }
+
                     delete this.sourceTiles_[sourceTileKey];
                     sourceTile.dispose();
                 }

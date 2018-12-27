@@ -7550,10 +7550,10 @@ function olInit() {
     /**
      * Clean up.
      */
-    ol.Disposable.prototype.dispose = function () {
+    ol.Disposable.prototype.dispose = function (context) {
         if (!this.disposed_) {
             this.disposed_ = true;
-            this.disposeInternal();
+            this.disposeInternal(context);
         }
     };
 
@@ -12636,67 +12636,67 @@ function olInit() {
         }   
         
         if(extent){
-            var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-            var isStartIn = ol.extent.containsXY(extent, startCoord[0], startCoord[1]);
-            var lineFlag = false;
-            var bottomLeft = ol.extent.getBottomLeft(extent);
-            var bottomRight = ol.extent.getBottomRight(extent);
-            var topLeft = ol.extent.getTopLeft(extent);
-            var topRight = ol.extent.getTopRight(extent);
+            // var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+            // var isStartIn = ol.extent.containsXY(extent, startCoord[0], startCoord[1]);
+            // var lineFlag = false;
+            // var bottomLeft = ol.extent.getBottomLeft(extent);
+            // var bottomRight = ol.extent.getBottomRight(extent);
+            // var topLeft = ol.extent.getTopLeft(extent);
+            // var topRight = ol.extent.getTopRight(extent);
         }    
 
         for (j = offset; j < end; j += stride) {
-            if(!isLineString){
-                var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-                if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
-                    // fix the coordinates that out of extent                    
-                    if(flatCoordinates[j] < extent[0]){
-                        flatCoordinates[j] =  extent[0];
-                    }else if(flatCoordinates[j] > extent[2]){
-                        flatCoordinates[j] =  extent[2];
-                    }
-                    if(flatCoordinates[j + 1] < extent[1]){
-                        flatCoordinates[j + 1] =  extent[1];
-                    }else if(flatCoordinates[j + 1] > extent[3]){
-                        flatCoordinates[j + 1] =  extent[3];
-                    }
-                }
-            }else if(extent){
-                if(isStartIn){
-                    if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
-                        var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-                        var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
-                        var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
-                                                segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
-                                                segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
-                                                segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);   
-                        if(intersectionPoint){
-                            flatCoordinates[j] = intersectionPoint[0];
-                            flatCoordinates[j + 1] = intersectionPoint[1];
-                            lineFlag = true;
-                        }
-                    }     
-                }else{
-                    if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
-                        if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
-                            var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-                            var prevCoord = [flatCoordinates[j + 2], flatCoordinates[j + 3]];                        
-                            var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
-                                                    segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
-                                                    segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
-                                                    segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);
-                            if(intersectionPoint){
-                                flatCoordinates[j] = intersectionPoint[0];
-                                flatCoordinates[j + 1] = intersectionPoint[1];    
-                            }else{
-                                continue;
-                            } 
-                        }else{
-                            continue;
-                        }
-                    }              
-                }
-            }
+            // if(!isLineString){
+            //     var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+            //     if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+            //         // fix the coordinates that out of extent                    
+            //         if(flatCoordinates[j] < extent[0]){
+            //             flatCoordinates[j] =  extent[0];
+            //         }else if(flatCoordinates[j] > extent[2]){
+            //             flatCoordinates[j] =  extent[2];
+            //         }
+            //         if(flatCoordinates[j + 1] < extent[1]){
+            //             flatCoordinates[j + 1] =  extent[1];
+            //         }else if(flatCoordinates[j + 1] > extent[3]){
+            //             flatCoordinates[j + 1] =  extent[3];
+            //         }
+            //     }
+            // }else if(extent){
+            //     if(isStartIn){
+            //         if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
+            //             var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+            //             var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
+            //             var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
+            //                                     segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
+            //                                     segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
+            //                                     segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);   
+            //             if(intersectionPoint){
+            //                 flatCoordinates[j] = intersectionPoint[0];
+            //                 flatCoordinates[j + 1] = intersectionPoint[1];
+            //                 lineFlag = true;
+            //             }
+            //         }     
+            //     }else{
+            //         if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+            //             if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
+            //                 var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+            //                 var prevCoord = [flatCoordinates[j + 2], flatCoordinates[j + 3]];                        
+            //                 var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
+            //                                         segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
+            //                                         segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
+            //                                         segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);
+            //                 if(intersectionPoint){
+            //                     flatCoordinates[j] = intersectionPoint[0];
+            //                     flatCoordinates[j + 1] = intersectionPoint[1];    
+            //                 }else{
+            //                     continue;
+            //                 } 
+            //             }else{
+            //                 continue;
+            //             }
+            //         }              
+            //     }
+            // }
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
 
@@ -12704,9 +12704,9 @@ function olInit() {
                 dest[i++] = flatCoordinates[k];
             }
 
-            if(lineFlag){
-                break;
-            }
+            // if(lineFlag){
+                // break;
+            // }
         }
         if (opt_dest && dest.length != i) {
             dest.length = i;
@@ -68946,16 +68946,6 @@ function olInit() {
                 // gl.clear(gl.DEPTH_BUFFER_BIT);
                 end = start;
             }
-
-            // for (i = 0; i < this.styleIndices_.length; ++i) {
-            //     start = this.styleIndices_[i];
-            //     end = i !== (this.styleIndices_.length - 1) ? this.styleIndices_[i + 1] 
-            //         : this.startIndices[this.startIndices.length - 1];
-            //     nextStyle = this.styles_[i];
-            //     this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-            //     this.drawElements(gl, context, start, end);
-            //     gl.clear(gl.DEPTH_BUFFER_BIT);
-            // }
         }
         if (!hitDetection) {
             gl.disable(gl.DEPTH_TEST);
@@ -70506,7 +70496,6 @@ function olInit() {
         //Save GL parameters.
         var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
         var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-
         if (!hitDetection) {
             gl.enable(gl.DEPTH_TEST);
             gl.depthMask(true);
@@ -70519,7 +70508,7 @@ function olInit() {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
             end = this.startIndices[this.startIndices.length - 1];
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
                 this.setFillStyle_(gl, nextStyle);
@@ -75983,17 +75972,7 @@ function olInit() {
             if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
                 break;
             } else {
-                var vectorImageTile = this.pop();
-                // BufferCache in webgl
-                if(vectorImageTile.tileKeys.length){
-                    var vectorTile = vectorImageTile.sourceTiles_[tile.tileKeys.toString()];
-                    var replayGroups = vectorTile.replayGroups_;
-                    
-                    for(var key in replayGroups){
-                        replayGroups[key].getDeleteResourcesFunction(context)();
-                    }
-                }
-                vectorImageTile.dispose();
+                this.pop().dispose(context);
             }
         }
     };
@@ -102528,14 +102507,14 @@ function olInit() {
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
 
-            if((window).count == undefined){
-                (window).count = 0;
-            }
-            if((window).count != 2){
-                (window).count += 1;
-                // return;
-            }
-            (window).count += 1;
+            // if((window).count == undefined){
+            //     (window).count = 0;
+            // }
+            // if((window).count != 1){
+            //     (window).count += 1;
+            //     return;
+            // }
+            // (window).count += 1;
 
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
@@ -102597,6 +102576,17 @@ function olInit() {
             var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
 
+            // TEST
+            // console.log(tileCoord);
+            
+            // console.log(requestTileCoord);
+            if(requestTileCoord.toString() !== "2,2,-3"){
+            // if(requestTileCoord.toString() !== "14,3786,-6612"){
+            // if(tileCoord.toString() !== "15,7573,-13222"){
+                // return
+            }
+            // TEST END
+
             var tileProjection = new ol.proj.Projection({
                 code: 'EPSG:3857',
                 units: ol.proj.Units.TILE_PIXELS
@@ -102616,9 +102606,7 @@ function olInit() {
             }
 
             var squaredTolerance = messageData[5];
-
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
-
             var vectorTileData = null;
             if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
                 vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);

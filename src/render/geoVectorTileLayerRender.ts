@@ -189,8 +189,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     tile.transition=z === currentZ
                     this.renderedTiles.push(tile);
-                }
-                
+                }                
             }
 
             this.renderedRevision = sourceRevision;
@@ -255,6 +254,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 continue;
             }
             let tileCoord = tile.tileCoord;
+            if(tileCoord.toString() !== "15,7573,-13222"){
+                // continue
+            }
+
             // console.log(tileCoord)
             let worldOffset = tileGrid.getTileCoordExtent(tileCoord)[0] -
                 tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
