@@ -69,9 +69,7 @@ const closer = document.getElementById('popup-closer');
 let overlay = new ol.Overlay({
     element: container,
     autoPan: false,
-    autoPanAnimation: {
-        duration: 2000
-    }
+    
 });
 
 closer.onclick = function () {
@@ -111,34 +109,27 @@ const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, addres
     let source = geocodingLayer.getSource();
     source.clear();
     coordinates = [parseFloat(coordinatesX), parseFloat(coordinatesY)];
-    coordinatesCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.04];
+ 
     let format = new ol.format.WKT();
     let wktFeature = format.readFeature(boundingBox, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
     });
     geocodingLayer.getSource().addFeature(wktFeature);
-    let zoom;
-    let animateCenter
     if (type === 'Street') {
-        zoom = 16;
-        animateCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.001];
-    } else if (type === 'City') {
-        zoom = 11
-        animateCenter = coordinatesCenter;
-        wktFeature.set('type', 'boundingBox');
+        view.animate({
+            center: ol.proj.fromLonLat([parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.001]),
+            zoom: 16,
+            duration: 0
+        });
+
     } else {
-        zoom = 5
-        animateCenter = coordinatesCenter;
         wktFeature.set('type', 'boundingBox');
+        view.fit(wktFeature.getGeometry(),{
+            padding:[20,20,20,20]
+        })
     }
-
-    view.animate({
-        center: ol.proj.fromLonLat(animateCenter),
-        zoom: zoom,
-        duration: 0
-    });
-
+ 
     popUp(address, coordinates, type);
 }
 
