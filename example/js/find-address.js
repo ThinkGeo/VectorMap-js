@@ -68,7 +68,7 @@ const closer = document.getElementById('popup-closer');
 
 let overlay = new ol.Overlay({
     element: container,
-    autoPan: true,
+    autoPan: false,
     autoPanAnimation: {
         duration: 2000
     }
@@ -85,7 +85,7 @@ closer.onclick = function () {
 const popUp = function (address, coordinates, type) {
     overlay.setPosition(ol.proj.fromLonLat(coordinates));
     map.addOverlay(overlay);
-    content.innerHTML = `<p><span>Address:</span>${address}</p><p><span>Location:</span>${coordinates[1]},${coordinates[0]}</p><p><span>Types:</span>${type}</p>`;
+    content.innerHTML = `<p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]}</p>`
 }
 
 const geocoderResultNode = document.getElementById('geocoderResult');
@@ -111,19 +111,34 @@ const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, addres
     let source = geocodingLayer.getSource();
     source.clear();
     coordinates = [parseFloat(coordinatesX), parseFloat(coordinatesY)];
-    coordinatesCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.08];
+    coordinatesCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.04];
     let format = new ol.format.WKT();
     let wktFeature = format.readFeature(boundingBox, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
     });
-    wktFeature.set('type', 'boundingBox');
     geocodingLayer.getSource().addFeature(wktFeature);
+    let zoom;
+    let animateCenter
+    if (type === 'Street') {
+        zoom = 16;
+        animateCenter = [parseFloat(coordinatesX), parseFloat(coordinatesY) + 0.001];
+    } else if (type === 'City') {
+        zoom = 11
+        animateCenter = coordinatesCenter;
+        wktFeature.set('type', 'boundingBox');
+    } else {
+        zoom = 5
+        animateCenter = coordinatesCenter;
+        wktFeature.set('type', 'boundingBox');
+    }
+
     view.animate({
-        center: ol.proj.fromLonLat(coordinatesCenter),
-        zoom: 10,
-        duration: 2000
+        center: ol.proj.fromLonLat(animateCenter),
+        zoom: zoom,
+        duration: 0
     });
+
     popUp(address, coordinates, type);
 }
 
