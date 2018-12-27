@@ -264,6 +264,10 @@ class GeoVectorTileSource extends VectorTile {
                     // MapSuite : add replay created checking
                     loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
                     if (loaded) {
+                        tile = tile.getInterimTile();
+                        loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
+                    }
+                    if (loaded) {
                         loaded = (callback(tile) !== false);
                     }
                 }
