@@ -2,11 +2,11 @@
  * @module ol/interaction/DragPan
  */
 import ViewHint from '../ViewHint.js';
-import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
-import {easeOut} from '../easing.js';
-import {noModifierKeys} from '../events/condition.js';
-import {FALSE} from '../functions.js';
-import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
+import { scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate } from '../coordinate.js';
+import { easeOut } from '../easing.js';
+import { noModifierKeys } from '../events/condition.js';
+import { FALSE } from '../functions.js';
+import PointerInteraction, { centroid as centroidFromPointers } from './Pointer.js';
 
 
 /**
@@ -67,14 +67,14 @@ var DragPan = /*@__PURE__*/(function (PointerInteraction) {
 
   }
 
-  if ( PointerInteraction ) DragPan.__proto__ = PointerInteraction;
-  DragPan.prototype = Object.create( PointerInteraction && PointerInteraction.prototype );
+  if (PointerInteraction) DragPan.__proto__ = PointerInteraction;
+  DragPan.prototype = Object.create(PointerInteraction && PointerInteraction.prototype);
   DragPan.prototype.constructor = DragPan;
 
   /**
    * @inheritDoc
    */
-  DragPan.prototype.handleDragEvent = function handleDragEvent (mapBrowserEvent) {
+  DragPan.prototype.handleDragEvent = function handleDragEvent(mapBrowserEvent) {
     if (!this.panning_) {
       this.panning_ = true;
       this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
@@ -109,7 +109,7 @@ var DragPan = /*@__PURE__*/(function (PointerInteraction) {
   /**
    * @inheritDoc
    */
-  DragPan.prototype.handleUpEvent = function handleUpEvent (mapBrowserEvent) {
+  DragPan.prototype.handleUpEvent = function handleUpEvent(mapBrowserEvent) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
     if (this.targetPointers.length === 0) {
@@ -125,7 +125,9 @@ var DragPan = /*@__PURE__*/(function (PointerInteraction) {
         view.animate({
           center: view.constrainCenter(dest),
           duration: 500,
-          easing: easeOut
+          easing: function (t) {
+            return Math.sin(t * 0.5 * Math.PI);
+          }
         });
       }
       if (this.panning_) {
@@ -147,7 +149,7 @@ var DragPan = /*@__PURE__*/(function (PointerInteraction) {
   /**
    * @inheritDoc
    */
-  DragPan.prototype.handleDownEvent = function handleDownEvent (mapBrowserEvent) {
+  DragPan.prototype.handleDownEvent = function handleDownEvent(mapBrowserEvent) {
     if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();

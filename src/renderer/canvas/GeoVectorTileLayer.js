@@ -643,8 +643,9 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
         const tileState = tile.getState();
         const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+        const image = tile.getImage(tileLayer)
         // Tile Loaded and replay has been created.
-        return (tileState == TileState.LOADED && tile.replayCreated) ||
+        return (tileState == TileState.LOADED && tile.replayCreated && image) ||
             tileState == TileState.EMPTY ||
             tileState == TileState.ERROR && !useInterimTilesOnError;
     }
