@@ -608,7 +608,7 @@
           comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
           title: "Find an Address in the US",
           htmlPath: './example/html/find-address.html',
-          codePenUrl: '#',
+          codePenUrl: 'https://codepen.io/thinkgeo/pen/jXwdKq',
           jsPath: './example/js/find-address.js'
         }]
       }, {
@@ -9810,7 +9810,6 @@
           });
        */
       var loadChildPage = function loadChildPage(childPageObj) {
-        console.log(childPageObj)
         if (!childPageObj.htmlPath || !childPageObj.jsPath) {
           alert('html path or js path is not right!');
           return;
