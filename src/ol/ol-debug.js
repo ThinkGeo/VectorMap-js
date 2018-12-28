@@ -67325,7 +67325,11 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
-        
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        // fix for WebGL not to unpremultiply      
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
         if (opt_wrapS !== undefined) {
             gl.texParameteri(
                 ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
@@ -102660,9 +102664,9 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            if(requestTileCoord.toString() !== "2,2,-3"){
+            // if(requestTileCoord.toString() !== "2,2,-3"){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
-            // if(tileCoord.toString() !== "15,7573,-13222"){
+            if(tileCoord.toString() !== "15,7573,-13222"){
                 // return
             }
             // TEST END

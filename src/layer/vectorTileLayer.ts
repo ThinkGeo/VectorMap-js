@@ -724,36 +724,31 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
 
-            // recalculate the verctices of text for resolution changed
-            // fix for WebGL not to unpremultiply           
-            if(this instanceof (<any>ol.render).webgl.TextReplay){
-                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-    
-                if(!Number.isInteger(frameState.viewState.zoom)){
-                    var startIndicesFeature = this.startIndicesFeature;
-                    this.declutterTree.clear();
+            // recalculate the verctices of text for resolution changed                 
+            if(!Number.isInteger(frameState.viewState.zoom)){
+                var startIndicesFeature = this.startIndicesFeature;
+                this.declutterTree.clear();
 
-                    for(var i = 0; i < startIndicesFeature.length; i++){
-                        var feature = startIndicesFeature[i];
-                        var geometry = feature.getGeometry();
-                        var type = feature.getType();
-                        if(type == 'LineString' || type == 'MultiLineString'){
-                            this.drawText(geometry, feature);
-                            var startIndices = this.startIndices;
-                            var start = startIndices[i] / 6 * 32;
-                            var num = this.vertices.length;
-                            // replace the indices and vertices
-                            this.vertices_.splice(start, num, ...this.vertices);
-                            this.vertices.length = 0;
-                        }
-                    }
-    
-                    if(this.indices.length > 0){                        
-                        this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
-                        this.indices.length = 0;
+                for(var i = 0; i < startIndicesFeature.length; i++){
+                    var feature = startIndicesFeature[i];
+                    var geometry = feature.getGeometry();
+                    var type = feature.getType();
+                    if(type == 'LineString' || type == 'MultiLineString'){
+                        this.drawText(geometry, feature);
+                        var startIndices = this.startIndices;
+                        var start = startIndices[i] / 6 * 32;
+                        var num = this.vertices.length;
+                        // replace the indices and vertices
+                        this.vertices_.splice(start, num, ...this.vertices);
+                        this.vertices.length = 0;
                     }
                 }
-            }             
+
+                if(this.indices.length > 0){                        
+                    this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
+                    this.indices.length = 0;
+                }
+            }
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 

@@ -187,7 +187,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
-                    tile.transition=z === currentZ
+                    tile.transition=z === currentZ;
+                    // tile.position = [x, y, w, h];
                     this.renderedTiles.push(tile);
                 }                
             }
@@ -300,6 +301,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 //         context.clip();
                 //     }
                 // }
+
+                // var gl = context.getGL();
+                // var position = tile.position;
+                // var x = position[0];
+                // var y = position[1];
+                // var width = position[2];
+                // var height = position[3];
+                // gl.scissor(x, size[1] - y - height, width, height);
+                // gl.viewport(x, size[1] - y - height, width, height);
 
                 context.frameState = frameState;
                 context.layerState = layerState;
