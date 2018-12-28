@@ -252,10 +252,6 @@ class GeoVectorTileSource extends VectorTile {
         if (!tileCache) {
             return false;
         }
-        if(window["zoom6"])
-        {
-            console.log("foreachLoadedTile")
-        }
         let covered = true;
         let tile, tileCoordKey, loaded;
         for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -266,7 +262,7 @@ class GeoVectorTileSource extends VectorTile {
                     tile = /** @type {!import("../Tile.js").default} */ (tileCache.get(tileCoordKey));
                     // MapSuite : add replay created checking
                     loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
-                    if (loaded) {
+                    if (!loaded) {
                         tile = tile.getInterimTile();
                         loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
                     }
