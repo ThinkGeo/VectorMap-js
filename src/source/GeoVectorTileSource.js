@@ -252,7 +252,10 @@ class GeoVectorTileSource extends VectorTile {
         if (!tileCache) {
             return false;
         }
-
+        if(window["zoom6"])
+        {
+            console.log("foreachLoadedTile")
+        }
         let covered = true;
         let tile, tileCoordKey, loaded;
         for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
