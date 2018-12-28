@@ -12609,31 +12609,31 @@ function olInit() {
      * @param {Array.<number>=} opt_dest Destination.
      * @return {Array.<number>} Transformed coordinates.
      */
-    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest, extent, isLineString) {
+    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest, extent, properties) {
         var dest = opt_dest ? opt_dest : [];
         var i = 0;
         var j, k;
 
-        function segmentsIntr_1(a, b, c, d){  
-            var denominator = (b[1] - a[1])*(d[0] - c[0]) - (a[0] - b[0])*(c[1] - d[1]); 
-            if (denominator == 0) { 
-                return false; 
-            } 
-            var x = ( (b[0] - a[0]) * (d[0] - c[0]) * (c[1] - a[1]) 
-                + (b[1]- a[1]) * (d[0] - c[0]) * a[0] 
-                - (d[1] - c[1]) * (b[0] - a[0]) * c[0] ) / denominator ; 
-            var y = -( (b[1] - a[1]) * (d[1] - c[1]) * (c[0] - a[0]) 
-                + (b[0] - a[0]) * (d[1] - c[1]) * a[1]
-                - (d[0] - c[0]) * (b[1] - a[1]) * c[1] ) / denominator;  
-            if (  
-            (x - a[0]) * (x - b[0]) <= 0 && (y - a[1]) * (y - b[1]) <= 0 
-                && (x - c[0]) * (x - d[0]) <= 0 && (y - c[1]) * (y - d[1]) <= 0 
-            ){ 
-                return [x, y];
-            } 
+        // function segmentsIntr_1(a, b, c, d){  
+        //     var denominator = (b[1] - a[1])*(d[0] - c[0]) - (a[0] - b[0])*(c[1] - d[1]); 
+        //     if (denominator == 0) { 
+        //         return false; 
+        //     } 
+        //     var x = ( (b[0] - a[0]) * (d[0] - c[0]) * (c[1] - a[1]) 
+        //         + (b[1]- a[1]) * (d[0] - c[0]) * a[0] 
+        //         - (d[1] - c[1]) * (b[0] - a[0]) * c[0] ) / denominator ; 
+        //     var y = -( (b[1] - a[1]) * (d[1] - c[1]) * (c[0] - a[0]) 
+        //         + (b[0] - a[0]) * (d[1] - c[1]) * a[1]
+        //         - (d[0] - c[0]) * (b[1] - a[1]) * c[1] ) / denominator;  
+        //     if (  
+        //     (x - a[0]) * (x - b[0]) <= 0 && (y - a[1]) * (y - b[1]) <= 0 
+        //         && (x - c[0]) * (x - d[0]) <= 0 && (y - c[1]) * (y - d[1]) <= 0 
+        //     ){ 
+        //         return [x, y];
+        //     } 
 
-            return false
-        }   
+        //     return false
+        // }   
         
         if(extent){
             // var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
@@ -12646,57 +12646,56 @@ function olInit() {
         }    
 
         for (j = offset; j < end; j += stride) {
-            // if(!isLineString){
-            //     var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-            //     if(extent && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
-            //         // fix the coordinates that out of extent                    
-            //         if(flatCoordinates[j] < extent[0]){
-            //             flatCoordinates[j] =  extent[0];
-            //         }else if(flatCoordinates[j] > extent[2]){
-            //             flatCoordinates[j] =  extent[2];
-            //         }
-            //         if(flatCoordinates[j + 1] < extent[1]){
-            //             flatCoordinates[j + 1] =  extent[1];
-            //         }else if(flatCoordinates[j + 1] > extent[3]){
-            //             flatCoordinates[j + 1] =  extent[3];
-            //         }
-            //     }
-            // }else if(extent){
-            //     if(isStartIn){
-            //         if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
-            //             var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-            //             var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
-            //             var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
-            //                                     segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
-            //                                     segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
-            //                                     segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);   
-            //             if(intersectionPoint){
-            //                 flatCoordinates[j] = intersectionPoint[0];
-            //                 flatCoordinates[j + 1] = intersectionPoint[1];
-            //                 lineFlag = true;
-            //             }
-            //         }     
-            //     }else{
-            //         if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
-            //             if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
-            //                 var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
-            //                 var prevCoord = [flatCoordinates[j + 2], flatCoordinates[j + 3]];                        
-            //                 var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
-            //                                         segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
-            //                                         segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
-            //                                         segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);
-            //                 if(intersectionPoint){
-            //                     flatCoordinates[j] = intersectionPoint[0];
-            //                     flatCoordinates[j + 1] = intersectionPoint[1];    
-            //                 }else{
-            //                     continue;
-            //                 } 
-            //             }else{
-            //                 continue;
-            //             }
-            //         }              
-            //     }
-            // }
+            // fix the coordinates that out of extent                    
+            if(properties && extent){
+                if(properties.layerName.includes('country') && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+                    if(flatCoordinates[j] < extent[0]){
+                        flatCoordinates[j] =  extent[0];
+                    }else if(flatCoordinates[j] > extent[2]){
+                        flatCoordinates[j] =  extent[2];
+                    }
+                    if(flatCoordinates[j + 1] < extent[1]){
+                        flatCoordinates[j + 1] =  extent[1];
+                    }else if(flatCoordinates[j + 1] > extent[3]){
+                        flatCoordinates[j + 1] =  extent[3];
+                    }
+                }
+            }else if(extent){
+                // if(isStartIn){
+                    // if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){                    
+                    //     var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+                    //     var prevCoord = [flatCoordinates[j - 2], flatCoordinates[j - 1]];                        
+                    //     var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
+                    //                             segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
+                    //                             segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
+                    //                             segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);   
+                    //     if(intersectionPoint){
+                    //         flatCoordinates[j] = intersectionPoint[0];
+                    //         flatCoordinates[j + 1] = intersectionPoint[1];
+                    //         // lineFlag = true;
+                    //     }
+                    // }     
+                // }else{
+                    // if(!ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+                    //     if(ol.extent.containsXY(extent, flatCoordinates[j + 2], flatCoordinates[j + 3])){
+                    //         var currentCoord = [flatCoordinates[j], flatCoordinates[j + 1]];
+                    //         var prevCoord = [flatCoordinates[j + 2], flatCoordinates[j + 3]];                        
+                    //         var intersectionPoint = segmentsIntr_1(bottomLeft, topLeft, currentCoord, prevCoord) || 
+                    //                                 segmentsIntr_1(topRight, topLeft, currentCoord, prevCoord) ||
+                    //                                 segmentsIntr_1(bottomRight, bottomLeft, currentCoord, prevCoord) ||
+                    //                                 segmentsIntr_1(bottomRight, topRight, currentCoord, prevCoord);
+                    //         if(intersectionPoint){
+                    //             flatCoordinates[j] = intersectionPoint[0];
+                    //             flatCoordinates[j + 1] = intersectionPoint[1];    
+                    //         }else{
+                    //             continue;
+                    //         } 
+                    //     }else{
+                    //         continue;
+                    //     }
+                    // }              
+                // }
+            }
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
 
@@ -12710,11 +12709,6 @@ function olInit() {
         }
         if (opt_dest && dest.length != i) {
             dest.length = i;
-        }
-
-        if(!isLineString && dest[0] != dest[dest.length - 2] || dest[1] != dest[dest.length - 1]){
-            // dest.push(dest[0]);
-            // dest.push(dest[1]);
         }
         
         return dest;
@@ -29253,10 +29247,7 @@ function olInit() {
         if (strokeStyle === undefined || lineWidth === undefined) {
             return;
         }
-        // Eric
-        if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
-            state.styleId = lineStringGeometry.styleId;
-        }
+
         this.updateStrokeStyle(state, this.applyStroke);
         this.beginGeometry(lineStringGeometry, feature);
         this.hitDetectionInstructions.push([
@@ -31096,7 +31087,6 @@ function olInit() {
         if (fillStyle || strokeStyle) {
             var polygonReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.POLYGON); 
-
             polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
             polygonReplay.drawPolygon(geometry, feature);
         }
@@ -68804,7 +68794,7 @@ function olInit() {
             var extent = feature.getExtent();
             if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
                 flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                    stride, -this.origin[0], -this.origin[1], undefined, extent);
                 
                 if (this.state_.changed) {
                     this.styleIndices_.push(this.indices.length);
@@ -68838,7 +68828,7 @@ function olInit() {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
                     var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
-                        stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                        stride, -this.origin[0], -this.origin[1], undefined, extent);
                     this.drawCoordinates_(
                         lineString, 0, lineString.length, stride);
                 }
@@ -70451,9 +70441,9 @@ function olInit() {
         var stride = polygonGeometry.getStride();
         var extent = feature.getExtent();
         if (ends.length > 0) {            
-            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                stride, -this.origin[0], -this.origin[1], undefined, extent);
+                stride, -this.origin[0], -this.origin[1], undefined, extent, feature.getProperties());
 
             if (outerRing.length) {
                 var holes = [];
@@ -70461,7 +70451,7 @@ function olInit() {
                 for (i = 1, ii = ends.length; i < ii; ++i) {
                     if (ends[i] !== ends[i - 1]) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                            ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent);
+                            ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, feature.getProperties());
                         if(holeFlatCoords.length > 3){
                             holes.push(holeFlatCoords);
                         }
@@ -102665,8 +102655,8 @@ function olInit() {
             
             // console.log(requestTileCoord);
             // if(requestTileCoord.toString() !== "2,2,-3"){
-            // if(requestTileCoord.toString() !== "14,3786,-6612"){
-            if(tileCoord.toString() !== "15,7573,-13222"){
+            if(requestTileCoord.toString() !== "14,3786,-6612"){
+            // if(tileCoord.toString() !== "15,7573,-13222"){
                 // return
             }
             // TEST END

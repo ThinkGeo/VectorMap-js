@@ -330,7 +330,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     // BufferCache in webgl
                     var vectorTile = this.sourceTiles_[sourceTileKey];
                     var replayGroups = vectorTile.replayGroups_;
-                    
+
                     for(var key in replayGroups){
                         replayGroups[key].getDeleteResourcesFunction(context)();
                     }
@@ -725,7 +725,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             // recalculate the verctices of text for resolution changed                 
-            if(!Number.isInteger(frameState.viewState.zoom)){
+            if(this instanceof (<any>ol).render.webgl.TextReplay && !Number.isInteger(frameState.viewState.zoom)){
                 var startIndicesFeature = this.startIndicesFeature;
                 this.declutterTree.clear();
 

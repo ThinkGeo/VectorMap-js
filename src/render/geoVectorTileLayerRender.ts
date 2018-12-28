@@ -83,7 +83,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-                // FIXME Eric
                 tile.tileRange = tileRange;
                 tile.pixelRatio = pixelRatio;
                 if (tile.getState() === (<any>ol).TileState.ERROR) {
