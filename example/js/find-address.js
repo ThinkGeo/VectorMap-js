@@ -95,8 +95,9 @@ const renderResult = ({ locations }) => {
         let str = '';
         let i = -1
         for (const item of locations) {
+          
             i = i + 1;
-            str += `<li><a data-coordinatesX=${item.locationPoint.pointX} data-coordinatesY=${item.locationPoint.pointY} data-index=${i}   data-boundingBox="${item.boundingBox}"" data-type=${item.locationType}> ${item.address} </a></li>`
+            str += `<li><a data-coordinatesX=${(item.locationPoint.pointX).toFixed(6)} data-coordinatesY=${(item.locationPoint.pointY).toFixed(6)} data-index=${i}   data-boundingBox="${item.boundingBox}"" data-type=${item.locationType}> ${item.address} </a></li>`
         }
         geocoderResultNode.innerHTML = str;
     } else {
@@ -185,9 +186,11 @@ const compareFocusIndex = (flag) => {
     for (let node of nodeList) {
         if (Number(node.getAttribute('data-index')) == focusIndex) {
             if (flag) {
-                node.classList.add('focus')
+                node.classList.add('focus');
                 return
             } else {
+                address.value = node.innerText;
+                geocoderResultNode.innerHTML = '';
                 obtainParameter(node)
             }
         }
@@ -231,19 +234,13 @@ document.getElementById('geocoderResult').addEventListener('click', (e) => {
     let target = e.target;
     if (target.nodeName == 'A') {
         removeClass();
-        e.target.classList.add('focus');
+        address.value = target.innerText;
+        geocoderResultNode.innerHTML = '';
         focusIndex = Number(target.getAttribute('data-index'));
         obtainParameter(target)
     }
 })
-
-document.getElementById('map').addEventListener('click', (e) => {
-    address.value = document.querySelector('.focus').innerText;
-    geocoderResultNode.innerHTML = '';
-
-})
-
-
+ 
 document.body.addEventListener('keydown', (e) => {
     switch (e.keyCode) {
         //up
