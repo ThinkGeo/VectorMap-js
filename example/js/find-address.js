@@ -23,10 +23,10 @@ let focusIndex = null;
 let resultsLength;
 
 //creat result layer
-const createGeocodingLayer = function() {
+const createGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
-        style: function(feature) {
+        style: function (feature) {
             let key = feature.get('type');
             let style = _styles[key];
             return style;
@@ -72,7 +72,7 @@ let overlay = new ol.Overlay({
 
 });
 
-closer.onclick = function() {
+closer.onclick = function () {
     overlay.setPosition(undefined);
     let source = geocodingLayer.getSource();
     source.clear();
@@ -80,7 +80,7 @@ closer.onclick = function() {
     return false;
 };
 
-const popUp = function(address, coordinates, type) {
+const popUp = function (address, coordinates, type) {
     overlay.setPosition(ol.proj.fromLonLat(coordinates));
     map.addOverlay(overlay);
     content.innerHTML = `<p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]}</p>`
@@ -237,6 +237,12 @@ document.getElementById('geocoderResult').addEventListener('click', (e) => {
     }
 })
 
+document.getElementById('map').addEventListener('click', (e) => {
+    address.value = document.querySelector('.focus').innerText;
+    geocoderResultNode.innerHTML = '';
+
+})
+
 
 document.body.addEventListener('keydown', (e) => {
     switch (e.keyCode) {
@@ -245,7 +251,7 @@ document.body.addEventListener('keydown', (e) => {
             e.preventDefault();
             moveFocus(-1);
             break;
-            // down
+        // down
         case 40:
             e.preventDefault();
             moveFocus(1);
