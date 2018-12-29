@@ -94,7 +94,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         tilesToDrawByZ[z] = {};
 
         const findLoadedTiles = this.createLoadedTileFinder(
-            tileSource, projection, tilesToDrawByZ);
+            tileSource, projection, tilesToDrawByZ, tileLayer);
 
         const hints = frameState.viewHints;
         const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
@@ -648,6 +648,28 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
         return (tileState == TileState.LOADED && tile.replayCreated && image) ||
             tileState == TileState.EMPTY ||
             tileState == TileState.ERROR && !useInterimTilesOnError;
+    }
+
+    createLoadedTileFinder(source, projection, tiles, layer) {
+        return (
+            /**
+             * @param {number} zoom Zoom level.
+             * @param {import("../TileRange.js").default} tileRange Tile range.
+             * @return {boolean} The tile range is fully loaded.
+             */
+            function (zoom, tileRange) {
+                /**
+                 * @param {import("../Tile.js").default} tile Tile.
+                 */
+                function callback(tile) {
+                    if (!tiles[zoom]) {
+                        tiles[zoom] = {};
+                    }
+                    tiles[zoom][tile.tileCoord.toString()] = tile;
+                }
+                return source.forEachLoadedTile(projection, zoom, tileRange, callback,layer);
+            }
+        );
     }
 }
 
