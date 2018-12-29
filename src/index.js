@@ -702,6 +702,4 @@ ol.Map.prototype.createRenderer = function createRenderer() {
     return renderer;
 };
 
-
-
 export default ol;
