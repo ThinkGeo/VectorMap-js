@@ -557,6 +557,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var view = this.getView();
             var extent = ol.extent.createEmpty();
             var previousFrameState = this.frameState_;
+            var isZoom=view.isZoom;
             /** @type {?olx.FrameState} */
             var frameState = null;
             if (size !== undefined && (<any>ol).size.hasArea(size) && view && view.isDef()) {
@@ -594,7 +595,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     quickZoom: quickZoom,
                     currentResolution: viewState.resolution,
                     wantedTiles: {},
-                    context: this.renderer_.context_
+                    context: this.renderer_.context_,
+                    isZoom:isZoom
                 });
             }
 

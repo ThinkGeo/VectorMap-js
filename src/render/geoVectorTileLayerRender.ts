@@ -169,6 +169,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             });
+            zs = zs.reverse().slice(0,2);
+            if(!frameState.isZoom){
+                zs = zs.slice(0,1);
+            }
+            // console.log(tilesToDrawByZ)
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
             for (i = 0, ii = zs.length; i < ii; ++i) {

@@ -16193,6 +16193,7 @@ function olInit() {
                         this.set(ol.ViewProperty.CENTER,
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
+                    this.isZoom=true;
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
@@ -21392,6 +21393,7 @@ function olInit() {
         if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
+            view.isZoom=false;
             this.lastCentroid = null;
             if (!this.handlingDownUpSequence) {
                 view.setHint(ol.ViewHint.INTERACTING, 1);
