@@ -67525,7 +67525,7 @@ function olInit() {
         var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
         // this.rotation_ is anti-clockwise, but rotation is clockwise
         var rotation = /** @type {number} */ (-this.rotation);
-        var scale = /** @type {number} */ (this.scale);
+        var scale = /** @type {number} */ (this.scale / window.devicePixelRatio);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
@@ -67533,7 +67533,7 @@ function olInit() {
         var numVertices = this.tmpVertices.length;
         var i, n, offsetX, offsetY, x, y, relativeX, relativeY;
         var charX, charY, pixelX, pixelY;
-        var pixelCoordinates;        
+        var pixelCoordinate;        
 
         for (i = offset; i < end; i += stride) {
             pixelCoordinate = map.getPixelFromCoordinate([flatCoordinates[i], flatCoordinates[i + 1]]);
@@ -71402,8 +71402,7 @@ function olInit() {
             feature.isCurve = false;           
             var i, ii, j, jj, currX, currY, charArr, charInfo; 
             var glyphAtlas = this.currAtlas_;            
-            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-            var pixelRatio = map.frameState_.pixelRatio;            
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;                   
        
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
@@ -71510,8 +71509,8 @@ function olInit() {
                     this.originY = 0;
                     this.height = height;
                     this.width = width + lineWidth;
-                    this.imageHeight = height / pixelRatio;
-                    this.imageWidth = width / pixelRatio;
+                    this.imageHeight = height;
+                    this.imageWidth = width;
 
                     var currentImage;
                     if (this.tmpImages.length === 0) {
