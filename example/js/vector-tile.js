@@ -23,3 +23,5 @@ var map = new ol.Map({
         maxResolution: 40075016.68557849 / 512
     }),
 });
+
+map.addControl(new ol.control.FullScreen());

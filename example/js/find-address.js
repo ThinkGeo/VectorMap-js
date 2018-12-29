@@ -58,6 +58,8 @@ let map = new ol.Map({
     view: view
 });
 
+map.addControl(new ol.control.FullScreen());
+
 //render result
 
 //   Elements that make up the popup.

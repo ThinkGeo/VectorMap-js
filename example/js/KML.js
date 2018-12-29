@@ -96,3 +96,5 @@ let map = new ol.Map({
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true
 }); 
+
+map.addControl(new ol.control.FullScreen());

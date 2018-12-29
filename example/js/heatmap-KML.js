@@ -49,3 +49,5 @@ let map = new ol.Map({
         minZoom: 2
     })
 });
+
+map.addControl(new ol.control.FullScreen());

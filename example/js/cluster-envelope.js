@@ -21,6 +21,8 @@ let map = new ol.Map({
     })
 })
 
+map.addControl(new ol.control.FullScreen());
+
 let styleCache = {};
 
 const getStyle = function (feature, resolution) {

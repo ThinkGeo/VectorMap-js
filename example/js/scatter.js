@@ -31,6 +31,8 @@ let map = new ol.Map({
     })
 });
 
+map.addControl(new ol.control.FullScreen());
+
 //Process the data
 
 let xhr = new XMLHttpRequest();

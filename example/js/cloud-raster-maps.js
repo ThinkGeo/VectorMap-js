@@ -44,6 +44,8 @@ let map = new ol.Map({
     })
 });
 
+map.addControl(new ol.control.FullScreen());
+
 document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll('#wrap div');
     for (let node of nodeList) {

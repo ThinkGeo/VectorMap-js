@@ -32,6 +32,8 @@ $.ajax({
 
             })
         });
+
+        map.addControl(new ol.control.FullScreen());
         var vectorSource = new ol.source.Vector()
         var featuresArr = [];
         for (let i = 0; i < points.length; i++) {

@@ -164,6 +164,8 @@ let map =  new ol.Map({
     }),
 });
 
+map.addControl(new ol.control.FullScreen());
+
 $('button').click(function () {
     let options = {
         category: $('select#category option:selected').val(),

@@ -25,6 +25,7 @@ let map = new ol.Map({
         zoom: 4
     })
 });
+map.addControl(new ol.control.FullScreen());
 
 //AQI layer
 let AQIlayer = (id, data, color, pt) => {

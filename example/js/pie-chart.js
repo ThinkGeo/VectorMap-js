@@ -22,7 +22,7 @@ let map = new ol.Map({
         progressiveZoom: false,
     })
 });
-
+map.addControl(new ol.control.FullScreen());
 // pie chart
 let pieChartOvery = (id, data, pt) => {
     option = {

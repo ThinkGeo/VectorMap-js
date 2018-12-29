@@ -87,6 +87,37 @@
         #geocoderResult li a:hover{
             color: #63b6e5
         }
+         .ol-control:hover {
+            background-color: unset;
+        }
+
+        .ol-control:focus {
+            outline: unset !important;
+        }
+
+        .ol-full-screen {
+            right: unset;
+            left: 0.5em;
+            top: 5.5em;
+            background-color: unset
+        }
+
+        .ol-full-screen button {
+            height: 1.2em !important;
+            width: 1.2em !important;
+            font-size: 1.5em !important;
+            cursor: pointer;
+            margin: 0px !important;
+            background-color: #fff !important;
+            color: #2d3c4d !important;
+            border: solid 1px #ccc !important;
+            box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+            border-radius: 0 0 2px 2px;
+        }
+
+        .ol-full-screen button:hover {
+            background-color: #eee !important;
+        }
         .ol-popup {
             position: absolute;
             background-color: white;
@@ -176,21 +207,23 @@
 </head>
 
 <body>
-    <div id="searchBar">
-        <div id="geocoder">
-            <i></i>
-            <input type="text" id="address" autofocus autocomplete="off" placeholder="Search United States">
-            <div class="geocoderResult">
-                <ul id="geocoderResult">
-                </ul>
-                <div class="loading hidden ">
-                    <img src="../image/Spinner-1s-50px.gif" alt="loading">
+
+    <div id="map" style="width:100%;height:100%">
+        <div id="searchBar">
+            <div id="geocoder">
+                <i></i>
+                <input type="text" id="address" autofocus autocomplete="off" placeholder="Search United States">
+                <div class="geocoderResult">
+                    <ul id="geocoderResult">
+                    </ul>
+                    <div class="loading hidden ">
+                        <img src="../image/Spinner-1s-50px.gif" alt="loading">
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
-    <div id="map" style="width:100%;height:100%"></div>
     <div id="popup" class="ol-popup hidden">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
         <div id="popup-content">

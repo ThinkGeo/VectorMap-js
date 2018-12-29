@@ -31,6 +31,8 @@ let map = new ol.Map({
     view: view
 });
 
+map.addControl(new ol.control.FullScreen());
+
 
 //   Elements that make up the popup.
 
@@ -72,7 +74,6 @@ const reverseGeocode = function (coordinate) {
     let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&Srid=3857`;
 
     let jqxhr = $.get(getURL, function (data) {
-        console.log(data)
         if (data.data.bestMatchLocation) {
             let address = data.data.bestMatchLocation.data.address;
 

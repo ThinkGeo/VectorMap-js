@@ -121,6 +121,9 @@ var map = new ol.Map({
 });
 
 
+map.addControl(new ol.control.FullScreen());
+
+
 map.addInteraction(new ol.interaction.DragPan({
   condition: function (event) {
     return event.originalEvent.ctrlKey

@@ -33,3 +33,5 @@ let map = new ol.Map({
 
     }),
 });
+
+map.addControl(new ol.control.FullScreen());

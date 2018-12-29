@@ -29,3 +29,5 @@ let map = new ol.Map({
         progressiveZoom: false,
     }),
 });
+
+map.addControl(new ol.control.FullScreen());

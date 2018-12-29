@@ -34,7 +34,7 @@ let map = new ol.Map({
 
     })
 });
-
+map.addControl(new ol.control.FullScreen());
 // Convert the json  to geoson
 $.get("../data/rainfall.json", function (result) {
     let geojson = {

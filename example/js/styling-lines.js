@@ -152,3 +152,5 @@ let map = new ol.Map({
         minZoom: 0,
     }),
 });
+
+map.addControl(new ol.control.FullScreen());

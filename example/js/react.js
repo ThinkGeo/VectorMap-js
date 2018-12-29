@@ -19,6 +19,9 @@ function renderStreetMap() {
           
         }),
     });
+
+
+    streetMap.addControl(new ol.control.FullScreen());
 }
 class StreetMap extends React.Component {
     constructor(props) {
@@ -169,53 +172,54 @@ class StreetMap extends React.Component {
 
         return (
             <div id="mapWrap">
-                <div id="map"></div>
-                <div className="controlPanel">
-                    <div>
-                        <label>
-                            Road Name Placement:
+                <div id="map">
+                    <div className="controlPanel">
+                        <div>
+                            <label>
+                                Road Name Placement:
                         </label>
-                        <select onChange={this.placementHandleChange}>
-                            <option value="Line">Line</option>
-                            <option value="Point">Point</option>
-                        </select>
-                    </div>
+                            <select onChange={this.placementHandleChange}>
+                                <option value="Line">Line</option>
+                                <option value="Point">Point</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label>
-                            Road Number Mask Type:
+                        <div>
+                            <label>
+                                Road Number Mask Type:
                         </label>
-                        <select onChange={this.maskTypeHandleChange}>
-                            <option value="Circle">Circle</option>
-                            <option value="Rectangle">Rectangle</option>
-                            <option value="Default">Default</option>
-                            <option value="RoundedCorners">RoundedCorners</option>
-                            <option value="RoundedEnds">RoundedEnds</option>
-                        </select>
-                    </div>
+                            <select onChange={this.maskTypeHandleChange}>
+                                <option value="Circle">Circle</option>
+                                <option value="Rectangle">Rectangle</option>
+                                <option value="Default">Default</option>
+                                <option value="RoundedCorners">RoundedCorners</option>
+                                <option value="RoundedEnds">RoundedEnds</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label>
-                            Park Color:
+                        <div>
+                            <label>
+                                Park Color:
                         </label>
-                        <select onChange={this.parkFillColorHandleChange}>
-                            <option value="#a7da7a59">#a7da7a59</option>
-                            <option value="#25ff00">#25ff00</option>
-                            <option value="#4ea440">#4ea440</option>
-                            <option value="#a29708">#a29708</option>
-                            <option value="#fe6c00">#fe6c00</option>
-                        </select>
-                    </div>
+                            <select onChange={this.parkFillColorHandleChange}>
+                                <option value="#a7da7a59">#a7da7a59</option>
+                                <option value="#25ff00">#25ff00</option>
+                                <option value="#4ea440">#4ea440</option>
+                                <option value="#a29708">#a29708</option>
+                                <option value="#fe6c00">#fe6c00</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label>
-                            POI Size:
+                        <div>
+                            <label>
+                                POI Size:
                         </label>
-                        <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
-                    </div>
+                            <input type="number" value={this.state.poiSize} onChange={this.poiSizeHandleChange} />
+                        </div>
 
-                    <div className="refresh-btn">
-                        <button onClick={this.clickRefresh}>Refresh</button>
+                        <div className="refresh-btn">
+                            <button onClick={this.clickRefresh}>Refresh</button>
+                        </div>
                     </div>
                 </div>
             </div>

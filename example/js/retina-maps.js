@@ -25,3 +25,5 @@ let map2x = new ol.Map({
 
     }),
 });
+
+map2x.addControl(new ol.control.FullScreen());

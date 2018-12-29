@@ -21,6 +21,8 @@ let map = new ol.Map({
     })
 });
 
+map.addControl(new ol.control.FullScreen());
+
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         let file = "../data/crime.json";

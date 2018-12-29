@@ -119,6 +119,8 @@ let map = new ol.Map({
     view: view
 });
 
+map.addControl(new ol.control.FullScreen());
+
 
 //creat feature
 const createFeature = function (wkt) {

@@ -106,6 +106,8 @@ let map = new ol.Map({
     }),
 });
 
+map.addControl(new ol.control.FullScreen());
+
 let highlightLayer = new ol.layer.Vector({
     source: new ol.source.Vector(),
     map: map,

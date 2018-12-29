@@ -84,6 +84,8 @@ let map = new ol.Map({
         center: ol.proj.fromLonLat([-96.79620, 33.15423]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
-        zoom: 14,
+        zoom: 13,
     }),
 });
+
+map.addControl(new ol.control.FullScreen());

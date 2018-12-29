@@ -22,6 +22,8 @@ let map = new ol.Map({
     }),
 });
 
+map.addControl(new ol.control.FullScreen());
+
 let getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         let file = "../data/light.json";
