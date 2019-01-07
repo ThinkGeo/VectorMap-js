@@ -240,7 +240,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
             return false;
         }
 
-        let covered = true;
+        let covered = false;
         let tile, tileCoordKey, loaded;
         for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -257,11 +257,12 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                     }
                     if (loaded) {
                         loaded = (callback(tile) !== false);
+                        covered = true;
                     }
                 }
-                if (!loaded) {
-                    covered = false;
-                }
+                // if (!loaded) {
+                //     covered = false;
+                // }
             }
         }
         return covered;
