@@ -31050,8 +31050,11 @@ function olInit() {
             }
             var imageReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.IMAGE);
-            imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
-            imageReplay.drawPoint(geometry, feature);
+            // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
+            // imageReplay.drawPoint(geometry, feature);
+            imageReplay.startIndicesFeature.push(feature);
+            var imageStyleClone = imageStyle.clone();
+            imageReplay.startIndicesStyle.push(imageStyleClone);
         }
         var textStyle = style.getText();
         if (textStyle) {
@@ -67542,7 +67545,6 @@ function olInit() {
      */
     ol.render.webgl.TextureReplay.prototype.drawCoordinates = function (flatCoordinates, offset, end, stride) {
         this.extent == undefined && (this.extent = ol.extent.createOrUpdateEmpty());
-        this.tmpIndices == undefined && (this.tmpIndices = this.indices) && (this.tmpVertices = this.vertices);
         var anchorX = /** @type {number} */ (this.anchorX);
         var anchorY = /** @type {number} */ (this.anchorY);
         var height = /** @type {number} */ (this.height);
@@ -67999,31 +68001,18 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
-        this.extent = ol.extent.createOrUpdateEmpty()
-        // if(!this.vertices_){
-        //     this.startIndices.push(this.indices.length);
-        //     this.startIndicesFeature.push(feature);
-        // }
+        this.extent = ol.extent.createOrUpdateEmpty();      
         var flatCoordinates = pointGeometry.getFlatCoordinates();
         var stride = pointGeometry.getStride();
+        this.tmpIndices = this.indices.slice(0)
+        this.tmpVertices = this.vertices.slice(0);        
         this.drawCoordinates(
             flatCoordinates, 0, flatCoordinates.length, stride);
 
         if(this.renderDeclutter_(this.extent, feature)){
-            // var indicesNum = 6;
-            // var verticesNum = 32;            
-            // this.indices.splice(-indicesNum);
-            // this.vertices.splice(-verticesNum);
-            // this.startIndices.pop();
-            // this.startIndicesFeature.pop();
-            if(!this.vertices_){
-                this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
-            }
-            this.indices = this.indices.concat(this.tmpIndices);
-            this.vertices = this.vertices.concat(this.tmpVertices);
-            this.tmpIndices.length = 0;
-            this.tmpVertices.length = 0;
+            this.startIndices.push(this.indices.length);
+            this.indices = this.tmpIndices;
+            this.vertices = this.tmpVertices;
         }           
     };
 
@@ -68038,12 +68027,10 @@ function olInit() {
         this.hitDetectionGroupIndices.push(this.indices.length);
 
         // create, bind, and populate the vertices buffer
-        this.verticesBuffer = new ol.webgl.Buffer(this.vertices.slice(0));
-
-        var indices = this.indices.slice(0);
+        this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(indices);
+        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
@@ -68054,12 +68041,8 @@ function olInit() {
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
             texturePerImage, gl);
 
-        this.images_ = null;
-        this.hitDetectionImages_ = null;
-        // record for resolution replacement
-        this.vertices_ = this.vertices.slice(0);
-        this.vertices.length = 0;
-        this.indices.length = 0;
+        this.images_ = [];
+        this.hitDetectionImages_ = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -71357,7 +71340,6 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
         if (this.text_) {
-            // this.text_ = feature.text_ || this.text_;
             this.tmpVertices = this.vertices.slice(0);
             this.tmpIndices = this.indices.slice(0);
             this.tmpImages = this.images_.slice(0);
@@ -71545,14 +71527,14 @@ function olInit() {
 
             if(this.renderDeclutter_(this.extent, feature)){
                 this.startIndices.push(this.indices.length);
-                this.indices = this.tmpIndices.slice(0);
-                this.vertices = this.tmpVertices.slice(0);
-                this.groupIndices = this.tmpGroupIndices.slice(0);
-                this.images_ = this.tmpImages.slice(0);
-                this.tmpIndices.length = 0;
-                this.tmpVertices.length = 0;
-                this.tmpGroupIndices.length = 0;
-                this.tmpImages.length = 0;
+                this.indices = this.tmpIndices;
+                this.vertices = this.tmpVertices;
+                this.groupIndices = this.tmpGroupIndices;
+                this.images_ = this.tmpImages;
+                // this.tmpIndices.length = 0;
+                // this.tmpVertices.length = 0;
+                // this.tmpGroupIndices.length = 0;
+                // this.tmpImages.length = 0;
             }         
         }
     };

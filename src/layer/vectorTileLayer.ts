@@ -727,7 +727,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             // recalculate the verctices of text for resolution changed                 
-            if(this instanceof (<any>ol).render.webgl.TextReplay){
+            if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
                 var startIndicesFeature = this.startIndicesFeature;
                 var startIndicesStyle = this.startIndicesStyle;
                 this.indices.length = 0;
@@ -737,26 +737,36 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 for(var i = 0; i < startIndicesFeature.length; i++){
                     var feature = startIndicesFeature[i];
-                    var textStyle = startIndicesStyle[i];
+                    var style = startIndicesStyle[i];
                     var geometry = feature.getGeometry();
                     var type = feature.getType(); 
                     
+                    if(!style){
+                        continue;
+                    }
+
                     if(type == 'MultiLineString'){
                         var ends = geometry.getEnds();
                         for(var k = 0; k < ends.length; k++){
                             var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
                             var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
 
-                            this.setTextStyle(textStyle);
+                            this.setTextStyle(style);
                             this.drawText(newFeature.getGeometry(), newFeature);
                         }
                     }else{
-                        this.setTextStyle(textStyle);
-                        this.drawText(geometry, feature);
+                        if(this instanceof (<any>ol).render.webgl.ImageReplay){
+                            this.setImageStyle(style);
+                            this.drawPoint(geometry, feature);
+                        }else{
+                            this.setTextStyle(style);
+                            this.drawText(geometry, feature);
+                        }
                     }
                 }
                 this.finish(context);                
             }
+
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
