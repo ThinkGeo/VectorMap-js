@@ -30968,9 +30968,13 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             // textReplay.drawText(geometry, feature);
-            textReplay.startIndicesFeature.push(feature);  
+            textReplay.startIndicesFeature.push(feature); 
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone); 
         }
     };
 
@@ -30994,9 +30998,13 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            // textReplay.drawText(geometry, feature);            
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            // textReplay.drawText(geometry, feature); 
             textReplay.startIndicesFeature.push(feature);
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone);
         }
     };
 
@@ -31049,9 +31057,13 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
-            // textReplay.drawText(geometry, feature);            
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
+            // textReplay.drawText(geometry, feature);    
             textReplay.startIndicesFeature.push(feature);
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone);
         }
     };
 
@@ -66028,6 +66040,13 @@ function olInit() {
         this.startIndicesFeature = [];
 
         /**
+         * Start index per style (the style).
+         * @protected
+         * @type {Array.<ol.Feature|ol.render.Feature>}
+         */
+        this.startIndicesStyle = [];
+
+        /**
          * @protected
          * @type {Array.<number>}
          */
@@ -71338,6 +71357,7 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
         if (this.text_) {
+            // this.text_ = feature.text_ || this.text_;
             this.tmpVertices = this.vertices.slice(0);
             this.tmpIndices = this.indices.slice(0);
             this.tmpImages = this.images_.slice(0);
@@ -71383,9 +71403,10 @@ function olInit() {
                 if(window.tests == undefined){
                     window.tests = 0;
                 }
-                // if(!this.text_.includes('Woodall')){
-                if(!this.text_.includes('Ross Avenue')){
+                if(this.text_.includes('United States')){
+                // if(!this.text_.includes('Ross Avenue')){
                     // return
+                    // debugger
                 }
 
                 if(window.tests !== 3){

@@ -131,7 +131,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 }
             }
         }
-        //    console.log(tilesToDrawByZ);
+        // console.log(tilesToDrawByZ);
 
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
