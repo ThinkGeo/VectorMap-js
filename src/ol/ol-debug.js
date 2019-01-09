@@ -12648,8 +12648,11 @@ function olInit() {
         for (j = offset; j < end; j += stride) {
             // fix the coordinates that out of extent                    
             if(properties && extent){
+                // FIXME this is a temp solution, and fix it using z coordinate with depth_test of webgl
+                var filter = properties.layerName.includes('country') || properties.layerName.includes('water');
+                // var filter = !properties.layerName.includes('building');
                 // var filter = properties.layerName.includes('landcover') || properties.layerName.includes('country');
-                var filter = properties.layerName.includes('country');
+                
                 if(filter && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
                     if(flatCoordinates[j] < extent[0]){
                         flatCoordinates[j] =  extent[0];
@@ -16195,7 +16198,7 @@ function olInit() {
                         this.set(ol.ViewProperty.CENTER,
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
-                    this.isZoom=true;
+                    this.isZoom = true;
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
@@ -21395,7 +21398,7 @@ function olInit() {
         if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
-            view.isZoom=false;
+            view.isZoom = false;
             this.lastCentroid = null;
             if (!this.handlingDownUpSequence) {
                 view.setHint(ol.ViewHint.INTERACTING, 1);
@@ -30966,7 +30969,8 @@ function olInit() {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
             textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            textReplay.drawText(geometry, feature);            
+            // textReplay.drawText(geometry, feature);
+            textReplay.startIndicesFeature.push(feature);  
         }
     };
 
@@ -30991,7 +30995,8 @@ function olInit() {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
             textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            textReplay.drawText(geometry, feature);
+            // textReplay.drawText(geometry, feature);            
+            textReplay.startIndicesFeature.push(feature);
         }
     };
 
@@ -31045,7 +31050,8 @@ function olInit() {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
             textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
-            textReplay.drawText(geometry, feature);
+            // textReplay.drawText(geometry, feature);            
+            textReplay.startIndicesFeature.push(feature);
         }
     };
 
@@ -68823,7 +68829,7 @@ function olInit() {
         ends.unshift(0);
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
         if(multiLineStringGeometry.properties_.class === 'rail' && multiLineStringGeometry.styleId.includes('c')){
-            console.log('railway')
+            // console.log('railway')
         }
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
@@ -71331,19 +71337,6 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
-        var type  = geometry.getType();
-        if(type === 'MultiLineString'){
-            var ends = geometry.getEnds();
-            for(var k = 0; k < ends.length; k++){
-                var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
-                var newFeature = new ol.render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
-                this.drawText(newFeature.getGeometry(), newFeature);
-            }
-
-            return;
-        }
-
-        this.text_ = feature.text_ || this.text_;        
         if (this.text_) {
             this.tmpVertices = this.vertices.slice(0);
             this.tmpIndices = this.indices.slice(0);
@@ -71380,7 +71373,7 @@ function olInit() {
                 default:
             }
             
-            var resolution = map.frameState_.currentResolution;
+            var resolution = map.frameState_.currentResolution / map.frameState_.pixelRatio;
             var type  = geometry.getType();
             var lines = this.text_.split('\n');
             var pathLength;
@@ -71391,12 +71384,11 @@ function olInit() {
                     window.tests = 0;
                 }
                 // if(!this.text_.includes('Woodall')){
-                    if(!(this.text_.includes('Tom Landry Freeway') || this.text_.includes('North Beckley Avenu'))){
-                // if(!this.text_.includes('North Beckley Avenu')){
+                if(!this.text_.includes('Ross Avenue')){
                     // return
                 }
 
-                if(window.tests != 2){
+                if(window.tests !== 3){
                     window.tests += 1;
                     // return;
                 }
@@ -71531,11 +71523,7 @@ function olInit() {
             }           
 
             if(this.renderDeclutter_(this.extent, feature)){
-                if(!this.vertices_){
-                    feature.text_ = this.text_;
-                    this.startIndices.push(this.indices.length);
-                    this.startIndicesFeature.push(feature);
-                }
+                this.startIndices.push(this.indices.length);
                 this.indices = this.tmpIndices.slice(0);
                 this.vertices = this.tmpVertices.slice(0);
                 this.groupIndices = this.tmpGroupIndices.slice(0);
@@ -71650,15 +71638,15 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.finish = function (context) {
         var gl = context.getGL();
-
+        
         this.groupIndices.push(this.indices.length);
         this.hitDetectionGroupIndices = this.groupIndices;
 
         // create, bind, and populate the vertices buffer
-        this.verticesBuffer = new ol.webgl.Buffer(this.vertices.slice(0));
+        this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(this.indices.slice(0));
+        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
@@ -71687,10 +71675,6 @@ function olInit() {
         // this.atlases_ = {};
         // this.currAtlas_ = undefined;
 
-        // record for resolution replacement
-        this.vertices_ = this.vertices.slice(0);
-        this.vertices.length = 0;
-        this.indices.length = 0;
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -102583,16 +102567,6 @@ function olInit() {
             var pixelToCoordinateTransform=messageData[13]
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-
-            // if((window).count == undefined){
-            //     (window).count = 0;
-            // }
-            // if((window).count != 1){
-            //     (window).count += 1;
-            //     return;
-            // }
-            // (window).count += 1;
-
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
@@ -102657,9 +102631,10 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            if(requestTileCoord.toString() !== "2,0,-2"){
+            // if(requestTileCoord.toString() !== "2,0,-2"){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
-            // if(tileCoord.toString() !== "15,7573,-13222"){
+            // if(tileCoord.toString() !== "15,7572,-13223"){
+            if(tileCoord.toString() !== "15,7563,-13209" && tileCoord.toString() !== "15,7564,-13209" ){
                 // return
             }
             // TEST END

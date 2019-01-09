@@ -32,7 +32,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let extent = frameState.extent;
         // update for webgl
         // let extent = (<any>ol.extent).buffer(frameState.extent,
-        //     tileLayer.getRenderBuffer() * viewResolution);
+        //     tileLayer.getRenderBuffer() * viewResolution);       
 
         if (layerState.extent !== undefined) {
             extent = ol.extent.getIntersection(extent, layerState.extent);
@@ -131,7 +131,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 }
             }
         }
-    //    console.log(tilesToDrawByZ);
+        //    console.log(tilesToDrawByZ);
 
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
@@ -174,6 +174,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             });            
+
+            if(!frameState.isZoom){
+                // zs = zs.reverse().slice(0, 1);
+            }
 
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
@@ -247,7 +251,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             // (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
         }
         if (declutterReplays) {
-            // this.declutterTree_.clear();
+            this.declutterTree_.clear();
         }
         let tiles = this.renderedTiles;
         let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
@@ -404,7 +408,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             else {
                 var replayGroup = new ReplayGroupCustom(
                     0, sharedExtent, layer.getRenderBuffer(), this.declutterTree_);
-                    
                 // let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
                 let squaredTolerance = (<any>ol).renderer.vector.getSquaredTolerance(resolution, pixelRatio);
                 let strategyTree = (<any>ol).ext.rbush(9);

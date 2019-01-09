@@ -9077,7 +9077,7 @@ function olInit() {
                         (document.createElement('CANVAS'));
                     var gl=canvas.getContext('webgl');
                     if (gl) {
-                        gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
+                        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
                         // gl.clearColor(1.0,0.0,0.0,1.0)
                         ol.webglContext={canvas:canvas,gl:gl};
                         hasWebGL = true;
@@ -12648,7 +12648,9 @@ function olInit() {
         for (j = offset; j < end; j += stride) {
             // fix the coordinates that out of extent                    
             if(properties && extent){
-                if(properties.layerName.includes('country') && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
+                // var filter = properties.layerName.includes('landcover') || properties.layerName.includes('country');
+                var filter = properties.layerName.includes('country');
+                if(filter && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
                     if(flatCoordinates[j] < extent[0]){
                         flatCoordinates[j] =  extent[0];
                     }else if(flatCoordinates[j] > extent[2]){
@@ -16193,6 +16195,7 @@ function olInit() {
                         this.set(ol.ViewProperty.CENTER,
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
+                    this.isZoom = true;
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
@@ -21392,6 +21395,7 @@ function olInit() {
         if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
+            view.isZoom = false;
             this.lastCentroid = null;
             if (!this.handlingDownUpSequence) {
                 view.setHint(ol.ViewHint.INTERACTING, 1);
@@ -26673,7 +26677,7 @@ function olInit() {
             // context.clearRect(0, 0, width, height);
         }
 
-        gl.clearColor(0.6666666666666666,0.7764705882352941,0.9333333333333333,1);
+        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
         // gl.enable(gl.BLEND);
 
@@ -71376,7 +71380,7 @@ function olInit() {
                 default:
             }
             
-            var resolution = map.frameState_.currentResolution;
+            var resolution = map.frameState_.currentResolution / map.frameState_.pixelRatio;
             var type  = geometry.getType();
             var lines = this.text_.split('\n');
             var pathLength;
@@ -71387,12 +71391,11 @@ function olInit() {
                     window.tests = 0;
                 }
                 // if(!this.text_.includes('Woodall')){
-                    if(!(this.text_.includes('Tom Landry Freeway') || this.text_.includes('North Beckley Avenu'))){
-                // if(!this.text_.includes('North Beckley Avenu')){
+                if(!this.text_.includes('Ross Avenue')){
                     // return
                 }
 
-                if(window.tests != 2){
+                if(window.tests !== 3){
                     window.tests += 1;
                     // return;
                 }
@@ -71402,7 +71405,7 @@ function olInit() {
             feature.isCurve = false;           
             var i, ii, j, jj, currX, currY, charArr, charInfo; 
             var glyphAtlas = this.currAtlas_;            
-            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;                   
        
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 var textSize = this.getTextSize_([lines[i]]);
@@ -102579,16 +102582,6 @@ function olInit() {
             var pixelToCoordinateTransform=messageData[13]
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-
-            // if((window).count == undefined){
-            //     (window).count = 0;
-            // }
-            // if((window).count != 1){
-            //     (window).count += 1;
-            //     return;
-            // }
-            // (window).count += 1;
-
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
@@ -102653,9 +102646,9 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(requestTileCoord.toString() !== "2,2,-3"){
-            if(requestTileCoord.toString() !== "14,3786,-6612"){
-            // if(tileCoord.toString() !== "15,7573,-13222"){
+            // if(requestTileCoord.toString() !== "2,0,-2"){
+            // if(requestTileCoord.toString() !== "14,3786,-6612"){
+            if(tileCoord.toString() !== "15,7572,-13223"){
                 // return
             }
             // TEST END
@@ -102731,8 +102724,29 @@ function olInit() {
             // replayGroup.finish();
             strategyTree.clear();
 
-            // var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
+            //         //serilize
+            // for (var zIndex in replayGroup.replaysByZIndex_) {
+            //     var replays = replayGroup.replaysByZIndex_[zIndex];
+               
+            //     for (var replayType in replays) {                    
+            //         var replay = replays[replayType];
+            //         var indicesBuffers = new ArrayBuffer(replay.indices.length * 4);
+            //         var indicesView = new Int32Array(indicesBuffers);
+            //         for (var i = 0; i < indicesView.length; i++) {
+            //             indicesView[i] = replay.indices[i];
+            //         }
+            //         replayGroup.replaysByZIndex_[zIndex][replayType]['indices'] = indicesBuffers;
 
+            //         var verticesBuffers = new ArrayBuffer(replay.vertices.length * 4);
+            //         var verticesView = new Int32Array(verticesBuffers);
+            //         for (var i = 0; i < verticesView.length; i++) {
+            //             verticesView[i] = replay.vertices[i];
+            //         }
+            //         replayGroup.replaysByZIndex_[zIndex][replayType]['vertices'] = verticesBuffers;
+            //     }
+            // }
+
+            // var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
             // var transform = ol.transform.create();
             // ol.transform.scale(transform, pixelScale, -pixelScale);
             // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);

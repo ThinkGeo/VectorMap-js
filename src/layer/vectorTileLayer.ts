@@ -727,29 +727,30 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
 
             // recalculate the verctices of text for resolution changed                 
-            if(this instanceof (<any>ol).render.webgl.TextReplay && !Number.isInteger(frameState.viewState.zoom)){
+            if(this instanceof (<any>ol).render.webgl.TextReplay){
                 var startIndicesFeature = this.startIndicesFeature;
-                this.declutterTree.clear();
-
+                this.indices.length = 0;
+                this.vertices.length = 0;
+                this.groupIndices.length = 0;
+                this.images_.length = 0;
+                
                 for(var i = 0; i < startIndicesFeature.length; i++){
                     var feature = startIndicesFeature[i];
                     var geometry = feature.getGeometry();
-                    var type = feature.getType();
-                    if(!this.label && type == 'LineString' || type == 'MultiLineString'){
+                    var type = feature.getType();   
+                                     
+                    if(type == 'MultiLineString'){
+                        var ends = geometry.getEnds();
+                        for(var k = 0; k < ends.length; k++){
+                            var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                            var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                            this.drawText(newFeature.getGeometry(), newFeature);
+                        }
+                    }else{
                         this.drawText(geometry, feature);
-                        var startIndices = this.startIndices;
-                        var start = startIndices[i] / 6 * 32;
-                        var num = this.vertices.length;
-                        // replace the indices and vertices
-                        this.vertices_.splice(start, num, ...this.vertices);
-                        this.vertices.length = 0;
                     }
                 }
-
-                if(this.indices.length > 0){                        
-                    this.verticesBuffer = new (<any>ol).webgl.Buffer(this.vertices_);
-                    this.indices.length = 0;
-                }
+                this.finish(context);                
             }
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
