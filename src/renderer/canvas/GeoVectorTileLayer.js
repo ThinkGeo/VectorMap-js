@@ -430,7 +430,6 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                 let geoStyle = geoStyles[geoStyleId];
 
                                 let feature = features[mainDrawingInstructs[i][0]];
-                                feature["tempTreeZindex"] = mainDrawingInstructs[i][2];
                                 render.call(rendererSelf, feature, geoStyle, { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
@@ -440,7 +439,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                 let workerReplay = replaysByZIndex[zindex][replayType];
                                 let replay = replayGroup.getReplay(zindex, replayType);
 
-                                if (!layer.minimalist && workerReplay.instructions) {
+                                if (workerReplay["instructions"]) {
                                     for (let i = 0; i < workerReplay["instructions"].length; i++) {
                                         let instruction = workerReplay["instructions"][i];
                                         if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
@@ -449,14 +448,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                         }
                                     }
                                 }
-                                for (var key in workerReplay) {
-                                    if (key === "pixelCoordinates_") {
-                                        replay[key] = new Int32Array(workerReplay[key]);
-                                    }
-                                    else {
-                                        replay[key] = workerReplay[key];
-                                    }
-                                }
+                                replay["instructions"] = workerReplay["instructions"];
+                                replay["coordinates"] = workerReplay["coordinates"];
                             }
                         }
 
@@ -562,8 +555,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         else {
                             for (let i = 0, ii = instructs.length; i < ii; ++i) {
                                 const featureIndex = instructs[i][0];
-                                let feature = features[featureIndex];
-                                feature["tempTreeZindex"] = instructs[i][2];
+                                const feature = features[featureIndex];
+
                                 let geoStyle = instructs[i][1];
 
                                 if (reproject && !feature["projected"]) {
@@ -674,7 +667,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                     tiles[zoom][tile.tileCoord.toString()] = tile;
                 }
-                return source.forEachLoadedTile(projection, zoom, tileRange, callback, layer);
+                return source.forEachLoadedTile(projection, zoom, tileRange, callback,layer);
             }
         );
     }
