@@ -465,6 +465,7 @@ self.createApplyTileInstructions = function (features, formatId, vectorImageTile
     for (var pbfLayerName in zoomMatchedGeoStylesGroupByLayerId) {
         let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[pbfLayerName];
         if (cacheTrees && cacheTrees.length > 0) {
+            self.replaceFiltersToIndexOfPbfLayer(cacheTrees, pbfLayer);
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
                 if (feature.get(this.layerName) === pbfLayerName) {
@@ -582,6 +583,31 @@ self.createApplyTileInstructions = function (features, formatId, vectorImageTile
     return [outputFeatures, instructs]
 }
 
+self.replaceFiltersToIndexOfPbfLayer = function (cacheTrees, pbfLayer) {
+    for (var i = 0, ii = cacheTrees.length; i < ii; i++) {
+        var cacheTree = cacheTrees[i];
+        self.replaceCacheItemFiltersToIndexOfPbfLayer(cacheTree.root, pbfLayer);
+    }
+}
+
+self.replaceCacheItemFiltersToIndexOfPbfLayer = function (node, pbfLayer) {
+    var data = node.data;
+    for (var i = 0; i < data.filterGroup.length; i++) {
+        var filters = data.filterGroup[i];
+        var geoFilter;
+        for (var j = 0; j < filters.length; j++) {
+            geoFilter = filters[j];
+            geoFilter.replaceVaulesToPbfIndex(pbfLayer);
+        }
+    }
+
+    if (node.children) {
+        for (var i = 0, ii = node.children.length; i < ii; i++) {
+            replaceCacheItemFiltersToIndexOfPbfLayer(node.children[i], pbfLayer);
+        }
+    }
+}
+
 self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
     if (!styles) {
         return false;
@@ -683,6 +709,7 @@ self.readFeaturesAndInstructions = function (source, zoom, formatId, tileCoord, 
 
         let cacheTrees = zoomMatchedGeoStylesGroupByLayerId[name];
         if (cacheTrees && cacheTrees.length > 0) {
+            self.replaceFiltersToIndexOfPbfLayer(cacheTrees, pbfLayer);
             for (let i = 0; i < pbfLayer.length; i++) {
                 const rawFeature = readRawFeature(pbf, pbfLayer, i);
                 let feature;
@@ -840,7 +867,8 @@ function readRawFeature(pbf, layer, i) {
     const feature = {
         layer: layer,
         type: 0,
-        properties: {}
+        properties: {},
+        propertiesIndex: {}
     };
     pbf.readFields(featurePBFReader, feature, end);
     return feature;
@@ -851,8 +879,12 @@ function featurePBFReader(tag, feature, pbf) {
     } else if (tag == 2) {
         const end = pbf.readVarint() + pbf.pos;
         while (pbf.pos < end) {
-            const key = feature.layer.keys[pbf.readVarint()];
-            const value = feature.layer.values[pbf.readVarint()];
+            var key = pbf.readVarint();
+            var value = pbf.readVarint();
+            feature.propertiesIndex[key] = value;
+
+            key = feature.layer.keys[key];
+            value = feature.layer.values[value];
             feature.properties[key] = value;
         }
     } else if (tag == 3) {
