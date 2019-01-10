@@ -439,7 +439,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                 let workerReplay = replaysByZIndex[zindex][replayType];
                                 let replay = replayGroup.getReplay(zindex, replayType);
 
-                                if (workerReplay["instructions"]) {
+                                if (!layer.minimalist && workerReplay.instructions) {
                                     for (let i = 0; i < workerReplay["instructions"].length; i++) {
                                         let instruction = workerReplay["instructions"][i];
                                         if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
@@ -448,8 +448,14 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                         }
                                     }
                                 }
-                                replay["instructions"] = workerReplay["instructions"];
-                                replay["coordinates"] = workerReplay["coordinates"];
+                                for (var key in workerReplay) {
+                                    if (key === "pixelCoordinates_") {
+                                        replay[key] = new Int32Array(workerReplay[key]);
+                                    }
+                                    else {
+                                        replay[key] = workerReplay[key];
+                                    }
+                                }
                             }
                         }
 
@@ -667,7 +673,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                     }
                     tiles[zoom][tile.tileCoord.toString()] = tile;
                 }
-                return source.forEachLoadedTile(projection, zoom, tileRange, callback,layer);
+                return source.forEachLoadedTile(projection, zoom, tileRange, callback, layer);
             }
         );
     }

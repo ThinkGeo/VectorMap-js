@@ -7,6 +7,8 @@ import CanvasImageReplay from '../../ol/render/canvas/ImageReplay.js';
 import CanvasLineStringReplay from '../../ol/render/canvas/LineStringReplay.js';
 import CanvasPolygonReplay from '../../ol/render/canvas/PolygonReplay.js';
 import GeoCanvasTextReplay from './GeoTextReplay';
+import CanvasInstruction from '../../ol/render/canvas/Instruction';
+
 
 const BATCH_CONSTRUCTORS = {
     'Circle': CanvasPolygonReplay,
@@ -25,7 +27,8 @@ class GeoCanvasReplayGroup extends CanvasReplayGroup {
         pixelRatio,
         overlaps,
         declutterTree,
-        opt_renderBuffer) {
+        opt_renderBuffer,
+        minimalist) {
         super(tolerance,
             maxExtent,
             resolution,
@@ -33,6 +36,7 @@ class GeoCanvasReplayGroup extends CanvasReplayGroup {
             overlaps,
             declutterTree,
             opt_renderBuffer)
+        this.minimalist = minimalist;
     }
 
     getReplay(zIndex, replayType) {
@@ -47,6 +51,30 @@ class GeoCanvasReplayGroup extends CanvasReplayGroup {
             const Constructor = BATCH_CONSTRUCTORS[replayType];
             replay = new Constructor(this.tolerance_, this.maxExtent_,
                 this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
+            replay.minimalist = this.minimalist;
+            replay.beginGeometry = function (geometry, feature) {
+                this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
+                if (!this.minimalist) {
+                    this.instructions.push(this.beginGeometryInstruction1_);
+                }
+                this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
+                if (!this.minimalist) {
+                    this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
+                }
+            };
+
+            replay.endGeometry = function (geometry, feature) {
+                this.beginGeometryInstruction1_[2] = this.instructions.length;
+                this.beginGeometryInstruction1_ = null;
+                this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
+                this.beginGeometryInstruction2_ = null;
+                var endGeometryInstruction = [CanvasInstruction.END_GEOMETRY, feature];
+                if (!this.minimalist) {
+                    this.instructions.push(endGeometryInstruction);
+                    this.hitDetectionInstructions.push(endGeometryInstruction);
+                }
+            };
+
             replays[replayType] = replay;
         }
         return replay;

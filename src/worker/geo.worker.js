@@ -19,7 +19,8 @@ import { renderFeature } from '../renderer/vector';
 import { intersects } from '../ol/extent';
 import GeoLineStyle from "../style/geoLineStyle";
 import Instruction from '../ol/render/canvas/Instruction';
-
+import { create as transformCreate, scale as transformScale, translate as transformTranslate } from '../ol/transform';
+import { transform2D } from '../ol/geom/flat/transform';
 
 self.styleJsonCache = {};
 self.vectorTilesData = {};
@@ -251,7 +252,6 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
     let features = tileFeatureAndInstrictions[0];
     let instructs = tileFeatureAndInstrictions[1];
-    let strategyTree = rbush(9);
 
     let tileProjection = new Projection({
         code: 'EPSG:3857',
@@ -270,7 +270,8 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
 
     let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
-        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
+        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6],minimalist);
+    var strategyTree = rbush(9);
 
     let drawingFeatures = {};
     let mainDrawingInstructs = [];
@@ -326,8 +327,15 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
         }
     }
     replayGroup.finish();
-    var resultData = {
-    };
+    strategyTree.clear();
+
+    var pixelScale = pixelRatio / resolution;
+    var transform = transformCreate();
+    transformScale(transform, pixelScale, -pixelScale);
+    transformTranslate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
+
+    var resultData = {};
+    var postPixelCoordinates_ = [];
 
     for (var zIndex in replayGroup.replaysByZIndex_) {
         var replays = replayGroup.replaysByZIndex_[zIndex];
@@ -339,20 +347,45 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 resultData[zIndex][replayType] = {};
             }
             var replay = replays[replayType];
-            resultData[zIndex][replayType]["instructions"] = [];
-            for (let i = 0; i < replay.instructions.length; i++) {
-                let instruction = replay.instructions[i];
-                if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
-                    let feature = instruction[1];
-                    instruction[1] = getUid(feature);
+
+            if (!replay.minimalist) {
+                resultData[zIndex][replayType]["instructions"] = [];
+                for (let i = 0; i < replay.instructions.length; i++) {
+                    let instruction = replay.instructions[i];
+                    if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                        let feature = instruction[1];
+                        instruction[1] = getUid(feature);
+                    }
+                    resultData[zIndex][replayType]["instructions"].push(instruction);
                 }
-                resultData[zIndex][replayType]["instructions"].push(instruction);
+                resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+                replay.coordinates.length = 0;
+                replay.instructions.length = 0;
             }
-            resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-            replay.coordinates.length = 0;
-            replay.instructions.length = 0;
+            else {
+                resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+
+                replay.renderedTransform_ = transform;
+                resultData[zIndex][replayType]["renderedTransform_"] = transform.slice(0);
+                if (!replay.pixelCoordinates_) {
+                    replay.pixelCoordinates_ = [];
+                }
+                transform2D(replay.coordinates, 0, replay.coordinates.length, 2, transform, replay.pixelCoordinates_);
+                var buffers = new ArrayBuffer(replay.pixelCoordinates_.length * 4);
+                var view = new Int32Array(buffers);
+                for (var i = 0; i < view.length; i++) {
+                    view[i] = replay.pixelCoordinates_[i];
+                }
+                resultData[zIndex][replayType]["pixelCoordinates_"] = buffers;
+                postPixelCoordinates_ = postPixelCoordinates_.concat(buffers);
+                replay.instructions.length = 0;
+                replay.hitDetectionInstructions.length = 0;
+                replay.coordinates.length = 0;
+                replay.pixelCoordinates_.length = 0;
+            }
         }
     }
+    transform.length = 0;
 
     return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
 }
