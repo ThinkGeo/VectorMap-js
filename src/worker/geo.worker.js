@@ -270,23 +270,23 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
 
     let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
-        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6],minimalist);
+        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], minimalist);
     var strategyTree = rbush(9);
 
     let drawingFeatures = {};
     let mainDrawingInstructs = [];
-    const render = function (feature, geostyle) {
+    const render = function (feature, geostyle, options, instruct) {
         let styles;
         if (geostyle) {
             if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
                 drawingFeatures[getUid(feature)] = feature;
-                mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                mainDrawingInstructs.push([getUid(feature), geostyle.id, instruct[2]]);
             }
             else {
-                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                let ol4Styles = geostyle.getStyles(feature, resolution, options);
                 if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
                     drawingFeatures[getUid(feature)] = feature;
-                    mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                    mainDrawingInstructs.push([getUid(feature), geostyle.id, instruct[2]]);
                 }
                 else {
                     if (styles === undefined) {
@@ -323,7 +323,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             featureInfo["projected"] = true;
         }
         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-            render(feature, geoStyle);
+            render(feature, geoStyle, { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform } }, instructs[i]);
         }
     }
     replayGroup.finish();

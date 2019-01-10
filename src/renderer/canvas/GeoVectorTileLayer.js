@@ -430,6 +430,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                 let geoStyle = geoStyles[geoStyleId];
 
                                 let feature = features[mainDrawingInstructs[i][0]];
+                                feature["tempTreeZindex"] = mainDrawingInstructs[i][2];
                                 render.call(rendererSelf, feature, geoStyle, { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
@@ -561,8 +562,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                         else {
                             for (let i = 0, ii = instructs.length; i < ii; ++i) {
                                 const featureIndex = instructs[i][0];
-                                const feature = features[featureIndex];
-
+                                let feature = features[featureIndex];
+                                feature["tempTreeZindex"] = instructs[i][2];
                                 let geoStyle = instructs[i][1];
 
                                 if (reproject && !feature["projected"]) {
