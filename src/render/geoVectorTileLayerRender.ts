@@ -124,8 +124,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 if (childTileRange) {
                     covered = findLoadedTiles((z + 1), childTileRange);
                 }
-
-                if (!covered) {
+                // FIXME frameState.isZoom
+                if (!covered && frameState.isZoom) {
                     tileGrid.forEachTileCoordParentTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
                 }
@@ -173,11 +173,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 } else {
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
-            });            
-
-            if(!frameState.isZoom){
-                // zs = zs.reverse().slice(0, 1);
-            }
+            }); 
 
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;

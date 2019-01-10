@@ -755,9 +755,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.drawText(newFeature.getGeometry(), newFeature);
                         }
                     }else{
+                        // FIXME 
                         if(this instanceof (<any>ol).render.webgl.ImageReplay){
-                            this.setImageStyle(style);
-                            this.drawPoint(geometry, feature);
+                            // this.setImageStyle(style);
+                            // this.drawPoint(geometry, feature);
                         }else{
                             this.setTextStyle(style);
                             this.drawText(geometry, feature);
