@@ -274,18 +274,18 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
     let drawingFeatures = {};
     let mainDrawingInstructs = [];
-    const render = function (feature, geostyle) {
+    let render = function (feature, geostyle, treeZIndex) {
         let styles;
         if (geostyle) {
             if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
                 drawingFeatures[getUid(feature)] = feature;
-                mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                mainDrawingInstructs.push([getUid(feature), geostyle.id, treeZIndex]);
             }
             else {
                 let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
                 if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
                     drawingFeatures[getUid(feature)] = feature;
-                    mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                    mainDrawingInstructs.push([getUid(feature), geostyle.id, treeZIndex]);
                 }
                 else {
                     if (styles === undefined) {
@@ -322,10 +322,12 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             featureInfo["projected"] = true;
         }
         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-            render(feature, geoStyle);
+            render(feature, geoStyle, instructs[i][2]);
         }
     }
     replayGroup.finish();
+    strategyTree.clear();
+
     var resultData = {
     };
 
