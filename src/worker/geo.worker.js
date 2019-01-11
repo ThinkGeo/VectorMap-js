@@ -40,7 +40,6 @@ self.onmessage = function (msg) {
     if (method) {
         var resultMessageData = method(messageData, methodInfo);
         if (resultMessageData) {
-
             var postMessageData = {
                 methodInfo: methodInfo,
                 messageData: resultMessageData,
@@ -50,6 +49,7 @@ self.onmessage = function (msg) {
             }
 
             postMessage(postMessageData);
+
             postMessageData = undefined;
         }
     }
@@ -341,6 +341,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 resultData[zIndex][replayType] = {};
             }
             var replay = replays[replayType];
+            // Formats instructions
             resultData[zIndex][replayType]["instructions"] = [];
             for (let i = 0; i < replay.instructions.length; i++) {
                 let instruction = replay.instructions[i];
@@ -350,7 +351,15 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 }
                 resultData[zIndex][replayType]["instructions"].push(instruction);
             }
-            resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+
+            // Formats coordinates
+            var buffers = new ArrayBuffer(replay.coordinates.length * 4);
+            var view = new Float32Array(buffers);
+            for (var i = 0; i < view.length; i++) {
+                view[i] = replay.coordinates[i];
+            }
+            resultData[zIndex][replayType]["coordinates"] = buffers;
+
             replay.coordinates.length = 0;
             replay.instructions.length = 0;
         }

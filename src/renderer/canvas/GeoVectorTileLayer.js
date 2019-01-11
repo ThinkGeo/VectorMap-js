@@ -450,7 +450,8 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                     }
                                 }
                                 replay["instructions"] = workerReplay["instructions"];
-                                replay["coordinates"] = workerReplay["coordinates"];
+
+                                replay["coordinates"] = new Float32Array(workerReplay["coordinates"]);
                             }
                         }
 
