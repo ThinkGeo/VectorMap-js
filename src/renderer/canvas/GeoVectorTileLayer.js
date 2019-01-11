@@ -365,7 +365,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
 
                 replayState.dirty = false;
                 const replayGroup = new GeoCanvasReplayGroup(0, sharedExtent, resolution,
-                    pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
+                    pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer(), layer.minimalist);
                 let replayGroupInfo = [0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer()];
 
                 const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
@@ -440,7 +440,7 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                 let workerReplay = replaysByZIndex[zindex][replayType];
                                 let replay = replayGroup.getReplay(zindex, replayType);
 
-                                if (workerReplay["instructions"]) {
+                                if (!layer.minimalist && workerReplay["instructions"]) {
                                     for (let i = 0; i < workerReplay["instructions"].length; i++) {
                                         let instruction = workerReplay["instructions"][i];
                                         if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
@@ -449,8 +449,17 @@ class GeoCanvasVectorTileLayerRenderer extends CanvasVectorTileLayerRenderer {
                                         }
                                     }
                                 }
+                                if (!layer.minimalist && workerReplay["hitDetectionInstructions"]) {
+                                    for (let i = 0; i < workerReplay["hitDetectionInstructions"].length; i++) {
+                                        let instruction = workerReplay["hitDetectionInstructions"][i];
+                                        if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                                            let featureId = instruction[1];
+                                            instruction[1] = features[featureId];
+                                        }
+                                    }
+                                    replay["hitDetectionInstructions"] = workerReplay["hitDetectionInstructions"];
+                                }
                                 replay["instructions"] = workerReplay["instructions"];
-
                                 replay["coordinates"] = new Float32Array(workerReplay["coordinates"]);
                             }
                         }

@@ -270,7 +270,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
 
     let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
-        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
+        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], minimalist);
 
     let drawingFeatures = {};
     let mainDrawingInstructs = [];
@@ -341,15 +341,30 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 resultData[zIndex][replayType] = {};
             }
             var replay = replays[replayType];
+
             // Formats instructions
-            resultData[zIndex][replayType]["instructions"] = [];
-            for (let i = 0; i < replay.instructions.length; i++) {
-                let instruction = replay.instructions[i];
-                if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
-                    let feature = instruction[1];
-                    instruction[1] = getUid(feature);
+            if (!minimalist) {
+                resultData[zIndex][replayType]["instructions"] = [];
+                for (let i = 0; i < replay.instructions.length; i++) {
+                    let instruction = replay.instructions[i];
+                    if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                        let feature = instruction[1];
+                        instruction[1] = getUid(feature);
+                    }
+                    resultData[zIndex][replayType]["instructions"].push(instruction);
                 }
-                resultData[zIndex][replayType]["instructions"].push(instruction);
+                resultData[zIndex][replayType]["hitDetectionInstructions"] = [];
+                for (let i = 0; i < replay.hitDetectionInstructions.length; i++) {
+                    let instruction = replay.hitDetectionInstructions[i];
+                    if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                        let feature = instruction[1];
+                        instruction[1] = getUid(feature);
+                    }
+                    resultData[zIndex][replayType]["hitDetectionInstructions"].push(instruction);
+                }
+            }
+            else {
+                resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
             }
 
             // Formats coordinates
@@ -360,6 +375,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             }
             resultData[zIndex][replayType]["coordinates"] = buffers;
 
+            replay.hitDetectionInstructions.length = 0;
             replay.coordinates.length = 0;
             replay.instructions.length = 0;
         }
