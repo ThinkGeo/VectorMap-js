@@ -4107,7 +4107,36 @@ var light =
                 "styles": [
                     "country",
                     "urban",
-                    "landcover", "water", "waterway", "building", "country_boundary", "province_boundary", "aeroway", "road", "railway", "place_popular", "place_others", "poi_icon", "country_name", "state_name", "marine_name", "poi_text", "road_number", "motorway_name", "trunk_name", "primary_name", "secondary_name", "tertiary_name", "residential_name", "pedestrian_name", "otherroad_name", "road_oneway", "water_name", "waterway_name", "building_name", "housenumber"
+                    "landcover",
+                    "water",
+                    "waterway",
+                    "building",
+                    "country_boundary",
+                    "province_boundary",
+                    "aeroway",
+                    "road",
+                    "railway",
+                    "place_popular",
+                    "place_others",
+                    "poi_icon",
+                    "country_name",
+                    "state_name",
+                    "marine_name",
+                    "poi_text",
+                    "road_number",
+                    "motorway_name",
+                    "trunk_name",
+                    "primary_name",
+                    "secondary_name",
+                    "tertiary_name",
+                    "residential_name",
+                    "pedestrian_name",
+                    "otherroad_name",
+                    "road_oneway",
+                    "water_name",
+                    "waterway_name",
+                    "building_name",
+                    "housenumber"
                 ]
             }
         ]
