@@ -16,7 +16,7 @@ class GeoStringAttributeFilter extends GeoFilter {
     matchFeatureCore(feature, zoom) {
         let currentValue;
         let currentExpectedValues;
-        if (this.replacedValueToIndex) {
+        if (this.replacedValueToIndex && feature.propertiesIndex) {
             currentValue = feature.propertiesIndex[this.keyIndex];
             currentExpectedValues = this.expectedValueIndexs;
         }
@@ -27,6 +27,7 @@ class GeoStringAttributeFilter extends GeoFilter {
             else {
                 currentValue = feature.get(this.key)
             }
+            currentValue = "" + currentValue;
             currentExpectedValues = this.expectedValues;
         }
 
