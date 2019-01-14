@@ -97,13 +97,14 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                 if (replay !== undefined) {
                     if (opt_declutterReplays &&
                         (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
-                        let declutter = opt_declutterReplays[zIndexKey];
+                            let declutter = opt_declutterReplays[zIndexKey];
                         if (!declutter) {
                             opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
                         } else {
                             declutter.push(replay, transform.slice(0));
                         }
                     } else {
+                        replay.zIndex = zs[i];
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }

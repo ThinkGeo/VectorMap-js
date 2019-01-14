@@ -102,7 +102,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
                         } else {
                             declutter.push(replay, transform.slice(0));
                         }
-                    } else {
+                    } else {                        
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }

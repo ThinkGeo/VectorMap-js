@@ -793,7 +793,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
             gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-            gl.uniform1f(locations.u_opacity, opacity);            
+            gl.uniform1f(locations.u_opacity, opacity); 
+            
+            // FIXME replace this temp solution with text calculation in worker
+            if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
+                this.zIndex = Infinity;
+            }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
+                this.zIndex = 200;
+            }            
+
+            gl.uniform1f(locations.u_zIndex, (0.1 / this.zIndex));            
 
             // draw!
             var result;
