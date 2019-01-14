@@ -383,10 +383,10 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                                 for (let d = 0; d < declutterGroups.length; d++) {
                                     let targetDeclutterGroup = declutterGroups[d];
                                     if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
-                                        let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
-                                        if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
-                                            this.renderDeclutterChar_(targetDeclutterGroup, feature);
-                                        }
+                                        // let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
+                                        // if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
+                                        this.renderDeclutterChar_(targetDeclutterGroup, feature);
+                                        // }
                                     }
                                 }
                             }
