@@ -40,6 +40,10 @@ self.onmessage = function (msg) {
     if (method) {
         var resultMessageData = method(messageData, methodInfo);
         if (resultMessageData) {
+            let transferableObjects = resultMessageData.transferableObjects;
+            if (transferableObjects) {
+                delete resultMessageData.transferableObjects;
+            }
             var postMessageData = {
                 methodInfo: methodInfo,
                 messageData: resultMessageData,
@@ -48,7 +52,7 @@ self.onmessage = function (msg) {
                 }
             }
 
-            postMessage(postMessageData);
+            postMessage(postMessageData, transferableObjects);
 
             postMessageData = undefined;
         }
@@ -330,6 +334,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
 
     var resultData = {
     };
+    var transferableObjects = [];
 
     for (var zIndex in replayGroup.replaysByZIndex_) {
         var replays = replayGroup.replaysByZIndex_[zIndex];
@@ -368,20 +373,27 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             }
 
             // Formats coordinates
-            var buffers = new ArrayBuffer(replay.coordinates.length * 4);
-            var view = new Float32Array(buffers);
+            var view = new Float64Array(replay.coordinates.length);
             for (var i = 0; i < view.length; i++) {
                 view[i] = replay.coordinates[i];
             }
-            resultData[zIndex][replayType]["coordinates"] = buffers;
+            resultData[zIndex][replayType]["coordinates"] = view.buffer;
+            transferableObjects.push(view.buffer);
+
+            // Formats coordinates
+            // var buffers = new ArrayBuffer(replay.coordinates.length * 4);
+            // var view = new Float32Array(buffers);
+            // for (var i = 0; i < view.length; i++) {
+            //     view[i] = replay.coordinates[i];
+            // }
+            // resultData[zIndex][replayType]["coordinates"] = buffers;
 
             replay.hitDetectionInstructions.length = 0;
             replay.coordinates.length = 0;
             replay.instructions.length = 0;
         }
     }
-
-    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
+    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs, transferableObjects: transferableObjects };
 }
 
 self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
