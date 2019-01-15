@@ -772,7 +772,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
             var locations = this.setUpProgram(gl, context, size, pixelRatio);
-
+                
             // set the "uniform" values
             var projectionMatrix = (<any>ol).transform.reset(this.projectionMatrix_);
             (<any>ol).transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
@@ -797,12 +797,15 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             
             // FIXME replace this temp solution with text calculation in worker
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
-                this.zIndex = Infinity;
+                // this.zIndex = Infinity;
+                gl.uniform1f(locations.u_zIndex, 0);
             }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
-                this.zIndex = 200;
-            }            
-
-            gl.uniform1f(locations.u_zIndex, (0.1 / this.zIndex));            
+                // this.zIndex = 200;
+                gl.uniform1f(locations.u_zIndex, (0.1 / 200));
+            }else if(this instanceof (<any>ol).render.webgl.PolygonReplay){
+                this.u_zIndex = locations.u_zIndex;
+            }
+            // gl.uniform1f(locations.u_zIndex, (0.1 / this.zIndex));            
 
             // draw!
             var result;

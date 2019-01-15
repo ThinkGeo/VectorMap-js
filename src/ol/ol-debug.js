@@ -26554,7 +26554,7 @@ function olInit() {
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
         this.gl_.disable(ol.webgl.CULL_FACE);
-        this.gl_.disable(ol.webgl.DEPTH_TEST);
+        this.gl_.enable(ol.webgl.DEPTH_TEST);
         this.gl_.disable(ol.webgl.SCISSOR_TEST);
         this.gl_.disable(ol.webgl.STENCIL_TEST);
 
@@ -26681,7 +26681,7 @@ function olInit() {
 
         gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
         gl.enable(gl.BLEND);
-        gl.enable(gl.DEPTH_TEST);
+        // gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // gl.depthMask(true);
         // gl.depthFunc(gl.NOTEQUAL);
@@ -30975,7 +30975,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                3, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             // textReplay.drawText(geometry, feature);
             textReplay.startIndicesFeature.push(feature); 
@@ -30985,7 +30985,6 @@ function olInit() {
             textReplay.startIndicesStyle.push(textStyleClone); 
         }
     };
-
 
     /**
      * @param {ol.render.ReplayGroup} replayGroup Replay group.
@@ -31005,7 +31004,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                3, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             // textReplay.drawText(geometry, feature); 
             textReplay.startIndicesFeature.push(feature);
@@ -31056,8 +31055,9 @@ function olInit() {
             if (imageStyle.getImageState() != ol.ImageState.LOADED) {
                 return;
             }
+            // FIXME replace it with style.getZIndex()
             var imageReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.IMAGE);
+                1, ol.render.ReplayType.IMAGE);
             // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
             // imageReplay.drawPoint(geometry, feature);
             imageReplay.startIndicesFeature.push(feature);
@@ -31067,7 +31067,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                2, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
             // textReplay.drawText(geometry, feature);    
             textReplay.startIndicesFeature.push(feature);
@@ -31121,6 +31121,7 @@ function olInit() {
             var polygonReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.POLYGON); 
             polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
+            feature.zCoordinate = style.zCoordinate;
             polygonReplay.drawPolygon(geometry, feature);
         }
         var textStyle = style.getText();
@@ -66068,6 +66069,12 @@ function olInit() {
          * @type {?ol.webgl.Buffer}
          */
         this.verticesBuffer = null;
+        
+        /**
+         * @protected
+         * @type {Array.<number>}
+         */
+        this.zCoordinates = [];
 
         /**
          * Optional parameter for PolygonReplay instances.
@@ -69027,8 +69034,8 @@ function olInit() {
      */
     ol.render.webgl.LineStringReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
             // gl.enable(gl.DEPTH_TEST);
@@ -69047,7 +69054,6 @@ function olInit() {
                 nextStyle = this.styles_[i];
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                 this.drawElements(gl, context, start, end);
-                // gl.clear(gl.DEPTH_BUFFER_BIT);
                 end = start;
             }
         }
@@ -70498,6 +70504,7 @@ function olInit() {
                 this.startIndices.push(this.indices.length);
                 this.startIndicesFeature.push(feature);
                 if (this.state_.changed) {
+                    this.zCoordinates.push(feature.zCoordinate);
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
@@ -70604,8 +70611,8 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
         if (!hitDetection) {
             // gl.enable(gl.DEPTH_TEST);
             // gl.depthMask(true);
@@ -70621,6 +70628,7 @@ function olInit() {
             for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
+                gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
                 end = start;
@@ -98983,7 +98991,8 @@ function olInit() {
                         GeoAreaStyle.areaStyle.setStroke(undefined);
                     }
                     GeoAreaStyle.areaStyle.setGeometry(feature);                    
-                    GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
+                    GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
+                    // GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;

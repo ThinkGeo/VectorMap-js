@@ -125,7 +125,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     covered = findLoadedTiles((z + 1), childTileRange);
                 }
                 // FIXME frameState.isZoom
-                if (!covered && frameState.isZoom) {
+                if (!covered) {
+                    // if (!covered && frameState.isZoom) {
                     tileGrid.forEachTileCoordParentTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
                 }

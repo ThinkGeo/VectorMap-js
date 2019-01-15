@@ -12644,12 +12644,14 @@ function olInit() {
             // var topLeft = ol.extent.getTopLeft(extent);
             // var topRight = ol.extent.getTopRight(extent);
         }    
-
         for (j = offset; j < end; j += stride) {
             // fix the coordinates that out of extent                    
-            if(properties && extent){
+            if(false && properties && extent){
+                // FIXME this is a temp solution, and fix it using z coordinate with depth_test of webgl
+                var filter = properties.layerName.includes('country') || properties.layerName.includes('water');
+                // var filter = !properties.layerName.includes('building');
                 // var filter = properties.layerName.includes('landcover') || properties.layerName.includes('country');
-                var filter = properties.layerName.includes('country');
+                
                 if(filter && !ol.extent.containsXY(extent, flatCoordinates[j], flatCoordinates[j + 1])){
                     if(flatCoordinates[j] < extent[0]){
                         flatCoordinates[j] =  extent[0];
@@ -12698,6 +12700,7 @@ function olInit() {
                     // }              
                 // }
             }
+            
             dest[i++] = flatCoordinates[j] + deltaX;
             dest[i++] = flatCoordinates[j + 1] + deltaY;
 
@@ -26552,7 +26555,7 @@ function olInit() {
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
         this.gl_.disable(ol.webgl.CULL_FACE);
-        this.gl_.disable(ol.webgl.DEPTH_TEST);
+        this.gl_.enable(ol.webgl.DEPTH_TEST);
         this.gl_.disable(ol.webgl.SCISSOR_TEST);
         this.gl_.disable(ol.webgl.STENCIL_TEST);
 
@@ -26678,9 +26681,11 @@ function olInit() {
         }
 
         gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        // gl.enable(gl.BLEND);
-
+        gl.enable(gl.BLEND);
+        // gl.enable(gl.DEPTH_TEST);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // gl.depthMask(true);
+        // gl.depthFunc(gl.NOTEQUAL);
         // var rotation = frameState.viewState.rotation;
 
         this.calculateMatrices2D(frameState);
@@ -26709,6 +26714,14 @@ function olInit() {
                 layerRenderer.composeFrame(frameState, layerState, context);
             }
         }
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        
+        // gl.disable(gl.DEPTH_TEST);
+        // gl.clear(gl.DEPTH_BUFFER_BIT);
+        // Restore GL parameters.
+        // gl.depthMask(tmpDepthMask);
+        // gl.depthFunc(tmpDepthFunc);
 
         // if (rotation) {
             // context.restore();
@@ -30693,8 +30706,7 @@ function olInit() {
                         } else {
                             declutter.push(replay, transform.slice(0));
                         }
-                    } else {
-                        // console.log('replay')
+                    } else {                        
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }
@@ -30965,8 +30977,13 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            textReplay.drawText(geometry, feature);            
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            // textReplay.drawText(geometry, feature);
+            textReplay.startIndicesFeature.push(feature); 
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone); 
         }
     };
 
@@ -30990,8 +31007,13 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            textReplay.drawText(geometry, feature);
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            // textReplay.drawText(geometry, feature); 
+            textReplay.startIndicesFeature.push(feature);
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone);
         }
     };
 
@@ -31037,15 +31059,23 @@ function olInit() {
             }
             var imageReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.IMAGE);
-            imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
-            imageReplay.drawPoint(geometry, feature);
+            // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
+            // imageReplay.drawPoint(geometry, feature);
+            imageReplay.startIndicesFeature.push(feature);
+            var imageStyleClone = imageStyle.clone();
+            imageReplay.startIndicesStyle.push(imageStyleClone);
         }
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
-            textReplay.drawText(geometry, feature);
+            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
+            // textReplay.drawText(geometry, feature);    
+            textReplay.startIndicesFeature.push(feature);
+            var textStyleClone = textStyle.clone();
+            textStyleClone.label = textStyle.label;
+            textStyleClone.labelPosition = textStyle.labelPosition;
+            textReplay.startIndicesStyle.push(textStyleClone);
         }
     };
 
@@ -66022,6 +66052,13 @@ function olInit() {
         this.startIndicesFeature = [];
 
         /**
+         * Start index per style (the style).
+         * @protected
+         * @type {Array.<ol.Feature|ol.render.Feature>}
+         */
+        this.startIndicesStyle = [];
+
+        /**
          * @protected
          * @type {Array.<number>}
          */
@@ -66902,7 +66939,7 @@ function olInit() {
         'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.texturereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
+        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nuniform float u_zIndex;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
         'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.0,0.0);gl_Position=h*vec4(c,0.0,1.0)+offsets;a=d;b=f;}');
 
     // This file is automatically generated, do not edit
@@ -66948,6 +66985,12 @@ function olInit() {
          */
         this.u_image = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_image' : 'l');
+
+        /**
+         * @type {WebGLUniformLocation}
+         */
+        this.u_zIndex = gl.getUniformLocation(
+            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'm');
 
         /**
          * @type {number}
@@ -67517,7 +67560,6 @@ function olInit() {
      */
     ol.render.webgl.TextureReplay.prototype.drawCoordinates = function (flatCoordinates, offset, end, stride) {
         this.extent == undefined && (this.extent = ol.extent.createOrUpdateEmpty());
-        this.tmpIndices == undefined && (this.tmpIndices = this.indices) && (this.tmpVertices = this.vertices);
         var anchorX = /** @type {number} */ (this.anchorX);
         var anchorY = /** @type {number} */ (this.anchorY);
         var height = /** @type {number} */ (this.height);
@@ -67737,7 +67779,6 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
         var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-        
         // gl.enable(gl.STENCIL_TEST);
         // gl.colorMask(false, false, false, false);
         // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
@@ -67974,31 +68015,18 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
-        this.extent = ol.extent.createOrUpdateEmpty()
-        // if(!this.vertices_){
-        //     this.startIndices.push(this.indices.length);
-        //     this.startIndicesFeature.push(feature);
-        // }
+        this.extent = ol.extent.createOrUpdateEmpty();      
         var flatCoordinates = pointGeometry.getFlatCoordinates();
         var stride = pointGeometry.getStride();
+        this.tmpIndices = this.indices.slice(0)
+        this.tmpVertices = this.vertices.slice(0);        
         this.drawCoordinates(
             flatCoordinates, 0, flatCoordinates.length, stride);
 
         if(this.renderDeclutter_(this.extent, feature)){
-            // var indicesNum = 6;
-            // var verticesNum = 32;            
-            // this.indices.splice(-indicesNum);
-            // this.vertices.splice(-verticesNum);
-            // this.startIndices.pop();
-            // this.startIndicesFeature.pop();
-            if(!this.vertices_){
-                this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
-            }
-            this.indices = this.indices.concat(this.tmpIndices);
-            this.vertices = this.vertices.concat(this.tmpVertices);
-            this.tmpIndices.length = 0;
-            this.tmpVertices.length = 0;
+            this.startIndices.push(this.indices.length);
+            this.indices = this.tmpIndices;
+            this.vertices = this.tmpVertices;
         }           
     };
 
@@ -68013,12 +68041,10 @@ function olInit() {
         this.hitDetectionGroupIndices.push(this.indices.length);
 
         // create, bind, and populate the vertices buffer
-        this.verticesBuffer = new ol.webgl.Buffer(this.vertices.slice(0));
-
-        var indices = this.indices.slice(0);
+        this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(indices);
+        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
@@ -68029,12 +68055,8 @@ function olInit() {
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
             texturePerImage, gl);
 
-        this.images_ = null;
-        this.hitDetectionImages_ = null;
-        // record for resolution replacement
-        this.vertices_ = this.vertices.slice(0);
-        this.vertices.length = 0;
-        this.indices.length = 0;
+        this.images_ = [];
+        this.hitDetectionImages_ = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -68119,7 +68141,7 @@ function olInit() {
         'precision mediump float;varying float a;varying vec2 aVertex;varying float c;uniform float m;uniform vec4 n;uniform vec2 o;uniform float p;void main(void){if(a>0.0){vec2 windowCoords=vec2((aVertex.x+1.0)/2.0*o.x*p,(aVertex.y+1.0)/2.0*o.y*p);if(length(windowCoords-gl_FragCoord.xy)>c*p){discard;}} gl_FragColor=n;float alpha=n.a*m;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.linestringreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        'varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, 0.0, 1.0);\n  }\n}\n\n\n' :
+        'varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\nuniform float u_zIndex;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, 0.0, 1.0);\n  }\n}\n\n\n' :
         'varying float a;varying vec2 aVertex;varying float c;attribute vec2 d;attribute vec2 e;attribute vec2 f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;bool nearlyEquals(in float value,in float ref){float epsilon=0.000000000001;return value>=ref-epsilon&&value<=ref+epsilon;}void alongNormal(out vec2 offset,in vec2 nextP,in float turnDir,in float direction){vec2 dirVect=nextP-e;vec2 normal=normalize(vec2(-turnDir*dirVect.y,turnDir*dirVect.x));offset=k/2.0*normal*direction;}void miterUp(out vec2 offset,out float round,in bool isRound,in float direction){float halfWidth=k/2.0;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=f-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;round=0.0;if(isRound){round=1.0;}else if(miterLength>l+k){offset=halfWidth*tmpNormal*direction;}} bool miterDown(out vec2 offset,in vec4 projPos,in mat4 offsetMatrix,in float direction){bool degenerate=false;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=d-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));vec2 longOffset,shortOffset,longVertex;vec4 shortProjVertex;float halfWidth=k/2.0;if(length(f-e)>length(d-e)){longOffset=tmpNormal*direction*halfWidth;shortOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=f;shortProjVertex=h*vec4(d,0.0,1.0);}else{shortOffset=tmpNormal*direction*halfWidth;longOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=d;shortProjVertex=h*vec4(f,0.0,1.0);}vec4 p1=h*vec4(longVertex,0.0,1.0)+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p2=projPos+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p3=shortProjVertex+offsetMatrix*vec4(-shortOffset,0.0,0.0);vec4 p4=shortProjVertex+offsetMatrix*vec4(shortOffset,0.0,0.0);float denom=(p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y);float firstU=((p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x))/denom;float secondU=((p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x))/denom;float epsilon=0.000000000001;if(firstU>epsilon&&firstU<1.0-epsilon&&secondU>epsilon&&secondU<1.0-epsilon){shortProjVertex.x=p1.x+firstU*(p2.x-p1.x);shortProjVertex.y=p1.y+firstU*(p2.y-p1.y);offset=shortProjVertex.xy;degenerate=true;}else{float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;}return degenerate;}void squareCap(out vec2 offset,out float round,in bool isRound,in vec2 nextP,in float turnDir,in float direction){round=0.0;vec2 dirVect=e-nextP;vec2 firstNormal=normalize(dirVect);vec2 secondNormal=vec2(turnDir*firstNormal.y*direction,-turnDir*firstNormal.x*direction);vec2 hypotenuse=normalize(firstNormal-secondNormal);vec2 normal=vec2(turnDir*hypotenuse.y*direction,-turnDir*hypotenuse.x*direction);float length=sqrt(c*c*2.0);offset=normal*length;if(isRound){round=1.0;}} void main(void){bool degenerate=false;float direction=float(sign(g));mat4 offsetMatrix=i*j;vec2 offset;vec4 projPos=h*vec4(e,0.0,1.0);bool round=nearlyEquals(mod(g,2.0),0.0);a=0.0;c=k/2.0;aVertex=projPos.xy;if(nearlyEquals(mod(g,3.0),0.0)||nearlyEquals(mod(g,17.0),0.0)){alongNormal(offset,f,1.0,direction);}else if(nearlyEquals(mod(g,5.0),0.0)||nearlyEquals(mod(g,13.0),0.0)){alongNormal(offset,d,-1.0,direction);}else if(nearlyEquals(mod(g,23.0),0.0)){miterUp(offset,a,round,direction);}else if(nearlyEquals(mod(g,19.0),0.0)){degenerate=miterDown(offset,projPos,offsetMatrix,direction);}else if(nearlyEquals(mod(g,7.0),0.0)){squareCap(offset,a,round,f,1.0,direction);}else if(nearlyEquals(mod(g,11.0),0.0)){squareCap(offset,a,round,d,-1.0,direction);}if(!degenerate){vec4 offsets=offsetMatrix*vec4(offset,0.0,0.0);gl_Position=projPos+offsets;}else{gl_Position=vec4(offset,0.0,1.0);}}');
 
     // This file is automatically generated, do not edit
@@ -68189,6 +68211,12 @@ function olInit() {
          */
         this.u_pixelRatio = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_pixelRatio' : 'p');
+        
+        /**
+         * @type {WebGLUniformLocation}
+         */
+        this.u_zIndex = gl.getUniformLocation(
+            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'q');
 
         /**
          * @type {number}
@@ -68823,7 +68851,7 @@ function olInit() {
         ends.unshift(0);
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
         if(multiLineStringGeometry.properties_.class === 'rail' && multiLineStringGeometry.styleId.includes('c')){
-            console.log('railway')
+            // console.log('railway')
         }
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
@@ -69000,13 +69028,13 @@ function olInit() {
      */
     ol.render.webgl.LineStringReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
-            gl.enable(gl.DEPTH_TEST);
-            gl.depthMask(true);
-            gl.depthFunc(gl.NOTEQUAL);
+            // gl.enable(gl.DEPTH_TEST);
+            // gl.depthMask(true);
+            // gl.depthFunc(gl.NOTEQUAL);
         }
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -69020,16 +69048,15 @@ function olInit() {
                 nextStyle = this.styles_[i];
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                 this.drawElements(gl, context, start, end);
-                // gl.clear(gl.DEPTH_BUFFER_BIT);
                 end = start;
             }
         }
         if (!hitDetection) {
-            gl.disable(gl.DEPTH_TEST);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-            //Restore GL parameters.
-            gl.depthMask(tmpDepthMask);
-            gl.depthFunc(tmpDepthFunc);
+            // gl.disable(gl.DEPTH_TEST);
+            // gl.clear(gl.DEPTH_BUFFER_BIT);
+            // //Restore GL parameters.
+            // gl.depthMask(tmpDepthMask);
+            // gl.depthFunc(tmpDepthFunc);
         }
     };
 
@@ -69224,7 +69251,7 @@ function olInit() {
         'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n' :
+        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform float u_zIndex;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0);\n}\n\n\n' :
         'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}');
 
     // This file is automatically generated, do not edit
@@ -69270,6 +69297,12 @@ function olInit() {
          */
         this.u_opacity = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_opacity' : 'f');
+
+        /**
+         * @type {WebGLUniformLocation}
+         */
+        this.u_zIndex = gl.getUniformLocation(
+            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'g');
 
         /**
          * @type {number}
@@ -70571,12 +70604,12 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
         if (!hitDetection) {
-            gl.enable(gl.DEPTH_TEST);
-            gl.depthMask(true);
-            gl.depthFunc(gl.NOTEQUAL);
+            // gl.enable(gl.DEPTH_TEST);
+            // gl.depthMask(true);
+            // gl.depthFunc(gl.NOTEQUAL);
         }
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -70594,11 +70627,11 @@ function olInit() {
             }
         }
         if (!hitDetection) {
-            gl.disable(gl.DEPTH_TEST);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-            // Restore GL parameters.
-            gl.depthMask(tmpDepthMask);
-            gl.depthFunc(tmpDepthFunc);
+            // gl.disable(gl.DEPTH_TEST);
+            // gl.clear(gl.DEPTH_BUFFER_BIT);
+            // // Restore GL parameters.
+            // gl.depthMask(tmpDepthMask);
+            // gl.depthFunc(tmpDepthFunc);
         }
     };
 
@@ -71331,19 +71364,6 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
-        var type  = geometry.getType();
-        if(type === 'MultiLineString'){
-            var ends = geometry.getEnds();
-            for(var k = 0; k < ends.length; k++){
-                var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
-                var newFeature = new ol.render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
-                this.drawText(newFeature.getGeometry(), newFeature);
-            }
-
-            return;
-        }
-
-        this.text_ = feature.text_ || this.text_;        
         if (this.text_) {
             this.tmpVertices = this.vertices.slice(0);
             this.tmpIndices = this.indices.slice(0);
@@ -71390,9 +71410,10 @@ function olInit() {
                 if(window.tests == undefined){
                     window.tests = 0;
                 }
-                // if(!this.text_.includes('Woodall')){
-                if(!this.text_.includes('Ross Avenue')){
+                if(this.text_.includes('United States')){
+                // if(!this.text_.includes('Ross Avenue')){
                     // return
+                    // debugger
                 }
 
                 if(window.tests !== 3){
@@ -71530,19 +71551,15 @@ function olInit() {
             }           
 
             if(this.renderDeclutter_(this.extent, feature)){
-                if(!this.vertices_){
-                    feature.text_ = this.text_;
-                    this.startIndices.push(this.indices.length);
-                    this.startIndicesFeature.push(feature);
-                }
-                this.indices = this.tmpIndices.slice(0);
-                this.vertices = this.tmpVertices.slice(0);
-                this.groupIndices = this.tmpGroupIndices.slice(0);
-                this.images_ = this.tmpImages.slice(0);
-                this.tmpIndices.length = 0;
-                this.tmpVertices.length = 0;
-                this.tmpGroupIndices.length = 0;
-                this.tmpImages.length = 0;
+                this.startIndices.push(this.indices.length);
+                this.indices = this.tmpIndices;
+                this.vertices = this.tmpVertices;
+                this.groupIndices = this.tmpGroupIndices;
+                this.images_ = this.tmpImages;
+                // this.tmpIndices.length = 0;
+                // this.tmpVertices.length = 0;
+                // this.tmpGroupIndices.length = 0;
+                // this.tmpImages.length = 0;
             }         
         }
     };
@@ -71649,15 +71666,15 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.finish = function (context) {
         var gl = context.getGL();
-
+        
         this.groupIndices.push(this.indices.length);
         this.hitDetectionGroupIndices = this.groupIndices;
 
         // create, bind, and populate the vertices buffer
-        this.verticesBuffer = new ol.webgl.Buffer(this.vertices.slice(0));
+        this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(this.indices.slice(0));
+        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
@@ -71686,10 +71703,6 @@ function olInit() {
         // this.atlases_ = {};
         // this.currAtlas_ = undefined;
 
-        // record for resolution replacement
-        this.vertices_ = this.vertices.slice(0);
-        this.vertices.length = 0;
-        this.indices.length = 0;
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -98089,13 +98102,13 @@ function olInit() {
         }
 
         var createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
-            var styleIdIndex = 0;
+            var styleIdIndex = 1;
             var geoStyles = {};
             var styleJsonCache = new StyleJsonCache();
             styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
-                var item = new StyleJsonCacheItem(json, 0, 24, "layerName");
+                var item = new StyleJsonCacheItem(json, 0, 24, "layerName", styleIdIndex);
 
                 for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                     var treeNode = new TreeNode(item);
@@ -98174,7 +98187,7 @@ function olInit() {
         }());
 
         var StyleJsonCacheItem = /** @class */ (function () {
-            function StyleJsonCacheItem(styleJson, minZoom, maxZoom, dataLayerColumnName) {
+            function StyleJsonCacheItem(styleJson, minZoom, maxZoom, dataLayerColumnName, styleIdIndex) {
                 this.childrenGeoStyles = [];
                 this.subStyleCacheItems = [];
                 this.minZoom = minZoom;
@@ -98182,8 +98195,10 @@ function olInit() {
                 this.zIndex = styleJson["z-index"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-                this.createSubItems(styleJson, dataLayerColumnName);
+                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
                 this.geoStyle = this.createGeoStyle(styleJson);
+                // used for webgl depth test
+                this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
                 this.createChildrenGeoStyle(styleJson);
             }
             StyleJsonCacheItem.prototype.createFilters = function (filterString, dataLayerColumnName) {
@@ -98270,7 +98285,7 @@ function olInit() {
                 }
                 return filterGroup;
             };
-            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName) {
+            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex) {
                 if (styleJson.style) {
                     // apply the property to sub style.
                     for (var key in styleJson) {
@@ -98292,7 +98307,7 @@ function olInit() {
                     var subItemMaxZoom = void 0;
                     for (var _i = 0, _a = styleJson.style; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
-                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName);
+                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName, styleIdIndex);
                         if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
                             subItemMaxZoom = styleJsonCacheSubItem.maxZoom;
                         }
@@ -98967,7 +98982,8 @@ function olInit() {
                     else {
                         GeoAreaStyle.areaStyle.setStroke(undefined);
                     }
-                    GeoAreaStyle.areaStyle.setGeometry(feature);
+                    GeoAreaStyle.areaStyle.setGeometry(feature);                    
+                    GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;
@@ -102646,9 +102662,10 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(requestTileCoord.toString() !== "2,0,-2"){
+            if(requestTileCoord.toString() !== "2,0,-2"){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
-            if(tileCoord.toString() !== "15,7572,-13223"){
+            // if(tileCoord.toString() !== "15,7572,-13223"){
+            // if(tileCoord.toString() !== "15,7563,-13209" && tileCoord.toString() !== "15,7564,-13209" ){
                 // return
             }
             // TEST END
@@ -102707,7 +102724,6 @@ function olInit() {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
-
                         var geoStyle = geoStyles[geoStyleId];
                         var featureInfo = features[instructs[i][0]]
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
