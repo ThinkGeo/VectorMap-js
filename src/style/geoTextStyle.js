@@ -154,7 +154,7 @@ class GeoTextStyle extends GeoStyle {
             textStyle.setRotation(this.rotateAngle);
         }
         if (this.maxCharAngle >= 0) {
-            textStyle.setMaxAngle(this.maxCharAngle);
+            // textStyle.setMaxAngle(this.maxCharAngle);
         }
         if (this.textTransforms.includes(this.textTransform)) {
         } else {
