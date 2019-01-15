@@ -32,7 +32,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let extent = frameState.extent;
         // update for webgl
         // let extent = (<any>ol.extent).buffer(frameState.extent,
-        //     tileLayer.getRenderBuffer() * viewResolution);       
+        //     tileLayer.getRenderBuffer() * viewResolution);
 
         if (layerState.extent !== undefined) {
             extent = ol.extent.getIntersection(extent, layerState.extent);
@@ -186,14 +186,21 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 tileGutter = tilePixelRatio * tileSource.getGutter(projection);
                 tilesToDraw = tilesToDrawByZ[currentZ];
                 for (let tileCoordKey in tilesToDraw) {
-                    tile = tilesToDraw[tileCoordKey];
-                    tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord());
+                    
+                    tile = tilesToDraw[tileCoordKey]; 
+                    if(tile.getTileCoord().toString() != '1,-1,-1'&&tile.getTileCoord().toString() != '1,0,-1'&&tile.getTileCoord().toString() != '1,1,-1'){
+                        // continue;
+                    }
+                    tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
                     x = (tileExtent[0] - imageExtent[0]) / tileResolution * tilePixelRatio / oversampling;
                     y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
                     this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     tile.transition = (z === currentZ);
+                    tile.screenXY=[(tileExtent[0]+tileExtent[2])/2,(tileExtent[1] + tileExtent[3]) / 2];
+                    // tile.position = [x, y, w, h];
+                    // console.log(tile.screenXY)
                     this.renderedTiles.push(tile);
                 }                
             }
@@ -256,6 +263,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let zs = [];
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
+            let screenXY=tile.screenXY;
             if (tile.getState() === (<any>ol).TileState.ABORT) {
                 continue;
             }
@@ -307,7 +315,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
 
                 context.frameState = frameState;
                 context.layerState = layerState;
-                replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays);
+                // console.log(screenXY)
+                replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays, screenXY);
+                
                 // context.restore();
                 // clips.push(currentClip);
                 // zs.push(currentZ);
@@ -332,6 +342,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 context["quickZoom"] = frameState["quickZoom"];
             }
             context["currentResolution"] = frameState["currentResolution"];
+            
             (<any>ol.render.canvas).ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {

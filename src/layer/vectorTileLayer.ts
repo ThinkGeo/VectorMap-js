@@ -675,16 +675,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         // overwrite
         (<any>ol.render).webgl.Replay.prototype.replay = function (
-            context, transform, viewRotation, skippedFeaturesHash) {
+            context, transform, viewRotation, skippedFeaturesHash,screenXY) {
             this.viewRotation_ = viewRotation;
             this.webglReplay_(context, transform,
-                skippedFeaturesHash, this.instructions, undefined, undefined);
+                skippedFeaturesHash, this.instructions, undefined, undefined,screenXY);
         };
 
         // webgl render
         (<any>ol).render.webgl.Replay.prototype.webglReplay_ = function (
             context, transform, skippedFeaturesHash,
-            instructions, featureCallback, opt_hitExtent
+            instructions, featureCallback, opt_hitExtent,screenXY
         ) {
             var frameState = context.frameState;
             var layerState = context.layerState;
@@ -728,6 +728,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             // recalculate the verctices of text for resolution changed                 
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
+                console.log(screenXY[0] - center[0] - this.origin[0]);
                 var startIndicesFeature = this.startIndicesFeature;
                 var startIndicesStyle = this.startIndicesStyle;
                 this.indices.length = 0;
@@ -766,6 +767,11 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                 }
                 this.finish(context);                
+            }else{
+                //  console.log(screenXY[0] - center[0] - this.origin[0]);
+                // console.log(center[0]);
+                // console.log(screenXY[0]);
+                // return
             }
 
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
@@ -777,7 +783,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var projectionMatrix = (<any>ol).transform.reset(this.projectionMatrix_);
             (<any>ol).transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
             (<any>ol).transform.rotate(projectionMatrix, -rotation);
-            (<any>ol).transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+            (<any>ol).transform.translate(projectionMatrix, (screenXY[0] - center[0] - this.origin[0]), (screenXY[1] - center[1] - this.origin[1]));
 
             var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
             (<any>ol).transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
