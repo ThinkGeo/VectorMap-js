@@ -680,7 +680,7 @@ ol.mapsuite = {};
 ol.mapsuite.VectorTileLayer = GeoVectorTileLayer;
 ol.mapsuite.VectorLayer = GeoVectorLayer;
 ol.mapsuite.version = "2.0.2";
-ol.mapsuite.devVersion = "2.0.0-beta040";
+ol.mapsuite.devVersion = "2.0.0-beta044";
 
 import CanvasImageLayerRenderer from './ol/renderer/canvas/ImageLayer';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer';
@@ -701,7 +701,5 @@ ol.Map.prototype.createRenderer = function createRenderer() {
     ]);
     return renderer;
 };
-
-
 
 export default ol;

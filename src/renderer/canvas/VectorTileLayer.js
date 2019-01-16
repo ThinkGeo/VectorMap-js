@@ -409,6 +409,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       if (declutterReplays) {
+        context["currentResolution"] = frameState.viewState.resolution;
         replayDeclutter(declutterReplays, context, rotation, snapToPixel);
       }
       if (rotation) {

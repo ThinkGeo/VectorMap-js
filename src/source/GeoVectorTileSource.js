@@ -247,7 +247,7 @@ class GeoVectorTileSource extends VectorTile {
         return tileGrid;
     }
 
-    forEachLoadedTile(projection, z, tileRange, callback) {
+    forEachLoadedTile(projection, z, tileRange, callback, layer) {
         const tileCache = this.getTileCacheForProjection(projection);
         if (!tileCache) {
             return false;
@@ -261,10 +261,11 @@ class GeoVectorTileSource extends VectorTile {
                 if (tileCache.containsKey(tileCoordKey)) {
                     tile = /** @type {!import("../Tile.js").default} */ (tileCache.get(tileCoordKey));
                     // MapSuite : add replay created checking
-                    loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
+
+                    loaded = tile.getState() === TileState.LOADED && tile.replayCreated && tile.getImage(layer);
                     if (!loaded) {
                         tile = tile.getInterimTile();
-                        loaded = tile.getState() === TileState.LOADED && tile.replayCreated;
+                        loaded = tile.getState() === TileState.LOADED && tile.replayCreated && tile.getImage(layer);
                     }
                     if (loaded) {
                         loaded = (callback(tile) !== false);

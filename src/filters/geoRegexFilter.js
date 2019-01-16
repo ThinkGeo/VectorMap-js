@@ -15,7 +15,7 @@ class GeoRegexFilter extends GeoFilter {
 
     matchFeatureCore(feature, zoom) {
         let currentValue;
-        if (this.replacedValueToIndex) {
+        if (this.replacedValueToIndex && feature.propertiesIndex) {
             currentValue = feature.propertiesIndex[this.key];
         }
         else {

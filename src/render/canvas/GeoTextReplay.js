@@ -80,7 +80,6 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
         const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
 
         var currentResolution = context["currentResolution"];
-        var ratio = window.devicePixelRatio * 1.194328566955879 / currentResolution;
 
         let /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ feature;
         let x, y;
@@ -199,7 +198,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                     break;
                 case CanvasInstruction.DRAW_CHARS:
                     if (!quickZoom) {
-
+debugger;
                         const begin = /** @type {number} */ (instruction[1]);
                         const end = /** @type {number} */ (instruction[2]);
                         const baseline = /** @type {number} */ (instruction[3]);
@@ -214,33 +213,40 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                         const text = /** @type {string} */ (instruction[12]);
                         const textKey = /** @type {string} */ (instruction[13]);
                         const textScale = /** @type {number} */ (instruction[14]);
-                        const ignored = (instruction[15]);
-                        const displayedTextLength = instruction[16];
+                        const textSpacing = instruction[15];
+
+                        // For skip the ignored label.
+                        const ignored = instruction[16];
+                        const displayedTextLength = instruction[17];
 
                         if (!ignored) {
                             const declutterGroups = [];
                             const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
                             let textLength = undefined;
-
                             if (displayedTextLength) {
                                 textLength = displayedTextLength;
                             }
                             else {
                                 textLength = measure(text);
-                                instruction[16] = textLength;
+                                instruction[17] = textLength;
                             }
+
                             if (overflow || textLength <= pathLength) {
                                 // The original logical is create label image --> declutterGroup --> draw label image to context
                                 // The newest logical is  create label info and create image instruction --> declutterGroup --> create label image --> draw label image to context
                                 let labelInstructions = [];
                                 let labelIndex = 0;
 
-                                if (currentResolution < 1) {
-                                    var distance = 220 * ratio;
+                                if (currentResolution < 1.2) {
+                                    var distance = (textSpacing / currentResolution * 1.194328566955879) * window.devicePixelRatio;
+                                    while (distance >= textSpacing * 2) {
+                                        distance = distance / 2;
+                                    }
                                     var tmpLength = pathLength - textLength;
                                     var centerPoint = tmpLength / 2;
                                     var leftPoint = centerPoint;
                                     var rightPoint = centerPoint;
+
                                     var pointArray = [];
                                     pointArray.push(centerPoint);
 
@@ -383,16 +389,16 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                                 for (let d = 0; d < declutterGroups.length; d++) {
                                     let targetDeclutterGroup = declutterGroups[d];
                                     if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
-                                        let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
-                                        if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
-                                            this.renderDeclutterChar_(targetDeclutterGroup, feature);
-                                        }
+                                        // let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
+                                        // if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
+                                        this.renderDeclutterChar_(targetDeclutterGroup, feature);
+                                        // }
                                     }
                                 }
                             }
-                            else {
-                                instruction[15] = true;
-                            }
+                        }
+                        else {
+                            instruction[16] = true;
                         }
                     }
                     ++i;
@@ -672,7 +678,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             }
             return width * textScale * pixelRatio;
         },
-            offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
+            offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1, 400
         ]);
         this.hitDetectionInstructions.push([CanvasInstruction.DRAW_CHARS,
             begin, end, baseline, declutterGroup,
@@ -685,7 +691,7 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
             }
             return width * textScale;
         },
-            offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio
+            offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio, 400
         ]);
     };
 
@@ -901,6 +907,20 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
               /** @type {Array<*>} */(strokeInstruction));
             }
             drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
+        }
+    }
+
+
+    getCenterAnchor(startM, endM, textLength, distance, pointArray) {
+        if (endM - startM > distance) {
+            var center = (endM + startM - textLength) / 2;
+            pointArray.push(center);
+            if (center - startM > distance * 2) {
+                this.getCenterAnchor(startM, center, textLength, distance, pointArray);
+            }
+            if (endM - center > distance * 2) {
+                this.getCenterAnchor(center, endM, textLength, distance, pointArray);
+            }
         }
     }
 }

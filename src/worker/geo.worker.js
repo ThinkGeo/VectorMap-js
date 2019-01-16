@@ -40,7 +40,10 @@ self.onmessage = function (msg) {
     if (method) {
         var resultMessageData = method(messageData, methodInfo);
         if (resultMessageData) {
-
+            let transferableObjects = resultMessageData.transferableObjects;
+            if (transferableObjects) {
+                delete resultMessageData.transferableObjects;
+            }
             var postMessageData = {
                 methodInfo: methodInfo,
                 messageData: resultMessageData,
@@ -49,7 +52,8 @@ self.onmessage = function (msg) {
                 }
             }
 
-            postMessage(postMessageData);
+            postMessage(postMessageData, transferableObjects);
+
             postMessageData = undefined;
         }
     }
@@ -270,22 +274,22 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
     }
 
     let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
-        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
+        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], minimalist);
 
     let drawingFeatures = {};
     let mainDrawingInstructs = [];
-    const render = function (feature, geostyle) {
+    let render = function (feature, geostyle, treeZIndex) {
         let styles;
         if (geostyle) {
             if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
                 drawingFeatures[getUid(feature)] = feature;
-                mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                mainDrawingInstructs.push([getUid(feature), geostyle.id, treeZIndex]);
             }
             else {
                 let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
                 if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
                     drawingFeatures[getUid(feature)] = feature;
-                    mainDrawingInstructs.push([getUid(feature), geostyle.id]);
+                    mainDrawingInstructs.push([getUid(feature), geostyle.id, treeZIndex]);
                 }
                 else {
                     if (styles === undefined) {
@@ -322,12 +326,15 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
             featureInfo["projected"] = true;
         }
         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-            render(feature, geoStyle);
+            render(feature, geoStyle, instructs[i][2]);
         }
     }
     replayGroup.finish();
+    strategyTree.clear();
+
     var resultData = {
     };
+    var transferableObjects = [];
 
     for (var zIndex in replayGroup.replaysByZIndex_) {
         var replays = replayGroup.replaysByZIndex_[zIndex];
@@ -339,22 +346,54 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 resultData[zIndex][replayType] = {};
             }
             var replay = replays[replayType];
-            resultData[zIndex][replayType]["instructions"] = [];
-            for (let i = 0; i < replay.instructions.length; i++) {
-                let instruction = replay.instructions[i];
-                if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
-                    let feature = instruction[1];
-                    instruction[1] = getUid(feature);
+
+            // Formats instructions
+            if (!minimalist) {
+                resultData[zIndex][replayType]["instructions"] = [];
+                for (let i = 0; i < replay.instructions.length; i++) {
+                    let instruction = replay.instructions[i];
+                    if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                        let feature = instruction[1];
+                        instruction[1] = getUid(feature);
+                    }
+                    resultData[zIndex][replayType]["instructions"].push(instruction);
                 }
-                resultData[zIndex][replayType]["instructions"].push(instruction);
+                resultData[zIndex][replayType]["hitDetectionInstructions"] = [];
+                for (let i = 0; i < replay.hitDetectionInstructions.length; i++) {
+                    let instruction = replay.hitDetectionInstructions[i];
+                    if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
+                        let feature = instruction[1];
+                        instruction[1] = getUid(feature);
+                    }
+                    resultData[zIndex][replayType]["hitDetectionInstructions"].push(instruction);
+                }
             }
-            resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
+            else {
+                resultData[zIndex][replayType]["instructions"] = replay.instructions.slice(0);
+            }
+
+            // Formats coordinates
+            var view = new Float64Array(replay.coordinates.length);
+            for (var i = 0; i < view.length; i++) {
+                view[i] = replay.coordinates[i];
+            }
+            resultData[zIndex][replayType]["coordinates"] = view.buffer;
+            transferableObjects.push(view.buffer);
+
+            // Formats coordinates
+            // var buffers = new ArrayBuffer(replay.coordinates.length * 4);
+            // var view = new Float32Array(buffers);
+            // for (var i = 0; i < view.length; i++) {
+            //     view[i] = replay.coordinates[i];
+            // }
+            // resultData[zIndex][replayType]["coordinates"] = buffers;
+
+            replay.hitDetectionInstructions.length = 0;
             replay.coordinates.length = 0;
             replay.instructions.length = 0;
         }
     }
-
-    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
+    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs, transferableObjects: transferableObjects };
 }
 
 self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
