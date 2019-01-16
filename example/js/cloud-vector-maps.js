@@ -48,12 +48,12 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     }
     if (e.target.nodeName == 'DIV') {
         e.target.style.borderColor = '#ffffff';
-        chnageLayer(e);
+        changeLayer(e);
     }
 })
 
 
-const chnageLayer = function (e) {
+const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
         if (layers[i].get("layerName") == e.target.getAttribute("value")) {
