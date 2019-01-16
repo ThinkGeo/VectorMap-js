@@ -31049,6 +31049,7 @@ function olInit() {
      * @param {ol.style.Style} style Style.
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
+     * @override_
      */
     ol.renderer.vector.renderPointGeometry_ = function (replayGroup, geometry, style, feature) {
         var imageStyle = style.getImage();
@@ -31061,6 +31062,8 @@ function olInit() {
                 1, ol.render.ReplayType.IMAGE);
             // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
             // imageReplay.drawPoint(geometry, feature);
+            feature.flatCoordinates_ = geometry.getFlatCoordinates();
+            feature.ends_ = [2];
             imageReplay.startIndicesFeature.push(feature);
             var imageStyleClone = imageStyle.clone();
             imageReplay.startIndicesStyle.push(imageStyleClone);
@@ -68026,13 +68029,14 @@ function olInit() {
 
     /**
      * @inheritDoc
+     * @override_
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
         this.extent = ol.extent.createOrUpdateEmpty();      
         var flatCoordinates = pointGeometry.getFlatCoordinates();
         var stride = pointGeometry.getStride();
         this.tmpIndices = this.indices.slice(0)
-        this.tmpVertices = this.vertices.slice(0);        
+        this.tmpVertices = this.vertices.slice(0);
         this.drawCoordinates(
             flatCoordinates, 0, flatCoordinates.length, stride);
 
@@ -71381,6 +71385,7 @@ function olInit() {
 
     /**
      * @inheritDoc
+     * @override_
      */
     ol.render.webgl.TextReplay.prototype.drawText = function (geometry, feature) {
         if (this.text_) {
@@ -71569,7 +71574,7 @@ function olInit() {
                 }
             }           
 
-            if(this.renderDeclutter_(this.extent, feature)){
+            // if(this.renderDeclutter_(this.extent, feature)){
                 this.startIndices.push(this.indices.length);
                 this.indices = this.tmpIndices;
                 this.vertices = this.tmpVertices;
@@ -71579,7 +71584,7 @@ function olInit() {
                 // this.tmpVertices.length = 0;
                 // this.tmpGroupIndices.length = 0;
                 // this.tmpImages.length = 0;
-            }         
+            // }         
         }
     };
 

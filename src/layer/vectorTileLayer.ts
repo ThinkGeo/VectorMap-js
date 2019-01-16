@@ -728,7 +728,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             // recalculate the verctices of text for resolution changed                 
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
-                console.log(screenXY[0] - center[0] - this.origin[0]);
                 var startIndicesFeature = this.startIndicesFeature;
                 var startIndicesStyle = this.startIndicesStyle;
                 this.indices.length = 0;
@@ -756,22 +755,17 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.drawText(newFeature.getGeometry(), newFeature);
                         }
                     }else{
-                        // FIXME 
                         if(this instanceof (<any>ol).render.webgl.ImageReplay){
-                            // this.setImageStyle(style);
-                            // this.drawPoint(geometry, feature);
+                            this.setImageStyle(style);
+                            this.drawPoint(geometry, feature);
                         }else{
                             this.setTextStyle(style);
                             this.drawText(geometry, feature);
                         }
                     }
                 }
+                
                 this.finish(context);                
-            }else{
-                //  console.log(screenXY[0] - center[0] - this.origin[0]);
-                // console.log(center[0]);
-                // console.log(screenXY[0]);
-                // return
             }
 
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);

@@ -12700,9 +12700,8 @@ function olInit() {
                     // }              
                 // }
             }
-            
-            dest[i++] = flatCoordinates[j] + deltaX;
-            dest[i++] = flatCoordinates[j + 1] + deltaY;
+            dest[i++] = flatCoordinates[j] ;
+            dest[i++] = flatCoordinates[j + 1];
 
             for (k = j + 2; k < j + stride; ++k) {
                 dest[i++] = flatCoordinates[k];
@@ -30454,8 +30453,9 @@ function olInit() {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
                 var replay = replayData[i++];
+                
                 var transform = replayData[i++];
-                replay.replay(context, transform, rotation, skippedFeatureUids);
+                replay.replay(context, transform, rotation, skippedFeatureUids, screenXY);
             }
         }
     };
@@ -30976,7 +30976,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                3, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             // textReplay.drawText(geometry, feature);
             textReplay.startIndicesFeature.push(feature); 
@@ -30986,7 +30986,6 @@ function olInit() {
             textReplay.startIndicesStyle.push(textStyleClone); 
         }
     };
-
 
     /**
      * @param {ol.render.ReplayGroup} replayGroup Replay group.
@@ -31006,7 +31005,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                3, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             // textReplay.drawText(geometry, feature); 
             textReplay.startIndicesFeature.push(feature);
@@ -31057,8 +31056,9 @@ function olInit() {
             if (imageStyle.getImageState() != ol.ImageState.LOADED) {
                 return;
             }
+            // FIXME replace it with style.getZIndex()
             var imageReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.IMAGE);
+                1, ol.render.ReplayType.IMAGE);
             // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
             // imageReplay.drawPoint(geometry, feature);
             imageReplay.startIndicesFeature.push(feature);
@@ -31068,7 +31068,7 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.TEXT);
+                2, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
             // textReplay.drawText(geometry, feature);    
             textReplay.startIndicesFeature.push(feature);
@@ -31122,6 +31122,7 @@ function olInit() {
             var polygonReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.POLYGON); 
             polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
+            feature.zCoordinate = style.zCoordinate;
             polygonReplay.drawPolygon(geometry, feature);
         }
         var textStyle = style.getText();
@@ -65977,6 +65978,11 @@ function olInit() {
          * @type {?}
          */
         this.declutterTree = declutterTree;
+        /**
+         * @private
+         * @type {ol.Extent}
+         */
+        this.tmpExtent_ = ol.extent.createEmpty();
 
         /**
          * @protected
@@ -66069,6 +66075,12 @@ function olInit() {
          * @type {?ol.webgl.Buffer}
          */
         this.verticesBuffer = null;
+        
+        /**
+         * @protected
+         * @type {Array.<number>}
+         */
+        this.zCoordinates = [];
 
         /**
          * Optional parameter for PolygonReplay instances.
@@ -67021,6 +67033,7 @@ function olInit() {
          */
         this.a_rotateWithView = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_rotateWithView' : 'g');
+
     };
 
     goog.provide('ol.webgl.ContextEventType');
@@ -67585,8 +67598,8 @@ function olInit() {
             pixelCoordinate = map.getPixelFromCoordinate([flatCoordinates[i], flatCoordinates[i + 1]]);
             charX = pixelCoordinate[0];
             charY = pixelCoordinate[1];
-            x = flatCoordinates[i] - this.origin[0];
-            y = flatCoordinates[i + 1] - this.origin[1];
+            x = flatCoordinates[i];
+            y = flatCoordinates[i + 1];
             
             // There are 4 vertices per [x, y] point, one for each corner of the
             // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
@@ -68241,6 +68254,9 @@ function olInit() {
          */
         this.a_direction = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_direction' : 'g');
+
+        
+    
     };
 
     goog.provide('ol.render.webgl.LineStringReplay');
@@ -69309,6 +69325,7 @@ function olInit() {
          */
         this.a_position = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_position' : 'a');
+
     };
 
     goog.provide('ol.structs.LinkedList');
@@ -70498,6 +70515,7 @@ function olInit() {
                 this.startIndices.push(this.indices.length);
                 this.startIndicesFeature.push(feature);
                 if (this.state_.changed) {
+                    this.zCoordinates.push(feature.zCoordinate);
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
@@ -70621,6 +70639,7 @@ function olInit() {
             for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
+                gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
                 end = start;
@@ -98983,7 +99002,8 @@ function olInit() {
                         GeoAreaStyle.areaStyle.setStroke(undefined);
                     }
                     GeoAreaStyle.areaStyle.setGeometry(feature);                    
-                    GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
+                    GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
+                    // GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;
@@ -102662,12 +102682,12 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            if(requestTileCoord.toString() !== "2,0,-2"){
+            // if(requestTileCoord.toString() !== "2,0,-2"){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
             // if(tileCoord.toString() !== "15,7572,-13223"){
             // if(tileCoord.toString() !== "15,7563,-13209" && tileCoord.toString() !== "15,7564,-13209" ){
                 // return
-            }
+            // }
             // TEST END
 
             var tileProjection = new ol.proj.Projection({
