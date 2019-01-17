@@ -70529,6 +70529,12 @@ function olInit() {
                 }
 
                 outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);
+                if(holes.length>0 && feature.properties_.layerName=='building'){
+                    this.styles_.push( this.styles_[0]);
+                    this.zCoordinates.push(feature.zCoordinate);
+                    this.styleIndices_.push(this.indices.length);
+                    this.state_.changed = false;
+                }
                 for(var i = 0; i < holes.length; i++){
                     this.drawCoordinates_(holes[i], [], stride);
                 }                 
@@ -98990,6 +98996,7 @@ function olInit() {
                         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
+                        GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
                         this.styles[length++] = GeoAreaStyle.areaShadowStyle;
                     }
                     if (this.fill) {
