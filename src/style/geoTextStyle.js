@@ -71,7 +71,10 @@ class GeoTextStyle extends GeoStyle {
             this.rotateAngle = styleJson["text-rotate-angle"];
             this.placements = styleJson["text-placements"] | ["U,B,L,R"];
             this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
+            // For point label.
             this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
+            // For line label.
+            this.textSpacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 400;
             this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
             this.wrapWidth = styleJson["text-wrap-width"];
             this.textFormat = styleJson["text-text-format"];
@@ -153,8 +156,13 @@ class GeoTextStyle extends GeoStyle {
         if (this.rotateAngle) {
             textStyle.setRotation(this.rotateAngle);
         }
+
+        if (this.textSpacing) {
+            textStyle.textSpacing = this.textSpacing;
+        }
+
         if (this.maxCharAngle >= 0) {
-            // textStyle.setMaxAngle(this.maxCharAngle);
+            textStyle.setMaxAngle(this.maxCharAngle);
         }
         if (this.textTransforms.includes(this.textTransform)) {
         } else {

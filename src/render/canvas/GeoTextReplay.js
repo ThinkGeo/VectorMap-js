@@ -198,7 +198,6 @@ class GeoCanvasTextReplay extends CanvasTextReplay {
                     break;
                 case CanvasInstruction.DRAW_CHARS:
                     if (!quickZoom) {
-debugger;
                         const begin = /** @type {number} */ (instruction[1]);
                         const end = /** @type {number} */ (instruction[2]);
                         const baseline = /** @type {number} */ (instruction[3]);
@@ -678,7 +677,7 @@ debugger;
             }
             return width * textScale * pixelRatio;
         },
-            offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1, 400
+            offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1, textState.textSpacing
         ]);
         this.hitDetectionInstructions.push([CanvasInstruction.DRAW_CHARS,
             begin, end, baseline, declutterGroup,
@@ -691,7 +690,7 @@ debugger;
             }
             return width * textScale;
         },
-            offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio, 400
+            offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio, textState.textSpacing
         ]);
     };
 
@@ -753,6 +752,7 @@ debugger;
             textState.backgroundStroke = textStyle.getBackgroundStroke();
             textState.padding = textStyle.getPadding() || defaultPadding;
             textState.scale = textScale === undefined ? 1 : textScale;
+            textState.textSpacing = textStyle.textSpacing === undefined ? 400 : textStyle.textSpacing;
 
             const textOffsetX = textStyle.getOffsetX();
             const textOffsetY = textStyle.getOffsetY();
