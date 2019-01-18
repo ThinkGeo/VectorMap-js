@@ -335,15 +335,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         }
         
         if (declutterReplays) {
-            var hints = frameState.viewHints;
-            var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
-            // delete context["quickZoom"]
-            if (animatingOrInteracting) {
-                context["quickZoom"] = frameState["quickZoom"];
-            }
-            context["currentResolution"] = frameState["currentResolution"];
+            // var hints = frameState.viewHints;
+            // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
+            // // delete context["quickZoom"]
+            // if (animatingOrInteracting) {
+            //     context["quickZoom"] = frameState["quickZoom"];
+            // }
+            // context["currentResolution"] = frameState["currentResolution"];
             
-            (<any>ol.render.canvas).ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
+            // (<any>ol.render.canvas).ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,

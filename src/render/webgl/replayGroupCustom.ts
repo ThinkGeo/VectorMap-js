@@ -93,23 +93,43 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
             for (j = 0, jj = replayTypes.length; j < jj; ++j) {
                 let replayType = replayTypes[j];
                 replay = replays[replayType];
-                if (replay !== undefined) {
+                // if (replay !== undefined) {
                     // if (opt_declutterReplays &&
                     //     (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
+                    //     // debugger
                     //         let declutter = opt_declutterReplays[zIndexKey];
                     //     if (!declutter) {
-                    //         opt_declutterReplays[zIndexKey] = [replay, transform.slice(0),screenXY];
+                    //         opt_declutterReplays[zIndexKey] = [replay, transform.slice(0), screenXY];
                     //     } else {
-                    //         declutter.push(replay, transform.slice(0),screenXY);
+                    //         declutter.push(replay, transform.slice(0), screenXY);
                     //     }
-                    // } else {
-                        replay.zIndex = zs[i];
-                        replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
+                    // } else {       
+                        if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
+                            replay.declutterRepeat_(context, screenXY);                
+                        }                 
+                        // replay.zIndex = zs[i];
+                        // replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
                     // }
-                }
+                // }
             }
         }
 
+        // draw
+        for (i = 0, ii = zs.length; i < ii; ++i) {
+            let zIndexKey = zs[i].toString();
+            replays = this.replaysByZIndex_[zIndexKey];
+            for (j = 0, jj = replayTypes.length; j < jj; ++j) {
+                let replayType = replayTypes[j];
+                replay = replays[replayType];
+                if (replay !== undefined) {
+                    replay.zIndex = zs[i];
+                    if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
+                        replay.finish(context);
+                    }
+                    replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
+                }
+            }
+        }
         // context.restore();
     }
 

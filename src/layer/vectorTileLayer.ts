@@ -675,16 +675,131 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         // overwrite
         (<any>ol.render).webgl.Replay.prototype.replay = function (
-            context, transform, viewRotation, skippedFeaturesHash,screenXY) {
+            context, transform, viewRotation, skippedFeaturesHash, screenXY) {
             this.viewRotation_ = viewRotation;
-            this.webglReplay_(context, transform,
-                skippedFeaturesHash, this.instructions, undefined, undefined,screenXY);
+            this.webglReplay_(context, 
+                skippedFeaturesHash, undefined, undefined, screenXY);
+        };
+
+        // recalculate the verctices of text for resolution changed                 
+        (<any>ol.render).webgl.Replay.prototype.declutterRepeat_ = function (context, screenXY){
+            var startIndicesFeature = this.startIndicesFeature;
+            var startIndicesStyle = this.startIndicesStyle;
+            this.indices.length = 0;
+            this.vertices.length = 0;
+            this.groupIndices.length = 0;
+            this.images_.length = 0;
+
+            for(var i = 0; i < startIndicesFeature.length; i++){
+                var feature = startIndicesFeature[i];
+                var style = startIndicesStyle[i];
+                var declutterGroup = style.declutterGroup_;
+                var geometry = feature.getGeometry();
+                var type = feature.getType(); 
+                geometry.screenXY = screenXY;
+
+                if(!style){
+                    continue;
+                }
+
+                if(type == 'MultiLineString'){
+                    var ends = geometry.getEnds();
+                    for(var k = 0; k < ends.length; k++){
+                        var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+
+                        this.setTextStyle(style);
+                        this.drawText(newFeature.getGeometry(), newFeature);
+                    }                    
+                }else{
+                    if(this instanceof (<any>ol).render.webgl.ImageReplay){
+                        var callback = function(this_, geometry, feature, style){
+                            this_.setImageStyle(style);                            
+                            this_.drawPoint(geometry, feature);
+                        }
+                        this.setImageStyle(style);
+                        this.replayImage_(context.frameState, geometry, feature, style, declutterGroup, callback);
+                        this.renderDeclutter_(declutterGroup, feature);
+                    }else{
+                        this.setTextStyle(style);
+                        if(this.label){
+                            var callback = function(this_, geometry, feature, style){
+                                this_.setTextStyle(style);
+                                this_.drawText(geometry, feature);
+                            }
+                            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                            this.width = this.label.width + lineWidth; 
+                            this.height = this.label.height; 
+                            this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                            this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+                            this.replayImage_(context.frameState, geometry, feature, style, declutterGroup, callback);
+                            this.renderDeclutter_(declutterGroup, feature);
+                        }else{
+                            this.drawText(geometry, feature);
+                        }
+                    }
+                }
+            }
+        };
+    
+        (<any>ol.render).webgl.Replay.prototype.renderDeclutter_ = function (declutterGroup, feature){
+            if(declutterGroup && declutterGroup.length > 5){
+                var groupCount = declutterGroup[4];
+                if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
+                    var box = {
+                        minX: /** @type {number} */ (declutterGroup[0]),
+                        minY: /** @type {number} */ (declutterGroup[1]),
+                        maxX: /** @type {number} */ (declutterGroup[2]),
+                        maxY: /** @type {number} */ (declutterGroup[3]),
+                        value: feature
+                    };
+
+                    if(!this.declutterTree.collides(box)){
+                        this.declutterTree.insert(box);
+                        for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
+                            var declutter = declutterGroup[j];                            
+                            declutter[0](declutter[1], declutter[2], declutter[3], declutter[4]);
+                        }
+                    }
+                    declutterGroup.length = 5;
+                    (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
+                }
+            }
+        };
+
+        // Blocking repeat
+        (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, geometry, feature, style, declutterGroup, callback){
+            var box = [];
+            var flatCoordinates = geometry.getFlatCoordinates();
+            var screenXY = geometry.screenXY;
+            var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
+            var scale = this.scale / window.devicePixelRatio;
+            var canvas = frameState.context.canvas_;
+
+            var offsetX = -scale * (this.anchorX);
+            var offsetY = -scale * (this.height - this.anchorY);
+            box[0] = pixelCoordinate[0] + offsetX;
+            box[3] = pixelCoordinate[1] - offsetY;
+
+            offsetX = scale * (this.width - this.anchorX);
+            offsetY = scale * this.anchorY;        
+            box[2] = pixelCoordinate[0] + offsetX;
+            box[1] = pixelCoordinate[1] - offsetY;
+
+            var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+            if(declutterGroup){    
+                if(!intersects && declutterGroup[4] == 1){
+                    return;
+                }                
+                (<any>ol).extent.extend(declutterGroup, box);
+                var declutterArgs = [callback, this, geometry, feature, style];
+                declutterGroup.push(declutterArgs);
+            }
         };
 
         // webgl render
         (<any>ol).render.webgl.Replay.prototype.webglReplay_ = function (
-            context, transform, skippedFeaturesHash,
-            instructions, featureCallback, opt_hitExtent,screenXY
+            context, skippedFeaturesHash, featureCallback, opt_hitExtent, screenXY
         ) {
             var frameState = context.frameState;
             var layerState = context.layerState;
@@ -725,49 +840,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // gl.stencilMask(0);
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
-
-            // recalculate the verctices of text for resolution changed                 
-            if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
-                var startIndicesFeature = this.startIndicesFeature;
-                var startIndicesStyle = this.startIndicesStyle;
-                this.indices.length = 0;
-                this.vertices.length = 0;
-                this.groupIndices.length = 0;
-                this.images_.length = 0;
-
-                for(var i = 0; i < startIndicesFeature.length; i++){
-                    var feature = startIndicesFeature[i];
-                    var style = startIndicesStyle[i];
-                    var geometry = feature.getGeometry();
-                    var type = feature.getType(); 
-                    
-                    if(!style){
-                        continue;
-                    }
-
-                    if(type == 'MultiLineString'){
-                        var ends = geometry.getEnds();
-                        for(var k = 0; k < ends.length; k++){
-                            var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
-                            var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
-
-                            this.setTextStyle(style);
-                            this.drawText(newFeature.getGeometry(), newFeature);
-                        }
-                    }else{
-                        if(this instanceof (<any>ol).render.webgl.ImageReplay){
-                            this.setImageStyle(style);
-                            this.drawPoint(geometry, feature);
-                        }else{
-                            this.setTextStyle(style);
-                            this.drawText(geometry, feature);
-                        }
-                    }
-                }
-                
-                this.finish(context);                
-            }
-
+            
             context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
             context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
@@ -777,7 +850,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var projectionMatrix = (<any>ol).transform.reset(this.projectionMatrix_);
             (<any>ol).transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
             (<any>ol).transform.rotate(projectionMatrix, -rotation);
-            (<any>ol).transform.translate(projectionMatrix, (screenXY[0] - center[0] - this.origin[0]), (screenXY[1] - center[1] - this.origin[1]));
+            (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
 
             var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
             (<any>ol).transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
