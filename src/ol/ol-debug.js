@@ -69728,75 +69728,9 @@ function olInit() {
         var rtree = new ol.structs.RBush();
         // Initialize the outer ring
         this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
-        var maxCoords = this.getMaxCoords_(outerRing);     
-        // var maxYCoords = this.getMaxCoords_(outerRing);     
-        // var minCoords = this.getMinCoords_(outerRing);     
-        // var minYCoords = this.getMinCoords_(outerRing);     
-
-        if(window.test){
-            console.log('flatCoordinates:');
-            // var flatCoordinates = [-18027654.9536536, 2636840.02951925,-18027953.9073781, 2636618.53042918,-18027786.3120998, 2637031.99779214,-18027750.0752679, 2637411.01872729,-18027609.6576414, 2637607.9161804,-18027124.9902783, 2637534.07941713,-18027179.3454706, 2637095.98767865,-18027378.6478794, 2636938.47449871,-18027654.9536536, 2636840.02951925]
-            // var arr = [];
-            // for(var k = 0; k < flatCoordinates.length; k += 2){
-            //     arr.push(`(${flatCoordinates[k]}, ${flatCoordinates[k+1]})`);
-            // }
-            // console.log(JSON.stringify(arr));
-            
-            if(!window.features){
-                window.features = [];
-            }
-
-            
-            var flatCoordinatesArray = [];
-            for(var i = 0; i < flatCoordinates.length; i+=2){ 
-                var transformedCoordinates = ol.proj.transform([flatCoordinates[i], flatCoordinates[i+1]], 'EPSG:3857', 'EPSG:4326');
-                if(transformedCoordinates[0] == 39.50683593750001 && transformedCoordinates[1] == 67.25505812564364){
-                    debugger
-                }
-                flatCoordinatesArray.push(transformedCoordinates);
-            }
-            // console.log(JSON.stringify(flatCoordinatesArray));
-
-            window.features.push({
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [flatCoordinatesArray]
-                }            
-            })
-
-            window.test = false
-            // console.log('-------');
-            // for(var i = 0; i < holeFlatCoordinates.length; i++){
-            //     var holeFlatCoordinatesArray = [];
-            //     var holeFlatCoordinate = holeFlatCoordinates[i];
-            //     for(var j = 0; j < holeFlatCoordinate.length; j+=2){
-            //         var tmp = ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326');
-            //         if(tmp[0] == 14.15039062499998 && tmp[1] == -12.651058133703486){
-            //             // debugger
-            //         }
-            //         holeFlatCoordinatesArray.push(ol.proj.transform([holeFlatCoordinate[j], holeFlatCoordinate[j+1]], 'EPSG:3857', 'EPSG:4326'));
-            //     }
-            //     // console.log(JSON.stringify(holeFlatCoordinatesArray));
-
-
-            //     window.features.push({
-            //         "type": "Feature",
-            //         "properties": {},
-            //         "geometry": {
-            //             "type": "Polygon",
-            //             "coordinates": [holeFlatCoordinatesArray]
-            //         }            
-            //     })
-            // } 
-
-
-            // console.log(JSON.stringify(window.features));
-        }
-
         // Eliminate holes, if there are any
         if(holeFlatCoordinates.length) {
+            var maxCoords = this.getMaxCoords_(outerRing);     
             var i, ii;
             var holeLists = [];
             for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
@@ -70594,13 +70528,15 @@ function olInit() {
                     this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
 
-                outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);
-                if(holes.length>0 && feature.properties_.layerName=='building'){
-                    this.styles_.push( this.styles_[0]);
+                outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);                    
+
+                if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                    this.styles_.push(this.styles_[0]);
                     this.zCoordinates.push(feature.zCoordinate);
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
+
                 for(var i = 0; i < holes.length; i++){
                     this.drawCoordinates_(holes[i], [], stride);
                 }                 
@@ -102788,7 +102724,7 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(requestTileCoord.toString() !== "2,0,-2"){
+            // if(!(requestTileCoord.toString() == "2,0,-2")){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
             // if(tileCoord.toString() !== "15,7572,-13223"){
             // if(tileCoord.toString() !== "15,7563,-13209" && tileCoord.toString() !== "15,7564,-13209" ){
@@ -102822,7 +102758,7 @@ function olInit() {
             }
             else {
                 this.console.log("missing", tileCoord, tileCoordKey)
-            }
+            }            
 
             if (tileCoord[0] < maxDataZoom) {
                 self.vectorTilesData[formatId].remove(tileCoordKey);
@@ -102844,8 +102780,8 @@ function olInit() {
             var strategyTree = ol.ext.rbush(9);
 
             var tileGrid = new ol.source.XYZ().getTileGrid();
-
-            if (instructs && instructs.length > 0) {
+            
+            if (instructs && instructs.length > 0) {                
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
@@ -102854,7 +102790,6 @@ function olInit() {
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
                         var cloneEnds = featureInfo.ends_.slice(0);                        
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
-                        
                         feature.getGeometry().transform(tileProjection, projection);
                         feature["styleId"] = geoStyleId;                       
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, instructs[i]);
@@ -102864,7 +102799,7 @@ function olInit() {
             // replayGroup.finish();
             strategyTree.clear();
 
-            //         //serilize
+            //serilize
             // for (var zIndex in replayGroup.replaysByZIndex_) {
             //     var replays = replayGroup.replaysByZIndex_[zIndex];
                
@@ -102893,7 +102828,11 @@ function olInit() {
             
             // transform.length = 0;
 
-            return { 'replays': replayGroup.replaysByZIndex_, features: mainFeatures, instructs: mainDrawingInstructs };
+            return { 
+                'replays': replayGroup.replaysByZIndex_,
+                features: mainFeatures, 
+                instructs: mainDrawingInstructs
+            };
         }
         
         self.getMainInstructs = function (oTile, mainGeoStyleIds) {

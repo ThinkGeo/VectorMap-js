@@ -1,4 +1,4 @@
-import { ReplayGroupCustom } from "./webgl/replayGroupCustom";
+import { ReplayGroupCustom } from "./replayGroupCustom";
 
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorTileLayer as { new(p: ol.layer.VectorTile): any; }) {
     constructor(layer: ol.layer.VectorTile) {

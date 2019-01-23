@@ -1,13 +1,14 @@
-import { TextReplayCustom } from "./textReplayCustom";
+// import { TextReplayCustom } from "./textReplayCustom";
 
-export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as { new(tolerance: number, maxExtent: any, resolution: number, pixelRatio: number, overlaps: boolean, declutterTree: any, opt_renderBuffer: number) }) {
+export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
-    constructor(tolerance: number, maxExtent: any, resolution: number, pixelRatio: number, overlaps: boolean, declutterTree: any, opt_renderBuffer: number) {
-        super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer);
+    constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number, declutterTree: any) {
+        super(tolerance, maxExtent, opt_renderBuffer);
         this.getReplay = this.getReplayCustom;
         this.BATCH_CONSTRUCTORS_ = this.BATCH_CONSTRUCTORS_CUSTOM;
         this.replay = this.replayCustom;
-        this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
+        this.declutterTree = declutterTree;
+        // this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
     }
 
     public forEachFeatureAtCoordinateCustom(coordinate: any, resolution: number, rotation: number, hitTolerance: number, skippedFeaturesHash: any, callback: any, declutterReplays: any) {
@@ -75,7 +76,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
             skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
     }
     
-    public replayCustom(context: CanvasRenderingContext2D, transform: any, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any) {
+    public replayCustom(context: CanvasRenderingContext2D, transform: any, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any) {
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
@@ -84,7 +85,6 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
         // visible outside the current extent when panning
         // context.save();
         // this.clip(context, transform);
-
         let replayTypes = opt_replayTypes ? opt_replayTypes : (<any>ol.render).replay.ORDER;
         let i, ii, j, jj, replays, replay;
         for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -93,22 +93,43 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
             for (j = 0, jj = replayTypes.length; j < jj; ++j) {
                 let replayType = replayTypes[j];
                 replay = replays[replayType];
-                if (replay !== undefined) {
-                    if (opt_declutterReplays &&
-                        (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
-                        let declutter = opt_declutterReplays[zIndexKey];
-                        if (!declutter) {
-                            opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-                        } else {
-                            declutter.push(replay, transform.slice(0));
-                        }
-                    } else {                        
-                        replay.replay(context, transform, viewRotation, skippedFeaturesHash);
-                    }
-                }
+                // if (replay !== undefined) {
+                    // if (opt_declutterReplays &&
+                    //     (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
+                    //     // debugger
+                    //         let declutter = opt_declutterReplays[zIndexKey];
+                    //     if (!declutter) {
+                    //         opt_declutterReplays[zIndexKey] = [replay, transform.slice(0), screenXY];
+                    //     } else {
+                    //         declutter.push(replay, transform.slice(0), screenXY);
+                    //     }
+                    // } else {       
+                        if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
+                            replay.declutterRepeat_(context, screenXY);                
+                        }                 
+                        // replay.zIndex = zs[i];
+                        // replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
+                    // }
+                // }
             }
         }
 
+        // draw
+        for (i = 0, ii = zs.length; i < ii; ++i) {
+            let zIndexKey = zs[i].toString();
+            replays = this.replaysByZIndex_[zIndexKey];
+            for (j = 0, jj = replayTypes.length; j < jj; ++j) {
+                let replayType = replayTypes[j];
+                replay = replays[replayType];
+                if (replay !== undefined) {
+                    replay.zIndex = zs[i];
+                    if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
+                        replay.finish(context);
+                    }
+                    replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
+                }
+            }
+        }
         // context.restore();
     }
 
@@ -122,19 +143,20 @@ export class ReplayGroupCustom extends ((<any>ol).render.canvas.ReplayGroup as {
         let replay = replays[replayType];
         if (replay === undefined) {
             let Constructor = this.BATCH_CONSTRUCTORS_[replayType];
-            replay = new Constructor(this.tolerance_, this.maxExtent_,
-                this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
+            replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree);
+
             replays[replayType] = replay;
         }
+
         return replay;
     }
 
     BATCH_CONSTRUCTORS_CUSTOM = {
-        "Circle": (<any>ol.render.canvas).PolygonReplay,
-        "Default": (<any>ol.render.canvas).Replay,
-        "Image": (<any>ol.render.canvas).ImageReplay,
-        "LineString": (<any>ol.render.canvas).LineStringReplay,
-        "Polygon": (<any>ol.render.canvas).PolygonReplay,
-        "Text": TextReplayCustom
+        "Circle": (<any>ol.render).webgl.PolygonReplay,
+        "Default": (<any>ol.render).webgl.Replay,
+        "Image": (<any>ol.render).webgl.ImageReplay,
+        "LineString": (<any>ol.render).webgl.LineStringReplay,
+        "Polygon": (<any>ol.render).webgl.PolygonReplay,
+        "Text": (<any>ol.render).webgl.TextReplay
     };
 }
