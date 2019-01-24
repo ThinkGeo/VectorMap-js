@@ -6,7 +6,7 @@ WebFont.load({
 });
 
 let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
-    'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+    'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 });
 
 //Create map
@@ -72,7 +72,7 @@ const clickRefresh = (json) => {
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);
     let newLayer = new ol.mapsuite.VectorTileLayer(json, {
-        'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+        'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
     });
     map.addLayer(newLayer);
 }

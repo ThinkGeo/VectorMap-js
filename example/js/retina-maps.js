@@ -3,7 +3,7 @@
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x2/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",// please go to https://cloud.thinkgeo.com to create
+            + "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",// please go to https://cloud.thinkgeo.com to create
         tileSize: 512,
         tilePixelRatio: 2
     }),

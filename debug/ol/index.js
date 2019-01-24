@@ -12,7 +12,7 @@ var vectorTileLayer = new ol.layer.VectorTile({
     source: new ol.source.VectorTile({
         format: new ol.format.MVT({
         }),
-        url: "https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~",
+        url: "https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
         tileGrid: ol.tilegrid.createXYZ({ tileSize: 512, maxZoom: 22 }),
         cacheSize: 64
     }),

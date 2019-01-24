@@ -1,6 +1,6 @@
 
 const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
-const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
 //Render data
 const renderData = (data) => {

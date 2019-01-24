@@ -9,7 +9,7 @@ WebFont.load({
 
 //create default layer
 let layer = new ol.mapsuite.VectorTileLayer('../data/vectortils_gray.json', {
-    'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+    'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 });
 
 //create map
@@ -88,7 +88,7 @@ const updateStyleJson = (poiSize, waterColor, buildingColor, placement) => {
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);
     let newLayer = new ol.mapsuite.VectorTileLayer(stylejson, {
-        'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+        'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
     });
     map.addLayer(newLayer);
 }

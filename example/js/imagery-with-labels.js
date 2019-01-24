@@ -7,7 +7,7 @@ WebFont.load({
 
 //Label featuer
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
-    apiKey: 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~', // please go to https://cloud.thinkgeo.com to create
+    apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~', // please go to https://cloud.thinkgeo.com to create
     visible: true
 });
 

@@ -58,7 +58,7 @@ const gpxJonStyle =
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
 }
-const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
