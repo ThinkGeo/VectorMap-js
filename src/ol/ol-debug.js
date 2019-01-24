@@ -30984,7 +30984,7 @@ function olInit() {
             var textReplay = replayGroup.getReplay(
                 2, ol.render.ReplayType.TEXT);
             // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
-            // textReplay.drawText(geometry, feature); 
+            // textReplay.drawText(geometry, feature);
             textReplay.startIndicesFeature.push(feature);
             var textStyleClone = textStyle.clone();
             textStyleClone.label = textStyle.label;
@@ -71436,20 +71436,10 @@ function olInit() {
             var startM;
 
             // declutter duplicate label
-                // if(window.tests == undefined){
-                //     window.tests = 0;
-                // }
-                // if(this.text_.includes('United States')){
-                // if(!this.text_.includes('Ross Avenue')){
-                    // return
+                // if(!this.text_.includes('Canton Street')){
                     // debugger
+                    // return
                 // }
-
-                // if(window.tests !== 3){
-                //     window.tests += 1;
-                //     // return;
-                // }
-                // window.tests += 1;
             // declutter duplicate label end
             
             if(!this.label){    
@@ -71459,7 +71449,8 @@ function olInit() {
                 this.tmpGroupIndices = this.groupIndices.slice(0);
                 this.extent = ol.extent.createOrUpdateEmpty();          
                 var i, ii, j, jj, currX, currY, charArr, charInfo; 
-                var glyphAtlas = this.currAtlas_;            
+                var startM = 0;
+                var glyphAtlas = this.currAtlas_; 
                 for (i = 0, ii = lines.length; i < ii; ++i) {
                     var textSize = this.getTextSize_([lines[i]]);
                     var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
@@ -71468,7 +71459,6 @@ function olInit() {
                     currY = glyphAtlas.height * i;
                     charArr = lines[i].split(''); 
 
-                    // debugger
                     var lineStringCoordinates = geometry.getFlatCoordinates();
                     var endLineString = lineStringCoordinates.length;
                     // Keep text upright
@@ -71481,10 +71471,11 @@ function olInit() {
                     var y2 = lineStringCoordinates[offset + 1];
                     var segmentM = 0;
                     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-                    var startM = 0;                    
+                    // startM += 200;                    
                     var charFlatCoordinates = [x1, y1];
                     var index, previousAngle;
 
+                    // prepare coordinates
                     for (var j = 0; j < numChars; ++j) {
                         index = reverse ? numChars - j - 1 : j;
                         charInfo = glyphAtlas.atlas.getInfo(charArr[index]);
@@ -71507,18 +71498,27 @@ function olInit() {
                                 segmentM += segmentLength;
                                 segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                             }
-
+                            // var segmentPos = charM - segmentM;
                             var angle = Math.atan2(y2 - y1, x2 - x1);     
-                            
-                            if(angle > this.maxAngle_){
-                                return;
-                            }
                             
                             if (reverse) {
                                 angle += angle > 0 ? -Math.PI : Math.PI;
                             }
 
-                            if(previousAngle !== undefined && angle !== previousAngle){                                
+                            if(previousAngle == undefined){
+                                charFlatCoordinates = [x1, y1];
+                            }
+
+                            if(previousAngle !== undefined && angle !== previousAngle){
+                                var delta = angle - previousAngle;       
+                                delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
+                                if (Math.abs(delta) > this.maxAngle_) {
+                                    return;
+                                }        
+                                
+                                // var interpolate = segmentPos / segmentLength;
+                                // var x = ol.math.lerp(x1, x2, interpolate);
+                                // var y = ol.math.lerp(y1, y2, interpolate);
                                 charFlatCoordinates = [x1, y1];
                                 currX = startM - segmentM;
                             }
@@ -102726,7 +102726,7 @@ function olInit() {
             // console.log(requestTileCoord);
             // if(!(requestTileCoord.toString() == "2,0,-2")){
             // if(requestTileCoord.toString() !== "14,3786,-6612"){
-            // if(tileCoord.toString() !== "15,7572,-13223"){
+            // if(tileCoord.toString() !== "15,7571,-13222"){
             // if(tileCoord.toString() !== "15,7563,-13209" && tileCoord.toString() !== "15,7564,-13209" ){
                 // return
             // }
