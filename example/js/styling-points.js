@@ -4,7 +4,7 @@ const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     apiKey: 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~' // please go to https://cloud.thinkgeo.com to create
 });
  
-
+//Geojson style data
 const geosjonStyle = {
     "id": "Frisco-school-poi",
     "version": 1.3,
@@ -71,10 +71,12 @@ const geosjonStyle = {
     }]
 }
 
+//Create layer
 let pointLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 })
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

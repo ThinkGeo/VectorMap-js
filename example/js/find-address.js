@@ -22,7 +22,7 @@ let _styles = {
 let focusIndex = null;
 let resultsLength;
 
-//creat result layer
+//create result layer
 const createGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
@@ -90,6 +90,7 @@ const popUp = function (address, coordinates, type) {
 
 const geocoderResultNode = document.getElementById('geocoderResult');
 
+//Renter result
 const renderResult = ({ locations }) => {
     document.querySelector('.loading').classList.add('hidden');
     if (locations.length > 0) {

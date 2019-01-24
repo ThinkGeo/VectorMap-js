@@ -1,3 +1,4 @@
+//Style json data
 const baseMapStyleJson = {
     "id": "europe",
     "version": 1.3,
@@ -127,6 +128,7 @@ const riverStyleJson = {
     }]
 };
 
+//Create layer with diiffent style json
 let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyleJson, {
     multithread: false
 });

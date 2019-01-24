@@ -1,5 +1,6 @@
 let streetMap;
 
+//Render map
 function renderStreetMap() {
     let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
         'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
@@ -52,7 +53,7 @@ class StreetMap extends React.Component {
             });
         });
     }
-
+    //Get value
     parkFillColorHandleChange(event) {
         this.setState({
             parkColor: event.target.value
@@ -97,6 +98,7 @@ class StreetMap extends React.Component {
         return readTextFile;
     }
 
+    //Updated style
     clickRefresh() {
         let layers = streetMap.getLayers().getArray();
         streetMap.removeLayer(layers[0]);
@@ -164,6 +166,7 @@ class StreetMap extends React.Component {
         }
     }
 
+    //Render html
     render() {
         this.changePlacement();
         this.changeParkColor();

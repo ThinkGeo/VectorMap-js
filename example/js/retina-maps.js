@@ -1,5 +1,5 @@
  
-// retina layer
+// Retina layer
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x2/3857/512/{z}/{x}/{y}.png"
@@ -9,7 +9,7 @@ let map2xLayer = new ol.layer.Tile({
     }),
 });
 
-//craet map
+//Create map
 let map2x = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

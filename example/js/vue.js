@@ -9,6 +9,7 @@ let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
     'apiKey': 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 });
 
+//Create map
 let map = new ol.Map({
     oadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -50,6 +51,7 @@ getJson().then((data) => {
     json = JSON.parse(data);
 })
 
+//updated map style
 const updatedWater = (poiSize, waterColor, buildingColor) => {
     let styles = json.styles;
     let stylesLength = styles.length;
@@ -65,6 +67,7 @@ const updatedWater = (poiSize, waterColor, buildingColor) => {
     return json;
 }
 
+//refresh
 const clickRefresh = (json) => {
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);

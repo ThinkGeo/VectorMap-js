@@ -6,6 +6,7 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

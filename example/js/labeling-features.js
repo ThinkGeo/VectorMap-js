@@ -1,3 +1,4 @@
+//Load icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -5,6 +6,7 @@ WebFont.load({
     }
 });
 
+//style json
 const geosjonStyle = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
@@ -84,15 +86,17 @@ const hotelStyleJson = {
     }]
 };
 
-
+//Create block line layer
 let blockMapLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
     multithread: false
 });
 
+//Create hotel poi layer
 let hotelLayer = new ol.mapsuite.VectorLayer(hotelStyleJson, {
     multithread: false
 });
 
+//Craete map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

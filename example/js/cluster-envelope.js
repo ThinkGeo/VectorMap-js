@@ -29,7 +29,6 @@ const getStyle = function (feature, resolution) {
     let size = feature.get('features').length;
     let style = styleCache[size];
     if (!style) {
-        // let color = size > 8 ? "248, 128, 0" : size > 2 ? "248, 192, 0" : "128, 192, 64";
         let color;
         const xxl = 100;
         const xl = 50;

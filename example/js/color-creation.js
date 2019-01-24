@@ -2,89 +2,50 @@
 const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
 const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 
-const output = function (data) {
+//Render data
+const renderData = (data) => {
+    let outputData = []
+    if (data) {
+        if (data.data.colors) {
+            outputData = data.data.colors;
+        } else {
+            data.data.forEach(function (val) {
+                outputData = outputData.concat(val.colors)
+            });
+        }
+    }
+    updateStyle(outputData)
+}
 
-    $('#output').html("");
-    let outputData = [];
-    if (data.colors) {
-        outputData = data.colors
+//Use get to get data
+const getResponse = () => {
+    let options = {
+        category: $('select#category option:selected').val(),
+        radio: $('input:radio:checked').val(),
+        color: $('#color').val(),
+        numbur: 20,
+    }
+    let getURL
+
+    if (options.radio == 'random') {
+        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
     } else {
-        data.forEach(function (val) {
-            val.colors.forEach(function (color) {
-                outputData.push(color)
-            })
-        });
+        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
     }
 
-    return outputData;
-}
- 
+    let jqxhr = $.get(getURL, function (data) {
+        if (data.status == 'success') {
+            renderData(response)
+        }
+    });
 
-
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-    }
-});
-
-let color = ["641615", "7C1B1A", "93201F", "AB2624", "C22B28", "D43533", "D94D4A", "65153C", "7C1A4A", "931F58", "AB2567", "C22A75", "D33583", "D84C91", "641563", "7C1A7A", "931F91", "AB24A9", "C228C0", "D433D1"]
-
-let styles = {
-    'XXXS': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[19]}`
-        })
-    }),
-    'XXS': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[17]}`
-        })
-    }),
-    'XS': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[15]}`
-        })
-    }),
-    'S': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[13]}`
-        })
-    }),
-    'M': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[11]}`
-        }),
-    }),
-    'L': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[9]}`
-        }),
-    }),
-    'XL': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[7]}`
-        })
-    }),
-    'XXL': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[5]}`
-        })
-    }),
-    'XXXL': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[3]}`
-        })
-    }),
-    'XXXXL': new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: `#${color[0]}`
-        })
-    }),
+    jqxhr.fail(function (data) {
+        window.alert('No results');
+    })
 
 }
 
-//base map style 
+//Render base map
 const baseMapStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
         color: 'rgba(256, 256, 256, 1)',
@@ -109,13 +70,89 @@ let baseMapLayer = new ol.layer.Vector({
     }),
     style: function (feature) {
         baseMapStyle.getText().setText(feature.get('NAME'));
-      
+
         return baseMapStyle;
     }
 });
- 
 
-const layerStyle= function (feature) {
+let colorLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: '../data/world-population.geo.json',
+        format: new ol.format.GeoJSON(),
+    })
+})
+
+//Create map
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
+    layers: [colorLayer, baseMapLayer],
+    target: 'map',
+    view: new ol.View({
+        center: ol.proj.fromLonLat([18.79620, 50.55423]),
+        maxZoom: 19,
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 4,
+    }),
+});
+
+//Update style
+const updateStyle = (outputData) => {
+    let styles = {
+        'XXXS': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[19]}`
+            })
+        }),
+        'XXS': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[17]}`
+            })
+        }),
+        'XS': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[15]}`
+            })
+        }),
+        'S': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[13]}`
+            })
+        }),
+        'M': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[11]}`
+            }),
+        }),
+        'L': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[9]}`
+            }),
+        }),
+        'XL': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[7]}`
+            })
+        }),
+        'XXL': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[5]}`
+            })
+        }),
+        'XXXL': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[3]}`
+            })
+        }),
+        'XXXXL': new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: `#${outputData[0]}`
+            })
+        }),
+
+    }
+    //Style divided by population
+    const layerStyle = function (feature) {
         let population = Number(feature.get('POP2005'))
         if (population < 10000) {
             return styles.XXXS
@@ -137,112 +174,20 @@ const layerStyle= function (feature) {
             return styles.XXXL
         } else if (population > 100000000) {
             return styles.XXXXL
+        } else {
+            return styles.XXL
         }
     }
+    colorLayer.setStyle(layerStyle)
+}
 
 
-
-let colorLayer = new ol.layer.Vector({
-    source: new ol.source.Vector({
-        url: '../data/world-population.geo.json',
-        format: new ol.format.GeoJSON(),
-    }),
-    style: layerStyle
-
-})
-
-let map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
-    loadTilesWhileInteracting: true,
-    layers: [colorLayer, baseMapLayer],
-    target: 'map',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        maxZoom: 19,
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 4,
-    }),
-});
-
-map.addControl(new ol.control.FullScreen());
-
-$('button').click(function () {
-    let options = {
-        category: $('select#category option:selected').val(),
-        radio: $('input:radio:checked').val(),
-        color: $('#color').val(),
-        numbur: 20,
-    }
-    let getURL
-
-    if (options.radio == 'random') {
-        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
-    } else {
-        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
-    }
-
-    let jqxhr = $.get(getURL, function (data) {
-        if (data.status == 'success') {
-             color = output(data.data);
-            styles = {
-                'XXXS': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[19]}`
-                    })
-                }),
-                'XXS': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[17]}`
-                    })
-                }),
-                'XS': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[15]}`
-                    })
-                }),
-                'S': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[13]}`
-                    })
-                }),
-                'M': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[11]}`
-                    }),
-                }),
-                'L': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[9]}`
-                    }),
-                }),
-                'XL': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[7]}`
-                    })
-                }),
-                'XXL': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[5]}`
-                    })
-                }),
-                'XXXL': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[3]}`
-                    })
-                }),
-                'XXXXL': new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: `#${color[0]}`
-                    })
-                }),
-
-            }
-            colorLayer.setStyle(layerStyle)
-        }
-    });
-
-    jqxhr.fail(function (data) {
-        window.alert('No results');
+window.onload = function a() {
+    //default color
+    let defaultData = ["641615", "7C1B1A", "93201F", "AB2624", "C22B28", "D43533", "D94D4A", "65153C", "7C1A4A", "931F58", "AB2567", "C22A75", "D33583", "D84C91", "641563", "7C1A7A", "931F91", "AB24A9", "C228C0", "D433D1"]
+    updateStyle(defaultData)
+    document.getElementById('generate').addEventListener('click', (e) => {
+        getResponse()
     })
+}
 
-});

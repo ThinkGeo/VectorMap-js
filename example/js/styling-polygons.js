@@ -1,4 +1,4 @@
-//basemap style
+//Basemap style
 const baseMapStyleJson = {
     "id": "base",
     "version": 1.3,
@@ -47,7 +47,7 @@ const baseMapStyleJson = {
     }]
 };
 
-//highlight style
+//Highlight style
 const highlightStyle = new ol.style.Style({
     fill: new ol.style.Fill({
         color: '#f4755d'
@@ -68,7 +68,7 @@ const highlightStyle = new ol.style.Style({
     })
 });
 
-// highlight text wrap
+// Highlight text wrap
 const stringDivider = (str, width, spaceReplacer) => {
     if (str.length > width) {
         var p = width;

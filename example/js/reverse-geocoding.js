@@ -36,7 +36,7 @@ let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     layerName: 'light'
 });
 
-//creat resultLayer
+//create resultLayer
 const createGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
@@ -102,7 +102,7 @@ const popUp = function (address, centerCoordinate) {
     content.innerHTML = '<p style="font-size:1.3rem" >' + (addressArr[0] || '') + '</p><p style="margin-left:2px">' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
 }
 
-//creat view
+//create view
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
     maxZoom: 19,
@@ -110,7 +110,7 @@ let view = new ol.View({
     zoom: 16,
 })
 
-//creat map
+//create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -122,7 +122,7 @@ let map = new ol.Map({
 map.addControl(new ol.control.FullScreen());
 
 
-//creat feature
+//create feature
 const createFeature = function (wkt) {
     let wktReader = new ol.format.WKT();
     let feature = wktReader.readFeature(wkt);

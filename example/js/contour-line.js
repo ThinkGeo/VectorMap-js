@@ -9,12 +9,12 @@ const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/dark.json";
 
-//base layer
+//Base layer
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
-//heatmap layer
+//Heatmap layer
 let vector = new ol.layer.Vector({
     source: null,
     style: function (feature) {
@@ -23,7 +23,7 @@ let vector = new ol.layer.Vector({
     }
 });
 
-//create map
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -76,7 +76,7 @@ $.get("../data/rainfall.json", function (result) {
 
 })
 
-//style of line 
+//Style of line 
 let styleLineFunc = function (feature) {
     let color = feature.get("color");
     let text = feature.get("symbol");
@@ -101,7 +101,7 @@ let styleLineFunc = function (feature) {
     })
 };
 
-//style of  plane
+//Style of  plane
 let stylePlaneFunc = function (feature) {
     let color = feature.get("color");
     color = "rgba(" + color + ")";
@@ -115,7 +115,7 @@ let stylePlaneFunc = function (feature) {
 vector.setStyle(styleLineFunc);
 vector.setOpacity(0.8);
 
-// check the status of checkbox:
+// Check the status of checkbox:
 if ($('#checkbox').prop('checked')) {
     vector.setStyle(stylePlaneFunc);
 }

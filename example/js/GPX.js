@@ -1,9 +1,12 @@
+ //Load icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
         urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
     }
 });
+
+//Style json data
 const gpxJonStyle =
 {
     "id": "thinkgeo-world-streets-light",
@@ -57,6 +60,7 @@ const styleJson = {
 }
 const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
 
+
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
     layerName: 'light'
@@ -67,6 +71,7 @@ let gpxVectorLayer = new ol.mapsuite.VectorLayer(gpxJonStyle, {
     multithread: false
 })
 
+//Create view
 let view = new ol.View({
     center: [-7916041.528716288, 5228379.045749711],
     maxZoom: 19,
@@ -75,6 +80,7 @@ let view = new ol.View({
    
 });
 
+//Create Map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

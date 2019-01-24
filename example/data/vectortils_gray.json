@@ -140,10 +140,8 @@
         {
             "id": "water",
             "filter": "layerName='water'",
-            "style": [{
-                "filter": "zoom>=0;zoom<=19;",
-                "polygon-fill": "#eee"
-            }]
+            "polygon-fill": "#eee"
+       
         },
         {
             "id": "country_boundary",

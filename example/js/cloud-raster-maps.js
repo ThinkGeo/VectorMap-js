@@ -1,3 +1,4 @@
+//Load icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -5,7 +6,7 @@ WebFont.load({
     }
 });
 
-const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'// please go to https://cloud.thinkgeo.com to create
 let url = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
@@ -13,7 +14,7 @@ let url = {
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
 }
 
-
+//Create layer with different source
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.light,
@@ -50,7 +51,7 @@ let aerial = new ol.layer.Tile({
 });
 
 
-
+//Create map
 let map = new ol.Map({
     layers: [dark, light, aerial, transparentBackground,],
     target: 'map',
@@ -70,10 +71,10 @@ map.addControl(new ol.control.FullScreen());
 
 const applyAPIKey = document.getElementById("ckbApiKey");
 
+//If no apikey set new source
 const setSource = (url) => {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
-        // layers[i].get("layerName")
         layers[i].setSource(new ol.source.XYZ({
             url: url[`${layers[i].get("layerName")}`],
             tileSize: 512,
@@ -82,6 +83,7 @@ const setSource = (url) => {
     }
 }
 
+//updated url
 applyAPIKey.addEventListener('click', (e) => {
     if (applyAPIKey.getAttribute('checked') == 'checked') {
         applyAPIKey.setAttribute('checked', 'unchecked')
@@ -121,6 +123,7 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     }
 })
 
+//Change layer to visible
 const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
     if (e.target.getAttribute("value") == 'hybrid') {

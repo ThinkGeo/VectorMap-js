@@ -23,6 +23,7 @@ let view = new ol.View({
     zoom: 16,
 })
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -67,6 +68,7 @@ const popUp = function (address, centerCoordinate) {
     content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
 }
 
+// Get data
 const reverseGeocode = function (coordinate) {
 
 

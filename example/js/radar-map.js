@@ -1,3 +1,4 @@
+//Load icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -27,8 +28,8 @@ let map = new ol.Map({
 });
 map.addControl(new ol.control.FullScreen());
 
-//AQI layer
-let AQIlayer = (id, data, color, pt) => {
+//Education layer
+let educationLayer = (id, data, color, pt) => {
     let lineStyle = {
         normal: {
             width: 2,
@@ -102,11 +103,12 @@ let AQIlayer = (id, data, color, pt) => {
 
 for (let i = 0; i < 26; i++) {
     let aqiDiv = document.createElement("div");
-    aqiDiv.id = `AQIChart${i}`;
+    aqiDiv.id = `educationChart${i}`;
     aqiDiv.style = "height:200px;width:430px";
-    document.querySelector("#AQIChart").appendChild(aqiDiv)
+    document.querySelector("#educationLayerChart").appendChild(aqiDiv)
 }
 
+//Get stylejson
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         let file = "../data/educationLsee.geojson";
@@ -151,8 +153,8 @@ getJson().then(function (data) {
                 }
             }
         });
-        let index = `AQIChart${i}`;
-        map.addOverlay(AQIlayer(index, stateArr[i], textColor, ol.proj.fromLonLat(coor)));
+        let index = `educationChart${i}`;
+        map.addOverlay(educationLayer(index, stateArr[i], textColor, ol.proj.fromLonLat(coor)));
     }
 })
 

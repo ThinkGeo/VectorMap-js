@@ -18,7 +18,7 @@ let imageryLayer = new ol.layer.Tile({
     }),
 });
 
-//creat map
+//create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

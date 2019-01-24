@@ -11,6 +11,7 @@ var intervalDistanceUnit = "Feet";
 window.app = {};
 const app = window.app;
 
+//Draw Line
 app.drawLineControl = function (opt_options) {
   const options = opt_options || {};
   const button = document.createElement('button');
@@ -35,6 +36,7 @@ $(function () {
 
 });
 
+//Create basemap layer
 let satelliteLayer = new ol.layer.Tile({
   source: new ol.source.XYZ({
     url: "https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
@@ -50,6 +52,7 @@ var removeFeature = function (feature) {
   createVector().getSource().removeFeature(feature);
 };
 
+//Define style
 var styles = {
   'waypoint': new ol.style.Style({
     image: new ol.style.Circle({
@@ -101,6 +104,7 @@ var createVector = function () {
   });
 };
 
+//Craete map
 var map = new ol.Map({
   controls: ol.control.defaults({
     attributionOptions: {
@@ -130,7 +134,7 @@ map.addInteraction(new ol.interaction.DragPan({
   }
 }));
 
-
+//Get data by cloudclint
 var drawLineElevation = function (feature) {
   var apiInstance = new GisServerApis.ElevationApi();
   var line = feature.getGeometry();
@@ -191,6 +195,7 @@ var drawLineElevation = function (feature) {
   }
 }
 
+//Change the parameters
 var canExecuteApiCall = function () {
   var samplesNumber = $('#samples-number').val();
   if (Number.isNaN(samplesNumber)) {
@@ -258,6 +263,7 @@ var polygonDefault = function () {
   var APIKey = defaultClient.authentications['API Key'];
   APIKey.apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~';
 
+  //default data
   featureDefault = new ol.Feature({
     geometry: new ol.geom.LineString([
       [-13541888.484786397, 6056958.501631321],
@@ -331,6 +337,7 @@ var getChartDataSet = function (data) {
   };
 };
 
+//Render result to chart
 var initChart = function () {
   _chartCtx = document.getElementById('chartContainer').getContext("2d");
 }
