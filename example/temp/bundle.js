@@ -548,44 +548,40 @@
       Object.defineProperty(exports, "__esModule", {
         value: true
       });
-      const menuData = [{
-        dataTarget: 'thinkGeo-cloud-maps',
-        styleName: 'ThinkGeo Cloud Maps',
-        subitems: [{
-          comments: "Consume ThinkGeo Cloud vector tiles using pre-defined Map Styles.",
-          title: 'Vector Maps',
-          htmlPath: './example/html/cloud-vector-maps.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/BGXGrb',
-          jsPath: './example/js/cloud-vector-maps.js'
-        }, {
-          comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
-          title: 'Raster Maps',
-          htmlPath: './example/html/cloud-raster-maps.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/vQoQMQ',
-          jsPath: './example/js/cloud-raster-maps.js'
-        }, {
-          comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
-          title: 'Hybrid Maps',
-          htmlPath: './example/html/satellite-with-labels.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/KrObdg',
-          jsPath: './example/js/satellite-with-labels.js'
-        }, {
-          comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
-          title: 'Raster Maps (High Resolution)',
-          htmlPath: './example/html/retina-maps.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/NEQeXR',
-          jsPath: './example/js/retina-maps.js'
-        }, {
-          comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
-          title: 'Vector Maps on Custom Imagery',
-          htmlPath: './example/html/imagery-with-labels.html',
-          codePenUrl: 'https://codepen.io/thinkgeo/pen/aQePBG',
-          jsPath: './example/js/imagery-with-labels.js'
-        }]
-      }, {
+      const menuData = [ {
         dataTarget: 'ThinkGeo-cloud-services',
         styleName: 'ThinkGeo Cloud Services',
-        subitems: [{
+          subitems: [{
+            comments: "Consume ThinkGeo Cloud vector tiles using pre-defined Map Styles.",
+            title: 'Vector Maps',
+            htmlPath: './example/html/cloud-vector-maps.html',
+            codePenUrl: 'https://codepen.io/thinkgeo/pen/BGXGrb',
+            jsPath: './example/js/cloud-vector-maps.js'
+          }, {
+              comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
+              title: 'Raster Maps',
+              htmlPath: './example/html/cloud-raster-maps.html',
+              codePenUrl: 'https://codepen.io/thinkgeo/pen/vQoQMQ',
+              jsPath: './example/js/cloud-raster-maps.js'
+            }, {
+              comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
+              title: 'Hybrid Maps',
+              htmlPath: './example/html/satellite-with-labels.html',
+              codePenUrl: 'https://codepen.io/thinkgeo/pen/KrObdg',
+              jsPath: './example/js/satellite-with-labels.js'
+            }, {
+              comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
+              title: 'Raster Maps (High Resolution)',
+              htmlPath: './example/html/retina-maps.html',
+              codePenUrl: 'https://codepen.io/thinkgeo/pen/NEQeXR',
+              jsPath: './example/js/retina-maps.js'
+            }, {
+              comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
+              title: 'Vector Maps on Custom Imagery',
+              htmlPath: './example/html/imagery-with-labels.html',
+              codePenUrl: 'https://codepen.io/thinkgeo/pen/aQePBG',
+              jsPath: './example/js/imagery-with-labels.js'
+            },{
           comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.`,
           title: 'Get Elevation Along Path',
           htmlPath: './example/html/elevation.html',

@@ -5,16 +5,18 @@ WebFont.load({
     }
 });
 
-
-const url = {
-    light: 'https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png',
-    dark: 'https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png'
-}
 const apiKey = 'Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~'
+let url = {
+    light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+    dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+    aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
+    transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
+}
+
 
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: `${url.light}?apiKey=${apiKey}`,
+        url: url.light,
         tileSize: 512,
     }),
     visible: false,
@@ -23,14 +25,34 @@ let light = new ol.layer.Tile({
 
 let dark = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: `${url.dark}?apiKey=${apiKey}`,
+        url: url.dark,
         tileSize: 512,
     }),
     layerName: 'dark'
 });
 
+let transparentBackground = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: url.transparentBackground,
+        tileSize: 512,
+    }),
+    visible: false,
+    layerName: 'transparentBackground'
+});
+
+let aerial = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: url.aerial,
+        tileSize: 512,
+    }),
+    visible: false,
+    layerName: 'aerial'
+});
+
+
+
 let map = new ol.Map({
-    layers: [dark, light,],
+    layers: [dark, light, aerial, transparentBackground,],
     target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -46,24 +68,76 @@ let map = new ol.Map({
 
 map.addControl(new ol.control.FullScreen());
 
-document.getElementById('wrap').addEventListener('click', (e) => {
-    const nodeList = document.querySelectorAll('#wrap div');
-    for (let node of nodeList) {
-        node.style.borderColor = 'transparent';
+const applyAPIKey = document.getElementById("ckbApiKey");
+
+const setSource = (url) => {
+    let layers = map.getLayers().getArray();
+    for (let i = 0; i < layers.length; i++) {
+        // layers[i].get("layerName")
+        layers[i].setSource(new ol.source.XYZ({
+            url: url[`${layers[i].get("layerName")}`],
+            tileSize: 512,
+        }));
+
     }
-    if (e.target.nodeName == 'DIV') {
-        e.target.style.borderColor = '#ffffff';
-        changeLayer(e);
+}
+
+applyAPIKey.addEventListener('click', (e) => {
+    if (applyAPIKey.getAttribute('checked') == 'checked') {
+        applyAPIKey.setAttribute('checked', 'unchecked')
+        url = {
+            light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png`,
+            dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png`,
+            aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg`,
+            transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png`
+        }
+        setSource(url)
+
+
+    } else {
+        applyAPIKey.setAttribute('checked', 'checked')
+        url = {
+            light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+            dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+            aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
+            transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
+        }
+        setSource(url)
+    }
+
+})
+
+
+document.getElementById('wrap').addEventListener('click', (e) => {
+    if (e.target.classList.contains('thumb')) {
+        const nodeList = document.querySelectorAll('#wrap div');
+        for (let node of nodeList) {
+            node.style.borderColor = 'transparent';
+        }
+        if (e.target.nodeName == 'DIV') {
+            e.target.style.borderColor = '#ffffff';
+            changeLayer(e);
+        }
     }
 })
 
 const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
-    for (let i = 0; i < layers.length; i++) {
-        if (layers[i].get("layerName") == e.target.getAttribute("value")) {
-            layers[i].setVisible(true);
-        } else {
+    if (e.target.getAttribute("value") == 'hybrid') {
+        for (let i = 0; i < layers.length; i++) {
             layers[i].setVisible(false);
+        }
+        transparentBackground.setVisible(true);
+        aerial.setVisible(true);
+
+    } else {
+        for (let i = 0; i < layers.length; i++) {
+
+            if (layers[i].get("layerName") == e.target.getAttribute("value")) {
+                layers[i].setVisible(true);
+            } else {
+                layers[i].setVisible(false);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
             position: relative;
             width: 100%;
             height: 100%;
+            background-color: #4a4a4a;
         }
 
         #wrap {
@@ -20,25 +21,46 @@
             top: 1em;
             right: 0.5em;
             z-index: 1000;
-
+            color: #fff;
+            font-size: 12px
         }
 
         .thumb {
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
             z-index: 1000;
             border: 2px solid transparent;
             margin-bottom: 5px;
             cursor: pointer;
+
         }
 
         .thumb-light {
-            background-image: url(../image/vector-map-light.jpg)
+            background: url(../image/vector-map-light.jpg);
+            background-size: contain
         }
 
         .thumb-dark {
-            background-image: url(../image/vector-map-dark.jpg)
+
+            background: url(../image/vector-map-dark.jpg);
+            background-size: contain
         }
+
+        .thumb-hybrid {
+            background: url(../image/vector-map-hybrid.jpg);
+            background-size: contain
+        }
+
+        .thumb-aerial {
+            background: url(../image/vector-map-aerial.jpg);
+            background-size: contain
+        }
+
+        .thumb-transparent-background {
+            background: url(../image/vector-map-transparent-background.jpg);
+            background-size: contain
+        }
+
 
         .ol-control:hover {
             background-color: unset;
@@ -77,10 +99,19 @@
 <body>
     <div id="map">
         <div id="wrap">
+            <input type="checkbox" id="ckbApiKey" checked="checked">
+            <label for="rbtLight">Use API Key </label>
             <div class="thumb thumb-light" value="light">
             </div>
             <div class="thumb thumb-dark" style="  border: 2px solid #ffffff;" value="dark">
             </div>
+            <div class="thumb thumb-aerial" value="aerial">
+            </div>
+            <div class="thumb thumb-hybrid" value="hybrid">
+            </div>
+            <div class="thumb thumb-transparent-background" value="transparentBackground">
+            </div>
+
         </div>
     </div>
     <!-- latest minified version of vectormap.js -->
