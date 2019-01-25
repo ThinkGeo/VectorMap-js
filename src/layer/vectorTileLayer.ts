@@ -735,6 +735,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.replayImage_(context.frameState, geometry, feature, style, declutterGroup, callback);
                             this.renderDeclutter_(declutterGroup, feature);
                         }else{
+                            // draw chars
                             this.drawText(geometry, feature);
                         }
                     }
