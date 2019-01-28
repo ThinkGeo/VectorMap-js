@@ -71443,59 +71443,66 @@ function olInit() {
                 // declutter duplicate label end
                 
             if(!this.label){ 
-                var measure = function(text){
-                    return this.measureCanvas_.getContext('2d').measureText(text).width;
-                }.bind(this);
-                var maxAngle = this.maxAngle_;
-                var lineStringCoordinates = geometry.getFlatCoordinates();
-                var pixelCoordinate;
-                var pixelCoordinates = [];
-                for(var i = 0; i < lineStringCoordinates.length; i += 2){
-                    pixelCoordinate = map.getPixelFromCoordinate([lineStringCoordinates[i], lineStringCoordinates[i + 1]]);
-                    pixelCoordinates.push(...map.getPixelFromCoordinate([lineStringCoordinates[i], lineStringCoordinates[i + 1]]));
-                }
-                var end = pixelCoordinates.length;
-                var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, offset, end, stride);
-                let textLength = measure(text);
+                if(false){
 
-                if (textLength * 1.2 <= pathLength) {
-                    var currentResolution = map.frameState_.context["currentResolution"];
-                    var ratio = window.devicePixelRatio * 1.194328566955879 / currentResolution;
-                    if(ratio >= 3){
-                        ratio /= 2;
+                    var measure = function(text){
+                        return this.measureCanvas_.getContext('2d').measureText(text).width;
+                    }.bind(this);
+                    var maxAngle = this.maxAngle_;
+                    var lineStringCoordinates = geometry.getFlatCoordinates();
+                    var pixelCoordinate;
+                    var pixelCoordinates = [];
+                    for(var i = 0; i < lineStringCoordinates.length; i += 2){
+                        pixelCoordinate = map.getPixelFromCoordinate([lineStringCoordinates[i], lineStringCoordinates[i + 1]]);
+                        pixelCoordinates.push(...map.getPixelFromCoordinate([lineStringCoordinates[i], lineStringCoordinates[i + 1]]));
                     }
-                    // if (currentResolution < 1) {
-
-                    // }
-                    var distance = 180 * ratio;
-                    var tmpLength = pathLength - textLength;
-                    var centerPoint = tmpLength / 2;
-                    var leftPoint = centerPoint;
-                    var rightPoint = centerPoint;
-                    var pointArray = [];
-                    pointArray.push(centerPoint);
-
-                    while(leftPoint > ((textLength / 2) + distance)){
-                        leftPoint = leftPoint - distance;
-                        pointArray.push(leftPoint);        
-                    }
-                    while(rightPoint < ((pathLength - textLength / 2) - distance)){
-                        rightPoint = rightPoint + distance;                                   
-                        pointArray.push(rightPoint);                                    
-                    }
-
-                    for (var len = 0; len < pointArray.length; len++) {
-                        var startM = pointArray[len];
-                        let parts = ol.geom.flat.textpath.lineString(pixelCoordinates, offset, end, 2, text, measure, startM, maxAngle);
-                        if(parts){
-                            
+                    var end = pixelCoordinates.length;
+                    var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, offset, end, stride);
+                    let textLength = measure(text);
+    
+                    if (textLength * 1.2 <= pathLength) {
+                        var ratio = window.devicePixelRatio * 1.194328566955879 / resolution;
+                        if(ratio >= 3){
+                            ratio /= 2;
+                        }
+                        // if (currentResolution < 1) {
+    
+                        // }
+                        var distance = 180 * ratio;
+                        var tmpLength = pathLength - textLength;
+                        var centerPoint = tmpLength / 2;
+                        var leftPoint = centerPoint;
+                        var rightPoint = centerPoint;
+                        var pointArray = [];
+                        pointArray.push(centerPoint);
+    
+                        while(leftPoint > ((textLength / 2) + distance)){
+                            leftPoint = leftPoint - distance;
+                            pointArray.push(leftPoint);        
+                        }
+                        while(rightPoint < ((pathLength - textLength / 2) - distance)){
+                            rightPoint = rightPoint + distance;                                   
+                            pointArray.push(rightPoint);                                    
+                        }
+    
+                        for (var len = 0; len < pointArray.length; len++) {
+                            var startM = pointArray[len];
+                            let parts = ol.geom.flat.textpath.lineString(pixelCoordinates, offset, end, 2, text, measure, startM, maxAngle);
+                            if(parts){
+                                for(var j = 0; j < parts.length; j++){
+                                    var part = parts[j];
+                                    var lines = part[4];
+                                    // for (var i = 0, ii = lines.length; i < ii; ++i) {
+                                        debugger
+                                        var textSize = this.getTextSize_([lines]);
+                                    // }
+                                }
+                            }
                         }
                     }
+                    
+                    return;
                 }
-                
-
-
-                return;
 
 
                 this.tmpVertices = this.vertices.slice(0);

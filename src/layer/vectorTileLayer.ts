@@ -736,6 +736,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.renderDeclutter_(declutterGroup, feature);
                         }else{
                             // draw chars
+                            // var flatCoordinates = geometry.flatCoordinates_;
+                            // geometry.flatCoordinates_ = flatCoordinates.slice(0, 6);
+                            // geometry.ends_ = geometry.flatCoordinates_.length;
+                            // this.drawText(geometry, feature);
+                            // geometry.flatCoordinates_ = flatCoordinates.slice(6);
+                            // geometry.ends_ = geometry.flatCoordinates_.length;
                             this.drawText(geometry, feature);
                         }
                     }
