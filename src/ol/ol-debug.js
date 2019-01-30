@@ -68914,6 +68914,23 @@ function olInit() {
                     stride, -this.origin[0], -this.origin[1]);
                 
                 if (this.state_.changed) {
+                    // let layerName = feature.properties_.layerName;
+                    // let class = feature.properties_.class;
+                    if(feature.properties_.class == "primary" && feature.styleId.includes('#c')){
+                        let z_order = feature.properties_.z_order;
+                        this.zCoordinates.push(0.01 / (z_order+100));
+                        // debugger;
+                    }else if(feature.properties_.layerName== "road"){
+                        let z_order = feature.properties_.z_order;
+                        this.zCoordinates.push(0.1 / (z_order+100));
+                    }else if(feature.properties_.layerName == "waterway"){
+                        this.zCoordinates.push(0.01 / 1);
+                    }else if(feature.properties_.layerName == "admin_boundary"&& feature.styleId.includes('#c')){
+                        this.zCoordinates.push(0.00001);
+                    }else{
+                        this.zCoordinates.push(0.009 / 100);
+                    }
+                    // debugger;
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
@@ -68955,6 +68972,20 @@ function olInit() {
             this.startIndices.push(indexCount);
             this.startIndicesFeature.push(feature);
             if (this.state_.changed) {
+                if(feature.properties_.class == "primary" && feature.styleId.includes('#c')){
+                    let z_order = feature.properties_.z_order;
+                    this.zCoordinates.push(0.01 / (z_order+100));
+                    // debugger;
+                }else if(feature.properties_.layerName== "road"){
+                    let z_order = feature.properties_.z_order;
+                    this.zCoordinates.push(0.1 / (z_order+100));
+                }else if(feature.properties_.layerName == "waterway"){
+                    this.zCoordinates.push(0.01 / 1);
+                }else if(feature.properties_.layerName == "admin_boundary"&& feature.styleId.includes('#c')){
+                    this.zCoordinates.push(0.00001);
+                }else{
+                    this.zCoordinates.push(0.009 / 100);
+                }
                 this.styleIndices_.push(indexCount);
                 this.state_.changed = false;
             }
@@ -69131,6 +69162,8 @@ function olInit() {
             for (i = this.styleIndices_.length - 1; i >= 0; --i) {
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
+                // debugger;
+                gl.uniform1f(this.u_zIndex,this.zCoordinates[i])
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                 this.drawElements(gl, context, start, end);
                 end = start;
@@ -70524,8 +70557,8 @@ function olInit() {
                     this.state_.changed = false;
                 }
                 if(this.lineStringReplay){
-                    this.lineStringReplay.setPolygonStyle(feature);
-                    this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                    // this.lineStringReplay.setPolygonStyle(feature);
+                    // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
 
                 outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);                    
@@ -99088,7 +99121,7 @@ function olInit() {
                         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                        GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
+                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex;
                         this.styles[length++] = GeoAreaStyle.areaShadowStyle;
                     }
                     if (this.fill) {
