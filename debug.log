@@ -21,3 +21,5 @@
 [0129/100415.698:ERROR:http_transport_win.cc(273)] WinHttpSendRequest: The operation completed successfully. (0x0)
 [0129/111016.026:ERROR:http_transport_win.cc(273)] WinHttpSendRequest: The operation completed successfully. (0x0)
 [0129/130207.444:ERROR:http_transport_win.cc(273)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0130/130500.925:ERROR:http_transport_win.cc(273)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0130/142524.002:ERROR:http_transport_win.cc(273)] WinHttpSendRequest: The operation completed successfully. (0x0)

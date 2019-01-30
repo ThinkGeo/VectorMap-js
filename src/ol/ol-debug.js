@@ -68908,7 +68908,6 @@ function olInit() {
        
         function drawLineString_(flatCoordinates){
             var stride = lineStringGeometry.getStride();
-            var extent = feature.getExtent();
             if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
                 flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                     stride, -this.origin[0], -this.origin[1]);
@@ -68957,7 +68956,6 @@ function olInit() {
         }
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
-        var extent = feature.getExtent();
         if (ends.length > 1) {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
@@ -70530,7 +70528,6 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
-        var extent = feature.getExtent();
         if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
@@ -97905,7 +97902,7 @@ function olInit() {
 
                 var skipOffset = 1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = (tileResolution / scale) * skipOffset;
+                var offset = Math.round((tileResolution / scale) * skipOffset);
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
@@ -98165,7 +98162,6 @@ function olInit() {
                             currentEnd = coordsLen;
                         }
                     }
-
                     if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
                         flatCoordinates.push(x, y);
                         prevX = x;

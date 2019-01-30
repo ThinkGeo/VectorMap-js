@@ -201,7 +201,6 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
 
                                 if (source) {
                                     // ReadFeature
-
                                     var data = format.readFeaturesAndCreateInstructsNew(source, requestTileCoord, tileCoord);
 
                                     // Call Load Event
@@ -240,6 +239,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
             return false;
         }
 
+        // let covered = true;
         let covered = false;
         let tile, tileCoordKey, loaded;
         for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
