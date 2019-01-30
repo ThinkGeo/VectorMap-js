@@ -231,7 +231,6 @@ map.addEventListener('click', function (evt) {
     let coordinate = evt.coordinate;
     overlay.setPosition(undefined);
     source.clear();
-    console.log(coordinate)
     reverseGeocode([coordinate[1], coordinate[0]], true)
 });
 

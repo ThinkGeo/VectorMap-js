@@ -49,17 +49,17 @@ body {
     font-size: 1.2rem;
 }
 
-.navbar-toggler{
+.navbar-toggler {
     border: 1px solid #ffffff3d;
     color: #ffffffe3;
     display: none;
 }
 
-.navbar-toggler:focus{
+.navbar-toggler:focus {
     outline: none;
 }
 
-.navbar-toggler span{
+.navbar-toggler span {
     font-size: 2rem;
 }
 
@@ -99,7 +99,7 @@ body {
     border-right: 1px solid #eee;
 }
 
-.sidebar.collapse{
+.sidebar.collapse {
     display: block;
 }
 
@@ -142,7 +142,7 @@ body {
 
 /* Sidebar navigation */
 
-.nav-sidebar{
+.nav-sidebar {
     position: absolute;
     padding-top: 16px;
     top: 0;
@@ -165,7 +165,7 @@ body {
     font-size: 1.4rem;
 }
 
-#menu-bar>ul{
+#menu-bar>ul {
     width: 100%;
 }
 
@@ -272,7 +272,7 @@ pre {
     display: none;
 }
 
- 
+
 
 /*
  * Override bootstrap and awesome
@@ -286,21 +286,21 @@ pre {
 child pages
 */
 
-#codepen a{
+#codepen a {
     opacity: 0.6;
 }
 
 #codepen .nav-link:hover {
-     border-width: 0px;
-     opacity: 1;
- }
+    border-width: 0px;
+    opacity: 1;
+}
 
 #child-page-title {
     width: 100%;
     height: auto;
 }
 
-#child-page-title h1{
+#child-page-title h1 {
     margin-bottom: 1.5rem;
 }
 
@@ -358,6 +358,10 @@ pre {
     line-height: 133%;
     color: #AAA;
     list-style: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .has-numbering {

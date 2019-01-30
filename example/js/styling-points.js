@@ -1,3 +1,10 @@
+
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
+    }
+});
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";
 
 const worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
