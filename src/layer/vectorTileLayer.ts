@@ -881,7 +881,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 gl.uniform1f(locations.u_zIndex, 0);
             }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
                 // this.zIndex = 200;
-                gl.uniform1f(locations.u_zIndex, (0.1 / 200));
+                // gl.uniform1f(locations.u_zIndex, (0.1 / 200));
+                this.u_zIndex = locations.u_zIndex;
             }else if(this instanceof (<any>ol).render.webgl.PolygonReplay){
                 this.u_zIndex = locations.u_zIndex;
             }
