@@ -43,7 +43,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             // temp Emil
             if (tempIsMultithread) {
                 this.threadMode = VectorTileLayerThreadMode.Default;
-                this.backgroundWorkerCount = 5;
+                this.backgroundWorkerCount = 2;
             }
 
             this.minimalist = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];

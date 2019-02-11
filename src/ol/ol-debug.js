@@ -69775,7 +69775,7 @@ function olInit() {
                 
                 holeLists.push(holeList);
                 this.classifyPoints_(holeList.list, holeList.rtree, true);
-                holeList.maxCoords = this.getMaxCoords_(holeList.list);
+                holeList.maxCoords = this.getMaxCoords_(holeList.list);                
             }
             holeLists.sort(function (a, b) {
                 return b.maxCoords[0] === a.maxCoords[0] ?
@@ -69884,50 +69884,6 @@ function olInit() {
         } while (seg !== start);
 
         return maxCoords;
-    };
-    ol.render.webgl.PolygonReplay.prototype.getMaxYCoords_ = function (list) {
-        var start = list.firstItem();
-        var seg = start;
-        var maxCoords = [seg.p0.x, seg.p0.y];
-
-        do {
-            seg = list.nextItem();
-            if (seg.p0.y > maxCoords[1]) {
-                maxCoords = [seg.p0.x, seg.p0.y];
-            }
-        } while (seg !== start);
-
-        return maxCoords;
-    };
-
-    ol.render.webgl.PolygonReplay.prototype.getMinCoords_ = function (list) {
-        var start = list.firstItem();
-        var seg = start;
-        var minCoords = [seg.p0.x, seg.p0.y];
-
-        do {
-            seg = list.nextItem();
-            if (seg.p0.x < minCoords[0]) {
-                minCoords = [seg.p0.x, seg.p0.y];
-            }
-        } while (seg !== start);
-
-        return minCoords;
-    };
-
-    ol.render.webgl.PolygonReplay.prototype.getMinYCoords_ = function (list) {
-        var start = list.firstItem();
-        var seg = start;
-        var minCoords = [seg.p0.x, seg.p0.y];
-
-        do {
-            seg = list.nextItem();
-            if (seg.p0.y < minCoords[1]) {
-                minCoords = [seg.p0.x, seg.p0.y];
-            }
-        } while (seg !== start);
-
-        return minCoords;
     };
 
     /**
@@ -70532,7 +70488,7 @@ function olInit() {
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
-
+                
             if (outerRing.length) {
                 var holes = [];
                 var i, ii, holeFlatCoords;
@@ -70540,25 +70496,26 @@ function olInit() {
                     if (ends[i] !== ends[i - 1]) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
                             ends[i], stride, -this.origin[0], -this.origin[1]);
-                        if(holeFlatCoords.length > 3){
+                        if(holeFlatCoords.length > 6){
                             holes.push(holeFlatCoords);
                         }
                     }
                 }
 
-                this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
-                if (this.state_.changed) {
-                    this.zCoordinates.push(feature.zCoordinate);
-                    this.styleIndices_.push(this.indices.length);
-                    this.state_.changed = false;
+                if(outerRing.length > 6){
+                    this.startIndices.push(this.indices.length);
+                    this.startIndicesFeature.push(feature);
+                    if (this.state_.changed) {
+                        this.zCoordinates.push(feature.zCoordinate);
+                        this.styleIndices_.push(this.indices.length);
+                        this.state_.changed = false;
+                    }
+                    if(this.lineStringReplay){
+                        // this.lineStringReplay.setPolygonStyle(feature);
+                        // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                    }
+                    this.drawCoordinates_(outerRing, [], stride);                    
                 }
-                if(this.lineStringReplay){
-                    // this.lineStringReplay.setPolygonStyle(feature);
-                    // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                }
-
-                outerRing.length > 2 && this.drawCoordinates_(outerRing, [], stride);                    
 
                 if(holes.length > 0 && feature.properties_.layerName == 'building'){
                     this.styles_.push(this.styles_[0]);
@@ -102872,7 +102829,7 @@ function olInit() {
 
             var tileGrid = new ol.source.XYZ().getTileGrid();
             
-            if (instructs && instructs.length > 0) {                
+            if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
