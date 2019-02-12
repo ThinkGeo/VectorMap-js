@@ -7,8 +7,8 @@ WebFont.load({
 
 //Create layer with different source
 const styleJson = {
-    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
-    dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/dark.json'
+    light: 'https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/light.json',
+    dark: 'https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/dark.json'
 }
 
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create

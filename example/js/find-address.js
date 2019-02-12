@@ -38,7 +38,7 @@ const createGeocodingLayer = function () {
 
 
 //render base map 
-let baseMap = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json', {
+let baseMap = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/light.json', {
     apiKey: apiKey,
 });
 

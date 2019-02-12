@@ -6,7 +6,7 @@ WebFont.load({
         urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
     }
 });
-const satelliteLabelStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/transparent-background.json";
+const satelliteLabelStyle = "https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/transparent-background.json";
 
 //label layer
 let satelliteLabeLayer = new ol.mapsuite.VectorTileLayer(satelliteLabelStyle, {

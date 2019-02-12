@@ -1,33 +1,45 @@
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
-let satelliteLayer = new ol.layer.Tile({
+//Create default layer
+let defaultLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png" +
-            "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
+        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
         tileSize: 512,
     }),
 });
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [satelliteLayer],
+
+    //Add default layers
+    layers: [defaultLayer],
     target: 'map',
     view: new ol.View({
+
+        //Make Chicago the center of the map
         center: ol.proj.fromLonLat([-87.640620, 41.75423]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 12,
         progressiveZoom: false,
+
     })
 })
 
+//Map full screen control
 map.addControl(new ol.control.FullScreen());
 
 let styleCache = {};
-
+// Style for the clusters
 const getStyle = function (feature, resolution) {
+
+    // Define different styles according to the length of feature
     let size = feature.get('features').length;
     let style = styleCache[size];
+
+    //Define the color division criteria
     if (!style) {
         let color;
         const xxl = 100;
@@ -41,14 +53,15 @@ const getStyle = function (feature, resolution) {
             color = '196,12,2';
         } else if (size > max && size < xl || size == xl) {
             color = '215,116,9';
-        } else if (size > middle && size < max || size ==max) {
+        } else if (size > middle && size < max || size == max) {
             color = '248, 128, 0';
-        } else if (size > min && size < middle || size== middle) {
+        } else if (size > min && size < middle || size == middle) {
             color = "248, 192, 0";
         } else {
             color = "128, 192, 64";
         }
-        
+
+        //Define the radius criteria
         let radius = Math.max(8, Math.min(size * 1.5, 20));
         style = styleCache[size] = [new ol.style.Style({
             image: new ol.style.Circle({
@@ -59,6 +72,8 @@ const getStyle = function (feature, resolution) {
                 })
             })
         }),
+
+        //Set the style
         new ol.style.Style({
             image: new ol.style.Circle({
                 radius: radius,
@@ -78,11 +93,12 @@ const getStyle = function (feature, resolution) {
     return style;
 }
 
-// Add 2000 features
-let features = [];
+//Read data file
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/crime.json";
+
+        //Can be replaced with your local data or network data
+        let file = "../data/crime.json"; //The data source is https://catalog.data.gov/dataset and the data is preprocessed
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -100,6 +116,8 @@ const getJson = () => {
     return readTextFile;
 }
 
+// Add Clustered  features
+let features = [];
 let clusterLayer;
 getJson().then((data) => {
     let result = JSON.parse(data);
@@ -110,8 +128,11 @@ getJson().then((data) => {
     }
 
     // Cluster Source
+    let spacerDistance=40
     let clusterSource = new ol.source.Cluster({
-        distance: 40,
+
+        //The spacing between clusters
+        distance: spacerDistance,
         source: new ol.source.Vector()
     });
     clusterSource.getSource().clear();
@@ -126,12 +147,15 @@ getJson().then((data) => {
     map.addLayer(clusterLayer);
 });
 
-// Add over interaction that draw hull in a layer
+// Add hover interaction that draw polygon (convex hull) area of the points that were used to build the cluster point.
+
+// New layer
 let vector = new ol.layer.Vector({
     source: new ol.source.Vector()
 })
 vector.setMap(map);
 
+//Define new hover interactions
 let hover = new ol.interaction.Hover({
     cursor: "pointer",
     layerFilter: function (l) {
@@ -139,11 +163,13 @@ let hover = new ol.interaction.Hover({
     }
 });
 map.addInteraction(hover);
+
+//Mousemove
 hover.on("enter", function (e) {
     let h = e.feature.get("convexHull");
     if (!h) {
         let cluster = e.feature.get("features");
-        // calculate convex hull
+        // calculate polygon (convex hull)
         if (cluster && cluster.length) {
             let c = [];
             for (let i = 0, f; f = cluster[i]; i++) {
@@ -156,6 +182,8 @@ hover.on("enter", function (e) {
     vector.getSource().clear();
     if (h.length > 2) vector.getSource().addFeature(new ol.Feature(new ol.geom.Polygon([h])));
 });
+
+//Mouseleave
 hover.on("leave", function (e) {
     vector.getSource().clear();
 });
