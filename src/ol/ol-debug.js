@@ -73823,7 +73823,9 @@ function olInit() {
         gl.clearColor(0, 0, 0, 1);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
         gl.enable(ol.webgl.BLEND);
+        gl.enable(gl.SCISSOR_TEST);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
+        gl.scissor(0, 0, 10, 10);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
             layerState = layerStatesToDraw[i];

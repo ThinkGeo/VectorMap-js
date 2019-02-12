@@ -1,5 +1,3 @@
-// import { TextReplayCustom } from "./textReplayCustom";
-
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
     constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number, declutterTree: any) {

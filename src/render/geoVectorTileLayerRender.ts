@@ -152,23 +152,23 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             oversampling !== this.oversampling_ ||
             !animatingOrInteracting && renderedResolution !== this.renderedResolution
         )) {
-            let context = this.context;
-            if (context) {
-                let tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
-                let width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
-                let height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
-                let canvas = context.canvas;
-                if (canvas.width !== width || canvas.height !== height) {
-                    this.oversampling_ = oversampling;
-                    canvas.width = width;
-                    canvas.height = height;
-                } else {
-                    if (this.renderedExtent_ && !ol.extent.equals(imageExtent, this.renderedExtent_)) {
-                        context.clearRect(0, 0, width, height);
-                    }
-                    oversampling = this.oversampling_;
-                }
-            }
+            // let context = this.context;
+            // if (context) {
+            //     let tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
+            //     let width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
+            //     let height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
+            //     let canvas = context.canvas;
+            //     if (canvas.width !== width || canvas.height !== height) {
+            //         this.oversampling_ = oversampling;
+            //         canvas.width = width;
+            //         canvas.height = height;
+            //     } else {
+            //         if (this.renderedExtent_ && !ol.extent.equals(imageExtent, this.renderedExtent_)) {
+            //             context.clearRect(0, 0, width, height);
+            //         }
+            //         oversampling = this.oversampling_;
+            //     }
+            // }
 
             this.renderedTiles.length = 0;
             /** @type {Array.<number>} */
@@ -250,12 +250,12 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let pixelRatio = frameState.pixelRatio;
         let rotation = frameState.viewState.rotation;
         let size = frameState.size;
-        let offsetX, offsetY;
-        if (rotation) {
-            offsetX = Math.round(pixelRatio * size[0] / 2);
-            offsetY = Math.round(pixelRatio * size[1] / 2);
+        // let offsetX, offsetY;
+        // if (rotation) {
+            // offsetX = Math.round(pixelRatio * size[0] / 2);
+            // offsetY = Math.round(pixelRatio * size[1] / 2);
             // (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
-        }
+        // }
         if (declutterReplays) {
             this.declutterTree_.clear();
         }
@@ -317,7 +317,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
 
                 context.frameState = frameState;
                 context.layerState = layerState;
-                // console.log(screenXY)
                 replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays, screenXY);
                 
                 // context.restore();
