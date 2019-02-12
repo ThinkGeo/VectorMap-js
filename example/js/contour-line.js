@@ -7,7 +7,7 @@ WebFont.load({
 
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-const worldstreetsStyle = "https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/dark.json";
+const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
 //Base layer
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {

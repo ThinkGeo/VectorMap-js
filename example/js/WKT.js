@@ -42,7 +42,7 @@ const WKTstyleJson =
 }
 
 const styleJson = {
-    light: 'https://cdn.thinkgeo.com/ worldstreets-styles/1.1.0/light.json',
+    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
