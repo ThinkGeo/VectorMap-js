@@ -35,7 +35,7 @@ const getResponse = () => {
 
     let jqxhr = $.get(getURL, function (data) {
         if (data.status == 'success') {
-            renderData(response)
+            renderData(data)
         }
     });
 
