@@ -112,7 +112,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
         {
             apiKey:'your-ThinkGeo-Cloud-Service-key'
         });
-    let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+    let map =  new ol.Map({                         
         layers: [worldstreets],
         target: 'map',
         view: new ol.View({
@@ -182,7 +182,7 @@ After all the above steps completed, your HTML page should be:
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'      // please go to https://cloud.thinkgeo.com to create
             });
-            let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+            let map =  new ol.Map({                        
                 layers: [worldstreets],
                 target: 'map',
                 view: new ol.View({
