@@ -103,7 +103,7 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
         var layer = new ol.mapsuite.VectorTileLayer('https://samples.thinkgeo.com/cloud/example/data/light.json', {
-            'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+            'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
         });
         var map = new ol.Map({
             loadTilesWhileInteracting: true,
@@ -162,7 +162,7 @@ var AppComponent = /** @class */ (function () {
             var layers = map.getLayers().getArray();
             map.removeLayer(layers[0]);
             var newLayer = new ol.mapsuite.VectorTileLayer(json, {
-                'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+                'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
             });
             map.addLayer(newLayer);
         };

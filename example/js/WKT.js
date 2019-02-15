@@ -44,7 +44,7 @@ const WKTstyleJson =
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
 
 //Base map layer
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {

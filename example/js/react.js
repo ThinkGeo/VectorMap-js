@@ -3,7 +3,7 @@ let streetMap;
 //Render map
 function renderStreetMap() {
     let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
-        'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+        'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
     });
 
     streetMap = new ol.Map({
@@ -106,7 +106,7 @@ class StreetMap extends React.Component {
         let layers = streetMap.getLayers().getArray();
         streetMap.removeLayer(layers[0]);
         let newLayer = new ol.mapsuite.VectorTileLayer(this.state.json, {
-            'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+            'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
         });
         streetMap.addLayer(newLayer);
     }
