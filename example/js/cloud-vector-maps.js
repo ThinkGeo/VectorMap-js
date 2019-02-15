@@ -1,3 +1,5 @@
+
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
@@ -5,13 +7,14 @@ WebFont.load({
     }
 });
 
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
+
 //Create layer with different source
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
     dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json'
 }
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
@@ -24,14 +27,18 @@ let dark = new ol.mapsuite.VectorTileLayer(styleJson.dark, {
     layerName: 'dark'
 });
 
-
+//Create map
 let map = new ol.Map({
+
+    //Add default layers
     layers: [light, dark],
     target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+
+        //Set the center of the map,
+        center: ol.proj.fromLonLat([-96.79620, 32.79423]), //EPSG:4326 to EPSG:3857
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
@@ -39,8 +46,10 @@ let map = new ol.Map({
     })
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
+//Control Thumb style
 document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll('geocoderResult a');
     

@@ -1,3 +1,5 @@
+
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -5,7 +7,7 @@ WebFont.load({
     }
 });
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
@@ -38,7 +40,10 @@ let map = new ol.Map({
 
     })
 });
+
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
+
 // Convert the json  to geoson
 $.get("../data/rainfall.json", function (result) {
     let geojson = {
@@ -71,7 +76,6 @@ $.get("../data/rainfall.json", function (result) {
     let vectorSource = new ol.source.Vector({
         features: (new ol.format.GeoJSON()).readFeatures(geojson)
     });
-
     vector.setSource(vectorSource);
 
 })

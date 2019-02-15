@@ -1,3 +1,5 @@
+
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
@@ -9,13 +11,15 @@ WebFont.load({
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'// please go to https://cloud.thinkgeo.com to create
 
+//Create layer
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
     layerName: 'light'
 });
 
+//Create view
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
     maxZoom: 19,
@@ -32,11 +36,12 @@ let map = new ol.Map({
     view: view
 });
 
+
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
 
 //   Elements that make up the popup.
-
 const container = document.getElementById('popup');
 container.classList.remove('hidden');
 const content = document.getElementById('popup-content');
@@ -70,8 +75,6 @@ const popUp = function (address, centerCoordinate) {
 
 // Get data
 const reverseGeocode = function (coordinate) {
-
-
     const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
     let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&Srid=3857`;
 
@@ -91,6 +94,7 @@ const reverseGeocode = function (coordinate) {
     })
 }
 
+//User interaction
 map.addEventListener('click', function (evt) {
     let coordinate = evt.coordinate;
     reverseGeocode([coordinate[1], coordinate[0]])

@@ -1,3 +1,5 @@
+
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
@@ -108,6 +110,7 @@ const renderResult = ({ locations }) => {
     }
 }
 
+//re
 const renderBestMatchLoaction = (coordinatesX, coordinatesY, boundingBox, address, type) => {
     overlay.setPosition(undefined);
     let source = geocodingLayer.getSource();

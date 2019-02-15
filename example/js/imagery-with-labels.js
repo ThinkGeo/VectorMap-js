@@ -1,24 +1,18 @@
-WebFont.load({
-    custom: {
-        families: ['vectormap-icons'],
-        urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
-    }
-});
 
 //Label featuer
-let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-hybrid.json", {
-    apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~', // please go to https://cloud.thinkgeo.com to create
+let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json", {
+    apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~', // Please go to https://cloud.thinkgeo.com to create
     visible: true
 });
 
-//image feature
+//Image feature
 let imageryLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'
+        url: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg' //Source from NASA
     }),
 });
 
-//create map
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -34,4 +28,5 @@ let map = new ol.Map({
     }),
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());

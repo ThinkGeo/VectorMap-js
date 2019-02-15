@@ -1,4 +1,5 @@
 //Basemap style
+//Learn more about stylejson on https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/
 const baseMapStyleJson = {
     "id": "base",
     "version": 1.3,
@@ -6,32 +7,32 @@ const baseMapStyleJson = {
     "time": "2018/06/09",
     "background": "#044061",
     "styles": [{
-            "id": "country",
+        "id": "country",
+        "style": [{
+            "filter": "zoom>=0;zoom<=18;",
+            "polygon-fill": "#004881"
+        }]
+    },
+    {
+        "id": "country_boundary",
+        "style": [{
+            "filter": "zoom>=0;zoom<=18;",
+            "line-width": 0.6,
+            "line-color": "#019fd4",
+        }]
+    }, {
+        "id": "country_name",
+        "style": [{
+            "text-name": "name",
+            "text-fill": "#ffff28",
+            "text-wrap-width": 10,
+            "text-spacing": 1,
             "style": [{
                 "filter": "zoom>=0;zoom<=18;",
-                "polygon-fill": "#004881"
+                "text-font": "14px Calibri,sans-serif",
             }]
-        },
-        {
-            "id": "country_boundary",
-            "style": [{
-                "filter": "zoom>=0;zoom<=18;",
-                "line-width": 0.6,
-                "line-color": "#019fd4",
-            }]
-        }, {
-            "id": "country_name",
-            "style": [{
-                "text-name": "name",
-                "text-fill": "#ffff28",
-                "text-wrap-width": 10,
-                "text-spacing": 1,
-                "style": [{
-                    "filter": "zoom>=0;zoom<=18;",
-                    "text-font": "14px Calibri,sans-serif",
-                }]
-            }]
-        }
+        }]
+    }
     ],
     "sources": [{
         "id": "data_source",
@@ -89,6 +90,7 @@ const stringDivider = (str, width, spaceReplacer) => {
     return str;
 };
 
+
 let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyleJson, {
     multithread: false
 });
@@ -106,6 +108,7 @@ let map = new ol.Map({
     }),
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
 let highlightLayer = new ol.layer.Vector({

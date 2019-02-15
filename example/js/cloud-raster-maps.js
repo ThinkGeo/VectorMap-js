@@ -1,20 +1,31 @@
- 
+
 
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
-let url = {
+
+//Create layer with different source
+const urlWithApikey = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
     aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
 }
 
-//Create layer with different source
+const urlwithoutApikey = {
+    light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png`,
+    dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png`,
+    aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg`,
+    transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png`
+}
+
+
+let url = urlWithApikey
+
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.light,
         tileSize: 512,
     }),
-  
+
     layerName: 'light'
 });
 
@@ -48,12 +59,16 @@ let aerial = new ol.layer.Tile({
 
 //Create map
 let map = new ol.Map({
+
+    //Add layers
     layers: [dark, light, aerial, transparentBackground,],
     target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+
+        //Set the center of the map,
+        center: ol.proj.fromLonLat([-96.79620, 32.79423]),//EPSG:4326 to EPSG:3857
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
@@ -62,6 +77,7 @@ let map = new ol.Map({
     })
 });
 
+//Map full screen control
 map.addControl(new ol.control.FullScreen());
 
 const applyAPIKey = document.getElementById("ckbApiKey");
@@ -78,33 +94,23 @@ const setSource = (url) => {
     }
 }
 
-//updated url
+//Updated url
 applyAPIKey.addEventListener('click', (e) => {
     if (applyAPIKey.getAttribute('checked') == 'checked') {
         applyAPIKey.setAttribute('checked', 'unchecked')
-        url = {
-            light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png`,
-            dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png`,
-            aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg`,
-            transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png`
-        }
+        url = urlWithoutApikey
         setSource(url)
 
 
     } else {
         applyAPIKey.setAttribute('checked', 'checked')
-        url = {
-            light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
-            dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
-            aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
-            transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
-        }
+        url = urlWithApikey
         setSource(url)
     }
 
 })
 
-
+//Control Thumb style
 document.getElementById('wrap').addEventListener('click', (e) => {
     if (e.target.classList.contains('thumb')) {
         const nodeList = document.querySelectorAll('#wrap div');

@@ -1,3 +1,4 @@
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -5,18 +6,16 @@ WebFont.load({
     }
 });
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
 //  Base map layer
-
 let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
 //Create  map
-
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -31,10 +30,10 @@ let map = new ol.Map({
     })
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
 //Process the data
-
 let xhr = new XMLHttpRequest();
 xhr.open("GET", "../data/scatter.json");
 xhr.onreadystatechange = function () {
@@ -53,7 +52,6 @@ xhr.onreadystatechange = function () {
         };
 
         //style options
-
         var option = {
             title: {
                 left: 'center',

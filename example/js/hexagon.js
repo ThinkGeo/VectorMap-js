@@ -1,7 +1,9 @@
-let satelliteLayer = new ol.layer.Tile({
+
+//Create default layer
+let defaultLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png" +
-            "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
+            "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",// please go to https://cloud.thinkgeo.com to create
         tileSize: 512,
     }),
 });
@@ -10,7 +12,7 @@ let satelliteLayer = new ol.layer.Tile({
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [satelliteLayer],
+    layers: [defaultLayer],
     target: 'map',
     view: new ol.View({
         maxZoom: 19,
@@ -22,11 +24,14 @@ let map = new ol.Map({
     })
 });
 
+//Map full screen control
 map.addControl(new ol.control.FullScreen());
 
+//Read data file
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        let file = "../data/crime.json";
+        //Can be replaced with your local data or network data
+        let file = "../data/crime.json"; //The data source is https://catalog.data.gov/dataset and the data is preprocessed
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -44,6 +49,7 @@ const getJson = () => {
     return readTextFile;
 };
 
+//Add features
 let source = new ol.source.Vector();
 const addFeatures = () => {
     let features = [];
@@ -71,10 +77,10 @@ let min, max, maxi;
 const styleFn = function (f, res) {
     // depending on the number of objects in the aggregate.
     let color;
-    const xxl=251;
-    const xl =150;
-    const max =100;
-    const middle =50
+    const xxl = 251;
+    const xl = 150;
+    const max = 100;
+    const middle = 50
     const min = 1;
     if (f.get('features').length > xxl) {
         color = '#3d0401';
@@ -82,11 +88,11 @@ const styleFn = function (f, res) {
         color = '#910902';
     } else if (f.get('features').length > max && f.get('features').length < xl) {
         color = '#c40c02';
-    }else if (f.get('features').length > middle && f.get('features').length < max) {
+    } else if (f.get('features').length > middle && f.get('features').length < max) {
         color = '#e50e03';
     } else if (f.get('features').length > min && f.get('features').length < middle) {
         color = '#fd4a40';
-    }  else {
+    } else {
         color = '#fd6962';
     }
     return [new ol.style.Style({

@@ -51,13 +51,13 @@ let getJson = () => {
     return readTextFile;
 }
 
-//parses a JSON string
+//Parses a JSON string
 let stylejson;
 getJson().then((data) => {
     stylejson = JSON.parse(data);
 })
 
-//updated style json by user input value
+//Updated style json by user input value
 const updateStyleJson = (poiSize, waterColor, buildingColor, placement) => {
     let styles = stylejson.styles;
     let stylesLength = styles.length;
@@ -84,7 +84,7 @@ const updateStyleJson = (poiSize, waterColor, buildingColor, placement) => {
             }
         }
     }
-    //add layer with new style json
+    //Add layer with new style json
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);
     let newLayer = new ol.mapsuite.VectorTileLayer(stylejson, {

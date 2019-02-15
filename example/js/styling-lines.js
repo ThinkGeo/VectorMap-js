@@ -1,4 +1,5 @@
-//Style json data
+//Geojson style data 
+//Learn more about stylejson on https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/
 const baseMapStyleJson = {
     "id": "europe",
     "version": 1.3,
@@ -6,39 +7,39 @@ const baseMapStyleJson = {
     "time": "2018/06/09",
     "background": "#aac6ee",
     "styles": [{
-            "id": "country",
-            "style": [{
-                "filter": "zoom>=0;zoom<=18;",
-                "polygon-fill": "#25273e"
-            }]
+        "id": "country",
+        "style": [{
+            "filter": "zoom>=0;zoom<=18;",
+            "polygon-fill": "#25273e"
+        }]
+    },
+    {
+        "id": "country_boundary",
+        "style": [{
+            "filter": "zoom>=0;zoom<=3;",
+            "line-width": 1,
+            "line-color": "rgba(255, 255, 255, 0.4)",
         },
         {
-            "id": "country_boundary",
-            "style": [{
-                    "filter": "zoom>=0;zoom<=3;",
-                    "line-width": 1,
-                    "line-color": "rgba(255, 255, 255, 0.4)",
-                },
-                {
-                    "filter": "zoom>=4;zoom<=18;",
-                    "line-width": 1,
-                    "line-color": "rgba(255, 255, 255, 0.6)",
-                }
-            ]
-        }, {
-            "id": "country_name",
-            "style": [{
-                "text-name": "NAME",
-                "text-wrap-width": 20,
-                "text-fill": "#fff",
-                "text-halo-fill": "#ed6c82",
-                "text-halo-radius": 2,
-                "style": [{
-                    "filter": "zoom>=3;zoom<=18;",
-                    "text-font": "18px Calibri,sans-serif",
-                }]
-            }]
+            "filter": "zoom>=4;zoom<=18;",
+            "line-width": 1,
+            "line-color": "rgba(255, 255, 255, 0.6)",
         }
+        ]
+    }, {
+        "id": "country_name",
+        "style": [{
+            "text-name": "NAME",
+            "text-wrap-width": 20,
+            "text-fill": "#fff",
+            "text-halo-fill": "#ed6c82",
+            "text-halo-radius": 2,
+            "style": [{
+                "filter": "zoom>=3;zoom<=18;",
+                "text-font": "18px Calibri,sans-serif",
+            }]
+        }]
+    }
     ],
     "sources": [{
         "id": "data_source",
@@ -141,6 +142,7 @@ let riverLayer = new ol.mapsuite.VectorLayer(riverStyleJson, {
     multithread: false
 });
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -155,4 +157,5 @@ let map = new ol.Map({
     }),
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());

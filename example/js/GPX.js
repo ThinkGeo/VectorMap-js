@@ -1,4 +1,4 @@
- //Load icon font
+//Load icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -6,7 +6,9 @@ WebFont.load({
     }
 });
 
-//Style json data
+ 
+//Geojson style data 
+//Learn more about stylejson on https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/
 const gpxJonStyle =
 {
     "id": "thinkgeo-world-streets-light",
@@ -25,7 +27,7 @@ const gpxJonStyle =
             },
         ]
     }, {
-        "id":  "Point",
+        "id": "Point",
         "style": [
             {
                 "point-type": "symbol",
@@ -34,8 +36,8 @@ const gpxJonStyle =
                 "point-outline-width": 2,
                 "point-fill": "#990100",
                 "point-size": 16,
-                
-                 
+
+
             },
         ]
     },
@@ -56,17 +58,17 @@ const gpxJonStyle =
     }]
 }
 const styleJson = {
-    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
+    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json',
 }
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
-
+//Create base layer
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
     apiKey: apiKey,
     layerName: 'light'
 });
 
-
+// Create gpx layer
 let gpxVectorLayer = new ol.mapsuite.VectorLayer(gpxJonStyle, {
     multithread: false
 })
@@ -77,7 +79,7 @@ let view = new ol.View({
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     zoom: 13,
-   
+
 });
 
 //Create Map
@@ -93,4 +95,5 @@ let map = new ol.Map({
     loadTilesWhileAnimating: true
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());

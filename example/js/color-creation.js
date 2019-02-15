@@ -17,7 +17,7 @@ const renderData = (data) => {
     updateStyle(outputData)
 }
 
-//Use get to get data
+//User Interaction
 const getResponse = () => {
     let options = {
         category: $('select#category option:selected').val(),
@@ -63,6 +63,7 @@ const baseMapStyle = new ol.style.Style({
     })
 })
 
+//Create base map layer
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
         url: '../data/world-population.geo.json',
@@ -95,6 +96,8 @@ let map = new ol.Map({
         zoom: 4,
     }),
 });
+
+map.addControl(new ol.control.FullScreen());
 
 //Update style
 const updateStyle = (outputData) => {

@@ -1,4 +1,5 @@
 
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -97,4 +98,5 @@ let map = new ol.Map({
     }),
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());

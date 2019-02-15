@@ -1,5 +1,4 @@
-// base map layer
-
+// Base map layer
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
@@ -8,10 +7,9 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
-//create map
-
-let map =  new ol.Map({                         
-    loadTilesWhileAnimating: true,                         
+//Create map
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     layers: [satelliteLayer],
     target: 'map',
@@ -24,9 +22,11 @@ let map =  new ol.Map({
         progressiveZoom: false,
     })
 })
-map.addControl(new ol.control.FullScreen());
-//get data
 
+//Control map full screen
+map.addControl(new ol.control.FullScreen());
+
+//Get data
 let getHeatmapJson = (url) => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest;
@@ -73,6 +73,8 @@ let minutesStyleFn = (f, res) => {
         })
     })];
 };
+
+//Get data json  
 getHeatmapJson("../data/cummute.json").then((strData) => {
     let data = JSON.parse(strData);
     let vectorSource = new ol.source.Vector();
@@ -100,8 +102,7 @@ getHeatmapJson("../data/cummute.json").then((strData) => {
 })
 let animateI = document.querySelectorAll(".minutes i");
 
-//add interaction
-
+//Add interaction
 animateI.forEach((ele) => {
     ele.addEventListener("mouseover", (e) => {
         let min = e.target.getAttribute("data").split("-")[0];
@@ -145,6 +146,8 @@ let displayFeatureInfo = (evt) => {
         map.removeOverlay(overlay);
     }
 };
+
+
 map.on('pointermove', function (evt) {
     if (evt.dragging) {
         return;

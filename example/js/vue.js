@@ -1,3 +1,4 @@
+//Load vector map icon font
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -51,7 +52,7 @@ getJson().then((data) => {
     json = JSON.parse(data);
 })
 
-//updated map style
+//Updated map style
 const updatedWater = (poiSize, waterColor, buildingColor) => {
     let styles = json.styles;
     let stylesLength = styles.length;
@@ -67,7 +68,7 @@ const updatedWater = (poiSize, waterColor, buildingColor) => {
     return json;
 }
 
-//refresh
+//Refresh
 const clickRefresh = (json) => {
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);

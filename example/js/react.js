@@ -27,6 +27,8 @@ function renderStreetMap() {
 class StreetMap extends React.Component {
     constructor(props) {
         super(props);
+
+        //Define state
         this.state = {
             parkColor: '#a7da7a59',
             placement: 'Line',
@@ -78,6 +80,7 @@ class StreetMap extends React.Component {
         });
     }
 
+    //Get geojson data
     getJson() {
         let readTextFile = new Promise(function (resolve, reject) {
             let file = "../data/light.json";
@@ -108,6 +111,7 @@ class StreetMap extends React.Component {
         streetMap.addLayer(newLayer);
     }
 
+    //Updated road name placement
     changePlacement() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
@@ -130,6 +134,7 @@ class StreetMap extends React.Component {
         }
     }
 
+    //Updated park color
     changeParkColor() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
@@ -146,6 +151,7 @@ class StreetMap extends React.Component {
         }
     }
 
+    //Updated road number mask type
     changeMaskType() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;
@@ -156,6 +162,7 @@ class StreetMap extends React.Component {
         }
     }
 
+    //Updated POI size
     changePoiSize() {
         let styles = this.state.json.styles;
         let stylesLength = styles.length;

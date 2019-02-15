@@ -112,6 +112,8 @@ let map = new ol.Map({
     }),
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
+//Add Layer
 map.addLayer(hotelLayer);

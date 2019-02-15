@@ -6,7 +6,7 @@ WebFont.load({
     }
 });
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
@@ -14,6 +14,7 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -26,6 +27,8 @@ let map = new ol.Map({
         zoom: 4
     })
 });
+
+//Control map full screen
 map.addControl(new ol.control.FullScreen());
 
 //Education layer
@@ -101,6 +104,7 @@ let educationLayer = (id, data, color, pt) => {
     });
 }
 
+//Create rader
 for (let i = 0; i < 26; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `educationChart${i}`;
@@ -108,7 +112,7 @@ for (let i = 0; i < 26; i++) {
     document.querySelector("#educationLayerChart").appendChild(aqiDiv)
 }
 
-//Get stylejson
+//Get geojson
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         let file = "../data/educationLsee.geojson";
@@ -133,6 +137,8 @@ let stateArr = []
 for (let index = 0; index < 26; index++) {
     stateArr.push([]);
 }
+
+//Set rader style
 let textColor = "#ffdf34";
 getJson().then(function (data) {
     let resultFeatures = JSON.parse(data)['features'];
@@ -143,7 +149,6 @@ getJson().then(function (data) {
         let Col = item.Col;
         let HS = item.HS;
         let UHSC = item.UHSC;
-
         stateArr[i].push({
             value: [UHSC, HS, Col, bcav, 1],
             name: 'Education',

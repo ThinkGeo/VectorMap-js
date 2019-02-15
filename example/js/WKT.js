@@ -1,4 +1,4 @@
-//load font
+//Load font
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
@@ -78,4 +78,5 @@ let map =  new ol.Map({
     loadTilesWhileAnimating: true
 });
 
+//Control map full screen
 map.addControl(new ol.control.FullScreen());

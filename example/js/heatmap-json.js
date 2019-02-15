@@ -1,4 +1,6 @@
-let satelliteLayer = new ol.layer.Tile({
+
+//Create default layer
+let defaultLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png"
             + "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
@@ -6,21 +8,27 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
+//Create new sourse
 let vectorSource = new ol.source.Vector();
 
+//Get Gata
 $.ajax({
     type: "get",
-    url: "../data/hangzhou-tracks.json",
+
+   //Can be replaced with your local data or network data
+    url: "../data/hangzhou-tracks.json", 
     success: function (data) {
         var points = [].concat.apply([], data.map(function (track) {
             return track.map(function (seg) {
                 return seg.coord.concat([1]);
             });
         }));
-        let map =  new ol.Map({                         
-            loadTilesWhileAnimating: true,                         
+
+        //Create map
+        let map = new ol.Map({
+            loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
-            layers: [satelliteLayer],
+            layers: [defaultLayer],
             target: 'map',
             view: new ol.View({
                 center: ol.proj.fromLonLat([120.10886859566, 30.235956526643]),
@@ -50,12 +58,16 @@ $.ajax({
             featuresArr.push(pointFeature)
         }
         vectorSource.addFeatures(featuresArr);
+
+        //Create heatMapLayer
         let heatMapLayer = new ol.layer.Heatmap({
             source: vectorSource,
             blur: 15,
             radius: 6,
             gradient: ['#00f', '#0ff', '#0f0', '#ff0', '#f00']
         });
+
+        //Add layer
         map.addLayer(heatMapLayer)
     }
 })

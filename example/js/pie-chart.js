@@ -1,4 +1,4 @@
-// base map layer
+// Base map layer
 let satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png" +
@@ -7,8 +7,7 @@ let satelliteLayer = new ol.layer.Tile({
     }),
 });
 
-//create map
-
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -23,7 +22,7 @@ let map = new ol.Map({
     })
 });
 map.addControl(new ol.control.FullScreen());
-// pie chart
+// Pie chart
 let pieChartOvery = (id, data, pt) => {
     option = {
         tooltip: {
@@ -59,6 +58,7 @@ let pieChartOvery = (id, data, pt) => {
     });
 }
 
+//Create pie chart layer
 for (let i = 0; i < 26; i++) {
     let aqiDiv = document.createElement("div");
     aqiDiv.id = `pieChart${i}`;
@@ -66,6 +66,7 @@ for (let i = 0; i < 26; i++) {
     document.querySelector("#pieChart").appendChild(aqiDiv)
 }
 
+//Get data
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         let file = "../data/education.geojson";
@@ -92,6 +93,7 @@ for (let index = 0; index < 26; index++) {
     stateArr.push([]);
 }
 
+//Set pie chart style
 getJson().then(function (data) {
     let resultFeatures = JSON.parse(data)['features'];
     for (let i = 0, l = resultFeatures.length; i < l; i++) {

@@ -738,7 +738,7 @@
         codePenUrl: 'https://codepen.io/thinkgeo/pen/dwbPoq',
         jsPath: './example/js/Jquery.js'
       }, {
-        comments: 'Shows how VectorMap.js works with Vue.JS.',
+          comments: 'Shows how VectorMap.js works with React.JS.',
         title: 'React JS',
         htmlPath: './example/html/react.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/pqzvRR',

@@ -1,5 +1,5 @@
- 
-// Retina layer
+
+// Raster layer (High Resolution)
 let map2xLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x2/3857/512/{z}/{x}/{y}.png"
@@ -16,14 +16,15 @@ let map2x = new ol.Map({
     layers: [map2xLayer],
     target: 'map@2x',
     view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+
+        //Set the center of the map
+        center: ol.proj.fromLonLat([-96.79620, 32.79423]),//EPSG:4326 to EPSG:3857
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
         progressiveZoom: false,
-        
-
     }),
 });
 
+//Control map full screen
 map2x.addControl(new ol.control.FullScreen());

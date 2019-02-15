@@ -1,4 +1,5 @@
-//style json
+//Geojson style data 
+//Learn more about stylejson on https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/
 const styleJson =
 {
     "id": "thinkgeo-world-streets-light",
@@ -49,14 +50,12 @@ let geoVectorLayer = new ol.mapsuite.VectorLayer(styleJson, {
 let view = new ol.View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
-    maxZoom: 19,
-    maxResolution: 40075016.68557849 / 512,
-    zoom: 11,
+    zoom: 12,
     progressiveZoom: false,
 
 });
 
-//create map
+//Create map
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -68,5 +67,3 @@ let map = new ol.Map({
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true
 });
-
-map.addControl(new ol.control.FullScreen());
