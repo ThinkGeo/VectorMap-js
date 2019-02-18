@@ -17,7 +17,7 @@ function renderStreetMap() {
             maxResolution: 40075016.68557849 / 512,
             zoom: 14,
             minZoom: 2,
-          
+
         }),
     });
 
@@ -187,7 +187,7 @@ class StreetMap extends React.Component {
                         <div>
                             <label>
                                 Road Name Placement:
-                        </label>
+                            </label>
                             <select onChange={this.placementHandleChange}>
                                 <option value="Line">Line</option>
                                 <option value="Point">Point</option>
@@ -197,7 +197,7 @@ class StreetMap extends React.Component {
                         <div>
                             <label>
                                 Road Number Mask Type:
-                        </label>
+                            </label>
                             <select onChange={this.maskTypeHandleChange}>
                                 <option value="Circle">Circle</option>
                                 <option value="Rectangle">Rectangle</option>
@@ -210,7 +210,7 @@ class StreetMap extends React.Component {
                         <div>
                             <label>
                                 Park Color:
-                        </label>
+                            </label>
                             <select onChange={this.parkFillColorHandleChange}>
                                 <option value="#a7da7a59">#a7da7a59</option>
                                 <option value="#25ff00">#25ff00</option>
