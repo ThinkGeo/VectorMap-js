@@ -23,7 +23,7 @@ export class AppComponent implements AfterViewInit {
     ngAfterViewInit() {
 
         let layer = new (<any>ol).mapsuite.VectorTileLayer('../assets/data/light.json', {
-            'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+            'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
         });
 
         let map = new ol.Map({
@@ -84,7 +84,7 @@ export class AppComponent implements AfterViewInit {
             let layers = map.getLayers().getArray();
             map.removeLayer(layers[0]);
             let newLayer = new (<any>ol).mapsuite.VectorTileLayer(json, {
-                'apiKey': 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'
+                'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
             });
             map.addLayer(newLayer);
         }

@@ -1,7 +1,7 @@
 
 //Label featuer
 let imageryLabeLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json", {
-    apiKey: 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~', // Please go to https://cloud.thinkgeo.com to create
+    apiKey: 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~', // Please go to https://cloud.thinkgeo.com to create
     visible: true
 });
 

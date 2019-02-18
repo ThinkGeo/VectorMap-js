@@ -32,7 +32,7 @@ $(function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
-  APIKey.apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+  APIKey.apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 });
 
@@ -40,7 +40,7 @@ $(function () {
 let satelliteLayer = new ol.layer.Tile({
   source: new ol.source.XYZ({
     url: "https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
-      "?apiKey=v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~",
+      "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
     tileSize: 512
   }),
 });
@@ -261,7 +261,7 @@ var polygonDefault = function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud1.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
-  APIKey.apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+  APIKey.apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
   //default data
   featureDefault = new ol.Feature({
