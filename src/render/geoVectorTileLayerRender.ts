@@ -263,9 +263,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
         // let clips = [];
         let zs = [];
+
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
-            let screenXY=tile.screenXY;
+            let screenXY = tile.screenXY;
             if (tile.getState() === (<any>ol).TileState.ABORT) {
                 continue;
             }

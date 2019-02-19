@@ -688,6 +688,19 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.vertices.length = 0;
             this.groupIndices.length = 0;
             this.images_.length = 0;
+            var frameState = context.frameState;
+            var tileExtent = this.maxExtent;
+            var pixelCoordinate;
+            var tilePixelExtent = [];           
+            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
+
+            for(let index = 0; index < tileExtent.length; index += 2){
+                pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
+                    [tileExtent[index], tileExtent[index + 1]]);
+                tilePixelExtent.push(...pixelCoordinate);
+            }
+
+            this.tilePixelExtent = tilePixelExtent;
 
             for(var i = 0; i < startIndicesFeature.length; i++){
                 var feature = startIndicesFeature[i];
@@ -701,47 +714,33 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     continue;
                 }
 
-                if(type == 'MultiLineString'){
-                    var ends = geometry.getEnds();
-                    for(var k = 0; k < ends.length; k++){
-                        var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
-                        var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
-
-                        this.setTextStyle(style);
-                        this.drawText(newFeature.getGeometry(), newFeature);
-                    }                    
-                }else{
-                    if(this instanceof (<any>ol).render.webgl.ImageReplay){
-                        var callback = function(this_, geometry, feature, style){
-                            this_.setImageStyle(style);                            
-                            this_.drawPoint(geometry, feature);
-                        }
-                        this.setImageStyle(style);
-                        this.replayImage_(context.frameState, geometry, feature, style, declutterGroup, callback);
-                        this.renderDeclutter_(declutterGroup, feature);
+                if(this instanceof (<any>ol).render.webgl.ImageReplay){
+                    this.setImageStyle(style);
+                    this.replayImage_(frameState, declutterGroup, geometry);
+                    this.renderDeclutter_(declutterGroup, feature);
+                }else{                    
+                    if(type == 'MultiLineString'){
+                        var ends = geometry.getEnds();
+                        for(var k = 0; k < ends.length; k++){
+                            var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                            var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                            
+                            this.setTextStyle(style);
+                            this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                        }  
                     }else{
                         this.setTextStyle(style);
                         if(this.label){
-                            var callback = function(this_, geometry, feature, style){
-                                this_.setTextStyle(style);
-                                this_.drawText(geometry, feature);
-                            }
                             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
                             this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-                            this.replayImage_(context.frameState, geometry, feature, style, declutterGroup, callback);
+                            this.replayImage_(frameState, declutterGroup, geometry);
                             this.renderDeclutter_(declutterGroup, feature);
-                        }else{
-                            // draw chars
-                            // var flatCoordinates = geometry.flatCoordinates_;
-                            // geometry.flatCoordinates_ = flatCoordinates.slice(0, 6);
-                            // geometry.ends_ = geometry.flatCoordinates_.length;
-                            // this.drawText(geometry, feature);
-                            // geometry.flatCoordinates_ = flatCoordinates.slice(6);
-                            // geometry.ends_ = geometry.flatCoordinates_.length;
-                            this.drawText(geometry, feature);
+                        }else{                            
+                            // draw chars  
+                            this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                         }
                     }
                 }
@@ -763,8 +762,15 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     if(!this.declutterTree.collides(box)){
                         this.declutterTree.insert(box);
                         for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
-                            var declutter = declutterGroup[j];                            
-                            declutter[0](declutter[1], declutter[2], declutter[3], declutter[4]);
+                            var declutter = declutterGroup[j];
+                            var options = declutter[0];
+                            var this$1 = declutter[1];
+
+                            if(this$1 instanceof (<any>ol).render.webgl.TextReplay){
+                                this$1.drawText(options);
+                            }else if(this$1 instanceof (<any>ol).render.webgl.ImageReplay){
+                                this$1.drawPoint(options);
+                            }
                         }
                     }
                     declutterGroup.length = 5;
@@ -773,14 +779,257 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
         };
 
+        (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
+            var scale = this.scale / window.devicePixelRatio;
+            var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
+            var x = part[0];
+            var y = part[1];
+            var rotation = part[3];
+            var text = part[4];
+            var cos = Math.cos(rotation);
+            var sin = Math.sin(rotation); 
+            var anchorX = part[2];
+            var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+            var width = this.width;
+            var height = this.height;
+            var bottomLeft = [];
+            var bottomRight = [];
+            var topLeft = [];
+            var topRight = [];
+            var offsetX, offsetY;
+
+            // bottom-left corner
+            offsetX = -scale * anchorX;
+            offsetY = -scale * (height - anchorY);
+            bottomLeft[0] = x + (offsetX * cos - offsetY * sin);
+            bottomLeft[1] = y + (offsetX * sin + offsetY * cos);
+
+            // bottom-right corner
+            offsetX = scale * (width - anchorX);
+            offsetY = -scale * (height - anchorY);
+            bottomRight[0] = x + (offsetX * cos - offsetY * sin);
+            bottomRight[1] = y + (offsetX * sin + offsetY * cos);
+
+            // top-right corner
+            offsetX = scale * (width - anchorX);
+            offsetY = scale * anchorY;
+            topRight[0] = x + (offsetX * cos - offsetY * sin);
+            topRight[1] = y + (offsetX * sin + offsetY * cos);
+
+            // top-left corner
+            offsetX = -scale * anchorX;
+            offsetY = scale * anchorY;
+            topLeft[0] = x + (offsetX * cos - offsetY * sin);
+            topLeft[1] = y + (offsetX * sin + offsetY * cos);
+
+            (<any>ol).extent.extendCoordinate(declutterGroup, bottomLeft);
+            (<any>ol).extent.extendCoordinate(declutterGroup, bottomRight);
+            (<any>ol).extent.extendCoordinate(declutterGroup, topRight);
+            (<any>ol).extent.extendCoordinate(declutterGroup, topLeft);
+
+            var declutterArgs = [{
+                pixelToCoordinateTransform,
+                anchorX,
+                anchorY,
+                rotation,
+                x, 
+                y,
+                text
+            }, this];
+            declutterGroup.push(declutterArgs);
+        };
+
+        (<any>ol.render).webgl.TextReplay.prototype.drawLineStringText = function (geometry, feature, frameState, declutterGroup) {
+            var offset = 0;
+            var stride = 2;
+            var resolution = frameState.currentResolution / frameState.pixelRatio;
+            var text = this.text_;
+            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
+            var maxAngle = this.maxAngle_;
+            var lineStringCoordinates = geometry.getFlatCoordinates();
+            var pixelCoordinate;
+            var pixelCoordinates = [];
+            var tilePixelExtent = this.tilePixelExtent;           
+            
+            for(let index = 0; index < lineStringCoordinates.length; index += 2){
+                pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
+                    [lineStringCoordinates[index], lineStringCoordinates[index + 1]]);
+                pixelCoordinates.push(...pixelCoordinate);
+            }
+            var end = pixelCoordinates.length;
+            var pathLength = (<any>ol.geom).flat.length.lineString(pixelCoordinates, offset, end, stride);
+            let textLength = this.getTextSize_([text])[0];
+            
+            if(this.label){
+                pathLength = textLength
+            }
+            if (textLength * 1.2 <= pathLength) {  
+                let declutterGroups = [];
+                this.extent = (<any>ol.extent).createOrUpdateEmpty();          
+                var ratio = window.devicePixelRatio * 1.194328566955879 / resolution;
+                if(ratio >= 3){
+                    ratio /= 2;
+                }
+                var distance = 180 * ratio;
+                var tmpLength = pathLength - textLength;
+                var centerPoint = tmpLength / 2;
+                var leftPoint = centerPoint;
+                var rightPoint = centerPoint;
+                var pointArray = [];
+                pointArray.push(centerPoint);
+
+                if(frameState.currentResolution < 1){
+                    while(leftPoint > ((textLength / 2) + distance)){
+                        leftPoint = leftPoint - distance;
+                        pointArray.push(leftPoint);        
+                    }
+                    while(rightPoint < ((pathLength - textLength / 2) - distance)){
+                        rightPoint = rightPoint + distance;                                   
+                        pointArray.push(rightPoint);                                    
+                    }
+                }
+
+                for (var len = 0; len < pointArray.length; len++) {
+                    let tempDeclutterGroup;
+                    if (declutterGroup) {
+                        // tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
+                        tempDeclutterGroup = declutterGroup.slice(0);
+                    }                          
+
+                    var startM = pointArray[len];                    
+                    let parts = (<any>ol.geom).flat.textpath.lineString(pixelCoordinates, offset, end, 2, text, this, startM, maxAngle);
+                    
+                    if(parts){
+                        for(let i = 0; i < parts.length; i++){
+                            var part = parts[i];
+                            var lines = part[4];
+                            var textSize = this.getTextSize_([lines]);
+                            this.width = textSize[0];
+                            this.height = textSize[1];
+
+                            this.replayCharImage_(frameState, tempDeclutterGroup, part);
+                        }   
+                        var canvas = frameState.context.canvas_;
+                        var intersects = tempDeclutterGroup[0] <= canvas.width && tempDeclutterGroup[2] >= 0 && tempDeclutterGroup[1] <= canvas.height && tempDeclutterGroup[3] >= 0;
+                        
+                        if(declutterGroup){    
+                            if(!intersects && declutterGroup[4] == 1){
+                                continue;
+                            }          
+                            declutterGroups.push(tempDeclutterGroup);
+                        }
+                    }
+                }
+
+                for (let d = 0; d < declutterGroups.length; d++) {
+                    let targetDeclutterGroup = declutterGroups[d];
+                    if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
+                        let targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
+                        if (targetExtent[0] > tilePixelExtent[0] && targetExtent[1] > tilePixelExtent[3] && targetExtent[2] < tilePixelExtent[2] && targetExtent[3] < tilePixelExtent[1]) {
+                            this.renderDeclutter_(targetDeclutterGroup, feature);
+                        }
+                    }
+                }
+            }
+        };
+
+        (<any>ol.render).webgl.TextReplay.prototype.drawText = function (options) {
+            var this$1 = this;
+            var text = options.text;
+            if (text || this.label) {
+                var offset = 0;
+                var end = 2;
+                var stride = 2;    
+                var flatCoordinates = (<any>ol).transform.apply(options.pixelToCoordinateTransform, [options.x, options.y]);
+
+                this.startIndices.push(this.indices.length);
+            
+                if(this.label){
+                    var image = this.label;
+                    var width = image.width;
+                    var height = image.height;
+                    this.originX = 0;
+                    this.originY = 0;
+                    // this.height = height;
+                    // this.width = width + lineWidth;
+                    this.imageHeight = height;
+                    this.imageWidth = width;
+                    var currentImage;
+    
+                    if (this.images_.length === 0) {
+                        this.images_.push(image);
+                    } else {
+                        currentImage = this.images_[this.images_.length - 1];
+                        if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
+                            this.groupIndices.push(this.indices.length);
+                            this.images_.push(image);
+                        }
+                    }
+                    this.drawText_(flatCoordinates, offset, end, stride);
+                }else{
+                    var glyphAtlas = this.currAtlas_;
+                    var j, jj, currX, currY, charArr, charInfo;
+                    var anchorX = options.anchorX;
+                    var anchorY = options.anchorY;          
+                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+                    
+                    this$1.rotation = options.rotation;
+                    currX = 0;
+                    currY = 0;
+                    charArr = text.split('');
+            
+                    for (j = 0, jj = charArr.length; j < jj; ++j) {
+                        charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+            
+                        if (charInfo) {
+                            var image = charInfo.image;    
+                            this$1.anchorX = anchorX - currX;
+                            this$1.anchorY = anchorY - currY;
+                            this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                            this$1.originY = charInfo.offsetY;
+                            this$1.height = glyphAtlas.height;
+                            this$1.width = j === 0 || j === charArr.length - 1 ?
+                                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                            this$1.imageHeight = image.height;
+                            this$1.imageWidth = image.width;
+    
+                            if (this$1.images_.length === 0) {
+                                this$1.images_.push(image);
+                            } else {
+                                var currentImage = this$1.images_[this$1.images_.length - 1];
+                                if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
+                                    this$1.groupIndices.push(this$1.indices.length);
+                                    this$1.images_.push(image);
+                                }
+                            }
+                
+                            this$1.drawText_(flatCoordinates, offset, end, stride);
+                        }
+                        currX += this$1.width;
+                    }
+                }
+            }
+        };
+
+        (<any>ol.render).webgl.ImageReplay.prototype.drawPoint = function (options) {
+            var offset = 0;
+            var end = 2;
+            var stride = 2;    
+            var flatCoordinates = (<any>ol).transform.apply(options.pixelToCoordinateTransform, [options.x, options.y]);
+            this.drawCoordinates(
+                flatCoordinates, offset, end, stride);
+        };
+
         // Blocking repeat
-        (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, geometry, feature, style, declutterGroup, callback){
+        (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, declutterGroup, geometry){
             var box = [];
+            var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
             var flatCoordinates = geometry.getFlatCoordinates();
             var screenXY = geometry.screenXY;
             var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
             var scale = this.scale / window.devicePixelRatio;
             var canvas = frameState.context.canvas_;
+            var rotation = 0;            
 
             var offsetX = -scale * (this.anchorX);
             var offsetY = -scale * (this.height - this.anchorY);
@@ -798,9 +1047,96 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     return;
                 }                
                 (<any>ol).extent.extend(declutterGroup, box);
-                var declutterArgs = [callback, this, geometry, feature, style];
+                var declutterArgs = [{
+                    pixelToCoordinateTransform,
+                    x: pixelCoordinate[0],
+                    y: pixelCoordinate[1],
+                    rotation
+                }, this];
                 declutterGroup.push(declutterArgs);
             }
+        };
+
+        (<any>ol.geom).flat.textpath.lineString = function (
+            flatCoordinates, offset, end, stride, text, webglTextReplay, startM, maxAngle) {
+            var result = [];
+    
+            // Keep text upright
+            var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+
+            var numChars = text.length;
+    
+            var x1 = flatCoordinates[offset];
+            var y1 = flatCoordinates[offset + 1];
+            offset += stride;
+            var x2 = flatCoordinates[offset];
+            var y2 = flatCoordinates[offset + 1];
+            var segmentM = 0;
+            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    
+            var chunk = '';
+            var chunkLength = 0;
+            var data, index, previousAngle;        
+            for (var i = 0; i < numChars; ++i) {
+                index = reverse ? numChars - i - 1 : i;
+                var char = text.charAt(index);
+                chunk = reverse ? char + chunk : chunk + char;
+                // var charLength = webglTextReplay.getTextSize_([chunk])[0] - chunkLength;    
+                var charLength = webglTextReplay.getTextSize_([char])[0];    
+                chunkLength += charLength;
+                var charM = startM + charLength / 2;
+
+                // label exceed the road range
+                // if(offset >= end - stride){
+                    // return result;
+                // }
+
+                while (offset < end - stride && segmentM + segmentLength < charM) {
+                    x1 = x2;
+                    y1 = y2;
+                    offset += stride;
+                    x2 = flatCoordinates[offset];
+                    y2 = flatCoordinates[offset + 1];
+                    segmentM += segmentLength;
+                    segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                }
+                var segmentPos = charM - segmentM;
+                var angle = Math.atan2(y2 - y1, x2 - x1);
+                if (reverse) {
+                    angle += angle > 0 ? -Math.PI : Math.PI;
+                }
+                if (previousAngle !== undefined) {
+                    var delta = angle - previousAngle;
+                    delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
+                    if (Math.abs(delta) > maxAngle) {
+                        return null;
+                    }
+                }            
+                var interpolate = segmentPos / segmentLength;
+                var x = (<any>ol).math.lerp(x1, x2, interpolate);
+                var y = (<any>ol).math.lerp(y1, y2, interpolate);            
+                if (previousAngle == angle) {
+                    if (reverse) {
+                        data[0] = x;
+                        data[1] = y;
+                        data[2] = charLength / 2;
+                    }
+                    data[4] = chunk;
+                } else {
+                    chunk = char;
+                    chunkLength = charLength;
+                    data = [x, y, charLength / 2, angle, chunk];
+                    if (reverse) {
+                        result.unshift(data);
+                    } else {
+                        result.push(data);
+                    }
+                    previousAngle = angle;
+                }            
+                startM += charLength;
+            }
+            
+            return result;
         };
 
         // webgl render
