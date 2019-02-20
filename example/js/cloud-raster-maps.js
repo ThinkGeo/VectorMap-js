@@ -1,8 +1,37 @@
 
+/*===========================================================================*/
+// Raster Maps
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Display Different Styles Of Maps 
+/*===========================================================================*/
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
 
-//Create layer with different source
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create different layers with different data source. These layers 
+// all use ThinkGeo Cloud Maps Raster Tile service to display a detailed map. 
+// For more info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
+
+// Set different data source with apiKey.
 const urlWithApikey = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
@@ -10,6 +39,7 @@ const urlWithApikey = {
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
 }
 
+// Set different data source without apiKey. Watermark shows up as no keys are provided.
 const urlWithoutApikey = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png`,
@@ -17,9 +47,9 @@ const urlWithoutApikey = {
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png`
 }
 
-
 let url = urlWithApikey
 
+// Create different layers using different data source. 
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.light,
@@ -56,33 +86,42 @@ let aerial = new ol.layer.Tile({
     layerName: 'aerial'
 });
 
-
-//Create map
+// Create and initialize our raster map.
 let map = new ol.Map({
-
-    //Add layers
-    layers: [dark, light, aerial, transparentBackground,],
-    target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
+
+    // Add our previously-defined ThinkGeo Cloud Vector Tile layers to the map.
+    layers: [dark, light, aerial, transparentBackground],
+    // States that the HTML tag with id="map" should serve as the container for our map.
+    target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
 
-        //Set the center of the map,
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),//EPSG:4326 to EPSG:3857
-        maxZoom: 19,
+        // Center the map on the United States and start at zoom level 3.
+        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
         maxResolution: 40075016.68557849 / 512,
-        zoom: 3,
         progressiveZoom: false,
-        minZoom: 2
+        zoom: 3,
+        minZoom: 2,
+        maxZoom: 19
     })
 });
 
-//Map full screen control
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-const applyAPIKey = document.getElementById("ckbApiKey");
 
-//If no apikey set new source
+/*---------------------------------------------*/
+// 3. Display Different Styles Of Maps 
+/*---------------------------------------------*/
+
+// Now that we've set up our variable layers for map, we need to add event
+// listener that let us toggle variable styles of map, and toggle maps with 
+// watermarker or not.
+
+// When click the "use API Key" button, reset the data source value.Then you can get
+// the map with watermarker or without watermarker.
 const setSource = (url) => {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
@@ -94,23 +133,20 @@ const setSource = (url) => {
     }
 }
 
-//Updated url
+const applyAPIKey = document.getElementById("ckbApiKey");
 applyAPIKey.addEventListener('click', (e) => {
     if (applyAPIKey.getAttribute('checked') == 'checked') {
         applyAPIKey.setAttribute('checked', 'unchecked')
         url = urlWithoutApikey
         setSource(url)
-
-
     } else {
         applyAPIKey.setAttribute('checked', 'checked')
         url = urlWithApikey
         setSource(url)
     }
-
 })
 
-//Control Thumb style
+// When click the different styles button, render the relevant style map.
 document.getElementById('wrap').addEventListener('click', (e) => {
     if (e.target.classList.contains('thumb')) {
         const nodeList = document.querySelectorAll('#wrap div');
@@ -124,7 +160,6 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     }
 })
 
-//Change layer to visible
 const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
     if (e.target.getAttribute("value") == 'hybrid') {
@@ -136,7 +171,6 @@ const changeLayer = function (e) {
 
     } else {
         for (let i = 0; i < layers.length; i++) {
-
             if (layers[i].get("layerName") == e.target.getAttribute("value")) {
                 layers[i].setVisible(true);
             } else {

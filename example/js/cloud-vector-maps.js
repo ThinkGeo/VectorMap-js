@@ -5,7 +5,7 @@
 //   1. ThinkGeo Cloud API Key
 //   2. ThinkGeo Map Icon Fonts
 //   3. Map Control Setup
-//   4. Toggle Different Map Styles.
+//   4. Display Different Styles Of Maps 
 /*===========================================================================*/
 
 
@@ -84,11 +84,10 @@ map.addControl(new ol.control.FullScreen());
 
 
 /*---------------------------------------------*/
-// 4. Toggle Different Map Styles
+// 4. Display Different Styles Of Maps 
 /*---------------------------------------------*/
 
-// Add event listener that let us toggle light or dark map style 
-// when click different style button.
+// When click the different styles button, render the relevant style map.
 document.getElementById('wrap').addEventListener('click', (e) => {
     const nodeList = document.querySelectorAll(".thumb");
     
