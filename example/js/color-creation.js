@@ -1,51 +1,35 @@
+/*===========================================================================*/
+// Generate Color Themes
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Request Colors Data 
+//   3. Map Control Setup
+/*===========================================================================*/
 
-const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
-//Render data
-const renderData = (data) => {
-    let outputData = []
-    if (data) {
-        if (data.data.colors) {
-            outputData = data.data.colors;
-        } else {
-            data.data.forEach(function (val) {
-                outputData = outputData.concat(val.colors)
-            });
-        }
-    }
-    updateStyle(outputData)
-}
 
-//User Interaction
-const getResponse = () => {
-    let options = {
-        category: $('select#category option:selected').val(),
-        radio: $('input:radio:checked').val(),
-        color: $('#color').val(),
-        numbur: 20,
-    }
-    let getURL
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
 
-    if (options.radio == 'random') {
-        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
-    } else {
-        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
-    }
+// Now we'll create the layers for our map. The base layer uses 
+// the custom style to display color polygons. The base layer uses a 
+// small GeoJSON file hosted on our servers, but you can load your 
+// own data from any publicly-accessible server. In the near future you'll be able to upload your
+// data to the ThinkGeo Cloud and let us host it for you!
 
-    let jqxhr = $.get(getURL, function (data) {
-        if (data.status == 'success') {
-            renderData(data)
-        }
-    });
-
-    jqxhr.fail(function (data) {
-        window.alert('No results');
-    })
-
-}
-
-//Render base map
+// Create the base layer style.
 const baseMapStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
         color: 'rgba(256, 256, 256, 1)',
@@ -63,7 +47,7 @@ const baseMapStyle = new ol.style.Style({
     })
 })
 
-//Create base map layer
+// Apply the base style to base map layer. 
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
         url: '../data/world-population.geo.json',
@@ -76,6 +60,7 @@ let baseMapLayer = new ol.layer.Vector({
     }
 });
 
+// Create the color layer.
 let colorLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
         url: '../data/world-population.geo.json',
@@ -83,13 +68,17 @@ let colorLayer = new ol.layer.Vector({
     })
 })
 
-//Create map
+// Create and initialize our interactive map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
+    // Add our previously-defined ThinkGeo Cloud Vector Tile layers to the map.
     layers: [colorLayer, baseMapLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
+        // Center the map on Europe and start at zoom level 4.
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
         maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
@@ -97,9 +86,10 @@ let map = new ol.Map({
     }),
 });
 
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//Update style
+// Set new style of when the color data changed. 
 const updateStyle = (outputData) => {
     let styles = {
         'XXXS': new ol.style.Style({
@@ -184,10 +174,63 @@ const updateStyle = (outputData) => {
     colorLayer.setStyle(layerStyle)
 }
 
+
+/*---------------------------------------------*/
+// 3. Request Color Scheme Data 
+// Then, let's define our base url, which we'll use to request the colors scheme data. We use 
+// the ThinkGeo Cloud Maps Colors services to response the request. 
+/*---------------------------------------------*/
+
+const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
+
+//Render data
+const renderData = (data) => {
+    let outputData = []
+    if (data) {
+        if (data.data.colors) {
+            outputData = data.data.colors;
+        } else {
+            data.data.forEach(function (val) {
+                outputData = outputData.concat(val.colors)
+            });
+        }
+    }
+    updateStyle(outputData)
+}
+
+// Send the request and update the response data to map.
+const getResponse = () => {
+    let options = {
+        category: $('select#category option:selected').val(),
+        radio: $('input:radio:checked').val(),
+        color: $('#color').val(),
+        numbur: 20,
+    }
+    let getURL
+
+    if (options.radio == 'random') {
+        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
+    } else {
+        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
+    }
+
+    let jqxhr = $.get(getURL, function (data) {
+        if (data.status == 'success') {
+            renderData(data)
+        }
+    });
+
+    jqxhr.fail(function (data) {
+        window.alert('No results');
+    })
+
+}
+
+// Set default color theme when the page load for the first time.
 window.onload = function a() {
-    //default color
     let defaultData = ["641615", "7C1B1A", "93201F", "AB2624", "C22B28", "D43533", "D94D4A", "65153C", "7C1A4A", "931F58", "AB2567", "C22A75", "D33583", "D84C91", "641563", "7C1A7A", "931F91", "AB24A9", "C228C0", "D433D1"]
     updateStyle(defaultData)
+    // When click the 'generate' button, set new style according to what the user input.
     document.getElementById('generate').addEventListener('click', (e) => {
         getResponse()
     })
