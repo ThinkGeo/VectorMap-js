@@ -5,9 +5,8 @@
 //   1. ThinkGeo Cloud API Key
 //   2. ThinkGeo Map Icon Fonts
 //   3. Map Control Setup
-//   4. Display Different Styles Of Maps 
+//   4. Changing the Map Style
 /*===========================================================================*/
-
 
 
 /*---------------------------------------------*/
@@ -84,7 +83,7 @@ map.addControl(new ol.control.FullScreen());
 
 
 /*---------------------------------------------*/
-// 4. Display Different Styles Of Maps 
+// 4. Changing the Map Style
 /*---------------------------------------------*/
 
 // When click the different styles button, render the relevant style map.

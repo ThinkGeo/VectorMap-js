@@ -1,13 +1,11 @@
-
 /*===========================================================================*/
 // Raster Maps
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
 //   2. Map Control Setup
-//   3. Display Different Styles Of Maps 
+//   3. Changing the Map Style
 /*===========================================================================*/
-
 
 
 /*---------------------------------------------*/
@@ -26,12 +24,14 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // 2. Map Control Setup
 /*---------------------------------------------*/
 
-// Now we'll create different layers with different data source. These layers 
+// Now we'll create different layers with different data sources. These layers 
 // all use ThinkGeo Cloud Maps Raster Tile service to display a detailed map. 
 // For more info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
 
-// Set different data source with apiKey.
+// This object defines the layer data sources that our map will use if the 
+// "Use API Key" checkbox on the UI is checked.  Map tiles requested with a 
+// valid API key will be clear with no watermarks.
 const urlWithApikey = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
@@ -39,7 +39,9 @@ const urlWithApikey = {
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
 }
 
-// Set different data source without apiKey. Watermark shows up as no keys are provided.
+// This object defines the layer data sources that our map will use if the 
+// "Use API Key" checkbox on the UI is unchecked.  Without an API key, map 
+// tiles will still be returned, but will be watermarked with ThinkGeo's logo.
 const urlWithoutApikey = {
     light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png`,
     dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png`,
@@ -47,20 +49,25 @@ const urlWithoutApikey = {
     transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png`
 }
 
+// Because the UI defaults to "Use API Key" being checked, our code will 
+// default to making tile requests with an API key.
 let url = urlWithApikey
 
-// Create different layers using different data source. 
-// Light Map: light layer
-// Dark Map: dark layer
-// Imagery Map: aerial layer
-// Hybrid Map: light layer + aerial layer
-// Transparent Map: transparentBackground layer
+// Now let's create each actual map layer, using the data source URLs we 
+// defined earlier.  We'll create the following layers:
+//   1. light:  Street map with a light background and features.
+//   2. dark:   Street map with a dark background and features.
+//   3. aerial: Aerial imagery map with no street features or POIs.
+//   4. transparentBackground: Just the streets and POIs with a transparent 
+//      background.  Useful for displaying on top of the aerial layer, or
+//      your own custom imagery layer.
+// The "light" layer will be our default, so for the others, we'll set the
+// "visible" property to false.
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.light,
         tileSize: 512,
     }),
-
     layerName: 'light'
 });
 
@@ -73,25 +80,25 @@ let dark = new ol.layer.Tile({
     visible: false,
 });
 
-let transparentBackground = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: url.transparentBackground,
-        tileSize: 512,
-    }),
-    visible: false,
-    layerName: 'transparentBackground'
-});
-
 let aerial = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.aerial,
         tileSize: 512,
     }),
-    visible: false,
-    layerName: 'aerial'
+    layerName: 'aerial',
+    visible: false
 });
 
-// Create and initialize our raster map.
+let transparentBackground = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: url.transparentBackground,
+        tileSize: 512,
+    }),
+    layerName: 'transparentBackground',
+    visible: false
+});
+
+// Create and initialize our raster map control.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
@@ -118,15 +125,18 @@ map.addControl(new ol.control.FullScreen());
 
 
 /*---------------------------------------------*/
-// 3. Display Different Styles Of Maps 
+// 3. Changing the Map Style
 /*---------------------------------------------*/
 
-// Now that we've set up our variable layers for map, we need to add event
-// listener that let us toggle variable styles of map, and toggle maps with 
-// watermarker or not.
+// Now that we've set up our variable layers for the map, we need to add an 
+// event listener that lets us switch which layers are visible.  This has the 
+// effect of letting the user change the style of the map with a single click.
+// We will also handle clicks on the "Use API Key" checkbox, so that when the 
+// API key is disabled, we'll request watermarked map tiles anonymously.
 
-// When click the "use API Key" button, reset the data source value.Then you can get
-// the map with watermarker or without watermarker.
+// This method sets the data source URL for each layer on the map according to 
+// the object passed in.  Used for controlling whether the ApiKey parameter is 
+// passed to the ThinkGeo Cloud tile endpoints or not.
 const setSource = (url) => {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
@@ -134,10 +144,10 @@ const setSource = (url) => {
             url: url[`${layers[i].get("layerName")}`],
             tileSize: 512,
         }));
-
     }
 }
 
+// Handles clicks on the "Use API Key" checkbox.
 const applyAPIKey = document.getElementById("ckbApiKey");
 applyAPIKey.addEventListener('click', (e) => {
     if (applyAPIKey.getAttribute('checked') == 'checked') {
@@ -151,7 +161,8 @@ applyAPIKey.addEventListener('click', (e) => {
     }
 })
 
-// When click the different styles button, render the relevant style map.
+// When the user clicks the different map style buttons, this method will 
+// change the visible map layers to match the style they requested.
 document.getElementById('wrap').addEventListener('click', (e) => {
     if (e.target.classList.contains('thumb')) {
         const nodeList = document.querySelectorAll('#wrap div');
@@ -165,6 +176,7 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     }
 })
 
+// This method actually applies the requested layer changes to the map.
 const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
     if (e.target.getAttribute("value") == 'hybrid') {

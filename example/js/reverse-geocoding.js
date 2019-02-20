@@ -5,8 +5,10 @@
 //   1. ThinkGeo Cloud API Key
 //   2. ThinkGeo Map Icon Fonts
 //   3. Map Control Setup
+//   4. Reverse Geocoding Setup
+//   5. Point Details Popup Bubble
+//   6. Event Listeners
 /*===========================================================================*/
-
 
 
 /*---------------------------------------------*/
@@ -41,7 +43,12 @@ WebFont.load({
 // 3. Map Control Setup
 /*---------------------------------------------*/
 
-// Styling: Set the marker style of the best matched place and the search result circle style.
+// Here's where we set up our map.  We're going to create layers, styles, 
+// and define our initial view when the page first loads.
+
+// In this custom object, we're going to define two styles:
+//   1. The appearance of the red marker icon for the best matched place.
+//   2. The appearance of the blue circle indicating the search area.
 let _styles = {
     bestMatchLocation: new ol.style.Style({
         image: new ol.style.Icon({
@@ -58,12 +65,14 @@ let _styles = {
     })
 };
 
-// Create Reverse Geocoding Layer for the map. 
+// Create a Reverse Geocoding Layer for the map.  Tihs layer will display icons 
+// for each place found near the clicked location on the map.
 const createReverseGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
 
-        //ResultLayer style
+        // Depending on the type of place, show a different icon. For example,
+        // restaurants will show a knife and fork symbol.
         style: function (feature) {
             let key = feature.get("type");
             let style = _styles[key];
@@ -93,47 +102,6 @@ const createReverseGeocodingLayer = function () {
     });
     vectorLayer.set("name", "reverseGeocodingLayer");
     return vectorLayer;
-};
-
-// Set up the popup panel box(the popup will show when hovering a item after 0.5s).
-const container = document.getElementById("popup");
-container.classList.remove("hidden");
-const content = document.getElementById("popup-content");
-const closer = document.getElementById("popup-closer");
- 
-let overlay = new ol.Overlay({
-    element: container,
-    autoPan: true,
-    autoPanAnimation: {
-        duration: 2000
-    }
-});
-
-closer.onclick = function () {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
-};
-
-// Display the specific location detail imformation panel.
-const popUp = function (address, centerCoordinate) {
-    let addressArr = address.split(",");
-    overlay.setPosition(centerCoordinate);
-    map.addOverlay(overlay);
-    let length = addressArr.length;
-    content.innerHTML =
-        '<p style="font-size:1.3rem" >' +
-        (addressArr[0] || "") +
-        '</p><p style="margin-left:2px">' +
-        (addressArr[1] || "") +
-        "," +
-        (addressArr[length - 2] || "") +
-        "</p>" +
-        "<p>" +
-        (addressArr[4] || "") +
-        "," +
-        (addressArr[length - 1] || "") +
-        "</p>";
 };
 
 // Now we'll create the base layer for our map. The base layer uses the ThinkGeo
@@ -168,67 +136,19 @@ let map = new ol.Map({
 // Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//render Circle layer
-const renderSearchCircle = function (radius, coordinate) {
-    let projection = view.getProjection();
-    let resolutionAtEquator = view.getResolution();
-    let center = coordinate;
-    let pointResolution = ol.proj.getPointResolution(
-        projection,
-        resolutionAtEquator,
-        center
-    );
-    let resolutionFactor = resolutionAtEquator / pointResolution;
-    let radiusInMeter = radius * resolutionFactor;
 
-    let feature = new ol.Feature({
-        geometry: new ol.geom.Circle(center, radiusInMeter),
-        type: "searchRadius"
-    });
-    reverseGeocodingLayer.getSource().addFeature(feature);
-};
+/*---------------------------------------------*/
+// 4. Reverse Geocoding Setup
+/*---------------------------------------------*/
 
-//Render best Match result
-const renderBestMatchLoaction = function (place, coordinate, address) {
-    if (place.data) {
-        let wktReader = new ol.format.WKT();
-        let feature = wktReader.readFeature(
-            place.data.locationFeatureWellKnownText
-        );
-        if (feature.getGeometry().getType() !== "Point") {
-            feature = new ol.Feature({
-                geometry: new ol.geom.Point([coordinate[1], coordinate[0]])
-            });
-        }
-        feature.set("type", "bestMatchLocation");
-        feature.set("text", "");
-        reverseGeocodingLayer.getSource().addFeature(feature);
-        let addressArr = address.split(",");
-        let length = addressArr.length;
-        let coordinateTrans = ol.proj.transform(
-            [coordinate[1], coordinate[0]],
-            "EPSG:3857",
-            "EPSG:4326"
-        );
-        document.getElementById("floating-panel").innerHTML =
-            '<p style="font-size:1.2rem;font-weight: bold;" >' +
-            (addressArr[0] || "") +
-            "</p>" +
-            "<p>" +
-            (addressArr[1] || "") +
-            "," +
-            (addressArr[length - 2] || "") +
-            "</p>" +
-            "<p>" +
-            coordinateTrans[1].toFixed(4) +
-            " , " +
-            coordinateTrans[0].toFixed(4) +
-            "</p>";
-    }
-};
+// At this point we'll build up the methods and functionality that will  
+// actually perform the reverse geocoding using the ThinkGeo Cloud and then 
+// display the results on the map.
 
+// Define a list of the different types of places for which we have unique 
+// marker icons that can be shown on the map.
 const _supportedMarkers = [
-    "aeroway",
+    "aeroway", 
     "amenity",
     "barrier",
     "building",
@@ -252,10 +172,53 @@ const _supportedMarkers = [
     "waterway"
 ];
 
-// Render reverse geocoding result. The reverse geocoding uses the ThinkGeo
-// Cloud Maps Reverse Geocoding services to display the result. For more 
-// info, see our wiki:
-// https://wiki.thinkgeo.com/wiki/thinkgeo_sdk_reverse_geocoding
+// This method draws the best matching location on the map whenever a reverse 
+// geocode is performed.  The best match is defined as the place closest to 
+// the reverse geocoded coordinates, regardless of any other conditions.
+const renderBestMatchLocation = function (place, coordinate, address) {
+    if (place.data) {
+        let wktReader = new ol.format.WKT();
+        let feature = wktReader.readFeature(
+            place.data.locationFeatureWellKnownText
+        );
+        if (feature.getGeometry().getType() !== "Point") {
+            feature = new ol.Feature({
+                geometry: new ol.geom.Point([coordinate[1], coordinate[0]])
+            });
+        }
+        feature.set("type", "bestMatchLocation");
+        feature.set("text", "");
+        reverseGeocodingLayer.getSource().addFeature(feature);
+        let addressArr = address.split(",");
+        let length = addressArr.length;
+        let coordinateTrans = ol.proj.transform(
+            [coordinate[1], coordinate[0]],
+            "EPSG:3857",
+            "EPSG:4326"
+        );
+        
+        // Display the name, address and coordinates of the best match result 
+        // in the box at the top center of the map.
+        document.getElementById("floating-panel").innerHTML =
+            '<p style="font-size:1.2rem;font-weight: bold;" >' +
+            (addressArr[0] || "") +
+            "</p>" +
+            "<p>" +
+            (addressArr[1] || "") +
+            "," +
+            (addressArr[length - 2] || "") +
+            "</p>" +
+            "<p>" +
+            coordinateTrans[1].toFixed(4) +
+            " , " +
+            coordinateTrans[0].toFixed(4) +
+            "</p>";
+    }
+};
+
+// This method renders all of the places found in the vicinity of the reverse 
+// geocoded coordinates.  These are points of interest belonging to different 
+// categories, like amenities, sustenance, buildings, etc.
 const renderNearbyResult = function (response) {
     for (let i = 0; i < response.length; i++) {
         let item = response[i].data;
@@ -276,6 +239,7 @@ const renderNearbyResult = function (response) {
     }
 };
 
+// This method is used to create the actual map feature for each place result.
 const createFeature = function (wkt) {
     let wktReader = new ol.format.WKT();
     let feature = wktReader.readFeature(wkt);
@@ -289,6 +253,33 @@ const createFeature = function (wkt) {
     return feature;
 };
 
+// When a reverse geocode is performed, we want to draw a circle on the map 
+// that represents the area we queried for nearby locations.  This method 
+// handles the drawing and positioning of that circle.
+const renderSearchCircle = function (radius, coordinate) {
+    let projection = view.getProjection();
+    let resolutionAtEquator = view.getResolution();
+    let center = coordinate;
+    let pointResolution = ol.proj.getPointResolution(
+        projection,
+        resolutionAtEquator,
+        center
+    );
+    let resolutionFactor = resolutionAtEquator / pointResolution;
+    let radiusInMeter = radius * resolutionFactor;
+
+    let feature = new ol.Feature({
+        geometry: new ol.geom.Circle(center, radiusInMeter),
+        type: "searchRadius"
+    });
+    reverseGeocodingLayer.getSource().addFeature(feature);
+};
+
+// This method performs the actual reverse geocode using the ThinkGeo Cloud. 
+// By passing in the coordinates of the map location that was clicked, we can 
+// get back a collection of places in the vicinity of that click, as well as 
+// the closest matching address.  For more details, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
 const reverseGeocode = function (coordinate, flag) {
     const baseURL = "https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/";
     let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&SearchRadius=500&MaxResults=20&Srid=3857&VerboseResults=true`;
@@ -297,16 +288,18 @@ const reverseGeocode = function (coordinate, flag) {
         if (data.data.bestMatchLocation) {
             let address = data.data.bestMatchLocation.data.address;
             if (flag) {
-                renderBestMatchLoaction(
+                renderBestMatchLocation(
                     data.data.bestMatchLocation,
                     coordinate,
                     address
                 );
                 renderNearbyResult(data.data.nearbyLocations);
                 renderSearchCircle(500, [coordinate[1], coordinate[0]]);
+                // When clicking on the map, slide the map over to the clicked point
+                // over a duration of 500 milliseconds.
                 view.animate({
                     center: [coordinate[1], coordinate[0]],
-                    duration: 2000
+                    duration: 500
                 });
             } else {
                 popUp(address, [coordinate[1], coordinate[0]]);
@@ -316,15 +309,75 @@ const reverseGeocode = function (coordinate, flag) {
         }
     });
 
+    // In case the ThinkGeo Cloud Reverse Geocoding service requests fails for 
+    // any reason, display a message that something went wrong.
     jqxhr.fail(function (data) {
         window.alert(
-            "The decimal degree latitude value you provided was out of range."
+            "Unable to reverse geocode that location. Please try again."
         );
     });
 };
 
-// When click on the map, get the coordinates where you click. Then send 
-// request with the coordinates to query reverse geocode result.
+
+/*---------------------------------------------*/
+// 5. Point Details Popup Bubble
+/*---------------------------------------------*/
+
+// When you hover your mouse over a place on the map, we want to show 
+// a popup bubble with the name and address of that place.  Here, we'll 
+// set up the container element, markup and methods for that bubble.
+const container = document.getElementById("popup");
+container.classList.remove("hidden");
+const content = document.getElementById("popup-content");
+const closer = document.getElementById("popup-closer");
+ 
+// Create an overlay for the map that will hold the popup bubble.
+let overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 2000
+    }
+});
+
+// Make the popup bubble disappear when its "X" button is clicked.
+closer.onclick = function () {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+};
+
+// Assemble the HTML for the popup bubble.
+const popUp = function (address, centerCoordinate) {
+    let addressArr = address.split(",");
+    overlay.setPosition(centerCoordinate);
+    map.addOverlay(overlay);
+    let length = addressArr.length;
+    content.innerHTML =
+        '<p style="font-size:1.3rem" >' +
+        (addressArr[0] || "") +
+        '</p><p style="margin-left:2px">' +
+        (addressArr[1] || "") +
+        "," +
+        (addressArr[length - 2] || "") +
+        "</p>" +
+        "<p>" +
+        (addressArr[4] || "") +
+        "," +
+        (addressArr[length - 1] || "") +
+        "</p>";
+};
+
+
+/*---------------------------------------------*/
+// 6. Event Listeners
+/*---------------------------------------------*/
+
+// These event listeners tell the UI when it's time to execute all of the 
+// code we've written.
+
+// This listener gets the coordinates when you click on the map, and then 
+// uses them to perform a reverse geocode with the ThinkGeo Cloud.
 map.addEventListener("click", function (evt) {
     let source = reverseGeocodingLayer.getSource();
     let coordinate = evt.coordinate;
@@ -333,7 +386,8 @@ map.addEventListener("click", function (evt) {
     reverseGeocode([coordinate[1], coordinate[0]], true);
 });
 
-// When the pointer hover over the nearby item, show the details pop up of the specific item.
+// This event listener will show the popup bubble we created, any time 
+// you hover your mouse over a location point on the map.
 let timer = null;
 map.addEventListener("pointermove", function (evt) {
     clearTimeout(timer);

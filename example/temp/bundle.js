@@ -572,9 +572,9 @@
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
         title: 'Raster Maps (High Resolution)',
-        htmlPath: './example/html/retina-maps.html',
+        htmlPath: './example/html/high-dpi-maps.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/NEQeXR',
-        jsPath: './example/js/retina-maps.js'
+        jsPath: './example/js/high-dpi-maps.js'
       }, {
         comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
         title: 'Vector Maps on Custom Imagery',
