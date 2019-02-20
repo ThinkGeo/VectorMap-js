@@ -3,8 +3,8 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. Request Colors Data 
-//   3. Map Control Setup
+//   2. Map Control Setup
+//   3. Request Color Scheme Data 
 /*===========================================================================*/
 
 /*---------------------------------------------*/
@@ -177,9 +177,10 @@ const updateStyle = (outputData) => {
 
 /*---------------------------------------------*/
 // 3. Request Color Scheme Data 
+/*---------------------------------------------*/
+
 // Then, let's define our base url, which we'll use to request the colors scheme data. We use 
 // the ThinkGeo Cloud Maps Colors services to response the request. 
-/*---------------------------------------------*/
 
 const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
 
