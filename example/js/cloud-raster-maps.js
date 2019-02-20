@@ -50,6 +50,11 @@ const urlWithoutApikey = {
 let url = urlWithApikey
 
 // Create different layers using different data source. 
+// Light Map: light layer
+// Dark Map: dark layer
+// Imagery Map: aerial layer
+// Hybrid Map: light layer + aerial layer
+// Transparent Map: transparentBackground layer
 let light = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: url.light,
@@ -91,7 +96,7 @@ let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
 
-    // Add our previously-defined ThinkGeo Cloud Vector Tile layers to the map.
+    // Add our previously-defined ThinkGeo Cloud Raster Tile layers to the map.
     layers: [dark, light, aerial, transparentBackground],
     // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
