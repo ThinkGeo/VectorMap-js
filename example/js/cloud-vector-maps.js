@@ -1,5 +1,35 @@
+/*===========================================================================*/
+// Vector Maps
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. ThinkGeo Map Icon Fonts
+//   3. Map Control Setup
+//   4. Toggle Different Map Styles.
+/*===========================================================================*/
 
-//Load vector map icon font
+
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+
+
+/*---------------------------------------------*/
+// 2. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
+// Icon Fonts will be rendered as POI icons on the background layer. 
+// For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
@@ -7,51 +37,60 @@ WebFont.load({
     }
 });
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
-//Create layer with different source
-const styleJson = {
-    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
-    dark: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json'
-}
+/*---------------------------------------------*/
+// 3. Map Control Setup
+/*---------------------------------------------*/
 
-
-let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
+// Now, we'll create the two different styles of layers for our map. 
+// The two styles of layers use ThinkGeo Cloud Maps Vector Tile service to 
+// display the detailed light style street map and dark style street map.
+// For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
+let light = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
 
-let dark = new ol.mapsuite.VectorTileLayer(styleJson.dark, {
+let dark = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json', {
     apiKey: apiKey,
     visible: false,
     layerName: 'dark'
 });
 
-//Create map
+// Create and initialize our multi-style map.
 let map = new ol.Map({
-
-    //Add default layers
-    layers: [light, dark],
-    target: 'map',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
+
+    // Add our two previously-defined ThinkGeo Cloud Vector Tile layers to the map.
+    layers: [light, dark],
+    // States that the HTML tag with id="map" should serve as the container for our map.
+    target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
 
-        //Set the center of the map,
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]), //EPSG:4326 to EPSG:3857
-        maxZoom: 19,
+        // Center the map on The United States and start at zoom level 3.
+        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
-        minZoom: 2
+        minZoom: 2,
+        maxZoom: 19
     })
 });
 
-//Control map full screen
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//Control Thumb style
+
+/*---------------------------------------------*/
+// 4. Toggle Different Map Styles
+/*---------------------------------------------*/
+
+// Add event listener that let us toggle light or dark map style 
+// when click different style button.
 document.getElementById('wrap').addEventListener('click', (e) => {
-    const nodeList = document.querySelectorAll('geocoderResult a');
+    const nodeList = document.querySelectorAll(".thumb");
     
     for (let node of nodeList) {
         node.style.borderColor = 'transparent';
@@ -62,7 +101,6 @@ document.getElementById('wrap').addEventListener('click', (e) => {
     }
 })
 
-//Change layer to visible
 const changeLayer = function (e) {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
