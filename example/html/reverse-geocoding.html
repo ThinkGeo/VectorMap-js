@@ -6,9 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Find Nearby Places</title>
-    <!-- style sheet for vectormap.js -->
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+    
+    <!-- Define some custom styles for the UI of our sample page. -->
     <style rel="stylesheet" type="text/css">
+        #map{
+            width: 100%;
+            height: 100%;
+        }
+
         #floating-panel {
             position: absolute;
             top: 10px;
@@ -189,29 +197,27 @@
 </head>
 
 <body>
-
-    <div id="map" style="width:100%;height:100%">
+    <!-- This <div> is the container into which our map control will be loaded. -->
+    <div id="map">
         <div id="floating-panel">
             <p>Click on the map and get the POIs nearby</p>
         </div>
     </div>
+    <!-- This <div> is the container into which our popup panel will be rendered. -->
     <div id="popup" class="ol-popup hidden">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
         <div id="popup-content"></div>
     </div>
-    <!-- latest minified version of vectormap.js -->
+
+    <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
-    <!-- option: Map Suite World Streets Styles -->
+
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
-    <script>
-        WebFont.load({
-            custom: {
-                families: ['vectormap-icons'],
-                urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
-            }
-        });
-    </script>
+
+    <!-- Load the Jquery library dependency. -->
     <script src="../lib/jquery/jquery.min.js"></script>
+
     <script src="../js/reverse-geocoding.js"></script>
 
 </body>

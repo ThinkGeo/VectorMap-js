@@ -1,4 +1,34 @@
-//Load vector map icon font
+/*===========================================================================*/
+// Find Nearby Places
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. ThinkGeo Map Icon Fonts
+//   3. Map Control Setup
+/*===========================================================================*/
+
+
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~"; 
+
+
+/*---------------------------------------------*/
+// 2. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
+// Icon Fonts will be rendered as POI icons on the background layer. 
+// For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -6,9 +36,12 @@ WebFont.load({
     }
 });
 
-const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~"; // please go to https://cloud.thinkgeo.com to create
 
-//Define Styles
+/*---------------------------------------------*/
+// 3. Map Control Setup
+/*---------------------------------------------*/
+
+// Styling: Set the marker style of the best matched place and the search result circle style.
 let _styles = {
     bestMatchLocation: new ol.style.Style({
         image: new ol.style.Icon({
@@ -25,18 +58,8 @@ let _styles = {
     })
 };
 
-const styleJson = {
-    light: "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json"
-};
-
-//Create map
-let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
-    apiKey: apiKey,
-    layerName: "light"
-});
-
-//Create resultLayer
-const createGeocodingLayer = function () {
+// Create Reverse Geocoding Layer for the map. 
+const createReverseGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: [] }),
 
@@ -68,16 +91,16 @@ const createGeocodingLayer = function () {
             return style;
         }
     });
-    vectorLayer.set("name", "geocodingLayer");
+    vectorLayer.set("name", "reverseGeocodingLayer");
     return vectorLayer;
 };
 
-//   Elements that make up the popup.
+// Set up the popup panel box(the popup will show when hovering a item after 0.5s).
 const container = document.getElementById("popup");
 container.classList.remove("hidden");
 const content = document.getElementById("popup-content");
 const closer = document.getElementById("popup-closer");
-
+ 
 let overlay = new ol.Overlay({
     element: container,
     autoPan: true,
@@ -92,6 +115,7 @@ closer.onclick = function () {
     return false;
 };
 
+// Display the specific location detail imformation panel.
 const popUp = function (address, centerCoordinate) {
     let addressArr = address.split(",");
     overlay.setPosition(centerCoordinate);
@@ -112,41 +136,39 @@ const popUp = function (address, centerCoordinate) {
         "</p>";
 };
 
-//Create view
+// Now we'll create the base layer for our map. The base layer uses the ThinkGeo
+// Cloud Maps Vector Tile service to display a detailed street map.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
+let light = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json", {
+    apiKey: apiKey,
+    layerName: "light"
+});
+
+// Create a default view for the map when it starts up.
 let view = new ol.View({
+    // Center the map on Frisco, TX and start at zoom level 16.
     center: ol.proj.fromLonLat([-96.804616, 33.120202]),
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     zoom: 16
 });
 
-//Create map
+// Create and initialize our interactive map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [light, (geocodingLayer = createGeocodingLayer())],
+    // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
+    layers: [light, (reverseGeocodingLayer = createReverseGeocodingLayer())],
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: "map",
     view: view
 });
 
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//Create feature
-const createFeature = function (wkt) {
-    let wktReader = new ol.format.WKT();
-    let feature = wktReader.readFeature(wkt);
-    if (feature.getGeometry().getType() !== "Point") {
-        feature = new ol.Feature({
-            geometry: new ol.geom.Point(
-                ol.extent.getCenter(feature.getGeometry().getExtent())
-            )
-        });
-    }
-    return feature;
-};
-
 //render Circle layer
-
 const renderSearchCircle = function (radius, coordinate) {
     let projection = view.getProjection();
     let resolutionAtEquator = view.getResolution();
@@ -163,7 +185,7 @@ const renderSearchCircle = function (radius, coordinate) {
         geometry: new ol.geom.Circle(center, radiusInMeter),
         type: "searchRadius"
     });
-    geocodingLayer.getSource().addFeature(feature);
+    reverseGeocodingLayer.getSource().addFeature(feature);
 };
 
 //Render best Match result
@@ -180,7 +202,7 @@ const renderBestMatchLoaction = function (place, coordinate, address) {
         }
         feature.set("type", "bestMatchLocation");
         feature.set("text", "");
-        geocodingLayer.getSource().addFeature(feature);
+        reverseGeocodingLayer.getSource().addFeature(feature);
         let addressArr = address.split(",");
         let length = addressArr.length;
         let coordinateTrans = ol.proj.transform(
@@ -230,7 +252,10 @@ const _supportedMarkers = [
     "waterway"
 ];
 
-//Render Nearby Result
+// Render reverse geocoding result. The reverse geocoding uses the ThinkGeo
+// Cloud Maps Reverse Geocoding services to display the result. For more 
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_sdk_reverse_geocoding
 const renderNearbyResult = function (response) {
     for (let i = 0; i < response.length; i++) {
         let item = response[i].data;
@@ -247,11 +272,23 @@ const renderNearbyResult = function (response) {
             feature.set("type", marker);
         }
         feature.set("name", "nearbyFeature");
-        geocodingLayer.getSource().addFeature(feature);
+        reverseGeocodingLayer.getSource().addFeature(feature);
     }
 };
 
-//Search nearby
+const createFeature = function (wkt) {
+    let wktReader = new ol.format.WKT();
+    let feature = wktReader.readFeature(wkt);
+    if (feature.getGeometry().getType() !== "Point") {
+        feature = new ol.Feature({
+            geometry: new ol.geom.Point(
+                ol.extent.getCenter(feature.getGeometry().getExtent())
+            )
+        });
+    }
+    return feature;
+};
+
 const reverseGeocode = function (coordinate, flag) {
     const baseURL = "https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/";
     let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&SearchRadius=500&MaxResults=20&Srid=3857&VerboseResults=true`;
@@ -286,15 +323,17 @@ const reverseGeocode = function (coordinate, flag) {
     });
 };
 
-//User interaction
+// When click on the map, get the coordinates where you click. Then send 
+// request with the coordinates to query reverse geocode result.
 map.addEventListener("click", function (evt) {
-    let source = geocodingLayer.getSource();
+    let source = reverseGeocodingLayer.getSource();
     let coordinate = evt.coordinate;
     overlay.setPosition(undefined);
     source.clear();
     reverseGeocode([coordinate[1], coordinate[0]], true);
 });
 
+// When the pointer hover over the nearby item, show the details pop up of the specific item.
 let timer = null;
 map.addEventListener("pointermove", function (evt) {
     clearTimeout(timer);
@@ -311,7 +350,7 @@ map.addEventListener("pointermove", function (evt) {
             {
                 layerFilter: layer => {
                     let name = layer.get("name");
-                    if (name === "geocodingLayer") {
+                    if (name === "reverseGeocodingLayer") {
                         return true;
                     }
                     return false;
