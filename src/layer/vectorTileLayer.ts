@@ -1212,16 +1212,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             
             // FIXME replace this temp solution with text calculation in worker
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
-                // this.zIndex = Infinity;
                 gl.uniform1f(locations.u_zIndex, 0);
             }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
-                // this.zIndex = 200;
-                // gl.uniform1f(locations.u_zIndex, (0.1 / 200));
                 this.u_zIndex = locations.u_zIndex;
             }else if(this instanceof (<any>ol).render.webgl.PolygonReplay){
                 this.u_zIndex = locations.u_zIndex;
-            }
-            // gl.uniform1f(locations.u_zIndex, (0.1 / this.zIndex));            
+            }           
 
             // draw!
             var result;
