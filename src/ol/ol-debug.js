@@ -70340,10 +70340,11 @@ function olInit() {
                         }
                     }
                 }
-
-                if(outerRing.length > 6){
+                
+                {
                     this.startIndices.push(this.indices.length);
                     this.startIndicesFeature.push(feature);
+
                     if (this.state_.changed) {
                         this.zCoordinates.push(feature.zCoordinate);
                         this.styleIndices_.push(this.indices.length);
@@ -70353,19 +70354,21 @@ function olInit() {
                         // this.lineStringReplay.setPolygonStyle(feature);
                         // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                     }
-                    this.drawCoordinates_(outerRing, [], stride);       
+                    outerRing.length > 6 && this.drawCoordinates_(outerRing, [], stride);       
                 }
 
-                if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                    this.styles_.push(this.styles_[0]);
-                    this.zCoordinates.push(feature.zCoordinate);
-                    this.styleIndices_.push(this.indices.length);
-                    this.state_.changed = false;
+                {
+                    if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                        this.styles_.push(this.styles_[0]);
+                        this.zCoordinates.push(feature.zCoordinate);
+                        this.styleIndices_.push(this.indices.length);
+                        this.state_.changed = false;
+                    }
+    
+                    for(var i = 0; i < holes.length; i++){
+                        this.drawCoordinates_(holes[i], [], stride);
+                    }                 
                 }
-
-                for(var i = 0; i < holes.length; i++){
-                    this.drawCoordinates_(holes[i], [], stride);
-                }                 
             }
         }
     };
@@ -102416,7 +102419,7 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "2,0,-2")){
+            // if(!(requestTileCoord.toString() == "2,2,-1")){
             // if(tileCoord.toString() !== "16,15147,-26446"){
             // if(tileCoord.toString() !== "15,7573,-13224"){
                 // return
