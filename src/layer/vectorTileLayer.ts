@@ -689,17 +689,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.groupIndices.length = 0;
             this.images_.length = 0;
             var frameState = context.frameState;
-            var tileExtent = this.maxExtent;
-            var pixelCoordinate;
             var tilePixelExtent = [];           
-            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
             this.screenXY = screenXY;
-
-            // for(let index = 0; index < tileExtent.length; index += 2){
-            //     pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
-            //         [tileExtent[index] - this.origin[0] + screenXY[0], tileExtent[index + 1] - this.origin[1] + screenXY[1]]);
-            //     tilePixelExtent.push(...pixelCoordinate);
-            // }
 
             // this.tilePixelExtent = tilePixelExtent;
 
@@ -781,7 +772,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
             var scale = this.scale / window.devicePixelRatio;
-            var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
+            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
             var x = part[0];
             var y = part[1];
             var rotation = part[3];
@@ -797,6 +788,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var topLeft = [];
             var topRight = [];
             var offsetX, offsetY;
+            var pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
+                [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
+            x = pixelCoordinate[0];
+            y = pixelCoordinate[1];
 
             // bottom-left corner
             offsetX = -scale * anchorX;
@@ -828,12 +823,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             (<any>ol).extent.extendCoordinate(declutterGroup, topLeft);
 
             var declutterArgs = [{
-                pixelToCoordinateTransform,
                 anchorX,
                 anchorY,
                 rotation,
-                x, 
-                y,
+                flatCoordinates: [part[0], part[1]],
                 text
             }, this];
             declutterGroup.push(declutterArgs);
@@ -847,18 +840,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
             var maxAngle = this.maxAngle_;
             var lineStringCoordinates = geometry.getFlatCoordinates();
+            var end = lineStringCoordinates.length;
             var screenXY = this.screenXY;
-            var pixelCoordinate;
-            var pixelCoordinates = [];
             var tilePixelExtent = this.tilePixelExtent;           
-            
-            for(let index = 0; index < lineStringCoordinates.length; index += 2){
-                pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
-                    [lineStringCoordinates[index] - this.origin[0] + screenXY[0], lineStringCoordinates[index + 1] - this.origin[1] + screenXY[1]]);                    
-                pixelCoordinates.push(...pixelCoordinate);
-            }
-            var end = pixelCoordinates.length;
-            var pathLength = (<any>ol.geom).flat.length.lineString(pixelCoordinates, offset, end, stride);
+            var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
             let textLength = this.getTextSize_([text])[0];
             
             if(this.label){
@@ -899,7 +884,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }                          
 
                     var startM = pointArray[len];                    
-                    let parts = (<any>ol.geom).flat.textpath.lineString(pixelCoordinates, offset, end, 2, text, this, startM, maxAngle);
+                    let parts = (<any>ol.geom).flat.textpath.lineString(lineStringCoordinates, offset, end, 2, text, this, startM, 
+                            maxAngle, resolution, screenXY, coordinateToPixelTransform, this.origin);
                     
                     if(parts){
                         for(let i = 0; i < parts.length; i++){
@@ -945,8 +931,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 
                 this.startIndices.push(this.indices.length);
                 
+                var flatCoordinates = options.flatCoordinates;
                 if(this.label){
-                    var flatCoordinates = options.flatCoordinates;
                     var image = this.label;
                     var width = image.width;
                     var height = image.height;
@@ -969,9 +955,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                     this.drawText_(flatCoordinates, offset, end, stride);
                 }else{
-                    var flatCoordinates = (<any>ol).transform.apply(options.pixelToCoordinateTransform, [options.x, options.y]);
-                    flatCoordinates[0] = flatCoordinates[0]  + this.origin[0] - this.screenXY[0];
-                    flatCoordinates[1] = flatCoordinates[1]  + this.origin[1] - this.screenXY[1];
                     var glyphAtlas = this.currAtlas_;
                     var j, jj, currX, currY, charArr, charInfo;
                     var anchorX = options.anchorX;
@@ -1019,7 +1002,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var offset = 0;
             var end = 2;
             var stride = 2;    
-            // var flatCoordinates = (<any>ol).transform.apply(options.pixelToCoordinateTransform, [options.x, options.y]);
             var flatCoordinates = options.flatCoordinates;
             
             this.drawCoordinates(
@@ -1029,7 +1011,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         // Blocking repeat
         (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, declutterGroup, geometry){
             var box = [];
-            var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
             var flatCoordinates = geometry.getFlatCoordinates();
             var screenXY = this.screenXY;
             var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
@@ -1054,9 +1035,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }                
                 (<any>ol).extent.extend(declutterGroup, box);
                 var declutterArgs = [{
-                    pixelToCoordinateTransform,
-                    x: pixelCoordinate[0],
-                    y: pixelCoordinate[1],
                     flatCoordinates,
                     rotation
                 }, this];
@@ -1065,7 +1043,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.geom).flat.textpath.lineString = function (
-            flatCoordinates, offset, end, stride, text, webglTextReplay, startM, maxAngle) {
+            flatCoordinates, offset, end, stride, text, webglTextReplay, 
+            startM, maxAngle, resolution, screenXY, coordinateToPixelTransform, origin) {
             var result = [];
     
             // Keep text upright
@@ -1079,11 +1058,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var x2 = flatCoordinates[offset];
             var y2 = flatCoordinates[offset + 1];
             var segmentM = 0;
-            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
     
             var chunk = '';
             var chunkLength = 0;
-            var data, index, previousAngle;        
+            var data, index, previousAngle;  
+            
             for (var i = 0; i < numChars; ++i) {
                 index = reverse ? numChars - i - 1 : i;
                 var char = text.charAt(index);
@@ -1105,7 +1085,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     x2 = flatCoordinates[offset];
                     y2 = flatCoordinates[offset + 1];
                     segmentM += segmentLength;
-                    segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                 }
                 var segmentPos = charM - segmentM;
                 var angle = Math.atan2(y2 - y1, x2 - x1);
@@ -1123,7 +1103,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 var x = (<any>ol).math.lerp(x1, x2, interpolate);
                 var y = (<any>ol).math.lerp(y1, y2, interpolate);            
                 if (previousAngle == angle) {
-                    if (reverse) {
+                    if (reverse) {                                            
                         data[0] = x;
                         data[1] = y;
                         data[2] = charLength / 2;
@@ -1132,7 +1112,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 } else {
                     chunk = char;
                     chunkLength = charLength;
-                    data = [x, y, charLength / 2, angle, chunk];
+                    data = [x, y, charLength / 2, -angle, chunk];
                     if (reverse) {
                         result.unshift(data);
                     } else {
@@ -1146,6 +1126,20 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             return result;
         };
 
+        (<any>ol.geom).flat.length.lineString = function (flatCoordinates, offset, end, stride, resolution) {
+            var x1 = flatCoordinates[offset];
+            var y1 = flatCoordinates[offset + 1];
+            var length = 0;
+            var i;
+            for (i = offset + stride; i < end; i += stride) {
+                var x2 = flatCoordinates[i];
+                var y2 = flatCoordinates[i + 1];
+                length += (Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) / resolution);
+                x1 = x2;
+                y1 = y2;
+            }
+            return length;
+        };
         // webgl render
         (<any>ol).render.webgl.Replay.prototype.webglReplay_ = function (
             context, skippedFeaturesHash, featureCallback, opt_hitExtent, screenXY
