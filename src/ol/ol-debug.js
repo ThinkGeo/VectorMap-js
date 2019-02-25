@@ -18746,7 +18746,7 @@ function olInit() {
      * @param {number} time Time.
      * @private
      */
-    ol.PluggableMap.prototype.renderFrame_ = function (time) {
+    ol.PluggableMap.prototype.renderFrame_ = function (time) {  
         var i, ii, viewState;
         var size = this.getSize();
         var view = this.getView();
@@ -18795,7 +18795,6 @@ function olInit() {
 
         this.frameState_ = frameState;
         this.renderer_.renderFrame(frameState);
-
         if (frameState) {
             if (frameState.animate) {
                 this.render();
@@ -21268,7 +21267,7 @@ function olInit() {
         var view = map.getView();
         if (this.targetPointers.length === 0) {
             if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-                var distance = this.kinetic_.getDistance();
+                var distance = this.kinetic_.getDistance() / 1.8;
                 var angle = this.kinetic_.getAngle();
                 var center = /** @type {!ol.Coordinate} */ (view.getCenter());
                 var centerpx = map.getPixelFromCoordinate(center);
@@ -22270,8 +22269,10 @@ function olInit() {
         // Delta normalisation inspired by
         // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
         var delta;
+        let unit = wheelEvent.deltaY / 2.5;
         if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
-            delta = wheelEvent.deltaY;
+            
+            delta = wheelEvent.deltaY - unit;
             if (ol.has.FIREFOX &&
                 wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
                 delta /= ol.has.DEVICE_PIXEL_RATIO;
@@ -22280,7 +22281,7 @@ function olInit() {
                 delta *= 40;
             }
         } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
-            delta = -wheelEvent.wheelDeltaY;
+            delta = -wheelEvent.wheelDeltaY - unit;
             if (ol.has.SAFARI) {
                 delta /= 3;
             }
