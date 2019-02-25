@@ -69120,7 +69120,7 @@ function olInit() {
                 const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
                 const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
                 const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                const A3 = 1;
+                const A3 = A1 == 0 ? 0 : 1;
                 strColor[0] = R3.toFixed(6).toString();
                 strColor[1] = G3.toFixed(6).toString();
                 strColor[2] = B3.toFixed(6).toString();
