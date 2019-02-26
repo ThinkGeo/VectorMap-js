@@ -707,10 +707,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
-                    !this.scaled && (this.scale /= window.devicePixelRatio);
-                    this.scaled = true;
+                    this.scale /= window.devicePixelRatio;
                     this.replayImage_(frameState, declutterGroup, geometry);
                     this.renderDeclutter_(declutterGroup, feature);
+                    this.scale *= window.devicePixelRatio;
                 }else{                    
                     if(type == 'MultiLineString'){
                         var ends = geometry.getEnds();
@@ -729,10 +729,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-                            !this.scaled && (this.scale /= window.devicePixelRatio);
-                            this.scaled = true;
+                            this.scale /= window.devicePixelRatio;
                             this.replayImage_(frameState, declutterGroup, geometry);
                             this.renderDeclutter_(declutterGroup, feature);
+                            this.scale *= window.devicePixelRatio;
                         }else{                            
                             // draw chars  
                             this.drawLineStringText(geometry, feature, frameState, declutterGroup);
@@ -1018,7 +1018,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var flatCoordinates = geometry.getFlatCoordinates();
             var screenXY = this.screenXY;
             var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
-            var scale = this.scale / window.devicePixelRatio;
+            var scale = this.scale;
             var canvas = frameState.context.canvas_;
             var rotation = 0;            
 
