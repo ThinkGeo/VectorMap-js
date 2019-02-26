@@ -136,15 +136,19 @@
             <select name="" id="category">
                 <option value="analogous" selected="selected">Analogous</option>
                 <option value="complementary">Complementary</option>
+                <option value="contrasting">Contrasting</option>
                 <option value="qualitative">Qualitative</option>
-                <option value="tetrad">Tetrad</option>
+                <option value="sequential">Sequential</option>
                 <option value="triad">Triad</option>
+                <option value="tetrad">Tetrad</option>
             </select>
             <br>
-            <input type="radio" name="radio" checked value="random" /> <label>Random</label>
+            <input type="radio" name="radio" id="colorRandom" checked="checked" value="random" />
+            <label for="colorRandom">Random</label>
             <br>
-            <input type="radio" name="radio" value="specific" /> <label> Specific Color: </label> <input class="jscolor"
-                id="color" value="ab2567">
+            <input type="radio" name="radio" id="colorSpecific" value="specific" />
+            <label for="colorSpecific"> Specific Color: </label> 
+            <input type="color" class="jscolor" id="colorPicker" value="#ab2567">
             <br>
             <button id="generate">Generate</button>
         </div>

@@ -37,16 +37,16 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 // countries in white and display their names in red text.
 const baseMapStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
-        color: 'rgba(256, 256, 256, 1)',
+        color: '#fff',
         width: 1
     }),
     text: new ol.style.Text({
         font: '16px Calibri,sans-serif',
         fill: new ol.style.Fill({
-            color: '#990100'
+            color: '#fff'
         }),
         stroke: new ol.style.Stroke({
-            color: '#fff',
+            color: "rgba(0,0,0,0.65)",
             width: 3
         }),
     })
@@ -118,8 +118,8 @@ const getColorscheme = () => {
     let options = {
         category: $('select#category option:selected').val(),
         radio: $('input:radio:checked').val(),
-        color: $('#color').val(),
-        numbur: 20,
+        color: $('#colorPicker').val().replace('#', ''),
+        numbur: 12,
     }
     let getURL
 
@@ -257,7 +257,20 @@ const updateStyle = (outputData) => {
 // button that will call out to the ThinkGeo Cloud and get a new color scheme, 
 // then apply it to the map.
 window.onload = function a() {
-    let defaultData = ["641615", "7C1B1A", "93201F", "AB2624", "C22B28", "D43533", "D94D4A", "65153C", "7C1A4A", "931F58", "AB2567", "C22A75", "D33583", "D84C91", "641563", "7C1A7A", "931F91", "AB24A9", "C228C0", "D433D1"]
+    let defaultData = [
+        "993333",
+        "A63C3C",
+        "B24747",
+        "B65A5A",
+        "BA6E6E",
+        "BE8181",
+        "C39494",
+        "C8A5A5",
+        "CFB6B6",
+        "D6C5C5",
+        "DED4D4",
+        "E8E2E2"
+    ];
     updateStyle(defaultData)
     // When click the 'generate' button, set new style according to what the user input.
     document.getElementById('generate').addEventListener('click', (e) => {
