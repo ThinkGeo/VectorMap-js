@@ -67501,7 +67501,7 @@ function olInit() {
         var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
         // this.rotation_ is anti-clockwise, but rotation is clockwise
         var rotation = /** @type {number} */ (-this.rotation);
-        var scale = /** @type {number} */ (this.scale / window.devicePixelRatio);
+        var scale = /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
@@ -71229,85 +71229,85 @@ function olInit() {
         var this$1 = this;
 
         if (this.text_) {
-        var flatCoordinates = null;
-        var offset = 0;
-        var end = 2;
-        var stride = 2;
-        switch (geometry.getType()) {
-            case ol.geom.GeometryType.POINT:
-            case ol.geom.GeometryType.MULTI_POINT:
-                flatCoordinates = geometry.getFlatCoordinates();
-                end = flatCoordinates.length;
-                stride = geometry.getStride();
-                break;
-            case ol.geom.GeometryType.CIRCLE:
-                flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
-                break;
-            case ol.geom.GeometryType.LINE_STRING:
-                flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
-                break;
-            case ol.geom.GeometryType.MULTI_LINE_STRING:
-                flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
-                end = flatCoordinates.length;
-                break;
-            case ol.geom.GeometryType.POLYGON:
-                flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
-                break;
-            case ol.geom.GeometryType.MULTI_POLYGON:
-                flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
-                end = flatCoordinates.length;
-                break;
-            default:
-        }
-        this.startIndices.push(this.indices.length);
-        this.startIndicesFeature.push(feature);
+            var flatCoordinates = null;
+            var offset = 0;
+            var end = 2;
+            var stride = 2;
+            switch (geometry.getType()) {
+                case ol.geom.GeometryType.POINT:
+                case ol.geom.GeometryType.MULTI_POINT:
+                    flatCoordinates = geometry.getFlatCoordinates();
+                    end = flatCoordinates.length;
+                    stride = geometry.getStride();
+                    break;
+                case ol.geom.GeometryType.CIRCLE:
+                    flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
+                    break;
+                case ol.geom.GeometryType.LINE_STRING:
+                    flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
+                    break;
+                case ol.geom.GeometryType.MULTI_LINE_STRING:
+                    flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
+                    end = flatCoordinates.length;
+                    break;
+                case ol.geom.GeometryType.POLYGON:
+                    flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
+                    break;
+                case ol.geom.GeometryType.MULTI_POLYGON:
+                    flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
+                    end = flatCoordinates.length;
+                    break;
+                default:
+            }
+            this.startIndices.push(this.indices.length);
+            this.startIndicesFeature.push(feature);
 
-        var glyphAtlas = this.currAtlas_;
-        var lines = this.text_.split('\n');
-        var textSize = this.getTextSize_(lines);
-        var i, ii, j, jj, currX, currY, charArr, charInfo;
-        var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-        var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
-        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+            var glyphAtlas = this.currAtlas_;
+            var lines = this.text_.split('\n');
+            var textSize = this.getTextSize_(lines);
+            var i, ii, j, jj, currX, currY, charArr, charInfo;
+            var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+            var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
 
-        for (i = 0, ii = lines.length; i < ii; ++i) {
-            currX = 0;
-            currY = glyphAtlas.height * i;
-            charArr = lines[i].split('');
+            for (i = 0, ii = lines.length; i < ii; ++i) {
+                currX = 0;
+                currY = glyphAtlas.height * i;
+                charArr = lines[i].split('');
 
-            for (j = 0, jj = charArr.length; j < jj; ++j) {
-            charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+                for (j = 0, jj = charArr.length; j < jj; ++j) {
+                    charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
 
-            if (charInfo) {
-                var image = charInfo.image;
+                    if (charInfo) {
+                        var image = charInfo.image;
 
-                this$1.anchorX = anchorX - currX;
-                this$1.anchorY = anchorY - currY;
-                this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                this$1.originY = charInfo.offsetY;
-                this$1.height = glyphAtlas.height;
-                this$1.width = j === 0 || j === charArr.length - 1 ?
-                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-                this$1.imageHeight = image.height;
-                this$1.imageWidth = image.width;
+                        this$1.anchorX = anchorX - currX;
+                        this$1.anchorY = anchorY - currY;
+                        this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                        this$1.originY = charInfo.offsetY;
+                        this$1.height = glyphAtlas.height;
+                        this$1.width = j === 0 || j === charArr.length - 1 ?
+                        glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                        this$1.imageHeight = image.height;
+                        this$1.imageWidth = image.width;
 
-                if (this$1.images_.length === 0) {
-                this$1.images_.push(image);
-                } else {
-                var currentImage = this$1.images_[this$1.images_.length - 1];
-                if (getUid(currentImage) != getUid(image)) {
-                    this$1.groupIndices.push(this$1.indices.length);
-                    this$1.images_.push(image);
+                        if (this$1.images_.length === 0) {
+                            this$1.images_.push(image);
+                        } else {
+                            var currentImage = this$1.images_[this$1.images_.length - 1];
+                            if (getUid(currentImage) != getUid(image)) {
+                                this$1.groupIndices.push(this$1.indices.length);
+                                this$1.images_.push(image);
+                            }
+                        }
+
+                        this$1.drawText_(flatCoordinates, offset, end, stride);
+                    }
+                    currX += this$1.width;
                 }
-                }
-
-                this$1.drawText_(flatCoordinates, offset, end, stride);
-            }
-            currX += this$1.width;
-            }
             }
         }
-      };
+    };
     
 
     /**

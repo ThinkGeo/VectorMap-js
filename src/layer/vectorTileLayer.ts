@@ -707,6 +707,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
+                    !this.scaled && (this.scale /= window.devicePixelRatio);
+                    this.scaled = true;
                     this.replayImage_(frameState, declutterGroup, geometry);
                     this.renderDeclutter_(declutterGroup, feature);
                 }else{                    
@@ -727,6 +729,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+                            !this.scaled && (this.scale /= window.devicePixelRatio);
+                            this.scaled = true;
                             this.replayImage_(frameState, declutterGroup, geometry);
                             this.renderDeclutter_(declutterGroup, feature);
                         }else{                            
@@ -771,7 +775,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
-            var scale = this.scale / window.devicePixelRatio;
+            var scale = this.scale;
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
             var x = part[0];
             var y = part[1];
@@ -835,7 +839,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         (<any>ol.render).webgl.TextReplay.prototype.drawLineStringText = function (geometry, feature, frameState, declutterGroup) {
             var offset = 0;
             var stride = 2;
-            var resolution = frameState.currentResolution / frameState.pixelRatio;
+            var resolution = frameState.currentResolution;
             var text = this.text_;
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
             var maxAngle = this.maxAngle_;
