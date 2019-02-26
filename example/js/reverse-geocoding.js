@@ -65,7 +65,7 @@ let _styles = {
     })
 };
 
-// Create a Reverse Geocoding Layer for the map.  Tihs layer will display icons 
+// Create a Reverse Geocoding Layer for the map.  This layer will display icons 
 // for each place found near the clicked location on the map.
 const createReverseGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
