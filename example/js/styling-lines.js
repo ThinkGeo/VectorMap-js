@@ -1,5 +1,23 @@
-//Geojson style data 
-//Learn more about stylejson on https://thinkgeo.gitbooks.io/map-suite-stylejson-specification/content/
+/*===========================================================================*/
+// Style Lines from GeoJSON
+// Sample map by ThinkGeo
+// 
+//   1. Layers Setup
+//   2. Map Control Setup
+/*===========================================================================*/
+
+
+/*---------------------------------------------*/
+// 1. Layers Setup
+/*---------------------------------------------*/
+
+// First, the map is a combanation of three layers. So we have to set up three styles
+// and the three corresponding layers: 
+//    1. baseMapLayer
+//    2. countryNameLayer
+//    3. riverLayer
+// For more info about the StyleJSON, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_stylejson
 const baseMapStyleJson = {
     "id": "europe",
     "version": 1.3,
@@ -55,7 +73,7 @@ const baseMapStyleJson = {
     }]
 };
 
-const countryNameStyle = {
+const countryNameStyleJson = {
     "id": "europe",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -129,12 +147,12 @@ const riverStyleJson = {
     }]
 };
 
-//Create layer with diiffent style json
+// Create layer with diiffent style json
 let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyleJson, {
     multithread: false
 });
 
-let countryNameLayer = new ol.mapsuite.VectorLayer(countryNameStyle, {
+let countryNameLayer = new ol.mapsuite.VectorLayer(countryNameStyleJson, {
     multithread: false
 });
 
@@ -142,20 +160,29 @@ let riverLayer = new ol.mapsuite.VectorLayer(riverStyleJson, {
     multithread: false
 });
 
-//Create map
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Create and initialize our map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
+    // Add our previously-defined layers to the map.
     layers: [baseMapLayer, riverLayer, countryNameLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
+        // Center the map on Europe and start at zoom level 6.
         center: ol.proj.fromLonLat([18.79620, 50.55423]),
-        maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 6,
         minZoom: 0,
-    }),
+        maxZoom: 19
+    })
 });
 
-//Control map full screen
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
