@@ -41,7 +41,7 @@ WebFont.load({
 // 3. WKT Setup
 /*---------------------------------------------*/
 
-// Create another layer from a GeoJSON hosted on our server, this time to hold the color fill 
+// Create another layer from a GeoJSON data file hosted on our server, this time to hold the color fill 
 // for the WKT polygon. Then apply the styleJSON to WKT layer.
 
 // For more info about StyleJSON, see our wiki:  
@@ -107,7 +107,7 @@ let map =  new ol.Map({
     loadTilesWhileInteracting: true,
     // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
-    // Add our two previously-defined ThinkGeo Cloud Vector Tile layer and WKT layer to the map.
+    // Add our previously-defined ThinkGeo Cloud Vector Tile layer and WKT layer to the map.
     layers: [
         baseLayer, wktVectorLayer,
     ],
