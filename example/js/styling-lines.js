@@ -11,7 +11,7 @@
 // 1. Layers Setup
 /*---------------------------------------------*/
 
-// First, the map is a combanation of three layers. So we have to set up three styles
+// First, the map has three layers. So we have to set up three styles
 // and the three corresponding layers: 
 //    1. baseMapLayer
 //    2. countryNameLayer
