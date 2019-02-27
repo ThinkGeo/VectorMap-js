@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Style ThinkGeo Maps</title>
-    <!-- style sheet for vectormap.js -->
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+    <!-- Define some custom styles for the UI of our sample page. -->
     <style rel="stylesheet" type="text/css">
         #map {
             height: 100%;
@@ -132,7 +135,9 @@
 </head>
 
 <body>
+    <!-- This <div> is the container into which our map control will be loaded. -->
     <div id="map">
+        <!-- Set up a form panel for user to create custom map by inputing variable styles.-->
         <ul id="user-input">
             <li>
                 <label title="category">POI Size: </label><input type="number" id="poiSize" value="40">
@@ -150,18 +155,24 @@
                 <label> Water Color: </label> <input class="jscolor" id="water-color" value="#0000CD">
             </li>
             <li class="btn">
-                <button id="generate">Refresh</button>
+                <button id="refresh">Refresh</button>
             </li>
         </ul>
+    </div>
 
-        <!-- latest minified version of vectormap.js -->
-        <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+    <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
+    <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 
-        <!-- option: Map Suite World Streets Styles -->
-        <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
-        <script src="../lib/jquery/jquery.min.js"></script>
-        <script src="../js/jscolor.js"></script>
-        <script src="../js/vector-tile.js"></script>
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
+    <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+    
+    <!-- Load the Jquery library dependency. -->
+    <script src="../lib/jquery/jquery.min.js"></script>
+    
+    <!-- Load the Color Picker library dependency. -->
+    <script src="../js/jscolor.js"></script>
+    
+    <script src="../js/vector-tile.js"></script>
 </body>
 
 </html>
