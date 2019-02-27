@@ -64,7 +64,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         else {
             this.loadStyleJson(styleJson);
         }
-        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;        
+        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;    
     }
 
     loadStyleJsonAsyn(styleJsonUrl) {
@@ -684,14 +684,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         (<any>ol.render).webgl.Replay.prototype.declutterRepeat_ = function (context, screenXY){
             var startIndicesFeature = this.startIndicesFeature;
             var startIndicesStyle = this.startIndicesStyle;
-            this.indices.length = 0;
-            this.vertices.length = 0;
+            // this.indices.length = 0;
+            // this.vertices.length = 0;
             this.groupIndices.length = 0;
-            this.images_.length = 0;
+            // this.images_.length = 0;
             var frameState = context.frameState;
             var tilePixelExtent = [];           
             this.screenXY = screenXY;
-
             // this.tilePixelExtent = tilePixelExtent;
 
             for(var i = 0; i < startIndicesFeature.length; i++){
@@ -983,7 +982,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                                 glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
                             this$1.imageHeight = image.height;
                             this$1.imageWidth = image.width;
-    
+                            this$1.rotateWithView = 1;
+
                             if (this$1.images_.length === 0) {
                                 this$1.images_.push(image);
                             } else {

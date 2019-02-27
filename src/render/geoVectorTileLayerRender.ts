@@ -351,7 +351,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
         // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
-        (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);
+        (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);        
     }
 
     public createReplayGroup_(tile: ol.VectorTile, frameState: olx.FrameState, x, y) {

@@ -17911,7 +17911,7 @@ function olInit() {
         // setProperties will trigger the rendering of the map if the map
         // is "defined" already.
         this.setProperties(optionsInternal.values);
-
+        
         this.controls.forEach(
             /**
              * @param {ol.control.Control} control Control.
@@ -67071,7 +67071,7 @@ function olInit() {
     ol.webgl.Context.prototype.bindBuffer = function (target, buf) {
         var gl = this.getGL();
         var arr = buf.getArray();
-        var bufferKey = String(ol.getUid(buf));
+        var bufferKey = String(ol.getUid(buf));        
         if (bufferKey in this.bufferCache_) {
             var bufferCacheEntry = this.bufferCache_[bufferKey];
             gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -68747,7 +68747,7 @@ function olInit() {
                     this.state_.changed = false;
                 }
                 this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
+                // this.startIndicesFeature.push(feature);
                 this.drawCoordinates_(
                     flatCoordinates, 0, flatCoordinates.length, stride);
             }
@@ -68783,7 +68783,7 @@ function olInit() {
         
         if (this.indices.length > indexCount) {
             this.startIndices.push(indexCount);
-            this.startIndicesFeature.push(feature);
+            // this.startIndicesFeature.push(feature);
             if (this.state_.changed) {
                 var z_order = multiLineStringGeometry.properties_.z_order;
                 var styleId = multiLineStringGeometry.styleId;
@@ -70344,7 +70344,7 @@ function olInit() {
                 
                 {
                     this.startIndices.push(this.indices.length);
-                    this.startIndicesFeature.push(feature);
+                    // this.startIndicesFeature.push(feature);
 
                     if (this.state_.changed) {
                         this.zCoordinates.push(feature.zCoordinate);
@@ -71427,27 +71427,29 @@ function olInit() {
 
         this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
-        // this.state_ = {
-        //     strokeColor: null,
-        //     lineCap: undefined,
-        //     lineDash: null,
-        //     lineDashOffset: undefined,
-        //     lineJoin: undefined,
-        //     lineWidth: 0,
-        //     miterLimit: undefined,
-        //     fillColor: null,
-        //     font: undefined,
-        //     scale: undefined
-        // };
-        // this.text_ = '';
-        // this.textAlign_ = undefined;
-        // this.textBaseline_ = undefined;
-        // this.offsetX_ = undefined;
-        // this.offsetY_ = undefined;
+        this.state_ = {
+            strokeColor: null,
+            lineCap: undefined,
+            lineDash: null,
+            lineDashOffset: undefined,
+            lineJoin: undefined,
+            lineWidth: 0,
+            miterLimit: undefined,
+            fillColor: null,
+            font: undefined,
+            scale: undefined
+        };
+        this.text_ = '';
+        this.textAlign_ = undefined;
+        this.textBaseline_ = undefined;
+        this.offsetX_ = undefined;
+        this.offsetY_ = undefined;
         // this.images_ = null;
         // this.atlases_ = {};
         // this.currAtlas_ = undefined;
-
+        this.images_ = [];
+        this.indices = [];
+        this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
