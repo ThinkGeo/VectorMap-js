@@ -66,6 +66,7 @@ const wfsStyleJson =
     }]
 }
 
+// Create WFS layer by using the pre-defined StyleJSON.
 let wfsLayer = new ol.mapsuite.VectorLayer(wfsStyleJson, {
     multithread: false
 })
