@@ -76,7 +76,7 @@ let wfsLayer = new ol.mapsuite.VectorLayer(wfsStyleJson, {
 // 3. Map Control Setup
 /*---------------------------------------------*/
 
-// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo Cloud 
+// Now we'll create the base layer for our map. The base layer uses the ThinkGeo Cloud 
 // Maps Raster Tile service to display a detailed map.  For more info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
 let baseLayer = new ol.layer.Tile({
@@ -85,7 +85,7 @@ let baseLayer = new ol.layer.Tile({
     }),
 });
 
-// Create and initialize our raster map control.
+// Create and initialize our map control.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

@@ -105,6 +105,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worlds
     layerName: 'light'
 });
 
+// Create and initialize our map control.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,

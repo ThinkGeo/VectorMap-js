@@ -101,7 +101,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worlds
     layerName: 'light'
 });
 
-// Create and initialize our multi-style map.
+// Create and initialize our map.
 let map =  new ol.Map({                         
     loadTilesWhileAnimating: true,                         
     loadTilesWhileInteracting: true,
