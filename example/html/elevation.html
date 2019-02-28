@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Elevation along Path </title>
-    <!-- style sheet for vectormap.js -->
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+    <!-- Define some custom styles for the UI of our sample page. -->
     <style rel="stylesheet" type="text/css">
         #map {
             width: 100%;
@@ -45,6 +48,28 @@
 
         .ol-full-screen button:hover {
             background-color: #eee !important;
+        }
+
+        .style-btn-group {
+            top: 1rem;
+            right: 50px;
+            position: absolute;
+            z-index: 1000;
+            display: flex;
+        }
+
+        .style-btn-group button {
+            width: 4.2em;
+            height: 2.2em;
+            background-color: #fff;
+            color: #2d3c4d;
+            border: 1px solid #ccc;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .style-btn-group .current {
+            background-color: #efefef;
         }
 
         #chart {
@@ -88,9 +113,10 @@
             color: #5f6b78;
             margin: 10px 0;
         }
-#chartContainer{
-    z-index: 1000;
-}
+
+        #chartContainer {
+            z-index: 1000;
+        }
 
         .btn-wrap {
             width: 100%;
@@ -114,7 +140,13 @@
             background-color: #428bca;
         }
 
-        .line {
+        .drawline {
+            position: absolute;
+            top: 1rem;
+            right: 10px;
+        }
+
+        .drawline button {
             background-color: #fff;
             background: url('../image/draw_line_off.png');
             background-size: 100% 100%;
@@ -124,77 +156,6 @@
             height: 22px;
         }
 
-        .drawline {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-        }
-
-        .pg {
-            position: absolute;
-        }
-
-        .loading-spinner {
-            position: fixed;
-            display: block;
-            width: 100px;
-            height: 100px;
-            left: 50%;
-            top: 50%;
-            margin-left: -50px;
-            margin-top: -50px;
-        }
-
-        .loading-spinner i {
-            color: #ccc;
-        }
-
-        .modal-backdrop.in {
-            filter: alpha(opacity=50);
-            opacity: .5;
-        }
-
-        .progress {
-            position: absolute;
-            width: 24px;
-            left: 10px;
-            height: 40vh;
-            bottom: 40vh;
-            margin-bottom: 0px;
-            background: linear-gradient(to bottom, red, orange, yellow, green, blue);
-            filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#00ff00', GradientType=1);
-        }
-
-        .amount {
-            position: absolute;
-            height: 100%;
-            transition: all 0.8s;
-            background: gray;
-            width: 0;
-        }
-
-        .progress:before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            line-height: 31px;
-        }
-
-        #lowElevation {
-            position: absolute;
-            left: 33px;
-            bottom: 40vh;
-        }
-
-        #highElevation {
-            position: absolute;
-            left: 33px;
-            bottom: 60vh;
-        }
-
         #samples-number {
             width: 100%;
         }
@@ -202,10 +163,13 @@
 </head>
 
 <body>
+    <!-- This <div> is the container into which our map control will be loaded. -->
     <div id="map">
+        <!-- This <div> is the container into which our diagram will be rendered. -->
         <div id="chart">
             <canvas id="chartContainer"></canvas>
         </div>
+        <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
             <div id="numberSamples">
                 <div>
@@ -214,7 +178,7 @@
                 <div>
                     <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
                 </div>
-                <label for="samples-number" class="control-label  col-7 col-md-6">Interval Distance:</label>
+                <label for="samples-number" class="control-label col-7 col-md-6">Interval Distance:</label>
                 <span id="IntervalDistance">100 (feet) </span>
                 <div class="btn-wrap">
                     <button tabindex="4" class="buttonClear">Clear</button>
@@ -222,16 +186,28 @@
             </div>
         </div>
 
+        <div class="style-btn-group">
+            <button value="dark">Dark</button>
+            <button class="current" value="hybrid">Hybrid</button>
+            <button value="light">Light</button>
+        </div>
     </div>
 
-    <!-- latest minified version of vectormap.js -->
+    <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 
-    <!-- option: Map Suite World Streets Styles -->
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+
+    <!-- Load the Jquery library dependency. -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+    <!-- Load the ThinkGeo GIS library dependency to support for Quering Elevation. -->
     <script src="../js/thinkgeo.gis.js"></script>
+
+    <!-- Load the Chart library dependency for diagrammatic presentation. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
     <script src="../js/elevation.js"></script>
 </body>
 

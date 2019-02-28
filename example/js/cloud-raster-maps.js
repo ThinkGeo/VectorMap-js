@@ -185,7 +185,6 @@ const changeLayer = function (e) {
         }
         transparentBackground.setVisible(true);
         aerial.setVisible(true);
-
     } else {
         for (let i = 0; i < layers.length; i++) {
             if (layers[i].get("layerName") == e.target.getAttribute("value")) {

@@ -10,6 +10,49 @@ var intervalDistanceUnit = "Feet";
 
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
+const urls = {
+  light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+  dark: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+  aerial: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
+  transparentBackground: `https://cloud.thinkgeo.com/api/v1/maps/raster/transparent-background/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`
+}
+
+let lightLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: urls.light,
+    tileSize: 512,
+  }),
+  layerName: 'light',
+  visible: false,
+});
+
+let darkLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: urls.dark,
+    tileSize: 512,
+  }),
+  layerName: 'dark',
+  visible: false,
+});
+
+let aerialLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: urls.aerial,
+    tileSize: 512,
+  }),
+  layerName: 'aerial',
+  visible: true
+});
+
+let transparentBackgroundLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: urls.transparentBackground,
+    tileSize: 512,
+  }),
+  layerName: 'transparentBackground',
+  visible: true
+});
+
 window.app = {};
 const app = window.app;
 
@@ -17,8 +60,6 @@ const app = window.app;
 app.drawLineControl = function (opt_options) {
   const options = opt_options || {};
   const button = document.createElement('button');
-  button.className = 'line';
-  const this_ = this;
   const element = document.createElement('div');
   element.className = 'drawline ol-unselectable ol-control';
   element.appendChild(button);
@@ -35,21 +76,20 @@ $(function () {
   defaultClient.basePath = "https://cloud.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
   APIKey.apiKey = apiKey;
-
 });
 
 //Create basemap layer
-let satelliteLayer = new ol.layer.Tile({
-  source: new ol.source.XYZ({
-    url: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
-    tileSize: 512
-  }),
-});
+// let satelliteLayer = new ol.layer.Tile({
+//   source: new ol.source.XYZ({
+//     url: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
+//     tileSize: 512
+//   }),
+// });
 
-let transparentLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json', {
-    apiKey: apiKey,
-    layerName: 'hybrid'
-});
+// let transparentLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json', {
+//   apiKey: apiKey,
+//   layerName: 'hybrid'
+// });
 
 var addFeature = function (feature) {
   createVector().getSource().addFeature(feature);
@@ -119,7 +159,9 @@ var map = new ol.Map({
   }).extend([
     new app.drawLineControl()
   ]),
-  layers: [satelliteLayer, transparentLayer, createVector()],
+
+  layers: [darkLayer, lightLayer, aerialLayer, transparentBackgroundLayer, createVector()],
+  // layers: [satelliteLayer, transparentLayer, createVector()],
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([-121.64325200613075, 47.6966203898931]),
@@ -177,7 +219,7 @@ var drawLineElevation = function (feature) {
     });
 
     var callback = function (error, data, response) {
-      if (error) { } else {
+      if (error) {} else {
         var coordinates = feature.getGeometry().getLastCoordinate();
         addFeature(new ol.Feature({
           geometry: new ol.geom.Point(coordinates),
@@ -422,27 +464,55 @@ var drawChart = function (data, grades) {
   });
 };
 
+const changeLayer = function (e) {
+  let layers = map.getLayers().getArray();
+  if (e.target.getAttribute("value") == 'hybrid') {
+    for (let i = 0; i < layers.length; i++) {
+      layers[i].setVisible(false);
+    }    
+    layers[4].setVisible(true)
+    transparentBackgroundLayer.setVisible(true);
+    aerialLayer.setVisible(true);
+  } else {
+    for (let i = 0; i < layers.length; i++) {
+      if (layers[i].get("layerName") == e.target.getAttribute("value")) {
+        layers[i].setVisible(true);
+      } else {
+        layers[i].setVisible(false);
+      }
+      layers[4].setVisible(true)
+    }
+  }
+}
+
 
 $(initChart(), drawChart());
 $('#IntervalDistanceLine').show();
 
 $(function () {
-
-  $(".line").click(function () {
+  $(".drawline button").click(function () {
     $(this).css({
       "background": "url('../image/draw_line_on.png')",
       "background-size": "100% 100%"
     });
     $('.error-tip').css('display', 'none');
   });
-});
 
-$(".buttonClear").click(function () {
-  clear();
-  drawChart(null);
-  $(".line").css({
-    "background": "url('../image/draw_line_off.png')",
-    "background-size": "100% 100%"
+  $(".buttonClear").click(function () {
+    clear();
+    drawChart(null);
+    $(".drawline button").css({
+      "background": "url('../image/draw_line_off.png')",
+      "background-size": "100% 100%"
+    });
+    $('.error-tip').css('display', 'none');
   });
-  $('.error-tip').css('display', 'none');
+
+  $(".style-btn-group").click(function (e) {
+    if (e.target.nodeName == 'BUTTON') {
+      changeLayer(e);
+    }
+    $(".style-btn-group button").removeClass("current");
+    $(e.target).addClass("current");
+  });
 });
