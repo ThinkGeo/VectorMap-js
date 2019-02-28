@@ -59,8 +59,8 @@
         }
 
         .style-btn-group button {
-            width: 4.2em;
-            height: 2.2em;
+            width: 55px;
+            height: 28px;
             background-color: #fff;
             color: #2d3c4d;
             border: 1px solid #ccc;
@@ -144,16 +144,31 @@
             position: absolute;
             top: 1rem;
             right: 10px;
+            padding: 0;
+            background-color: rgba(255, 255, 255, 0);
         }
 
         .drawline button {
             background-color: #fff;
-            background: url('../image/draw_line_off.png');
-            background-size: 100% 100%;
+            background-image: url('../image/line.png');
+            background-size: 80%;
+            background-position: center;
+            background-repeat: no-repeat;
             border-style: none;
-            border: 0px;
-            width: 24px;
-            height: 22px;
+            border: none;
+            width: 28px;
+            height: 28px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .drawline button:focus,
+        .drawline button:hover {
+            background-color: #fff;
+        }
+
+        .drawline button.on{
+            background-color: #f2c021;
         }
 
         #samples-number {

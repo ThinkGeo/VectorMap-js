@@ -60,6 +60,7 @@ const app = window.app;
 app.drawLineControl = function (opt_options) {
   const options = opt_options || {};
   const button = document.createElement('button');
+  button.className = 'on';
   const element = document.createElement('div');
   element.className = 'drawline ol-unselectable ol-control';
   element.appendChild(button);
@@ -272,7 +273,8 @@ $(".drawline").click(function () {
     type: 'LineString'
   })
   map.addInteraction(draw);
-  draw.on('drawstart', function (feature) {
+  draw.on('drawstart', function (feature) {    
+    $('.drawline button').addClass('on');
     clear();
   })
 
@@ -347,7 +349,6 @@ $(
 
 
 var clear = function () {
-  // Clear Elevation Layer.
   var source = createVector().getSource();
   source.clear();
 };
@@ -490,21 +491,15 @@ $(initChart(), drawChart());
 $('#IntervalDistanceLine').show();
 
 $(function () {
-  $(".drawline button").click(function () {
-    $(this).css({
-      "background": "url('../image/draw_line_on.png')",
-      "background-size": "100% 100%"
-    });
+  $(".drawline button").click(function (e) {
+    $(e.target).addClass('on')
     $('.error-tip').css('display', 'none');
   });
 
   $(".buttonClear").click(function () {
     clear();
-    drawChart(null);
-    $(".drawline button").css({
-      "background": "url('../image/draw_line_off.png')",
-      "background-size": "100% 100%"
-    });
+    drawChart(null);    
+    $('.drawline button').removeClass('on')
     $('.error-tip').css('display', 'none');
   });
 
