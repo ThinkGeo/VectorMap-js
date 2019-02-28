@@ -87,7 +87,8 @@
 
         #side-bar {
             right: 0;
-            background-color: #fff;
+            background-color: rgba(0, 0, 0, .5);
+            color: #999;
             position: absolute;
             bottom: 40vh;
             padding: 0.6rem;
@@ -100,6 +101,8 @@
             line-height: 1.42857;
             color: #555;
             background-color: #fff;
+            -webkit-appearance: none;
+            border-radius: 10px;
         }
 
         #side-bar input:focus {
@@ -107,10 +110,26 @@
             outline: 0;
         }
 
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 12px;
+            border-radius: 10px;
+            box-shadow: 0 0 1px #def3f8, inset 0 0 .125em #0d1112;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            margin-top: 1px;
+            height: 10px;
+            width: 10px;
+            background: #808080;
+            border-radius: 50%;
+            border: solid 0.125em rgba(53, 53, 53, 0.5);
+            box-shadow: 0 .125em .125em #3b4547;
+        }
+
         #side-bar label {
             display: inline-block;
             width: 165px;
-            color: #5f6b78;
             margin: 10px 0;
         }
 
@@ -167,12 +186,17 @@
             background-color: #fff;
         }
 
-        .drawline button.on{
+        .drawline button.on {
             background-color: #f2c021;
         }
 
         #samples-number {
             width: 100%;
+        }
+
+        #IntervalDistance {
+            display: inline-block;
+            width: 75px;
         }
     </style>
 </head>
@@ -186,18 +210,16 @@
         </div>
         <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
-            <div id="numberSamples">
-                <div>
-                    <label for="samples-number">Number of Samples:</label>
-                </div>
-                <div>
-                    <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
-                </div>
-                <label for="samples-number" class="control-label col-7 col-md-6">Interval Distance:</label>
-                <span id="IntervalDistance">100 (feet) </span>
-                <div class="btn-wrap">
-                    <button tabindex="4" class="buttonClear">Clear</button>
-                </div>
+            <div>
+                <label for="samples-number">Number of Samples:</label>
+            </div>
+            <div>
+                <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
+            </div>
+            <label for="samples-number" class="interval-distance">Interval Distance:</label>
+            <span id="IntervalDistance">100 (feet) </span>
+            <div class="btn-wrap">
+                <button tabindex="4" class="buttonClear">Clear</button>
             </div>
         </div>
 
