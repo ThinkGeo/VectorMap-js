@@ -273,7 +273,7 @@ $(".drawline").click(function () {
     type: 'LineString'
   })
   map.addInteraction(draw);
-  draw.on('drawstart', function (feature) {    
+  draw.on('drawstart', function (feature) {
     $('.drawline button').addClass('on');
     clear();
   })
@@ -470,7 +470,7 @@ const changeLayer = function (e) {
   if (e.target.getAttribute("value") == 'hybrid') {
     for (let i = 0; i < layers.length; i++) {
       layers[i].setVisible(false);
-    }    
+    }
     layers[4].setVisible(true)
     transparentBackgroundLayer.setVisible(true);
     aerialLayer.setVisible(true);
@@ -498,7 +498,7 @@ $(function () {
 
   $(".buttonClear").click(function () {
     clear();
-    drawChart(null);    
+    drawChart(null);
     $('.drawline button').removeClass('on')
     $('.error-tip').css('display', 'none');
   });
@@ -510,4 +510,20 @@ $(function () {
     $(".style-btn-group button").removeClass("current");
     $(e.target).addClass("current");
   });
+
+  $(".info").click(function (e) {
+    if ($(".info p").hasClass('hide')) {
+      $(".info p").removeClass('hide')
+    } else {
+      $(".info p").addClass('hide')
+    }
+  });
+
+  $(".info p").click(function () {
+    return false;
+  })
+
+  $(".close").click(function () {
+    $(".info p").addClass('hide')
+  })
 });

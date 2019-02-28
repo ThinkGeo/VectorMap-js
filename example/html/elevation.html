@@ -129,7 +129,7 @@
 
         #side-bar label {
             display: inline-block;
-            width: 165px;
+            width: 170px;
             margin: 10px 0;
         }
 
@@ -198,6 +198,64 @@
             display: inline-block;
             width: 75px;
         }
+
+        .info {
+            position: relative;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            font-size: 13px;
+            text-align: center;
+            border-radius: 50%;
+            color: rgb(48, 48, 48);
+            background-color: antiquewhite;
+            font-weight: bolder;
+            cursor: pointer;
+        }
+
+        .info p {
+            display: inline-block;
+            position: absolute;
+            width: 200px;
+            height: auto;
+            background-color: antiquewhite;
+            padding: 15px 12px;
+            bottom: 14px;
+            left: -118px;
+            text-align: left;
+            word-spacing: 1px;
+            word-break: break-all;
+            border-radius: 5px;
+            cursor: default;
+        }
+
+        .info p::after {
+            position: absolute;
+            display: inline-block;
+            width: 0;
+            height: 0;
+            content: '';
+            border-width: 8px;
+            border-color: transparent;
+            border-style: solid;
+            border-top-color: antiquewhite;
+            bottom: -16px;
+            left: calc(50% + 4px);
+        }
+
+        .close {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 0;
+            right: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .hide {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -211,7 +269,16 @@
         <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
             <div>
-                <label for="samples-number">Number of Samples:</label>
+                <label for="samples-number">Number of Samples
+                    <span class="info">i
+                        <p class="hide">The number of samples determines how many elevation readings will be taken
+                            along the path
+                            that you’ve drawn. A higher number of samples results in a more accurate overall elevation
+                            result.
+                            <span class="close">x</span>
+                        </p>
+                    </span> :
+                </label>
             </div>
             <div>
                 <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
