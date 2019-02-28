@@ -221,7 +221,7 @@
             background-color: #fff;
             padding: 15px 12px;
             bottom: 14px;
-            left: -118px;
+            left: -100px;
             text-align: left;
             word-spacing: 1px;
             word-break: break-all;
@@ -240,7 +240,7 @@
             border-style: solid;
             border-top-color: #fff;
             bottom: -16px;
-            left: calc(50% + 4px);
+            left: calc(50% - 13px);
         }
 
         .close {
@@ -268,6 +268,14 @@
         </div>
         <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
+            <div>
+                <label for="places">Choose One Place:</label>
+                <select id="places">
+                    <option value="place1">San Francisco Coit Tower Walk-Up Path</option>
+                    <option value="place2">Arizona Meteor Crater</option>
+                    <option value="place3">Mount Rainier Path to Summit</option>
+                </select>
+            </div>
             <div>
                 <label for="samples-number">Number of Samples
                     <span class="info">i

@@ -53,6 +53,14 @@ let transparentBackgroundLayer = new ol.layer.Tile({
   visible: true
 });
 
+const wkts = {
+  "place1": 'LINESTRING(-13626205.692956349 4551708.736638038,-13626195.839745672 4551699.182009503,-13626193.74967068 4551687.537305975,-13626201.811388507 4551674.996856023,-13626214.35183846 4551662.754988211,-13626226.892288413 4551648.721627549,-13626231.968184823 4551636.479759738,-13626232.266766964 4551623.342145502,-13626226.59370627 4551608.114456273,-13626214.949002743 4551588.70661706,-13626200.019895656 4551563.327135012,-13626186.882281419 4551540.336310098,-13626178.521981452 4551522.719963735,-13626173.1475029 4551510.776678066,-13626164.48862079 4551497.340481687,-13626158.815560097 4551494.653242412,-13626148.663767276 4551508.985185215,-13626155.232574396 4551513.463917341,-13626160.009888664 4551522.421381594,-13626159.41272438 4551527.497278003,-13626165.981531497 4551533.767502979,-13626169.86309934 4551545.412206507,-13626169.86309934 4551555.563999327,-13626157.62123153 4551561.535642161)',
+
+  "place2": 'LINESTRING(-12359831.643855993 4167388.583607652,-12358190.636404995 4167794.6553204176)',
+
+  "place3": 'LINESTRING(-13552189.568676393 5907435.731019847,-13551272.32433697 5909939.0436961865,-13550909.248452617 5911391.347233605,-13550202.205940979 5911945.515688673,-13550679.93736776 5913990.2061953,-13551444.307650613 5915461.618989791,-13551520.744678898 5916684.611442354,-13552762.846388532 5917334.326182777,-13552533.535303677 5917831.166866631,-13553183.2500441 5918136.914979772,-13554024.057355236 5918041.368694415)'
+}
+
 window.app = {};
 const app = window.app;
 
@@ -78,19 +86,6 @@ $(function () {
   var APIKey = defaultClient.authentications['API Key'];
   APIKey.apiKey = apiKey;
 });
-
-//Create basemap layer
-// let satelliteLayer = new ol.layer.Tile({
-//   source: new ol.source.XYZ({
-//     url: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
-//     tileSize: 512
-//   }),
-// });
-
-// let transparentLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json', {
-//   apiKey: apiKey,
-//   layerName: 'hybrid'
-// });
 
 var addFeature = function (feature) {
   createVector().getSource().addFeature(feature);
@@ -165,10 +160,10 @@ var map = new ol.Map({
   layers: [darkLayer, lightLayer, aerialLayer, transparentBackgroundLayer, createVector()],
   target: 'map',
   view: new ol.View({
-    center: ol.proj.fromLonLat([-121.64325200613075, 47.6966203898931]),
-    maxZoom: 19,
+    center: ol.proj.fromLonLat([-122.405729, 37.802338]),
     maxResolution: 40075016.68557849 / 512,
-    zoom: 15,
+    zoom: 16,
+    maxZoom: 19,
     progressiveZoom: false,
   })
 });
@@ -182,31 +177,17 @@ map.addInteraction(new ol.interaction.DragPan({
   }
 }));
 
-//Get data by cloudclint
-var drawLineElevation = function (feature) {
+
+var drawLineElevation = function (feature, wkt) {
   var apiInstance = new GisServerApis.ElevationApi();
-  var line = feature.getGeometry();
-  $("#IntervalDistance").html(parseInt(line.getLength() / $("#samples-number").val()) + " (feet)")
-  if (line.getLength() > 20000) {
-    window.alert('The test distance is too long and the input is invalid. Please re-enter!');
-    clear();
-    feature.set('type', null);
-    map.removeInteraction(
-      new ol.interaction.Draw({
-        source: source,
-        type: 'LineString'
-      })
-    );
-  } else {
-    var format = new ol.format.WKT();
-    var wkt = format.writeGeometry(feature.getGeometry());
-    var opts = {
+  if (wkt) {
+    opts = {
       'srid': 3857,
       'numberOfSegments': _samplesNumber || 15,
       'intervalDistance': intervalLine || null,
       'elevationUnit': "Feet",
       'intervalDistanceUnit': intervalDistanceUnit || "Feet"
-    };
+    }
     var grades = [];
     apiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
       if (error) {
@@ -219,14 +200,19 @@ var drawLineElevation = function (feature) {
       }
     });
 
-    var callback = function (error, data, response) {
-      if (error) {} else {
-        var coordinates = feature.getGeometry().getLastCoordinate();
+    apiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        var format = new ol.format.WKT();
+        var geom = format.readGeometry(wkt);
+        var coordinates = geom.getLastCoordinate();
         addFeature(new ol.Feature({
           geometry: new ol.geom.Point(coordinates),
           type: 'end'
         }));
-        for (let i = 0; i < data.data.length; i++) {
+        var l = data.data.length;
+        for (let i = 0; i < l; i++) {
           var item = data.data[i];
           var start = data.data[0];
           var waypoint = format.readFeature(item.wellKnownText);
@@ -239,8 +225,66 @@ var drawLineElevation = function (feature) {
         var datas = getChartDataSet(data.data)
         drawChart(datas, grades);
       }
-    };
-    apiInstance.getElevationOfLineV1(wkt, opts, callback);
+    });
+  } else {
+    
+    var line = feature.getGeometry();
+    $("#IntervalDistance").html(parseInt(line.getLength() / $("#samples-number").val()) + " (feet)")
+    if (line.getLength() > 20000) {
+      window.alert('The test distance is too long and the input is invalid. Please re-enter!');
+      clear();
+      drawChart(null);
+      feature.set('type', null);
+      map.removeInteraction(
+        new ol.interaction.Draw({
+          source: source,
+          type: 'LineString'
+        })
+      );
+    } else {
+      var format = new ol.format.WKT();
+      var wkt = format.writeGeometry(feature.getGeometry());
+      var opts = {
+        'srid': 3857,
+        'numberOfSegments': _samplesNumber || 15,
+        'intervalDistance': intervalLine || null,
+        'elevationUnit': "Feet",
+        'intervalDistanceUnit': intervalDistanceUnit || "Feet"
+      };
+      var grades = [];
+      apiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
+        if (error) {
+          console.error(error);
+        } else {
+          for (let i = 0; i < data.data.length; i++) {
+            var grade = data.data[i].grade;
+            grades.push(grade);
+          }
+        }
+      });
+
+      apiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
+        if (error) {} else {
+          var coordinates = feature.getGeometry().getLastCoordinate();
+          addFeature(new ol.Feature({
+            geometry: new ol.geom.Point(coordinates),
+            type: 'end'
+          }));
+          for (let i = 0; i < data.data.length; i++) {
+            var item = data.data[i];
+            var start = data.data[0];
+            var waypoint = format.readFeature(item.wellKnownText);
+            var startpoint = format.readFeature(start.wellKnownText);
+            startpoint.set('type', 'start');
+            waypoint.set('type', 'waypoint');
+            addFeature(startpoint);
+            addFeature(waypoint);
+          }
+          var datas = getChartDataSet(data.data)
+          drawChart(datas, grades);
+        }
+      });
+    }
   }
 }
 
@@ -276,16 +320,17 @@ $(".drawline").click(function () {
   draw.on('drawstart', function (feature) {
     $('.drawline button').addClass('on');
     clear();
+    drawChart(null);
   })
 
   draw.on('drawend', function (feature) {
-    // clear();
     featureLine = feature.feature;
     featureLine.set('type', 'route');
     drawLineElevation(featureLine);
   })
 });
 
+var defaultFeature;
 $('#samples-number').on('change', function () {
   _samplesNumber = $("#samples-number").val();
   intervalLine = null;
@@ -298,53 +343,40 @@ $('#samples-number').on('change', function () {
       featureLine.set('type', 'route');
       addFeature(featureLine);
     } else {
-      drawLineElevation(featureDefault);
-      featureDefault.set('type', 'route');
-      addFeature(featureDefault);
+      var format = new ol.format.WKT();
+      var place = $('#places').val();
+      var geom = format.readGeometry(wkts[place]);
+      var feature = new ol.Feature({
+        geometry: geom,
+        type: 'route',
+      })
+      drawLineElevation(feature);
+      feature.set('type', 'route');
+      addFeature(feature);
     }
   }
 });
-var featureDefault;
-var polygonDefault = function () {
+
+var defaultLine = function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud1.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
   APIKey.apiKey = apiKey;
 
-  //default data
-  featureDefault = new ol.Feature({
-    geometry: new ol.geom.LineString([
-      [-13541888.484786397, 6056958.501631321],
-      [-13541864.598215058, 6056894.0078887055],
-      [-13541874.152843593, 6056853.400717429],
-      [-13541881.318814995, 6056812.793546153],
-      [-13541890.87344353, 6056762.631746341],
-      [-13541914.76001487, 6056662.308146716],
-      [-13541888.484786397, 6056607.369032636],
-      [-13541828.76835805, 6056593.037089833],
-      [-13541752.331329763, 6056593.037089833],
-      [-13541661.562358676, 6056595.425746967],
-      [-13541582.736673256, 6056614.535004038],
-      [-13541513.465616373, 6056636.032918244],
-      [-13541475.24710223, 6056633.64426111],
-      [-13541429.862616686, 6056624.089632574],
-      [-13541336.704988463, 6056612.146346904],
-      [-13541265.045274446, 6056597.814404101],
-      [-13541190.996903295, 6056518.988718682],
-      [-13541195.774217563, 6056452.106318932],
-      [-13541183.830931893, 6056380.446604915],
-      [-13541174.276303357, 6056306.398233764],
-      [-13541174.276303357, 6056227.572548345]
-    ])
-  });
-  featureDefault.set('type', 'route');
-  addFeature(featureDefault);
-  drawLineElevation(featureDefault)
+  var format = new ol.format.WKT();
+  var defaultWkt = wkts.place1;
+  var defalutGeom = format.readGeometry(defaultWkt);
+  defaultFeature = new ol.Feature({
+    geometry: defalutGeom,
+    type: 'route',
+  })
+  addFeature(defaultFeature);
+  drawLineElevation(defaultFeature)
 }
-$(
-  polygonDefault()
-);
 
+$(
+  defaultLine()
+);
 
 var clear = function () {
   var source = createVector().getSource();
@@ -521,5 +553,52 @@ $(function () {
 
   $(".close").click(function () {
     $(".info p").addClass('hide')
+  })
+
+  $('#places').change(function (e) {
+    var geom;
+    var newFeature;
+    var format = new ol.format.WKT();
+    switch (e.target.value) {
+      case 'place1':
+        map.getView().animate({
+          center: ol.proj.fromLonLat([-122.405729, 37.802338]),
+          zoom: 16,
+        });
+        var geom = format.readGeometry(wkts.place1);
+        newFeature = new ol.Feature({
+          geometry: geom,
+          type: 'route',
+        })
+        addFeature(newFeature);
+        drawLineElevation(null, wkts.place1)
+        break;
+      case 'place2':
+        map.getView().animate({
+          center: ol.proj.fromLonLat([-111.022344, 35.027376]),
+          zoom: 15,
+        });
+        var geom = format.readGeometry(wkts.place2);
+        newFeature = new ol.Feature({
+          geometry: geom,
+          type: 'route',
+        })
+        addFeature(newFeature);
+        drawLineElevation(null, wkts.place2)
+        break;
+      case 'place3':
+        map.getView().animate({
+          center: ol.proj.fromLonLat([-121.747791, 46.835727]),
+          zoom: 11,
+        });
+        var geom = format.readGeometry(wkts.place3);
+        newFeature = new ol.Feature({
+          geometry: geom,
+          type: 'route',
+        })
+        addFeature(newFeature);
+        drawLineElevation(null, wkts.place3)
+        break;
+    }
   })
 });
