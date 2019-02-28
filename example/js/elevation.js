@@ -8,6 +8,8 @@ var interval;
 var intervalLine;
 var intervalDistanceUnit = "Feet";
 
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
 window.app = {};
 const app = window.app;
 
@@ -32,17 +34,21 @@ $(function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
-  APIKey.apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+  APIKey.apiKey = apiKey;
 
 });
 
 //Create basemap layer
 let satelliteLayer = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    url: "https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg" +
-      "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
+    url: `https://cloud.thinkgeo.com/api/v1/maps/raster/aerial/x1/3857/512/{z}/{x}/{y}.jpeg?apiKey=${apiKey}`,
     tileSize: 512
   }),
+});
+
+let transparentLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json', {
+    apiKey: apiKey,
+    layerName: 'hybrid'
 });
 
 var addFeature = function (feature) {
@@ -113,7 +119,7 @@ var map = new ol.Map({
   }).extend([
     new app.drawLineControl()
   ]),
-  layers: [satelliteLayer, createVector()],
+  layers: [satelliteLayer, transparentLayer, createVector()],
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([-121.64325200613075, 47.6966203898931]),
@@ -261,7 +267,7 @@ var polygonDefault = function () {
   var defaultClient = GisServerApis.ApiClient.instance;
   defaultClient.basePath = "https://cloud1.thinkgeo.com";
   var APIKey = defaultClient.authentications['API Key'];
-  APIKey.apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+  APIKey.apiKey = apiKey;
 
   //default data
   featureDefault = new ol.Feature({
