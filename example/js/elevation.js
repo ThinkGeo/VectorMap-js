@@ -141,6 +141,7 @@ var styles = {
 };
 
 var source = new ol.source.Vector();
+
 var createVector = function () {
   return new ol.layer.Vector({
     source: source,
@@ -162,7 +163,6 @@ var map = new ol.Map({
   ]),
 
   layers: [darkLayer, lightLayer, aerialLayer, transparentBackgroundLayer, createVector()],
-  // layers: [satelliteLayer, transparentLayer, createVector()],
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([-121.64325200613075, 47.6966203898931]),
@@ -176,7 +176,6 @@ var map = new ol.Map({
 
 map.addControl(new ol.control.FullScreen());
 
-
 map.addInteraction(new ol.interaction.DragPan({
   condition: function (event) {
     return event.originalEvent.ctrlKey
@@ -188,9 +187,10 @@ var drawLineElevation = function (feature) {
   var apiInstance = new GisServerApis.ElevationApi();
   var line = feature.getGeometry();
   $("#IntervalDistance").html(parseInt(line.getLength() / $("#samples-number").val()) + " (feet)")
-  if (line.getLength() > 5000) {
+  if (line.getLength() > 20000) {
     window.alert('The test distance is too long and the input is invalid. Please re-enter!');
     clear();
+    feature.set('type', null);
     map.removeInteraction(
       new ol.interaction.Draw({
         source: source,
@@ -279,7 +279,7 @@ $(".drawline").click(function () {
   })
 
   draw.on('drawend', function (feature) {
-    clear();
+    // clear();
     featureLine = feature.feature;
     featureLine.set('type', 'route');
     drawLineElevation(featureLine);
@@ -302,8 +302,6 @@ $('#samples-number').on('change', function () {
       featureDefault.set('type', 'route');
       addFeature(featureDefault);
     }
-
-
   }
 });
 var featureDefault;
@@ -493,14 +491,12 @@ $('#IntervalDistanceLine').show();
 $(function () {
   $(".drawline button").click(function (e) {
     $(e.target).addClass('on')
-    $('.error-tip').css('display', 'none');
   });
 
   $(".buttonClear").click(function () {
     clear();
     drawChart(null);
     $('.drawline button').removeClass('on')
-    $('.error-tip').css('display', 'none');
   });
 
   $(".style-btn-group").click(function (e) {
