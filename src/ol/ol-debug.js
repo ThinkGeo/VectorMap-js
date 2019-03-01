@@ -9075,11 +9075,11 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    var gl=canvas.getContext('webgl');
+                    var gl = canvas.getContext('webgl');
                     if (gl) {
-                        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
+                        // gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
                         // gl.clearColor(1.0,0.0,0.0,1.0)
-                        ol.webglContext={canvas:canvas,gl:gl};
+                        ol.webglContext = {canvas: canvas, gl: gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -26460,7 +26460,7 @@ function olInit() {
             stencil: true
         });
         
-        this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+        // this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
         this.gl_.activeTexture(ol.webgl.TEXTURE0);
         this.gl_.blendFuncSeparate(
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
@@ -26469,7 +26469,7 @@ function olInit() {
         this.gl_.enable(ol.webgl.DEPTH_TEST);
         this.gl_.disable(ol.webgl.SCISSOR_TEST);
         this.gl_.disable(ol.webgl.STENCIL_TEST);
-
+        
         /**
          * @private
          * @type {ol.webgl.Context}
@@ -26583,16 +26583,17 @@ function olInit() {
         var pixelRatio = frameState.pixelRatio;
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
+        
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            this.gl_.viewport(0, 0, width, height);
+            gl.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
             // context.clearRect(0, 0, width, height);
         }
-
+        
         gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-        gl.enable(gl.BLEND);
+        // gl.enable(gl.BLEND);
         // gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // gl.depthMask(true);
@@ -67068,7 +67069,7 @@ function olInit() {
      * @param {number} target Target.
      * @param {ol.webgl.Buffer} buf Buffer.
      */
-    ol.webgl.Context.prototype.bindBuffer = function (target, buf) {
+    ol.webgl.Context.prototype.bindBuffer = function (target, buf, shouldBeCached) {
         var gl = this.getGL();
         var arr = buf.getArray();
         var bufferKey = String(ol.getUid(buf));        
@@ -67086,10 +67087,12 @@ function olInit() {
                     new Uint32Array(arr) : new Uint16Array(arr);
             }
             gl.bufferData(target, arrayBuffer, buf.getUsage());
-            this.bufferCache_[bufferKey] = {
-                buf: buf,
-                buffer: buffer
-            };
+            if(shouldBeCached){
+                this.bufferCache_[bufferKey] = {
+                    buf: buf,
+                    buffer: buffer
+                };
+            } 
         }
     };
 
@@ -67101,7 +67104,6 @@ function olInit() {
         var gl = this.getGL();
         var bufferKey = String(ol.getUid(buf));
         var bufferCacheEntry = this.bufferCache_[bufferKey];
-        
         // there may be no bufferKey in bufferCache_
         if(bufferCacheEntry){
             if (!gl.isContextLost()) {
@@ -67293,8 +67295,8 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        // gl.enable(gl.BLEND);
+        // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         // fix for WebGL not to unpremultiply      
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
@@ -67467,7 +67469,7 @@ function olInit() {
         var verticesBuffer = this.verticesBuffer;
         var indicesBuffer = this.indicesBuffer;
         var textures = this.getTextures(true);
-        var gl = context.getGL();
+        var gl = context.getGL();    
         return function () {
             if (!gl.isContextLost()) {
                 var i, ii;
@@ -67684,6 +67686,8 @@ function olInit() {
         // gl.colorMask(false, false, false, false);
         // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
         // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
@@ -67698,6 +67702,10 @@ function olInit() {
             }
         }
 
+        gl.blendFuncSeparate(
+            ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+            ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
+        gl.disable(gl.BLEND);
         // gl.colorMask(true, true, true, true);
         // gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
         // gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
@@ -67951,6 +67959,8 @@ function olInit() {
 
         this.images_ = [];
         this.hitDetectionImages_ = [];
+        this.indices = [];
+        this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -69573,10 +69583,10 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function (
         flatCoordinates, holeFlatCoordinates, stride) {
         // Triangulate the polygon
-        var outerRing = new ol.structs.LinkedList();        
-        var rtree = new ol.structs.RBush();
+        // var outerRing = new ol.structs.LinkedList();        
+        // var rtree = new ol.structs.RBush();
         // Initialize the outer ring
-        this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+        // this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
         // Eliminate holes, if there are any
         // if(holeFlatCoordinates.length) {
         //     var maxCoords = this.getMaxCoords_(outerRing);     
@@ -102424,7 +102434,7 @@ function olInit() {
             // console.log(requestTileCoord);
             // if(!(requestTileCoord.toString() == "2,2,-1")){
             // if(tileCoord.toString() !== "16,15147,-26446"){
-            // if(tileCoord.toString() !== "15,7573,-13224"){
+            // if(tileCoord.toString() !== "17,30288,-52741"){
                 // return
             // }
             // TEST END

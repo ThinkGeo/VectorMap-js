@@ -733,7 +733,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.renderDeclutter_(declutterGroup, feature);
                             this.scale *= window.devicePixelRatio;
                         }else{                            
-                            // draw chars  
+                            // draw chars 
                             this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                         }
                     }
@@ -1077,12 +1077,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 chunkLength += charLength;
                 var charM = startM + charLength / 2;
 
-                // label exceed the road range
-                // if(offset >= end - stride){
-                    // return result;
-                // }
-
-                while (offset < end - stride && segmentM + segmentLength < charM) {
+                while (segmentM + segmentLength < charM) {
                     x1 = x2;
                     y1 = y2;
                     offset += stride;
@@ -1091,6 +1086,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     segmentM += segmentLength;
                     segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                 }
+
+                // label exceed the road range
+                if(offset >= end - stride){
+                    return false;
+                }
+
                 var segmentPos = charM - segmentM;
                 var angle = Math.atan2(y2 - y1, x2 - x1);
                 if (reverse) {
@@ -1187,9 +1188,11 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // gl.stencilMask(0);
                 // gl.stencilFunc(context.NOTEQUAL, 1, 255);
             }
-            
-            context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
-            context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+
+            var shouldBeCached = (this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay) ? false : true;
+
+            context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer, shouldBeCached);
+            context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer, shouldBeCached);
 
             var locations = this.setUpProgram(gl, context, size, pixelRatio);
                 
@@ -1236,7 +1239,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
             // disable the vertex attrib arrays
             this.shutDownProgram(gl, locations);
-
+            
             if (this.lineStringReplay) {
                 if (!tmpStencil) {
                     gl.disable(gl.STENCIL_TEST);
