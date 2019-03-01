@@ -14,7 +14,8 @@
     <style rel="stylesheet" type="text/css">
         #map {
             width: 100%;
-            height: 60vh;
+            height: calc(75% - 27px);
+            position: relative;
             background-color: #fff;
         }
 
@@ -54,7 +55,7 @@
             top: 1rem;
             right: 50px;
             position: absolute;
-            z-index: 1000;
+            z-index: 999;
             display: flex;
         }
 
@@ -74,23 +75,18 @@
 
         #chart {
             width: 100%;
-            margin-top: 0px;
-            position: absolute;
-            height: 40vh;
-            top: 60vh;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            margin-top: 5px;
+            height: 25%;
             z-index: 1000;
-            background: #fff
+            background: #fff;
         }
 
         #side-bar {
             right: 0;
-            background-color: rgba(0, 0, 0, .5);
-            color: #999;
+            background-color: rgba(38, 40, 44, 0.85);
+            color: #ccc;
             position: absolute;
-            bottom: 40vh;
+            bottom: 0;
             padding: 0.6rem;
             box-shadow: -2px -2px 4px rgba(0, 0, 0, .2);
             border-top-left-radius: 5px;
@@ -130,7 +126,7 @@
         #side-bar label {
             display: inline-block;
             width: 170px;
-            margin: 10px 0;
+            margin: 6px 0;
         }
 
         #chartContainer {
@@ -191,12 +187,7 @@
         }
 
         #samples-number {
-            width: 100%;
-        }
-
-        #IntervalDistance {
-            display: inline-block;
-            width: 100px;
+            width: 200px;
         }
 
         .info {
@@ -224,7 +215,6 @@
             left: -100px;
             text-align: left;
             word-spacing: 1px;
-            word-break: break-all;
             border-radius: 5px;
             cursor: default;
         }
@@ -262,22 +252,18 @@
 <body>
     <!-- This <div> is the container into which our map control will be loaded. -->
     <div id="map">
-        <!-- This <div> is the container into which our diagram will be rendered. -->
-        <div id="chart">
-            <canvas id="chartContainer"></canvas>
-        </div>
         <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
             <div>
-                <label for="places">Choose One Place:</label>
+                <label for="places">Preset Paths:</label>
                 <select id="places">
-                    <option value="place1">San Francisco Coit Tower Walk-Up Path</option>
+                    <option value="place1">San Francisco - Coit Tower</option>
                     <option value="place2">Arizona Meteor Crater</option>
                     <option value="place3">Mount Rainier Path to Summit</option>
                 </select>
             </div>
             <div>
-                <label for="samples-number">Number of Samples
+                <label for="samples-number">Number of Samples:
                     <span class="info">i
                         <p class="hide">The number of samples determines how many elevation readings will be taken
                             along the path
@@ -285,16 +271,12 @@
                             result.
                             <span class="close">x</span>
                         </p>
-                    </span> :
+                    </span>
                 </label>
-            </div>
-            <div>
                 <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
             </div>
-            <label for="samples-number" class="interval-distance">Interval Distance:</label>
-            <span id="IntervalDistance">100 (feet) </span>
             <div class="btn-wrap">
-                <button tabindex="4" class="buttonClear">Clear</button>
+                <button tabindex="4" class="buttonClear">Draw New Path</button>
             </div>
         </div>
 
@@ -303,6 +285,11 @@
             <button class="current" value="hybrid">Hybrid</button>
             <button value="light">Light</button>
         </div>
+    </div>
+
+    <!-- This <div> is the container into which our diagram will be rendered. -->
+    <div id="chart">
+        <canvas id="chartContainer"></canvas>
     </div>
 
     <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
