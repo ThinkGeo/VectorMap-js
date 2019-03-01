@@ -459,6 +459,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         // Get quickZoom zoom in/out
         (<any>ol).View.prototype.animate = function (var_args) {
             var animationCount = arguments.length;
+
             var callback;
             if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
                 callback = arguments[animationCount - 1];
@@ -489,7 +490,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var quickZoom = false;
             for (var i = 0; i < animationCount; ++i) {
                 var options = /** @type {olx.AnimationOptions} */ (arguments[i]);
-
                 var animation = /** @type {ol.ViewAnimation} */ ({
                     start: start,
                     complete: false,
@@ -502,6 +502,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     animation["sourceCenter"] = center;
                     animation["targetCenter"] = options.center;
                     center = animation["targetCenter"];
+                    this.isDrag = true;
+                    // debugger;
                 }
 
                 if (options.zoom !== undefined) {
@@ -509,7 +511,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     animation["targetResolution"] = this.constrainResolution(
                         this.maxResolution_, options.zoom - this.minZoom_, 0);
                     resolution = animation["targetResolution"];
-
                     if (!quickZoom) {
                         quickZoom = Math.abs(animation["sourceResolution"] - animation["targetResolution"]) * 2 >= animation["sourceResolution"];
                     }
@@ -517,10 +518,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     animation["sourceResolution"] = resolution;
                     animation["targetResolution"] = options.resolution;
                     resolution = animation["targetResolution"];
-
                     if (!quickZoom) {
                         quickZoom = Math.abs(animation["sourceResolution"] - animation["targetResolution"]) * 2 >= animation["sourceResolution"];
                     }
+                   
                 }
 
                 if (options.rotation !== undefined) {
@@ -556,7 +557,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var view = this.getView();
             var extent = ol.extent.createEmpty();
             var previousFrameState = this.frameState_;
-            var isZoom=view.isZoom;
             /** @type {?olx.FrameState} */
             var frameState = null;
             if (size !== undefined && (<any>ol).size.hasArea(size) && view && view.isDef()) {
@@ -595,7 +595,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     currentResolution: viewState.resolution,
                     wantedTiles: {},
                     context: this.renderer_.context_,
-                    isZoom:isZoom
+                    isDrag: view.isDrag,
+                    isZoomOut:view.isZoomOut,
+                    isPinchOut:view.isPinchOut,
+                    isClickZoomOut:view.isClickZoomOut
                 });
             }
 
@@ -635,10 +638,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     (<any>ol).extent.clone(frameState.extent, this.previousExtent_);
                 }
             }
-
+            // if(this.tileQueue_.elements_.length>0){
+            //     debugger;
+            // }
             this.dispatchEvent(
                 new ol.MapEvent((<any>ol).MapEventType.POSTRENDER, this, frameState));
-
+               
             setTimeout(this.handlePostRender.bind(this), 0);
 
         };

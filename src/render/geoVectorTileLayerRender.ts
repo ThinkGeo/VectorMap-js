@@ -26,7 +26,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
         let sourceRevision = tileSource.getRevision();
         let tileGrid = tileSource.getTileGridForProjection(projection);
-        let z = tileGrid.getZForResolution(viewResolution, this.zDirection);
+        let z = tileGrid.getZForResolution(viewResolution, 0);
+        // console.log(tileSource.tileCache.entries_);
         let tileResolution = tileGrid.getResolution(z);
         let oversampling = Math.round(viewResolution / tileResolution) || 1;
         let extent = frameState.extent;
@@ -103,6 +104,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     let uid = (<any>ol).getUid(this);
                     if (tile.getState() === (<any>ol).TileState.LOADED) {
                         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+                        // console.log(tilesToDrawByZ)
                         let inTransition = tile.inTransition(uid);
                         if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
                             newTiles = true;
@@ -124,24 +126,29 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 if (childTileRange) {
                     covered = findLoadedTiles((z + 1), childTileRange);
                 }
-                
+                let judgeZoomOut ={
+                    'isZoomOut':frameState.isZoomOut,
+                    'isPinchOut':frameState.isPinchOut,
+                    'isClickZoomOut':frameState.isClickZoomOut
+                }
                 if (!covered) {
                     // if (!covered && frameState.isZoom) {
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent,judgeZoomOut
+                        );
                 }
             }
         }
-
         // delete a large interval for drawing
         var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-        if(tilesToDrawKeys.length > 1){
+        if(frameState.isDrag || frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut){
             while(+tilesToDrawKeys[tilesToDrawKeys.length - 1] - (+tilesToDrawKeys[0]) > 2){
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
             }
         }
-
+        
+       
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
         let animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
@@ -183,7 +190,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
-
+            // if(frameState.isZoomOut) {
+            //     zs.sort(function(a,b){
+            //         return b - a ;
+            //     });
+            // }
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
             for (i = 0, ii = zs.length; i < ii; ++i) {
