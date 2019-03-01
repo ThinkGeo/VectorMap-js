@@ -28,10 +28,10 @@
         }
 
         .ol-full-screen {
-            right: unset;
-            left: 0.5em;
-            top: 5.5em;
-            background-color: unset
+            right: unset !important;
+            left: 0.5em !important;
+            top: 5.5em !important;
+            background-color: unset；
         }
 
         .ol-full-screen button {
@@ -75,7 +75,7 @@
 
         #chart {
             width: 100%;
-            margin-top: 5px;
+            padding-top: 5px;
             height: 25%;
             z-index: 1000;
             background: #fff;
@@ -246,6 +246,67 @@
         .hide {
             display: none !important;
         }
+
+        @media (max-width: 767px) {
+            #chart {
+                height: 20%;
+            }
+
+            #map {
+                height: calc(80% - 27px);
+            }
+
+            #side-bar {
+                padding: 0;
+                background-color: transparent;
+            }
+
+            #side-bar label {
+                width: 130px;
+                margin: 5px 0;
+                font-size: 12px;
+            }
+
+            #samples-number {
+                width: 170px;
+            }
+
+            #places {
+                font-size: 11px
+            }
+
+            .buttonClear {
+                font-size: 12px;
+                padding: 0 5px;
+            }
+
+            input[type=range]::-webkit-slider-runnable-track {
+                height: 10px;
+            }
+
+            input[type=range]::-webkit-slider-thumb {
+                margin-top: 0;
+                height: 10px;
+                width: 10px;
+            }
+
+            .preset-paths-panel>label,
+            .num-samples-panel,
+            .btn-wrap {
+                display: none !important;
+            }
+
+            .preset-paths-panel select {
+                background-color: rgb(65, 65, 65);
+                color: #fff;
+                border: none;
+                padding: 0.3rem;
+            }
+
+            .preset-paths-panel select:focus{
+                outline: none;
+            }
+        }
     </style>
 </head>
 
@@ -254,7 +315,7 @@
     <div id="map">
         <!-- This <div> is the container into which our control panels will be rendered. -->
         <div id="side-bar">
-            <div>
+            <div class="preset-paths-panel">
                 <label for="places">Preset Paths:</label>
                 <select id="places">
                     <option value="place1">San Francisco - Coit Tower</option>
@@ -262,7 +323,7 @@
                     <option value="place3">Mount Rainier Path to Summit</option>
                 </select>
             </div>
-            <div>
+            <div class="num-samples-panel">
                 <label for="samples-number">Number of Samples:
                     <span class="info">i
                         <p class="hide">The number of samples determines how many elevation readings will be taken
