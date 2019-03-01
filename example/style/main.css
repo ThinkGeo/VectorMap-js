@@ -95,8 +95,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f7f8;
-    border-right: 1px solid #eee;
+    background-color: #2D3035;
 }
 
 .sidebar.collapse {
@@ -152,7 +151,7 @@ body {
 }
 
 .nav-sidebar a {
-    color: #2d3e50;
+    color: #60B9E2;
     display: inline-block;
     width: 100%;
     height: 3.75rem;
@@ -170,14 +169,10 @@ body {
 }
 
 .nav-sidebar li {
-    border-bottom: 1px solid #e2e4e7;
+    border-bottom: 1px solid #3B3B3C;
     width: 100%;
     padding: 0rem;
     margin-bottom: 0;
-}
-
-.nav-sidebar>li>a i {
-    width: 20px;
 }
 
 .nav-sidebar>li>a {
@@ -185,10 +180,14 @@ body {
     font-size: large;
 }
 
+.nav-sidebar>li>a i {
+    width: 20px;
+}
+
 .sub-menu .active,
 .sub-menu .active:hover,
 .sub-menu .active:focus {
-    background-color: #e2e4e7;
+    background-color: #505050;
 }
 
 .nav>li>a:hover {
@@ -196,11 +195,11 @@ body {
 }
 
 .sidebar>.nav>li:hover {
-    background-color: #f5f5f5;
+    background-color: #505050;
 }
 
 .sidebar>.nav>li:hover a {
-    color: #425067;
+    color: #60B9E2;
 }
 
 .arrow:before {
@@ -232,6 +231,7 @@ body {
  */
 .container-fluid {
     height: 100%;
+    background-color: #3D3D3E;
 }
 
 .tab-content {
@@ -286,18 +286,15 @@ pre {
 child pages
 */
 
-#codepen a {
-    opacity: 0.6;
-}
-
 #codepen .nav-link:hover {
-    border-width: 0px;
+    border-width: 1px;
     opacity: 1;
 }
 
 #child-page-title {
     width: 100%;
     height: auto;
+    color: #ffffff;
 }
 
 #child-page-title h1 {
@@ -308,9 +305,13 @@ child pages
     font-size: 1.5rem
 }
 
-.nav-tabs .nav-link {
+.nav-tabs .nav-item{
+    background-color: #eee;
+}
+
+.nav-item .nav-link {
     font-size: 1.6rem;
-    color: #2d3e50
+    color:rgb(73, 80, 87)
 }
 
 .nav-link img {

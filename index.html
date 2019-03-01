@@ -35,9 +35,8 @@
     <nav class="navbar bg-dark fixed-top">
         <a class="navbar-brand" href="https://thinkgeo.com/"> </a>
         <span class="navbar-text mr-auto">
-            <h4>
-                ThinkGeo Vector Map Online Samples</h4>
-            <h6>Samples for ThinkGeo VectorMap JavaScript Library and ThinkGeo Cloud Services</h6>
+            <h4>Vector Map for JavaScript</h4>
+            <h6>Ultimate collection of JavaScript mapping components for jQuery, Angular, React, and Vue.</h6>
         </span>
         <!-- <button type="button" class="btn fa fa-bars collapsed mr-4" data-toggle="collapse" data-target="" aria-expanded="false">
         </button> -->
@@ -59,6 +58,7 @@
             </li>
             |
             <li class="nav-item">
+                <img style="width:18px;height:18px" src="./image/GitHub-Mark-Light-32px.png" alt="GitHub">
                 <a href="https://github.com/ThinkGeo/VectorMap-js" target="_blank" rel="noopener">GitHub</a>
             </li>
             |
@@ -87,26 +87,6 @@
         <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
     </div>
 </body>
-<script>
-    function IsPC() {
-        var userAgentInfo = navigator.userAgent;
-        var Agents = ["Android", "iPhone",
-            "SymbianOS", "Windows Phone",
-            "iPod"
-        ];
-        var flag = true;
-        for (var v = 0; v < Agents.length; v++) {
-            if (userAgentInfo.indexOf(Agents[v]) > 0) {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    }
-    // if (!IsPC()) {
-    //     document.getElementsByClassName('navbar')[0].classList.add('collapse');
-    // }
-</script>
 
 <script src="./example/lib/jquery/jquery.min.js"></script>
 <script src="./example/lib/bootstrap/bootstrap.min.js"></script>
