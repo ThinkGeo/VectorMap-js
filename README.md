@@ -142,7 +142,7 @@ __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your 
     WebFont.load({
         custom: {
             families: ["vectormap-icons"],
-            urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
         }
     });
 </script>
@@ -169,7 +169,7 @@ After all the above steps completed, your HTML page should be:
             WebFont.load({
                 custom: {
                     families: ["vectormap-icons"],
-                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
                 }
             });
         </script>

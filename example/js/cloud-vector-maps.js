@@ -32,7 +32,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 WebFont.load({
     custom: {
         families: ['vectormap-icons'],
-        urls: ['https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css']
+        urls: ['https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css']
     }
 });
 
