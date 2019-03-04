@@ -3,6 +3,8 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Map Icon Fonts
+//   2. Layer Setup
+//   3. Map Control Setup
 /*===========================================================================*/
 
 
