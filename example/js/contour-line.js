@@ -53,7 +53,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worlds
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    // Add our previously-defined ThinkGeo Cloud Vector Tile layer and Precipitation Distribution Layer to the map.
+    // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
     layers: [baseLayer],
     // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
