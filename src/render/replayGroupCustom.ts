@@ -78,7 +78,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
-
+        let currentResolution = (<any>context).frameState.currentResolution;
         // setup clipping so that the parts of over-simplified geometries are not
         // visible outside the current extent when panning
         // context.save();
@@ -103,7 +103,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                     //     }
                     // } else {       
                         if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
-                            replay.declutterRepeat_(context, screenXY);                
+                            replay.declutterRepeat_(context, screenXY);                            
                         }                 
                         // replay.zIndex = zs[i];
                         // replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
@@ -122,7 +122,24 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                 if (replay !== undefined) {
                     replay.zIndex = zs[i];
                     if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
-                        replay.finish(context);
+                        var tmpOptions = replay.tmpOptions;                        
+                        if(tmpOptions.length != replay.options.length || currentResolution < 1){
+                            replay.indices.length = 0;
+                            replay.vertices.length = 0;
+                            replay.groupIndices.length = 0;
+                            
+                            for(var k = 0; k < tmpOptions.length; k++){
+                                if(replay instanceof (<any>ol).render.webgl.TextReplay){
+                                    replay.drawText(tmpOptions[k]);
+                                }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
+                                    replay.drawPoint(tmpOptions[k]);
+                                }
+                            }
+                            replay.finish(context);
+                            replay.options = tmpOptions;
+                        }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
+                            continue;
+                        }
                     }
                     replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
                 }

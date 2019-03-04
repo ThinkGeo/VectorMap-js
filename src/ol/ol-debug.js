@@ -67458,6 +67458,18 @@ function olInit() {
          * @protected
          */
         this.width = undefined;
+
+        /**
+         * @type {Array.<number>}
+         * @protected
+         */
+        this.options = [];
+
+        /**
+         * @type {Array.<number>}
+         * @protected
+         */
+        this.texturePerImage = {};
     };
     ol.inherits(ol.render.webgl.TextureReplay, ol.render.webgl.Replay);
 
@@ -67469,12 +67481,16 @@ function olInit() {
         var verticesBuffer = this.verticesBuffer;
         var indicesBuffer = this.indicesBuffer;
         var textures = this.getTextures(true);
+        var texturePerImages = Object.values(this.texturePerImage);
         var gl = context.getGL();    
         return function () {
             if (!gl.isContextLost()) {
                 var i, ii;
                 for (i = 0, ii = textures.length; i < ii; ++i) {
                     gl.deleteTexture(textures[i]);
+                }
+                for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
+                    gl.deleteTexture(texturePerImages[j]);
                 }
             }
             context.deleteBuffer(verticesBuffer);
@@ -67950,17 +67966,18 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        var texturePerImage = {};
-
-        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
+        // var texturePerImage = {};
+        this.textures_ = [];
+        
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-            texturePerImage, gl);
+            this.texturePerImage, gl);
 
         this.images_ = [];
         this.hitDetectionImages_ = [];
-        this.indices = [];
-        this.vertices = [];
+        // this.indices = [];
+        // this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -71433,9 +71450,10 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        var texturePerImage = {};
-
-        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
+        // var texturePerImage = {};
+        this.textures_ = [];
+        
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
         this.state_ = {
             strokeColor: null,
@@ -71458,8 +71476,8 @@ function olInit() {
         // this.atlases_ = {};
         // this.currAtlas_ = undefined;
         this.images_ = [];
-        this.indices = [];
-        this.vertices = [];
+        // this.indices = [];
+        // this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -102432,7 +102450,7 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "2,2,-1")){
+            // if(!(requestTileCoord.toString() == "2,0,-2")){
             // if(tileCoord.toString() !== "16,15147,-26446"){
             // if(tileCoord.toString() !== "17,30288,-52741"){
                 // return
