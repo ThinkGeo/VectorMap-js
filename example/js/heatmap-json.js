@@ -99,7 +99,7 @@ getJson().then((data) => {
 
     // Let's build up an array of features, one for each point in our dataset.
     let featuresArr = [];
-    // For each feature in the Chicago GeoJSON dataset, add it to the feature 
+    // For each feature in the JSON dataset, add it to the feature 
     // collection array and create a point shape.
     for (let i = 0; i < points.length; i++) {
         let coord = points[i].slice(0, 2);
