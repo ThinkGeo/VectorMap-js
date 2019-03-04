@@ -142,7 +142,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         // delete a large interval for drawing
         var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
         if(frameState.isDrag || frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut){
-            while(+tilesToDrawKeys[tilesToDrawKeys.length - 1] - (+tilesToDrawKeys[0]) > 2){
+            while(z - (+tilesToDrawKeys[0]) > 1 || z - (+tilesToDrawKeys[0]) < -1){
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
             }
@@ -190,11 +190,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
-            // if(frameState.isZoomOut) {
-            //     zs.sort(function(a,b){
-            //         return b - a ;
-            //     });
-            // }
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
             for (i = 0, ii = zs.length; i < ii; ++i) {

@@ -6637,46 +6637,50 @@ function olInit() {
      * @template T
      */
     ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent,judgeZoomOut) {
-        var tileRange, x, y;
+        var tileRange, x, y , c ,d, tileRange1;
         var tileCoordExtent = null;
        
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
+            c = tileCoord[1];
+            d = tileCoord[2];
         } else {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
+        
+        //the reason that zoom in is blank why is run this. 
+        var z_ = tileCoord[0] - 1;
+        while (z_ >= this.minZoom) {
+            if (this.zoomFactor_ === 2) {
+                x = Math.floor(x / 2);
+                y = Math.floor(y / 2);
+                tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
+            } else {
+                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
+            }
+            if (callback.call(opt_this, z_, tileRange)) {
+                return true;
+            }
+            --z_;
+        }
         if(judgeZoomOut.isZoomOut || judgeZoomOut.isPinchOut || judgeZoomOut.isClickZoomOut){
-            var z = tileCoord[0] + 1;
-            while (z <= this.maxZoom) {
+            let z = tileCoord[0] + 1;
+            while (z <= this.maxZoom && z> 1) {
                 if (this.zoomFactor_ === 2) {
-                    x =(x * 2);
-                    y =(y * 2);
-                    tileRange = ol.TileRange.createOrUpdate(x - 2, x + 2, y-2, y + 2, opt_tileRange);
+                    c =(c * 2);
+                    d =(d * 2);
+                    tileRange1 = ol.TileRange.createOrUpdate(c , c + 1, d, d + 1, opt_tileRange);
                 } else {
-                    tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+                    tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
                 }
-                if (callback.call(opt_this, z, tileRange)) {
-                    return true;
+                if (callback.call(opt_this, z, tileRange1)) {
+                    // return true;
                 }
                 ++z;
             }
-        }else{
-            var z = tileCoord[0] - 1;
-            while (z >= this.minZoom) {
-                if (this.zoomFactor_ === 2) {
-                    x = Math.floor(x / 2);
-                    y = Math.floor(y / 2);
-                    tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
-                } else {
-                    tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
-                }
-                if (callback.call(opt_this, z, tileRange)) {
-                    return true;
-                }
-                --z;
-            }
         }
+        
         return false;
     };
 
@@ -11659,7 +11663,6 @@ function olInit() {
                 delete this.queuedElements_[this.keyFunction_(element)];
             } else {
                 priorities[index] = priority;
-                element[4] = priority;
                 elements[index++] = element;
             }
         }
@@ -11778,15 +11781,11 @@ function olInit() {
         var newLoads = 0;
         var abortedTiles = false;
         var state, tile, tileKey;
-        let elements = this.elements_;
         while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
             this.getCount() > 0) {
-           
-
             tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
             
             tileKey = tile.getKey();
-            // console.log(tileKey)
             state = tile.getState();
             if (state === ol.TileState.ABORT) {
                 abortedTiles = true;
@@ -18533,13 +18532,7 @@ function olInit() {
         //   tile loads to remain reactive to view changes and to reduce the chance of
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
-        var center = frameState.viewState.center;
-        function twoPointDistance(point1,point2){
-  
-            var xdiff = point2[0] - point1[0];            
-            var ydiff = point2[1] - point1[1];          
-            return Math.pow((xdiff * xdiff + ydiff * ydiff), 0.5);   
-        }
+        
         if (!tileQueue.isEmpty()) {
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
@@ -18557,11 +18550,6 @@ function olInit() {
             if (tileQueue.getTilesLoading() < maxTotalLoading) {
               
                 tileQueue.reprioritize(); // FIXME only call if view has changed
-                let  elements = tileQueue.elements_ ;
-                for(let i=0; i<elements.length;i++){
-                    // console.log(elements[i][0].tileCoord)
-                }
-
                 tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
             }
         }
@@ -21325,7 +21313,7 @@ function olInit() {
         var view = map.getView();
         if (this.targetPointers.length === 0) {
             if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-                var distance = this.kinetic_.getDistance() / 1.8;
+                var distance = this.kinetic_.getDistance() / 1.5;
                 var angle = this.kinetic_.getAngle();
                 var center = /** @type {!ol.Coordinate} */ (view.getCenter());
                 var centerpx = map.getPixelFromCoordinate(center);
@@ -22761,12 +22749,15 @@ function olInit() {
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
         }
+       
         if(scaleDelta <= 1){
             view.isZoomOut = false;
             view.isPinchOut =false;
             view.isClickZoomOut = false;
             view.isDrag = false;
-        }else{
+        }
+        if(scaleDelta > 1)
+        {
             view.isPinchOut = true;
         }
         // scale anchor point.
@@ -25416,7 +25407,7 @@ function olInit() {
                     if (currentZ - z <= preload) {
                         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
                         // FIXME Eric
-                        if (tile.getState() == ol.TileState.IDLE) {
+                        if (tile.getState() == ol.TileState.IDLE || tile.getState() == ol.TileState.CANCEL) {
                             wantedTiles[tile.getKey()] = true;
                             if (!tileQueue.isKeyQueued(tile.getKey())) {
                                 tileQueue.enqueue([tile, tileSourceKey,
@@ -102205,9 +102196,6 @@ function olInit() {
             var method = self[methodInfo.methodName];
             if (method) {
                 var resultMessageData = method(messageData, methodInfo);
-                if(messageData.requestCoord){
-                    // console.log(messageData.requestCoord)
-                }
                 
                 if (resultMessageData) {
                     var postMessageData = {
