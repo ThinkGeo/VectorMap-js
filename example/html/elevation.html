@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Elevation along Path </title>
 
@@ -138,7 +138,7 @@
             text-align: right;
         }
 
-        .buttonClear {
+        .btn-wrap .buttonDraw {
             display: inline-block;
             padding: 2px 10px;
             margin-bottom: 0;
@@ -161,6 +161,7 @@
             right: 10px;
             padding: 0;
             background-color: rgba(255, 255, 255, 0);
+            border: 1px solid #ccc;
         }
 
         .drawline button {
@@ -171,8 +172,8 @@
             background-repeat: no-repeat;
             border-style: none;
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 25px;
+            height: 25px;
             background-color: #fff;
             cursor: pointer;
         }
@@ -247,7 +248,7 @@
             display: none !important;
         }
 
-        @media (max-width: 767px) {
+        @media screen and (max-width: 767px) {
             #chart {
                 height: 20%;
             }
@@ -275,7 +276,7 @@
                 font-size: 11px
             }
 
-            .buttonClear {
+            .buttonDraw {
                 font-size: 12px;
                 padding: 0 5px;
             }
@@ -337,7 +338,7 @@
                 <input type="range" data-option="hard-light" min="0" max="30" value="15" step="1" id="samples-number">
             </div>
             <div class="btn-wrap">
-                <button tabindex="4" class="buttonClear">Draw New Path</button>
+                <button tabindex="4" class="buttonDraw">Draw New Path</button>
             </div>
         </div>
 

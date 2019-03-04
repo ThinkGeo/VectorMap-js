@@ -68,9 +68,8 @@ const app = window.app;
 app.drawLineControl = function (opt_options) {
 	const options = opt_options || {};
 	const button = document.createElement('button');
-	button.className = 'on';
 	const element = document.createElement('div');
-	element.className = 'drawline ol-unselectable ol-control';
+	element.className = 'drawline buttonDraw ol-unselectable ol-control';
 	element.appendChild(button);
 	ol.control.Control.call(this, {
 		element: element,
@@ -373,6 +372,13 @@ var clear = function () {
 	source.clear();
 };
 
+var deactivateDrawing = function () {
+	clear();
+	drawChart(null);
+	map.removeInteraction(draw);
+	$('.buttonDraw').find('button').removeClass('on');
+}
+
 function sortNumber(a, b) {
 	return a - b;
 }
@@ -511,7 +517,8 @@ const changeLayer = function (e) {
 $(initChart(), drawChart());
 
 $(function () {
-	$('.buttonClear').click(function () {
+	$('.buttonDraw').click(function () {
+		$('.buttonDraw').find('button').addClass('on');
 		samplesNumber = $('#samples-number').val();
 		selectedWaypoint = null;
 		map.removeInteraction(draw);
@@ -564,6 +571,7 @@ $(function () {
 		var geom;
 		var newFeature;
 		var format = new ol.format.WKT();
+		deactivateDrawing();
 		switch (e.target.value) {
 			case 'place1':
 				map.getView().animate({
