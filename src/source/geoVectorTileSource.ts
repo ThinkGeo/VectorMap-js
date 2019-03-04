@@ -162,7 +162,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                 }
                             }
                         }
-
+                        // console.log(this.tileCoord)
                         format.workerManager.postMessage(this.tileCoord + (<any>ol).getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
                     }
                     else {
@@ -238,7 +238,6 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
         if (!tileCache) {
             return false;
         }
-
         // let covered = true;
         let covered = false;
         let tile, tileCoordKey, loaded;

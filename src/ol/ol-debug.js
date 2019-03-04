@@ -6636,29 +6636,51 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-        var tileRange, x, y;
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent,judgeZoomOut) {
+        var tileRange, x, y , c ,d, tileRange1;
         var tileCoordExtent = null;
-        var z = tileCoord[0] - 1;
+       
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
+            c = tileCoord[1];
+            d = tileCoord[2];
         } else {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
-        while (z >= this.minZoom) {
+        
+        //the reason that zoom in is blank why is run this. 
+        var z_ = tileCoord[0] - 1;
+        while (z_ >= this.minZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
                 tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
             } else {
-                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
             }
-            if (callback.call(opt_this, z, tileRange)) {
+            if (callback.call(opt_this, z_, tileRange)) {
                 return true;
             }
-            --z;
+            --z_;
         }
+        if(judgeZoomOut.isZoomOut || judgeZoomOut.isPinchOut || judgeZoomOut.isClickZoomOut){
+            let z = tileCoord[0] + 1;
+            while (z <= this.maxZoom && z> 1) {
+                if (this.zoomFactor_ === 2) {
+                    c =(c * 2);
+                    d =(d * 2);
+                    tileRange1 = ol.TileRange.createOrUpdate(c , c + 1, d, d + 1, opt_tileRange);
+                } else {
+                    tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+                }
+                if (callback.call(opt_this, z, tileRange1)) {
+                    // return true;
+                }
+                ++z;
+            }
+        }
+        
         return false;
     };
 
@@ -11762,6 +11784,7 @@ function olInit() {
         while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
             this.getCount() > 0) {
             tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
+            
             tileKey = tile.getKey();
             state = tile.getState();
             if (state === ol.TileState.ABORT) {
@@ -15765,7 +15788,6 @@ function olInit() {
      */
     ol.View = function (opt_options) {
         ol.Object.call(this);
-
         var options = ol.obj.assign({}, opt_options);
 
         /**
@@ -15989,6 +16011,7 @@ function olInit() {
                 animation.sourceCenter = center;
                 animation.targetCenter = options.center;
                 center = animation.targetCenter;
+            
             }
 
             if (options.zoom !== undefined) {
@@ -16000,6 +16023,7 @@ function olInit() {
                 animation.sourceResolution = resolution;
                 animation.targetResolution = options.resolution;
                 resolution = animation.targetResolution;
+
             }
 
             if (options.rotation !== undefined) {
@@ -16108,8 +16132,8 @@ function olInit() {
                         this.set(ol.ViewProperty.CENTER,
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
-                    this.isZoom = true;
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
+                    //isZoom
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
                     var rotation = progress === 1 ?
@@ -18469,11 +18493,14 @@ function olInit() {
             // coordinates so interactions cannot be used.
             return;
         }
+
         this.focus_ = mapBrowserEvent.coordinate;
         mapBrowserEvent.frameState = this.frameState_;
         var interactionsArray = this.getInteractions().getArray();
         var i;
         if (this.dispatchEvent(mapBrowserEvent) !== false) {
+
+
             for (i = interactionsArray.length - 1; i >= 0; i--) {
                 var interaction = interactionsArray[i];
                 if (!interaction.getActive()) {
@@ -18505,6 +18532,7 @@ function olInit() {
         //   tile loads to remain reactive to view changes and to reduce the chance of
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
+        
         if (!tileQueue.isEmpty()) {
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
@@ -18520,6 +18548,7 @@ function olInit() {
                 }
             }
             if (tileQueue.getTilesLoading() < maxTotalLoading) {
+              
                 tileQueue.reprioritize(); // FIXME only call if view has changed
                 tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
             }
@@ -20194,6 +20223,15 @@ function olInit() {
             // upon it
             return;
         }
+        // delta < 0 ? map.isClickZoomOut =true :  map.isClickZoomOut = false;  
+        if(delta > 0){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }else{
+            view.isClickZoomOut = true;
+        }
         var currentResolution = view.getResolution();
         if (currentResolution) {
             var oldZoom = view.getZoom();
@@ -20584,6 +20622,14 @@ function olInit() {
      */
     ol.interaction.Interaction.zoomByDelta = function (view, delta, opt_anchor, opt_duration) {
         var currentResolution = view.getResolution();
+        if(delta > 0){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }else{
+            view.isZoomOut = true;
+        }
         var resolution = view.constrainResolution(currentResolution, delta, 0);
 
         if (resolution !== undefined) {
@@ -21267,7 +21313,7 @@ function olInit() {
         var view = map.getView();
         if (this.targetPointers.length === 0) {
             if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-                var distance = this.kinetic_.getDistance() / 1.8;
+                var distance = this.kinetic_.getDistance() / 1.5;
                 var angle = this.kinetic_.getAngle();
                 var center = /** @type {!ol.Coordinate} */ (view.getCenter());
                 var centerpx = map.getPixelFromCoordinate(center);
@@ -21307,7 +21353,6 @@ function olInit() {
         if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
-            view.isZoom = false;
             this.lastCentroid = null;
             if (!this.handlingDownUpSequence) {
                 view.setHint(ol.ViewHint.INTERACTING, 1);
@@ -22269,10 +22314,9 @@ function olInit() {
         // Delta normalisation inspired by
         // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
         var delta;
-        let unit = wheelEvent.deltaY / 2.5;
+
         if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
-            
-            delta = wheelEvent.deltaY - unit;
+            delta = wheelEvent.deltaY;
             if (ol.has.FIREFOX &&
                 wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
                 delta /= ol.has.DEVICE_PIXEL_RATIO;
@@ -22281,7 +22325,7 @@ function olInit() {
                 delta *= 40;
             }
         } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
-            delta = -wheelEvent.wheelDeltaY - unit;
+            delta = -wheelEvent.wheelDeltaY;
             if (ol.has.SAFARI) {
                 delta /= 3;
             }
@@ -22693,7 +22737,7 @@ function olInit() {
         var resolution = view.getResolution();
         var maxResolution = view.getMaxResolution();
         var minResolution = view.getMinResolution();
-        var newResolution = resolution * scaleDelta;
+        var newResolution = resolution * scaleDelta ;
         if (newResolution > maxResolution) {
             scaleDelta = maxResolution / resolution;
             newResolution = maxResolution;
@@ -22705,7 +22749,17 @@ function olInit() {
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
         }
-
+       
+        if(scaleDelta <= 1){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }
+        if(scaleDelta > 1)
+        {
+            view.isPinchOut = true;
+        }
         // scale anchor point.
         var viewportPosition = map.getViewport().getBoundingClientRect();
         var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
@@ -82034,6 +82088,7 @@ function olInit() {
         var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
         if (this.tileCache.containsKey(tileCoordKey)) {
             return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+            
         } else {
             var tileCoord = [z, x, y];
             var urlTileCoord = this.getTileCoordForTileUrlFunction(
@@ -102159,6 +102214,7 @@ function olInit() {
             var method = self[methodInfo.methodName];
             if (method) {
                 var resultMessageData = method(messageData, methodInfo);
+                
                 if (resultMessageData) {
                     var postMessageData = {
                         methodInfo: methodInfo,
@@ -102223,7 +102279,10 @@ function olInit() {
             }
             else {
                 var xhr = new XMLHttpRequest();
+                // debugger;
                 xhr.open("GET", requestInfo.url, true);
+                // console.log(requestInfo.requestCoord)
+                // console.log(requestInfo.url)
                 // TODO others type, such as geojson.
                 xhr.responseType = "arraybuffer";
 

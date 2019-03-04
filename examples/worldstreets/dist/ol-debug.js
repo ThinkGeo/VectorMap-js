@@ -6636,29 +6636,51 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-        var tileRange, x, y;
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent,judgeZoomOut) {
+        var tileRange, x, y , c ,d, tileRange1;
         var tileCoordExtent = null;
-        var z = tileCoord[0] - 1;
+       
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
+            c = tileCoord[1];
+            d = tileCoord[2];
         } else {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
-        while (z >= this.minZoom) {
+        
+        //the reason that zoom in is blank why is run this. 
+        var z_ = tileCoord[0] - 1;
+        while (z_ >= this.minZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
                 tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
             } else {
-                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
             }
-            if (callback.call(opt_this, z, tileRange)) {
+            if (callback.call(opt_this, z_, tileRange)) {
                 return true;
             }
-            --z;
+            --z_;
         }
+        if(judgeZoomOut.isZoomOut || judgeZoomOut.isPinchOut || judgeZoomOut.isClickZoomOut){
+            let z = tileCoord[0] + 1;
+            while (z <= this.maxZoom && z> 1) {
+                if (this.zoomFactor_ === 2) {
+                    c =(c * 2);
+                    d =(d * 2);
+                    tileRange1 = ol.TileRange.createOrUpdate(c , c + 1, d, d + 1, opt_tileRange);
+                } else {
+                    tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+                }
+                if (callback.call(opt_this, z, tileRange1)) {
+                    // return true;
+                }
+                ++z;
+            }
+        }
+        
         return false;
     };
 
@@ -9075,11 +9097,11 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    var gl=canvas.getContext('webgl');
+                    var gl = canvas.getContext('webgl');
                     if (gl) {
-                        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
+                        // gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
                         // gl.clearColor(1.0,0.0,0.0,1.0)
-                        ol.webglContext={canvas:canvas,gl:gl};
+                        ol.webglContext = {canvas: canvas, gl: gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -11762,6 +11784,7 @@ function olInit() {
         while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
             this.getCount() > 0) {
             tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
+            
             tileKey = tile.getKey();
             state = tile.getState();
             if (state === ol.TileState.ABORT) {
@@ -15765,7 +15788,6 @@ function olInit() {
      */
     ol.View = function (opt_options) {
         ol.Object.call(this);
-
         var options = ol.obj.assign({}, opt_options);
 
         /**
@@ -15989,6 +16011,7 @@ function olInit() {
                 animation.sourceCenter = center;
                 animation.targetCenter = options.center;
                 center = animation.targetCenter;
+            
             }
 
             if (options.zoom !== undefined) {
@@ -16000,6 +16023,7 @@ function olInit() {
                 animation.sourceResolution = resolution;
                 animation.targetResolution = options.resolution;
                 resolution = animation.targetResolution;
+
             }
 
             if (options.rotation !== undefined) {
@@ -16108,8 +16132,8 @@ function olInit() {
                         this.set(ol.ViewProperty.CENTER,
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
-                    this.isZoom = true;
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
+                    //isZoom
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
                     var rotation = progress === 1 ?
@@ -17911,7 +17935,7 @@ function olInit() {
         // setProperties will trigger the rendering of the map if the map
         // is "defined" already.
         this.setProperties(optionsInternal.values);
-
+        
         this.controls.forEach(
             /**
              * @param {ol.control.Control} control Control.
@@ -18469,11 +18493,14 @@ function olInit() {
             // coordinates so interactions cannot be used.
             return;
         }
+
         this.focus_ = mapBrowserEvent.coordinate;
         mapBrowserEvent.frameState = this.frameState_;
         var interactionsArray = this.getInteractions().getArray();
         var i;
         if (this.dispatchEvent(mapBrowserEvent) !== false) {
+
+
             for (i = interactionsArray.length - 1; i >= 0; i--) {
                 var interaction = interactionsArray[i];
                 if (!interaction.getActive()) {
@@ -18505,6 +18532,7 @@ function olInit() {
         //   tile loads to remain reactive to view changes and to reduce the chance of
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
+        
         if (!tileQueue.isEmpty()) {
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
@@ -18520,6 +18548,7 @@ function olInit() {
                 }
             }
             if (tileQueue.getTilesLoading() < maxTotalLoading) {
+              
                 tileQueue.reprioritize(); // FIXME only call if view has changed
                 tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
             }
@@ -18746,7 +18775,7 @@ function olInit() {
      * @param {number} time Time.
      * @private
      */
-    ol.PluggableMap.prototype.renderFrame_ = function (time) {
+    ol.PluggableMap.prototype.renderFrame_ = function (time) {  
         var i, ii, viewState;
         var size = this.getSize();
         var view = this.getView();
@@ -18795,7 +18824,6 @@ function olInit() {
 
         this.frameState_ = frameState;
         this.renderer_.renderFrame(frameState);
-
         if (frameState) {
             if (frameState.animate) {
                 this.render();
@@ -20195,6 +20223,15 @@ function olInit() {
             // upon it
             return;
         }
+        // delta < 0 ? map.isClickZoomOut =true :  map.isClickZoomOut = false;  
+        if(delta > 0){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }else{
+            view.isClickZoomOut = true;
+        }
         var currentResolution = view.getResolution();
         if (currentResolution) {
             var oldZoom = view.getZoom();
@@ -20585,6 +20622,14 @@ function olInit() {
      */
     ol.interaction.Interaction.zoomByDelta = function (view, delta, opt_anchor, opt_duration) {
         var currentResolution = view.getResolution();
+        if(delta > 0){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }else{
+            view.isZoomOut = true;
+        }
         var resolution = view.constrainResolution(currentResolution, delta, 0);
 
         if (resolution !== undefined) {
@@ -21268,7 +21313,7 @@ function olInit() {
         var view = map.getView();
         if (this.targetPointers.length === 0) {
             if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-                var distance = this.kinetic_.getDistance();
+                var distance = this.kinetic_.getDistance() / 1.5;
                 var angle = this.kinetic_.getAngle();
                 var center = /** @type {!ol.Coordinate} */ (view.getCenter());
                 var centerpx = map.getPixelFromCoordinate(center);
@@ -21308,7 +21353,6 @@ function olInit() {
         if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
-            view.isZoom = false;
             this.lastCentroid = null;
             if (!this.handlingDownUpSequence) {
                 view.setHint(ol.ViewHint.INTERACTING, 1);
@@ -22270,6 +22314,7 @@ function olInit() {
         // Delta normalisation inspired by
         // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
         var delta;
+
         if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
             delta = wheelEvent.deltaY;
             if (ol.has.FIREFOX &&
@@ -22692,7 +22737,7 @@ function olInit() {
         var resolution = view.getResolution();
         var maxResolution = view.getMaxResolution();
         var minResolution = view.getMinResolution();
-        var newResolution = resolution * scaleDelta;
+        var newResolution = resolution * scaleDelta ;
         if (newResolution > maxResolution) {
             scaleDelta = maxResolution / resolution;
             newResolution = maxResolution;
@@ -22704,7 +22749,17 @@ function olInit() {
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
         }
-
+       
+        if(scaleDelta <= 1){
+            view.isZoomOut = false;
+            view.isPinchOut =false;
+            view.isClickZoomOut = false;
+            view.isDrag = false;
+        }
+        if(scaleDelta > 1)
+        {
+            view.isPinchOut = true;
+        }
         // scale anchor point.
         var viewportPosition = map.getViewport().getBoundingClientRect();
         var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
@@ -26459,7 +26514,7 @@ function olInit() {
             stencil: true
         });
         
-        this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+        // this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
         this.gl_.activeTexture(ol.webgl.TEXTURE0);
         this.gl_.blendFuncSeparate(
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
@@ -26468,7 +26523,7 @@ function olInit() {
         this.gl_.enable(ol.webgl.DEPTH_TEST);
         this.gl_.disable(ol.webgl.SCISSOR_TEST);
         this.gl_.disable(ol.webgl.STENCIL_TEST);
-
+        
         /**
          * @private
          * @type {ol.webgl.Context}
@@ -26582,16 +26637,17 @@ function olInit() {
         var pixelRatio = frameState.pixelRatio;
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
+        
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            this.gl_.viewport(0, 0, width, height);
+            gl.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
             // context.clearRect(0, 0, width, height);
         }
-
+        
         gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-        gl.enable(gl.BLEND);
+        // gl.enable(gl.BLEND);
         // gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // gl.depthMask(true);
@@ -67067,10 +67123,10 @@ function olInit() {
      * @param {number} target Target.
      * @param {ol.webgl.Buffer} buf Buffer.
      */
-    ol.webgl.Context.prototype.bindBuffer = function (target, buf) {
+    ol.webgl.Context.prototype.bindBuffer = function (target, buf, shouldBeCached) {
         var gl = this.getGL();
         var arr = buf.getArray();
-        var bufferKey = String(ol.getUid(buf));
+        var bufferKey = String(ol.getUid(buf));        
         if (bufferKey in this.bufferCache_) {
             var bufferCacheEntry = this.bufferCache_[bufferKey];
             gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -67085,10 +67141,12 @@ function olInit() {
                     new Uint32Array(arr) : new Uint16Array(arr);
             }
             gl.bufferData(target, arrayBuffer, buf.getUsage());
-            this.bufferCache_[bufferKey] = {
-                buf: buf,
-                buffer: buffer
-            };
+            if(shouldBeCached){
+                this.bufferCache_[bufferKey] = {
+                    buf: buf,
+                    buffer: buffer
+                };
+            } 
         }
     };
 
@@ -67100,7 +67158,6 @@ function olInit() {
         var gl = this.getGL();
         var bufferKey = String(ol.getUid(buf));
         var bufferCacheEntry = this.bufferCache_[bufferKey];
-        
         // there may be no bufferKey in bufferCache_
         if(bufferCacheEntry){
             if (!gl.isContextLost()) {
@@ -67292,8 +67349,8 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        // gl.enable(gl.BLEND);
+        // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         // fix for WebGL not to unpremultiply      
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
@@ -67455,6 +67512,18 @@ function olInit() {
          * @protected
          */
         this.width = undefined;
+
+        /**
+         * @type {Array.<number>}
+         * @protected
+         */
+        this.options = [];
+
+        /**
+         * @type {Array.<number>}
+         * @protected
+         */
+        this.texturePerImage = {};
     };
     ol.inherits(ol.render.webgl.TextureReplay, ol.render.webgl.Replay);
 
@@ -67466,12 +67535,16 @@ function olInit() {
         var verticesBuffer = this.verticesBuffer;
         var indicesBuffer = this.indicesBuffer;
         var textures = this.getTextures(true);
-        var gl = context.getGL();
+        var texturePerImages = Object.values(this.texturePerImage);
+        var gl = context.getGL();    
         return function () {
             if (!gl.isContextLost()) {
                 var i, ii;
                 for (i = 0, ii = textures.length; i < ii; ++i) {
                     gl.deleteTexture(textures[i]);
+                }
+                for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
+                    gl.deleteTexture(texturePerImages[j]);
                 }
             }
             context.deleteBuffer(verticesBuffer);
@@ -67500,7 +67573,7 @@ function olInit() {
         var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
         // this.rotation_ is anti-clockwise, but rotation is clockwise
         var rotation = /** @type {number} */ (-this.rotation);
-        var scale = /** @type {number} */ (this.scale / window.devicePixelRatio);
+        var scale = /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
@@ -67683,6 +67756,8 @@ function olInit() {
         // gl.colorMask(false, false, false, false);
         // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
         // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
@@ -67697,6 +67772,10 @@ function olInit() {
             }
         }
 
+        gl.blendFuncSeparate(
+            ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+            ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
+        gl.disable(gl.BLEND);
         // gl.colorMask(true, true, true, true);
         // gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
         // gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
@@ -67941,15 +68020,18 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        var texturePerImage = {};
-
-        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
+        // var texturePerImage = {};
+        this.textures_ = [];
+        
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-            texturePerImage, gl);
+            this.texturePerImage, gl);
 
         this.images_ = [];
         this.hitDetectionImages_ = [];
+        // this.indices = [];
+        // this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -68746,7 +68828,7 @@ function olInit() {
                     this.state_.changed = false;
                 }
                 this.startIndices.push(this.indices.length);
-                this.startIndicesFeature.push(feature);
+                // this.startIndicesFeature.push(feature);
                 this.drawCoordinates_(
                     flatCoordinates, 0, flatCoordinates.length, stride);
             }
@@ -68782,7 +68864,7 @@ function olInit() {
         
         if (this.indices.length > indexCount) {
             this.startIndices.push(indexCount);
-            this.startIndicesFeature.push(feature);
+            // this.startIndicesFeature.push(feature);
             if (this.state_.changed) {
                 var z_order = multiLineStringGeometry.properties_.z_order;
                 var styleId = multiLineStringGeometry.styleId;
@@ -69120,7 +69202,7 @@ function olInit() {
                 const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
                 const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
                 const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                const A3 = 1;
+                const A3 = A1 == 0 ? 0 : 1;
                 strColor[0] = R3.toFixed(6).toString();
                 strColor[1] = G3.toFixed(6).toString();
                 strColor[2] = B3.toFixed(6).toString();
@@ -69572,10 +69654,10 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function (
         flatCoordinates, holeFlatCoordinates, stride) {
         // Triangulate the polygon
-        var outerRing = new ol.structs.LinkedList();        
-        var rtree = new ol.structs.RBush();
+        // var outerRing = new ol.structs.LinkedList();        
+        // var rtree = new ol.structs.RBush();
         // Initialize the outer ring
-        this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+        // this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
         // Eliminate holes, if there are any
         // if(holeFlatCoordinates.length) {
         //     var maxCoords = this.getMaxCoords_(outerRing);     
@@ -70343,7 +70425,7 @@ function olInit() {
                 
                 {
                     this.startIndices.push(this.indices.length);
-                    this.startIndicesFeature.push(feature);
+                    // this.startIndicesFeature.push(feature);
 
                     if (this.state_.changed) {
                         this.zCoordinates.push(feature.zCoordinate);
@@ -71228,85 +71310,85 @@ function olInit() {
         var this$1 = this;
 
         if (this.text_) {
-        var flatCoordinates = null;
-        var offset = 0;
-        var end = 2;
-        var stride = 2;
-        switch (geometry.getType()) {
-            case ol.geom.GeometryType.POINT:
-            case ol.geom.GeometryType.MULTI_POINT:
-                flatCoordinates = geometry.getFlatCoordinates();
-                end = flatCoordinates.length;
-                stride = geometry.getStride();
-                break;
-            case ol.geom.GeometryType.CIRCLE:
-                flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
-                break;
-            case ol.geom.GeometryType.LINE_STRING:
-                flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
-                break;
-            case ol.geom.GeometryType.MULTI_LINE_STRING:
-                flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
-                end = flatCoordinates.length;
-                break;
-            case ol.geom.GeometryType.POLYGON:
-                flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
-                break;
-            case ol.geom.GeometryType.MULTI_POLYGON:
-                flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
-                end = flatCoordinates.length;
-                break;
-            default:
-        }
-        this.startIndices.push(this.indices.length);
-        this.startIndicesFeature.push(feature);
+            var flatCoordinates = null;
+            var offset = 0;
+            var end = 2;
+            var stride = 2;
+            switch (geometry.getType()) {
+                case ol.geom.GeometryType.POINT:
+                case ol.geom.GeometryType.MULTI_POINT:
+                    flatCoordinates = geometry.getFlatCoordinates();
+                    end = flatCoordinates.length;
+                    stride = geometry.getStride();
+                    break;
+                case ol.geom.GeometryType.CIRCLE:
+                    flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
+                    break;
+                case ol.geom.GeometryType.LINE_STRING:
+                    flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
+                    break;
+                case ol.geom.GeometryType.MULTI_LINE_STRING:
+                    flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
+                    end = flatCoordinates.length;
+                    break;
+                case ol.geom.GeometryType.POLYGON:
+                    flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
+                    break;
+                case ol.geom.GeometryType.MULTI_POLYGON:
+                    flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
+                    end = flatCoordinates.length;
+                    break;
+                default:
+            }
+            this.startIndices.push(this.indices.length);
+            this.startIndicesFeature.push(feature);
 
-        var glyphAtlas = this.currAtlas_;
-        var lines = this.text_.split('\n');
-        var textSize = this.getTextSize_(lines);
-        var i, ii, j, jj, currX, currY, charArr, charInfo;
-        var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-        var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
-        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+            var glyphAtlas = this.currAtlas_;
+            var lines = this.text_.split('\n');
+            var textSize = this.getTextSize_(lines);
+            var i, ii, j, jj, currX, currY, charArr, charInfo;
+            var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+            var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
 
-        for (i = 0, ii = lines.length; i < ii; ++i) {
-            currX = 0;
-            currY = glyphAtlas.height * i;
-            charArr = lines[i].split('');
+            for (i = 0, ii = lines.length; i < ii; ++i) {
+                currX = 0;
+                currY = glyphAtlas.height * i;
+                charArr = lines[i].split('');
 
-            for (j = 0, jj = charArr.length; j < jj; ++j) {
-            charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+                for (j = 0, jj = charArr.length; j < jj; ++j) {
+                    charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
 
-            if (charInfo) {
-                var image = charInfo.image;
+                    if (charInfo) {
+                        var image = charInfo.image;
 
-                this$1.anchorX = anchorX - currX;
-                this$1.anchorY = anchorY - currY;
-                this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                this$1.originY = charInfo.offsetY;
-                this$1.height = glyphAtlas.height;
-                this$1.width = j === 0 || j === charArr.length - 1 ?
-                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-                this$1.imageHeight = image.height;
-                this$1.imageWidth = image.width;
+                        this$1.anchorX = anchorX - currX;
+                        this$1.anchorY = anchorY - currY;
+                        this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+                        this$1.originY = charInfo.offsetY;
+                        this$1.height = glyphAtlas.height;
+                        this$1.width = j === 0 || j === charArr.length - 1 ?
+                        glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                        this$1.imageHeight = image.height;
+                        this$1.imageWidth = image.width;
 
-                if (this$1.images_.length === 0) {
-                this$1.images_.push(image);
-                } else {
-                var currentImage = this$1.images_[this$1.images_.length - 1];
-                if (getUid(currentImage) != getUid(image)) {
-                    this$1.groupIndices.push(this$1.indices.length);
-                    this$1.images_.push(image);
+                        if (this$1.images_.length === 0) {
+                            this$1.images_.push(image);
+                        } else {
+                            var currentImage = this$1.images_[this$1.images_.length - 1];
+                            if (getUid(currentImage) != getUid(image)) {
+                                this$1.groupIndices.push(this$1.indices.length);
+                                this$1.images_.push(image);
+                            }
+                        }
+
+                        this$1.drawText_(flatCoordinates, offset, end, stride);
+                    }
+                    currX += this$1.width;
                 }
-                }
-
-                this$1.drawText_(flatCoordinates, offset, end, stride);
-            }
-            currX += this$1.width;
-            }
             }
         }
-      };
+    };
     
 
     /**
@@ -71422,31 +71504,34 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        var texturePerImage = {};
+        // var texturePerImage = {};
+        this.textures_ = [];
+        
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
-        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
-
-        // this.state_ = {
-        //     strokeColor: null,
-        //     lineCap: undefined,
-        //     lineDash: null,
-        //     lineDashOffset: undefined,
-        //     lineJoin: undefined,
-        //     lineWidth: 0,
-        //     miterLimit: undefined,
-        //     fillColor: null,
-        //     font: undefined,
-        //     scale: undefined
-        // };
-        // this.text_ = '';
-        // this.textAlign_ = undefined;
-        // this.textBaseline_ = undefined;
-        // this.offsetX_ = undefined;
-        // this.offsetY_ = undefined;
+        this.state_ = {
+            strokeColor: null,
+            lineCap: undefined,
+            lineDash: null,
+            lineDashOffset: undefined,
+            lineJoin: undefined,
+            lineWidth: 0,
+            miterLimit: undefined,
+            fillColor: null,
+            font: undefined,
+            scale: undefined
+        };
+        this.text_ = '';
+        this.textAlign_ = undefined;
+        this.textBaseline_ = undefined;
+        this.offsetX_ = undefined;
+        this.offsetY_ = undefined;
         // this.images_ = null;
         // this.atlases_ = {};
         // this.currAtlas_ = undefined;
-
+        this.images_ = [];
+        // this.indices = [];
+        // this.vertices = [];
         // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
@@ -82003,6 +82088,7 @@ function olInit() {
         var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
         if (this.tileCache.containsKey(tileCoordKey)) {
             return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+            
         } else {
             var tileCoord = [z, x, y];
             var urlTileCoord = this.getTileCoordForTileUrlFunction(
@@ -102128,6 +102214,7 @@ function olInit() {
             var method = self[methodInfo.methodName];
             if (method) {
                 var resultMessageData = method(messageData, methodInfo);
+                
                 if (resultMessageData) {
                     var postMessageData = {
                         methodInfo: methodInfo,
@@ -102192,7 +102279,10 @@ function olInit() {
             }
             else {
                 var xhr = new XMLHttpRequest();
+                // debugger;
                 xhr.open("GET", requestInfo.url, true);
+                // console.log(requestInfo.requestCoord)
+                // console.log(requestInfo.url)
                 // TODO others type, such as geojson.
                 xhr.responseType = "arraybuffer";
 
@@ -102419,9 +102509,9 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "2,2,-1")){
+            // if(!(requestTileCoord.toString() == "2,0,-2")){
             // if(tileCoord.toString() !== "16,15147,-26446"){
-            // if(tileCoord.toString() !== "15,7573,-13224"){
+            // if(tileCoord.toString() !== "17,30288,-52741"){
                 // return
             // }
             // TEST END

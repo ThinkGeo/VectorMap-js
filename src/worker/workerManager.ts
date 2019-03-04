@@ -70,7 +70,12 @@ export class WorkerManager {
         if (callbackInfo) {
             this.workerCallback[uid] = callbackInfo;
         }
-
+        
+        if(messageData.requestCoord){
+            // debugger;
+            // console.log(messageData.requestCoord)
+        }
+       
         let postMessage = {
             methodInfo: methodInfo,
             messageData: messageData
