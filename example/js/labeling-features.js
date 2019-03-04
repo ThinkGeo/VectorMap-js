@@ -1,4 +1,19 @@
-//Load icon font
+/*===========================================================================*/
+// Label Features
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Map Icon Fonts
+/*===========================================================================*/
+
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// First we'll load the Map Icon Fonts using the WebFont loader. The loaded 
+// Icon Fonts will be rendered as POI icons on the background layer. 
+// For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
@@ -6,8 +21,18 @@ WebFont.load({
     }
 });
 
-//style json
-const geosjonStyle = {
+
+/*---------------------------------------------*/
+// 2. Layer Setup
+/*---------------------------------------------*/
+
+// Now, we need to create the layers for our map. In this map, we use two 
+// layers for the map. One that display road lines and road names as the 
+// background layer, another dispalys the hotel poi point data.
+
+// Create different styles for our layers. 
+// This style is for the base map layer, which displays the road and road name. 
+const baseLayerStyle = {
     "id": "thinkgeo-world-streets-light",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -25,7 +50,6 @@ const geosjonStyle = {
         "id": "block_name",
         "style": [{
             "text-name": "NAME",
-
             "text-fill": "#496588",
             "text-halo-fill": "rgba(255, 255, 255, 0.5)",
             "text-halo-radius": 2,
@@ -52,7 +76,8 @@ const geosjonStyle = {
     }]
 };
 
-const hotelStyleJson = {
+// This style is for the hotel poi layer, which displays the hotel poi points.
+const hotelPoiStyle = {
     "id": "hotel",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
@@ -86,34 +111,41 @@ const hotelStyleJson = {
     }]
 };
 
-//Create block line layer
-let blockMapLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
+// Create base map layer by using the pre-defined style.
+let baseMapLayer = new ol.mapsuite.VectorLayer(baseLayerStyle, {
     multithread: false
 });
 
-//Create hotel poi layer
-let hotelLayer = new ol.mapsuite.VectorLayer(hotelStyleJson, {
+// Create hotel poi layer by using the pre-defined style.
+let hotelPoiLayer = new ol.mapsuite.VectorLayer(hotelPoiStyle, {
     multithread: false
 });
 
-//Craete map
+
+/*---------------------------------------------*/
+// 3. Map Control Setup
+/*---------------------------------------------*/
+
+// Now, we'll set up the map control and add the pre-defined layers to our map.
+
+// Create and initialize our map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    layers: [blockMapLayer],
+    loadTilesWhileInteracting: true,    
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
+    // Add our previously-defined two layers to the map.
+    layers: [baseMapLayer,hotelPoiLayer],
+    // Create a default view for the map when it starts up.
     view: new ol.View({
+        // Center the map on Frisco, TX and start at zoom level 16.
         center: ol.proj.fromLonLat([-96.820787, 33.098294]),
-        maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 16,
         minZoom: 0,
-       
+        maxZoom: 19       
     }),
 });
 
-//Control map full screen
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
-
-//Add Layer
-map.addLayer(hotelLayer);
