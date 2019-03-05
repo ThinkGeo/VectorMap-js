@@ -133,8 +133,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent
                         );
                 }
-                if(frameState.isZoomOut || frameState.isPinchOut || frameState.isPinchOut){
-                    // debugger;
+                if(frameState.isZoomOut || frameState.isPinchOut || frameState.isClickZoomOut){
                     let x, y,  tileRange1;
                     var tileCoord = tile.tileCoord;
                     var tileCoordExtent = null;
