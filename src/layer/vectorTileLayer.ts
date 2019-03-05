@@ -502,7 +502,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     animation["sourceCenter"] = center;
                     animation["targetCenter"] = options.center;
                     center = animation["targetCenter"];
-                    this.isDrag = true;
+                   
                     // debugger;
                 }
 

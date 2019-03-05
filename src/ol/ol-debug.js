@@ -21265,6 +21265,7 @@ function olInit() {
                 var deltaY = centroid[1] - this.lastCentroid[1];
                 var map = mapBrowserEvent.map;
                 var view = map.getView();
+                view.isDrag = true;
                 var viewState = view.getState();
                 var center = [deltaX, deltaY];
                 ol.coordinate.scale(center, viewState.resolution);
