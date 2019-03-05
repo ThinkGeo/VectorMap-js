@@ -6636,51 +6636,32 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent,judgeZoomOut) {
-        var tileRange, x, y , c ,d, tileRange1;
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
+        var tileRange, x, y;
         var tileCoordExtent = null;
        
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
-            c = tileCoord[1];
-            d = tileCoord[2];
         } else {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
         
         //the reason that zoom in is blank why is run this. 
-        var z_ = tileCoord[0] - 1;
-        while (z_ >= this.minZoom) {
+        var z = tileCoord[0] - 1;
+        while (z >= this.minZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
                 tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
             } else {
-                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
+                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
             }
-            if (callback.call(opt_this, z_, tileRange)) {
-                // return true;
+            if (callback.call(opt_this, z, tileRange)) {
+                return true;
             }
-            --z_;
+            --z;
         }
-        if(judgeZoomOut.isZoomOut || judgeZoomOut.isPinchOut || judgeZoomOut.isClickZoomOut){
-            let z = tileCoord[0] + 1;
-            while (z <= this.maxZoom && z> 1) {
-                if (this.zoomFactor_ === 2) {
-                    c =(c * 2);
-                    d =(d * 2);
-                    tileRange1 = ol.TileRange.createOrUpdate(c , c + 1, d, d + 1, opt_tileRange);
-                } else {
-                    tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
-                }
-                if (callback.call(opt_this, z, tileRange1)) {
-                    return true;
-                }
-                ++z;
-            }
-        }
-        
         return false;
     };
 

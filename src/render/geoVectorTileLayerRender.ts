@@ -126,17 +126,42 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 if (childTileRange) {
                     covered = findLoadedTiles((z + 1), childTileRange);
                 }
-                let judgeZoomOut ={
-                    'isZoomOut':frameState.isZoomOut,
-                    'isPinchOut':frameState.isPinchOut,
-                    'isClickZoomOut':frameState.isClickZoomOut
-                }
+
                 if (!covered) {
                     // if (!covered && frameState.isZoom) {
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent,judgeZoomOut
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent
                         );
                 }
+                if(frameState.isZoomOut || frameState.isPinchOut || frameState.isPinchOut){
+                    // debugger;
+                    let x, y,  tileRange1;
+                    var tileCoord = tile.tileCoord;
+                    var tileCoordExtent = null;
+                    if (tileGrid.zoomFactor_ === 2) {
+                        x = tileCoord[1];
+                        y = tileCoord[2];
+                    
+                    } else {
+                        tileCoordExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
+                    }
+                    let z = tileCoord[0] + 1;
+                    while (z <= tileGrid.maxZoom && z> 1) {
+                        if (tileGrid.zoomFactor_ === 2) {
+                            x =(x * 2);
+                            y =(y * 2);
+                            tileRange1 =  (<any>ol).TileRange.createOrUpdate(x , x + 1, y, y + 1, tmpTileRange);
+                        } else {
+                            tileRange1 = tileGrid.getTileRangeForExtentAndZ(tileCoordExtent, z, tmpTileRange);
+                        }
+                        if (findLoadedTiles.call(null, z, tileRange1)) {
+                            break;
+                        }
+                        ++z;
+                    }
+                }
+
+
             }
         }
         // delete a large interval for drawing
@@ -195,6 +220,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
+            console.log(zs)
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
             for (i = 0, ii = zs.length; i < ii; ++i) {
