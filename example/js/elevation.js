@@ -58,7 +58,9 @@ const wkts = {
 
 	place2: 'LINESTRING(-12359831.643855993 4167388.583607652,-12358190.636404995 4167794.6553204176)',
 
-	place3: 'LINESTRING(-13552189.568676393 5907435.731019847,-13551272.32433697 5909939.0436961865,-13550909.248452617 5911391.347233605,-13550202.205940979 5911945.515688673,-13550679.93736776 5913990.2061953,-13551444.307650613 5915461.618989791,-13551520.744678898 5916684.611442354,-13552762.846388532 5917334.326182777,-13552533.535303677 5917831.166866631,-13553183.2500441 5918136.914979772,-13554024.057355236 5918041.368694415)'
+	place3: 'LINESTRING(-13552189.568676393 5907435.731019847,-13551272.32433697 5909939.0436961865,-13550909.248452617 5911391.347233605,-13550202.205940979 5911945.515688673,-13550679.93736776 5913990.2061953,-13551444.307650613 5915461.618989791,-13551520.744678898 5916684.611442354,-13552762.846388532 5917334.326182777,-13552533.535303677 5917831.166866631,-13553183.2500441 5918136.914979772,-13554024.057355236 5918041.368694415)',
+
+	place4: 'LINESTRING(-12772636.98108149 4302695.261286651,-12772742.081995381 4302618.824258366,-12772894.956051951 4302461.172887527,-12773086.048622664 4302078.987746102,-12773157.708336681 4301739.798433086,-12773124.267136807 4301333.726720321,-12772775.523195256 4299876.645868635)'
 };
 
 window.app = {};
@@ -372,11 +374,40 @@ var clear = function () {
 	source.clear();
 };
 
+var activateDrawing = function () {
+	$('.buttonDraw').find('button').addClass('on');
+	samplesNumber = $('#samples-number').val();
+	selectedWaypoint = null;
+	map.removeInteraction(draw);
+	draw = new ol.interaction.Draw({
+		source: lineLayer.getSource(),
+		type: 'LineString'
+	});
+	map.addInteraction(draw);
+
+	draw.on('drawstart', function (feature) {
+		selectedWaypoint = null;
+		clear();
+		drawChart(null);
+	});
+
+	draw.on('drawend', function (feature) {
+		featureLine = feature.feature;
+		featureLine.set('type', 'route');
+		drawLineElevation(featureLine);
+	});
+	clear();
+	drawChart(null);
+
+	$('.map-tip').addClass('visible');
+}
+
 var deactivateDrawing = function () {
 	clear();
 	drawChart(null);
 	map.removeInteraction(draw);
 	$('.buttonDraw').find('button').removeClass('on');
+	$('.map-tip').removeClass('visible');
 }
 
 function sortNumber(a, b) {
@@ -518,29 +549,7 @@ $(initChart(), drawChart());
 
 $(function () {
 	$('.buttonDraw').click(function () {
-		$('.buttonDraw').find('button').addClass('on');
-		samplesNumber = $('#samples-number').val();
-		selectedWaypoint = null;
-		map.removeInteraction(draw);
-		draw = new ol.interaction.Draw({
-			source: lineLayer.getSource(),
-			type: 'LineString'
-		});
-		map.addInteraction(draw);
-
-		draw.on('drawstart', function (feature) {
-			selectedWaypoint = null;
-			clear();
-			drawChart(null);
-		});
-
-		draw.on('drawend', function (feature) {
-			featureLine = feature.feature;
-			featureLine.set('type', 'route');
-			drawLineElevation(featureLine);
-		});
-		clear();
-		drawChart(null);
+		activateDrawing();
 	});
 
 	$('.style-btn-group').click(function (e) {
@@ -611,6 +620,19 @@ $(function () {
 				});
 				addFeature(newFeature);
 				drawLineElevation(null, wkts.place3);
+				break;
+			case 'place4':
+				map.getView().animate({
+					center: ol.proj.fromLonLat([-114.743227, 36.008127]),
+					zoom: 13
+				});
+				var geom = format.readGeometry(wkts.place4);
+				newFeature = new ol.Feature({
+					geometry: geom,
+					type: 'route'
+				});
+				addFeature(newFeature);
+				drawLineElevation(null, wkts.place4);
 				break;
 		}
 	});

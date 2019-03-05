@@ -248,6 +248,24 @@
             display: none !important;
         }
 
+        .map-tip {
+            position: absolute;
+            left: 10px;
+            bottom: -10px;
+            opacity: 0;
+            background-color: rgba(38, 40, 44, 0.85);
+            color: #ccc;
+            z-index: 990;
+            font-size: 13px;
+            padding: 5px 10px;
+            transition:bottom 400ms ease-out, opacity 400ms ease-out;
+        }
+
+        .map-tip.visible {
+            bottom: 10px;
+            opacity: 1;
+        }
+
         @media screen and (max-width: 767px) {
             #chart {
                 height: 20%;
@@ -276,7 +294,7 @@
                 font-size: 11px
             }
 
-            .buttonDraw {
+            .btn-wrap .buttonDraw {
                 font-size: 12px;
                 padding: 0 5px;
             }
@@ -308,6 +326,12 @@
                 outline: none;
             }
         }
+
+        @media screen and (max-width: 481px) {
+            .map-tip {
+                max-width: 100px;
+            }
+        }
     </style>
 </head>
 
@@ -322,6 +346,7 @@
                     <option value="place1">San Francisco - Coit Tower</option>
                     <option value="place2">Arizona Meteor Crater</option>
                     <option value="place3">Mount Rainier Path to Summit</option>
+                    <option value="place4">Colorado River from Hoover Dam</option>
                 </select>
             </div>
             <div class="num-samples-panel">
@@ -346,6 +371,10 @@
             <button value="dark">Dark</button>
             <button class="current" value="hybrid">Hybrid</button>
             <button value="light">Light</button>
+        </div>
+
+        <div class="map-tip">
+            Hint: Double-tap to end drawing.
         </div>
     </div>
 
