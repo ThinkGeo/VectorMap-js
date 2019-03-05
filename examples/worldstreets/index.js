@@ -1,6 +1,6 @@
 var view = new ol.View({
     center: ol.proj.fromLonLat([-96.79748, 32.78819]),
-    zoom: 16,
+    zoom: 2,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
@@ -52,8 +52,8 @@ function showInfo(event) {
 
 // disable rotation in mobile devices
 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
-    map.getInteractions().forEach(function (element, index, array) {
-        if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
-        if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
-    });
+    // map.getInteractions().forEach(function (element, index, array) {
+    //     if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
+    //     if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
+    // });
 }
