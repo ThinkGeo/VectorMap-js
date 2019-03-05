@@ -220,7 +220,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
-            console.log(zs)
             let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
             let tileExtent, tileGutter, tilesToDraw, w, h;
             for (i = 0, ii = zs.length; i < ii; ++i) {
