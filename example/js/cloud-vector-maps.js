@@ -69,7 +69,7 @@ let map = new ol.Map({
     // Create a default view for the map when it starts up.
     view: new ol.View({
 
-        // Center the map on The United States and start at zoom level 3.
+        // Center the map on the United States and start at zoom level 3.
         center: ol.proj.fromLonLat([-96.79620, 32.79423]),
         maxResolution: 40075016.68557849 / 512,
         zoom: 3,
