@@ -6660,7 +6660,7 @@ function olInit() {
                 tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
             }
             if (callback.call(opt_this, z_, tileRange)) {
-                return true;
+                // return true;
             }
             --z_;
         }
@@ -6675,7 +6675,7 @@ function olInit() {
                     tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
                 }
                 if (callback.call(opt_this, z, tileRange1)) {
-                    // return true;
+                    return true;
                 }
                 ++z;
             }

@@ -141,13 +141,18 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         }
         // delete a large interval for drawing
         var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-        if(frameState.isDrag || frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut){
-            while(z - (+tilesToDrawKeys[0]) > 1 || z - (+tilesToDrawKeys[0]) < -1){
+        if(frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut){
+            while(z > (+tilesToDrawKeys[0])){
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
             }
         }
-        
+        if(frameState.isDrag){
+            while(z != (+tilesToDrawKeys[0])){
+                delete tilesToDrawByZ[tilesToDrawKeys[0]];
+                tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+            }
+        }
        
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
