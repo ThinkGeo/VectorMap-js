@@ -148,7 +148,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             }
         }
         if(frameState.isDrag){
-            while(z != (+tilesToDrawKeys[0])){
+            while(+tilesToDrawKeys[tilesToDrawKeys.length - 1] - (+tilesToDrawKeys[0]) > 2){
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
             }
