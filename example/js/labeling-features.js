@@ -2,30 +2,13 @@
 // Label Features
 // Sample map by ThinkGeo
 // 
-//   1. ThinkGeo Map Icon Fonts
-//   2. Layer Setup
-//   3. Map Control Setup
+//   1. Layer Setup
+//   2. Map Control Setup
+//   3. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
-
 /*---------------------------------------------*/
-// 1. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// First we'll load the Map Icon Fonts using the WebFont loader. The loaded 
-// Icon Fonts will be rendered as POI icons on the background layer. 
-// For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-
-/*---------------------------------------------*/
-// 2. Layer Setup
+// 1. Layer Setup
 /*---------------------------------------------*/
 
 // Now, we need to create the layers for our map. In this map, we use two 
@@ -125,29 +108,53 @@ let hotelPoiLayer = new ol.mapsuite.VectorLayer(hotelPoiStyle, {
 
 
 /*---------------------------------------------*/
-// 3. Map Control Setup
+// 2. Map Control Setup
 /*---------------------------------------------*/
 
 // Now, we'll set up the map control and add the pre-defined layers to our map.
 
-// Create and initialize our map.
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,    
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: 'map',
-    // Add our previously-defined two layers to the map.
-    layers: [baseMapLayer,hotelPoiLayer],
-    // Create a default view for the map when it starts up.
-    view: new ol.View({
-        // Center the map on Frisco, TX and start at zoom level 16.
-        center: ol.proj.fromLonLat([-96.820787, 33.098294]),
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 16,
-        minZoom: 0,
-        maxZoom: 19       
-    }),
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let initializeMap = function () {
+    let map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: 'map',
+        // Add our previously-defined two layers to the map.
+        layers: [baseMapLayer, hotelPoiLayer],
+        // Create a default view for the map when it starts up.
+        view: new ol.View({
+            // Center the map on Frisco, TX and start at zoom level 16.
+            center: ol.proj.fromLonLat([-96.820787, 33.098294]),
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 16,
+            minZoom: 0,
+            maxZoom: 19
+        }),
+    });
 
-// Add a button to the map that lets us toggle full-screen display mode.
-map.addControl(new ol.control.FullScreen());
+    // Add a button to the map that lets us toggle full-screen display mode.
+    map.addControl(new ol.control.FullScreen());
+}
+
+
+/*---------------------------------------------*/
+// 3. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});

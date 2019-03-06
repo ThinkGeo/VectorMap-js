@@ -121,7 +121,7 @@ let pointLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 // This function will create and initialize our interactive map.
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
-var initializeMap = function () {
+let initializeMap = function () {
     let map = new ol.Map({
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,

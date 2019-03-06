@@ -1,12 +1,4 @@
-//Load vector map icon font
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';// please go to https://cloud.thinkgeo.com to create
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'; // please go to https://cloud.thinkgeo.com to create
 
 const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
@@ -15,25 +7,32 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
     'apiKey': apiKey,
 });
 
-//Create  map
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    layers: [worldStreetLayer],
-    target: 'map',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([-96.79620, 38.79423]),
-        maxZoom: 19,
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 4,
-        minZoom: 2
-    })
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let map;
+let initializeMap = function () {
+    map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        layers: [worldStreetLayer],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-96.79620, 38.79423]),
+            maxZoom: 19,
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 4,
+            minZoom: 2
+        })
+    });
 
-//Control map full screen
-map.addControl(new ol.control.FullScreen());
+    //Control map full screen
+    map.addControl(new ol.control.FullScreen());
+    echartslayer.appendTo(map)
+}
 
 //Process the data
+let echartslayer;
 let xhr = new XMLHttpRequest();
 xhr.open("GET", "../data/scatter.json");
 xhr.onreadystatechange = function () {
@@ -67,8 +66,7 @@ xhr.onreadystatechange = function () {
 
             },
             openlayers: {},
-            series: [
-                {
+            series: [{
                     name: 'Milli­metres',
                     type: 'scatter',
                     data: convertData(data),
@@ -98,7 +96,7 @@ xhr.onreadystatechange = function () {
                         return b.value - a.value;
                     }).slice(0, 5)),
                     symbolSize: function (val) {
-                        return val[2] /40;
+                        return val[2] / 40;
                     },
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -120,16 +118,26 @@ xhr.onreadystatechange = function () {
                         }
                     },
                     zlevel: 1
-                }]
+                }
+            ]
         };
 
 
-        var echartslayer = new ol3Echarts(option, {
+        echartslayer = new ol3Echarts(option, {
             hideOnMoving: false,
             hideOnZooming: false,
             forcedPrecomposeRerender: true
         })
-        echartslayer.appendTo(map)
     }
 }
 xhr.send();
+
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});

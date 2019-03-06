@@ -3,8 +3,8 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. ThinkGeo Map Icon Fonts
-//   3. Map Control Setup
+//   2. Map Control Setup
+//   3. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
 
@@ -21,23 +21,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 
 /*---------------------------------------------*/
-// 2. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
-// Icon Fonts will be rendered as POI icons on the background layer. 
-// For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-
-/*---------------------------------------------*/
-// 3. Map Control Setup
+// 2. Map Control Setup
 /*---------------------------------------------*/
 
 // This sample demonstrates a hybrid map: one that displays aerial imagery as 
@@ -59,30 +43,53 @@ let rasterAerialLayer = new ol.layer.Tile({
 
 // Create the vector street map layer.
 let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json", {
-    apiKey: apiKey 
+    apiKey: apiKey
 });
 
-// Create and initialize our interactive map.
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let initializeMap = function () {
+    let map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
 
-    // Add our previously-defined raster and vector tile layers to the map.
-    layers: [rasterAerialLayer, vectorStreetsLayer],
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: 'map',
-    // Create a default view for the map when it starts up.
-    view: new ol.View({
+        // Add our previously-defined raster and vector tile layers to the map.
+        layers: [rasterAerialLayer, vectorStreetsLayer],
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: 'map',
+        // Create a default view for the map when it starts up.
+        view: new ol.View({
 
-        // Center the map on the United States and start at zoom level 3.
-        center: ol.proj.fromLonLat([-96.79620, 32.79423]),
-        maxResolution: 40075016.68557849 / 512,
-        progressiveZoom: false,
-        zoom: 3,
-        minZoom: 1,
-        maxZoom: 19
-    }),
+            // Center the map on the United States and start at zoom level 3.
+            center: ol.proj.fromLonLat([-96.79620, 32.79423]),
+            maxResolution: 40075016.68557849 / 512,
+            progressiveZoom: false,
+            zoom: 3,
+            minZoom: 1,
+            maxZoom: 19
+        }),
+    });
+
+    // Add a button to the map that lets us toggle full-screen display mode.
+    map.addControl(new ol.control.FullScreen());
+}
+
+/*---------------------------------------------*/
+// 3. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
 });
-
-// Add a button to the map that lets us toggle full-screen display mode.
-map.addControl(new ol.control.FullScreen());

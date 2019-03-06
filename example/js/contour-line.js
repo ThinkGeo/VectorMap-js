@@ -3,9 +3,9 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. ThinkGeo Map Icon Fonts
-//   3. Map Control Setup
-//   4. Precipitation Distribution Layer Setup
+//   2. Map Control Setup
+//   3. Precipitation Distribution Layer Setup
+//   4. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
 
@@ -22,23 +22,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 
 /*---------------------------------------------*/
-// 2. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
-// Icon Fonts will be rendered as POI icons on the background layer. 
-// For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-
-/*---------------------------------------------*/
-// 3. Map Control Setup
+// 2. Map Control Setup
 /*---------------------------------------------*/
 
 // Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
@@ -49,32 +33,40 @@ let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worlds
     'apiKey': apiKey,
 });
 
-// Create and initialize our interactive map.
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
-    layers: [baseLayer],
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: 'map',
-    // Create a default view for the map when it starts up.
-    view: new ol.View({
-        // Center the map on China and start at zoom level 3.
-        center: [11877713.642017495, 3471206.770222437],
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 3,
-        minZoom: 1,
-        maxZoom: 19,
-        progressiveZoom: false,
-    })
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let map;
+let initializeMap = function () {
+    map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
+        layers: [baseLayer],
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: 'map',
+        // Create a default view for the map when it starts up.
+        view: new ol.View({
+            // Center the map on China and start at zoom level 3.
+            center: [11877713.642017495, 3471206.770222437],
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 3,
+            minZoom: 1,
+            maxZoom: 19,
+            progressiveZoom: false,
+        })
+    });
 
-//Control map full screen
-map.addControl(new ol.control.FullScreen());
+    //Control map full screen
+    map.addControl(new ol.control.FullScreen());
+
+    // Add the pre-defined layer to our map.
+    map.addLayer(precipitationDistributionLayer);
+}
 
 
 /*---------------------------------------------*/
-// 4. Precipitation Distribution Layer Setup
+// 3. Precipitation Distribution Layer Setup
 /*---------------------------------------------*/
 
 // Now that we've set up our map's base layer, we need to actually create 
@@ -120,6 +112,7 @@ let stylePlaneFunc = function (feature) {
 
 // Load the data layer that will let us visualize China's precipitation distribution. 
 // We'll load it from a small JSON file hosted on our servers.
+let precipitationDistributionLayer;
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         // Load the China Rain Fall data from ThinkGeo's servers.
@@ -174,7 +167,7 @@ getJson().then((data) => {
         };
         geojson.features.push(feature);
     }
-    
+
     // Create a vector Source that will enable us to display our data points 
     // as map, and pass our array of features into it. 
     let vectorSource = new ol.source.Vector({
@@ -182,14 +175,13 @@ getJson().then((data) => {
     });
 
     // Create Precipitation Distribution Layer whose source is our China Rain Fall data, and add it to our map.
-    let precipitationDistributionLayer = new ol.layer.Vector({
+    precipitationDistributionLayer = new ol.layer.Vector({
         source: vectorSource,
         style: function (feature) {
             textStyle.getText().setText(feature.get('symbol'));
             return textStyle;
         }
     });
-    map.addLayer(precipitationDistributionLayer);
 
     // We set the Precipitation Distribution Layer's default style as spare space with color.
     precipitationDistributionLayer.setStyle(stylePlaneFunc);
@@ -204,3 +196,22 @@ getJson().then((data) => {
         }
     })
 })
+
+/*---------------------------------------------*/
+// 4. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});

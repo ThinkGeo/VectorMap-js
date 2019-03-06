@@ -1,12 +1,3 @@
-
-//Load vector map icon font
-WebFont.load({
-    custom: {
-        families: ['vectormap-icons'],
-        urls: ['https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css']
-    }
-});
-
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
 //layer style
@@ -16,7 +7,9 @@ let _styles = {
             color: [0, 0, 255, 0.5],
             width: 1
         }),
-        fill: new ol.style.Fill({ color: [0, 0, 255, 0.1] })
+        fill: new ol.style.Fill({
+            color: [0, 0, 255, 0.1]
+        })
     }),
 }
 
@@ -27,7 +20,9 @@ let resultsLength;
 //create result layer
 const createGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({ features: [] }),
+        source: new ol.source.Vector({
+            features: []
+        }),
         style: function (feature) {
             let key = feature.get('type');
             let style = _styles[key];
@@ -44,6 +39,10 @@ let baseMap = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstr
     apiKey: apiKey,
 });
 
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let map;
 let view = new ol.View({
     center: ol.proj.fromLonLat([-96.79620, 32.79423]),
     maxZoom: 19,
@@ -51,16 +50,17 @@ let view = new ol.View({
     zoom: 3,
     minZoom: 2
 })
+let initializeMap = function () {
+    map = new ol.Map({
+        layers: [baseMap, geocodingLayer = createGeocodingLayer()],
+        target: 'map',
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        view: view
+    });
 
-let map = new ol.Map({
-    layers: [baseMap, geocodingLayer = createGeocodingLayer()],
-    target: 'map',
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    view: view
-});
-
-map.addControl(new ol.control.FullScreen());
+    map.addControl(new ol.control.FullScreen());
+}
 
 //render result
 
@@ -93,14 +93,16 @@ const popUp = function (address, coordinates, type) {
 const geocoderResultNode = document.getElementById('geocoderResult');
 
 //Renter result
-const renderResult = ({ locations }) => {
+const renderResult = ({
+    locations
+}) => {
     document.querySelector('.loading').classList.add('hidden');
     if (locations.length > 0) {
         resultsLength = locations.length;
         let str = '';
         let i = -1
         for (const item of locations) {
-          
+
             i = i + 1;
             str += `<li><a data-coordinatesX=${(item.locationPoint.pointX).toFixed(6)} data-coordinatesY=${(item.locationPoint.pointY).toFixed(6)} data-index=${i}   data-boundingBox="${item.boundingBox}"" data-type=${item.locationType}> ${item.address} </a></li>`
         }
@@ -246,7 +248,7 @@ document.getElementById('geocoderResult').addEventListener('click', (e) => {
         obtainParameter(target)
     }
 })
- 
+
 document.body.addEventListener('keydown', (e) => {
     switch (e.keyCode) {
         //up
@@ -254,7 +256,7 @@ document.body.addEventListener('keydown', (e) => {
             e.preventDefault();
             moveFocus(-1);
             break;
-        // down
+            // down
         case 40:
             e.preventDefault();
             moveFocus(1);
@@ -266,3 +268,13 @@ document.body.addEventListener('keydown', (e) => {
             break;
     }
 })
+
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});

@@ -1,4 +1,3 @@
-
 //Load vector map icon font
 WebFont.load({
     custom: {
@@ -11,7 +10,7 @@ WebFont.load({
 const styleJson = {
     light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
 }
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'// please go to https://cloud.thinkgeo.com to create
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
 
 //Create layer
 let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
@@ -27,18 +26,29 @@ let view = new ol.View({
     zoom: 16,
 })
 
-//Create map
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    layers: [light],
-    target: 'map',
-    view: view
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let map;
+let initializeMap = function () {
+    map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        layers: [light],
+        target: 'map',
+        view: view
+    });
 
 
-//Control map full screen
-map.addControl(new ol.control.FullScreen());
+    //Control map full screen
+    map.addControl(new ol.control.FullScreen());
+
+    //User interaction
+    map.addEventListener('click', function (evt) {
+        let coordinate = evt.coordinate;
+        reverseGeocode([coordinate[1], coordinate[0]])
+    });
+}
 
 
 //   Elements that make up the popup.
@@ -94,8 +104,12 @@ const reverseGeocode = function (coordinate) {
     })
 }
 
-//User interaction
-map.addEventListener('click', function (evt) {
-    let coordinate = evt.coordinate;
-    reverseGeocode([coordinate[1], coordinate[0]])
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
 });

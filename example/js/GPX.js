@@ -3,9 +3,9 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. ThinkGeo Map Icon Fonts
-//   3. GPX Setup
-//   4. Map Control Setup
+//   2. GPX Setup
+//   3. Map Control Setup
+//   4. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
 
@@ -22,23 +22,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 
 /*---------------------------------------------*/
-// 2. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
-// Icon Fonts will be rendered as POI icons on the background layer. 
-// For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-
-/*---------------------------------------------*/
-// 3. GPX Setup
+// 2. GPX Setup
 /*---------------------------------------------*/
 
 // Create another layer from a GPX format data file hosted on our server, this time to hold the style 
@@ -94,37 +78,61 @@ let gpxVectorLayer = new ol.mapsuite.VectorLayer(gpxStyleJson, {
 
 
 /*---------------------------------------------*/
-// 4. Map Control Setup
+// 3. Map Control Setup
 /*---------------------------------------------*/
 
 // Now we'll create the base layer for our map. The light style of layers uses ThinkGeo Cloud 
 // Maps Vector Tile service to display the detailed base map. For more info, see our wiki: 
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles 
-let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json', {
+let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
 
-// Create and initialize our map control.
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: 'map',
-    // Add our previously-defined ThinkGeo Cloud Vector Tile layer and WKT layer to the map.
-    layers: [
-        baseLayer, gpxVectorLayer
-    ],
-    // Create a default view for the map when it starts up.
-    view: new ol.View({
-        // Center the map on Boston and start at zoom level 13.
-        center: [-7916041.528716288, 5228379.045749711],
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 13,
-        minZoom: 1,
-        maxZoom: 19
-    })
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let initializeMap = function () {
+    let map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: 'map',
+        // Add our previously-defined ThinkGeo Cloud Vector Tile layer and WKT layer to the map.
+        layers: [
+            baseLayer, gpxVectorLayer
+        ],
+        // Create a default view for the map when it starts up.
+        view: new ol.View({
+            // Center the map on Boston and start at zoom level 13.
+            center: [-7916041.528716288, 5228379.045749711],
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 13,
+            minZoom: 1,
+            maxZoom: 19
+        })
+    });
 
-// Add a button to the map that lets us toggle full-screen display mode.
-map.addControl(new ol.control.FullScreen());
+    // Add a button to the map that lets us toggle full-screen display mode.
+    map.addControl(new ol.control.FullScreen());
+}
+
+
+/*---------------------------------------------*/
+// 4. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});

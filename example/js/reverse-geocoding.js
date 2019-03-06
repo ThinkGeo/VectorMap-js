@@ -3,11 +3,11 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. ThinkGeo Map Icon Fonts
-//   3. Map Control Setup
-//   4. Reverse Geocoding Setup
-//   5. Point Details Popup Bubble
-//   6. Event Listeners
+//   2. Map Control Setup
+//   3. Reverse Geocoding Setup
+//   4. Point Details Popup Bubble
+//   5. Event Listeners
+//   6. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
 
@@ -24,23 +24,7 @@ const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 
 
 /*---------------------------------------------*/
-// 2. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Now we'll load the Map Icon Fonts using the WebFont loader. The loaded 
-// Icon Fonts will be rendered as POI icons on the background layer. 
-// For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
-
-
-/*---------------------------------------------*/
-// 3. Map Control Setup
+// 2. Map Control Setup
 /*---------------------------------------------*/
 
 // Here's where we set up our map.  We're going to create layers, styles, 
@@ -61,7 +45,9 @@ let _styles = {
             color: [0, 0, 255, 0.5],
             width: 1
         }),
-        fill: new ol.style.Fill({ color: [0, 0, 255, 0.1] })
+        fill: new ol.style.Fill({
+            color: [0, 0, 255, 0.1]
+        })
     })
 };
 
@@ -69,7 +55,9 @@ let _styles = {
 // for each place found near the clicked location on the map.
 const createReverseGeocodingLayer = function () {
     let vectorLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({ features: [] }),
+        source: new ol.source.Vector({
+            features: []
+        }),
 
         // Depending on the type of place, show a different icon. For example,
         // restaurants will show a knife and fork symbol.
@@ -86,8 +74,13 @@ const createReverseGeocodingLayer = function () {
                     text: new ol.style.Text({
                         font: "14px Arial",
                         text: "",
-                        fill: new ol.style.Fill({ color: "black" }),
-                        stroke: new ol.style.Stroke({ color: "white", width: 1 })
+                        fill: new ol.style.Fill({
+                            color: "black"
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "white",
+                            width: 1
+                        })
                     })
                 });
                 _styles[key] = style;
@@ -122,23 +115,30 @@ let view = new ol.View({
     zoom: 16
 });
 
-// Create and initialize our interactive map.
-let map = new ol.Map({
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
-    layers: [light, (reverseGeocodingLayer = createReverseGeocodingLayer())],
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: "map",
-    view: view
-});
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+let map;
+let initializeMap = function () {
+    map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
+        layers: [light, (reverseGeocodingLayer = createReverseGeocodingLayer())],
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: "map",
+        view: view
+    });
 
-// Add a button to the map that lets us toggle full-screen display mode.
-map.addControl(new ol.control.FullScreen());
+    // Add a button to the map that lets us toggle full-screen display mode.
+    map.addControl(new ol.control.FullScreen());
 
+    // Call the method to add Event Listeners to map.
+    addEventListeners(map);
+}
 
 /*---------------------------------------------*/
-// 4. Reverse Geocoding Setup
+// 3. Reverse Geocoding Setup
 /*---------------------------------------------*/
 
 // At this point we'll build up the methods and functionality that will  
@@ -148,7 +148,7 @@ map.addControl(new ol.control.FullScreen());
 // Define a list of the different types of places for which we have unique 
 // marker icons that can be shown on the map.
 const _supportedMarkers = [
-    "aeroway", 
+    "aeroway",
     "amenity",
     "barrier",
     "building",
@@ -196,7 +196,7 @@ const renderBestMatchLocation = function (place, coordinate, address) {
             "EPSG:3857",
             "EPSG:4326"
         );
-        
+
         // Display the name, address and coordinates of the best match result 
         // in the box at the top center of the map.
         document.getElementById("floating-panel").innerHTML =
@@ -320,7 +320,7 @@ const reverseGeocode = function (coordinate, flag) {
 
 
 /*---------------------------------------------*/
-// 5. Point Details Popup Bubble
+// 4. Point Details Popup Bubble
 /*---------------------------------------------*/
 
 // When you hover your mouse over a place on the map, we want to show 
@@ -330,7 +330,7 @@ const container = document.getElementById("popup");
 container.classList.remove("hidden");
 const content = document.getElementById("popup-content");
 const closer = document.getElementById("popup-closer");
- 
+
 // Create an overlay for the map that will hold the popup bubble.
 let overlay = new ol.Overlay({
     element: container,
@@ -370,46 +370,69 @@ const popUp = function (address, centerCoordinate) {
 
 
 /*---------------------------------------------*/
-// 6. Event Listeners
+// 5. Event Listeners
 /*---------------------------------------------*/
 
 // These event listeners tell the UI when it's time to execute all of the 
 // code we've written.
 
+// We'll call it later when our map has been rendered.
+
 // This listener gets the coordinates when you click on the map, and then 
 // uses them to perform a reverse geocode with the ThinkGeo Cloud.
-map.addEventListener("click", function (evt) {
-    let source = reverseGeocodingLayer.getSource();
-    let coordinate = evt.coordinate;
-    overlay.setPosition(undefined);
-    source.clear();
-    reverseGeocode([coordinate[1], coordinate[0]], true);
-});
-
-// This event listener will show the popup bubble we created, any time 
-// you hover your mouse over a location point on the map.
-let timer = null;
-map.addEventListener("pointermove", function (evt) {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
+let addEventListeners = function (map) {
+    map.addEventListener("click", function (evt) {
+        let source = reverseGeocodingLayer.getSource();
         let coordinate = evt.coordinate;
-        let pixel = map.getPixelFromCoordinate(coordinate);
-        map.forEachFeatureAtPixel(
-            pixel,
-            feature => {
-                if (feature.get("name") === "nearbyFeature") {
-                    reverseGeocode([coordinate[1], coordinate[0]], false);
-                }
-            },
-            {
-                layerFilter: layer => {
-                    let name = layer.get("name");
-                    if (name === "reverseGeocodingLayer") {
-                        return true;
+        overlay.setPosition(undefined);
+        source.clear();
+        reverseGeocode([coordinate[1], coordinate[0]], true);
+    });
+
+    // This event listener will show the popup bubble we created, any time 
+    // you hover your mouse over a location point on the map.
+    let timer = null;
+    map.addEventListener("pointermove", function (evt) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            let coordinate = evt.coordinate;
+            let pixel = map.getPixelFromCoordinate(coordinate);
+            map.forEachFeatureAtPixel(
+                pixel,
+                feature => {
+                    if (feature.get("name") === "nearbyFeature") {
+                        reverseGeocode([coordinate[1], coordinate[0]], false);
                     }
-                    return false;
+                }, {
+                    layerFilter: layer => {
+                        let name = layer.get("name");
+                        if (name === "reverseGeocodingLayer") {
+                            return true;
+                        }
+                        return false;
+                    }
                 }
-            }
-        );
-    }, 500);
+            );
+        }, 500);
+    });
+}
+
+
+/*---------------------------------------------*/
+// 6. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
 });
