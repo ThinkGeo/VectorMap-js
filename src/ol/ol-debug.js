@@ -22727,20 +22727,21 @@ function olInit() {
             newResolution = minResolution;
         }
 
-        if (scaleDelta != 1.0) {
-            this.lastScaleDelta_ = scaleDelta;
-        }
-       
-        if(scaleDelta <= 1){
+        if(scaleDelta > 1 && this.lastScaleDelta_ >1)
+        {
+            view.isPinchOut = true;
+        }else{
             view.isZoomOut = false;
             view.isPinchOut =false;
             view.isClickZoomOut = false;
             view.isDrag = false;
         }
-        if(scaleDelta > 1)
-        {
-            view.isPinchOut = true;
+
+        if (scaleDelta != 1.0) {
+            this.lastScaleDelta_ = scaleDelta;
         }
+       
+        
         // scale anchor point.
         var viewportPosition = map.getViewport().getBoundingClientRect();
         var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
