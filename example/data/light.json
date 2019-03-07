@@ -3711,11 +3711,7 @@
             ]
         }
     ],
-    "sources": [{
-            "id": "worldstreets_source",
-            "url": "http://54.177.171.109/v1/world-streets/v2/{z}/{x}/{y}.mvt",
-            "type": "MVT"
-        },
+    "sources": [
         {
             "id": "worldstreets_source_test",
             "urls": [
