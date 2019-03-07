@@ -30,11 +30,12 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // GeoJSON file hosted on our servers, but you can load your own data from any
 // publicly-accessible server.  In the near future you'll be able to upload your
 // data to the ThinkGeo Cloud and let us host it for you!
+
 let heatmapLayer;
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
         // Load the Hangzhou Tracks data from ThinkGeo's servers.
-        let file = "../data/hangzhou-tracks.json";
+        let file = "../data/road_congestion.json";
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open("GET", file, true);
@@ -54,23 +55,18 @@ const getJson = () => {
 
 getJson().then((data) => {
     data = JSON.parse(data);
-    let points = [].concat.apply([], data.map(function (track) {
-        return track.map(function (seg) {
-            return seg.coord.concat([1]);
-        });
-    }));
-
+    let points = data.featuresArr;
     // Let's build up an array of features, one for each point in our dataset.
     let featuresArr = [];
     // For each feature in the JSON dataset, add it to the feature 
     // collection array and create a point shape.
     for (let i = 0; i < points.length; i++) {
-        let coord = points[i].slice(0, 2);
-        coord = ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857');
+        let coord = points[i].coordinate;
 
         let pointFeature = new ol.Feature({
             geometry: new ol.geom.Point(coord),
-            weight: 20
+            // The weight value is between 0 and 1.
+            weight: points[i].value/100
         });
         featuresArr.push(pointFeature)
     }
@@ -80,12 +76,12 @@ getJson().then((data) => {
     vectorSource.addFeatures(featuresArr);
 
     // Create a Heatmap Layer whose source is our Hangzhou Tracks Source, and add it to our map.
-    heatMapLayer = new ol.layer.Heatmap({
+    heatmapLayer = new ol.layer.Heatmap({
         source: vectorSource,
         // Set Heatmap data blur size.
         blur: 15,
         // Set Heatmap data radius size.
-        radius: 6,
+        radius: 3,
         // Set Heatmap data color group.
         gradient: ['#00f', '#0ff', '#0f0', '#ff0', '#f00']
     });
@@ -122,7 +118,7 @@ let initializeMap = function () {
         // Create a default view for the map when it starts up.
         view: new ol.View({
             // Center the map on Hangzhou, China and start at zoom level 13.
-            center: ol.proj.fromLonLat([120.10886859566, 30.235956526643]),
+            center: [-13625957.5212473, 4547905.08198988],
             maxResolution: 40075016.68557849 / 512,
             zoom: 13,
             minZoom: 2,
@@ -133,9 +129,8 @@ let initializeMap = function () {
 
     // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
-
     // Add the pre-defined layer to our map.
-    map.addLayer(heatMapLayer);
+    map.addLayer(heatmapLayer);
 }
 
 
