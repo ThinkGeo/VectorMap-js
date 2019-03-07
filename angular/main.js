@@ -102,21 +102,33 @@ var AppComponent = /** @class */ (function () {
     }
     AppComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
+        var map;
+        var initializeMap = function () {
+            map = new ol.Map({
+                loadTilesWhileInteracting: true,
+                layers: [layer],
+                target: 'map',
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([-96.917754, 33.087878]),
+                    maxZoom: 19,
+                    maxResolution: 40075016.68557849 / 512,
+                    zoom: 15,
+                }),
+            });
+            map.addControl(new ol.control.FullScreen());
+        };
+        (window.WebFont).load({
+            custom: {
+                families: ["vectormap-icons"],
+                urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"],
+            },
+            // The "active" property defines a function to call when the font has
+            // finished downloading.  Here, we'll call our initializeMap method.
+            active: initializeMap
+        });
         var layer = new ol.mapsuite.VectorTileLayer('https://samples.thinkgeo.com/cloud/example/data/light.json', {
             'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
         });
-        var map = new ol.Map({
-            loadTilesWhileInteracting: true,
-            layers: [layer],
-            target: 'map',
-            view: new ol.View({
-                center: ol.proj.fromLonLat([-96.917754, 33.087878]),
-                maxZoom: 19,
-                maxResolution: 40075016.68557849 / 512,
-                zoom: 15,
-            }),
-        });
-        map.addControl(new ol.control.FullScreen());
         var getJson = function () {
             var readTextFile = new Promise(function (resolve, reject) {
                 var file = "https://samples.thinkgeo.com/cloud/example/data/light.json";
@@ -168,7 +180,6 @@ var AppComponent = /** @class */ (function () {
         };
     };
     AppComponent.prototype.refresh = function (formValue) {
-        console.log(formValue.waterColor);
         this.json = this.updatedstyle(formValue.poiSize || 30, formValue.waterColor || '#0000CD', formValue.parkColor || '#fe6c00');
         this.clickRefresh(this.json);
     };
