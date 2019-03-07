@@ -133,7 +133,7 @@ __NOTE:__
  
 `World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
 
-__Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with.
+__Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with. Once the Icon Fonts have been completely downloaded, the `initMapFuntion` will be called to init map.
 
 
 ```
@@ -143,7 +143,8 @@ __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your 
         custom: {
             families: ["vectormap-icons"],
             urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-        }
+        },
+        active: initMapFuntion
     });
 </script>
 ```
