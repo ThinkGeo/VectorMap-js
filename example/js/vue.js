@@ -1,30 +1,27 @@
-//Load vector map icon font
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    }
-});
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 let layer = new ol.mapsuite.VectorTileLayer('../data/light.json', {
-    'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+    'apiKey': apiKey
 });
 
-//Create map
-let map = new ol.Map({
-    oadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    layers: [layer],
-    target: 'map',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([-96.917754, 33.087878]),
-        maxZoom: 19,
-        maxResolution: 40075016.68557849 / 512,
-        zoom: 15,
-    }),
-});
+let map;
+let initializeMap = function () {
+    map = new ol.Map({
+        oadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        layers: [layer],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-96.917754, 33.087878]),
+            maxResolution: 40075016.68557849 / 512,
+            zoom: 15,
+            minZoom: 1,
+            maxZoom: 19
+        }),
+    });
 
-map.addControl(new ol.control.FullScreen());
+    map.addControl(new ol.control.FullScreen());
+}
 
 let getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
@@ -46,7 +43,7 @@ let getJson = () => {
     return readTextFile;
 }
 
-let json
+let json;
 
 getJson().then((data) => {
     json = JSON.parse(data);
@@ -73,7 +70,7 @@ const clickRefresh = (json) => {
     let layers = map.getLayers().getArray();
     map.removeLayer(layers[0]);
     let newLayer = new ol.mapsuite.VectorTileLayer(json, {
-        'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+        'apiKey': apiKey
     });
     map.addLayer(newLayer);
 }
@@ -92,3 +89,13 @@ new Vue({
         }
     }
 })
+
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
+});
