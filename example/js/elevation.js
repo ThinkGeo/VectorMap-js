@@ -500,10 +500,16 @@ var drawChart = function (data, grades) {
 			scales: {
 				xAxes: [{
 					display: true,
+					ticks: {
+						fontColor: "#ddd",
+					},
 					scaleLabel: {
 						display: false,
 						labelString: 'Distance(KM)'
-					}
+					},
+					gridLines: {
+						color: "#555",
+					},
 				}],
 				yAxes: [{
 					display: true,
@@ -511,12 +517,16 @@ var drawChart = function (data, grades) {
 						display: true,
 						labelString: 'Elevation(ft)'
 					},
+					gridLines: {
+						color: "#555",
+					},
 					ticks: {
 						callback: function (value) {
 							if (Math.floor(value) === value) {
 								return value;
 							}
-						}
+						},
+						fontColor: "#ddd",
 					}
 				}]
 			}
