@@ -118,9 +118,9 @@ let initializeMap = function () {
         // Create a default view for the map when it starts up.
         view: new ol.View({
             // Center the map on Hangzhou, China and start at zoom level 13.
-            center: [-13625957.5212473, 4547905.08198988],
+            center: [-13625957.5212473, 4545905.05198988],
             maxResolution: 40075016.68557849 / 512,
-            zoom: 13,
+            zoom: 12,
             minZoom: 2,
             maxZoom: 19,
             progressiveZoom: false
