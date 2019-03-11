@@ -31013,8 +31013,8 @@ function olInit() {
                 1, ol.render.ReplayType.IMAGE);
             // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
             // imageReplay.drawPoint(geometry, feature);
-            feature.flatCoordinates_ = geometry.getFlatCoordinates();
-            feature.ends_ = [2];
+            feature.pointCoordinates_ = geometry.getFlatCoordinates();
+            // feature.ends_ = [2];
             imageReplay.startIndicesFeature.push(feature);
             var imageStyleClone = imageStyle.clone();
             imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
@@ -102493,7 +102493,7 @@ function olInit() {
             // console.log(requestTileCoord);
             // if(!(requestTileCoord.toString() == "2,0,-2")){
             // if(tileCoord.toString() !== "16,15147,-26446"){
-            // if(tileCoord.toString() !== "17,30288,-52741"){
+            // if(tileCoord.toString() !== "17,30298,-52746"){
                 // return
             // }
             // TEST END

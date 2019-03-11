@@ -695,7 +695,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             // this.images_.length = 0;
             var frameState = context.frameState;
             var pixelRatio = frameState.pixelRatio;
-            var tilePixelExtent = [];           
+            // var tilePixelExtent = [];           
             this.screenXY = screenXY;
             // this.tilePixelExtent = tilePixelExtent;
             this.tmpOptions = [];
@@ -713,9 +713,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
-                    this.replayImage_(frameState, declutterGroup, geometry, style.scale_ / pixelRatio);
-                    this.renderDeclutter_(declutterGroup, feature);
-                }else{  
+                    this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
+                }else{ 
                     if(type == 'MultiLineString'){
                         var ends = geometry.getEnds();
                         for(var k = 0; k < ends.length; k++){
@@ -733,9 +732,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-                            this.replayImage_(frameState, declutterGroup, geometry, this.state_.scale / pixelRatio);
+                            this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
                             this.renderDeclutter_(declutterGroup, feature);
-                        }else{    
+                        }else{   
                             // draw chars 
                             this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                         }
@@ -839,21 +838,18 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }, this];
             declutterGroup.push(declutterArgs);
         };
-
+  
         (<any>ol.render).webgl.TextReplay.prototype.drawLineStringText = function (geometry, feature, frameState, declutterGroup) {
             var offset = 0;
             var stride = 2;
             var resolution = frameState.currentResolution;
             var text = this.text_;
-            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;            
             var maxAngle = this.maxAngle_;
             var lineStringCoordinates = geometry.getFlatCoordinates();
             var end = lineStringCoordinates.length;
-            var screenXY = this.screenXY;
-            var tilePixelExtent = this.tilePixelExtent;           
             var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
             let textLength = this.getTextSize_([text])[0];
-            
+
             if(this.label){
                 pathLength = textLength
             }
@@ -893,7 +889,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                     var startM = pointArray[len];                    
                     let parts = (<any>ol.geom).flat.textpath.lineString(lineStringCoordinates, offset, end, 2, text, this, startM, 
-                            maxAngle, resolution, screenXY, coordinateToPixelTransform, this.origin);
+                            maxAngle, resolution);
                     
                     if(parts){
                         for(let i = 0; i < parts.length; i++){
@@ -924,6 +920,66 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         // if (targetExtent[0] > tilePixelExtent[0] && targetExtent[1] > tilePixelExtent[3] && targetExtent[2] < tilePixelExtent[2] && targetExtent[3] < tilePixelExtent[1]) {
                         this.renderDeclutter_(targetDeclutterGroup, feature);
                         // }
+                    }
+                }
+            }
+        };
+
+        (<any>ol.render).webgl.ImageReplay.prototype.drawLineStringImage = function (geometry, feature, frameState, declutterGroup) {
+            var offset = 0;
+            var stride = 2;
+            var pixelRatio = frameState.pixelRatio;
+            var resolution = frameState.currentResolution;
+            var lineStringCoordinates = geometry.getFlatCoordinates();
+            var end = lineStringCoordinates.length;
+            var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
+            let width = this.width;            
+            let spaceDistance = 0;
+
+             if (width * 4 <= pathLength) {  
+                this.extent = (<any>ol.extent).createOrUpdateEmpty();          
+                var ratio = 1.194328566955879 / resolution;
+
+                if(ratio >= 3){
+                    ratio /= 2;
+                }
+                var distance = 280 * ratio;
+                var tmpLength = pathLength - width;
+                var centerPoint = tmpLength / 2 + spaceDistance;
+                var leftPoint = centerPoint;
+                var rightPoint = centerPoint;
+                var pointArray = [];
+                pointArray.push(centerPoint);
+
+                if(frameState.currentResolution < 1){
+                    while(leftPoint > ((width / 2) + distance)){
+                        leftPoint = leftPoint - distance;
+                        pointArray.push(leftPoint + spaceDistance);        
+                    }
+                    while(rightPoint < ((pathLength - width / 2) - distance)){
+                        rightPoint = rightPoint + distance;                                   
+                        pointArray.push(rightPoint + spaceDistance);                                    
+                    }
+                }
+
+                for (var len = 0; len < pointArray.length; len++) {
+                    let tempDeclutterGroup;
+                    if (declutterGroup) {
+                        // tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
+                        tempDeclutterGroup = declutterGroup.slice(0);
+                    }                          
+
+                    var startM = pointArray[len];                    
+                    let parts = (<any>ol.geom).flat.textpath.imagelineString(lineStringCoordinates, offset, end, 2, width, startM, resolution);
+                    
+                    if(parts){
+                        for(let i = 0; i < parts.length; i++){
+                            var part = parts[i];
+                            this.anchorX = part[2];
+                            this.rotation = part[3];
+                            this.replayImage_(frameState, declutterGroup, [part[0], part[1]], this.scale / pixelRatio);
+                            this.renderDeclutter_(declutterGroup, feature);
+                        }   
                     }
                 }
             }
@@ -1033,9 +1089,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         // Blocking repeat
-        (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, declutterGroup, geometry, scale){
+        (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, declutterGroup, flatCoordinates, scale){
             var box = [];
-            var flatCoordinates = geometry.getFlatCoordinates();
             var screenXY = this.screenXY;
             var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
             var canvas = frameState.context.canvas_;
@@ -1078,13 +1133,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.geom).flat.textpath.lineString = function (
-            flatCoordinates, offset, end, stride, text, webglTextReplay, 
-            startM, maxAngle, resolution, screenXY, coordinateToPixelTransform, origin) {
+            flatCoordinates, offset, end, stride, text, webglTextReplay, startM, maxAngle, resolution) {
             var result = [];
     
             // Keep text upright
             var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
-
+            
             var numChars = text.length;
     
             var x1 = flatCoordinates[offset];
@@ -1107,7 +1161,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 var charLength = webglTextReplay.getTextSize_([char])[0];    
                 chunkLength += charLength;
                 var charM = startM + charLength / 2;
-
+                
                 while (segmentM + segmentLength < charM) {
                     x1 = x2;
                     y1 = y2;
@@ -1118,8 +1172,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
                 }
 
+                if((x1 > x2) !== reverse){
+                    continue;
+                }
+
                 // label exceed the road range
-                if(offset >= end - stride){
+                if(offset > end - stride){
                     return false;
                 }
 
@@ -1162,6 +1220,46 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             return result;
         };
 
+        (<any>ol.geom).flat.textpath.imagelineString = function (
+            flatCoordinates, offset, end, stride, width, startM, resolution) {
+            var result = [];
+            var x1 = flatCoordinates[offset];
+            var y1 = flatCoordinates[offset + 1];
+            offset += stride;
+            var x2 = flatCoordinates[offset];
+            var y2 = flatCoordinates[offset + 1];
+            var segmentM = 0;
+            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+            var data; 
+            var charM = startM + width / 2;
+
+            while (segmentM + segmentLength < charM) {
+                x1 = x2;
+                y1 = y2;
+                offset += stride;
+                x2 = flatCoordinates[offset];
+                y2 = flatCoordinates[offset + 1];
+                segmentM += segmentLength;
+                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+            }
+
+            // label exceed the road range
+            if(offset > end - stride){
+                return false;
+            }
+
+            var segmentPos = charM - segmentM;
+            var angle = Math.atan2(y2 - y1, x2 - x1);      
+            var interpolate = segmentPos / segmentLength;            
+            var x = (<any>ol).math.lerp(x1, x2, interpolate);
+            var y = (<any>ol).math.lerp(y1, y2, interpolate);   
+
+            data = [x, y, width / 2, -angle];
+            result.push(data);
+           
+            return result;
+        };
+
         (<any>ol.geom).flat.length.lineString = function (flatCoordinates, offset, end, stride, resolution) {
             var x1 = flatCoordinates[offset];
             var y1 = flatCoordinates[offset + 1];
@@ -1194,7 +1292,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var gl = context.getGL();
             var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
                 tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
-
+           
             if (this.lineStringReplay) {
                 tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
                 tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
