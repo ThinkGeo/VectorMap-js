@@ -1,9 +1,35 @@
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'; // please go to https://cloud.thinkgeo.com to create
+/*===========================================================================*/
+// Average Precipitation
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Setup Average Precipitation Layer
+//   4. ThinkGeo Map Icon Fonts
+/*===========================================================================*/
 
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json";
 
-//  Base map layer
-let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create the base layer for our map. The base map layer uses the 
+// ThinkGeo Cloud Maps Vector Tile service to display a detailed map. For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles 
+let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json", {
     'apiKey': apiKey,
 });
 
@@ -11,27 +37,39 @@ let worldStreetLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
 let map;
-let initializeMap = function () {
+const initializeMap = function () {
     map = new ol.Map({
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
-        layers: [worldStreetLayer],
+        // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
+        layers: [baseLayer],
+        // Create a default view for the map when it starts up.
         target: 'map',
         view: new ol.View({
+            // Center the map on the United States and start at zoom level 4.
             center: ol.proj.fromLonLat([-96.79620, 38.79423]),
-            maxZoom: 19,
             maxResolution: 40075016.68557849 / 512,
             zoom: 4,
-            minZoom: 2
+            minZoom: 2,
+            maxZoom: 19
         })
     });
 
-    //Control map full screen
+    // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
+
+    // Add the pre-defined echarts layer to our map.
     echartslayer.appendTo(map)
 }
 
-//Process the data
+/*---------------------------------------------*/
+// 3. Setup Average Precipitation Layer
+/*---------------------------------------------*/
+
+// Now we'll create the Average Precipitation layer which will let us visualize 
+// the Average Precipitation statistics on the map. We'll load the data from a 
+// small JSON file hosted on our servers.
+
 let echartslayer;
 let xhr = new XMLHttpRequest();
 xhr.open("GET", "../data/scatter.json");
@@ -45,7 +83,6 @@ xhr.onreadystatechange = function () {
                     name: data[i].name,
                     value: data[i].coordinate.concat(data[i].value)
                 });
-
             }
             return res;
         };
@@ -122,7 +159,6 @@ xhr.onreadystatechange = function () {
             ]
         };
 
-
         echartslayer = new ol3Echarts(option, {
             hideOnMoving: false,
             hideOnZooming: false,
@@ -132,6 +168,16 @@ xhr.onreadystatechange = function () {
 }
 xhr.send();
 
+
+/*---------------------------------------------*/
+// 4. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],

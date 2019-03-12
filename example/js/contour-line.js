@@ -57,7 +57,7 @@ let initializeMap = function () {
         })
     });
 
-    //Control map full screen
+    // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
 
     // Add the pre-defined layer to our map.
