@@ -679,7 +679,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         // overwrite
         (<any>ol.render).webgl.Replay.prototype.replay = function (
-            context, transform, viewRotation, skippedFeaturesHash, screenXY) {
+            context, viewRotation, skippedFeaturesHash, screenXY) {
             this.viewRotation_ = viewRotation;
             this.webglReplay_(context, 
                 skippedFeaturesHash, undefined, undefined, screenXY);
@@ -1180,7 +1180,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }
 
                 if((x1 > x2) !== reverse){
-                    continue;
+                    return false;
                 }
 
                 // label exceed the road range

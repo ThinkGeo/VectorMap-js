@@ -102492,7 +102492,8 @@ function olInit() {
             
             // console.log(requestTileCoord);
             // if(!(requestTileCoord.toString() == "2,0,-2")){
-            // if(tileCoord.toString() !== "16,15147,-26446"){
+            // if(tileCoord.toString() !== "12,946,-1653"){
+                // if(tileCoord.toString() !== "16,15147,-26446"){
             // if(tileCoord.toString() !== "17,30298,-52746"){
                 // return
             // }

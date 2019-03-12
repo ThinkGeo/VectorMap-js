@@ -235,9 +235,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
                     w = currentTilePixelSize[0] * currentScale / oversampling;
                     h = currentTilePixelSize[1] * currentScale / oversampling;
-                    this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
                     tile.transition = (z === currentZ);
                     tile.screenXY = [(tileExtent[0] + tileExtent[2]) / 2,(tileExtent[1] + tileExtent[3]) / 2];
+                    this.drawTileImage(tile, frameState, layerState, x, y);
                     this.renderedTiles.push(tile);
                 }                
             }
@@ -257,6 +257,66 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         this.updateLogos(frameState, tileSource);
 
         return this.renderedTiles.length > 0;
+    }
+
+    public drawTileImage (tile, frameState, layerState, x, y) {
+        var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
+        this.createReplayGroup_(vectorImageTile, frameState, x, y);
+        var context = frameState.context;
+        var gl = context.getGL();
+        
+        if (gl) {
+            let screenXY = tile.screenXY;
+            let layer = this.getLayer();
+            let renderMode = layer.getRenderMode();
+            let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
+            let viewRotation = frameState.viewState.rotation;
+
+            if (tile.getState() === (<any>ol).TileState.ABORT) {
+                return;
+            }    
+           
+            for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+                let sourceTile = tile.getTile(tile.tileKeys[t]);
+                if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
+                    continue;
+                }
+
+                // reuse replayGroup of source Tile to reduce the memory.
+                let replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
+                if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
+                    continue;
+                }
+                context.globalAlpha = layerState.opacity;
+                context.frameState = frameState;
+                context.layerState = layerState;
+                
+                let zs = Object.keys(replayGroup.replaysByZIndex_).map(Number);
+                zs.sort((<any>ol).array.numberSafeCompareFunction);
+                let i, ii, j, jj, replays, replay;
+
+                for (i = 0, ii = zs.length; i < ii; ++i) {
+                    let zIndexKey = zs[i].toString();
+                    replays = replayGroup.replaysByZIndex_[zIndexKey];
+                    for (j = 0, jj = replayTypes.length; j < jj; ++j) {
+                        let replayType = replayTypes[j];
+                        replay = replays[replayType];
+                        if (replay !== undefined) {
+                            replay.zIndex = zs[i];                            
+                            replay.replay(context, viewRotation, {}, screenXY);
+                        }
+                    }
+                }
+
+                var uid = this.ol_uid;
+                var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
+                if (alpha !== 1) {
+                    frameState.animate = true;
+                } else if (tile.transition) {
+                    tile.endTransition(uid);
+                }
+            }
+        }
     }
 
     public prepareFrameCustom(frameState: any, layerState: any) {
@@ -279,12 +339,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
     public postCompose(context: any, frameState: any, layerState: any) {
         let layer = this.getLayer();
         let declutterReplays = layer.getDeclutter() ? {} : null;
-        let source = /** @type {ol.source.VectorTile} */ (layer.getSource());
+        // let source = /** @type {ol.source.VectorTile} */ (layer.getSource());
         let renderMode = layer.getRenderMode();
         let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
-        let pixelRatio = frameState.pixelRatio;
         let rotation = frameState.viewState.rotation;
-        let size = frameState.size;
+        // let size = frameState.size;
         // let offsetX, offsetY;
         // if (rotation) {
             // offsetX = Math.round(pixelRatio * size[0] / 2);
@@ -295,9 +354,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             this.declutterTree_.clear();
         }
         let tiles = this.renderedTiles;
-        let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+        // let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
         // let clips = [];
-        let zs = [];
+        // let zs = [];
 
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
@@ -306,11 +365,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 continue;
             }
 
-            let tileCoord = tile.tileCoord;            
-            let worldOffset = tileGrid.getTileCoordExtent(tileCoord)[0] -
-                tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
-            let transform = undefined;
-           
+            // let tileCoord = tile.tileCoord;            
             for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
                 let sourceTile = tile.getTile(tile.tileKeys[t]);
                 if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
@@ -322,15 +377,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 let replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
                 if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
                     continue;
-                }
-
-                if (!transform) {
-                    transform = this.getTransform(frameState, worldOffset);
-                }
+                }       
                 // let currentZ = sourceTile.tileCoord[0];
                 // let currentClip = replayGroup.getClipCoords(transform);
                 // context.save();
-                context.globalAlpha = layerState.opacity;
+                // context.globalAlpha = layerState.opacity;
                 // Create a clip mask for regions in this low resolution tile that are
                 // already filled by a higher resolution tile
                 // for (let j = 0, jj = clips.length; j < jj; ++j) {
@@ -351,23 +402,23 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 //     }
                 // }
 
-                context.frameState = frameState;
-                context.layerState = layerState;
-                replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays, screenXY);
+                // context.frameState = frameState;
+                // context.layerState = layerState;
+                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY);
                 
                 // context.restore();
                 // clips.push(currentClip);
                 // zs.push(currentZ);
                 
-                if(Object.keys(replayGroup.replaysByZIndex_).length){
-                    var uid = this.ol_uid;
-                    var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
-                    if (alpha !== 1) {
-                        frameState.animate = true;
-                    } else if (tile.transition) {
-                        tile.endTransition(uid);
-                    }
-                }
+                // if(Object.keys(replayGroup.replaysByZIndex_).length){                    
+                //     var uid = this.ol_uid;
+                //     var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
+                //     if (alpha !== 1) {
+                //         frameState.animate = true;
+                //     } else if (tile.transition) {
+                //         tile.endTransition(uid);
+                //     }
+                // }
             }
         }
         

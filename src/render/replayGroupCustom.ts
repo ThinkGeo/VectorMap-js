@@ -74,7 +74,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
             skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
     }
     
-    public replayCustom(context: CanvasRenderingContext2D, transform: any, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any) {
+    public replayCustom(context: CanvasRenderingContext2D, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any) {
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
@@ -140,8 +140,8 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                         }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
                             continue;
                         }
+                        replay.replay(context, viewRotation, skippedFeaturesHash, screenXY);
                     }
-                    replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
                 }
             }
         }
