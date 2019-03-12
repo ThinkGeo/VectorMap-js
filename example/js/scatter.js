@@ -87,7 +87,7 @@ xhr.onreadystatechange = function () {
             return res;
         };
 
-        //style options
+        // Set the style of each point.
         var option = {
             title: {
                 left: 'center',
