@@ -3,7 +3,7 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. Hangzhou Tracks Data Layer Setup
+//   2. Road Congestion Data Layer Setup
 //   3. Map Control Setup 
 //   4. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
@@ -22,11 +22,11 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 
 /*---------------------------------------------*/
-// 2. Hangzhou Tracks Data Layer Setup
+// 2. Road Congestion Data Layer Setup
 /*---------------------------------------------*/
 
 // Now that we've set up our map's base layer, we need to actually load the point data layer that will let us
-// visualize Hangzhou Road Congestion style on the map.  We'll load it from a small
+// visualize Road Congestion style on the map.  We'll load it from a small
 // GeoJSON file hosted on our servers, but you can load your own data from any
 // publicly-accessible server.  In the near future you'll be able to upload your
 // data to the ThinkGeo Cloud and let us host it for you!
@@ -34,7 +34,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 let heatmapLayer;
 const getJson = () => {
     let readTextFile = new Promise(function (resolve, reject) {
-        // Load the Hangzhou Tracks data from ThinkGeo's servers.
+        // Load the Road Congestion data from ThinkGeo's servers.
         let file = "../data/road_congestion.json";
         let rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
@@ -75,7 +75,7 @@ getJson().then((data) => {
     let vectorSource = new ol.source.Vector();
     vectorSource.addFeatures(featuresArr);
 
-    // Create a Heatmap Layer whose source is our Hangzhou Tracks Source, and add it to our map.
+    // Create a Heatmap Layer whose source is our Road Congestion Source, and add it to our map.
     heatmapLayer = new ol.layer.Heatmap({
         source: vectorSource,
         // Set Heatmap data blur size.
