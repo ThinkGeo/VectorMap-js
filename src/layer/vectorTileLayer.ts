@@ -734,9 +734,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }else{
                         this.setTextStyle(style);
                         if(this.label){          
-                            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                            var lineWidth = (this.state_.lineWidth) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
-                            this.height = this.label.height; 
+                            this.height = this.label.height + lineWidth; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
                             this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
