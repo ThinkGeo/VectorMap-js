@@ -1,46 +1,73 @@
-// Base map layer
-let satelliteLayer = new ol.layer.Tile({
+/*===========================================================================*/
+// Average Commute Times
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Commute Times Layer Setup
+//   4. Displaying Commute Times Points Info
+/*===========================================================================*/
+
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
+// Cloud Maps Raster Tile service to display a detailed street map.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
+let baseLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png"
-            + "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",
+        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/dark/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
         tileSize: 512,
     }),
 });
 
-//Create map
+// Create and initialize our interactive map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [satelliteLayer],
+    // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
+    layers: [baseLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
+        // Center the map on the United States and start at zoom level 4.
         center: ol.proj.fromLonLat([-99.097118, 38.915238]),
-        maxZoom: 19,
         maxResolution: 40075016.68557849 / 512,
         zoom: 4,
         minZoom: 2,
+        maxZoom: 19,
         progressiveZoom: false,
     })
 })
 
-//Control map full screen
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//Get data
-let getHeatmapJson = (url) => {
-    return new Promise((resolve, reject) => {
-        let xhr = new XMLHttpRequest;
-        xhr.open("GET", url);
 
-        xhr.send();
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                resolve(xhr.responseText)
-            }
-        }
-    })
-}
-let minutesLayer = null;
+/*---------------------------------------------*/
+// 3. Commute Times Layer Setup
+/*---------------------------------------------*/
+
+// Now that we've set up our map's base layer, we need to actually create 
+// the Average Commute Times Layer.
+
+// Let's set up the Average Commute Times Layer style.
 let minutesStyleFn = (f, res) => {
     let color, radius;
     let minute = f.get("minute")
@@ -74,8 +101,24 @@ let minutesStyleFn = (f, res) => {
     })];
 };
 
-//Get data json  
-getHeatmapJson("../data/cummute.json").then((strData) => {
+// Load the data layer that will let us visualize the United States's Average Commute Times. 
+// We'll load it from a small JSON file hosted on our servers.
+let getJson = () => {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        // Load the Average Commute Times data from ThinkGeo's servers.
+        xhr.open("GET", "../data/cummute.json");
+        xhr.send();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                resolve(xhr.responseText)
+            }
+        }
+    })
+}
+
+let minutesLayer = null;
+getJson().then((strData) => {
     let data = JSON.parse(strData);
     let vectorSource = new ol.source.Vector();
     let featuresArr = [];
@@ -100,9 +143,9 @@ getHeatmapJson("../data/cummute.json").then((strData) => {
     minutesLayer.setVisible(true);
     map.addLayer(minutesLayer);
 })
-let animateI = document.querySelectorAll(".minutes i");
 
-//Add interaction
+// Set Minutes Style for every cluster point. 
+let animateI = document.querySelectorAll(".minutes i");
 animateI.forEach((ele) => {
     ele.addEventListener("mouseover", (e) => {
         let min = e.target.getAttribute("data").split("-")[0];
@@ -121,6 +164,15 @@ animateI.forEach((ele) => {
         })
     })
 })
+
+/*---------------------------------------------*/
+// 4. Displaying Commute Times Points Info
+/*---------------------------------------------*/
+
+// Let's add a info panel that will let users visualize the location and Average 
+// Round Trip Commute Time each cluster point. When hovering over a cluster point, 
+// we'll generate a info panel and display the lacation information in the info panel.
+
 let container = document.getElementById('popup');
 let content = document.getElementById('popup-content');
 let overlay = new ol.Overlay({
@@ -147,7 +199,8 @@ let displayFeatureInfo = (evt) => {
     }
 };
 
-
+// When hovering over a cluster point, call the displayFeatureInfo function to generate 
+// info panel and display the information.
 map.on('pointermove', function (evt) {
     if (evt.dragging) {
         return;
