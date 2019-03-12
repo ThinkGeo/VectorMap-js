@@ -66,7 +66,7 @@ getJson().then((data) => {
         let pointFeature = new ol.Feature({
             geometry: new ol.geom.Point(coord),
             // The weight value is between 0 and 1.
-            weight: points[i].value/100
+            weight: points[i].value / 100
         });
         featuresArr.push(pointFeature)
     }
@@ -117,8 +117,8 @@ let initializeMap = function () {
         target: 'map',
         // Create a default view for the map when it starts up.
         view: new ol.View({
-            // Center the map on Hangzhou, China and start at zoom level 13.
-            center: [-13625957.5212473, 4545905.05198988],
+            // Center the map on San Francisco and start at zoom level 13.
+            center: ol.proj.fromLonLat([-122.444832, 37.759400]),
             maxResolution: 40075016.68557849 / 512,
             zoom: 12,
             minZoom: 2,
