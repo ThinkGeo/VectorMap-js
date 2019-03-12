@@ -503,7 +503,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     animation["targetCenter"] = options.center;
                     center = animation["targetCenter"];
                     this.isDrag = true;
-                    // debugger;
                 }
 
                 if (options.zoom !== undefined) {
@@ -718,7 +717,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     if(type == 'LineString'){
                         this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
                     }else{
-                        this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_ / pixelRatio);
+                        this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
                         this.renderDeclutter_(declutterGroup, feature);
                     }
                 }else{ 
