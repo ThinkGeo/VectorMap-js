@@ -26,7 +26,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
         let sourceRevision = tileSource.getRevision();
         let tileGrid = tileSource.getTileGridForProjection(projection);
-        let z = tileGrid.getZForResolution(viewResolution, 0);
+        let z = tileGrid.getZForResolution(viewResolution, this.zDirection);
         // console.log(tileSource.tileCache.entries_);
         let tileResolution = tileGrid.getResolution(z);
         let oversampling = Math.round(viewResolution / tileResolution) || 1;
