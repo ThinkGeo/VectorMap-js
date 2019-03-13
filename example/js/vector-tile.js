@@ -94,6 +94,9 @@
  let stylejson;
  getJson().then((data) => {
      stylejson = JSON.parse(data);
+    // Once the styleJSON data has been downloaded, call the addRefreshListener 
+    // method that user can custom the map style by click the Refresh button.
+     addRefreshListener();
  })
 
  // This method update the StyleJSON value by what user input.
@@ -142,17 +145,20 @@
  // code we've written.
 
  // This listener will get the values from the input boxes when you click the 
- // "refresh" button, and then uses them to update the map style.
- document.getElementById('refresh').addEventListener('click', (e) => {
-     let userInput = {
-         poiSize: document.getElementById('poiSize').value,
-         waterColor: document.getElementById('water-color').value,
-         buildingColor: document.getElementById('building-color').value,
-         placement: document.getElementById('placement').value,
-     }
+ // "refresh" button, and then uses them to update the map style. We'll call 
+ // this method once the styleJson data has been completely dowloaded.
+ const addRefreshListener = () => {
+     document.getElementById('refresh').addEventListener('click', (e) => {
+         let userInput = {
+             poiSize: document.getElementById('poiSize').value,
+             waterColor: document.getElementById('water-color').value,
+             buildingColor: document.getElementById('building-color').value,
+             placement: document.getElementById('placement').value,
+         }
 
-     updateStyleJson(userInput.poiSize, userInput.waterColor, userInput.buildingColor, userInput.placement)
- })
+         updateStyleJson(userInput.poiSize, userInput.waterColor, userInput.buildingColor, userInput.placement)
+     })
+ }
 
 
  /*---------------------------------------------*/

@@ -3,8 +3,8 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   2. Map Control Setup
-//   3. Display Heat Style Polygons
+//   2. Display Heat Style Polygons
+//   3. Map Control Setup
 //   4. ThinkGeo Map Icon Fonts
 /*===========================================================================*/
 
@@ -22,7 +22,43 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 
 /*---------------------------------------------*/
-// 2. Map Control Setup
+// 2. Display Heat Style Polygons
+/*---------------------------------------------*/
+
+// This next part sets up the heat style for the placemark on our map. As we 
+// zoom out, the color of the placemarks that are close together will be deepened, 
+// and these placemarks will be merged into one region. This heat map shows magnitude 
+// of each earthquake in each placemark, with color-coded from weakest to strongest.
+
+// Create heat map layer. It uses an xml format data, which is hosted on our server, 
+// to display the heat layer.
+let heatMapLayer = new ol.layer.Heatmap({
+    source: new ol.source.Vector({
+        url: '../data/2012_Earthquakes_Mag5.xml',
+        // Define the data format as KML.
+        format: new ol.format.KML({
+            extractStyles: false
+        })
+    }),
+    // The blur size.
+    blur: 15,
+    // The radius size.
+    radius: 10
+});
+
+// When add feature to the heatmap layer, 
+heatMapLayer.getSource().on('addfeature', function (event) {
+    // 2012_Earthquakes_Mag5.xml stores the magnitude of each earthquake in a
+    // standards-violating <magnitude> tag in each Placemark.  We extract it from
+    // the Placemark's name instead.
+    let name = event.feature.get('name');
+    let magnitude = parseFloat(name.substr(2));
+    // Set weight style for every point according to magnitude.
+    event.feature.set('weight', magnitude - 5);
+});
+
+/*---------------------------------------------*/
+// 3. Map Control Setup
 /*---------------------------------------------*/
 
 // Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
@@ -63,43 +99,6 @@ let initializeMap = function () {
     // Add the pre-defined heatmap layer to our map.
     map.addLayer(heatMapLayer);
 }
-
-
-/*---------------------------------------------*/
-// 3. Display Heat Style Polygons
-/*---------------------------------------------*/
-
-// This next part sets up the heat style for the placemark on our map. As we 
-// zoom out, the color of the placemarks that are close together will be deepened, 
-// and these placemarks will be merged into one region. This heat map shows magnitude 
-// of each earthquake in each placemark, with color-coded from weakest to strongest.
-
-// Create heat map layer. It uses a xml format data, which is hosted on our server, 
-// to display the heat layer.
-let heatMapLayer = new ol.layer.Heatmap({
-    source: new ol.source.Vector({
-        url: '../data/2012_Earthquakes_Mag5.xml',
-        // Define the data format as KML.
-        format: new ol.format.KML({
-            extractStyles: false
-        })
-    }),
-    // The blur size.
-    blur: 15,
-    // The radius size.
-    radius: 10
-});
-
-// When add feature to the heatmap layer, 
-heatMapLayer.getSource().on('addfeature', function (event) {
-    // 2012_Earthquakes_Mag5.xml stores the magnitude of each earthquake in a
-    // standards-violating <magnitude> tag in each Placemark.  We extract it from
-    // the Placemark's name instead.
-    let name = event.feature.get('name');
-    let magnitude = parseFloat(name.substr(2));
-    // Set weight style for every point according to magnitude.
-    event.feature.set('weight', magnitude - 5);
-});
 
 
 /*---------------------------------------------*/

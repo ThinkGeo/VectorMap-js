@@ -30,7 +30,6 @@ let initializeMap = function () {
     map.addControl(new ol.control.FullScreen());
 
     addOverlayToMap();
-    
 }
 
 let addOverlayToMap = function () {
@@ -114,7 +113,6 @@ let addOverlayToMap = function () {
         document.querySelector("#educationLayerChart").appendChild(aqiDiv)
     }
 
-
     let stateArr = []
     for (let index = 0; index < 26; index++) {
         stateArr.push([]);
@@ -167,7 +165,6 @@ let addOverlayToMap = function () {
             map.addOverlay(educationOverlay);
         }
     })
-
 }
 
 WebFont.load({

@@ -59,9 +59,7 @@ let initializeMap = function () {
 
     // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
-
-    // Add the pre-defined layer to our map.
-    map.addLayer(precipitationDistributionLayer);
+    addPrecipitationDistributionLayer();
 }
 
 
@@ -112,90 +110,96 @@ let stylePlaneFunc = function (feature) {
 
 // Load the data layer that will let us visualize China's precipitation distribution. 
 // We'll load it from a small JSON file hosted on our servers.
-let precipitationDistributionLayer;
-const getJson = () => {
-    let readTextFile = new Promise(function (resolve, reject) {
-        // Load the China Rain Fall data from ThinkGeo's servers.
-        let file = "../data/rainfall.json";
-        let rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType("application/json");
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function (ERR) {
-            if (rawFile.readyState === 4) {
-                if (rawFile.status == "200") {
-                    resolve(rawFile.responseText);
-                } else {
-                    reject(new Error(ERR));
+// We'll call this method when the map has 
+const addPrecipitationDistributionLayer = () => {
+    let precipitationDistributionLayer;
+    const getJson = () => {
+        let readTextFile = new Promise(function (resolve, reject) {
+            // Load the China Rain Fall data from ThinkGeo's servers.
+            let file = "../data/rainfall.json";
+            let rawFile = new XMLHttpRequest();
+            rawFile.overrideMimeType("application/json");
+            rawFile.open("GET", file, true);
+            rawFile.onreadystatechange = function (ERR) {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status == "200") {
+                        resolve(rawFile.responseText);
+                    } else {
+                        reject(new Error(ERR));
+                    }
                 }
-            }
-        };
-        rawFile.send(null);
-    });
-    return readTextFile;
-};
-
-getJson().then((data) => {
-    result = JSON.parse(data);
-
-    let geojson = {
-        "type": "FeatureCollection",
-        "totalFeatures": result.contours.length,
-        // Let's build up an array of features, one for each point in our dataset.
-        "features": []
+            };
+            rawFile.send(null);
+        });
+        return readTextFile;
     };
 
-    // For each feature in the dataset, add it to the feature 
-    // collection array and create a point shape.
-    for (let i = 0; i < result.contours.length; i++) {
-        let contour = result.contours[i];
-        let coords = [];
-        for (let j = 0; j < contour.latAndLong.length; j++) {
-            let latlon = contour.latAndLong[j];
-            coords.push(ol.proj.transform([latlon[1], latlon[0]], 'EPSG:4326', 'EPSG:3857'));
-        }
-        let feature = {
-            "type": "Feature",
-            "geometry_name": "geom",
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [coords]
-            },
-            "properties": {
-                "color": contour.color,
-                "symbol": contour.symbol
-            }
+    getJson().then((data) => {
+        result = JSON.parse(data);
+
+        let geojson = {
+            "type": "FeatureCollection",
+            "totalFeatures": result.contours.length,
+            // Let's build up an array of features, one for each point in our dataset.
+            "features": []
         };
-        geojson.features.push(feature);
-    }
 
-    // Create a vector Source that will enable us to display our data points 
-    // as map, and pass our array of features into it. 
-    let vectorSource = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(geojson)
-    });
-
-    // Create Precipitation Distribution Layer whose source is our China Rain Fall data, and add it to our map.
-    precipitationDistributionLayer = new ol.layer.Vector({
-        source: vectorSource,
-        style: function (feature) {
-            textStyle.getText().setText(feature.get('symbol'));
-            return textStyle;
+        // For each feature in the dataset, add it to the feature 
+        // collection array and create a point shape.
+        for (let i = 0; i < result.contours.length; i++) {
+            let contour = result.contours[i];
+            let coords = [];
+            for (let j = 0; j < contour.latAndLong.length; j++) {
+                let latlon = contour.latAndLong[j];
+                coords.push(ol.proj.transform([latlon[1], latlon[0]], 'EPSG:4326', 'EPSG:3857'));
+            }
+            let feature = {
+                "type": "Feature",
+                "geometry_name": "geom",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [coords]
+                },
+                "properties": {
+                    "color": contour.color,
+                    "symbol": contour.symbol
+                }
+            };
+            geojson.features.push(feature);
         }
-    });
 
-    // We set the Precipitation Distribution Layer's default style as spare space with color.
-    precipitationDistributionLayer.setStyle(stylePlaneFunc);
-    precipitationDistributionLayer.setOpacity(0.8);
+        // Create a vector Source that will enable us to display our data points 
+        // as map, and pass our array of features into it. 
+        let vectorSource = new ol.source.Vector({
+            features: (new ol.format.GeoJSON()).readFeatures(geojson)
+        });
 
-    // Check the status of checkbox to switch the Precipitation Distribution Layer style.
-    document.getElementById('checkbox').addEventListener('change', function () {
-        if (document.getElementById('checkbox').checked) {
-            precipitationDistributionLayer.setStyle(stylePlaneFunc);
-        } else {
-            precipitationDistributionLayer.setStyle(styleLineFunc);
-        }
+        // Create Precipitation Distribution Layer whose source is our China Rain Fall data, and add it to our map.
+        precipitationDistributionLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: function (feature) {
+                textStyle.getText().setText(feature.get('symbol'));
+                return textStyle;
+            }
+        });
+
+        // We set the Precipitation Distribution Layer's default style as spare space with color.
+        precipitationDistributionLayer.setStyle(stylePlaneFunc);
+        precipitationDistributionLayer.setOpacity(0.8);
+
+        // Check the status of checkbox to switch the Precipitation Distribution Layer style.
+        document.getElementById('checkbox').addEventListener('change', function () {
+            if (document.getElementById('checkbox').checked) {
+                precipitationDistributionLayer.setStyle(stylePlaneFunc);
+            } else {
+                precipitationDistributionLayer.setStyle(styleLineFunc);
+            }
+        })
+
+        // Add the pre-defined layer to our map.
+        map.addLayer(precipitationDistributionLayer);
     })
-})
+}
 
 /*---------------------------------------------*/
 // 4. ThinkGeo Map Icon Fonts

@@ -58,8 +58,8 @@ const initializeMap = function () {
     // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
 
-    // Add the pre-defined echarts layer to our map.
-    echartslayer.appendTo(map)
+    // Create Average Precipitation Layer and add it to map.
+    setupAveragePrecipitationLayer();
 }
 
 /*---------------------------------------------*/
@@ -69,104 +69,109 @@ const initializeMap = function () {
 // Now we'll create the Average Precipitation layer which will let us visualize 
 // the Average Precipitation statistics on the map. We'll load the data from a 
 // small JSON file hosted on our servers.
-
-let echartslayer;
-let xhr = new XMLHttpRequest();
-xhr.open("GET", "../data/scatter.json");
-xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-        let data = JSON.parse(xhr.responseText)
-        var convertData = function (data) {
-            var res = [];
-            for (var i = 0; i < data.length; i++) {
-                res.push({
-                    name: data[i].name,
-                    value: data[i].coordinate.concat(data[i].value)
-                });
-            }
-            return res;
-        };
-
-        // Set the style of each point.
-        var option = {
-            title: {
-                left: 'center',
-                textStyle: {
-                    color: '#fff'
+// We'll call this method once the map has been set up.
+const setupAveragePrecipitationLayer = () => {
+    let averagePrecipitationLayer;
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "../data/scatter.json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let data = JSON.parse(xhr.responseText)
+            var convertData = function (data) {
+                var res = [];
+                for (var i = 0; i < data.length; i++) {
+                    res.push({
+                        name: data[i].name,
+                        value: data[i].coordinate.concat(data[i].value)
+                    });
                 }
-            },
-            tooltip: {
-                trigger: 'item',
-                formatter: function (obj) {
-                    return `${obj.data.value[2]} Milli­metres`
-                },
+                return res;
+            };
 
-            },
-            openlayers: {},
-            series: [{
-                    name: 'Milli­metres',
-                    type: 'scatter',
-                    data: convertData(data),
-                    symbolSize: function (val) {
-                        return val[2] / 40;
-                    },
-                    label: {
-                        normal: {
-                            formatter: '{b}',
-                            position: 'right',
-                            show: false
-                        },
-                        emphasis: {
-                            show: true
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: '#7FFF00'
-                        }
+            // Set the style of each point.
+            var option = {
+                title: {
+                    left: 'center',
+                    textStyle: {
+                        color: '#fff'
                     }
                 },
-                {
-                    name: 'Top 5',
-                    type: 'effectScatter',
-                    data: convertData(data.sort(function (a, b) {
-                        return b.value - a.value;
-                    }).slice(0, 5)),
-                    symbolSize: function (val) {
-                        return val[2] / 40;
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (obj) {
+                        return `${obj.data.value[2]} Milli­metres`
                     },
-                    showEffectOn: 'render',
-                    rippleEffect: {
-                        brushType: 'stroke'
-                    },
-                    hoverAnimation: true,
-                    label: {
-                        normal: {
-                            formatter: '{b}',
-                            position: 'right',
-                            show: true
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: '#76EE00',
-                            shadowBlur: 10,
-                            shadowColor: '#333'
-                        }
-                    },
-                    zlevel: 1
-                }
-            ]
-        };
 
-        echartslayer = new ol3Echarts(option, {
-            hideOnMoving: false,
-            hideOnZooming: false,
-            forcedPrecomposeRerender: true
-        })
+                },
+                openlayers: {},
+                series: [{
+                        name: 'Milli­metres',
+                        type: 'scatter',
+                        data: convertData(data),
+                        symbolSize: function (val) {
+                            return val[2] / 40;
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#7FFF00'
+                            }
+                        }
+                    },
+                    {
+                        name: 'Top 5',
+                        type: 'effectScatter',
+                        data: convertData(data.sort(function (a, b) {
+                            return b.value - a.value;
+                        }).slice(0, 5)),
+                        symbolSize: function (val) {
+                            return val[2] / 40;
+                        },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        hoverAnimation: true,
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#76EE00',
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        zlevel: 1
+                    }
+                ]
+            };
+
+            averagePrecipitationLayer = new ol3Echarts(option, {
+                hideOnMoving: false,
+                hideOnZooming: false,
+                forcedPrecomposeRerender: true
+            })
+
+            // Add the pre-defined echarts layer to our map.
+            averagePrecipitationLayer.appendTo(map)
+        }
     }
+    xhr.send();
 }
-xhr.send();
 
 
 /*---------------------------------------------*/
