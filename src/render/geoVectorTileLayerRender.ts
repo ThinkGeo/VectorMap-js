@@ -165,13 +165,19 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         }
         // delete a large interval for drawing
         var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-        if(frameState.isDrag || frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut){
-            while(z > (+tilesToDrawKeys[0])){
-                delete tilesToDrawByZ[tilesToDrawKeys[0]];
-                tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+        if((frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut)){
+            let item = tilesToDrawKeys.filter((item) => {
+                return +item >= z;
+            });
+            if(item.length>0){
+                while(z > (+tilesToDrawKeys[0])){
+                    delete tilesToDrawByZ[tilesToDrawKeys[0]];
+                    tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+                }
             }
         }
-        if(frameState.isDrag){
+        
+        if(frameState.isDrag && Object.keys(tilesToDrawByZ[z]).length>0){
             while(z != (+tilesToDrawKeys[0])){
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
@@ -209,7 +215,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
             this.renderedTiles.length = 0;
             /** @type {Array.<number>} */
             let zs = Object.keys(tilesToDrawByZ).map(Number);
-            
+            // console.log(zs)
             zs.sort(function (a, b) {
                 if (a === z) {
                     return 1;
