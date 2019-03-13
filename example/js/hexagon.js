@@ -1,81 +1,73 @@
+/*===========================================================================*/
+// Chicago Crime - Hex Grid
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Styling
+//   4. Hex Grid Layer Setup
+/*===========================================================================*/
 
-//Create default layer
-let defaultLayer = new ol.layer.Tile({
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
+// Cloud Maps Raster Tile service to display a detailed map and its the map style is dark.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
+let baseLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png" +
-            "?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~",// please go to https://cloud.thinkgeo.com to create
+        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
         tileSize: 512,
     }),
 });
 
-//Create map
+// Create and initialize our interactive map.
 let map = new ol.Map({
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
-    layers: [defaultLayer],
+    // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
+    layers: [baseLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
+    // Create a default view for the map when it starts up.
     view: new ol.View({
-        maxZoom: 19,
+        // Center the map on Chicago and start at zoom level 10.
         maxResolution: 40075016.68557849 / 512,
-        zoom: 10,
         center: ol.proj.fromLonLat([-87.64620, 41.82623]),
+        zoom: 10,
+        minZoom: 1,
+        maxZoom: 19,
         progressiveZoom: false,
-
     })
 });
 
-//Map full screen control
+// Add a button to the map that lets us toggle full-screen display mode.
 map.addControl(new ol.control.FullScreen());
 
-//Read data file
-const getJson = () => {
-    let readTextFile = new Promise(function (resolve, reject) {
-        //Can be replaced with your local data or network data
-        let file = "../data/crime.json"; //The data source is https://catalog.data.gov/dataset and the data is preprocessed
-        let rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType("application/json");
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function (ERR) {
-            if (rawFile.readyState === 4) {
-                if (rawFile.status == "200") {
-                    resolve(rawFile.responseText);
-                } else {
-                    reject(new Error(ERR));
-                }
-            }
-        }
-        rawFile.send(null);
-    });
-    return readTextFile;
-};
 
-//Add features
-let source = new ol.source.Vector();
-const addFeatures = () => {
-    let features = [];
-    getJson().then((data) => {
-        let result = JSON.parse(data);
-        for (let k = 0, length = result.length; k < length; k++) {
-            let point = ol.proj.fromLonLat(result[k].geometry.coordinates);
-            let seed = point;
-            let f = new ol.Feature(new ol.geom.Point(
-                seed
-            ));
-            f.set('id', k);
-            features.push(f);
-        }
-        source.clear();
-        source.addFeatures(features);
-    });
-};
+/*---------------------------------------------*/
+// 3. Styling
+/*---------------------------------------------*/
 
-addFeatures();
-
-let hexbin, layer;
-
-let min, max, maxi;
-const styleFn = function (f, res) {
-    // depending on the number of objects in the aggregate.
+// This part sets up the Hex Grid style. This display Chicago drug-related 
+// crimes in 2016. The more crimes in a place the deeper the color of each 
+// hex grid will be.
+const createStyle = (f) => {
     let color;
     const xxl = 251;
     const xl = 150;
@@ -95,44 +87,75 @@ const styleFn = function (f, res) {
     } else {
         color = '#fd6962';
     }
-    return [new ol.style.Style({
+    let style = [new ol.style.Style({
         fill: new ol.style.Fill({
             color: color
         })
-    })];
+    })]
+    return style;
 }
-// Create HexBin and calculate min/max
-const reset = function () {
-    let size = 1000;
-    if (layer) map.removeLayer(layer);
-    let features;
 
-    hexbin = new ol.source.HexBin({
-        source: source, // source of the bin
-        size: size // hexagon size (in map unit)
-    });
-    layer = new ol.layer.Vector({
-        source: hexbin,
-        opacity: 0.7,
-        style: styleFn,
-        renderMode: 'image'
-    });
-    features = hexbin.getFeatures();
-    // Calculate min/ max value
-    min = Infinity;
-    max = 0;
-    for (let i = 0, f; f = features[i]; i++) {
-        let n = f.get('features').length;
-        if (n < min) min = n;
-        if (n > max) max = n;
-    }
-    let dl = (max - min);
-    maxi = max;
-    min = Math.max(1, Math.round(dl / 4));
-    max = Math.round(max - dl / 3);
+/*---------------------------------------------*/
+// 4. Hex Grid Layer Setup
+/*---------------------------------------------*/
 
-    // Add layer
-    map.addLayer(layer);
+// This next step part sets up the Hex Grid Layer on our map. Now that we've set 
+// up our map's base layer, we need to actually load the point data that will let 
+// us visualize Chicago crimes on the map. We'll load it from a JSON file hosted 
+// on our servers.
+const getJson = (filePath) => {
+    let readTextFile = new Promise(function (resolve, reject) {
+        let rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", filePath, true);
+        rawFile.onreadystatechange = function (ERR) {
+            if (rawFile.readyState === 4) {
+                if (rawFile.status == "200") {
+                    resolve(rawFile.responseText);
+                } else {
+                    reject(new Error(ERR));
+                }
+            }
+        }
+        rawFile.send(null);
+    });
+    return readTextFile;
 };
 
-reset();
+// Once the JSON file has been fully downloaded, just get the coordinates and create 
+// features for the Hex Grid Layer.
+getJson("../data/crime.json").then((data) => {
+    let result = JSON.parse(data);
+    let features = [];
+    let source = new ol.source.Vector();
+    for (let i = 0, length = result.length; i < length; i++) {
+        // Create feature for each point.
+        let coord = ol.proj.fromLonLat(result[i].geometry.coordinates);
+        let feature = new ol.Feature(new ol.geom.Point(coord));
+        feature.set('id', i);
+        features.push(feature);
+    }
+    source.clear();
+    source.addFeatures(features);
+    // Call the createHexGridLayer method to create Hex Grid Layer and add it to our map.
+    createHexGridLayer(source);
+});
+
+const createHexGridLayer = (source) => {
+    // Set the hexagon source and size.
+    let hexbin = new ol.source.HexBin({
+        source: source, 
+        size: 1000
+    });
+
+    // Create the hex grid layer using the pre-defined source and style.
+    let hexGridlayer = new ol.layer.Vector({
+        source: hexbin,
+        opacity: 0.7,
+        style: createStyle,
+        renderMode: 'image'
+    });
+
+    // Add the Hex Grid Layer to our map.
+    map.addLayer(hexGridlayer);
+};
