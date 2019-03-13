@@ -733,9 +733,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }else{
                         this.setTextStyle(style);
                         if(this.label){          
-                            var lineWidth = (this.state_.lineWidth) * this.state_.scale;        
+                            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
-                            this.height = this.label.height + lineWidth; 
+                            this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
                             this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
@@ -1079,6 +1079,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var end = 2;
             var stride = 2;    
             var flatCoordinates = options.flatCoordinates;
+            var image = options.image;
             this.originX = options.originX;
             this.originY = options.originY;
             this.imageWidth = options.imageWidth;
@@ -1089,6 +1090,28 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.rotation = options.rotation;
             this.rotateWithView = 1;
             this.scale = options.scale;
+
+            var currentImage;
+            if (this.images_.length === 0) {
+                this.images_.push(image);
+            } else {
+                currentImage = this.images_[this.images_.length - 1];
+                if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
+                    this.groupIndices.push(this.indices.length);
+                    this.images_.push(image);
+                }
+            }
+
+            // if (this.hitDetectionImages_.length === 0) {
+            //     this.hitDetectionImages_.push(hitDetectionImage);
+            // } else {
+            //     currentImage =
+            //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+            //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+            //         this.hitDetectionGroupIndices.push(this.indices.length);
+            //         this.hitDetectionImages_.push(hitDetectionImage);
+            //     }
+            // }
 
             this.drawCoordinates(
                 flatCoordinates, offset, end, stride);
@@ -1128,6 +1151,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     anchorX: this.anchorX,
                     anchorY: this.anchorY,
                     label: this.label,
+                    image: this.image,
                     imageHeight: this.imageHeight,
                     imageWidth: this.imageWidth,
                     opacity: this.opacity,

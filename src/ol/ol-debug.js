@@ -35472,7 +35472,7 @@ function olInit() {
         context.translate(x, y);
 
         context.beginPath();
-
+        
         var points = this.points_;
         if (points === Infinity) {
             context.arc(
@@ -68033,28 +68033,29 @@ function olInit() {
         var size = imageStyle.getSize();
         var scale = imageStyle.getScale();
 
-        var currentImage;
-        if (this.images_.length === 0) {
-            this.images_.push(image);
-        } else {
-            currentImage = this.images_[this.images_.length - 1];
-            if (ol.getUid(currentImage) != ol.getUid(image)) {
-                this.groupIndices.push(this.indices.length);
-                this.images_.push(image);
-            }
-        }
+        // var currentImage;
+        // if (this.images_.length === 0) {
+        //     this.images_.push(image);
+        // } else {
+        //     currentImage = this.images_[this.images_.length - 1];
+        //     if (ol.getUid(currentImage) != ol.getUid(image)) {
+        //         this.groupIndices.push(this.indices.length);
+        //         this.images_.push(image);
+        //     }
+        // }
 
-        if (this.hitDetectionImages_.length === 0) {
-            this.hitDetectionImages_.push(hitDetectionImage);
-        } else {
-            currentImage =
-                this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-            if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
-                this.hitDetectionGroupIndices.push(this.indices.length);
-                this.hitDetectionImages_.push(hitDetectionImage);
-            }
-        }
+        // if (this.hitDetectionImages_.length === 0) {
+        //     this.hitDetectionImages_.push(hitDetectionImage);
+        // } else {
+        //     currentImage =
+        //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+        //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+        //         this.hitDetectionGroupIndices.push(this.indices.length);
+        //         this.hitDetectionImages_.push(hitDetectionImage);
+        //     }
+        // }
 
+        this.image = image;
         this.anchorX = anchor[0];
         this.anchorY = anchor[1];
         this.height = size[1];
@@ -68789,20 +68790,20 @@ function olInit() {
                     stride, -this.origin[0], -this.origin[1]);
                     
                 if (this.state_.changed) {
-                    var z_order = lineStringGeometry.properties_.z_order;
-                    var styleId = lineStringGeometry.styleId;               
+                    var z_order = lineStringGeometry.properties_.layer;
+                    var styleId = lineStringGeometry.styleId;
 
                     // for railway
                     if(z_order == undefined){
                         z_order = 0;
                     }
-                    
+
                     z_order += 100;
 
                     if(styleId.includes('#c')){
                         z_order = 1 / (z_order + 0.5);
                     }else{
-                        z_order = 1 / (z_order);   
+                        z_order = 1 / z_order;   
                     }
 
                     this.zCoordinates.push(z_order);
@@ -68848,7 +68849,7 @@ function olInit() {
             this.startIndices.push(indexCount);
             // this.startIndicesFeature.push(feature);
             if (this.state_.changed) {
-                var z_order = multiLineStringGeometry.properties_.z_order;
+                var z_order = multiLineStringGeometry.properties_.layer;
                 var styleId = multiLineStringGeometry.styleId;
 
                 // for railway
@@ -100670,6 +100671,7 @@ function olInit() {
                 }
                 radius += context.canvas.width * 0.5;
                 context.beginPath();
+                debugger
                 context.arc(x + context.canvas.width * 0.5, y + context.canvas.width * 0.5, radius, 0, 2 * Math.PI, false);
                 context.closePath();
                 if (fill) {
@@ -102491,9 +102493,9 @@ function olInit() {
             // console.log(tileCoord);
             
             // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "2,0,-2")){
+            // if(!(requestTileCoord.toString() == "6,14,-27")){
             // if(tileCoord.toString() !== "12,946,-1653"){
-                // if(tileCoord.toString() !== "16,15147,-26446"){
+                // if(tileCoord.toString() !== "16,15146,-26447"){
             // if(tileCoord.toString() !== "17,30298,-52746"){
                 // return
             // }
