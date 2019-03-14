@@ -1,115 +1,155 @@
-//Load vector map icon font
-WebFont.load({
-    custom: {
-        families: ['vectormap-icons'],
-        urls: ['https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css']
-    }
+/*===========================================================================*/
+// JQuery
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Popup Overlay Setup
+//   4. Reverse Geocoding Setup
+//   5. Event Listeners
+/*===========================================================================*/
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
+
+
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
+// Cloud Maps Raster Tile service to display a detailed street map.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
+let baseLayer = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
+        tileSize: 512,
+    }),
 });
 
-
-const styleJson = {
-    light: 'https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json',
-}
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~' // please go to https://cloud.thinkgeo.com to create
-
-//Create layer
-let light = new ol.mapsuite.VectorTileLayer(styleJson.light, {
-    apiKey: apiKey,
-    layerName: 'light'
+// Create and initialize our interactive map.
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
+    // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
+    layers: [baseLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
+    target: 'map',
+    // Create a default view for the map when it starts up.
+    view: new ol.View({
+        // Center the map on Frisco, TX and start at zoom level 16.
+        center: ol.proj.fromLonLat([-96.804616, 33.120202]),
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 16,
+        minZoom: 1,
+        maxZoom: 19
+    })
 });
 
-//Create view
-let view = new ol.View({
-    center: ol.proj.fromLonLat([-96.804616, 33.120202]),
-    maxZoom: 19,
-    maxResolution: 40075016.68557849 / 512,
-    zoom: 16,
-})
-
-// This function will create and initialize our interactive map.
-// We'll call it later when our POI icon font has been fully downloaded,
-// which ensures that the POI icons display as intended.
-let map;
-let initializeMap = function () {
-    map = new ol.Map({
-        loadTilesWhileAnimating: true,
-        loadTilesWhileInteracting: true,
-        layers: [light],
-        target: 'map',
-        view: view
-    });
+// Add a button to the map that lets us toggle full-screen display mode.
+map.addControl(new ol.control.FullScreen());
 
 
-    //Control map full screen
-    map.addControl(new ol.control.FullScreen());
+/*---------------------------------------------*/
+// 3. Popup Overlay Setup
+/*---------------------------------------------*/
 
-    //User interaction
-    map.addEventListener('click', function (evt) {
-        let coordinate = evt.coordinate;
-        reverseGeocode([coordinate[1], coordinate[0]])
-    });
-}
+// This next part sets up the popup container for the information that we 
+// get from the location you click.
 
-
-//   Elements that make up the popup.
+// We need to get the DOM container.
 const container = document.getElementById('popup');
-container.classList.remove('hidden');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
 
+// Create the Overlay for our map and add the DOM Nodes to its container. 
+// So that we can control the info panel on our map.
 let overlay = new ol.Overlay({
-    element: container,
-    autoPan: true,
-    autoPanAnimation: {
-        duration: 2000
-    }
+    element: container
 });
 
-closer.onclick = function () {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
-};
-
-const popUp = function (address, centerCoordinate) {
-    view.animate({
-        center: centerCoordinate,
-        duration: 2000
-    });
-    let addressArr = address.split(",");
-    overlay.setPosition(centerCoordinate);
-    map.addOverlay(overlay);
-    let length = addressArr.length;
-    content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
+// This method recieve the Best Matched Location and coordnate to style the 
+const showPopUp = (bestMatchLocation, centerCoordinate) => {
+    if (bestMatchLocation) {
+        let address = bestMatchLocation.data.address;
+        // When clicking on the map, slide the map over to the clicked point
+        // over a duration of 2000 milliseconds.
+        map.getView().animate({
+            center: centerCoordinate,
+            duration: 2000
+        });
+        let addressArr = address.split(",");
+        overlay.setPosition(centerCoordinate);
+        map.addOverlay(overlay);
+        let length = addressArr.length;
+        content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
+    } else {
+        window.alert('No results');
+    }
 }
 
-// Get data
-const reverseGeocode = function (coordinate) {
-    const baseURL = 'https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/';
-    let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&Srid=3857`;
 
-    let jqxhr = $.get(getURL, function (data) {
-        if (data.data.bestMatchLocation) {
-            let address = data.data.bestMatchLocation.data.address;
+/*---------------------------------------------*/
+// 4. Reverse Geocoding Setup
+/*---------------------------------------------*/
 
-            popUp(address, [coordinate[1], coordinate[0]])
-
-        } else {
-            window.alert('No results found');
+// This method performs the actual reverse geocode using the ThinkGeo Cloud. 
+// By passing in the coordinates of the map location that was clicked, we can 
+// get back closest matching address of that click, as well as 
+// a collection of places in the vicinity.  For more details, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
+const getReverseGeocoder = (coordinate, apiKey) => {
+    return new Promise((resolve, reject) => {
+        let url = `https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/${coordinate[1]}, ${coordinate[0]}?Srid=3857&apikey=${apiKey}`;
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4) {
+                if (xhr.status === 200) {
+                    resolve(xhr)
+                } else {
+                    reject({
+                        status: request.status,
+                        statusText: request.statusText
+                    })
+                }
+            }
         }
-    });
-
-    jqxhr.fail(function (data) {
-        window.alert('The decimal degree latitude value you provided was out of range.');
+        xhr.send();
     })
 }
 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    },
-    // The "active" property defines a function to call when the font has
-    // finished downloading.  Here, we'll call our initializeMap method.
-    active: initializeMap
+
+/*---------------------------------------------*/
+// 5. Event Listeners
+/*---------------------------------------------*/
+
+// These event listeners tell the UI when it's time to execute all of the 
+// code we've written.
+
+// This listener will let the Popup Overlay disapear once you clicked the "close" 
+// icon on the top right corner of the popup panel.
+closer.addEventListener('click', () => {
+    overlay.setPosition(undefined);
+})
+
+// This listener gets the coordinates when you click on the map, and then uses them 
+// to perform a reverse geocode with the ThinkGeo Cloud. Once the reverse geocode 
+// result has been recieved, show up the popup panel.
+map.addEventListener('click', (evt) => {
+    let coordinate = evt.coordinate;
+    getReverseGeocoder(coordinate, apiKey).then((res) => {
+        response = JSON.parse(res.response);
+        let bestMatchLocation = response.data.bestMatchLocation;
+        showPopUp(bestMatchLocation, coordinate)
+    })
 });
