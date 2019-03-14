@@ -70,7 +70,7 @@
  // style layer.
 
  // Read a StyleJSON file data and assign the value to the variable -- stylejson.
- let getJson = () => {
+ const getJson = () => {
      let readTextFile = new Promise(function (resolve, reject) {
          let file = "../data/vectortils_gray.json";
          var rawFile = new XMLHttpRequest();

@@ -103,7 +103,7 @@ let minutesStyleFn = (f, res) => {
 
 // Load the data layer that will let us visualize the United States's Average Commute Times. 
 // We'll load it from a small JSON file hosted on our servers.
-let getJson = () => {
+const getJson = () => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         // Load the Average Commute Times data from ThinkGeo's servers.
