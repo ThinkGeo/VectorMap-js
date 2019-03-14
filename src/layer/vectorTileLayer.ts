@@ -867,7 +867,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 if(ratio >= 3){
                     ratio /= 2;
                 }
-                var distance = 180 * ratio;
+                var distance = 150 * ratio;
                 var tmpLength = pathLength - textLength;
                 var centerPoint = tmpLength / 2;
                 var leftPoint = centerPoint;
@@ -949,7 +949,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 if(ratio >= 3){
                     ratio /= 2;
                 }
-                var distance = 280 * ratio;
+                var distance = 100 * ratio;
                 var tmpLength = pathLength - width;
                 var centerPoint = tmpLength / 2 + spaceDistance;
                 var leftPoint = centerPoint;

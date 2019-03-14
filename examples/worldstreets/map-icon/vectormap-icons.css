@@ -3,17 +3,17 @@
  */
 
 @font-face {
-    font-family: "thinkgeo-icons-webfont";
-    src: url("thinkgeo-icons-webfont.eot"); /* IE9 */
-    src: url("thinkgeo-icons-webfont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-    url("thinkgeo-icons-webfont.woff") format("woff"), /* chrome、firefox */
-    url("thinkgeo-icons-webfont.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-    url("thinkgeo-icons-webfont.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
+    font-family: "vectormap-icons";
+    src: url("vectormap-icons.eot"); /* IE9 */
+    src: url("vectormap-icons.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("vectormap-icons.woff") format("woff"), /* chrome、firefox */
+    url("vectormap-icons.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    url("vectormap-icons.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
 }
 
 
 .icon {
-    font-family: "thinkgeo-icons-webfont" !important;
+    font-family: "vectormap-icons" !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -297,7 +297,7 @@
   content: "\e044";
 }
 
-.icon-tg-windfill:before {
+.icon-tg-windmill:before {
   content: "\e045";
 }
 
