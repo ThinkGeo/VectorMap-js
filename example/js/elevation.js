@@ -1,14 +1,14 @@
-var selectedWaypoint;
-var chart;
-var chartCtx;
-var styles;
-var draw;
-var samplesNumber;
-var interval;
-var intervalLine;
-var intervalDistanceUnit = 'Feet';
+let selectedWaypoint;
+let chartCtx;
+let drawLineButton;
+let wayPointNumRange;
 
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+let defaultClient = GisServerApis.ApiClient.instance;
+defaultClient.basePath = 'https://cloud.thinkgeo.com';
+let APIKey = defaultClient.authentications['API Key'];
+APIKey.apiKey = apiKey;
 
 const urls = {
 	light: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
@@ -77,16 +77,8 @@ const drawLineControl = function (opt_options) {
 
 ol.inherits(drawLineControl, ol.control.Control);
 
-var lineLayer = new ol.layer.Vector({
-	source: new ol.source.Vector(),
-	style: function (feature) {
-		var key = feature.get('type');
-		return styles[key];
-	}
-});
 
-//Define style
-var styles = {
+let styles = {
 	waypoint: new ol.style.Style({
 		image: new ol.style.Circle({
 			radius: 3,
@@ -126,30 +118,27 @@ var styles = {
 	})
 };
 
-var addFeature = function (feature) {
-	lineLayer.getSource().addFeature(feature);
-};
-var removeFeature = function (feature) {
-	lineLayer.getSource().removeFeature(feature);
-};
+let lineLayer = new ol.layer.Vector({
+	source: new ol.source.Vector(),
+	style: function (feature) {
+		let type = feature.get('type');
+		return styles[type];
+	}
+});
 
-
-//Craete map
-var map = new ol.Map({
-	controls: ol.control
-		.defaults({
-			attributionOptions: {
-				collapsible: false
-			}
-		})
-		.extend([new drawLineControl()]),
-
+let map = new ol.Map({
+	controls: ol.control.defaults({
+		attributionOptions: {
+			collapsible: false
+		}
+	}).extend([new drawLineControl()]),
 	layers: [darkLayer, lightLayer, aerialLayer, transparentBackgroundLayer, lineLayer],
 	target: 'map',
 	view: new ol.View({
 		center: ol.proj.fromLonLat([-122.405729, 37.802898]),
 		maxResolution: 40075016.68557849 / 512,
 		zoom: 16,
+		minZoom: 1,
 		maxZoom: 19,
 		progressiveZoom: false
 	})
@@ -165,239 +154,19 @@ map.addInteraction(
 	})
 );
 
-var drawLineElevation = function (feature, wkt) {
-	var elevationApiInstance = new GisServerApis.ElevationApi();
-	if (wkt) {
-		opts = {
-			srid: 3857,
-			numberOfSegments: samplesNumber || 15,
-			intervalDistance: intervalLine || null,
-			elevationUnit: 'Feet',
-			intervalDistanceUnit: intervalDistanceUnit || 'Feet'
-		};
-		var grades = [];
-		elevationApiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
-			if (error) {
-				console.error(error);
-			} else {
-				for (let i = 0; i < data.data.length; i++) {
-					var grade = data.data[i].grade;
-					grades.push(grade);
-				}
-			}
-		});
-
-		elevationApiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
-			if (error) {
-				console.log(error);
-			} else {
-				var format = new ol.format.WKT();
-				var geom = format.readGeometry(wkt);
-				var coordinates = geom.getLastCoordinate();
-				addFeature(
-					new ol.Feature({
-						geometry: new ol.geom.Point(coordinates),
-						type: 'end'
-					})
-				);
-				var l = data.data.length;
-				for (let i = 0; i < l; i++) {
-					var item = data.data[i];
-					var start = data.data[0];
-					var waypoint = format.readFeature(item.wellKnownText);
-					var startpoint = format.readFeature(start.wellKnownText);
-					startpoint.set('type', 'start');
-					waypoint.set('type', 'waypoint');
-					addFeature(startpoint);
-					addFeature(waypoint);
-				}
-				var datas = getChartDataSet(data.data);
-				drawChart(datas, grades);
-			}
-		});
-	} else {
-		var line = feature.getGeometry();
-		if (line.getLength() > 20000) {
-			window.alert('The test distance is too long and the input is invalid. Please re-enter!');
-			clear();
-			drawChart(null);
-			feature.set('type', null);
-			map.removeInteraction(
-				new ol.interaction.Draw({
-					source: lineLayer.getSource(),
-					type: 'LineString'
-				})
-			);
-		} else {
-			var format = new ol.format.WKT();
-			var wkt = format.writeGeometry(feature.getGeometry());
-			var opts = {
-				srid: 3857,
-				numberOfSegments: samplesNumber || 15,
-				intervalDistance: intervalLine || null,
-				elevationUnit: 'Feet',
-				intervalDistanceUnit: intervalDistanceUnit || 'Feet'
-			};
-			var grades = [];
-			elevationApiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
-				if (error) {
-					console.error(error);
-				} else {
-					for (let i = 0; i < data.data.length; i++) {
-						var grade = data.data[i].grade;
-						grades.push(grade);
-					}
-				}
-			});
-
-			elevationApiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
-				if (error) {} else {
-					var coordinates = feature.getGeometry().getLastCoordinate();
-					addFeature(
-						new ol.Feature({
-							geometry: new ol.geom.Point(coordinates),
-							type: 'end'
-						})
-					);
-					for (let i = 0; i < data.data.length; i++) {
-						var item = data.data[i];
-						var start = data.data[0];
-						var waypoint = format.readFeature(item.wellKnownText);
-						var startpoint = format.readFeature(start.wellKnownText);
-						startpoint.set('type', 'start');
-						waypoint.set('type', 'waypoint');
-						addFeature(startpoint);
-						addFeature(waypoint);
-					}
-					var datas = getChartDataSet(data.data);
-					drawChart(datas, grades);
-				}
-			});
-		}
-	}
+let elevationApiInstance = new GisServerApis.ElevationApi();
+let lineFeature;
+let opts = {
+	srid: 3857,
+	numberOfSegments: wayPointNumRange ? wayPointNumRange.value : 15,
+	elevationUnit: 'Feet',
+	intervalDistanceUnit: 'Feet'
 };
 
-//Change the parameters
-var canExecuteApiCall = function () {
-	samplesNumber = document.getElementById('samples-number').value;
-	if (Number.isNaN(samplesNumber)) {
-		return false;
-	}
-	return parseInt(samplesNumber) > 0;
-};
-
-var featureLine;
-let drawLineButton = document.getElementsByClassName('drawline')[0];
-drawLineButton.addEventListener('click', () => {
-	let button = drawLineButton.getElementsByTagName('button')[0];
-	if (!button.classList.contains('on')) {
-		button.classList.add('on');
-	}
-	samplesNumber = document.getElementById('samples-number').value;
-	intervalLine = null;
-	clear();
-	drawChart(null);
-	selectedWaypoint = null;
-	map.removeInteraction(draw);
-	draw = new ol.interaction.Draw({
-		source: lineLayer.getSource(),
-		type: 'LineString'
-	});
-	map.addInteraction(draw);
-
-	draw.on('drawstart', function (feature) {
-		clear();
-		drawChart(null);
-	});
-
-	draw.on('drawend', function (feature) {
-		featureLine = feature.feature;
-		featureLine.set('type', 'route');
-		drawLineElevation(featureLine);
-	});
-})
-
-var defaultFeature;
-var defaultLine = function () {
-	let defaultClient = GisServerApis.ApiClient.instance;
-	defaultClient.basePath = 'https://cloud.thinkgeo.com';
-	let APIKey = defaultClient.authentications['API Key'];
-	APIKey.apiKey = apiKey;
-
-	var format = new ol.format.WKT();
-	var defaultWkt = wkts.place1;
-	var defalutGeom = format.readGeometry(defaultWkt);
-	defaultFeature = new ol.Feature({
-		geometry: defalutGeom,
-		type: 'route'
-	});
-	addFeature(defaultFeature);
-	drawLineElevation(defaultFeature);
-};
-
-var clear = function () {
-	var source = lineLayer.getSource();
-	source.clear();
-};
-
-var activateDrawing = function () {
-	let buttonDrawEle = document.getElementsByClassName('drawline')[0];
-	let buttonClasslist = buttonDrawEle.getElementsByTagName('button')[0].classList;
-	if (!buttonClasslist.contains('on')) {
-		buttonClasslist.add('on');
-		document.getElementsByClassName('map-tip')[0].classList.add('visible');
-	}
-	samplesNumber = document.getElementById('samples-number').value;
-	selectedWaypoint = null;
-	map.removeInteraction(draw);
-	draw = new ol.interaction.Draw({
-		source: lineLayer.getSource(),
-		type: 'LineString'
-	});
-	map.addInteraction(draw);
-
-	draw.on('drawstart', function (feature) {
-		selectedWaypoint = null;
-		clear();
-		drawChart(null);
-	});
-
-	draw.on('drawend', function (feature) {
-		featureLine = feature.feature;
-		featureLine.set('type', 'route');
-		drawLineElevation(featureLine);
-	});
-	clear();
-	drawChart(null);
-}
-
-var deactivateDrawing = function () {
-	clear();
-	drawChart(null);
-	map.removeInteraction(draw);
-	let buttonDrawEle = document.getElementsByClassName('drawline')[0];
-	let buttonClasslist = buttonDrawEle.getElementsByTagName('button')[0].classList;
-	if (buttonClasslist.contains('on')) {
-		buttonClasslist.remove('on');
-		document.getElementsByClassName('map-tip')[0].classList.remove('visible');
-	}
-}
-
-function sortNumber(a, b) {
-	return a - b;
-}
-var getSequentialArray = function (data) {
-	var values = [];
-	for (var i = 0; i < data.length; i++) {
-		values.push(data[i].elevation);
-	}
-	return values.sort(sortNumber);
-};
-
-var getChartDataSet = function (data) {
-	var labels = [];
-	var values = [];
-	for (var i = 0; i < data.length; i++) {
+const getWaypoints = (data) => {
+	let labels = [];
+	let values = [];
+	for (let i = 0, l = data.length; i < l; i++) {
 		labels.push(i + 1);
 		values.push(data[i].elevation);
 	}
@@ -416,10 +185,136 @@ var getChartDataSet = function (data) {
 	};
 };
 
-//Render result to chart
-const initChart = () => {
-	chartCtx = document.getElementById('chartContainer').getContext('2d');
+const getGrades = (error, res, wkt) => {
+	let grades = [];
+	if (error) {
+		console.error(error);
+	} else {
+		for (let i = 0; i < res.data.length; i++) {
+			let grade = res.data[i].grade;
+			grades.push(grade);
+		}
+	}
+
+	elevationApiInstance.getElevationOfLineV1(wkt, opts, (error, res) => {
+		getElevation(error, res, wkt, grades)
+	});
+}
+
+const getElevation = (error, res, wkt, grades) => {
+	let format = new ol.format.WKT();
+	if (error) {
+		console.log(error);
+	} else {
+		let geom = format.readGeometry(wkt);
+		let coordinates = geom.getLastCoordinate();
+		let endFeature = new ol.Feature({
+			geometry: new ol.geom.Point(coordinates),
+			type: 'end'
+		})
+		lineLayer.getSource().addFeature(endFeature);
+		for (let i = 0, l = res.data.length; i < l; i++) {
+			let item = res.data[i];
+			let start = res.data[0];
+			let waypoint = format.readFeature(item.wellKnownText);
+			let startpoint = format.readFeature(start.wellKnownText);
+			startpoint.set('type', 'start');
+			waypoint.set('type', 'waypoint');
+			lineLayer.getSource().addFeature(startpoint);
+			lineLayer.getSource().addFeature(waypoint);
+		}
+		let waypoints = getWaypoints(res.data);
+		drawChart(waypoints, grades);
+	}
+}
+
+const drawElevationByLine = (feature, wkt) => {
+	if (feature) {
+		let line = feature.getGeometry();
+		if (line.getLength() > 20000) {
+			window.alert('The line is too long. Please re-enter!');
+			feature.set('type', null);
+			map.removeInteraction(
+				new ol.interaction.Draw({
+					source: lineLayer.getSource(),
+					type: 'LineString'
+				})
+			);
+			removeLine();
+			removeChart();
+		} else {
+			feature.set('type', 'route');
+			let format = new ol.format.WKT();
+			let wkt = format.writeGeometry(feature.getGeometry());
+			elevationApiInstance.getGradeOfLineV1(wkt, opts, (error, res) => {
+				getGrades(error, res, wkt)
+			});
+		}
+	} else {
+		let format = new ol.format.WKT();
+		let geom = format.readGeometry(wkt);
+		lineFeature = new ol.Feature({
+			geometry: geom,
+			type: 'route'
+		});
+		lineLayer.getSource().addFeature(lineFeature);
+		elevationApiInstance.getGradeOfLineV1(wkt, opts, (error, res) => {
+			getGrades(error, res, wkt)
+		});
+	}
 };
+
+const removeLine = () => {
+	let source = lineLayer.getSource();
+	source.clear();
+};
+
+
+
+let draw;
+const createDrawInteraction = () => {
+	draw = new ol.interaction.Draw({
+		source: lineLayer.getSource(),
+		type: 'LineString'
+	});
+
+	draw.on('drawstart', function () {
+		removeLine();
+		removeChart();
+	});
+
+	draw.on('drawend', function (feature) {
+		lineFeature = feature.feature;
+		drawElevationByLine(lineFeature, null);
+	});
+}
+
+createDrawInteraction();
+
+const activateDrawing = () => {
+	removeLine();
+	removeChart();
+	selectedWaypoint = null;
+	map.addInteraction(draw);
+
+	let buttonClasslist = drawLineButton.getElementsByTagName('button')[0].classList;
+	buttonClasslist.add('on');
+	document.getElementsByClassName('map-tip')[0].classList.add('visible');
+}
+
+const deactivateDrawing = () => {
+	removeLine();
+	removeChart();
+	map.removeInteraction(draw);
+
+	let buttonClasslist = drawLineButton.getElementsByTagName('button')[0].classList;
+	buttonClasslist.remove('on');
+	document.getElementsByClassName('map-tip')[0].classList.remove('visible');
+}
+
+
+
+let chart;
 const drawChart = (data, grades) => {
 	selectedWaypoint = null;
 	if (chart) {
@@ -444,11 +339,11 @@ const drawChart = (data, grades) => {
 				displayColors: false,
 				callbacks: {
 					label: function (tooltipItem, data) {
-						var label = data.datasets[tooltipItem.datasetIndex].label || '';
+						let label = data.datasets[tooltipItem.datasetIndex].label || '';
 						if (label) {
 							label += ': ';
 						}
-						var elevation = data.originaldata[tooltipItem.index];
+						let elevation = data.originaldata[tooltipItem.index];
 						if (grades == null) {
 							label += 'Elevation: ' + elevation.elevation + 'ft';
 						} else {
@@ -456,12 +351,12 @@ const drawChart = (data, grades) => {
 								'Elevation: ' + elevation.elevation + 'ft' + '  grade: ' + grades[tooltipItem.index];
 						}
 						if (selectedWaypoint) {
-							removeFeature(selectedWaypoint);
+							lineLayer.getSource().removeFeature(selectedWaypoint);
 						}
-						var wktReader = new ol.format.WKT();
-						selectedWaypoint = wktReader.readFeature(elevation.wellKnownText);
+						let wkt = new ol.format.WKT();
+						selectedWaypoint = wkt.readFeature(elevation.wellKnownText);
 						selectedWaypoint.set('type', 'waypoint-selected');
-						addFeature(selectedWaypoint);
+						lineLayer.getSource().addFeature(selectedWaypoint);
 						return label;
 					}
 				}
@@ -507,7 +402,13 @@ const drawChart = (data, grades) => {
 	});
 };
 
-const changeLayer = (e) => {
+const removeChart = () => {
+	drawChart(null);
+}
+
+
+
+const changeMapStyle = (e) => {
 	let layers = map.getLayers().getArray();
 	if (e.target.getAttribute('value') == 'hybrid') {
 		for (let i = 0; i < layers.length; i++) {
@@ -528,11 +429,47 @@ const changeLayer = (e) => {
 	}
 };
 
+const drawPreDefinedLine = (wkt, coord, zoom) => {
+	map.getView().animate({
+		center: ol.proj.fromLonLat(coord),
+		zoom: zoom
+	});
+	drawElevationByLine(null, wkt);
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
-	defaultLine();
-	initChart();
-	drawChart();
+	chartCtx = document.getElementById('chartContainer').getContext('2d');
+	drawLineButton = document.getElementsByClassName('drawline')[0];
+	wayPointNumRange = document.getElementById('samples-number');
+
+	drawLineButton.addEventListener('click', () => {
+		activateDrawing();
+	})
+
+	wayPointNumRange.addEventListener('change', (e) => {
+		e = window.event || e;
+		removeLine();
+		removeChart();
+		selectedWaypoint = null;
+		if (lineFeature) {
+			drawElevationByLine(lineFeature, null);
+			lineFeature.set('type', 'route');
+			lineLayer.getSource().addFeature(lineFeature);
+		} else {
+			let place = document.getElementById('places').value;
+			let format = new ol.format.WKT();
+			let geom = format.readGeometry(wkts[place]);
+			let feature = new ol.Feature({
+				geometry: geom,
+				type: 'route'
+			});
+
+			drawElevationByLine(feature, null);
+			feature.set('type', 'route');
+			lineLayer.getSource().addFeature(feature);
+		}
+	})
 
 	document.getElementsByClassName('buttonDraw')[0].addEventListener('click', () => {
 		activateDrawing();
@@ -542,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		e = window.event || e;
 		let target = e.target;
 		if (target.nodeName == 'BUTTON') {
-			changeLayer(e);
+			changeMapStyle(e);
 			let buttons = target.parentNode.getElementsByTagName('button');
 			for (let i = 0, l = buttons.length; i < l; i++) {
 				let classlist = buttons[i].classList;
@@ -577,91 +514,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	document.getElementById('places').addEventListener('change', (e) => {
 		e = window.event || e;
-		let geom;
-		let newFeature;
-		let format = new ol.format.WKT();
 		deactivateDrawing();
 		switch (e.target.value) {
 			case 'place1':
-				map.getView().animate({
-					center: ol.proj.fromLonLat([-122.405729, 37.802898]),
-					zoom: 16
-				});
-				geom = format.readGeometry(wkts.place1);
-				newFeature = new ol.Feature({
-					geometry: geom,
-					type: 'route'
-				});
-				addFeature(newFeature);
-				drawLineElevation(null, wkts.place1);
+				drawPreDefinedLine(wkts.place1, [-122.405729, 37.802898], 16);
 				break;
 			case 'place2':
-				map.getView().animate({
-					center: ol.proj.fromLonLat([-111.022344, 35.027376]),
-					zoom: 13
-				});
-				geom = format.readGeometry(wkts.place2);
-				newFeature = new ol.Feature({
-					geometry: geom,
-					type: 'route'
-				});
-				addFeature(newFeature);
-				drawLineElevation(null, wkts.place2);
+				drawPreDefinedLine(wkts.place2, [-111.022344, 35.027376], 13);
 				break;
 			case 'place3':
-				map.getView().animate({
-					center: ol.proj.fromLonLat([-121.747991, 46.820717]),
-					zoom: 11
-				});
-				geom = format.readGeometry(wkts.place3);
-				newFeature = new ol.Feature({
-					geometry: geom,
-					type: 'route'
-				});
-				addFeature(newFeature);
-				drawLineElevation(null, wkts.place3);
+				drawPreDefinedLine(wkts.place3, [-121.747991, 46.820717], 11);
 				break;
 			case 'place4':
-				map.getView().animate({
-					center: ol.proj.fromLonLat([-114.743227, 36.008127]),
-					zoom: 13
-				});
-				geom = format.readGeometry(wkts.place4);
-				newFeature = new ol.Feature({
-					geometry: geom,
-					type: 'route'
-				});
-				addFeature(newFeature);
-				drawLineElevation(null, wkts.place4);
+				drawPreDefinedLine(wkts.place4, [-114.743227, 36.008127], 13);
 				break;
 		}
 	})
 
-	document.getElementById('samples-number').addEventListener('change', (e) => {
-		e = window.event || e;
-		samplesNumber = e.target.value;
-		intervalLine = null;
-		clear();
-		drawChart(null);
-		selectedWaypoint = null;
-		if (canExecuteApiCall()) {
-			if (featureLine) {
-				drawLineElevation(featureLine);
-				featureLine.set('type', 'route');
-				addFeature(featureLine);
-			} else {
-				var format = new ol.format.WKT();
-				let place = document.getElementById('places').value;
-				var geom = format.readGeometry(wkts[place]);
-				var feature = new ol.Feature({
-					geometry: geom,
-					type: 'route'
-				});
-
-				drawLineElevation(feature);
-				feature.set('type', 'route');
-				addFeature(feature);
-			}
-		}
-	})
+	drawPreDefinedLine(wkts.place1, [-122.405729, 37.802898], 16);
+	drawChart();
 })
