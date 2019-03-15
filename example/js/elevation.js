@@ -63,15 +63,11 @@ const wkts = {
 	place4: 'LINESTRING(-12772636.98108149 4302695.261286651,-12772742.081995381 4302618.824258366,-12772894.956051951 4302461.172887527,-12773086.048622664 4302078.987746102,-12773157.708336681 4301739.798433086,-12773124.267136807 4301333.726720321,-12772775.523195256 4299876.645868635)'
 };
 
-window.app = {};
-const app = window.app;
-
-//Draw Line
-app.drawLineControl = function (opt_options) {
+const drawLineControl = function (opt_options) {
 	const options = opt_options || {};
 	const button = document.createElement('button');
 	const element = document.createElement('div');
-	element.className = 'drawline buttonDraw ol-unselectable ol-control';
+	element.className = 'drawline ol-unselectable ol-control';
 	element.appendChild(button);
 	ol.control.Control.call(this, {
 		element: element,
@@ -79,14 +75,7 @@ app.drawLineControl = function (opt_options) {
 	});
 };
 
-ol.inherits(app.drawLineControl, ol.control.Control);
-
-$(function () {
-	var defaultClient = GisServerApis.ApiClient.instance;
-	defaultClient.basePath = 'https://cloud.thinkgeo.com';
-	var APIKey = defaultClient.authentications['API Key'];
-	APIKey.apiKey = apiKey;
-});
+ol.inherits(drawLineControl, ol.control.Control);
 
 var lineLayer = new ol.layer.Vector({
 	source: new ol.source.Vector(),
@@ -95,12 +84,6 @@ var lineLayer = new ol.layer.Vector({
 		return styles[key];
 	}
 });
-var addFeature = function (feature) {
-	lineLayer.getSource().addFeature(feature);
-};
-var removeFeature = function (feature) {
-	lineLayer.getSource().removeFeature(feature);
-};
 
 //Define style
 var styles = {
@@ -143,6 +126,13 @@ var styles = {
 	})
 };
 
+var addFeature = function (feature) {
+	lineLayer.getSource().addFeature(feature);
+};
+var removeFeature = function (feature) {
+	lineLayer.getSource().removeFeature(feature);
+};
+
 
 //Craete map
 var map = new ol.Map({
@@ -152,7 +142,7 @@ var map = new ol.Map({
 				collapsible: false
 			}
 		})
-		.extend([new app.drawLineControl()]),
+		.extend([new drawLineControl()]),
 
 	layers: [darkLayer, lightLayer, aerialLayer, transparentBackgroundLayer, lineLayer],
 	target: 'map',
@@ -176,7 +166,7 @@ map.addInteraction(
 );
 
 var drawLineElevation = function (feature, wkt) {
-	var apiInstance = new GisServerApis.ElevationApi();
+	var elevationApiInstance = new GisServerApis.ElevationApi();
 	if (wkt) {
 		opts = {
 			srid: 3857,
@@ -186,7 +176,7 @@ var drawLineElevation = function (feature, wkt) {
 			intervalDistanceUnit: intervalDistanceUnit || 'Feet'
 		};
 		var grades = [];
-		apiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
+		elevationApiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
 			if (error) {
 				console.error(error);
 			} else {
@@ -197,7 +187,7 @@ var drawLineElevation = function (feature, wkt) {
 			}
 		});
 
-		apiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
+		elevationApiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
 			if (error) {
 				console.log(error);
 			} else {
@@ -249,7 +239,7 @@ var drawLineElevation = function (feature, wkt) {
 				intervalDistanceUnit: intervalDistanceUnit || 'Feet'
 			};
 			var grades = [];
-			apiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
+			elevationApiInstance.getGradeOfLineV1(wkt, opts, function (error, data, response) {
 				if (error) {
 					console.error(error);
 				} else {
@@ -260,7 +250,7 @@ var drawLineElevation = function (feature, wkt) {
 				}
 			});
 
-			apiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
+			elevationApiInstance.getElevationOfLineV1(wkt, opts, function (error, data, response) {
 				if (error) {} else {
 					var coordinates = feature.getGeometry().getLastCoordinate();
 					addFeature(
@@ -289,7 +279,7 @@ var drawLineElevation = function (feature, wkt) {
 
 //Change the parameters
 var canExecuteApiCall = function () {
-	var samplesNumber = $('#samples-number').val();
+	samplesNumber = document.getElementById('samples-number').value;
 	if (Number.isNaN(samplesNumber)) {
 		return false;
 	}
@@ -297,10 +287,14 @@ var canExecuteApiCall = function () {
 };
 
 var featureLine;
-$('.drawline').click(function () {
-	samplesNumber = $('#samples-number').val();
+let drawLineButton = document.getElementsByClassName('drawline')[0];
+drawLineButton.addEventListener('click', () => {
+	let button = drawLineButton.getElementsByTagName('button')[0];
+	if (!button.classList.contains('on')) {
+		button.classList.add('on');
+	}
+	samplesNumber = document.getElementById('samples-number').value;
 	intervalLine = null;
-	$('#side-bar').show();
 	clear();
 	drawChart(null);
 	selectedWaypoint = null;
@@ -321,39 +315,13 @@ $('.drawline').click(function () {
 		featureLine.set('type', 'route');
 		drawLineElevation(featureLine);
 	});
-});
+})
 
 var defaultFeature;
-$('#samples-number').on('change', function () {
-	samplesNumber = $('#samples-number').val();
-	intervalLine = null;
-	clear();
-	drawChart(null);
-	selectedWaypoint = null;
-	if (canExecuteApiCall()) {
-		if (featureLine) {
-			drawLineElevation(featureLine);
-			featureLine.set('type', 'route');
-			addFeature(featureLine);
-		} else {
-			var format = new ol.format.WKT();
-			var place = $('#places').val();
-			var geom = format.readGeometry(wkts[place]);
-			var feature = new ol.Feature({
-				geometry: geom,
-				type: 'route'
-			});
-			drawLineElevation(feature);
-			feature.set('type', 'route');
-			addFeature(feature);
-		}
-	}
-});
-
 var defaultLine = function () {
-	var defaultClient = GisServerApis.ApiClient.instance;
-	defaultClient.basePath = 'https://cloud1.thinkgeo.com';
-	var APIKey = defaultClient.authentications['API Key'];
+	let defaultClient = GisServerApis.ApiClient.instance;
+	defaultClient.basePath = 'https://cloud.thinkgeo.com';
+	let APIKey = defaultClient.authentications['API Key'];
 	APIKey.apiKey = apiKey;
 
 	var format = new ol.format.WKT();
@@ -367,16 +335,19 @@ var defaultLine = function () {
 	drawLineElevation(defaultFeature);
 };
 
-$(defaultLine());
-
 var clear = function () {
 	var source = lineLayer.getSource();
 	source.clear();
 };
 
 var activateDrawing = function () {
-	$('.buttonDraw').find('button').addClass('on');
-	samplesNumber = $('#samples-number').val();
+	let buttonDrawEle = document.getElementsByClassName('drawline')[0];
+	let buttonClasslist = buttonDrawEle.getElementsByTagName('button')[0].classList;
+	if (!buttonClasslist.contains('on')) {
+		buttonClasslist.add('on');
+		document.getElementsByClassName('map-tip')[0].classList.add('visible');
+	}
+	samplesNumber = document.getElementById('samples-number').value;
 	selectedWaypoint = null;
 	map.removeInteraction(draw);
 	draw = new ol.interaction.Draw({
@@ -398,16 +369,18 @@ var activateDrawing = function () {
 	});
 	clear();
 	drawChart(null);
-
-	$('.map-tip').addClass('visible');
 }
 
 var deactivateDrawing = function () {
 	clear();
 	drawChart(null);
 	map.removeInteraction(draw);
-	$('.buttonDraw').find('button').removeClass('on');
-	$('.map-tip').removeClass('visible');
+	let buttonDrawEle = document.getElementsByClassName('drawline')[0];
+	let buttonClasslist = buttonDrawEle.getElementsByTagName('button')[0].classList;
+	if (buttonClasslist.contains('on')) {
+		buttonClasslist.remove('on');
+		document.getElementsByClassName('map-tip')[0].classList.remove('visible');
+	}
 }
 
 function sortNumber(a, b) {
@@ -444,10 +417,10 @@ var getChartDataSet = function (data) {
 };
 
 //Render result to chart
-var initChart = function () {
+const initChart = () => {
 	chartCtx = document.getElementById('chartContainer').getContext('2d');
 };
-var drawChart = function (data, grades) {
+const drawChart = (data, grades) => {
 	selectedWaypoint = null;
 	if (chart) {
 		chart.destroy();
@@ -534,7 +507,7 @@ var drawChart = function (data, grades) {
 	});
 };
 
-const changeLayer = function (e) {
+const changeLayer = (e) => {
 	let layers = map.getLayers().getArray();
 	if (e.target.getAttribute('value') == 'hybrid') {
 		for (let i = 0; i < layers.length; i++) {
@@ -555,41 +528,58 @@ const changeLayer = function (e) {
 	}
 };
 
-$(initChart(), drawChart());
 
-$(function () {
-	$('.buttonDraw').click(function () {
+document.addEventListener('DOMContentLoaded', () => {
+	defaultLine();
+	initChart();
+	drawChart();
+
+	document.getElementsByClassName('buttonDraw')[0].addEventListener('click', () => {
 		activateDrawing();
-	});
+	})
 
-	$('.style-btn-group').click(function (e) {
-		if (e.target.nodeName == 'BUTTON') {
+	document.getElementsByClassName('style-btn-group')[0].addEventListener('click', (e) => {
+		e = window.event || e;
+		let target = e.target;
+		if (target.nodeName == 'BUTTON') {
 			changeLayer(e);
+			let buttons = target.parentNode.getElementsByTagName('button');
+			for (let i = 0, l = buttons.length; i < l; i++) {
+				let classlist = buttons[i].classList;
+				if (buttons[i] === target) {
+					classlist.add('current');
+				} else {
+					classlist.remove('current');
+				}
+
+			}
 		}
-		$('.style-btn-group button').removeClass('current');
-		$(e.target).addClass('current');
-	});
+	})
 
-	$('.info').click(function (e) {
-		if ($('.info p').hasClass('hide')) {
-			$('.info p').removeClass('hide');
-		} else {
-			$('.info p').addClass('hide');
+	document.getElementsByClassName('info')[0].addEventListener('click', (e) => {
+		e = window.event || e;
+		if (e.target === document.getElementsByClassName('info')[0]) {
+			let content = e.target.getElementsByTagName('p')[0];
+			let contentClassList = content.classList;
+			if (contentClassList.contains('hide')) {
+				contentClassList.remove('hide');
+			} else {
+				contentClassList.add('hide');
+			}
 		}
-	});
+	})
 
-	$('.info p').click(function () {
-		return false;
-	});
+	document.getElementsByClassName('close')[0].addEventListener('click', (e) => {
+		e = window.event || e;
+		let parentNode = e.target.parentNode;
+		parentNode.classList.add('hide');
+	})
 
-	$('.close').click(function () {
-		$('.info p').addClass('hide');
-	});
-
-	$('#places').change(function (e) {
-		var geom;
-		var newFeature;
-		var format = new ol.format.WKT();
+	document.getElementById('places').addEventListener('change', (e) => {
+		e = window.event || e;
+		let geom;
+		let newFeature;
+		let format = new ol.format.WKT();
 		deactivateDrawing();
 		switch (e.target.value) {
 			case 'place1':
@@ -597,7 +587,7 @@ $(function () {
 					center: ol.proj.fromLonLat([-122.405729, 37.802898]),
 					zoom: 16
 				});
-				var geom = format.readGeometry(wkts.place1);
+				geom = format.readGeometry(wkts.place1);
 				newFeature = new ol.Feature({
 					geometry: geom,
 					type: 'route'
@@ -610,7 +600,7 @@ $(function () {
 					center: ol.proj.fromLonLat([-111.022344, 35.027376]),
 					zoom: 13
 				});
-				var geom = format.readGeometry(wkts.place2);
+				geom = format.readGeometry(wkts.place2);
 				newFeature = new ol.Feature({
 					geometry: geom,
 					type: 'route'
@@ -623,7 +613,7 @@ $(function () {
 					center: ol.proj.fromLonLat([-121.747991, 46.820717]),
 					zoom: 11
 				});
-				var geom = format.readGeometry(wkts.place3);
+				geom = format.readGeometry(wkts.place3);
 				newFeature = new ol.Feature({
 					geometry: geom,
 					type: 'route'
@@ -636,7 +626,7 @@ $(function () {
 					center: ol.proj.fromLonLat([-114.743227, 36.008127]),
 					zoom: 13
 				});
-				var geom = format.readGeometry(wkts.place4);
+				geom = format.readGeometry(wkts.place4);
 				newFeature = new ol.Feature({
 					geometry: geom,
 					type: 'route'
@@ -645,5 +635,33 @@ $(function () {
 				drawLineElevation(null, wkts.place4);
 				break;
 		}
-	});
-});
+	})
+
+	document.getElementById('samples-number').addEventListener('change', (e) => {
+		e = window.event || e;
+		samplesNumber = e.target.value;
+		intervalLine = null;
+		clear();
+		drawChart(null);
+		selectedWaypoint = null;
+		if (canExecuteApiCall()) {
+			if (featureLine) {
+				drawLineElevation(featureLine);
+				featureLine.set('type', 'route');
+				addFeature(featureLine);
+			} else {
+				var format = new ol.format.WKT();
+				let place = document.getElementById('places').value;
+				var geom = format.readGeometry(wkts[place]);
+				var feature = new ol.Feature({
+					geometry: geom,
+					type: 'route'
+				});
+
+				drawLineElevation(feature);
+				feature.set('type', 'route');
+				addFeature(feature);
+			}
+		}
+	})
+})
