@@ -6,10 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Vue.JS </title>
-    <!-- style sheet for vectormap.js -->
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+    <!-- Define some custom styles for the UI of our sample page. -->
     <style rel="stylesheet" type="text/css">
-        #lines {
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        #panel {
             position: absolute;
             right: 0;
             top: 0;
@@ -20,7 +28,7 @@
             z-index: 1000;
         }
 
-        #lines label {
+        #panel label {
             display: inline-block;
             width: 100px;
             color: #5f6b78;
@@ -28,8 +36,8 @@
             margin: 12px 0;
         }
 
-        #lines input,
-        #lines select {
+        #panel input,
+        #panel select {
             width: 143px;
             padding: 3px 12px;
             line-height: 1.42857;
@@ -45,19 +53,19 @@
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         }
 
-        #lines select {
+        #panel select {
             width: 169px;
         }
 
-        #lines input:focus,
-        #lines select:focus {
+        #panel input:focus,
+        #panel select:focus {
             border-color: #66afe9;
             outline: 0;
             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
         }
 
-        #lines button {
+        #panel button {
             display: inline-block;
             padding: 6px 12px;
             margin-bottom: 0;
@@ -74,16 +82,16 @@
             background-color: #428bca;
         }
 
-        #lines button:focus {
+        #panel button:focus {
             outline: 0;
         }
 
-        #lines button:active {
+        #panel button:active {
             -webkit-box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
             box-shadow: inset 0 5px 4px rgba(0, 0, 0, .075);
         }
 
-        #lines div {
+        #panel div {
             width: 100%;
             text-align: right;
         }
@@ -121,11 +129,11 @@
         }
 
         @media only screen and (max-device-width: 767px) {
-            #lines input {
+            #panel input {
                 width: 100px;
             }
 
-            #lines select {
+            #panel select {
                 width: 126px;
             }
         }
@@ -133,8 +141,10 @@
 </head>
 
 <body>
-    <div id="map" style="width:100%;height:100%">
-        <div id="lines">
+    <!-- This <div> is the container into which our map control will be loaded. -->
+    <div id="map">
+        <!-- Set up a control panel for the map that we'll change the style of the map. -->
+        <div id="panel">
             <label>POI Size: </label>
             <input type="number" v-model="poiSize">
             <br>
@@ -152,11 +162,15 @@
         </div>
     </div>
 
-    <!-- latest minified version of vectormap.js -->
+    <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <!-- option: Map Suite World Streets Styles -->
+    
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+    
+    <!-- Load the Vue.js library dependency. -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
     <script src="../js/vue.js"></script>
 
 </body>
