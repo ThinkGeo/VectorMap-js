@@ -12613,24 +12613,123 @@ function olInit() {
      * @param {Array.<number>=} opt_dest Destination.
      * @return {Array.<number>} Transformed coordinates.
      */
-    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest, extent, isPolygon) {
         var dest = opt_dest ? opt_dest : [];
         var i = 0;
         var j, k;
+        var points;
 
-        for (j = offset; j < end; j += stride) {
-            dest[i++] = flatCoordinates[j] + deltaX;
-            dest[i++] = flatCoordinates[j + 1] + deltaY;
+        if(extent && isPolygon){
+            points = ol.geom.flat.transform.clipPolygon(flatCoordinates.slice(offset, end), extent);            
 
-            for (k = j + 2; k < j + stride; ++k) {
-                dest[i++] = flatCoordinates[k];
+            for (j = 0; j < points.length; j += 2) {       
+                dest[i++] = points[j] + deltaX;
+                dest[i++] = points[j + 1] + deltaY;
+            }     
+        }else{
+            for (j = offset; j < end; j += stride) {
+                dest[i++] = flatCoordinates[j] + deltaX;
+                dest[i++] = flatCoordinates[j + 1] + deltaY;
+    
+                for (k = j + 2; k < j + stride; ++k) {
+                    dest[i++] = flatCoordinates[k];
+                }
             }
         }
+
         if (opt_dest && dest.length != i) {
             dest.length = i;
         }
         
         return dest;
+    };
+
+    ol.geom.flat.transform.clipPolygon = function (points, bounds) {
+        var clippedPoints,
+            edges = [1, 4, 2, 8],
+            i, j, k,
+            a, b,
+            len, edge, p;   
+
+        // for each edge (left, bottom, right, top)
+        for (k = 0; k < 4; k++) {
+            edge = edges[k];
+            clippedPoints = [];
+            
+            for (i = 0, len = points.length, j = len - 2; i < len - 1; j = i, i += 2) {
+                a = [points[i], points[i + 1]];
+                b = [points[j], points[j + 1]];
+                var codeA = ol.geom.flat.transform.getBitCode(a, bounds);
+                var codeB = ol.geom.flat.transform.getBitCode(b, bounds);
+
+                // if a is inside the clip window
+                if (!(codeA & edge)) {
+                    // if b is outside the clip window (a->b goes out of screen)
+                    if (codeB & edge) {
+                        p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
+                        clippedPoints.push(...p);
+                    }
+                    clippedPoints.push(...a);
+    
+                // else if b is inside the clip window (a->b enters the screen)
+                } else if (!(codeB & edge)) {
+                    p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
+                    clippedPoints.push(...p);
+                }
+            }
+            points = clippedPoints;
+        }
+
+        if(points[0] != points[points.length - 2] || points[1] != points[points.length - 1]){
+            points.push(points[0]);
+            points.push(points[1]);
+        }    
+
+        return points;
+    };
+    
+    // square distance (to avoid unnecessary Math.sqrt calls)
+	ol.geom.flat.transform.sqDist = function (p1, p2) {
+		var dx = p2[0] - p1[0],
+            dy = p2[1] - p1[1];
+            
+		return dx * dx + dy * dy;
+    };
+    
+    ol.geom.flat.transform.getEdgeIntersection = function(a, b, code, bounds) {
+		var dx = b[0] - a[0],
+		    dy = b[1] - a[1],
+		    minX = bounds[0],
+		    minY = bounds[1],
+		    maxX = bounds[2],
+		    maxY = bounds[3];
+
+		if (code & 8) { // top
+			return [a[0] + dx * (maxY - a[1]) / dy, maxY];
+		} else if (code & 4) { // bottom
+			return [a[0] + dx * (minY - a[1]) / dy, minY];
+		} else if (code & 2) { // right
+			return [maxX, a[1] + dy * (maxX - a[0]) / dx];
+		} else if (code & 1) { // left
+			return [minX, a[1] + dy * (minX - a[0]) / dx];
+		}
+    };
+    
+    ol.geom.flat.transform.getBitCode = function(p, bounds) {
+		var code = 0;
+
+		if (p[0] < bounds[0]) { // left
+			code |= 1;
+		} else if (p[0] > bounds[2]) { // right
+			code |= 2;
+		}
+		if (p[1] < bounds[1]) { // bottom
+			code |= 4;
+		} else if (p[1] > bounds[3]) { // top
+			code |= 8;
+		}
+
+		return code;
     };
 
     ol.geom.flat.transform.transform2DRound = function (flatCoordinates, offset, end, stride, transform, opt_dest) {
@@ -68784,16 +68883,15 @@ function olInit() {
        
         function drawLineString_(flatCoordinates){
             var stride = lineStringGeometry.getStride();
-            var extent = feature.getExtent();
+            // var extent = feature.getExtent();
             if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-                flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+                var clippedFlatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                     stride, -this.origin[0], -this.origin[1]);
                     
                 if (this.state_.changed) {
                     var z_order = lineStringGeometry.properties_.layer;
                     var styleId = lineStringGeometry.styleId;
-
-                    // for railway
+                                       
                     if(z_order == undefined){
                         z_order = 0;
                     }
@@ -68806,14 +68904,14 @@ function olInit() {
                         z_order = 1 / z_order;   
                     }
 
-                    this.zCoordinates.push(z_order);
                     this.styleIndices_.push(this.indices.length);
+                    this.zCoordinates.push(z_order);
                     this.state_.changed = false;
                 }
                 this.startIndices.push(this.indices.length);
                 // this.startIndicesFeature.push(feature);
                 this.drawCoordinates_(
-                    flatCoordinates, 0, flatCoordinates.length, stride);
+                    clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
             }
         }
         drawLineString_.call(this, flatCoordinates)
@@ -68833,7 +68931,7 @@ function olInit() {
         // }
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
-        var extent = feature.getExtent();
+        // var extent = feature.getExtent();
         if (ends.length > 1) {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
@@ -68869,6 +68967,9 @@ function olInit() {
                 this.styleIndices_.push(indexCount);
                 this.state_.changed = false;
             }
+        }else if(this.state_.changed){
+            this.state_.changed = false;
+            this.styles_.pop();
         }
     };
 
@@ -69039,7 +69140,6 @@ function olInit() {
             // Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
             end = this.startIndices[this.startIndices.length - 1];
-            
             for (i = this.styleIndices_.length - 1; i >= 0; --i) {
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
@@ -70346,6 +70446,10 @@ function olInit() {
         var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
         var i, ii, j, jj;
         var start = 0;
+
+        console.log('multiPolygon');
+        
+
         for (i = 0, ii = endss.length; i < ii; ++i) {
             var ends = endss[i];
             if (ends.length > 0) {
@@ -70388,24 +70492,28 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
+        var extent = feature.getExtent();
         if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
-            var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                stride, -this.origin[0], -this.origin[1]);
+            var outerRing = [];
+            if(ends[0] > 6) {
+                outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
+                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+            }
 
-            if (outerRing.length) {
+            // if (outerRing.length) {
                 var holes = [];
                 var i, ii, holeFlatCoords;
                 for (i = 1, ii = ends.length; i < ii; ++i) {
-                    if (ends[i] !== ends[i - 1]) {
+                    if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                            ends[i], stride, -this.origin[0], -this.origin[1]);
+                            ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
                         if(holeFlatCoords.length > 6){
                             holes.push(holeFlatCoords);
                         }
                     }
                 }
-                
+
                 {
                     this.startIndices.push(this.indices.length);
                     // this.startIndicesFeature.push(feature);
@@ -70423,18 +70531,18 @@ function olInit() {
                 }
 
                 {
-                    if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                        this.styles_.push(this.styles_[0]);
-                        this.zCoordinates.push(feature.zCoordinate);
-                        this.styleIndices_.push(this.indices.length);
-                        this.state_.changed = false;
-                    }
+                    // if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                    //     this.styles_.push(this.styles_[0]);
+                    //     this.zCoordinates.push(feature.zCoordinate);
+                    //     this.styleIndices_.push(this.indices.length);
+                    //     this.state_.changed = false;
+                    // }
     
                     for(var i = 0; i < holes.length; i++){
                         this.drawCoordinates_(holes[i], [], stride);
                     }                 
                 }
-            }
+            // }
         }
     };
 
@@ -102184,6 +102292,7 @@ function olInit() {
         self.styleJsonCache = {};
         self.tileCoordWithSourceCoord = {};
         self.postCancelMessageData = {};
+        self.lastCode = undefined;
 
         self.onmessage = function (msg) {
             var methodInfo = msg.data["methodInfo"];
@@ -102432,7 +102541,6 @@ function olInit() {
             var replayGroup = new ol.render.webgl.ReplayGroup(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
-
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
@@ -102496,7 +102604,7 @@ function olInit() {
             // if(!(requestTileCoord.toString() == "6,14,-27")){
             // if(tileCoord.toString() !== "12,946,-1653"){
                 // if(tileCoord.toString() !== "16,15146,-26447"){
-            // if(tileCoord.toString() !== "17,30298,-52746"){
+            // if(tileCoord.toString() !== "18,60590,-105777"){
                 // return
             // }
             // TEST END
@@ -102549,18 +102657,48 @@ function olInit() {
             var strategyTree = ol.ext.rbush(9);
 
             var tileGrid = new ol.source.XYZ().getTileGrid();
-            
+            var bbox = tileGrid.getTileCoordExtent(tileCoord);
+
             if (instructs && instructs.length > 0) {                
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
                         var geoStyle = geoStyles[geoStyleId];
-                        var featureInfo = features[instructs[i][0]]
+                        var featureInfo = features[instructs[i][0]];               
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
-                        var cloneEnds = featureInfo.ends_.slice(0);                        
+                        var cloneEnds = featureInfo.ends_.slice(0);      
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
-                        feature["styleId"] = geoStyleId;                       
+                        feature.extent_ = bbox;                        
+                        feature["styleId"] = geoStyleId; 
+
+                        // clip line segment
+                        var type = feature.type_;
+                        if(type == 'LineString'){
+                            var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);                            
+                            var flatCoordinates = clipped.flatCoordinates;
+                            var ends = clipped.ends;
+                            
+                            if(flatCoordinates.length <= 2){                                
+                                continue;
+                            }
+
+                            if(ends.length > 1) {
+                                feature.type_ = 'MultiLineString';
+                            }
+                            feature.flatCoordinates_ = flatCoordinates;
+                            feature.ends_ = ends; 
+                        }else if(type == 'MultiLineString'){  
+                            var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
+                            var flatCoordinates = clipped.flatCoordinates;
+                            var ends = clipped.ends;
+                            
+                            if(flatCoordinates.length <= 2){                                
+                                continue;
+                            }
+                            feature.flatCoordinates_ = flatCoordinates;
+                            feature.ends_ = ends; 
+                        }
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, instructs[i]);
                     }
                 }
@@ -102603,7 +102741,115 @@ function olInit() {
                 instructs: mainDrawingInstructs
             };
         }
-        
+
+        self.clipLine = function(points, bounds, squaredTolerance){
+            var clippedFlatCoordinates = [];
+            var clippedEnds = [];
+            var clipped = self.clipPoint(points, bounds, squaredTolerance);
+
+            for(var j = 0; j < clipped.length; j++){
+                var coords = clipped[j];
+                if(coords.length > 2){
+                    clippedFlatCoordinates.push(...coords);
+                    clippedEnds.push(clippedFlatCoordinates.length);
+                }
+            }
+
+            return {
+                flatCoordinates: clippedFlatCoordinates,
+                ends: clippedEnds
+            }
+        }
+
+        self.clipMultiLine = function(points, ends, bounds, squaredTolerance){
+            var clippedFlatCoordinates;
+            var clippedEnds;
+            var clipped; 
+            var flatCoordinates = [], ends_ = [];
+            ends.unshift(0);
+
+            for(var i = 1; i < ends.length; i++){
+                clipped = self.clipLine(points.slice(ends[i - 1], ends[i]), bounds, squaredTolerance);
+                clippedFlatCoordinates = clipped.flatCoordinates;
+                clippedEnds = clipped.ends;
+                if(clippedFlatCoordinates.length > 2){
+                    clippedEnds = clippedEnds.map(item => item + flatCoordinates.length);
+                    ends_.push(...clippedEnds);
+                    flatCoordinates.push(...clippedFlatCoordinates);
+                }
+            }            
+
+            return {
+                flatCoordinates,
+                ends: ends_
+            }
+        }
+
+        self.clipPoint = function (points, bounds, squaredTolerance) {
+            var i, k, segment;
+            var parts = [];
+            var len = points.length;
+            var a = [];
+            var b = [];
+            self.lastCode = undefined;
+
+            for (i = 0, k = 0; i < len - 3; i += 2) {
+                a = [points[i], points[i + 1]];
+                b = [points[i + 2], points[i + 3]];
+                segment = self.clipSegment(a, b, bounds, i);
+                if (!segment) {
+                    continue;
+                }
+                parts[k] = parts[k] || [];
+                
+                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
+                if(!shortDistance){
+                    parts[k].push(...segment[0]);
+                }
+
+                // if segment goes out of screen, or it's the last one, it's the end of the line part
+                if ((segment[1][0] !== points[i + 2]) || (segment[1][1] !== points[i + 3]) || (i === len - 4)) {
+                    parts[k].push(...segment[1]);
+                    k++;
+                }
+            }
+            
+            return parts;
+        }
+
+        // Cohen-Sutherland line clipping algorithm.
+        // Used to avoid rendering parts of a polyline that are not currently visible.
+        self.clipSegment = function (a, b, bounds, useLastCode) {
+            var codeA = useLastCode ? self.lastCode : ol.geom.flat.transform.getBitCode(a, bounds),
+                codeB = ol.geom.flat.transform.getBitCode(b, bounds),
+                codeOut, p, newCode;
+
+            self.lastCode = codeB;
+
+            while (true) {
+                // if a,b is inside the clip window (trivial accept)
+                if (!(codeA | codeB)) {
+                    return [a, b];
+                // if a,b is outside the clip window (trivial reject)
+                } else if (codeA & codeB) {
+                    return false;
+                // other cases
+                } else {
+                    codeOut = codeA || codeB;
+                    p = ol.geom.flat.transform.getEdgeIntersection(a, b, codeOut, bounds);
+                    newCode = ol.geom.flat.transform.getBitCode(p, bounds);
+
+                    if (codeOut === codeA) {
+                        a = p;
+                        codeA = newCode;
+                    } else {
+                        b = p;
+                        codeB = newCode;
+                    }
+                }
+            }
+        }
+
         self.getMainInstructs = function (oTile, mainGeoStyleIds) {
             var features = {};
             var allFeatures = oTile.features;
