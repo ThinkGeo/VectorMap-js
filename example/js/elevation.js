@@ -5,6 +5,9 @@
 //   1. ThinkGeo Cloud API Key
 //   2. Define Global Variable
 //   3. Map Control Setup
+//   4. Elevation Setup
+//   5. Chart Setup
+//   6. Event Listeners
 /*===========================================================================*/
 
 
