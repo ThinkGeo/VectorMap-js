@@ -67430,8 +67430,6 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
-        // gl.enable(gl.BLEND);
-        // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         // fix for WebGL not to unpremultiply      
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
@@ -69129,6 +69127,7 @@ function olInit() {
         // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
+            // gl.enable(gl.BLEND);
             // gl.enable(gl.DEPTH_TEST);
             // gl.depthMask(true);
             // gl.depthFunc(gl.NOTEQUAL);
@@ -69150,6 +69149,7 @@ function olInit() {
             }
         }
         if (!hitDetection) {
+            // gl.disable(gl.BLEND);
             // gl.disable(gl.DEPTH_TEST);
             // gl.clear(gl.DEPTH_BUFFER_BIT);
             // //Restore GL parameters.
@@ -70500,7 +70500,7 @@ function olInit() {
                 outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                     stride, -this.origin[0], -this.origin[1], undefined, extent, true);
             }
-
+            
             // if (outerRing.length) {
                 var holes = [];
                 var i, ii, holeFlatCoords;
@@ -70513,7 +70513,7 @@ function olInit() {
                         }
                     }
                 }
-
+                
                 {
                     this.startIndices.push(this.indices.length);
                     // this.startIndicesFeature.push(feature);
@@ -70639,7 +70639,8 @@ function olInit() {
         // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
         // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
         if (!hitDetection) {
-            // gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.BLEND);
+            // gl.disable(gl.DEPTH_TEST);
             // gl.depthMask(true);
             // gl.depthFunc(gl.NOTEQUAL);
         }
@@ -70649,18 +70650,27 @@ function olInit() {
         } else {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
-            end = this.startIndices[this.startIndices.length - 1];
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
+            for (i = 0; i < this.styleIndices_.length; ++i) {                
                 start = this.styleIndices_[i];
+                end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
                 nextStyle = this.styles_[i];
                 gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
-                end = start;
             }
+            // end = this.startIndices[this.startIndices.length - 1];
+            // for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
+            //     start = this.styleIndices_[i];
+            //     nextStyle = this.styles_[i];                
+            //     gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
+            //     this.setFillStyle_(gl, nextStyle);
+            //     this.drawElements(gl, context, start, end);
+            //     end = start;
+            // }
         }
         if (!hitDetection) {
-            // gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.BLEND);
+            // gl.enable(gl.DEPTH_TEST);
             // gl.clear(gl.DEPTH_BUFFER_BIT);
             // // Restore GL parameters.
             // gl.depthMask(tmpDepthMask);
@@ -70770,26 +70780,26 @@ function olInit() {
         //     !(fillStyleColor instanceof CanvasPattern)) {
         if(fillStyleColor){
             // FIXME replace it with other ways,maybe gl.BLEND
-            var strColor = ol.color.asArray(fillStyleColor);
-            if(+strColor[3] !== 1){
-                const A1 = +strColor[3];
-                const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-                const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-                const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                const A3 = 1;
-                strColor[0] = R3.toFixed(6).toString();
-                strColor[1] = G3.toFixed(6).toString();
-                strColor[2] = B3.toFixed(6).toString();
-                strColor[3] = A3.toString();
-            }
+            // var strColor = ol.color.asArray(fillStyleColor);
+            // if(+strColor[3] !== 1){
+            //     const A1 = +strColor[3];
+            //     const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
+            //     const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
+            //     const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
+            //     const A3 = 1;
+            //     strColor[0] = R3.toFixed(6).toString();
+            //     strColor[1] = G3.toFixed(6).toString();
+            //     strColor[2] = B3.toFixed(6).toString();
+            //     strColor[3] = A3.toString();
+            // }
         
-            fillStyleColor = strColor.map((val, index) => {
-                return index !== 3 ? val / 255 : +val;
-            });
+            // fillStyleColor = strColor.map((val, index) => {
+            //     return index !== 3 ? val / 255 : +val;
+            // });
 
-            // fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
-            //     return i != 3 ? c / 255 : c;
-            // }) || ol.render.webgl.defaultFillStyle;
+            fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
+                return i != 3 ? c / 255 : c;
+            }) || ol.render.webgl.defaultFillStyle;
         } else {
             fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
@@ -98898,7 +98908,7 @@ function olInit() {
                         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex;
+                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
                         this.styles[length++] = GeoAreaStyle.areaShadowStyle;
                     }
                     if (this.fill) {
@@ -98917,7 +98927,6 @@ function olInit() {
                     }
                     GeoAreaStyle.areaStyle.setGeometry(feature);                    
                     GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
-                    // GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;
@@ -102603,7 +102612,7 @@ function olInit() {
             // console.log(requestTileCoord);
             // if(!(requestTileCoord.toString() == "6,14,-27")){
             // if(tileCoord.toString() !== "12,946,-1653"){
-                // if(tileCoord.toString() !== "16,15146,-26447"){
+            // if(tileCoord.toString() !== "16,15146,-26445"){
             // if(tileCoord.toString() !== "18,60590,-105777"){
                 // return
             // }
