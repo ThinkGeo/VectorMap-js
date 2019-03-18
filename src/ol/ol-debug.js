@@ -22826,7 +22826,7 @@ function olInit() {
             newResolution = minResolution;
         }
 
-        if(scaleDelta > 1 && this.lastScaleDelta_ >1)
+        if(scaleDelta > 1 && this.lastScaleDelta_ >=1 )
         {
             view.isPinchOut = true;
         }else{
