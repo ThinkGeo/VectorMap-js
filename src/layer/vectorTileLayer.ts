@@ -983,7 +983,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             var part = parts[i];
                             this.anchorX = part[2];
                             this.rotation = part[3];
-                            this.replayImage_(frameState, declutterGroup, [part[0], part[1]], this.scale / pixelRatio);
+                            this.replayImage_(frameState, declutterGroup, [part[0], part[1]], this.scale);
                             this.renderDeclutter_(declutterGroup, feature);
                         }   
                     }
