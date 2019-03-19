@@ -71435,7 +71435,7 @@ function olInit() {
             var state = this.state_;
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
-            var width = Math.ceil(mCtx.measureText(char).width * state.scale);
+            var width = Math.ceil((mCtx.measureText(char).width +state.lineWidth/2)* state.scale * window.devicePixelRatio );
 
             var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height,
                 function (ctx, x, y) {

@@ -783,7 +783,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
-            var scale = this.scale * window.devicePixelRatio;
+            var scale = this.scale*window.devicePixelRatio ;
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
             var x = part[0];
             var y = part[1];
