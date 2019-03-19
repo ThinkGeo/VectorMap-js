@@ -6,7 +6,7 @@
 //   2. Map Control Setup
 //   3. Popup Setup
 //   4. Geocoder Setup
-//   5. Feedback Addresses Select Control
+//   5. Event Listeners
 /*===========================================================================*/
 
 
