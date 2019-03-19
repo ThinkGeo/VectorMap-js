@@ -102613,7 +102613,7 @@ function olInit() {
             // if(!(requestTileCoord.toString() == "6,14,-27")){
             // if(tileCoord.toString() !== "12,946,-1653"){
             // if(tileCoord.toString() !== "16,15146,-26445"){
-            // if(tileCoord.toString() !== "18,60590,-105777"){
+            // if(!(tileCoord.toString() == "19,121173,-211544" || tileCoord.toString() == "19,121174,-211544")){
                 // return
             // }
             // TEST END

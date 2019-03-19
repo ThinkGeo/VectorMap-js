@@ -71,7 +71,6 @@
     "@roadShieldTrunk": "#ffe659",
     "@rail": "#cccccc",
     "@railOther": "#00ff00",
-    "@railSubway": "#f3759f",
     "@lightRail": "#9ed899",
     "@aerowayLevel1": "#bcc4cd",
     "@aerowayLevel3": "#c5cdd7",
@@ -595,7 +594,7 @@
           ]
         },
         {
-          "filter": "class='grassland'",
+          "filter": "class='grassland';subclass!='meadow'",
           "style": [
             {
               "filter": "zoom>=2;zoom<=19;",
@@ -631,7 +630,7 @@
           ]
         },
         {
-          "filter": "class='park'",
+          "filter": "class='park';subclass!='nature_reserve'",
           "polygon-fill": "@park",
           "style": [
             { "filter": "zoom>=4;zoom<=13;area>4500" },
@@ -1655,6 +1654,7 @@
             {
               "filter": "zoom=16",
               "line-width": 5,
+              "line-color": "@roadFill",
               "children": [
                 {
                   "line-width": 3,
@@ -2255,6 +2255,7 @@
               "shield-name": "@name",
               "shield-fill": "@grayLevel3",
               "shield-halo-fill": "@haloSolid",
+              "shield-icon-size": 0,
               "style": [
                 {
                   "filter": "population>=1000;population<=100000;zoom>=8;zoom<=10|population=0;zoom>=8;zoom<=10",
@@ -2285,7 +2286,7 @@
               "filter": "zoom>=5;zoom<=7",
               "shield-icon-type": "symbol",
               "shield-icon-symbol-type": "square",
-              "shield-icon-size": 5,
+              "shield-icon-size": 4,
               "shield-icon-color": "@grayLevel1",
               "shield-name": "@name",
               "shield-font": "small-caps 200 13px Arial, Helvetica, sans-serif",
@@ -2300,11 +2301,11 @@
               "style": [
                 {
                   "filter": "zoom>=8;zoom<=10",
-                  "text-font": "small-caps 500 12px Arial, Helvetica, sans-serif"
+                  "text-font": "small-caps 500 12px Arial, Helvetica, sans-serif"
                 },
                 {
                   "filter": "zoom>=11;zoom<=13",
-                  "text-font": "small-caps 500 14px Arial, Helvetica, sans-serif"
+                  "text-font": "small-caps 500 14px Arial, Helvetica, sans-serif"
                 }
               ]
             }
@@ -2489,7 +2490,7 @@
           ]
         },
         {
-          "filter": "class='bar,biergarden,cafe,fast_food,restaurant,fuel,bank,hospital,cinema,supermarket,food_court",
+          "filter": "class='bar,biergarden,cafe,fast_food,restaurant,fuel,bank,hospital,cinema,supermarket,food_court'",
           "style": [
             {
               "filter": "labelrank<=3;zoom=14|labelrank<=6;zoom=15|labelrank<=8;zoom=16|labelrank<=9;zoom=17|labelrank<=10;zoom=18|labelrank<=10;zoom=19",
@@ -2554,7 +2555,7 @@
           ]
         },
         {
-          "filter": "class='kindergarden,school,taxi,clinic,dentist,pharmacy,social_facility,veterinary,community_centre,courthouse,fire_station,embassy,marketplace,place_of_worship,police,prison,townhall,toilets,garden,miniature_golf,playground,water_park,swimming_pool,fitness_centre,attraction,camp_site,hostel,motel,theme_park,viewpoint,zoo,shelter,pub,fountain,casino,bicycle_rental,car_rental,bicycle_parking,ruins,memorial,monument,castle,battlefield,marina,water_tower,cave_entrance,motorcycle,garden_centre,cricket,climbing,canoebaseball,picnic_site,artwork,coniferous,mixed,deciduous,plant,recycling,post_office,nursing_home,ice_cream,toll_booth,wreck,windmill,crane,estate_agent,video,toys,tobacco,pet,optician,newsagent,musical_instrument,mobile_phone,laundry,kiosk,jewelry,hifi,hearing_aids,hairdresser,gift,greengrocer,florist,doityourself,department_store,copyshop,convenience,confectionery,computer,clothes,car_repair,car_parts,car,butcher,books,bicycle,bakery,alcohol,tennis,soccer,shooting,motor,ice_stock,horse_racing,baseball,gymnastics,archery,chalet,caravan_site,sikh,shinto,jain,muslim,hindu,christian,buddhist,jewish,pizza,mineshaft,hydro,gas,solar,wind,swimming,grave_yard,information'",
+          "filter": "class='kindergarden,school,taxi,clinic,dentist,pharmacy,social_facility,veterinary,community_centre,courthouse,fire_station,embassy,marketplace,place_of_worship,police,prison,townhall,toilets,garden,miniature_golf,playground,water_park,swimming_pool,fitness_centre,attraction,camp_site,hostel,motel,theme_park,viewpoint,zoo,shelter,pub,fountain,casino,bicycle_rental,car_rental,bicycle_parking,ruins,memorial,monument,castle,battlefield,marina,water_tower,cave_entrance,motorcycle,garden_centre,cricket,climbing,canoe,baseball,picnic_site,artwork,coniferous,mixed,deciduous,plant,recycling,post_office,nursing_home,ice_cream,toll_booth,wreck,windmill,crane,estate_agent,video,toys,tobacco,pet,optician,newsagent,musical_instrument,mobile_phone,laundry,kiosk,jewelry,hifi,hearing_aids,hairdresser,gift,greengrocer,florist,doityourself,department_store,copyshop,convenience,confectionery,computer,clothes,car_repair,car_parts,car,butcher,books,bicycle,bakery,alcohol,tennis,soccer,shooting,motor,ice_stock,horse_racing,baseball,gymnastics,archery,chalet,caravan_site,sikh,shinto,jain,muslim,hindu,christian,buddhist,jewish,pizza,mineshaft,hydro,gas,solar,wind,swimming,grave_yard,information'",
           "style": [
             {
               "filter": "labelrank<=2;zoom=14|labelrank<=2;zoom=15|labelrank<=3;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
@@ -3421,6 +3422,7 @@
       "text-base-line": "top",
       "text-font": "500 11px Arial",
       "text-spacing": 0,
+      "text-min-padding": 5,
       "style": [
         {
           "filter": "class='airport'",
@@ -3538,7 +3540,7 @@
           ]
         },
         {
-          "filter": "class='kindergarden,school,taxi,clinic,dentist,pharmacy,social_facility,veterinary,community_centre,courthouse,fire_station,embassy,marketplace,place_of_worship,police,prison,townhall,toilets,garden,miniature_golf,playground,water_park,swimming_pool,fitness_centre,attraction,camp_site,hostel,motel,theme_park,viewpoint,zoo,shelter,pub,fountain,casino,bicycle_rental,car_rental,bicycle_parking,ruins,memorial,monument,castle,battlefield,marina,water_tower,cave_entrance,motorcycle,garden_centre,cricket,climbing,canoebaseball,picnic_site,artwork,coniferous,mixed,deciduous,plant,recycling,post_office,nursing_home,ice_cream,toll_booth,wreck,windmill,crane,estate_agent,video,toys,tobacco,pet,optician,newsagent,musical_instrument,mobile_phone,laundry,kiosk,jewelry,hifi,hearing_aids,hairdresser,gift,greengrocer,florist,doityourself,department_store,copyshop,convenience,confectionery,computer,clothes,car_repair,car_parts,car,butcher,books,bicycle,bakery,alcohol,tennis,soccer,shooting,motor,ice_stock,horse_racing,baseball,gymnastics,archery,chalet,caravan_site,sikh,shinto,jain,muslim,hindu,christian,buddhist,jewish,pizza,mineshaft,hydro,gas,solar,wind,swimming,grave_yard,information'",
+          "filter": "class='kindergarden,school,taxi,clinic,dentist,pharmacy,social_facility,veterinary,community_centre,courthouse,fire_station,embassy,marketplace,place_of_worship,police,prison,townhall,toilets,garden,miniature_golf,playground,water_park,swimming_pool,fitness_centre,attraction,camp_site,hostel,motel,theme_park,viewpoint,zoo,shelter,pub,fountain,casino,bicycle_rental,car_rental,bicycle_parking,ruins,memorial,monument,castle,battlefield,marina,water_tower,cave_entrance,motorcycle,garden_centre,cricket,climbing,canoe,baseball,picnic_site,artwork,coniferous,mixed,deciduous,plant,recycling,post_office,nursing_home,ice_cream,toll_booth,wreck,windmill,crane,estate_agent,video,toys,tobacco,pet,optician,newsagent,musical_instrument,mobile_phone,laundry,kiosk,jewelry,hifi,hearing_aids,hairdresser,gift,greengrocer,florist,doityourself,department_store,copyshop,convenience,confectionery,computer,clothes,car_repair,car_parts,car,butcher,books,bicycle,bakery,alcohol,tennis,soccer,shooting,motor,ice_stock,horse_racing,baseball,gymnastics,archery,chalet,caravan_site,sikh,shinto,jain,muslim,hindu,christian,buddhist,jewish,pizza,mineshaft,hydro,gas,solar,wind,swimming,grave_yard,information'",
           "style": [
             {
               "filter": "labelrank<=2;zoom=14|labelrank<=2;zoom=15|labelrank<=3;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
@@ -3762,20 +3764,6 @@
                   "line-color": "@railOther"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "filter": "class='subway'",
-          "line-color": "@railSubway",
-          "style": [
-            {
-              "filter": "zoom>=12;zoom<=16",
-              "line-width": 1
-            },
-            {
-              "filter": "zoom>16",
-              "line-width": 2
             }
           ]
         },
@@ -4106,6 +4094,7 @@
       "text-halo-radius": 2,
       "text-halo-fill": "@haloTransp50",
       "text-spacing": 1,
+      "text-min-padding": 20,
       "style": [
         {
           "filter": "zoom=15;class!='yes'",
@@ -4128,11 +4117,6 @@
   "sources": [
     {
       "id": "worldstreets_source",
-      "url": "http://54.177.171.109/v1/world-streets/v2/{z}/{x}/{y}.mvt",
-      "type": "MVT"
-    },
-    {
-      "id": "worldstreets_source_test",
       "urls": [ 
         "https://cloud1.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~", 
         "https://cloud2.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~", 
@@ -4141,13 +4125,13 @@
         "https://cloud5.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~", 
         "https://cloud6.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=Yy6h5V0QY4ua3VjqdkJl7KTXpxbKgGlFJWjMTGLc_8s~" 
       ],
-      "type": "MVT"
+       "type": "MVT"
     }
   ],
   "layers": [
     {
       "id": "worldstreets_layers",
-      "source": "worldstreets_source_test",
+      "source": "worldstreets_source",
       "styles": [ "country", "urban", "landcover", "water", "waterway", "building", "country_boundary", "province_boundary", "aeroway", "road", "railway", "place_popular", "place_others", "poi_icon", "country_name", "state_name", "marine_name", "poi_text", "road_number", "motorway_name", "trunk_name", "primary_name", "secondary_name", "tertiary_name", "residential_name", "pedestrian_name", "otherroad_name", "road_oneway", "water_name", "waterway_name", "building_name", "housenumber" ]
     }
   ]

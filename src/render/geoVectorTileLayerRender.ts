@@ -182,8 +182,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 delete tilesToDrawByZ[tilesToDrawKeys[0]];
                 tilesToDrawKeys = Object.keys(tilesToDrawByZ);
             }
-        }
-       
+        }        
+    
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
         let animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
@@ -269,8 +269,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
         this.createReplayGroup_(vectorImageTile, frameState, x, y);
         var context = frameState.context;
-        var gl = context.getGL();
-        
+        var gl = context.getGL();      
+
         if (gl) {
             let screenXY = tile.screenXY;
             let layer = this.getLayer();
@@ -307,8 +307,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
                         let replayType = replayTypes[j];
                         replay = replays[replayType];
-                        if (replay !== undefined) {
-                            replay.zIndex = zs[i];                            
+                        if ((replay instanceof (<any>ol.render).webgl.PolygonReplay) || (replay instanceof (<any>ol.render).webgl.LineStringReplay)) {
+                            replay.zIndex = zs[i];      
                             replay.replay(context, viewRotation, {}, screenXY);
                         }
                     }
