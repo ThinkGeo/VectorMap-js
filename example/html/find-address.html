@@ -6,9 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Find an Address in the US</title>
-    <!-- style sheet for vectormap.js -->
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
-    <style>
+
+    <!-- Define some custom styles for the UI of our sample page. -->
+    <style rel="stylesheet" type="text/css">
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
         #searchBar {
             top: 20px;
             position: absolute;
@@ -28,7 +36,7 @@
             display: inline-block;
         }
 
-        #geocoder i{
+        #geocoder i {
             width: 20px;
             height: 20px;
             background: url(../image/seach.png);
@@ -37,39 +45,44 @@
             top: 10px;
             left: 10px;
         }
-        #geocoder input{
+
+        #geocoder input {
             display: inline-block;
-            font: 15px/20px  sans-serif;
+            font: 15px/20px sans-serif;
             margin: 0;
-            color: rgba(0,0,0,.6);
-            padding: 10px 35px ;
+            color: rgba(0, 0, 0, .6);
+            padding: 10px 35px;
             -webkit-appearance: none;
-            border: 0px solid ;
+            border: 0px solid;
             width: 100%;
             border-radius: 3px;
         }
 
-        #geocoder input:focus{
+        #geocoder input:focus {
             outline: none;
         }
-        .geocoderResult{
+
+        .result-wrap {
             position: relative;
         }
-        .loading{
+
+        .loading {
             position: absolute;
             top: 17%;
             left: 45%;
         }
-        #geocoderResult{
-             list-style: none;
-             padding: 0;
-             margin: 0;
+
+        #geocoderResult {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        #geocoderResult li{
-            border-top: 1px solid rgba(0,0,0,0.10);
+        #geocoderResult li {
+            border-top: 1px solid rgba(0, 0, 0, 0.10);
         }
-        #geocoderResult li a{
+
+        #geocoderResult li a {
             padding: 5px 15px;
             display: inline-block;
             width: 100%;
@@ -83,15 +96,17 @@
             color: #3887BE;
             cursor: pointer;
         }
-        #geocoderResult li a:hover{
+
+        #geocoderResult li a:hover {
             color: #63b6e5
         }
-         .ol-control:hover {
+
+        .ol-control:hover {
             background-color: unset;
         }
 
         .ol-control:focus {
-            outline: unset !important;
+            outline: unset;
         }
 
         .ol-full-screen {
@@ -102,21 +117,22 @@
         }
 
         .ol-full-screen button {
-            height: 1.2em !important;
-            width: 1.2em !important;
-            font-size: 1.5em !important;
+            height: 1.2em;
+            width: 1.2em;
+            font-size: 1.5em;
             cursor: pointer;
-            margin: 0px !important;
-            background-color: #fff !important;
-            color: #2d3c4d !important;
-            border: solid 1px #ccc !important;
+            margin: 0px;
+            background-color: #fff;
+            color: #2d3c4d;
+            border: solid 1px #ccc;
             box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
             border-radius: 0 0 2px 2px;
         }
 
         .ol-full-screen button:hover {
-            background-color: #eee !important;
+            background-color: #eee;
         }
+
         .ol-popup {
             position: absolute;
             background-color: white;
@@ -164,14 +180,15 @@
         }
 
         .ol-popup-closer:after {
-             content: "✖";
+            content: "✖";
         }
 
         #popup-content p {
             margin-top: 5px;
             margin-bottom: 5px;
         }
-        .address{
+
+        .address {
             font-family: Arial;
             display: inline-block;
             width: 300px;
@@ -185,10 +202,12 @@
             color: #333333;
             cursor: pointer;
         }
-        .coodinates{
+
+        .coodinates {
             font-size: 1.0em;
             color: gray;
         }
+
         .icon {
             position: absolute;
             bottom: -62px;
@@ -196,26 +215,26 @@
         }
 
         .hidden {
-             display: none;
+            display: none;
         }
-        .focus{
+
+        .focus {
             font-weight: 600;
         }
-         
     </style>
 </head>
 
 <body>
-
-    <div id="map" style="width:100%;height:100%">
+    <!-- This <div> is the container into which our map control will be loaded. -->
+    <div id="map">
         <div id="searchBar">
             <div id="geocoder">
                 <i></i>
                 <input type="text" id="address" autofocus autocomplete="off" placeholder="Search United States">
-                <div class="geocoderResult">
+                <div class="result-wrap">
                     <ul id="geocoderResult">
                     </ul>
-                    <div class="loading hidden ">
+                    <div class="loading hidden">
                         <img src="../image/Spinner-1s-50px.gif" alt="loading">
                     </div>
                 </div>
@@ -223,20 +242,20 @@
 
         </div>
     </div>
+    <!-- This <div> is the container into which our popup panel will be rendered. -->
     <div id="popup" class="ol-popup hidden">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
         <div id="popup-content">
         </div>
-        <div class="icon ">
-            <img src="../image/point.png" alt="">
+        <div class="icon">
+            <img src="../image/point.png" alt="Marker">
         </div>
     </div>
 </body>
 
-<!-- latest minified version of vectormap.js -->
+<!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
 <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
-<!-- option: Map Suite World Streets Styles -->
-<script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+
 <script src="../js/find-address.js"></script>
 
 </html>
