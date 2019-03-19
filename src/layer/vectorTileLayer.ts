@@ -783,7 +783,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
-            var scale = this.scale;
+            var scale = this.scale*window.devicePixelRatio ;
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
             var x = part[0];
             var y = part[1];
@@ -791,7 +791,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var text = part[4];
             var cos = Math.cos(rotation);
             var sin = Math.sin(rotation); 
-            var anchorX = part[2];
+            var anchorX = part[2] ;
             var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
             var width = this.width;
             var height = this.height;
@@ -1029,12 +1029,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                     this.drawText_(flatCoordinates, offset, end, stride);
                 }else{
-                    this.scale = 1;
+                    // this.scale = 1;
                     var glyphAtlas = options.currAtlas;
                     var j, jj, currX, currY, charArr, charInfo;
                     var anchorX = options.anchorX;
                     var anchorY = options.anchorY;          
-                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale * window.devicePixelRatio;
                     this$1.rotation = options.rotation;
                     currX = 0;
                     currY = 0;
@@ -1065,7 +1065,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                                     this$1.images_.push(image);
                                 }
                             }
-                
+                            this$1.scale_ = 1 / window.devicePixelRatio;
                             this$1.drawText_(flatCoordinates, offset, end, stride);
                         }
                         currX += this$1.width;

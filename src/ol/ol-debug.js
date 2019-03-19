@@ -67652,7 +67652,7 @@ function olInit() {
         var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
         // this.rotation_ is anti-clockwise, but rotation is clockwise
         var rotation = /** @type {number} */ (-this.rotation);
-        var scale = /** @type {number} */ (this.scale);
+        var scale = this.scale_ || /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
@@ -70931,13 +70931,20 @@ function olInit() {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        this.context_ = ol.dom.createCanvasContext2D(size, size);
+        this.context_ = ol.dom.createCanvasContext2D(size * window.devicePixelRatio, size * window.devicePixelRatio);
 
         /**
          * @private
          * @type {HTMLCanvasElement}
          */
         this.canvas_ = this.context_.canvas;
+
+        this.canvas_ = this.context_.canvas;
+
+        this.canvas_.width = size * window.devicePixelRatio;
+        this.canvas_.height = size * window.devicePixelRatio;
+        this.canvas_.style.width = size + 'px';
+        this.canvas_.style.height = size + 'px';
     };
 
 
@@ -70976,7 +70983,7 @@ function olInit() {
 
                 // render the image on the atlas image
                 renderCallback.call(opt_this, this.context_,
-                    block.x + this.space_, block.y + this.space_);
+                    block.x / window.devicePixelRatio + this.space_, block.y / window.devicePixelRatio + this.space_);
 
                 // split the block after the insertion, either horizontally or vertically
                 this.split_(i, block, width + this.space_, height + this.space_);
@@ -71512,7 +71519,7 @@ function olInit() {
                 }
                 sum += glyphAtlas.width[curr] ? glyphAtlas.width[curr] : 0;
             }
-            return sum;
+            return sum / window.devicePixelRatio;
         }).reduce(function (max, curr) {
             return Math.max(max, curr);
         });
@@ -71546,7 +71553,7 @@ function olInit() {
             var state = this.state_;
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
-            var width = Math.ceil(mCtx.measureText(char).width * state.scale);
+            var width = Math.ceil((mCtx.measureText(char).width +state.lineWidth/2)* state.scale * window.devicePixelRatio );
 
             var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height,
                 function (ctx, x, y) {
@@ -71565,11 +71572,11 @@ function olInit() {
                         ctx.setLineDash(state.lineDash);
                         ctx.lineDashOffset = /** @type {number} */ (state.lineDashOffset);
                     }
-                    if (state.scale !== 1) {
+                    // if (state.scale !== 1) {
                         //FIXME: use pixelRatio
-                        ctx.setTransform(/** @type {number} */(state.scale), 0, 0,
-                        /** @type {number} */(state.scale), 0, 0);
-                    }
+                        ctx.setTransform(/** @type {number} */(state.scale * window.devicePixelRatio), 0, 0,
+                        /** @type {number} */(state.scale * window.devicePixelRatio), 0, 0);
+                    // }
 
                     // Draw the character on the canvas
                     if (state.strokeColor) {
@@ -71712,7 +71719,7 @@ function olInit() {
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
             var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-                state.lineWidth / 2) * state.scale);
+                state.lineWidth / 2) * state.scale*window.devicePixelRatio);
 
             this.atlases_[hash] = {
                 atlas: new ol.style.AtlasManager({
