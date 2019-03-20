@@ -22,12 +22,12 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
-var tileGrid = new ol.layer.Tile({
-    source: new ol.source.TileDebug({
-        projection: "EPSG:3857",
-        tileGrid: worldStreetsLayer.createVectorTileGrid()
-    })
-});
+// var tileGrid = new ol.layer.Tile({
+//     source: new ol.source.TileDebug({
+//         projection: "EPSG:3857",
+//         tileGrid: worldStreetsLayer.createVectorTileGrid()
+//     })
+// });
 
 var map = new ol.Map({
     layers: [worldStreetsLayer],
@@ -52,8 +52,8 @@ function showInfo(event) {
 
 // disable rotation in mobile devices
 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
-    // map.getInteractions().forEach(function (element, index, array) {
-    //     if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
-    //     if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
-    // });
+    map.getInteractions().forEach(function (element, index, array) {
+        if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
+        if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
+    });
 }

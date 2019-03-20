@@ -80,7 +80,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let tmpTileRange = this.tmpTileRange_;
         let newTiles = false;
         let tile, x, y;  
-
+        let allLoaded = true;
+        
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
@@ -104,13 +105,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     let uid = (<any>ol).getUid(this);
                     if (tile.getState() === (<any>ol).TileState.LOADED) {
                         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-                        // console.log(tilesToDrawByZ)
                         let inTransition = tile.inTransition(uid);
                         if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
                             newTiles = true;
                         }
+                        // continue;
+                    }else if(tile.getState() === (<any>ol).TileState.EMPTY){
+                        continue;
                     }
-                    
                     // judge the data of replayGroup for drawing
                     let sourceTile = tile.getTile(tile.tileKeys[0]);
                     let replayGroup = sourceTile && sourceTile.getReplayGroup(this.getLayer(), sourceTile.tileCoord.toString());
@@ -120,69 +122,61 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                     }
                 }
 
+                if(y <= tileRange.maxY){
+                    allLoaded = false;
+                }
+
                 let childTileRange = tileGrid.getTileCoordChildTileRange(
                     tile.tileCoord, tmpTileRange, tmpExtent);
                 let covered = false;
-                if (childTileRange) {
-                    covered = findLoadedTiles((z + 1), childTileRange);
+                if (childTileRange) {           
+                    var maxZoom = tileSource.tileCache.maxZoom || 0;
+                    covered = tileGrid.forEachTileCoordChildTileRange(
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, maxZoom, tileRange
+                        );                    
+                    // covered = findLoadedTiles((z + 1), childTileRange);
                 }
 
                 if (!covered) {
-                    // if (!covered && frameState.isZoom) {
                     tileGrid.forEachTileCoordParentTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent
                         );
                 }
-                if(frameState.isZoomOut || frameState.isPinchOut || frameState.isClickZoomOut){
-                    let x, y,  tileRange1;
-                    var tileCoord = tile.tileCoord;
-                    var tileCoordExtent = null;
-                    if (tileGrid.zoomFactor_ === 2) {
-                        x = tileCoord[1];
-                        y = tileCoord[2];
-                    
-                    } else {
-                        tileCoordExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-                    }
-                    let z = tileCoord[0] + 1;
-                    while (z <= tileGrid.maxZoom && z> 1) {
-                        if (tileGrid.zoomFactor_ === 2) {
-                            x =(x * 2);
-                            y =(y * 2);
-                            tileRange1 =  (<any>ol).TileRange.createOrUpdate(x , x + 1, y, y + 1, tmpTileRange);
-                        } else {
-                            tileRange1 = tileGrid.getTileRangeForExtentAndZ(tileCoordExtent, z, tmpTileRange);
-                        }
-                        if (findLoadedTiles.call(null, z, tileRange1)) {
-                            break;
-                        }
-                        ++z;
-                    }
-                }
-
-
             }
+        }
+
+        // current tile range has been all loaded
+        if(allLoaded){            
+            var tileCache = tileSource.tileCache;
+            tileSource.tileCache.highWaterMark = 0;
+            tileCache.forEach(function(tile){
+                var keyZ = tile.tileCoord[0];
+                if(keyZ == z){
+                    tileSource.tileCache.highWaterMark += 1;
+                }                
+            });
+            tileSource.tileCache.maxZoom = tile.tileCoord[0];
         }
         // delete a large interval for drawing
-        var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-        if((frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut)){
-            let item = tilesToDrawKeys.filter((item) => {
-                return +item > z;
-            });
-            if(item.length>0 || Object.keys(tilesToDrawByZ[z]).length>0){
-                while(z > (+tilesToDrawKeys[0])){
-                    delete tilesToDrawByZ[tilesToDrawKeys[0]];
-                    tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-                }
-            }
-        }
+        // var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+        // if((frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut)){
+        //     let item = tilesToDrawKeys.filter((item) => {
+        //         return +item > z;
+        //     });
+        //     if(item.length>0 || Object.keys(tilesToDrawByZ[z]).length>0){
+        //         while(z > (+tilesToDrawKeys[0])){
+        //             delete tilesToDrawByZ[tilesToDrawKeys[0]];
+        //             tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+        //         }
+        //     }
+        // }
         
-        if(frameState.isDrag && Object.keys(tilesToDrawByZ[z]).length>0){
-            while(z != (+tilesToDrawKeys[0])){
-                delete tilesToDrawByZ[tilesToDrawKeys[0]];
-                tilesToDrawKeys = Object.keys(tilesToDrawByZ);
-            }
-        }        
+        // if(frameState.isDrag && Object.keys(tilesToDrawByZ[z]).length>0){
+        //     while(z != (+tilesToDrawKeys[0])){
+        //         delete tilesToDrawByZ[tilesToDrawKeys[0]];
+        //         tilesToDrawKeys = Object.keys(tilesToDrawByZ);
+        //     }
+        // }        
     
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;

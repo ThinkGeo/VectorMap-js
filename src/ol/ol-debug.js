@@ -6665,6 +6665,42 @@ function olInit() {
         return false;
     };
 
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordChildTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, maxZoom, tileRange) {
+        var tileRange_, x, y;
+        var tileCoordExtent = null;
+       
+        if (this.zoomFactor_ === 2) {
+            x = tileCoord[1];
+            y = tileCoord[2];
+        } else {
+            tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+        }
+        //the reason that zoom in is blank why is run this. 
+        var z = tileCoord[0] + 1;
+        var interval;
+        var rangeX = 3;
+        var rangeY = 3;
+        var intervalX = Math.abs(tileRange.maxX - tileRange.minX + 1);
+        var intervalY = Math.abs(tileRange.maxY - tileRange.minY + 2);
+
+        while (z <= maxZoom) {
+            if (this.zoomFactor_ === 2) {
+                interval = Math.pow(2, z - tileCoord[0]) - 1;
+                rangeX = interval > intervalX ? intervalX : interval;
+                rangeY = interval > intervalY ? intervalY : interval;
+                x = Math.floor(x * 2);
+                y = Math.floor(y * 2);
+                tileRange_ = ol.TileRange.createOrUpdate(x, x + rangeX, y, y + rangeY, opt_tileRange);
+            } else {
+                tileRange_ = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+            }
+            if (callback.call(opt_this, z, tileRange_)) {
+                return true;
+            }
+            ++z;
+        }
+        return false;
+    };
 
     /**
      * Get the extent for this tile grid, if it was configured.
