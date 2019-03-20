@@ -135,7 +135,7 @@ const getColorscheme = () => {
         }
     });
 
-    jqxhr.fail(function (data) {
+    jqxhr.fail(function () {
         window.alert('No results');
     })
 }

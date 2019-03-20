@@ -67,14 +67,14 @@ map.addControl(new ol.control.FullScreen());
 // get from the location you click.
 
 // We need to get the DOM container.
-const container = document.getElementById('popup');
-const content = document.getElementById('popup-content');
-const closer = document.getElementById('popup-closer');
+const container = $('#popup');
+const content = $('#popup-content');
+const closer = $('#popup-closer');
 
 // Create the Overlay for our map and add the DOM Nodes to its container. 
 // So that we can control the info panel on our map.
 let overlay = new ol.Overlay({
-    element: container
+    element: container.get(0)
 });
 
 // This method recieve the Best Matched Location and coordnate to style the 
@@ -91,7 +91,8 @@ const showPopUp = (bestMatchLocation, centerCoordinate) => {
         overlay.setPosition(centerCoordinate);
         map.addOverlay(overlay);
         let length = addressArr.length;
-        content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
+        content.html('<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>')
+        // content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
     } else {
         window.alert('No results');
     }
@@ -107,26 +108,22 @@ const showPopUp = (bestMatchLocation, centerCoordinate) => {
 // get back closest matching address of that click, as well as 
 // a collection of places in the vicinity.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
+
 const getReverseGeocoder = (coordinate, apiKey) => {
-    return new Promise((resolve, reject) => {
-        let url = `https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/${coordinate[1]}, ${coordinate[0]}?Srid=3857&apikey=${apiKey}`;
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4) {
-                if (xhr.status === 200) {
-                    resolve(xhr)
-                } else {
-                    reject({
-                        status: request.status,
-                        statusText: request.statusText
-                    })
-                }
-            }
-        }
-        xhr.send();
-    })
-}
+    let url = `https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/${coordinate[1]}, ${coordinate[0]}?Srid=3857&apikey=${apiKey}`;
+
+    let xhr = $.get(url, function (response) {
+        let bestMatchLocation = response.data.bestMatchLocation;
+        showPopUp(bestMatchLocation, coordinate)
+    });
+
+    xhr.fail(function () {
+        window.alert(
+            "Something goes wrong!"
+        );
+    });
+};
+
 
 
 /*---------------------------------------------*/
@@ -138,7 +135,7 @@ const getReverseGeocoder = (coordinate, apiKey) => {
 
 // This listener will let the Popup Overlay disapear once you clicked the "close" 
 // icon on the top right corner of the popup panel.
-closer.addEventListener('click', () => {
+closer.on('click', () => {
     overlay.setPosition(undefined);
 })
 
@@ -147,9 +144,5 @@ closer.addEventListener('click', () => {
 // result has been recieved, show up the popup panel.
 map.addEventListener('click', (evt) => {
     let coordinate = evt.coordinate;
-    getReverseGeocoder(coordinate, apiKey).then((res) => {
-        response = JSON.parse(res.response);
-        let bestMatchLocation = response.data.bestMatchLocation;
-        showPopUp(bestMatchLocation, coordinate)
-    })
+    getReverseGeocoder(coordinate, apiKey);
 });
