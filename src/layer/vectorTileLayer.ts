@@ -783,7 +783,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         };
 
         (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
-            var scale = this.scale*window.devicePixelRatio ;
+            var scale = this.scale ;
             var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
             var x = part[0];
             var y = part[1];
@@ -791,9 +791,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var text = part[4];
             var cos = Math.cos(rotation);
             var sin = Math.sin(rotation); 
-            var anchorX = part[2] ;
+            var anchorX = part[2] * window.devicePixelRatio;
             var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-            var width = this.width;
+            var width = this.width*window.devicePixelRatio;
             var height = this.height;
             var bottomLeft = [];
             var bottomRight = [];

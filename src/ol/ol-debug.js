@@ -71605,7 +71605,7 @@ function olInit() {
 
             this.atlases_[hash] = {
                 atlas: new ol.style.AtlasManager({
-                    space: state.lineWidth + 1
+                    space: state.lineWidth/2 + 1
                 }),
                 width: {},
                 height: height
