@@ -6636,7 +6636,7 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom) {
         var tileRange, x, y;
         var tileCoordExtent = null;
        
@@ -6649,7 +6649,7 @@ function olInit() {
         
         //the reason that zoom in is blank why is run this. 
         var z = tileCoord[0] - 1;
-        while (z >= this.minZoom) {
+        while (z >= cacheZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
@@ -6665,7 +6665,7 @@ function olInit() {
         return false;
     };
 
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordChildTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, maxZoom, tileRange) {
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordChildTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom, tileRange) {
         var tileRange_, x, y;
         var tileCoordExtent = null;
        
@@ -6680,10 +6680,10 @@ function olInit() {
         var interval;
         var rangeX = 3;
         var rangeY = 3;
-        var intervalX = Math.abs(tileRange.maxX - tileRange.minX + 1);
-        var intervalY = Math.abs(tileRange.maxY - tileRange.minY + 2);
+        var intervalX = tileRange.maxX - tileRange.minX + 2;
+        var intervalY = tileRange.maxY - tileRange.minY + 2;
 
-        while (z <= maxZoom) {
+        while (z <= cacheZoom) {            
             if (this.zoomFactor_ === 2) {
                 interval = Math.pow(2, z - tileCoord[0]) - 1;
                 rangeX = interval > intervalX ? intervalX : interval;
@@ -25523,7 +25523,6 @@ function olInit() {
                 for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                     if (currentZ - z <= preload) {
                         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-                        // FIXME Eric
                         if (tile.getState() == ol.TileState.IDLE || tile.getState() == ol.TileState.CANCEL) {
                             wantedTiles[tile.getKey()] = true;
                             if (!tileQueue.isKeyQueued(tile.getKey())) {
@@ -102650,11 +102649,10 @@ function olInit() {
             var tileCoord = messageData[2];
 
             // TEST
-            // console.log(tileCoord);
-            
+            // console.log(tileCoord);            
             // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "6,14,-27")){
-            // if(tileCoord.toString() !== "12,946,-1653"){
+
+            // if(tileCoord.toString() !== "2,0,-2"){
             // if(tileCoord.toString() !== "16,15146,-26445"){
             // if(!(tileCoord.toString() == "19,121173,-211544" || tileCoord.toString() == "19,121174,-211544")){
                 // return

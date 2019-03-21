@@ -81,7 +81,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         let newTiles = false;
         let tile, x, y;  
         let allLoaded = true;
-        
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
@@ -129,34 +128,38 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 let childTileRange = tileGrid.getTileCoordChildTileRange(
                     tile.tileCoord, tmpTileRange, tmpExtent);
                 let covered = false;
-                if (childTileRange) {           
-                    var maxZoom = tileSource.tileCache.maxZoom || 0;
+                var cacheZoom = tileSource.tileCache.zoom || 0;
+                if (childTileRange) { 
                     covered = tileGrid.forEachTileCoordChildTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, maxZoom, tileRange
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom, tileRange
                         );                    
                     // covered = findLoadedTiles((z + 1), childTileRange);
                 }
 
                 if (!covered) {
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom
                         );
                 }
             }
         }
 
         // current tile range has been all loaded
-        if(allLoaded){            
+        if(allLoaded){                        
             var tileCache = tileSource.tileCache;
-            tileSource.tileCache.highWaterMark = 0;
+            var highWaterMark = 0;
             tileCache.forEach(function(tile){
                 var keyZ = tile.tileCoord[0];
                 if(keyZ == z){
-                    tileSource.tileCache.highWaterMark += 1;
-                }                
+                    highWaterMark += 1;
+                }         
             });
-            tileSource.tileCache.maxZoom = tile.tileCoord[0];
-        }
+            tileSource.tileCache.highWaterMark = tileSource.tileCache.highWaterMark > highWaterMark ?
+                highWaterMark : tileSource.tileCache.highWaterMark;
+            
+            tileSource.tileCache.zoom = tile.tileCoord[0];
+        }        
+
         // delete a large interval for drawing
         // var tilesToDrawKeys = Object.keys(tilesToDrawByZ);
         // if((frameState.isPinchOut || frameState.isZoomOut || frameState.isClickZoomOut)){
