@@ -637,9 +637,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     (<any>ol).extent.clone(frameState.extent, this.previousExtent_);
                 }
             }
-            // if(this.tileQueue_.elements_.length>0){
-            //     debugger;
-            // }
             this.dispatchEvent(
                 new ol.MapEvent((<any>ol).MapEventType.POSTRENDER, this, frameState));
                
@@ -712,7 +709,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
-
+                    
                     var type = geometry.getType();
                     if(type == 'LineString'){
                         this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
@@ -730,14 +727,14 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.setTextStyle(style);
                             this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
                         }  
-                    }else{
+                    }else{                              
                         this.setTextStyle(style);
-                        if(this.label){          
+                        if(this.label){
                             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
                             this.height = this.label.height; 
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
-                            this.anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+                            this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
                             this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
                             this.renderDeclutter_(declutterGroup, feature);
                         }else{   
@@ -1017,7 +1014,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     this.scale = options.scale;
                     this.opacity = options.opacity;
                     var currentImage;
-    
+                    
                     if (this.images_.length === 0) {
                         this.images_.push(image);
                     } else {
@@ -1089,7 +1086,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.height = options.height;
             this.rotation = options.rotation;
             this.rotateWithView = 1;
-            this.scale = options.scale;
+            this.scale = options.scale; 
+            this.anchorX = options.anchorX;
+            this.anchorY = options.anchorY;
 
             var currentImage;
             if (this.images_.length === 0) {

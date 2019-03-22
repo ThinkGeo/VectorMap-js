@@ -123,7 +123,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                     replay.zIndex = zs[i];
                     if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
                         var tmpOptions = replay.tmpOptions;                        
-                        if(tmpOptions.length != replay.options.length || currentResolution < 1){
+                        // if(tmpOptions.length != replay.options.length || currentResolution < 1){
                             replay.indices.length = 0;
                             replay.vertices.length = 0;
                             replay.groupIndices.length = 0;
@@ -137,9 +137,9 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                             }
                             replay.finish(context);
                             replay.options = tmpOptions;
-                        }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
-                            continue;
-                        }
+                        // }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
+                        //     continue;
+                        // }
                         replay.replay(context, viewRotation, skippedFeaturesHash, screenXY);
                     }
                 }
