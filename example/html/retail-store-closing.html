@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Store Chains</title>
+    <title>U.S. Retail Store Closings 2019</title>
+    
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+    <!-- Define some custom styles for the UI of our sample page. -->
     <style type="text/css" rel="stylesheet">
         #map {
             width: 100%;
@@ -57,7 +62,7 @@
             border: solid 1px #ccc;
             height: 2rem;
             cursor: pointer;
-            transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+            transition: color .15s ease-in-out, background-color .15s ease-in-out;
         }
 
         .map-btn-group .current {
@@ -93,17 +98,20 @@
             }
         }
     </style>
-    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
-    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
 </head>
 
 <body>
+    <!-- This <div> is the container into which our map control will be loaded. -->
     <div id="map"></div>
+
+    <!-- Set up a button group to switch out the base map style.-->
     <div class="map-btn-group">
         <button value="dark">Dark</button>
         <button value="hybrid">Hybrid</button>
         <button value="light" class="current">Light</button>
     </div>
+
+    <!-- Set up a legend for the different point colors we'll be using. -->
     <ul class="legend">
         <li class="sears"> <input id="sears_checkbox" type="checkbox" checked> <i data-bg-color="#002c65"
                 style="background-color: #002c65"></i> <label for="sears_checkbox">Sears</label> </li>
@@ -118,6 +126,7 @@
                 style="background-color: #ffffff"></i> <label for="macys_checkbox">Macy's</label></li>
     </ul>
 
+    <!-- Set up a credit message. -->
     <div id="map-credit">
         SOURCE: Company Reports
     </div>

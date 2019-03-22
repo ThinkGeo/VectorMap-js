@@ -555,56 +555,56 @@
         comments: "Consume ThinkGeo Cloud vector tiles using pre-defined Map Styles.",
         title: 'Vector Maps',
         htmlPath: './example/html/cloud-vector-maps.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/BGXGrb',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/zeywMP',
         jsPath: './example/js/cloud-vector-maps.js'
       }, {
         comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
         title: 'Raster Maps',
         htmlPath: './example/html/cloud-raster-maps.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/vQoQMQ',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BMvRLb',
         jsPath: './example/js/cloud-raster-maps.js'
       }, {
         comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
         title: 'Hybrid Maps',
         htmlPath: './example/html/satellite-with-labels.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/KrObdg',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
         jsPath: './example/js/satellite-with-labels.js'
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
         title: 'Raster Maps (High Resolution)',
         htmlPath: './example/html/high-dpi-maps.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/NEQeXR',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/YBdVRd',
         jsPath: './example/js/high-dpi-maps.js'
       }, {
         comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
         title: 'Vector Maps on Custom Imagery',
         htmlPath: './example/html/imagery-with-labels.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/aQePBG',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/vbvmQb',
         jsPath: './example/js/imagery-with-labels.js'
       }, {
         comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.`,
         title: 'Get Elevation Along Path',
         htmlPath: './example/html/elevation.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/mabbKm',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZWQN',
         jsPath: './example/js/elevation.js'
       }, {
         comments: 'Convert a coordinate to address via <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
         title: 'Find Nearby Places',
         htmlPath: './example/html/reverse-geocoding.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/gZYOae',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ErGmGo',
         jsPath: './example/js/reverse-geocoding.js'
       }, {
         comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
         title: 'Generate Color Themes',
         htmlPath: './example/html/color-creation.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/ZVzEgL',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/qgLmLK',
         jsPath: './example/js/color-creation.js'
       },
       {
         comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
         title: "Find an Address in the US",
         htmlPath: './example/html/find-address.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/jXwdKq',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
         jsPath: './example/js/find-address.js'
       }]
     }, {
@@ -614,25 +614,25 @@
         comments: 'Render local Texas School POIs with Map Suite StyleJSON.',
         title: 'Render POIs',
         htmlPath: './example/html/styling-points.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/PxMrdV',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/LqMLBw',
         jsPath: './example/js/styling-points.js'
       }, {
         comments: 'Load features from a WFS services and show them on the map.',
         title: 'Work with WFS ',
         htmlPath: './example/html/WFS.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOjYV',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqWGY',
         jsPath: './example/js/WFS.js'
       }, {
         comments: 'Create features from geometries in WKT (Well Known Text) format.',
         title: 'Work with WKT ',
         htmlPath: './example/html/WKT.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/ZmgdgL',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/GzPEXq',
         jsPath: './example/js/WKT.js'
       }, {
         comments: 'Read features from a GPX file and show them on the map.',
         title: 'Work with GPX ',
         htmlPath: './example/html/GPX.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/LXwwPm',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/PVXjdb',
         jsPath: './example/js/GPX.js'
       }]
     }, {
@@ -642,32 +642,32 @@
         comments: 'Customize the style of ThinkGeo vector tiles.',
         title: 'Style ThinkGeo Maps',
         htmlPath: './example/html/vector-tile.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/XyvLxp',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ZwVyZq',
         jsPath: './example/js/vector-tile.js'
       }, {
         comments: 'Render GeoJSON lines with StyleJSON.',
         title: 'Style Lines from GeoJSON',
         htmlPath: './example/html/styling-lines.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoJGx',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/zeyzXb',
         jsPath: './example/js/styling-lines.js'
       },
       {
         comments: 'Render GeoJSON polygons with StyleJSON.',
         title: 'Style Polygons from GeoJSON',
         htmlPath: './example/html/styling-polygons.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/qQezZR',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/qgLjGW',
         jsPath: './example/js/styling-polygons.js'
       }, {
         comments: 'Render KML Polygons with StyleJSON.',
         title: 'Style Polygons from KML ',
         htmlPath: './example/html/KML.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqBMv',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/RvEgmR',
         jsPath: './example/js/KML.js'
       }, {
         comments: 'Label with StyleJSON.',
         title: 'Label Features',
         htmlPath: './example/html/labeling-features.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/MzNMqy',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/GzPEaN',
         jsPath: './example/js/labeling-features.js'
       }]
     }, {
@@ -677,61 +677,61 @@
         comments: 'The distribution of global earthquakes registering above 5.0 on the Richter Scale through 2012 is graphically presented with this heat map. The data is from a KML file.',
         title: 'Global Earthquake Distribution',
         htmlPath: './example/html/heatmap-KML.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/jQgXxm',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/NoeayW',
         jsPath: './example/js/heatmap-KML.js'
       }, {
         comments: 'Road congestion statistics are geographically presented with this heat map. The data is from a GeoJSON file. ',
         title: 'Road Congestion Heatmap',
         htmlPath: './example/html/heatmap-json.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/aQePxX',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/jdXGZb',
         jsPath: './example/js/heatmap-json.js'
       }, {
         comments: 'The statistics of rainfall distribution in China at 17:00 on Oct 16, 2018',
         title: 'Precipitation Distribution',
         htmlPath: './example/html/contour-line.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVqbw',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ZwVXrB',
         jsPath: './example/js/contour-line.js'
       }, {
         comments: 'The statistics and instensities of average round trip commute time in several major cities of United States.',
         title: 'Average Commute Times',
         htmlPath: './example/html/trip-commute-time.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/KrOLdo',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/rPoGJy',
         jsPath: './example/js/trip-commute-time.js'
       }, {
         comments: "Average annual precipitation for major US cities.",
         title: 'Average Precipitation',
         htmlPath: './example/html/scatter.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/qQevoP',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ErGwQv',
         jsPath: './example/js/scatter.js'
       }, {
         comments: 'Education achievement in major US cities for 2016,  ages 25 and older, shown with pie charts.',
         title: 'Education Achievement - Pie Chart',
         htmlPath: './example/html/pie-chart.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/gQVEZq',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/rPoGdm',
         jsPath: './example/js/pie-chart.js'
       }, {
         comments: 'Education achievement in major US cities for 2016,  ages 25 and older, shown as a radar map.',
         title: 'Education Achievement - Radar',
         htmlPath: './example/html/radar-map.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/EOqJyQ',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/aXPLYV',
         jsPath: './example/js/radar-map.js'
       }, {
         comments: 'Chicago drug-related crimes in 2016, shown as clustered points.',
         title: 'Chicago Crime - Clustered Points',
         htmlPath: './example/html/cluster-envelope.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/RqXORO',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/RvELME',
         jsPath: './example/js/cluster-envelope.js'
       }, {
         comments: 'Chicago drug-related crimes in 2016, shown as a hex grid.',
         title: 'Chicago Crime - Hex Grid',
         htmlPath: './example/html/hexagon.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZGey',
         jsPath: './example/js/hexagon.js'
       }, {
         comments: "The location of every individual store closing, including Sears, Kmart, Family Dollar, Lowe's and Macy's",
         title: 'U.S. Retail Store Closings 2019',
         htmlPath: './example/html/retail-store-closing.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/BbOgZE',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BbOgZE',
         jsPath: './example/js/retail-store-closing.js'
       }]
     }, {
@@ -741,19 +741,19 @@
         comments: 'Shows how VectorMap.js works with JQuery.',
         title: 'JQuery',
         htmlPath: './example/html/jquery.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/dwbPoq',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/dawVag',
         jsPath: './example/js/Jquery.js'
       }, {
           comments: 'Shows how VectorMap.js works with React.JS.',
         title: 'React JS',
         htmlPath: './example/html/react.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/pqzvRR',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/Jxwrxv',
         jsPath: './example/js/react.js'
       }, {
         comments: 'Shows how VectorMap.js works with Vue.JS.',
         title: 'Vue.JS',
         htmlPath: './example/html/vue.html',
-        codePenUrl: 'https://codepen.io/thinkgeo/pen/VqZYWg',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmXMW',
         jsPath: './example/js/vue.js'
       }, {
         comments: 'Shows how VectorMap.js works with Angular.',

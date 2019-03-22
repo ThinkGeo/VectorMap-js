@@ -3,7 +3,7 @@
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
-//   1. Map Control Setup
+//   2. Map Control Setup
 /*===========================================================================*/
 
 
