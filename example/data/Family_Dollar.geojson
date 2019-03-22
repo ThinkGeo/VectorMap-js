@@ -1,0 +1,3458 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.34984490904179, 32.30875846571901]
+        },
+        "properties": {
+            "input_address": "4850 Mobile Hwy, Montgomery, AL 36108",
+            "address": "4850 Mobile Highway, Montgomery, Montgomery County, Alabama 36108, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-114.34373758225998, 34.47605827811128]
+        },
+        "properties": {
+            "input_address": "215 N Lake Havasu Ave N, Lake Havasu, AZ 86403-5659",
+            "address": "215 Lake Havasu Avenue, Lake Havasu City, Mohave County, Arizona 86403, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.20712670785, 36.309959354700084]
+        },
+        "properties": {
+            "input_address": "1425 N Farmersville Boulevard, Farmersville, CA 93223",
+            "address": "1425 Farmersville Boulevard, Farmersville, Tulare County, California 93223, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.860676229674, 36.7791289087254]
+        },
+        "properties": {
+            "input_address": "3707 W. Shields, Fresno, CA 93722",
+            "address": "3707 Shields Avenue, Fresno, Fresno County, California 93722, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.780745245983, 36.31543146178089]
+        },
+        "properties": {
+            "input_address": "1148 N. Lemoore Avenue, Lemoore, CA 93245-2348",
+            "address": "1148 Lemoore Avenue, Lemoore, Kings County, California 93245, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-117.30669201817597, 34.136057510197105]
+        },
+        "properties": {
+            "input_address": "1054 W. Highland Avenue, San Bernardino, CA 92405",
+            "address": "1054 Highland Avenue, San Bernardino, San Bernardino County, California 92405, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-104.86823261315598, 39.73851127497619]
+        },
+        "properties": {
+            "input_address": "10204 E Colfax Ave, Aurora, CO 80010-5017",
+            "address": "10204 Colfax Avenue, Aurora, Arapahoe County, Colorado 80010, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-104.780337309546, 38.8070988497588]
+        },
+        "properties": {
+            "input_address": "1736 S Circle Dr, Colorado Springs, CO 80910-4434",
+            "address": "1736 Circle Drive, Colorado Springs, El Paso County, Colorado 80910, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-104.728839030609, 38.73670544408253]
+        },
+        "properties": {
+            "input_address": "20 Widefield Blvd, Colorado Springs, CO 80911-2125",
+            "address": "20 Widefield Boulevard, Colorado Springs, El Paso County, Colorado 80911, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-105.025131431734, 39.79552864180488]
+        },
+        "properties": {
+            "input_address": "5418 Federal Blvd., Denver, CO 80221-6540",
+            "address": "5418 Federal Boulevard, Denver, Adams County, Colorado 80221, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-105.006128601009, 39.84915055652789]
+        },
+        "properties": {
+            "input_address": "8495 Pecos St, Federal Heights, CO 80260-5008",
+            "address": "8495 Pecos Street, Denver, Adams County, Colorado 80260, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-105.0532245, 39.689243000000005]
+        },
+        "properties": {
+            "input_address": "1355 S Sheridan Blvd, Lakewood, CO 80232-5958",
+            "address": "1355 Sheridan Boulevard, Denver, Jefferson County, Colorado 80232, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.696541691177, 41.824891738023894]
+        },
+        "properties": {
+            "input_address": "1051 Blue Hills Ave, Bloomfield, CT 06002-2701",
+            "address": "1051 Blue Hills Avenue, Bloomfield, Hartford County, Connecticut 06002, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.0542639936208, 41.34878945282961]
+        },
+        "properties": {
+            "input_address": "756 Long Hill Rd, Groton, CT 06340",
+            "address": "756 Long Hill Road, Groton, New London County, Connecticut 06340, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.82539877617874, 41.52988862173231]
+        },
+        "properties": {
+            "input_address": "311 W Main St, Meriden, CT 06451-4046",
+            "address": "311 Main Street, Meriden, New Haven County, Connecticut 06451, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.92361906874909, 41.30509728055691]
+        },
+        "properties": {
+            "input_address": "760 Chapel St, New Haven, CT 06510-3104",
+            "address": "760 Chapel Street, New Haven, New Haven County, Connecticut 06510, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.571185937082, 39.745479565786525]
+        },
+        "properties": {
+            "input_address": "1709 Lancaster Ave, Wilmington, DE 19805-3926",
+            "address": "1709 Lancaster Avenue, Wilmington, New Castle County, Delaware 19805, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.14367097667373, 26.052299135510964]
+        },
+        "properties": {
+            "input_address": "120 S Federal Hwy, Dania, FL 33004-3623",
+            "address": "120 Federal Highway, Dania, Broward County, Florida 33004, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.24988013628179, 28.869329405171015]
+        },
+        "properties": {
+            "input_address": "951 Doyle Rd, Deltona, FL 32725-8298",
+            "address": "951 Doyle Road, Deltona, Volusia County, Florida 32725, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.14353601007228, 26.019853669335987]
+        },
+        "properties": {
+            "input_address": "1801 N Federal Hwy, Hollywood, FL 33020-2829",
+            "address": "1801 Federal Highway, Hollywood, Broward County, Florida 33020, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.40481899999999, 25.477789499999986]
+        },
+        "properties": {
+            "input_address": "16403 Sw 312th St, Homestead, FL 33033",
+            "address": "16403 312Th Street, Homestead, Miami-Dade County, Florida 33033, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.6237534005258, 30.2627965443492]
+        },
+        "properties": {
+            "input_address": "3801 University Blvd. W, Jacksonville, FL 32217-2201",
+            "address": "3801 University Boulevard, Jacksonville, Duval County, Florida 32217, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.4401810532424, 28.152056908904726]
+        },
+        "properties": {
+            "input_address": "4549 Pleasant Hill Rd #300, Kissimmee, FL 34759",
+            "address": "4549 Pleasant Hill Road, Kissimmee, Polk County, Florida 34759, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.426694, 28.268884999999997]
+        },
+        "properties": {
+            "input_address": "3195 S John Young Parkway #300, Kissimmee, FL 34746",
+            "address": "3195 John Young Parkway, Kissimmee, Osceola County, Florida 34746, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.4008687415798, 28.337130849542504]
+        },
+        "properties": {
+            "input_address": "624 E Osceola Parkway, Kissimmee, FL 34744-1603",
+            "address": "624 Osceola Parkway, Kissimmee, Osceola County, Florida 34744, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.24189464395279, 25.84601537372781]
+        },
+        "properties": {
+            "input_address": "2712 Nw 79th St, Miami, FL 33147-5437",
+            "address": "2712 79Th Street, Miami, Miami-Dade County, Florida 33147, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.1896428707084, 25.890138165083698]
+        },
+        "properties": {
+            "input_address": "401 Ne 125th St, Miami, FL 33161",
+            "address": "401 125Th Street, Miami, Miami-Dade County, Florida 33161, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.24729920397569, 25.831061259844788]
+        },
+        "properties": {
+            "input_address": "3105 Nw 62nd Street, Miami, FL 33147-7635",
+            "address": "3105 62Nd Street, Miami, Miami-Dade County, Florida 33147, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.3705345487329, 27.922507343948396]
+        },
+        "properties": {
+            "input_address": "7625 Causeway Blvd, Tampa, FL 33619-5932",
+            "address": "7625 Causeway Boulevard, Tampa, Hillsborough County, Florida 33619, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.4594587784496, 28.03093275863462]
+        },
+        "properties": {
+            "input_address": "9001 N Florida Ave, Tampa, FL 33604",
+            "address": "9001 Florida Avenue, Tampa, Hillsborough County, Florida 33604, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.4022001833671, 28.032636204087808]
+        },
+        "properties": {
+            "input_address": "4978 E Busch Blvd Ste A, Tampa, FL 33617-6024",
+            "address": "4978 Busch Boulevard, Tampa, Hillsborough County, Florida 33617, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.40967763816639, 33.6973116014815]
+        },
+        "properties": {
+            "input_address": "2779 Lakewood Ave, Atlanta, GA 30315-5810",
+            "address": "2779 Lakewood Avenue, Atlanta, Fulton County, Georgia 30315, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.43756134870699, 33.73321734187391]
+        },
+        "properties": {
+            "input_address": "807 Cascade Sw, Atlanta, GA 30310-2413",
+            "address": "807 Cascade Road, Atlanta, Fulton County, Georgia 30310, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.3509737256834, 33.995860614567505]
+        },
+        "properties": {
+            "input_address": "8775 Roswell Rd, Atlanta, GA 30350-1842",
+            "address": "8775 Roswell Road, Atlanta, Fulton County, Georgia 30350, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.4664569423162, 33.75171577481001]
+        },
+        "properties": {
+            "input_address": "2310 Martin Luther King Jr. Dr, Atlanta, GA 30310-1037",
+            "address": "2310 Martin Luther King Jr Drive, Atlanta, Fulton County, Georgia 30310, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.4874816595633, 33.68982570249139]
+        },
+        "properties": {
+            "input_address": "2975 Headland Blvd. Ste. A, Atlanta, GA 30311-5416",
+            "address": "2975 Headland Drive, Atlanta, Fulton County, Georgia 30311, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.4076825280084, 33.681460886879805]
+        },
+        "properties": {
+            "input_address": "2690 Metropolitan Pkwy Sw, Atlanta, GA 30315-7902",
+            "address": "2690 Metropolitan Parkway, Atlanta, Fulton County, Georgia 30315, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.9199978021138, 32.46503996892231]
+        },
+        "properties": {
+            "input_address": "4328 Buena Vista Rd, Columbus, GA 31907",
+            "address": "4328 Buena Vista Road, Columbus, Muscogee County, Georgia 31907, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.26519514265419, 33.751603126154606]
+        },
+        "properties": {
+            "input_address": "1291 Columbia Dr, Decatur, GA 30032-2800",
+            "address": "1291 Columbia Drive, Decatur, Dekalb County, Georgia 30032, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.23068908084659, 33.681590379534185]
+        },
+        "properties": {
+            "input_address": "4824 Flat Shoals Pkwy, Decatur, GA 30034",
+            "address": "4824 Flat Shoals Parkway, Decatur, Dekalb County, Georgia 30034, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.27069883265008, 33.712007555070414]
+        },
+        "properties": {
+            "input_address": "2628 Rainbow Way, Decatur, GA 30034-1402",
+            "address": "2628 Rainbow Way, Decatur, Dekalb County, Georgia 30034, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.22200164955052, 33.931877857170804]
+        },
+        "properties": {
+            "input_address": "6355 Jimmy Carter Blvd, Norcross, GA 30071-2378",
+            "address": "6355 Jimmy Carter Boulevard, Norcross, Gwinnett County, Georgia 30071, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.22114285277209, 33.7985092407214]
+        },
+        "properties": {
+            "input_address": "5209 Memorial Dr, Stone Mountain, GA 30083-3112",
+            "address": "5209 Memorial Drive, Stone Mountain, Dekalb County, Georgia 30083, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-116.50013370202801, 43.87546593511141]
+        },
+        "properties": {
+            "input_address": "135 S Washington Ave, Emmett, ID 83617-2947",
+            "address": "135 Washington Avenue, Emmett, Gem County, Idaho 83617, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-88.29045864001328, 41.751936727231424]
+        },
+        "properties": {
+            "input_address": "1033 E Galena Blvd, Aurora, IL 60505-3805",
+            "address": "1033 Galena Boulevard, Aurora, Kane County, Illinois 60505, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.79436699622359, 41.826670231974305]
+        },
+        "properties": {
+            "input_address": "6843 Ogden Ave, Berwyn, IL 60402-3646",
+            "address": "6843 Ogden Avenue, Berwyn, Cook County, Illinois 60402, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.60498992730389, 41.74321201500882]
+        },
+        "properties": {
+            "input_address": "8341 S Cottage Grove Ave, Chicago, IL 60619-5905",
+            "address": "8341 Cottage Grove Avenue, Chicago, Cook County, Illinois 60619, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.74312008055038, 41.80181262548038]
+        },
+        "properties": {
+            "input_address": "5018 S. Cicero Avenue, Chicago, IL 60638-2117",
+            "address": "5018 Cicero Avenue, Chicago, Cook County, Illinois 60638, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.747608, 41.95341300000001]
+        },
+        "properties": {
+            "input_address": "4828 W Irving Park Rd #34, Chicago, IL 60641-2718",
+            "address": "4828 Irving Park Road, Chicago, Cook County, Illinois 60641, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.704279495578, 41.81503423444789]
+        },
+        "properties": {
+            "input_address": "4314 S Kedzie Ave, Chicago, IL 60632-2813",
+            "address": "4314 Kedzie Avenue, Chicago, Cook County, Illinois 60632, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.7678901301696, 41.97588183241507]
+        },
+        "properties": {
+            "input_address": "5255 N Milwaukee Ave, Chicago, IL 60630-4634",
+            "address": "5255 Milwaukee Avenue, Chicago, Cook County, Illinois 60630, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.5372451578431, 41.680943315353886]
+        },
+        "properties": {
+            "input_address": "3560 E 118th St, Chicago, IL 60617-7314",
+            "address": "3560 118Th Street, Chicago, Cook County, Illinois 60617, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.69439176762589, 41.85191479229522]
+        },
+        "properties": {
+            "input_address": "2740 W Cermak Rd, Chicago, IL 60608-3528",
+            "address": "2740 Cermak Road, Chicago, Cook County, Illinois 60608, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.6891631462352, 42.0194958355238]
+        },
+        "properties": {
+            "input_address": "2341 W Howard St, Chicago, IL 60645-1513",
+            "address": "2341 Howard Street, Chicago, Cook County, Illinois 60645, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.66013785009699, 41.98695207166429]
+        },
+        "properties": {
+            "input_address": "5725 N Broadway St, Chicago, IL 60660-4301",
+            "address": "5725 Broadway Street, Chicago, Cook County, Illinois 60660, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.68982001652938, 41.96143070045761]
+        },
+        "properties": {
+            "input_address": "2424 W Montrose Ave, Chicago, IL 60618-1606",
+            "address": "2424 Montrose Avenue, Chicago, Cook County, Illinois 60618, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.59085405018999, 41.76598395934121]
+        },
+        "properties": {
+            "input_address": "1425 E 71st St, Chicago, IL 60619-1501",
+            "address": "1425 71St Street, Chicago, Cook County, Illinois 60619, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.66508549494418, 41.811794740274195]
+        },
+        "properties": {
+            "input_address": "4524 S Ashland Ave., Chicago, IL 60609-3249",
+            "address": "4524 Ashland Avenue, Chicago, Cook County, Illinois 60609, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-88.31189085503568, 42.046820414422996]
+        },
+        "properties": {
+            "input_address": "583 N Mclean Blvd, Elgin, IL 60123-3243",
+            "address": "583 Mclean Boulevard, Elgin, Kane County, Illinois 60123, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.6363799452293, 41.600452667827994]
+        },
+        "properties": {
+            "input_address": "15901 Halsted Street, Harvey, IL 60426-5222",
+            "address": "15901 Halsted Street, Harvey, Cook County, Illinois 60426, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.1290761978613, 41.035257598586014]
+        },
+        "properties": {
+            "input_address": "5307 Decatur Rd, Ft Wayne, IN 46806-3014",
+            "address": "5307 Decatur Road, Fort Wayne, Allen County, Indiana 46806, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.3605889726423, 41.543166669812024]
+        },
+        "properties": {
+            "input_address": "4157 Cleveland St, Gary, IN 46408-2427",
+            "address": "4157 Cleveland Street, Gary, Lake County, Indiana 46408, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.35913649999999, 41.58391]
+        },
+        "properties": {
+            "input_address": "2535 Garfield St, Gary, IN 46404",
+            "address": "2535 Garfield Street, Gary, Lake County, Indiana 46404, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.1448502856932, 39.825129000000686]
+        },
+        "properties": {
+            "input_address": "715 East 38th Street, Indianapolis, IN 46205-2748",
+            "address": "715 38Th Street, Indianapolis, Marion County, Indiana 46205, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.99260736800659, 39.85303253205882]
+        },
+        "properties": {
+            "input_address": "9950 Pendleton Pike, Indianapolis, IN 46236",
+            "address": "9950 Pendleton Pike, Indianapolis, Marion County, Indiana 46236, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.5065765663243, 39.06992750490582]
+        },
+        "properties": {
+            "input_address": "1722 Madison Ave, Covington, KY 41011-3331",
+            "address": "1722 Madison Avenue, Covington, Kenton County, Kentucky 41011, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.80216373630688, 38.195572219922184]
+        },
+        "properties": {
+            "input_address": "3808 7th Street Rd, Louisville, KY 40216-4102",
+            "address": "3808 7Th Street Road, Louisville, Jefferson County, Kentucky 40216, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-91.12065508194138, 30.451447695708822]
+        },
+        "properties": {
+            "input_address": "6832 Florida Blvd, Baton Rouge, LA 70806-4543",
+            "address": "6832 Florida Boulevard, Baton Rouge, East Baton Rouge County, Louisiana 70806, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-92.00552137028079, 30.25071852505731]
+        },
+        "properties": {
+            "input_address": "2001 Moss Street, Lafayette, LA 70501",
+            "address": "2001 Moss Street, Lafayette, Lafayette County, Louisiana 70501, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.0194295761521, 29.92480766177441]
+        },
+        "properties": {
+            "input_address": "3620 Macarthur Blvd, New Orleans, LA 70114-6815",
+            "address": "3620 Macarthur Boulevard, New Orleans, Orleans County, Louisiana 70114, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.1228283791531, 42.25593052753442]
+        },
+        "properties": {
+            "input_address": "1248 River St, Boston, MA 02136-2833",
+            "address": "1248 River Street, Hyde Park, Suffolk County, Massachusetts 02136, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.0942380445093, 42.3728493452127]
+        },
+        "properties": {
+            "input_address": "1030 Cambridge St, Cambridge, MA 02141-1018",
+            "address": "1030 Cambridge Street, Cambridge, Middlesex County, Massachusetts 02141, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.0251702661543, 42.401454103866]
+        },
+        "properties": {
+            "input_address": "121 Webster Ave., Chelsea, MA 02150",
+            "address": "121 Webster Avenue, Chelsea, Suffolk County, Massachusetts 02150, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.0643031785563, 42.29923252600071]
+        },
+        "properties": {
+            "input_address": "500 Geneva Ave, Dorchester, MA 02122-1231",
+            "address": "500 Geneva Avenue, Dorchester, Suffolk County, Massachusetts 02122, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.4084308038321, 42.278520419835814]
+        },
+        "properties": {
+            "input_address": "208 Waverly St, Framingham, MA 01702-7133",
+            "address": "208 Waverly Street, Framingham, Middlesex County, Massachusetts 01702, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.6698327752892, 42.61736793685719]
+        },
+        "properties": {
+            "input_address": "143 Washington St, Gloucester, MA 01930",
+            "address": "143 Washington Street, Gloucester, Essex County, Massachusetts 01930, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.6239679752572, 42.58663753316381]
+        },
+        "properties": {
+            "input_address": "10 Colrain Rd, Greenfield, MA 01301-9623",
+            "address": "10 Colrain Road, Greenfield, Franklin County, Massachusetts 01301, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.6303859031384, 42.186497101740315]
+        },
+        "properties": {
+            "input_address": "2261 Northampton St, Holyoke, MA 01040-3447",
+            "address": "2261 Northampton Street, Holyoke, Hampden County, Massachusetts 01040, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.3058621659857, 42.64149752292289]
+        },
+        "properties": {
+            "input_address": "125 Church St, Lowell, MA 01852-2623",
+            "address": "125 Church Street, Lowell, Middlesex County, Massachusetts 01852, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.091142979866, 42.42313382787552]
+        },
+        "properties": {
+            "input_address": "469 Salem St Ste 71, Medford, MA 02155-3336",
+            "address": "469 Salem Street, Medford, Middlesex County, Massachusetts 02155, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.11554108227308, 42.700381570746885]
+        },
+        "properties": {
+            "input_address": "69 Veterans Memorial Dr, N Adams, MA 01247-2359",
+            "address": "69 Veterans Memorial Drive, North Adams, Berkshire County, Massachusetts 01247, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.943886776618, 41.676146431217376]
+        },
+        "properties": {
+            "input_address": "1000 Kings Hwy, New Bedford, MA 02745-4949",
+            "address": "1000 Kings Highway, New Bedford, Bristol County, Massachusetts 02745, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.04488544790294, 42.16010344956851]
+        },
+        "properties": {
+            "input_address": "340 N Main St, Randolph, MA 02368-4173",
+            "address": "340 Main Street, Randolph, Norfolk County, Massachusetts 02368, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.0144864898897, 42.427779794878916]
+        },
+        "properties": {
+            "input_address": "339 Squire Rd, Revere, MA 02151-4309",
+            "address": "339 Squire Road, Revere, Suffolk County, Massachusetts 02151, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.2064041613987, 41.665731191413784]
+        },
+        "properties": {
+            "input_address": "31 Long Pond, South Yarmouth, MA 02664",
+            "address": "31 Long Pond Plaza, South Yarmouth, Barnstable County, Massachusetts 02664, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.5171342940049, 42.137225024304286]
+        },
+        "properties": {
+            "input_address": "786 Boston Rd, Springfield, MA 01119-1350",
+            "address": "786 Boston Road, Springfield, Hampden County, Massachusetts 01119, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.56688599999998, 42.1292775]
+        },
+        "properties": {
+            "input_address": "1070 Saint James Ave, Springfield, MA 01104-1311",
+            "address": "1070 St James Avenue, Springfield, Hampden County, Massachusetts 01104, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.8303518085234, 42.245856912652215]
+        },
+        "properties": {
+            "input_address": "1049 Main St, Worcester, MA 01603-2421",
+            "address": "1049 Main Street, Worcester, Worcester County, Massachusetts 01603, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.56506154863808, 39.286722701505084]
+        },
+        "properties": {
+            "input_address": "3824 Eastern Ave, Baltimore, MD 21224-4232",
+            "address": "3824 Eastern Avenue, Baltimore, Baltimore City County, Maryland 21224, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.55161340972649, 39.33809713969822]
+        },
+        "properties": {
+            "input_address": "4206 Frankford Ave, Baltimore, MD 21206-5131",
+            "address": "4206 Frankford Avenue, Baltimore, Baltimore City County, Maryland 21206, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.655521854418, 39.28366601918333]
+        },
+        "properties": {
+            "input_address": "2429 Frederick Ave., Baltimore, MD 21223-2856",
+            "address": "2429 Frederick Avenue, Baltimore, Baltimore City County, Maryland 21223, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.85021828599399, 38.89111071029569]
+        },
+        "properties": {
+            "input_address": "9115 Central Ave, Capitol Heights, MD 20743-3806",
+            "address": "9115 Central Avenue, Capitol Heights, Prince Georges County, Maryland 20743, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.97369170539409, 38.94320600183741]
+        },
+        "properties": {
+            "input_address": "2201 Varnum St, Mt Rainier, MD 20712-1457",
+            "address": "2201 Varnum Street, Mount Rainier, Prince Georges County, Maryland 20712, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.999773, 38.80322050000001]
+        },
+        "properties": {
+            "input_address": "5110 Indian Head Hwy, Oxon Hill, MD 20745-2013",
+            "address": "5110 Indian Head Highway, Oxon Hill, Prince Georges County, Maryland 20745, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.5475881841506, 38.368908263974106]
+        },
+        "properties": {
+            "input_address": "234 Tilghman Rd, Salisbury, MD 21804-1921",
+            "address": "234 Tilghman Road, Salisbury, Wicomico County, Maryland 21804, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.9470825791171, 39.082271528912116]
+        },
+        "properties": {
+            "input_address": "13817 Outlet Dr, Silver Spring, MD 20904-4971",
+            "address": "13817 Outlet Drive, Silver Spring, Montgomery County, Maryland 20904, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.95256901604058, 38.80408232004967]
+        },
+        "properties": {
+            "input_address": "3265 Brinkley Rd, Temple Hills, MD 20748-6301",
+            "address": "3265 Brinkley Road, Temple Hills, Prince Georges County, Maryland 20748, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-68.03018699999998, 46.874885500000005]
+        },
+        "properties": {
+            "input_address": "88 Sweden St, Caribou, ME 04736-2154",
+            "address": "88 Sweden Street, Caribou, Aroostook County, Maine 04736, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.2044802970647, 44.08489998230499]
+        },
+        "properties": {
+            "input_address": "855 Lisbon St, Lewiston, ME 04240-6123",
+            "address": "855 Lisbon Street, Lewiston, Androscoggin County, Maine 04240, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.1911655619902, 44.47497649803009]
+        },
+        "properties": {
+            "input_address": "82 Main St, Livermore Fls, ME 04254-1529",
+            "address": "82 Main Street, Livermore Falls, Androscoggin County, Maine 04254, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-68.6640314218293, 44.92863319337678]
+        },
+        "properties": {
+            "input_address": "494 Stillwater Ave, Old Town, ME 04468-2190",
+            "address": "494 Stillwater Avenue, Old Town, Penobscot County, Maine 04468, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.2565585282317, 43.637441890190104]
+        },
+        "properties": {
+            "input_address": "180 Waterman Dr, South Portland, ME 04106-3633",
+            "address": "180 Waterman Drive, South Portland, Cumberland County, Maine 04106, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-69.63133352029465, 44.54967719142792]
+        },
+        "properties": {
+            "input_address": "14 W Concourse, Waterville, ME 04901-6007",
+            "address": "14 Concourse, Waterville, Kennebec County, Maine 04901, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.6868134542137, 42.974225722459806]
+        },
+        "properties": {
+            "input_address": "1181 E Bristol Rd, Burton, MI 48529-1128",
+            "address": "1181 Bristol Road, Burton, Genesee County, Michigan 48529, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.0026352416412, 42.396998274924584]
+        },
+        "properties": {
+            "input_address": "10220 Gratiot Ave, Detroit, MI 48213-3211",
+            "address": "10220 Gratiot Avenue, Detroit, Wayne County, Michigan 48213, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.9553343934402, 42.37038664129659]
+        },
+        "properties": {
+            "input_address": "12815 E Jefferson Ave, Detroit, MI 48215-2754",
+            "address": "12815 Jefferson Avenue, Detroit, Wayne County, Michigan 48215, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.11094413506848, 42.31553439275689]
+        },
+        "properties": {
+            "input_address": "6365 W Vernor Hwy, Detroit, MI 48209-2002",
+            "address": "6365 Vernor Highway, Detroit, Wayne County, Michigan 48209, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.9657281934227, 42.45256734526549]
+        },
+        "properties": {
+            "input_address": "20900 Gratiot Avenue, Eastpointe, MI 48021-2857",
+            "address": "20900 Gratiot Avenue, Eastpointe, Macomb County, Michigan 48021, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.16156620639099, 42.4462197335408]
+        },
+        "properties": {
+            "input_address": "20735 Wyoming St, Ferndale, MI 48220-2141",
+            "address": "20735 Wyoming Street, Ferndale, Oakland County, Michigan 48220, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.60637402902168, 42.88274179987471]
+        },
+        "properties": {
+            "input_address": "4451 Breton Rd Se, Grand Rapids, MI 49508-5273",
+            "address": "4451 Breton Road, Grand Rapids, Kent County, Michigan 49508, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.62769275412938, 42.985229261532396]
+        },
+        "properties": {
+            "input_address": "1625 Leonard St Ne, Grand Rapids, MI 49505-5633",
+            "address": "1625 Leonard Street, Grand Rapids, Kent County, Michigan 49505, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.05459439405601, 42.39192628872354]
+        },
+        "properties": {
+            "input_address": "9028 Joseph Campau St, Hamtramck, MI 48212-3727",
+            "address": "9028 Joseph Campau Street, Hamtramck, Wayne County, Michigan 48212, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.1038139825204, 42.45998553532061]
+        },
+        "properties": {
+            "input_address": "22818 John R Road, Hazel Park, MI 48030",
+            "address": "22818 John R Road, Hazel Park, Oakland County, Michigan 48030, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.0982935817131, 42.40726519502098]
+        },
+        "properties": {
+            "input_address": "14101 Woodward Avenue, Highland Park, MI 48203-2930",
+            "address": "14101 Woodward Avenue, Highland Park, Wayne County, Michigan 48203, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.11664821039732, 42.76137541211398]
+        },
+        "properties": {
+            "input_address": "1006 S Washington Ave, Holland, MI 49423-5204",
+            "address": "1006 Washington Avenue, Holland, Ottawa County, Michigan 49423, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.310465272627, 42.29386454016131]
+        },
+        "properties": {
+            "input_address": "27425 Michigan Ave, Inkster, MI 48141-2201",
+            "address": "27425 Michigan Avenue, Inkster, Wayne County, Michigan 48141, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.54811138162029, 42.68367255498879]
+        },
+        "properties": {
+            "input_address": "5032 S. Cedar Street, Lansing, MI 48910-5479",
+            "address": "5032 Cedar Street, Lansing, Ingham County, Michigan 48910, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.354128223292, 42.39864418834253]
+        },
+        "properties": {
+            "input_address": "15399 Merriman Road, Livonia, MI 48154",
+            "address": "15399 Merriman Road, Livonia, Wayne County, Michigan 48154, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.6943645, 43.11002500000001]
+        },
+        "properties": {
+            "input_address": "6444 N Saginaw St, Mount Morris, MI 48458-2410",
+            "address": "6444 Saginaw Street, Mount Morris, Genesee County, Michigan 48458, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.1818317268546, 42.45758553655159]
+        },
+        "properties": {
+            "input_address": "22100 Coolidge Hwy, Oak Park, MI 48237-2813",
+            "address": "22100 Coolidge Highway, Oak Park, Oakland County, Michigan 48237, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.58959472600408, 42.2450706281501]
+        },
+        "properties": {
+            "input_address": "5003 S Westnedge Avenue, Portage, MI 49002",
+            "address": "5003 Westnedge Avenue, Portage, Kalamazoo County, Michigan 49002, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.9117806138222, 43.39995807859103]
+        },
+        "properties": {
+            "input_address": "3545 Dixie Hwy, Saginaw, MI 48601-4204",
+            "address": "3545 Dixie Highway, Saginaw, Saginaw County, Michigan 48601, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.2683351408465, 42.198912122855006]
+        },
+        "properties": {
+            "input_address": "14686 Telegraph Rd., Taylor, MI 48180-4636",
+            "address": "14686 Telegraph Road, Taylor, Wayne County, Michigan 48180, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.36382367779419, 42.29504283973051]
+        },
+        "properties": {
+            "input_address": "1918 Venoy Rd S, Westland, MI 48186-4600",
+            "address": "1918 Venoy Road, Westland, Wayne County, Michigan 48186, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.70392604338389, 42.91342108864501]
+        },
+        "properties": {
+            "input_address": "1540 28th St. Sw, Wyoming, MI 49509-2764",
+            "address": "1540 28Th Street, Wyoming, Kent County, Michigan 49509, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.24172451576808, 44.948405080071325]
+        },
+        "properties": {
+            "input_address": "2136 E Lake Street, Minneapolis, MN 55407-1931",
+            "address": "2136 Lake Street, Minneapolis, Hennepin County, Minnesota 55407, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.2864703119033, 44.9991048823251]
+        },
+        "properties": {
+            "input_address": "505 W. Broadway Ave., Minneapolis, MN 55411-2711",
+            "address": "505 Broadway Avenue, Minneapolis, Hennepin County, Minnesota 55411, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.2535445266595, 44.96261375381252]
+        },
+        "properties": {
+            "input_address": "1433 E Franklin Avenue, Minneapolis, MN 55404",
+            "address": "1433 Franklin Avenue, Minneapolis, Hennepin County, Minnesota 55404, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.33643404253108, 45.02884884392759]
+        },
+        "properties": {
+            "input_address": "4080 W Broadway Avenue, Robbinsdale, MN 55422",
+            "address": "4080 Broadway Avenue, Minneapolis, Hennepin County, Minnesota 55422, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.02071414337588, 44.9496657510463]
+        },
+        "properties": {
+            "input_address": "1900 Suburban Ave, St Paul, MN 55119-7001",
+            "address": "1900 Suburban Avenue, Saint Paul, Ramsey County, Minnesota 55119, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.0735550902269, 44.97306553120839]
+        },
+        "properties": {
+            "input_address": "1055 Payne Ave, St Paul, MN 55130-3842",
+            "address": "1055 Payne Avenue, Saint Paul, Ramsey County, Minnesota 55130, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.02519390877879, 44.98788296351242]
+        },
+        "properties": {
+            "input_address": "1546 White Bear Ave. N, St. Paul, MN 55106-1602",
+            "address": "1546 White Bear Avenue, Saint Paul, Ramsey County, Minnesota 55106, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.2413957058487, 38.7339347329694]
+        },
+        "properties": {
+            "input_address": "9448 Lewis And Clark Blvd, Jennings, MO 63136",
+            "address": "9448 Lewis And Clark Boulevard, Saint Louis, Saint Louis County, Missouri 63136, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.2855046087787, 38.695576927135505]
+        },
+        "properties": {
+            "input_address": "6730 Natural Bridge Rd, St Louis, MO 63121-5354",
+            "address": "6730 Natural Bridge Road, Saint Louis, Saint Louis County, Missouri 63121, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.24391428372368, 38.5916730468507]
+        },
+        "properties": {
+            "input_address": "3636 S Grand Blvd, St Louis, MO 63118-3404",
+            "address": "3636 Grand Boulevard, Saint Louis, Saint Louis City County, Missouri 63118, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.27654199979878, 38.58431199244819]
+        },
+        "properties": {
+            "input_address": "4930 Christy Blvd, St Louis, MO 63116-1218",
+            "address": "4930 Christy Boulevard, Saint Louis, Saint Louis City County, Missouri 63116, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.2580613127645, 38.56432555033959]
+        },
+        "properties": {
+            "input_address": "6155 S Grand Blvd, St Louis, MO 63111",
+            "address": "6155 Grand Boulevard, Saint Louis, Saint Louis City County, Missouri 63111, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.22271038669028, 38.606230616185485]
+        },
+        "properties": {
+            "input_address": "2500 S. Jefferson Avenue, St. Louis, MO 63104",
+            "address": "2500 Jefferson Avenue, Saint Louis, Saint Louis City County, Missouri 63104, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.2278469431084, 32.29331137172579]
+        },
+        "properties": {
+            "input_address": "1415 Ellis Ave, Jackson, MS 39204-2202",
+            "address": "1415 Ellis Avenue, Jackson, Hinds County, Mississippi 39204, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.787326027911, 35.2459353744116]
+        },
+        "properties": {
+            "input_address": "1437 E Sugar Creek Rd, Charlotte, NC 28205-1456",
+            "address": "1437 Sugar Creek Road, Charlotte, Mecklenburg County, North Carolina 28205, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.9470310843377, 41.20783868728421]
+        },
+        "properties": {
+            "input_address": "5033 S 24th St, Omaha, NE 68107-2710",
+            "address": "5033 24Th Street, Omaha, Douglas County, Nebraska 68107, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.0256651445385, 40.18037593673088]
+        },
+        "properties": {
+            "input_address": "831 Belmar Plaza, Belmar, NJ 07719-2752",
+            "address": "831 Belmar Plaza, Belmar, Monmouth County, New Jersey 07719, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.2062870658657, 40.772770331012]
+        },
+        "properties": {
+            "input_address": "397 Springdale Ave, East Orange, NJ 07017-2910",
+            "address": "397 Springdale Avenue, East Orange, Essex County, New Jersey 07017, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.21186049366598, 40.6620143289542]
+        },
+        "properties": {
+            "input_address": "1141 Elizabeth Ave, Elizabeth, NJ 07201-2412",
+            "address": "1141 Elizabeth Avenue, Elizabeth, Union County, New Jersey 07201, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.2189365461249, 40.668225767092196]
+        },
+        "properties": {
+            "input_address": "25 Westfield Avenue, Elizabeth, NJ 07208-3215",
+            "address": "25 Westfield Avenue, Elizabeth, Union County, New Jersey 07208, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.7585811972265, 40.243995531629395]
+        },
+        "properties": {
+            "input_address": "1600 N Olden Ave Ext, Ewing, NJ 08638-3206",
+            "address": "1600 Olden Avenue, Trenton, Mercer County, New Jersey 08638, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.1132726876283, 39.717165826865]
+        },
+        "properties": {
+            "input_address": "638 N Delsea Dr, Glassboro, NJ 08028-1419",
+            "address": "638 Delsea Drive, Glassboro, Gloucester County, New Jersey 08028, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.72532643121279, 40.19671742966261]
+        },
+        "properties": {
+            "input_address": "2130 South Broad St, Hamilton Township, NJ 08610-5502",
+            "address": "2130 Broad Street, Trenton, Mercer County, New Jersey 08610, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.2343744684907, 40.72562846215453]
+        },
+        "properties": {
+            "input_address": "1120 Springfield Ave, Irvington, NJ 07111",
+            "address": "1120 Springfield Avenue, Irvington, Essex County, New Jersey 07111, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.79490627608898, 40.00519369276742]
+        },
+        "properties": {
+            "input_address": "516 High St., Mt. Holly, NJ 08060",
+            "address": "516 High Street, Mount Holly, Burlington County, New Jersey 08060, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.1842199350178, 40.74038928725639]
+        },
+        "properties": {
+            "input_address": "184 W Market St, Newark, NJ 07103-2728",
+            "address": "184 Market Street, Newark, Essex County, New Jersey 07103, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.1747978195009, 40.736354101433506]
+        },
+        "properties": {
+            "input_address": "131 Market St., Newark, NJ 07102",
+            "address": "131 Market Street, Newark, Essex County, New Jersey 07102, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.1635783040122, 40.9143955049731]
+        },
+        "properties": {
+            "input_address": "355 Market St, Paterson, NJ 07501-2213",
+            "address": "355 Market Street, Paterson, Passaic County, New Jersey 07501, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.52140231135604, 39.39304206711475]
+        },
+        "properties": {
+            "input_address": "333 S. Main St, Pleasantville, NJ 08232",
+            "address": "333 Main Street, Pleasantville, Atlantic County, New Jersey 08232, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.729944154902, 35.07536334616002]
+        },
+        "properties": {
+            "input_address": "101 86th St W, Albuquerque, NM 87121",
+            "address": "101 86Th Street, Albuquerque, Bernalillo County, New Mexico 87121, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.64903771314148, 35.08483622522495]
+        },
+        "properties": {
+            "input_address": "2001 2nd St Nw, Albuquerque, NM 87102-1042",
+            "address": "2001 2Nd Street, Albuquerque, Bernalillo County, New Mexico 87102, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.777160502054, 32.30234047914101]
+        },
+        "properties": {
+            "input_address": "840 S El Paseo Ste C, Las Cruces, NM 88001-6043",
+            "address": "840 El Paseo Road, Las Cruces, Dona Ana County, New Mexico 88001, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.93040400000001, 40.75577749999999]
+        },
+        "properties": {
+            "input_address": "3527 31st St, Astoria, NY 11106-2320",
+            "address": "3527 31St Street, Astoria, Queens County, New York 11106, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.89915881615319, 40.82562699999522]
+        },
+        "properties": {
+            "input_address": "1041 Prospect Ave, Bronx, NY 10459-2711",
+            "address": "1041 Prospect Avenue, Bronx, Bronx County, New York 10459, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.8916333539255, 40.83079037594209]
+        },
+        "properties": {
+            "input_address": "1312 Southern Blvd, Bronx, NY 10459-1503",
+            "address": "1312 Southern Boulevard, Bronx, Bronx County, New York 10459, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9092187271796, 40.812736957946015]
+        },
+        "properties": {
+            "input_address": "528 Jackson Ave, Bronx, NY 10455-4333",
+            "address": "528 Jackson Avenue, Bronx, Bronx County, New York 10455, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.8654572326744, 40.87882207591471]
+        },
+        "properties": {
+            "input_address": "3555 White Plains Road, Bronx, NY 10467",
+            "address": "3555 White Plains Road, Bronx, Bronx County, New York 10467, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9174085301262, 40.8405566172994]
+        },
+        "properties": {
+            "input_address": "1412 Jerome Avenue, Bronx, NY 10452-3306",
+            "address": "1412 Jerome Avenue, Bronx, Bronx County, New York 10452, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.867390194454, 40.86321211013407]
+        },
+        "properties": {
+            "input_address": "2500 White Plains Road, Bronx, NY 10467-8111",
+            "address": "2500 White Plains Road, Bronx, Bronx County, New York 10467, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.8930447788486, 40.8193411989933]
+        },
+        "properties": {
+            "input_address": "900 Southern Blvd, Bronx, NY 10459",
+            "address": "900 Southern Boulevard, Bronx, Bronx County, New York 10459, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9219936536036, 40.664111013329574]
+        },
+        "properties": {
+            "input_address": "112 E 98th St #126, Brooklyn, NY 11212-3827",
+            "address": "112 98Th Street, Brooklyn, Kings County, New York 11212, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9322633890153, 40.69728305137829]
+        },
+        "properties": {
+            "input_address": "1192 Myrtle Ave, Brooklyn, NY 11221-2613",
+            "address": "1192 Myrtle Avenue, Brooklyn, Kings County, New York 11221, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.92721507773739, 40.622413249773615]
+        },
+        "properties": {
+            "input_address": "2027 Utica Ave, Brooklyn, NY 11234-3215",
+            "address": "2027 Utica Avenue, Brooklyn, Kings County, New York 11234, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9083739595033, 40.67425861578451]
+        },
+        "properties": {
+            "input_address": "226 Mother Gaston Blvd, Brooklyn, NY 11233-4312",
+            "address": "226 Mother Gaston Boulevard, Brooklyn, Kings County, New York 11233, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9373320434611, 40.6369022461968]
+        },
+        "properties": {
+            "input_address": "4118 Farragut Rd, Brooklyn, NY 11210-2016",
+            "address": "4118 Farragut Road, Brooklyn, Kings County, New York 11210, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9019691579706, 40.64478279410861]
+        },
+        "properties": {
+            "input_address": "1450 Rockaway Parkway, Brooklyn, NY 11236-2602",
+            "address": "1450 Rockaway Parkway, Brooklyn, Kings County, New York 11236, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.6305269265844, 42.7690665404337]
+        },
+        "properties": {
+            "input_address": "41 Buffalo Road, East Aurora, NY 14052-1648",
+            "address": "41 Buffalo Road, East Aurora, Erie County, New York 14052, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.894617, 40.70081099999999]
+        },
+        "properties": {
+            "input_address": "7134 Myrtle Ave, Glendale, NY 11385-7260",
+            "address": "7134 Myrtle Avenue, Ridgewood, Queens County, New York 11385, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.96745788939299, 43.02665684702902]
+        },
+        "properties": {
+            "input_address": "2391 Grand Island Blvd, Grand Island, NY 14072-3114",
+            "address": "2391 Grand Island Boulevard, Grand Island, Erie County, New York 14072, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.64685050705168, 43.25191908774008]
+        },
+        "properties": {
+            "input_address": "4419 Dewey Ave, Greece, NY 14616-1200",
+            "address": "4419 Dewey Avenue, Rochester, Monroe County, New York 14616, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.37409638039323, 40.689436409931204]
+        },
+        "properties": {
+            "input_address": "660 N Wellwood Ave, Lindenhurst, NY 11757-1611",
+            "address": "660 Wellwood Avenue, Lindenhurst, Suffolk County, New York 11757, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.1456805, 43.101518]
+        },
+        "properties": {
+            "input_address": "2202 Brewerton Rd, Mattydale, NY 13211-1602",
+            "address": "2202 Brewerton Road, Syracuse, Onondaga County, New York 13211, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.828154978704, 40.908475051757705]
+        },
+        "properties": {
+            "input_address": "205 E 3rd St, Mount Vernon, NY 10553-5112",
+            "address": "205 3Rd Street, Mount Vernon, Westchester County, New York 10553, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.99504165535615, 40.757479275888244]
+        },
+        "properties": {
+            "input_address": "59 S Ocean Ave Ste 63, Patchogue, NY 11772-3702",
+            "address": "59 Ocean Avenue, Patchogue, Suffolk County, New York 11772, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9111634390008, 41.686348233420205]
+        },
+        "properties": {
+            "input_address": "258 Hooker Ave, Poughkeepsie, NY 12603-3012",
+            "address": "258 Hooker Avenue, Poughkeepsie, Dutchess County, New York 12603, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.90752923742099, 40.704178703775455]
+        },
+        "properties": {
+            "input_address": "1815 Gates Ave, Ridgewood, NY 11385",
+            "address": "1815 Gates Avenue, Ridgewood, Queens County, New York 11385, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.6908867795473, 43.164802783439]
+        },
+        "properties": {
+            "input_address": "2390 Lyell Ave, Rochester, NY 14606-5738",
+            "address": "2390 Lyell Avenue, Rochester, Monroe County, New York 14606, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.5642276397437, 43.16343177025669]
+        },
+        "properties": {
+            "input_address": "1004 Culver Rd, Rochester, NY 14609-6417",
+            "address": "1004 Culver Road, Rochester, Monroe County, New York 14609, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.59316933482529, 43.14620261112799]
+        },
+        "properties": {
+            "input_address": "529 Monroe Ave., Rochester, NY 14607-3722",
+            "address": "529 Monroe Avenue, Rochester, Monroe County, New York 14607, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.9407490316745, 40.9424181909132]
+        },
+        "properties": {
+            "input_address": "29 Rocky Point Yaphank Rd, Rocky Point, NY 11778-8400",
+            "address": "29 Rocky Point Yaphank Road, Rocky Point, Suffolk County, New York 11778, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.03353205743248, 40.86671202011152]
+        },
+        "properties": {
+            "input_address": "624 Middle Country Rd, Selden, NY 11784-2500",
+            "address": "624 Middle Country Road, Selden, Suffolk County, New York 11784, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.8642120050219, 40.783205233796195]
+        },
+        "properties": {
+            "input_address": "441 William Floyd Pkwy, Shirley, NY 11967-3466",
+            "address": "441 William Floyd Parkway, Shirley, Suffolk County, New York 11967, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.1656136516104, 40.62715334875821]
+        },
+        "properties": {
+            "input_address": "2264 Forest Avenue, Staten Island, NY 10303",
+            "address": "2264 Forest Avenue, Staten Island, Richmond County, New York 10303, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.1426284992757, 43.00848290670919]
+        },
+        "properties": {
+            "input_address": "4141 S Salina St, Syracuse, NY 13205-2060",
+            "address": "4141 Salina Street, Syracuse, Onondaga County, New York 13205, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.17081798520434, 43.04797254187491]
+        },
+        "properties": {
+            "input_address": "220 S Geddes St, Syracuse, NY 13204-2809",
+            "address": "220 Geddes Street, Syracuse, Onondaga County, New York 13204, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.2215346497228, 43.091844722570016]
+        },
+        "properties": {
+            "input_address": "1112 Mohawk St, Utica, NY 13501-3780",
+            "address": "1112 Mohawk Street, Utica, Oneida County, New York 13501, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.3691035, 40.809071999999986]
+        },
+        "properties": {
+            "input_address": "210 12th Street Ne, Canton, OH 44704",
+            "address": "210 12Th Street, Canton, Stark County, Ohio 44704, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.5782212501057, 39.11412437624239]
+        },
+        "properties": {
+            "input_address": "3920 Glenway, Cincinnati, OH 45205-1440",
+            "address": "3920 Glenway Avenue, Cincinnati, Hamilton County, Ohio 45205, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.38616665283548, 39.196857465476796]
+        },
+        "properties": {
+            "input_address": "7700 Montgomery Road, Cincinnati, OH 45236-4202",
+            "address": "7700 Montgomery Road, Cincinnati, Hamilton County, Ohio 45236, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.5819710959275, 39.2042695429908]
+        },
+        "properties": {
+            "input_address": "6134 Colerain Ave., Cincinnati, OH 45239-6418",
+            "address": "6134 Colerain Avenue, Cincinnati, Hamilton County, Ohio 45239, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.4246969248777, 39.169381067703796]
+        },
+        "properties": {
+            "input_address": "5325 Ridge Avenue, Cincinnati, OH 45213",
+            "address": "5325 Ridge Avenue, Cincinnati, Hamilton County, Ohio 45213, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.5915755766563, 41.44530170401052]
+        },
+        "properties": {
+            "input_address": "13020 Miles Avenue, Cleveland, OH 44105",
+            "address": "13020 Miles Avenue, Cleveland, Cuyahoga County, Ohio 44105, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.73834933570042, 41.46024798416073]
+        },
+        "properties": {
+            "input_address": "3545 Ridge Rd, Cleveland, OH 44102-5464",
+            "address": "3545 Ridge Road, Cleveland, Cuyahoga County, Ohio 44102, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.0051770400182, 39.98524596374298]
+        },
+        "properties": {
+            "input_address": "1101 N High St, Columbus, OH 43201-2439",
+            "address": "1101 High Street, Columbus, Franklin County, Ohio 43201, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.09452407993923, 39.95380033694744]
+        },
+        "properties": {
+            "input_address": "128 N Wilson Rd, Columbus, OH 43204-1262",
+            "address": "128 Wilson Road, Columbus, Franklin County, Ohio 43204, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.91518420687238, 39.9527886175654]
+        },
+        "properties": {
+            "input_address": "901 S James Rd, Columbus, OH 43227-1069",
+            "address": "901 James Road, Columbus, Franklin County, Ohio 43227, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.594353591348, 41.51835065648322]
+        },
+        "properties": {
+            "input_address": "12732 Euclid Ave, East Cleveland, OH 44112-4626",
+            "address": "12732 Euclid Avenue, Cleveland, Cuyahoga County, Ohio 44112, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.28037310192609, 39.17794280765952]
+        },
+        "properties": {
+            "input_address": "825 Main Street, Milford, OH 45150-1725",
+            "address": "825 Main Street, Milford, Clermont County, Ohio 45150, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.49731956244078, 39.17020578487731]
+        },
+        "properties": {
+            "input_address": "5009 Vine St, St Bernard, OH 45217-1221",
+            "address": "5009 Vine Street, Cincinnati, Hamilton County, Ohio 45217, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.58539306429529, 41.7059024842585]
+        },
+        "properties": {
+            "input_address": "4925 Jackman Rd Ste 23, Toledo, OH 43613-3557",
+            "address": "4925 Jackman Road, Toledo, Lucas County, Ohio 43613, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.5574591424835, 41.652955939525214]
+        },
+        "properties": {
+            "input_address": "551 Dorr St, Toledo, OH 43604-1021",
+            "address": "551 Dorr Street, Toledo, Lucas County, Ohio 43604, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.89596954094641, 39.973892631428185]
+        },
+        "properties": {
+            "input_address": "3866 E Broad St, Whitehall, OH 43213-1128",
+            "address": "3866 Broad Street, Columbus, Franklin County, Ohio 43213, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.60844603615818, 35.49314371206948]
+        },
+        "properties": {
+            "input_address": "4800 Nw 23rd Street, Oklahoma City, OK 73127",
+            "address": "4800 23Rd Street, Oklahoma City, Oklahoma County, Oklahoma 73127, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.53584091766089, 35.49330355873019]
+        },
+        "properties": {
+            "input_address": "1525 Nw 23rd St, Oklahoma City, OK 73106-3614",
+            "address": "1525 23Rd Street, Oklahoma City, Oklahoma County, Oklahoma 73106, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.45935230770608, 40.58509546005649]
+        },
+        "properties": {
+            "input_address": "1604 S 4th St, Allentown, PA 18103-4917",
+            "address": "1604 4Th Street, Allentown, Lehigh County, Pennsylvania 18103, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.92365080225679, 40.461157059085906]
+        },
+        "properties": {
+            "input_address": "123 North Sheridan Ave, East Liberty, PA 15206-3018",
+            "address": "123 Sheridan Avenue, Pittsburgh, Allegheny County, Pennsylvania 15206, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.8916425, 40.29028600000001]
+        },
+        "properties": {
+            "input_address": "2941 N 7th St, Harrisburg, PA 17110-2109",
+            "address": "2941 7Th Street, Harrisburg, Dauphin County, Pennsylvania 17110, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.8273303657894, 40.27824921642059]
+        },
+        "properties": {
+            "input_address": "3810 Union Deposit Road, Harrisburg, PA 17109-5919",
+            "address": "3810 Union Deposit Road, Harrisburg, Dauphin County, Pennsylvania 17109, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.26598125774903, 39.94108616409338]
+        },
+        "properties": {
+            "input_address": "63 N. Union Avenue, Lansdowne, PA 19050",
+            "address": "63 Union Avenue, Lansdowne, Delaware County, Pennsylvania 19050, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.8800012922563, 40.137507201227294]
+        },
+        "properties": {
+            "input_address": "4551 New Falls Road, Levittown, PA 19056-3004",
+            "address": "4551 New Falls Road, Levittown, Bucks County, Pennsylvania 19056, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.83596457462158, 40.32061634570309]
+        },
+        "properties": {
+            "input_address": "4313 Walnut St, Mckeesport, PA 15132-6115",
+            "address": "4313 Walnut Street, Mckeesport, Allegheny County, Pennsylvania 15132, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.73091713452054, 40.19935079636099]
+        },
+        "properties": {
+            "input_address": "350 W Main St, Middletown, PA 17057-1220",
+            "address": "350 Main Street, Middletown, Dauphin County, Pennsylvania 17057, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.79582706922349, 40.21059330214479]
+        },
+        "properties": {
+            "input_address": "332 West Trenton Ave. Ste. 11, Morrisville, PA 19067-2054",
+            "address": "332 Trenton Avenue, Morrisville, Bucks County, Pennsylvania 19067, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.0650563824821, 40.035971035605]
+        },
+        "properties": {
+            "input_address": "6587 Roosevelt Blvd, Philadelphia, PA 19149-2918",
+            "address": "6587 Roosevelt Boulevard, Philadelphia, Philadelphia County, Pennsylvania 19149, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.11991367644778, 39.9759403061295]
+        },
+        "properties": {
+            "input_address": "2495 Aramingo Ave, Philadelphia, PA 19125-3732",
+            "address": "2495 Aramingo Avenue, Philadelphia, Philadelphia County, Pennsylvania 19125, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.18823092173409, 39.91977562173389]
+        },
+        "properties": {
+            "input_address": "2201 Oregon Ave., Philadelphia, PA 19145-4111",
+            "address": "2201 Oregon Avenue, Philadelphia, Philadelphia County, Pennsylvania 19145, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.1751420341923, 40.03537895071068]
+        },
+        "properties": {
+            "input_address": "138 W. Chelten Ave., Philadelphia, PA 19144-3302",
+            "address": "138 Chelten Avenue, Philadelphia, Philadelphia County, Pennsylvania 19144, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.99581599999999, 40.42177199999969]
+        },
+        "properties": {
+            "input_address": "700 E Warrington Ave, Pittsburgh, PA 15210-1562",
+            "address": "700 Warrington Avenue, Pittsburgh, Allegheny County, Pennsylvania 15210, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.0151117622415, 40.455364828507584]
+        },
+        "properties": {
+            "input_address": "1215 Brighton Road, Pittsburgh, PA 15233-1601",
+            "address": "1215 Brighton Road, Pittsburgh, Allegheny County, Pennsylvania 15233, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.2588846939263, 39.961249692340004]
+        },
+        "properties": {
+            "input_address": "9 South 69th St, Upper Darby, PA 19082-2425",
+            "address": "9 69Th Street, Upper Darby, Delaware County, Pennsylvania 19082, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.2591745, 39.93503799999999]
+        },
+        "properties": {
+            "input_address": "901 Cedar Ave., Yeadon, PA 19050",
+            "address": "901 Cedar Avenue, Lansdowne, Delaware County, Pennsylvania 19050, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.27931881207618, 41.693394705402795]
+        },
+        "properties": {
+            "input_address": "1150 Hope St, Bristol, RI 02809-1138",
+            "address": "1150 Hope Street, Bristol, Bristol County, Rhode Island 02809, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.3869378087776, 41.8846929198819]
+        },
+        "properties": {
+            "input_address": "400 Broad Street, Central Falls, RI 02863-3013",
+            "address": "400 Broad Street, Central Falls, Providence County, Rhode Island 02863, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.3906972679313, 41.88124532750382]
+        },
+        "properties": {
+            "input_address": "320 Dexter St, Pawtucket, RI 02860-1908",
+            "address": "320 Dexter Street, Pawtucket, Providence County, Rhode Island 02860, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.3636299625749, 41.88017145933901]
+        },
+        "properties": {
+            "input_address": "295 Armistice Blvd, Pawtucket, RI 02861-2329",
+            "address": "295 Armistice Boulevard, Pawtucket, Providence County, Rhode Island 02861, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.4619182026511, 41.81899631007701]
+        },
+        "properties": {
+            "input_address": "550 Hartford Ave, Providence, RI 02909-5800",
+            "address": "550 Hartford Avenue, Providence, Providence County, Rhode Island 02909, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.4249972171624, 41.85240360590171]
+        },
+        "properties": {
+            "input_address": "678 Branch Ave, Providence, RI 02904-1702",
+            "address": "678 Branch Avenue, Providence, Providence County, Rhode Island 02904, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.3545390443791, 41.85923456962419]
+        },
+        "properties": {
+            "input_address": "52 Newport Ave, Rumford, RI 02916-2068",
+            "address": "52 Newport Avenue, Rumford, Providence County, Rhode Island 02916, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.05598615527418, 35.0942796424206]
+        },
+        "properties": {
+            "input_address": "1945 S 3rd St, Memphis, TN 38109-7713",
+            "address": "1945 3Rd Street, Memphis, Shelby County, Tennessee 38109, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-89.8570968960647, 35.049730702520904]
+        },
+        "properties": {
+            "input_address": "6195 Winchester Rd, Memphis, TN 38115",
+            "address": "6195 Winchester Road, Memphis, Shelby County, Tennessee 38115, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.73364970989219, 36.2102468684792]
+        },
+        "properties": {
+            "input_address": "3407 Gallatin Pike, Nashville, TN 37216-2601",
+            "address": "3407 Gallatin Pike, Nashville, Davidson County, Tennessee 37216, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.0732002957688, 32.7064325048304]
+        },
+        "properties": {
+            "input_address": "2175 E Arkansas Lane, Arlington, TX 76010",
+            "address": "2175 Arkansas Lane, Arlington, Tarrant County, Texas 76010, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.61949394702701, 32.71948370749939]
+        },
+        "properties": {
+            "input_address": "11921 Elam Rd, Balch Springs, TX 75180-2820",
+            "address": "11921 Elam Road, Balch Springs, Dallas County, Texas 75180, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-94.1296223966663, 30.078305160879893]
+        },
+        "properties": {
+            "input_address": "46 N 11th St, Beaumont, TX 77702-2225",
+            "address": "46 11Th Street, Beaumont, Jefferson County, Texas 77702, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.4773158976268, 25.921567731366196]
+        },
+        "properties": {
+            "input_address": "2921 Boca Chica Blvd Ste 116, Brownsville, TX 78521-3574",
+            "address": "2921 Boca Chica Boulevard, Brownsville, Cameron County, Texas 78521, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.4177187276614, 27.751030249202003]
+        },
+        "properties": {
+            "input_address": "4138 Ayers St, Corpus Christi, TX 78415-5315",
+            "address": "4138 Ayers Street, Corpus Christi, Nueces County, Texas 78415, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.8366345, 32.7203765]
+        },
+        "properties": {
+            "input_address": "655 W Illinois Ave Ste 254, Dallas, TX 75224-1817",
+            "address": "655 Illinois Avenue, Dallas, Dallas County, Texas 75224, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.46145117612399, 31.77866604075632]
+        },
+        "properties": {
+            "input_address": "500 N Piedras St, El Paso, TX 79903-4015",
+            "address": "500 Piedras Street, El Paso, El Paso County, Texas 79903, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.27583653401699, 31.754494835023493]
+        },
+        "properties": {
+            "input_address": "1785 N Zaragoza Rd, El Paso, TX 79936-7910",
+            "address": "1785 Zaragoza Road, El Paso, El Paso County, Texas 79936, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.26202832198949, 32.7409572856795]
+        },
+        "properties": {
+            "input_address": "4117 E Lancaster Ave, Fort Worth, TX 76103-3614",
+            "address": "4117 Lancaster Avenue, Fort Worth, Tarrant County, Texas 76103, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.5083005009098, 29.641136427406494]
+        },
+        "properties": {
+            "input_address": "12550 Fondren Rd, Houston, TX 77035-5206",
+            "address": "12550 Fondren Road, Houston, Harris County, Texas 77035, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.3553355, 29.911408499999993]
+        },
+        "properties": {
+            "input_address": "12955 Aldine Westfield Rd, Houston, TX 77039-5307",
+            "address": "12955 Aldine Westfield Road, Houston, Harris County, Texas 77039, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.4448372866425, 29.832816375914703]
+        },
+        "properties": {
+            "input_address": "1804 W 43rd St, Houston, TX 77018-3006",
+            "address": "1804 43Rd Street, Houston, Harris County, Texas 77018, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.4608355356132, 29.819686312530393]
+        },
+        "properties": {
+            "input_address": "4800 W 34th St, Ste 20C, Houston, TX 77092-6671",
+            "address": "4800 34Th Street, Houston, Harris County, Texas 77092, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.37994076981953, 29.82876060510891]
+        },
+        "properties": {
+            "input_address": "525 Crosstimbers Street, Houston, TX 77022-3934",
+            "address": "525 Crosstimbers Street, Houston, Harris County, Texas 77022, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-101.889916978362, 33.54858116865671]
+        },
+        "properties": {
+            "input_address": "3501 50Th St Ste A, Lubbock, TX 79413-4000",
+            "address": "3501 50Th Street, Lubbock, Lubbock County, Texas 79413, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-102.35333701129498, 31.859421751692096]
+        },
+        "properties": {
+            "input_address": "1523 E 8th St, Odessa, TX 79761-4804",
+            "address": "1523 8Th Street, Odessa, Ector County, Texas 79761, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.1902389491443, 29.665228103756803]
+        },
+        "properties": {
+            "input_address": "3431 Spencer Hwy, Pasadena, TX 77504-1148",
+            "address": "3431 Spencer Highway, Pasadena, Harris County, Texas 77504, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-98.46852698812809, 29.3847152714079]
+        },
+        "properties": {
+            "input_address": "511 Fair Ave, San Antonio, TX 78223-1301",
+            "address": "511 Fair Avenue, San Antonio, Bexar County, Texas 78223, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.89093840203849, 40.620667249890204]
+        },
+        "properties": {
+            "input_address": "74 W 7200 S, Midvale, UT 84047-3747",
+            "address": "74 7200, Midvale, Salt Lake County, Utah 84047, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.970789967431, 41.20680259981461]
+        },
+        "properties": {
+            "input_address": "3161 Washington Blvd, Ogden, UT 84401-3946",
+            "address": "3161 Washington Boulevard, Ogden, Weber County, Utah 84401, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.65046622691699, 40.23219497478084]
+        },
+        "properties": {
+            "input_address": "355 S 600 E, Provo, UT 84606-4764",
+            "address": "355 600, Provo, Utah County, Utah 84606, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.93938983457602, 40.787849881839406]
+        },
+        "properties": {
+            "input_address": "857 N Redwood Rd, Salt Lake City, UT 84116-1912",
+            "address": "857 Redwood Road, Salt Lake City, Salt Lake County, Utah 84116, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-113.61029187984698, 37.08768309286749]
+        },
+        "properties": {
+            "input_address": "922 N Dixie Downs Dr, St George, UT 84770",
+            "address": "922 Dixie Drive, Saint George, Washington County, Utah 84770, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.1239228048686, 38.721319463778286]
+        },
+        "properties": {
+            "input_address": "8734 Richmond Hwy, Alexandria, VA 22309-4204",
+            "address": "8734 Richmond Highway, Alexandria, Fairfax County, Virginia 22309, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.250029, 36.755473499999994]
+        },
+        "properties": {
+            "input_address": "2040 Battlefield Blvd, Chesapeake, VA 23320",
+            "address": "2040 Battlefield Boulevard, Chesapeake, Chesapeake City County, Virginia 23320, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.35335038428968, 37.01041640146448]
+        },
+        "properties": {
+            "input_address": "3818 Kecoughtan Rd, Hampton, VA 23669-4402",
+            "address": "3818 Kecoughtan Road, Hampton, Hampton City County, Virginia 23669, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.2548095853007, 37.323033723321416]
+        },
+        "properties": {
+            "input_address": "22111 Timberlake Rd, Lynchburg, VA 24502",
+            "address": "22111 Timberlake Road, Lynchburg, Lynchburg City County, Virginia 24502, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.2957448565278, 36.87252141412941]
+        },
+        "properties": {
+            "input_address": "2301 Colley Ave Ste B, Norfolk, VA 23517-1144",
+            "address": "2301 Colley Avenue, Norfolk, Norfolk City County, Virginia 23517, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.26127703934795, 36.9423926219213]
+        },
+        "properties": {
+            "input_address": "187 W Ocean View Ave, Norfolk, VA 23503-1502",
+            "address": "187 Ocean Avenue, Norfolk, Norfolk City County, Virginia 23503, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.26802138771451, 36.868463375934]
+        },
+        "properties": {
+            "input_address": "2591 Tidewater Dr., Norfolk, VA 23504-2144",
+            "address": "2591 Tidewater Drive, Norfolk, Norfolk City County, Virginia 23504, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.3266419514409, 36.79482986579839]
+        },
+        "properties": {
+            "input_address": "1921 Victory Blvd, Portsmouth, VA 23702-3139",
+            "address": "1921 Victory Boulevard, Portsmouth, Portsmouth City County, Virginia 23702, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-88.40353942956544, 44.28745327511635]
+        },
+        "properties": {
+            "input_address": "102 E Northland Avenue, Appleton, WI 54911",
+            "address": "102 Northland Avenue, Appleton, Outagamie County, Wisconsin 54911, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-91.5440409371896, 44.82534535936409]
+        },
+        "properties": {
+            "input_address": "2621 N Clairemont Ave, Eau Claire, WI 54703-2405",
+            "address": "2621 Clairemont Avenue, Eau Claire, Eau Claire County, Wisconsin 54703, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.91889276862939, 43.01225396693508]
+        },
+        "properties": {
+            "input_address": "627 W Historic Mitchell St, Milwaukee, WI 53204-3513",
+            "address": "627 Historic Mitchell Street, Milwaukee, Milwaukee County, Wisconsin 53204, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.9686941978772, 43.090224006879]
+        },
+        "properties": {
+            "input_address": "4412 W Capitol Dr, Milwaukee, WI 53216-1541",
+            "address": "4412 Capitol Drive, Milwaukee, Milwaukee County, Wisconsin 53216, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.9095235340121, 42.96954042648349]
+        },
+        "properties": {
+            "input_address": "4130 S Howell Ave, Milwaukee, WI 53207-4410",
+            "address": "4130 Howell Avenue, Milwaukee, Milwaukee County, Wisconsin 53207, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.8715192908893, 42.9593003187492]
+        },
+        "properties": {
+            "input_address": "3048 E Layton Ave, St Francis, WI 53235-5735",
+            "address": "3048 Layton Avenue, Saint Francis, Milwaukee County, Wisconsin 53235, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.40460726950688, 38.42611289083757]
+        },
+        "properties": {
+            "input_address": "2725 5th Ave, Huntington, WV 25702-1330",
+            "address": "2725 5Th Avenue, Huntington, Cabell County, West Virginia 25702, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-118.34826799999998, 33.95330650000001]
+        },
+        "properties": {
+            "input_address": "Inglewood, CA",
+            "address": "Inglewood, Los Angeles County, California, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.20924949999998, 28.889648000000022]
+        },
+        "properties": {
+            "input_address": "Deltona, FL",
+            "address": "Deltona, Volusia County, Florida, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.72154549999999, 30.32041050000001]
+        },
+        "properties": {
+            "input_address": "Jacksonville, FL",
+            "address": "Jacksonville, Duval County, Florida, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.49845400000001, 25.686267]
+        },
+        "properties": {
+            "input_address": "Miami Gardens, FL",
+            "address": "Miami, Miami-Dade County, Florida, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.69632499999999, 41.82563200000001]
+        },
+        "properties": {
+            "input_address": "Chicago, IL",
+            "address": "Chicago, Cook County, Illinois, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.640862, 38.17805350000003]
+        },
+        "properties": {
+            "input_address": "Louisville, KY",
+            "address": "Louisville, Jefferson County, Kentucky, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.0272915, 42.084384]
+        },
+        "properties": {
+            "input_address": "Brockton, MA",
+            "address": "Brockton, Plymouth County, Massachusetts, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.263621, 42.262887999999975]
+        },
+        "properties": {
+            "input_address": "Ware, MA",
+            "address": "Ware, Hampshire County, Massachusetts, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.5456415, 42.11046700000003]
+        },
+        "properties": {
+            "input_address": "West Springfield, MA",
+            "address": "Springfield, Hampden County, Massachusetts, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.66430999999999, 39.17828299999999]
+        },
+        "properties": {
+            "input_address": "Baltimore, MD",
+            "address": "Baltimore, Anne Arundel County, Maryland, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.34639999999999, 43.88370900000001]
+        },
+        "properties": {
+            "input_address": "Gray, ME",
+            "address": "Gray, Cumberland County, Maine, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.40571, 42.111553000000015]
+        },
+        "properties": {
+            "input_address": "Benton Harbor, MI",
+            "address": "Benton Harbor, Berrien County, Michigan, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.1467085, 42.321225]
+        },
+        "properties": {
+            "input_address": "Detroit, MI",
+            "address": "Detroit, Wayne County, Michigan, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.1467085, 42.321225]
+        },
+        "properties": {
+            "input_address": "Detroit, MI",
+            "address": "Detroit, Wayne County, Michigan, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.24954349999997, 38.631186499999984]
+        },
+        "properties": {
+            "input_address": "St Louis, MO",
+            "address": "Saint Louis, St. Louis City County, Missouri, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.805737, 35.200968]
+        },
+        "properties": {
+            "input_address": "Charlotte, NC",
+            "address": "Charlotte, Mecklenburg County, North Carolina, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.383221, 39.400035]
+        },
+        "properties": {
+            "input_address": "Brigantine, NJ",
+            "address": "Brigantine, Atlantic County, New Jersey, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.97524050000001, 39.481447]
+        },
+        "properties": {
+            "input_address": "Vineland, NJ",
+            "address": "Vineland, Cumberland County, New Jersey, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.74400949999999, 35.04411500000002]
+        },
+        "properties": {
+            "input_address": "Albuquerque, NM",
+            "address": "Albuquerque, Bernalillo County, New Mexico, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.84903349999999, 40.85558850000001]
+        },
+        "properties": {
+            "input_address": "Bronx, NY",
+            "address": "Bronx, Bronx County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.9379285, 40.65458350000003]
+        },
+        "properties": {
+            "input_address": "Brooklyn, NY",
+            "address": "Brooklyn, Kings County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.8444, 40.785240000000016]
+        },
+        "properties": {
+            "input_address": "College Point, NY",
+            "address": "College Point, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.79233849999999, 40.610926999999975]
+        },
+        "properties": {
+            "input_address": "Far Rockaway, NY",
+            "address": "Far Rockaway, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.89128099999999, 40.66701900000001]
+        },
+        "properties": {
+            "input_address": "Jamaica, NY",
+            "address": "Jamaica, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.89128099999999, 40.66701900000001]
+        },
+        "properties": {
+            "input_address": "Jamaica, NY",
+            "address": "Jamaica, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.39549999999998, 43.02114]
+        },
+        "properties": {
+            "input_address": "Johnstown, NY",
+            "address": "Johnstown, Fulton County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.7478245, 40.722376499999996]
+        },
+        "properties": {
+            "input_address": "Queens Village, NY",
+            "address": "Queens Village, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.822336, 44.679941000000014]
+        },
+        "properties": {
+            "input_address": "Saranac Lake, NY",
+            "address": "Saranac, Clinton County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.75056, 40.672500000000014]
+        },
+        "properties": {
+            "input_address": "Springfield Gardens, NY",
+            "address": "Springfield Gardens, Queens County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.15365549999999, 40.5726985]
+        },
+        "properties": {
+            "input_address": "Staten Island, NY",
+            "address": "Staten Island, Richmond County, New York, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.546405, 41.064554000000015]
+        },
+        "properties": {
+            "input_address": "Akron, OH",
+            "address": "Akron, Summit County, Ohio, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.6462105, 41.47776950000002]
+        },
+        "properties": {
+            "input_address": "Cleveland, OH",
+            "address": "Cleveland, Cuyahoga County, Ohio, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.286436, 39.86937599999999]
+        },
+        "properties": {
+            "input_address": "Philadelphia, PA",
+            "address": "Philadelphia, Delaware County, Pennsylvania, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.02163250000001, 35.16603050000002]
+        },
+        "properties": {
+            "input_address": "Memphis, TN",
+            "address": "Memphis, Shelby County, Tennessee, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-100.491092, 28.714472999999998]
+        },
+        "properties": {
+            "input_address": "Eagle Pass, TX",
+            "address": "Eagle Pass, Maverick County, Texas, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-103.9585815, 31.247252000000017]
+        },
+        "properties": {
+            "input_address": "El Paso, TX",
+            "address": "El Paso, El Paso County, Texas, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.34901350000001, 32.78663549999999]
+        },
+        "properties": {
+            "input_address": "Fort Worth, TX",
+            "address": "Fort Worth, Tarrant County, Texas, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.50861849999998, 37.46351650000001]
+        },
+        "properties": {
+            "input_address": "Richmond, VA",
+            "address": "Richmond, Chesterfield County, Virginia, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.60792, 44.55527999999998]
+        },
+        "properties": {
+            "input_address": "Morrisville, VT",
+            "address": "Morrisville, Lamoille County, Vermont, United States",
+            "name": "Family_Dollar"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.20256, 44.94485999999998]
+        },
+        "properties": {
+            "input_address": "Newport, VT",
+            "address": "Newport, Orleans County, Vermont, United States",
+            "name": "Family_Dollar"
+        }
+    }]
+}

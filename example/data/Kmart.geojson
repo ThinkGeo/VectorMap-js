@@ -1,0 +1,719 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.826156282392, 45.4902806046602]
+        },
+        "properties": {
+            "input_address": "3955 SW Murray Blvd, Beaverton, OR 97005-2316",
+            "address": "3955 Murray Boulevard, Beaverton, Washington County, Oregon 97005, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.78139519734448, 36.31332631694572]
+        },
+        "properties": {
+            "input_address": "215 W Hanford/Armona Rd, Lemoore, CA 93245-2302",
+            "address": "215 Hanford Armona Road, Lemoore, Kings County, California 93245, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-84.5499542135913, 33.380179950034986]
+        },
+        "properties": {
+            "input_address": "400 Crosstown Road, Peachtree City, GA 30269-2915",
+            "address": "400 Crosstown Road, Peachtree City, Fayette County, Georgia 30269, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.87643920827144, 33.598668429696204]
+        },
+        "properties": {
+            "input_address": "6239 Turner Lake Road, Covington, GA 30014-2064",
+            "address": "6239 Turner Lake Road, Covington, Newton County, Georgia 30014, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.860826113188, 35.79103149765341]
+        },
+        "properties": {
+            "input_address": "1530 East Broad Street, Statesville, NC 28625-4302",
+            "address": "1530 Broad Street, Statesville, Iredell County, North Carolina 28625, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.9406166848441, 40.3174405730029]
+        },
+        "properties": {
+            "input_address": "720 Clairton Blvd, Pleasant Hills, PA 15236-4517",
+            "address": "720 Clairton Boulevard, Pittsburgh, Allegheny County, Pennsylvania 15236, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.5582465, 40.627973500000024]
+        },
+        "properties": {
+            "input_address": "15891 State Rt 170, East Liverpool, OH 43920-9633",
+            "address": "15891 State Street, East Liverpool, Columbiana County, Ohio 43920, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.40261000000001, 40.48016100000001]
+        },
+        "properties": {
+            "input_address": "528 W Plank Road, Altoona, PA 16602-2802",
+            "address": "528 Plank Road, Altoona, Blair County, Pennsylvania 16602, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.42743930543902, 41.55102328726403]
+        },
+        "properties": {
+            "input_address": "430 W Ridge Rd, Griffith, IN 46319-1095",
+            "address": "430 Ridge Road, Griffith, Lake County, Indiana 46319, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.80876999920902, 41.279349434260894]
+        },
+        "properties": {
+            "input_address": "2803 E Kanesville Blvd, Council Bluffs, IA 51503-1004",
+            "address": "2803 Kanesville Boulevard, Council Bluffs, Pottawattamie County, Iowa 51503, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.55155399887815, 42.74956296070931]
+        },
+        "properties": {
+            "input_address": "1111 N 2nd St, Cherokee, IA 51012-1287",
+            "address": "1111 2Nd Street, Cherokee, Cherokee County, Iowa 51012, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.4596028848896, 40.58553350906462]
+        },
+        "properties": {
+            "input_address": "1502 South Fourth St, Allentown, PA 18103-4949",
+            "address": "1502 4Th Street, Allentown, Lehigh County, Pennsylvania 18103, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.57996315068709, 38.5307207592341]
+        },
+        "properties": {
+            "input_address": "835 Solomons Island Rd N, Prince Frederick, MD 20678-3912",
+            "address": "835 Solomons Island Road, Prince Frederick, Calvert County, Maryland 20678, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.62430022886488, 38.84103248702752]
+        },
+        "properties": {
+            "input_address": "400 South Broadway, Salina, KS 67401-4005",
+            "address": "400 Broadway Boulevard, Salina, Saline County, Kansas 67401, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.5352465, 40.13226399999999]
+        },
+        "properties": {
+            "input_address": "1000 Nutt Rd, Phoenixville, PA 19460-2200",
+            "address": "1000 Nutt Road, Phoenixville, Chester County, Pennsylvania 19460, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.6868001657064, 40.27091006700542]
+        },
+        "properties": {
+            "input_address": "1170 Mae Street, Hummelstown, PA 17036-9185",
+            "address": "1170 Mae Street, Hummelstown, Dauphin County, Pennsylvania 17036, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.9167944214764, 38.37850833261291]
+        },
+        "properties": {
+            "input_address": "723 3rd Ave, Jasper, IN 47546-3639",
+            "address": "723 3Rd Avenue, Jasper, Dubois County, Indiana 47546, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.3948534270925, 25.7605490300448]
+        },
+        "properties": {
+            "input_address": "12350 Sw 8th Street, Miami, FL 33184-1510",
+            "address": "12350 8Th Street, Miami, Miami-Dade County, Florida 33184, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.11544739480338, 39.722022670275095]
+        },
+        "properties": {
+            "input_address": "779 Delsea Dr N, Glassboro, NJ 08028-1435",
+            "address": "779 Delsea Drive, Glassboro, Gloucester County, New Jersey 08028, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.71650471260548, 37.288314785235414]
+        },
+        "properties": {
+            "input_address": "118 Waller Mill Rd, Williamsburg, VA 23185-2946",
+            "address": "118 Waller Mill Road, Williamsburg, James City County, Virginia 23185, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.82509023592628, 41.3718856677915]
+        },
+        "properties": {
+            "input_address": "17840 Bagley Rd, Middleburg Heights, OH 44130-3401",
+            "address": "17840 Bagley Road, Cleveland, Cuyahoga County, Ohio 44130, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.9275604322022, 36.0723332165326]
+        },
+        "properties": {
+            "input_address": "6909 Maynardville Pike NE, Knoxville, TN 37918-5325",
+            "address": "6909 Maynardville Pike, Knoxville, Knox County, Tennessee 37918, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.98421076749328, 43.10665286222908]
+        },
+        "properties": {
+            "input_address": "2590 Military Rd, Niagara Falls, NY 14304-1506",
+            "address": "2590 Military Road, Niagara Falls, Niagara County, New York 14304, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-94.6498505659104, 39.2225230328049]
+        },
+        "properties": {
+            "input_address": "7100 Nw Prairie View Rd, Kansas City, MO 64151-1630",
+            "address": "7100 Prairie View Road, Kansas City, Platte County, Missouri 64151, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-120.992114982701, 37.60814874996255]
+        },
+        "properties": {
+            "input_address": "1351 E Hatch Rd, Modesto, CA 95351-5010",
+            "address": "1351 Hatch Road, Modesto, Stanislaus County, California 95351, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.99218543800988, 42.808047442206885]
+        },
+        "properties": {
+            "input_address": "93 West Campbell Rd, Schenectady, NY 12306-6800",
+            "address": "93 Campbell Road, Schenectady, Schenectady County, New York 12306, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.42407399999999, 29.660022499999997]
+        },
+        "properties": {
+            "input_address": "900 NW 76 Boulevard, Gainesville, FL 32606-6747",
+            "address": "900 76 Boulevard, Gainesville, Alachua County, Florida 32606, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-117.321013704166, 33.91644219686529]
+        },
+        "properties": {
+            "input_address": "375 E Alessandro Blvd, Riverside, CA 92508-2463",
+            "address": "375 Alessandro Boulevard, Riverside, Riverside County, California 92508, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.9808511846059, 38.80446725067651]
+        },
+        "properties": {
+            "input_address": "6163 Oxon Hill Road, Oxon Hill, MD 20745-3108",
+            "address": "6163 Oxon Hill Road, Oxon Hill, Prince Georges County, Maryland 20745, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.33184181016601, 36.326353670476195]
+        },
+        "properties": {
+            "input_address": "3247 W Noble Ave, Visalia, CA 93277-1841",
+            "address": "3247 Noble Avenue, Visalia, Tulare County, California 93277, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.785453809221, 42.83445059808389]
+        },
+        "properties": {
+            "input_address": "349 Orchard Park Rd, West Seneca, NY 14224-2634",
+            "address": "349 Orchard Park Road, Buffalo, Erie County, New York 14224, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.9460832897759, 40.50770368671701]
+        },
+        "properties": {
+            "input_address": "880 Butler Street, Pittsburgh, PA 15223-1319",
+            "address": "880 Butler Street, Pittsburgh, Allegheny County, Pennsylvania 15223, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.27786398243259, 39.744385235963506]
+        },
+        "properties": {
+            "input_address": "6780 W Washington St, Indianapolis, IN 46241-2999",
+            "address": "6780 Washington Street, Indianapolis, Marion County, Indiana 46241, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-94.762228271663, 39.11669273903681]
+        },
+        "properties": {
+            "input_address": "7836 State Ave, Kansas City, KS 66112-2417",
+            "address": "7836 State Avenue, Kansas City, Wyandotte County, Kansas 66112, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.59025597096078, 35.586854734616495]
+        },
+        "properties": {
+            "input_address": "1001 Patton Ave, Asheville, NC 28806-3643",
+            "address": "1001 Patton Avenue, Asheville, Buncombe County, North Carolina 28806, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.75331899999999, 39.99479400000001]
+        },
+        "properties": {
+            "input_address": "3205 Lincoln Hwy, Thorndale, PA 19372-1012",
+            "address": "3205 Lincoln Highway, Thorndale, Chester County, Pennsylvania 19372, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.7228334315497, 41.3538110452462]
+        },
+        "properties": {
+            "input_address": "111 Hulst Dr Ste 722, Matamoras, PA 18336-2115",
+            "address": "111 Hulst Drive, Matamoras, Pike County, Pennsylvania 18336, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.9262453846429, 38.081020851017115]
+        },
+        "properties": {
+            "input_address": "2712 W Main St, Waynesboro, VA 22980-1618",
+            "address": "2712 Main Street, Waynesboro, Waynesboro City County, Virginia 22980, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.22080749999999, 43.019686500000006]
+        },
+        "properties": {
+            "input_address": "8363 Lewiston Road, Batavia, NY 14020-1236",
+            "address": "8363 Lewiston Road, Batavia, Genesee County, New York 14020, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-117.650673940146, 34.02596149455681]
+        },
+        "properties": {
+            "input_address": "2530 S Euclid Ave, Ontario, CA 91762-6619",
+            "address": "2530 Euclid Avenue, Ontario, San Bernardino County, California 91762, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.7023821209849, 35.7847258971628]
+        },
+        "properties": {
+            "input_address": "4500 Western Blvd, Raleigh, NC 27606-1814",
+            "address": "4500 Western Boulevard, Raleigh, Wake County, North Carolina 27606, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.46142418807199, 48.77182899301292]
+        },
+        "properties": {
+            "input_address": "1001 E Sunset Drive, Bellingham, WA 98226-3510",
+            "address": "1001 Sunset Drive, Bellingham, Whatcom County, Washington 98226, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.8162873170975, 42.453620909841504]
+        },
+        "properties": {
+            "input_address": "2307 Superior, Webster City, IA 50595-3165",
+            "address": "2307 Superior Street, Webster City, Hamilton County, Iowa 50595, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.24604310097499, 35.7841406164807]
+        },
+        "properties": {
+            "input_address": "912 County Line Rd, Delano, CA 93215-3823",
+            "address": "912 County Line Road, Delano, Kern County, California 93215, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.30007611719039, 38.811037490779256]
+        },
+        "properties": {
+            "input_address": "14144 New Halls Ferry Rd, Florissant, MO 63033",
+            "address": "14144 New Halls Ferry Road, Florissant, Saint Louis County, Missouri 63033, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.46754403539238, 41.48983552527898]
+        },
+        "properties": {
+            "input_address": "5000 23Rd Ave, Moline, IL 61265-4599",
+            "address": "5000 23Rd Avenue, Moline, Rock Island County, Illinois 61265, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.1621572126303, 35.286580993524]
+        },
+        "properties": {
+            "input_address": "2821 East Main St, Russellville, AR 72801-9801",
+            "address": "2821 Main Street, Russellville, Pope County, Arkansas 72801, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.024889, 34.95115100000001]
+        },
+        "properties": {
+            "input_address": "2302 Cherry Rd, Rock Hill, SC 29732-2165",
+            "address": "2302 Cherry Road, Rock Hill, York County, South Carolina 29732, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-68.32235307222788, 47.35523361427539]
+        },
+        "properties": {
+            "input_address": "417 Main Street, Madawaska, ME 04756-1197",
+            "address": "417 Main Street, Madawaska, Aroostook County, Maine 04756, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.281742828173, 42.84886648224531]
+        },
+        "properties": {
+            "input_address": "4000 East 2nd Street, Casper, WY 82609-2385",
+            "address": "4000 2Nd Street, Casper, Natrona County, Wyoming 82609, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-91.36463649999999, 39.93523299999998]
+        },
+        "properties": {
+            "input_address": "3701 Broadway St, Quincy, IL 62301-3721",
+            "address": "3701 Broadway Street, Quincy, Adams County, Illinois 62301, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.8073330995386, 41.956303888734794]
+        },
+        "properties": {
+            "input_address": "4210 N Harlem Ave, Norridge, IL 60706-1277",
+            "address": "4210 Harlem Avenue, Harwood Heights, Cook County, Illinois 60706, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.935309, 38.32913500000001]
+        },
+        "properties": {
+            "input_address": "Grayson, KY",
+            "address": "Grayson, Carter County, Kentucky, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-90.17926949999999, 30.000841999999977]
+        },
+        "properties": {
+            "input_address": "Metairie, LA",
+            "address": "Metairie, Jefferson Parish County, Louisiana, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.72415999999998, 38.52005999999997]
+        },
+        "properties": {
+            "input_address": "Russell Springs, KY",
+            "address": "Russell, Greenup County, Kentucky, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.746221, 41.37767599999998]
+        },
+        "properties": {
+            "input_address": "Mahopac, NY",
+            "address": "Mahopac, Putnam County, New York, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-94.8356115, 39.75409299999998]
+        },
+        "properties": {
+            "input_address": "St. Joseph, MO",
+            "address": "Saint Joseph, Buchanan County, Missouri, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.30258, 34.77938599999999]
+        },
+        "properties": {
+            "input_address": "Mauldin, SC",
+            "address": "Mauldin, Greenville County, South Carolina, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.21766, 38.76325750000001]
+        },
+        "properties": {
+            "input_address": "Springfield, VA",
+            "address": "Springfield, Fairfax County, Virginia, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.722354, 40.575496000000015]
+        },
+        "properties": {
+            "input_address": "New Kensington, PA",
+            "address": "New Kensington, Westmoreland County, Pennsylvania, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-120.802796, 38.72332699999998]
+        },
+        "properties": {
+            "input_address": "Placerville, CA",
+            "address": "Placerville, El Dorado County, California, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.27047, 45.27936]
+        },
+        "properties": {
+            "input_address": "Charlevoix, MI",
+            "address": "Charlevoix, Charlevoix County, Michigan, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.003164, 43.897197000000006]
+        },
+        "properties": {
+            "input_address": "Lake Orion, MI",
+            "address": "Lake, Clare County, Michigan, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.21425799999999, 40.17115599999997]
+        },
+        "properties": {
+            "input_address": "Carlisle, PA",
+            "address": "Carlisle, Cumberland County, Pennsylvania, United States",
+            "name": "K-Mart"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.6131035, 38.416875000000005]
+        },
+        "properties": {
+            "input_address": "Charleston, WV",
+            "address": "Charleston, Kanawha County, West Virginia, United States",
+            "name": "K-Mart"
+        }
+    }]
+}

@@ -1,0 +1,840 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.8066966955676, 43.0997938576638]
+        },
+        "properties": {
+            "input_address": "50 Fox Run Rd Ste 74, Portsmouth, NH 03801-2858",
+            "address": "50 Fox Run Road, Portsmouth, Rockingham County, New Hampshire 03801, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-88.1642834407827, 41.579479665131714]
+        },
+        "properties": {
+            "input_address": "3340 Mall Loop Dr, Joliet, IL 60431-1057",
+            "address": "3340 Mall Loop Drive, Joliet, Will County, Illinois 60431, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-105.11881998020499, 39.740235941313614]
+        },
+        "properties": {
+            "input_address": "10785 W Colfax Ave, Lakewood, CO 80215-3807",
+            "address": "10785 Colfax Avenue, Denver, Jefferson County, Colorado 80215, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.10607330394049, 44.95400677274071]
+        },
+        "properties": {
+            "input_address": "425 Rice St, St Paul, MN 55103-2123",
+            "address": "425 Rice Street, Saint Paul, Ramsey County, Minnesota 55103, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-112.22188316362899, 33.4801629897875]
+        },
+        "properties": {
+            "input_address": "7611 W Thomas Rd, Phoenix-Desert Sky, AZ 85033-5433",
+            "address": "7611 Thomas Road, Phoenix, Maricopa County, Arizona 85033, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-89.7921666618844, 35.197211657272504]
+        },
+        "properties": {
+            "input_address": "2800 N Germantown Prkway, Cordova, TN 38133",
+            "address": "2800 Germantown Parkway, Memphis, Shelby County, Tennessee 38133, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.690914072029, 33.393829753149504]
+        },
+        "properties": {
+            "input_address": "6515 E Southern Ave, Mesa/East, AZ 85206-3711",
+            "address": "6515 Southern Avenue, Mesa, Maricopa County, Arizona 85206, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.62182126991348, 28.092641401707994]
+        },
+        "properties": {
+            "input_address": "1050 S Babcock St, Melbourne, FL 32901-3022",
+            "address": "1050 Babcock Street, Melbourne, Brevard County, Florida 32901, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-116.28431723884599, 43.61039154282159]
+        },
+        "properties": {
+            "input_address": "460 N Milwaukee St, Boise, ID 83704-9122",
+            "address": "460 Milwaukee Street, Boise, Ada County, Idaho 83704, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.19348249999999, 29.14205600000001]
+        },
+        "properties": {
+            "input_address": "3100 Sw College Rd Ste 300, Ocala, FL 34474-8449",
+            "address": "3100 College Road, Ocala, Marion County, Florida 34474, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.87361949999999, 32.66225949999999]
+        },
+        "properties": {
+            "input_address": "3450 W Camp Wisdom Rd, Southwest Ctr, TX 75237-2504",
+            "address": "3450 Camp Wisdom Road, Dallas, Dallas County, Texas 75237, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.803109, 41.32411499999998]
+        },
+        "properties": {
+            "input_address": "600 Lee Blvd, Yorktown Hts, NY 10598-1142",
+            "address": "600 Lee Boulevard, Yorktown Heights, Westchester County, New York 10598, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-120.48584278908399, 37.3195019945088]
+        },
+        "properties": {
+            "input_address": "1011 W Olive Ave, Merced, CA 95348-2422",
+            "address": "1011 Olive Avenue, Merced, Merced County, California 95348, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-121.43673457297699, 38.496385641796195]
+        },
+        "properties": {
+            "input_address": "5901 Florin Rd, Florin, CA 95823-2302",
+            "address": "5901 Florin Road, Sacramento, Sacramento County, California 95823, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-114.624457349273, 32.67106765402171]
+        },
+        "properties": {
+            "input_address": "3150 S 4Th Ave, Yuma, AZ 85364-8104",
+            "address": "3150 4Th Avenue, Yuma, Yuma County, Arizona 85364, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-110.25896447986298, 31.526928906060974]
+        },
+        "properties": {
+            "input_address": "2250 El Mercado Loop, Sierra Vista, AZ 85635-5204",
+            "address": "2250 El Mercado Loop, Sierra Vista, Cochise County, Arizona 85635, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-82.5665777354904, 27.46807371970999]
+        },
+        "properties": {
+            "input_address": "303 Us Hwy 301 Blvd W, Bradenton, FL 34205-7991",
+            "address": "303 301 Boulevard, Bradenton, Manatee County, Florida 34205, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.94318808037228, 35.375456802740885]
+        },
+        "properties": {
+            "input_address": "703 N Berkeley Blvd, Goldsboro, NC 27534-3444",
+            "address": "703 Berkeley Boulevard, Goldsboro, Wayne County, North Carolina 27534, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.87963628760089, 35.082694774945296]
+        },
+        "properties": {
+            "input_address": "11033 Carolina Place Pkwy, Pineville, NC 28134-8370",
+            "address": "11033 Carolina Place Parkway, Pineville, Mecklenburg County, North Carolina 28134, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.98959783629523, 39.571185653817196]
+        },
+        "properties": {
+            "input_address": "400 N Center St, Westminster, MD 21157-5140",
+            "address": "400 Center Street, Westminster, Carroll County, Maryland 21157, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.00449125394, 33.99430047075951]
+        },
+        "properties": {
+            "input_address": "1001 Rainbow Dr, Gadsden, AL 35901-5376",
+            "address": "1001 Rainbow Drive, Gadsden, Etowah County, Alabama 35901, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.72920366712448, 41.12246235346598]
+        },
+        "properties": {
+            "input_address": "5522 Shaffer Rd Ste 129, Dubois, PA 15801-3304",
+            "address": "5522 Shaffer Road, Du Bois, Clearfield County, Pennsylvania 15801, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.26530807968498, 42.8423695048736]
+        },
+        "properties": {
+            "input_address": "701 Se Wyoming Blvd, Casper, WY 82609-4213",
+            "address": "701 Wyoming Boulevard, Casper, Natrona County, Wyoming 82609, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.2952975529068, 36.5849194715386]
+        },
+        "properties": {
+            "input_address": "2801 Wilma Rudolph Blvd, Clarksville, TN 37040-5011",
+            "address": "2801 Wilma Rudolph Boulevard, Clarksville, Montgomery County, Tennessee 37040, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.4251504477627, 36.950389932821196]
+        },
+        "properties": {
+            "input_address": "2625 Scottsville Rd, Bowling Green, KY 42104-4477",
+            "address": "2625 Scottsville Road, Bowling Green, Warren County, Kentucky 42104, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.49902349999999, 35.218353500000006]
+        },
+        "properties": {
+            "input_address": "3201 W Main St, Norman, OK 73072-4847",
+            "address": "3201 Main Street, Norman, Cleveland County, Oklahoma 73072, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.570971748732, 35.10902486891791]
+        },
+        "properties": {
+            "input_address": "6600 Menaul Blvd Ne Ste 700, Coronado, NM 87110-3447",
+            "address": "6600 Menaul Boulevard, Albuquerque, Bernalillo County, New Mexico 87110, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.80558099999998, 33.10704199999999]
+        },
+        "properties": {
+            "input_address": "2605 Preston Rd, Frisco, TX 75034-9434",
+            "address": "2605 Preston Road, Frisco, Denton County, Texas 75034, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-93.4378304352128, 44.97045572929889]
+        },
+        "properties": {
+            "input_address": "12431 Wayzata Blvd, Minnetonka, MN 55305-1925",
+            "address": "12431 Wayzata Boulevard, Hopkins, Hennepin County, Minnesota 55305, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.85773338744569, 39.2157047290315]
+        },
+        "properties": {
+            "input_address": "10300 Little Patuxent Pkwy, Columbia, MD 21044-3341",
+            "address": "10300 Little Patuxent Parkway, Columbia, Howard County, Maryland 21044, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-119.035392345354, 35.33781618472129]
+        },
+        "properties": {
+            "input_address": "3001 Ming Ave, Bakersfield, CA 93304-4145",
+            "address": "3001 Ming Avenue, Bakersfield, Kern County, California 93304, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.16208249999998, 35.035382999999996]
+        },
+        "properties": {
+            "input_address": "2100 Hamilton Place Blvd, Chattanooga, TN 37421-6006",
+            "address": "2100 Hamilton Place Boulevard, Chattanooga, Hamilton County, Tennessee 37421, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.6745226897603, 38.13798683258261]
+        },
+        "properties": {
+            "input_address": "4807 Outer Loop, Louisville-Okolona, KY 40219-3200",
+            "address": "4807 Outer Loop, Louisville, Jefferson County, Kentucky 40219, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-118.11061247090349, 34.00802823060771]
+        },
+        "properties": {
+            "input_address": "1401 N Montebello Blvd, Montebello, CA 90640-2584",
+            "address": "1401 Montebello Boulevard, Montebello, Los Angeles County, California 90640, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.98311779535798, 44.94091642476681]
+        },
+        "properties": {
+            "input_address": "827 Lancaster Dr Ne, Salem, OR 97301-2929",
+            "address": "827 Lancaster Drive, Salem, Marion County, Oregon 97301, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.91343899999998, 40.16475600000001]
+        },
+        "properties": {
+            "input_address": "2300 E Lincoln Hwy, Langhorne, PA 19047-1824",
+            "address": "2300 Lincoln Highway, Langhorne, Bucks County, Pennsylvania 19047, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.992534, 39.628761999999995]
+        },
+        "properties": {
+            "input_address": "9520 Mall Rd, Morgantown, WV 26501-8524",
+            "address": "9520 Mall Road, Morgantown, Monongalia County, West Virginia 26501, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.781646293618, 45.4466105765739]
+        },
+        "properties": {
+            "input_address": "9800 Sw Washington Square Rd, Washington Square, OR 97223-4455",
+            "address": "9800 Washington Square Road, Portland, Washington County, Oregon 97223, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-75.0968282915728, 39.82838457901559]
+        },
+        "properties": {
+            "input_address": "1750 Deptford Center Rd, Deptford, NJ 08096-5282",
+            "address": "1750 Deptford Center Road, Deptford, Gloucester County, New Jersey 08096, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-101.92242312746001, 33.5378067760158]
+        },
+        "properties": {
+            "input_address": "6002 Slide Rd, Lubbock, TX 79414-8555",
+            "address": "6002 Slide Road, Lubbock, Lubbock County, Texas 79414, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-104.960190513289, 39.59410920952081]
+        },
+        "properties": {
+            "input_address": "7001 S University Blvd, Centennial, CO 80122-1599",
+            "address": "7001 University Boulevard, Littleton, Arapahoe County, Colorado 80122, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-121.91919599999999, 37.69059899999999]
+        },
+        "properties": {
+            "input_address": "1700 Stoneridge Dr, Pleasanton, CA 94588",
+            "address": "1700 Stoneridge Drive, Pleasanton, Alameda County, California 94588, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-95.88626435125408, 36.06358655089899]
+        },
+        "properties": {
+            "input_address": "6929 S Memorial Dr, Tulsa Woodland Hls, OK 74133-2035",
+            "address": "6929 Memorial Drive, Tulsa, Tulsa County, Oklahoma 74133, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.7434045440996, 42.2421931946715]
+        },
+        "properties": {
+            "input_address": "900 Briarwood Cir, Ann Arbor, MI 48108-1618",
+            "address": "900 Briarwood Circle, Ann Arbor, Washtenaw County, Michigan 48108, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.65399176040239, 30.41579002800262]
+        },
+        "properties": {
+            "input_address": "300 Mary Esther Blvd, Fort Walton Beach, FL 32569-1693",
+            "address": "300 Mary Esther Boulevard, Mary Esther, Okaloosa County, Florida 32569, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.6363018229761, 40.73137228384243]
+        },
+        "properties": {
+            "input_address": "1111 Franklin Ave, Garden City, NY 11530-1617",
+            "address": "1111 Franklin Avenue, Garden City, Nassau County, New York 11530, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-117.88556217619798, 33.69093870831651]
+        },
+        "properties": {
+            "input_address": "3333 Bristol St, Costa Mesa, CA 92626-1811",
+            "address": "3333 Bristol Street, Costa Mesa, Orange County, California 92626, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.29322881025499, 47.1646429662901]
+        },
+        "properties": {
+            "input_address": "3500 S Meridian Ste 900, Puyallup, WA 98373-3722",
+            "address": "3500 Meridian, Puyallup, Pierce County, Washington 98373, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-73.03818749999999, 41.237273499999986]
+        },
+        "properties": {
+            "input_address": "1201 Boston Post Rd Sp 2095, Milford, CT 06460",
+            "address": "1201 Boston Post Road, Milford, New Haven County, Connecticut 06460, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.99518761845108, 28.887825721378007]
+        },
+        "properties": {
+            "input_address": "7508 N Navarro St, Victoria, TX 77904-2654",
+            "address": "7508 Navarro Street, Victoria, Victoria County, Texas 77904, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-115.04060368532699, 36.056047893162]
+        },
+        "properties": {
+            "input_address": "1245 W Warm Springs Rd, Henderson, NV 89014-8740",
+            "address": "1245 Warm Springs Road, Henderson, Clark County, Nevada 89014, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-115.57026399999997, 32.78484900000001]
+        },
+        "properties": {
+            "input_address": "El Centro, CA",
+            "address": "El Centro, Imperial County, California, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.110588, 40.395632999999975]
+        },
+        "properties": {
+            "input_address": "Middletown, NJ",
+            "address": "Middletown, Monmouth County, New Jersey, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-99.24346599999998, 30.086341000000004]
+        },
+        "properties": {
+            "input_address": "Ingram, TX",
+            "address": "Ingram, Kerr County, Texas, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-72.148668, 41.34469800000002]
+        },
+        "properties": {
+            "input_address": "Waterford, CT",
+            "address": "Waterford, New London County, Connecticut, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.75641449999999, 38.96546599999999]
+        },
+        "properties": {
+            "input_address": "Bowie, MD",
+            "address": "Bowie, Prince George\"S County, Maryland, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-83.437946, 44.73124899999999]
+        },
+        "properties": {
+            "input_address": "Lincoln Park, MI",
+            "address": "Lincoln, Alcona County, Michigan, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-85.59686249999999, 30.234324]
+        },
+        "properties": {
+            "input_address": "Panama City, FL",
+            "address": "Panama City, Bay County, Florida, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-76.36078099999999, 37.050871]
+        },
+        "properties": {
+            "input_address": "Hampton, VA",
+            "address": "Hampton, Hampton City County, Virginia, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-81.96805649999999, 28.119778999999994]
+        },
+        "properties": {
+            "input_address": "Lakeland, FL",
+            "address": "Lakeland, Polk County, Florida, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-96.9590035, 32.85543199999999]
+        },
+        "properties": {
+            "input_address": "Irving, TX",
+            "address": "Irving, Dallas County, Texas, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-87.41954999999999, 39.433723000000015]
+        },
+        "properties": {
+            "input_address": "Terre Haute, IN",
+            "address": "Terre Haute, Vigo County, Indiana, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-79.324337, 42.09751600000001]
+        },
+        "properties": {
+            "input_address": "Lakewood, NY",
+            "address": "Lakewood, Chautauqua County, New York, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-78.826827, 35.01605799999999]
+        },
+        "properties": {
+            "input_address": "Fayetteville, NC",
+            "address": "Fayetteville, Cumberland County, North Carolina, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.35506, 42.28577999999999]
+        },
+        "properties": {
+            "input_address": "Natick, MA",
+            "address": "Natick, Middlesex County, Massachusetts, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.7184955, 26.21520000000001]
+        },
+        "properties": {
+            "input_address": "Harlingen, TX",
+            "address": "Harlingen, Cameron County, Texas, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-80.750039, 41.18718300000003]
+        },
+        "properties": {
+            "input_address": "Niles, OH",
+            "address": "Niles, Trumbull County, Ohio, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-118.048458, 33.86663500000002]
+        },
+        "properties": {
+            "input_address": "Cerritos, CA",
+            "address": "Cerritos, Los Angeles County, California, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-111.9189775, 33.25460800000002]
+        },
+        "properties": {
+            "input_address": "Chandler, AZ",
+            "address": "Chandler, Maricopa County, Arizona, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-121.0224635, 37.626864999999995]
+        },
+        "properties": {
+            "input_address": "Modesto, CA",
+            "address": "Modesto, Stanislaus County, California, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.93136, 40.10237999999998]
+        },
+        "properties": {
+            "input_address": "Bensalem, PA",
+            "address": "Bensalem, Bucks County, Pennsylvania, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.91626099999999, 30.216829999999987]
+        },
+        "properties": {
+            "input_address": "Austin, TX",
+            "address": "Austin, Hays County, Texas, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.11111099999998, 39.5925455]
+        },
+        "properties": {
+            "input_address": "Greenwood, IN",
+            "address": "Greenwood, Johnson County, Indiana, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.6813755, 38.45778249999998]
+        },
+        "properties": {
+            "input_address": "Santa Rosa, CA",
+            "address": "Santa Rosa, Sonoma County, California, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.01012, 41.09705999999997]
+        },
+        "properties": {
+            "input_address": "Nanuet, NY",
+            "address": "Nanuet, Rockland County, New York, United States",
+            "name": "Sears"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-97.91626099999999, 30.216829999999987]
+        },
+        "properties": {
+            "input_address": "Austin/Barton Creek, TX",
+            "address": "Austin, Hays County, Texas, United States",
+            "name": "Sears"
+        }
+    }]
+}

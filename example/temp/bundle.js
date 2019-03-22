@@ -727,6 +727,12 @@
         htmlPath: './example/html/hexagon.html',
         codePenUrl: 'https://codepen.io/thinkgeo/pen/VVoOvL',
         jsPath: './example/js/hexagon.js'
+      }, {
+        comments: "The location of every individual store closing, including Sears, Kmart, Family Dollar, Lowe's and Macy's",
+        title: 'U.S. Retail Store Closings 2019',
+        htmlPath: './example/html/retail-store-closing.html',
+        codePenUrl: 'https://codepen.io/thinkgeo/pen/BbOgZE',
+        jsPath: './example/js/retail-store-closing.js'
       }]
     }, {
       dataTarget: 'JavaScript-frameworks',

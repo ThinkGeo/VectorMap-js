@@ -1,0 +1,92 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-106.267772, 42.845049]
+        },
+        "properties": {
+            "input_address": "501 Wyoming Blvd SE, Casper, Wyoming, 82609",
+            "address": "501 SE Wyoming Blvd",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.118895, 47.670432]
+        },
+        "properties": {
+            "input_address": "7400 166th Ave NE, Redmond, Washington, 98052",
+            "address": "7400 166th Ave NE",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.031496, 37.376216]
+        },
+        "properties": {
+            "input_address": "200 W Washington Ave, Sunnyvale, California, 94086",
+            "address": "200 W Washington Ave",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-118.426586, 34.041025]
+        },
+        "properties": {
+            "input_address": "10800 Pico Blvd, Los Angeles, California, 90064",
+            "address": "10800 W Pico Blvd",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-86.12217, 39.866689]
+        },
+        "properties": {
+            "input_address": "6101 N Keystone Ave, Indianapolis, Indiana, 46220",
+            "address": "6101 N Keystone Ave",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-71.216129, 41.756377]
+        },
+        "properties": {
+            "input_address": "Swansea Mall Dr, Swansea, Massachusetts, 02777",
+            "address": "[1 - 599] Swansea Mall Dr",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-77.227048, 38.924369]
+        },
+        "properties": {
+            "input_address": "1651 International Drive, McLean, Virginia, 22102",
+            "address": "1651 International Dr",
+            "name": "Macy's"
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-74.012827, 41.100807]
+        },
+        "properties": {
+            "input_address": "200 Nanuet Mall S, Nanuet, New York, 10954",
+            "address": "",
+            "name": "Macy's"
+        }
+    }]
+}
