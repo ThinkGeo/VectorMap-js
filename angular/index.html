@@ -7,7 +7,10 @@
 <base href="https://samples.thinkgeo.com/cloud/angular/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
   <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+  <!-- Define some custom styles for the UI of our sample page. -->
   <style>
     .ol-control:hover {
       background-color: unset;
@@ -44,11 +47,21 @@
   </style>
 </head>
 
-<body>   
+<body> 
+  <!-- This <app-root> is the container into which our map control will be loaded. -->  
    <app-root></app-root>
-  <!-- option: Map Suite World Streets Styles -->
-  <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
-  <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
-<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+
+   <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
+   <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+
+   <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
+   <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+
+   <script type="text/javascript" src="main.js"></script>
+</body>
+   <script type="text/javascript" src="runtime.js"></script>
+   <script type="text/javascript" src="polyfills.js"></script>
+   <script type="text/javascript" src="styles.js"></script>
+   <script type="text/javascript" src="vendor.js"></script>
 
 </html>

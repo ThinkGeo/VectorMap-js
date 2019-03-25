@@ -21,16 +21,31 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
+        // We need to define our ThinkGeo Cloud API key, which we'll use to
+        // authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+        // restricted for use only from a given web domain or IP address.  To create your
+        // own API key, you'll need to sign up for a ThinkGeo Cloud account at
+        // https://cloud.thinkgeo.com.
 
+        // Then we'll create the base layer for our map.  The base layer uses the ThinkGeo
+        // Cloud Maps Vector Tile service to display a detailed street map.  For more
+        // info, see our wiki:
+        // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
         let layer = new (<any>ol).mapsuite.VectorTileLayer('../assets/data/light.json', {
             'apiKey': 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
         });
 
+
+        // Create and initialize our interactive map.
         let map = new ol.Map({
             loadTilesWhileInteracting: true,
+            // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
             layers: [layer],
+            // States that the HTML tag with id="map" should serve as the container for our map.
             target: 'map',
+            // Create a default view for the map when it starts up.
             view: new ol.View({
+                // Center the map on The Colony, TX and start at zoom level 15.
                 center: ol.proj.fromLonLat([-96.917754, 33.087878]),
                 maxZoom: 19,
                 maxResolution: 40075016.68557849 / 512,
@@ -38,6 +53,9 @@ export class AppComponent implements AfterViewInit {
             }),
         });
 
+        // Now we need to actually load the World Streets Style JSON file that will let us 
+        // visualize our light style map. This method will recieve a file path which is our 
+        // style JSON file be hosted, and send the request to get the data.
         let getJson = () => {
             let readTextFile = new Promise(function (resolve, reject) {
                 let file = "../assets/data/light.json";
@@ -54,11 +72,21 @@ export class AppComponent implements AfterViewInit {
             return readTextFile;
         }
 
+        // Once we have got the style JSON file, store the data to a global variable(it will be 
+        // </any>used when we create the base layer and customize the map style).
         getJson().then((data) => {
             this.json = data;
             this.json = JSON.parse(this.json);
         })
 
+
+        // This next step is to update the style what we recived from users. 
+        // When using the styleJson file, you can customize the presentation 
+        // of the ThinkGeo map, changing the style of such elements as roads, 
+        // parks, building, points of pois and so on. Here, you can change the 
+        // poi size and water fill color to have a try. 
+
+        // This method will recieve the two changed style and update it to style JSON data.
         this.updatedstyle = (poiSize, waterColor, parkColor) => {
             let styles = this.json.styles;
             let stylesLength = styles.length;
@@ -80,6 +108,8 @@ export class AppComponent implements AfterViewInit {
             return this.json;
         }
 
+        // This method will response to user's click action and call updatedstyle method to 
+        // update style to json variable. Then update it to our map.
         this.clickRefresh = (json) => {
             let layers = map.getLayers().getArray();
             map.removeLayer(layers[0]);
