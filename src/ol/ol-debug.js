@@ -70530,54 +70530,72 @@ function olInit() {
         var extent = feature.getExtent();
         if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
+            var index = 0;
+            var outers = [];
             var outerRing = [];
+            var isClockwise;
+            if(!outers[index]){
+                outers[index] = [];
+            }
+
             if(ends[0] > 6) {
                 outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);         
+                // FIXME it is also a anticlockwise, we don't judge for efficiency
+                outers[index].push(outerRing);
+            }else{
+                outers[index].push([]);
             }
             
-            // if (outerRing.length) {
-                var holes = [];
-                var i, ii, holeFlatCoords;
-                for (i = 1, ii = ends.length; i < ii; ++i) {
-                    if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
-                        holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                            ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
-                        if(holeFlatCoords.length > 6){
-                            holes.push(holeFlatCoords);
+            var holes = [];
+            var i, ii, holeFlatCoords;
+            for (i = 1, ii = ends.length; i < ii; ++i) {
+                if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
+                    holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                        ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                    if(holeFlatCoords.length > 6){
+                        isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
+                        if(isClockwise){
+                            if(!outers[++index]){
+                                outers[index] = [];
+                            }
+                            outers[index].push(holeFlatCoords);
+                        }else{
+                            outers[index].push(holeFlatCoords);
                         }
                     }
                 }
-                
-                {
-                    this.startIndices.push(this.indices.length);
-                    // this.startIndicesFeature.push(feature);
+            }
+            
+            {
+                this.startIndices.push(this.indices.length);
+                // this.startIndicesFeature.push(feature);
 
-                    if (this.state_.changed) {
-                        this.zCoordinates.push(feature.zCoordinate);
-                        this.styleIndices_.push(this.indices.length);
-                        this.state_.changed = false;
-                    }
-                    if(this.lineStringReplay){
-                        // this.lineStringReplay.setPolygonStyle(feature);
-                        // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                    }
-                    outerRing.length > 6 && this.drawCoordinates_(outerRing, [], stride);       
+                if (this.state_.changed) {
+                    this.zCoordinates.push(feature.zCoordinate);
+                    this.styleIndices_.push(this.indices.length);
+                    this.state_.changed = false;
+                }
+                if(this.lineStringReplay){
+                    // this.lineStringReplay.setPolygonStyle(feature);
+                    // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
                 }
 
-                {
-                    // if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                    //     this.styles_.push(this.styles_[0]);
-                    //     this.zCoordinates.push(feature.zCoordinate);
-                    //     this.styleIndices_.push(this.indices.length);
-                    //     this.state_.changed = false;
-                    // }
-    
-                    for(var i = 0; i < holes.length; i++){
-                        this.drawCoordinates_(holes[i], [], stride);
-                    }                 
+                for(var i = 0; i < outers.length; i++){
+                    var outer = outers[i];
+                    this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                 }
-            // }
+                // outerRing.length > 6 && this.drawCoordinates_(outerRing, [], stride);       
+            }
+
+            {
+                // if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                //     this.styles_.push(this.styles_[0]);
+                //     this.zCoordinates.push(feature.zCoordinate);
+                //     this.styleIndices_.push(this.indices.length);
+                //     this.state_.changed = false;
+                // }              
+            }
         }
     };
 
@@ -102653,7 +102671,7 @@ function olInit() {
             // console.log(requestTileCoord);
 
             // if(tileCoord.toString() !== "2,0,-2"){
-            // if(tileCoord.toString() !== "16,15146,-26445"){
+            // if(tileCoord.toString() !== "13,2411,-3081"){
             // if(!(tileCoord.toString() == "19,121173,-211544" || tileCoord.toString() == "19,121174,-211544")){
                 // return
             // }
