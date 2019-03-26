@@ -262,66 +262,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
         return this.renderedTiles.length > 0;
     }
 
-    public drawTileImage (tile, frameState, layerState, x, y) {
-        var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
-        this.createReplayGroup_(vectorImageTile, frameState, x, y);
-        var context = frameState.context;
-        var gl = context.getGL();      
-
-        if (gl) {
-            let screenXY = tile.screenXY;
-            let layer = this.getLayer();
-            let renderMode = layer.getRenderMode();
-            let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
-            let viewRotation = frameState.viewState.rotation;
-
-            if (tile.getState() === (<any>ol).TileState.ABORT) {
-                return;
-            }    
-           
-            for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
-                let sourceTile = tile.getTile(tile.tileKeys[t]);
-                if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
-                    continue;
-                }
-
-                // reuse replayGroup of source Tile to reduce the memory.
-                let replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
-                if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
-                    continue;
-                }
-                context.globalAlpha = layerState.opacity;
-                context.frameState = frameState;
-                context.layerState = layerState;
-                
-                let zs = Object.keys(replayGroup.replaysByZIndex_).map(Number);
-                zs.sort((<any>ol).array.numberSafeCompareFunction);
-                let i, ii, j, jj, replays, replay;
-
-                for (i = 0, ii = zs.length; i < ii; ++i) {
-                    let zIndexKey = zs[i].toString();
-                    replays = replayGroup.replaysByZIndex_[zIndexKey];
-                    for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-                        let replayType = replayTypes[j];
-                        replay = replays[replayType];
-                        if ((replay instanceof (<any>ol.render).webgl.PolygonReplay) || (replay instanceof (<any>ol.render).webgl.LineStringReplay)) {
-                            replay.zIndex = zs[i];      
-                            replay.replay(context, viewRotation, {}, screenXY);
-                        }
-                    }
-                }
-
-                var uid = this.ol_uid;
-                var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
-                if (alpha !== 1) {
-                    frameState.animate = true;
-                } else if (tile.transition) {
-                    tile.endTransition(uid);
-                }
-            }
-        }
-    }
-
     public prepareFrameCustom(frameState: any, layerState: any) {
         let layer = this.getLayer();
         let layerRevision = layer.getRevision();
@@ -342,24 +282,16 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
     public postCompose(context: any, frameState: any, layerState: any) {
         let layer = this.getLayer();
         let declutterReplays = layer.getDeclutter() ? {} : null;
-        // let source = /** @type {ol.source.VectorTile} */ (layer.getSource());
         let renderMode = layer.getRenderMode();
         let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
         let rotation = frameState.viewState.rotation;
-        // let size = frameState.size;
-        // let offsetX, offsetY;
-        // if (rotation) {
-            // offsetX = Math.round(pixelRatio * size[0] / 2);
-            // offsetY = Math.round(pixelRatio * size[1] / 2);
-            // (<any>ol.render.canvas).rotateAtOffset(context, -rotation, offsetX, offsetY);
-        // }
         if (declutterReplays) {
             this.declutterTree_.clear();
         }
         let tiles = this.renderedTiles;
-        // let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-        // let clips = [];
-        // let zs = [];
+        context.globalAlpha = layerState.opacity;        
+        context.frameState = frameState;
+        context.layerState = layerState;
 
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
@@ -380,67 +312,78 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.canvas.VectorT
                 let replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
                 if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
                     continue;
-                }       
-                // let currentZ = sourceTile.tileCoord[0];
-                // let currentClip = replayGroup.getClipCoords(transform);
-                // context.save();
-                // context.globalAlpha = layerState.opacity;
-                // Create a clip mask for regions in this low resolution tile that are
-                // already filled by a higher resolution tile
-                // for (let j = 0, jj = clips.length; j < jj; ++j) {
-                //     let clip = clips[j];
-                //     if (currentZ < zs[j]) {
-                //         context.beginPath();
-                //         // counter-clockwise (outer ring) for current tile
-                //         context.moveTo(currentClip[0], currentClip[1]);
-                //         context.lineTo(currentClip[2], currentClip[3]);
-                //         context.lineTo(currentClip[4], currentClip[5]);
-                //         context.lineTo(currentClip[6], currentClip[7]);
-                //         // clockwise (inner ring) for higher resolution tile
-                //         context.moveTo(clip[6], clip[7]);
-                //         context.lineTo(clip[4], clip[5]);
-                //         context.lineTo(clip[2], clip[3]);
-                //         context.lineTo(clip[0], clip[1]);
-                //         context.clip();
-                //     }
-                // }
-
-                // context.frameState = frameState;
-                // context.layerState = layerState;
-                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY);
+                } 
                 
-                // context.restore();
-                // clips.push(currentClip);
-                // zs.push(currentZ);
+                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY);            
                 
-                // if(Object.keys(replayGroup.replaysByZIndex_).length){                    
-                //     var uid = this.ol_uid;
-                //     var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
-                //     if (alpha !== 1) {
-                //         frameState.animate = true;
-                //     } else if (tile.transition) {
-                //         tile.endTransition(uid);
-                //     }
-                // }
+                if(Object.keys(replayGroup.replaysByZIndex_).length){                    
+                    var uid = this.ol_uid;
+                    var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
+                    if (alpha !== 1) {
+                        frameState.animate = true;
+                    } else if (tile.transition) {
+                        tile.endTransition(uid);
+                    }
+                }
             }
         }
         
         if (declutterReplays) {
             // var hints = frameState.viewHints;
             // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
-            // // delete context["quickZoom"]
+            // delete context["quickZoom"]
             // if (animatingOrInteracting) {
             //     context["quickZoom"] = frameState["quickZoom"];
             // }
             // context["currentResolution"] = frameState["currentResolution"];
-            
-            // (<any>ol.render.canvas).ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
+            this.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
         // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
         (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);        
+    }
+
+    public replayDeclutter(declutterReplays, context, rotation) {
+        var zs = Object.keys(declutterReplays).map(Number).sort((<any>ol).array.numberSafeCompareFunction);
+        var skippedFeatureUids = {};
+        for (var z = 0, zz = zs.length; z < zz; ++z) {
+            var replayData = declutterReplays[zs[z].toString()];
+            for (var i = 0, ii = replayData.length; i < ii;) {
+                var replay = replayData[i++];                
+                var screenXY = replayData[i++];
+                replay.declutterRepeat_(context, screenXY);
+            }
+        }
+
+        // draw
+        for (var z = 0, zz = zs.length; z < zz; ++z) {
+            var replayData = declutterReplays[zs[z].toString()];
+            for (var i = 0, ii = replayData.length; i < ii;) {
+                var replay = replayData[i++];                
+                var screenXY = replayData[i++];
+                var tmpOptions = replay.tmpOptions;                        
+                // if(tmpOptions.length != replay.options.length || currentResolution < 1){
+                    replay.indices.length = 0;
+                    replay.vertices.length = 0;
+                    replay.groupIndices.length = 0;
+                    
+                    for(var k = 0; k < tmpOptions.length; k++){
+                        if(replay instanceof (<any>ol).render.webgl.TextReplay){
+                            replay.drawText(tmpOptions[k]);
+                        }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
+                            replay.drawPoint(tmpOptions[k]);
+                        }
+                    }
+                    replay.finish(context);
+                    replay.options = tmpOptions;
+                // }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
+                //     continue;
+                // }
+                replay.replay(context, rotation, skippedFeatureUids, screenXY);
+            }
+        }
     }
 
     public createReplayGroup_(tile: ol.VectorTile, frameState: olx.FrameState, x, y) {

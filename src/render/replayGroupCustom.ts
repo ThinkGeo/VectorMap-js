@@ -78,11 +78,6 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
-        let currentResolution = (<any>context).frameState.currentResolution;
-        // setup clipping so that the parts of over-simplified geometries are not
-        // visible outside the current extent when panning
-        // context.save();
-        // this.clip(context, transform);
         let replayTypes = opt_replayTypes ? opt_replayTypes : (<any>ol.render).replay.ORDER;
         let i, ii, j, jj, replays, replay;
         for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -91,63 +86,23 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
             for (j = 0, jj = replayTypes.length; j < jj; ++j) {
                 let replayType = replayTypes[j];
                 replay = replays[replayType];
-                // if (replay !== undefined) {
-                    // if (opt_declutterReplays &&
-                    //     (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
-                    //     // debugger
-                    //         let declutter = opt_declutterReplays[zIndexKey];
-                    //     if (!declutter) {
-                    //         opt_declutterReplays[zIndexKey] = [replay, transform.slice(0), screenXY];
-                    //     } else {
-                    //         declutter.push(replay, transform.slice(0), screenXY);
-                    //     }
-                    // } else {       
-                        if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
-                            replay.declutterRepeat_(context, screenXY);                            
-                        }                 
-                        // replay.zIndex = zs[i];
-                        // replay.replay(context, transform, viewRotation, skippedFeaturesHash, screenXY);
-                    // }
-                // }
-            }
-        }
-
-        // draw
-        for (i = 0, ii = zs.length; i < ii; ++i) {
-            let zIndexKey = zs[i].toString();
-            replays = this.replaysByZIndex_[zIndexKey];
-            for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-                let replayType = replayTypes[j];
-                replay = replays[replayType];
                 if (replay !== undefined) {
-                    replay.zIndex = zs[i];
-                    if(replay instanceof (<any>ol).render.webgl.TextReplay || replay instanceof (<any>ol).render.webgl.ImageReplay){
-                        var tmpOptions = replay.tmpOptions;                        
-                        // if(tmpOptions.length != replay.options.length || currentResolution < 1){
-                            replay.indices.length = 0;
-                            replay.vertices.length = 0;
-                            replay.groupIndices.length = 0;
-                            
-                            for(var k = 0; k < tmpOptions.length; k++){
-                                if(replay instanceof (<any>ol).render.webgl.TextReplay){
-                                    replay.drawText(tmpOptions[k]);
-                                }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
-                                    replay.drawPoint(tmpOptions[k]);
-                                }
-                            }
-                            replay.finish(context);
-                            replay.options = tmpOptions;
-                        // }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
-                        //     continue;
-                        // }
+                    if (opt_declutterReplays &&
+                        (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
+                        let declutter = opt_declutterReplays[zIndexKey];
+                        if (!declutter) {
+                            opt_declutterReplays[zIndexKey] = [replay, screenXY];
+                        } else {
+                            declutter.push(replay, screenXY);
+                        }
+                    } else {          
                         replay.replay(context, viewRotation, skippedFeaturesHash, screenXY);
                     }
                 }
             }
         }
-        // context.restore();
     }
-
+   
     public getReplayCustom(zIndex: any, replayType: any) {
         let zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
         let replays = this.replaysByZIndex_[zIndexKey];
