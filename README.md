@@ -15,34 +15,45 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Examples - [View It Online](https://vectormapsamples.thinkgeo.com/):
 
-| <a href="https://vectormapsamples.thinkgeo.com/#VectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
-        </a> 
-	
+<a href="https://vectormapsamples.thinkgeo.com/#VectorMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
+</a> 
 	
 
-| <a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime"><img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#FindNearbyPlaces">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/find_nearby.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RenderPOIs">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
-        </a> 
+<a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime">
+   <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#FindNearbyPlaces">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/find_nearby.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RenderPOIs">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
+</a> 
 	
-| <a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution"><img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#GPX">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
-        </a> 
+<a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#GPX">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+</a> 
 	
  
 	
