@@ -26762,7 +26762,7 @@ function olInit() {
             // context.clearRect(0, 0, width, height);
         }
         
-        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
+        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
         // gl.enable(gl.BLEND);
         // gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -30996,8 +30996,10 @@ function olInit() {
         if (renderer) {
             ol.renderer.vector.renderGeometry_(replayGroup, simplifiedGeometry, style, feature);
         } else {
+            // debugger;
             var geometryRenderer =
                 ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
+                
             geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
         }
     };
@@ -98107,14 +98109,17 @@ function olInit() {
             var styleIdIndex = 1;
             var geoStyles = {};
             var styleJsonCache = new StyleJsonCache();
+            // debugger;
             styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
+                
                 var item = new StyleJsonCacheItem(json, 0, 24, "layerName", styleIdIndex);
 
                 for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                     var treeNode = new TreeNode(item);
                     createChildrenNode(treeNode, item, zoom);
+                  
                     styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
                 }
 
@@ -102575,6 +102580,7 @@ function olInit() {
             vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
 
             if (self.vectorTilesData[formatId] === undefined) {     
+                // debugger;
                 self.vectorTilesData[formatId] = new ol.structs.LRUCache(vectorTileDataCahceSize);
             }
             
@@ -102727,7 +102733,22 @@ function olInit() {
             var tileGrid = new ol.source.XYZ().getTileGrid();
             var bbox = tileGrid.getTileCoordExtent(tileCoord);
 
-            if (instructs && instructs.length > 0) {                
+
+            var bottomLeft = ol.extent.getBottomLeft(bbox);
+            var bottomRight = ol.extent.getBottomRight(bbox);
+            var topRight = ol.extent.getTopRight(bbox);
+            var topLeft = ol.extent.getTopLeft(bbox);
+
+            var feature = new ol.render.Feature('Polygon', [...bottomLeft,...bottomRight,...topRight,...topLeft], [8], {layerName: "ocean"}, 0);
+            var geoStyle = geoStyles["ocean#0"];
+            // var geoStyle = new GeoAreaStyle({
+            //     "filter": "zoom>=0;zoom<=19;",
+            //     "id": "ocean#0",
+            //     "polygon-fill": "#aac6ee"
+            // });
+            renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, [0,'ocean#0',0]);
+
+            if (instructs && instructs.length > 0) {           
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
