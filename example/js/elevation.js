@@ -22,12 +22,6 @@
 // https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-// We need to create the instance of Elevation client and authenticate the API key.
-let defaultClient = GisServerApis.ApiClient.instance;
-defaultClient.basePath = 'https://cloud.thinkgeo.com';
-let APIKey = defaultClient.authentications['API Key'];
-APIKey.apiKey = apiKey;
-
 /*---------------------------------------------*/
 // 2. Define Global Variable
 /*---------------------------------------------*/
@@ -271,8 +265,11 @@ const removeLine = () => {
 // split into segments. Then, we can send another request by passig the WKT fomrat geometries and 
 // some other options to ThinkGeo Cloud, and get the elevation of points along the line.
 
-// Create the Elevation Api instance.
-let elevationApiInstance = new GisServerApis.ElevationApi();
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// We need to create the instance of Elevation client and authenticate the API key.
+let elevationClient = new tg.ElevationClient(apiKey);
 
 // Declare the feature of the line that we add to map. 
 let lineFeature;
@@ -310,53 +307,51 @@ const getWaypoints = (data) => {
 
 // This method is the callback method, which will recieve the results of grade (slope) of the line, 
 // which split into segments. Then by passing the grades, we can draw it in the chart.
-const getGrades = (error, res, wkt) => {
+const getGrades = (res, wkt) => {
 	let grades = [];
-	if (error) {
-		console.error(error);
-	} else {
-		for (let i = 0; i < res.data.length; i++) {
-			let grade = res.data[i].grade;
-			grades.push(grade);
-		}
+	for (let i = 0; i < res.data.length; i++) {
+		let grade = res.data[i].grade;
+		grades.push(grade);
 	}
 
+	opts['wkt'] = wkt;
+
 	// Send request to get back the elevation of points along the line.
-	elevationApiInstance.getElevationOfLineV1(wkt, opts, (error, res) => {
-		getElevation(error, res, wkt, grades);
+	elevationClient.getElevationOfLine(opts, (status, res) => {
+		if (status == 403) {
+			alert(res.error.message);
+		} else {
+			getElevation(res, wkt, grades);
+		}
 	});
 };
 
 // This method recieves the result that get back from ThinkGeo Cloud and render the result to our map. 
 // Each points will be styled by different styles and added into lineLayer(defined earlier).
-const getElevation = (error, res, wkt, grades) => {
+const getElevation = (res, wkt, grades) => {
 	let format = new ol.format.WKT();
-	if (error) {
-		console.log(error);
-	} else {
-		// Get the last points and set its type as end.
-		let geom = format.readGeometry(wkt);
-		let lastCoordinates = geom.getLastCoordinate();
-		let endFeature = new ol.Feature({
-			geometry: new ol.geom.Point(lastCoordinates),
-			type: 'end'
-		});
-		lineLayer.getSource().addFeature(endFeature);
-		// Set the different style for every points.
-		for (let i = 0, l = res.data.length; i < l; i++) {
-			let item = res.data[i];
-			let start = res.data[0];
-			let waypoint = format.readFeature(item.wellKnownText);
-			let startpoint = format.readFeature(start.wellKnownText);
-			startpoint.set('type', 'start');
-			waypoint.set('type', 'waypoint');
-			lineLayer.getSource().addFeature(startpoint);
-			lineLayer.getSource().addFeature(waypoint);
-		}
-		// By passing the waypoints, we can draw the grade line in the chart.
-		let waypoints = getWaypoints(res.data);
-		drawChart(waypoints, grades);
+	// Get the last points and set its type as end.
+	let geom = format.readGeometry(wkt);
+	let lastCoordinates = geom.getLastCoordinate();
+	let endFeature = new ol.Feature({
+		geometry: new ol.geom.Point(lastCoordinates),
+		type: 'end'
+	});
+	lineLayer.getSource().addFeature(endFeature);
+	// Set the different style for every points.
+	for (let i = 0, l = res.data.length; i < l; i++) {
+		let item = res.data[i];
+		let start = res.data[0];
+		let waypoint = format.readFeature(item.wellKnownText);
+		let startpoint = format.readFeature(start.wellKnownText);
+		startpoint.set('type', 'start');
+		waypoint.set('type', 'waypoint');
+		lineLayer.getSource().addFeature(startpoint);
+		lineLayer.getSource().addFeature(waypoint);
 	}
+	// By passing the waypoints, we can draw the grade line in the chart.
+	let waypoints = getWaypoints(res.data);
+	drawChart(waypoints, grades);
 };
 
 // This method will recive the feature we drawn. It judges if the line is too long, if it does, we 
@@ -373,8 +368,13 @@ const drawElevationByLine = (feature) => {
 		let format = new ol.format.WKT();
 		let wkt = format.writeGeometry(feature.getGeometry());
 		opts['numberOfSegments'] = wayPointNumRange.value;
-		elevationApiInstance.getGradeOfLineV1(wkt, opts, (error, res) => {
-			getGrades(error, res, wkt);
+		opts['wkt'] = wkt;
+		elevationClient.getGradeOfLine(opts, (status, res) => {
+			if (status == 403) {
+				alert(res.error.message);
+			} else {
+				getGrades(res, wkt);
+			}
 		});
 	}
 };
@@ -609,7 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				drawPreDefinedLine(wkts.place1, [-122.405729, 37.802898], 16);
 				break;
 			case 'place2':
-				drawPreDefinedLine(wkts.place2, [-111.022344, 35.027376], 13);
+				drawPreDefinedLine(wkts.place2, [-111.022344, 35.027376], 14);
 				break;
 			case 'place3':
 				drawPreDefinedLine(wkts.place3, [-121.747991, 46.820717], 11);
