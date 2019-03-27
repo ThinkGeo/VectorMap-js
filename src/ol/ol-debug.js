@@ -67038,7 +67038,7 @@ function olInit() {
 
 
     ol.render.webgl.texturereplay.defaultshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ?
-        'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :
+        'precision mediump float;\nvarying vec2 v_texCoord;\nuniform vec4 u_color;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord)* u_color;\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :
         'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.texturereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
@@ -67124,6 +67124,9 @@ function olInit() {
          */
         this.a_rotateWithView = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_rotateWithView' : 'g');
+
+        this.u_color = gl.getUniformLocation(
+            program, ol.DEBUG_WEBGL ? 'u_color' : 'k');
 
     };
 
@@ -67874,7 +67877,7 @@ function olInit() {
         // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
+        // gl.enable(gl.CULL_FACE);
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
                 gl, context, skippedFeaturesHash, textures, groupIndices);
@@ -67882,10 +67885,19 @@ function olInit() {
             var i, ii, start;
             for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
                 gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
+                if(this instanceof   ol.render.webgl.TextReplay){
+                    let u_color  = this.styles_[i].map(function (c, i) {                
+                        return i != 3 ? c / 255 : c;
+                    }) ;
+                    
+                    gl.uniform4fv(this.u_color,u_color)
+                }
+               
                 var end = groupIndices[i];
                 this.drawElements(gl, context, start, end);
                 start = end;
             }
+            this.styles_ = [];
         }
 
         gl.blendFuncSeparate(
@@ -68138,7 +68150,7 @@ function olInit() {
         /** @type {Object.<string, WebGLTexture>} */
         // var texturePerImage = {};
         this.textures_ = [];
-        
+   
         this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
@@ -71382,6 +71394,8 @@ function olInit() {
          * @private
          * @type {Array.<WebGLTexture>}
          */
+
+        this.styles_ = [];
         this.textures_ = [];
 
         /**
@@ -71609,12 +71623,11 @@ function olInit() {
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
             var width = Math.ceil((mCtx.measureText(char).width +state.lineWidth/2)* state.scale * window.devicePixelRatio );
-
             var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height,
                 function (ctx, x, y) {
                     //Parameterize the canvas
                     ctx.font = /** @type {string} */ (state.font);
-                    ctx.fillStyle = state.fillColor;
+                    ctx.fillStyle = "white";
                     ctx.strokeStyle = state.strokeColor;
                     ctx.lineWidth = state.lineWidth;                    
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
@@ -71636,7 +71649,7 @@ function olInit() {
                     // Draw the character on the canvas
                     if (state.strokeColor) {
                         // FIXME: disable the stroke of text to fit background of map for empty data on ocean
-                        ctx.strokeText(char, x, y);
+                        // ctx.strokeText(char, x, y);
                     }
                     if (state.fillColor) {
                         ctx.fillText(char, x, y);
@@ -71669,6 +71682,8 @@ function olInit() {
         /** @type {Object.<string, WebGLTexture>} */
         // var texturePerImage = {};
         this.textures_ = [];
+
+       
         
         this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
@@ -102823,7 +102838,7 @@ function olInit() {
             // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
             
             // transform.length = 0;
-
+            // debugger;
             return { 
                 'replays': replayGroup.replaysByZIndex_,
                 features: mainFeatures, 

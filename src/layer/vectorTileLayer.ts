@@ -739,6 +739,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.renderDeclutter_(declutterGroup, feature);
                         }else{   
                             // draw chars 
+                            this.roadText = true;
                             this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                         }
                     }
@@ -852,8 +853,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var end = lineStringCoordinates.length;
             var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
             let textLength = this.getTextSize_([text])[0];
-
             if(this.label){
+              
                 pathLength = textLength
             }
             if (textLength * 1.2 <= pathLength) {  
@@ -1000,6 +1001,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 // this.startIndices.push(this.indices.length);
                 var flatCoordinates = options.flatCoordinates;
                 if(label){
+                    
                     var image = label;
                     this.originX = 0;
                     this.originY = 0;
@@ -1014,19 +1016,23 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     this.scale = options.scale;
                     this.opacity = options.opacity;
                     var currentImage;
-                    
+                    this.styles_.push([255,255,255,1])
                     if (this.images_.length === 0) {
                         this.images_.push(image);
+                        
                     } else {
                         currentImage = this.images_[this.images_.length - 1];
                         if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
                             this.groupIndices.push(this.indices.length);
                             this.images_.push(image);
+                           
                         }
                     }
+                    
                     this.drawText_(flatCoordinates, offset, end, stride);
                 }else{
                     // this.scale = 1;
+                   
                     var glyphAtlas = options.currAtlas;
                     var j, jj, currX, currY, charArr, charInfo;
                     var anchorX = options.anchorX;
@@ -1036,7 +1042,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     currX = 0;
                     currY = 0;
                     charArr = text.split('');
-            
+                    // return;
                     for (j = 0, jj = charArr.length; j < jj; ++j) {
                         charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
             
@@ -1052,14 +1058,19 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this$1.imageHeight = image.height;
                             this$1.imageWidth = image.width;
                             this$1.rotateWithView = 1;
-
+                            var fillStyleColor = ol.color.asArray(this$1.state_.fillColor);
                             if (this$1.images_.length === 0) {
                                 this$1.images_.push(image);
+                                
+                                this$1.styles_.push(fillStyleColor)
                             } else {
+
                                 var currentImage = this$1.images_[this$1.images_.length - 1];
                                 if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
                                     this$1.groupIndices.push(this$1.indices.length);
                                     this$1.images_.push(image);
+
+                                    this$1.styles_.push(fillStyleColor)
                                 }
                             }
                             this$1.scale_ = 1 / window.devicePixelRatio;
@@ -1376,9 +1387,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
             gl.uniform1f(locations.u_opacity, opacity); 
             
+
+           
             // FIXME replace this temp solution with text calculation in worker
+
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
                 gl.uniform1f(locations.u_zIndex, 0);
+                this.u_color = locations.u_color;
             }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
                 this.u_zIndex = locations.u_zIndex;
             }else if(this instanceof (<any>ol).render.webgl.PolygonReplay){
