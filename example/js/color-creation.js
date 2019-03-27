@@ -35,7 +35,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 
 // Create a simple base style for the base layer that will outline the 
 // countries in white and display their names in red text.
-const baseMapStyle = new ol.style.Style({
+let baseMapStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
         color: '#fff',
         width: 1
@@ -56,12 +56,11 @@ const baseMapStyle = new ol.style.Style({
 // apply our simple base style to it. 
 let baseMapLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
-        url: '../data/world-population.geo.json',
+        url: '../data/world-population.geojson',
         format: new ol.format.GeoJSON()
     }),
     style: function (feature) {
         baseMapStyle.getText().setText(feature.get('NAME'));
-
         return baseMapStyle;
     }
 });
@@ -71,7 +70,7 @@ let baseMapLayer = new ol.layer.Vector({
 // that will happen in Section 3: Generating a New Color Scheme.
 let colorLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
-        url: '../data/world-population.geo.json',
+        url: '../data/world-population.geojson',
         format: new ol.format.GeoJSON(),
     })
 })
@@ -108,42 +107,80 @@ map.addControl(new ol.control.FullScreen());
 // your maps will gain an eye-catching flair.  For details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_colors
 
-// First, we'll define the base URL of the ThinkGeo Cloud Color service:
-const baseURL = 'https://cloud.thinkgeo.com/api/v1/color/scheme/';
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// Create the ColorClient by passing apiKey.
+let ColorClient = new tg.ColorClient(apiKey);
 
 // This method asks the ThinkGeo Cloud Color service to generate a new color 
 // scheme based on the input parameters -- color family type, random or 
 // specific base color, etc.
-const getColorscheme = () => {
+const getColorSchemeResult = () => {
+    const categoryColor = document.getElementById('category');
+    let isRandom = document.getElementById('colorRandom').checked;
+    let category = categoryColor.options[categoryColor.selectedIndex].value;
     let options = {
-        category: $('select#category option:selected').val(),
-        radio: $('input:radio:checked').val(),
-        color: $('#colorPicker').val().replace('#', ''),
-        numbur: 12,
-    }
-    let getURL
-
-    if (options.radio == 'random') {
-        getURL = `${baseURL}${options.category}/${options.radio}/${options.numbur}?apikey=${apiKey}`
-    } else {
-        getURL = `${baseURL}${options.category}/${options.color}/${options.numbur}?apikey=${apiKey}`
+        numberOfColors: 12,
     }
 
-    let jqxhr = $.get(getURL, function (data) {
-        if (data.status == 'success') {
-            renderData(data)
-        }
-    });
+    // If you want to get back a color family based on a specific color, we'll add a property 
+    // called "color" and assign the color value to it. 
+    if (!isRandom) {
+        options['color'] = document.getElementById('colorPicker').value
+    }
 
-    jqxhr.fail(function () {
-        window.alert('No results');
-    })
+    // According to the color family type you chose, we'll call the responding Api to process the code of request. 
+    switch (category) {
+        case 'analogous':
+            ColorClient.getColorsInAnalogousFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'complementary':
+            ColorClient.getColorsInComplementaryFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'contrasting':
+            ColorClient.getColorsInContrastingFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'qualitative':
+            ColorClient.getColorsInQualityFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'sequential':
+            ColorClient.getColorsInHueFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'triad':
+            ColorClient.getColorsInTriadFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        case 'tetrad':
+            ColorClient.getColorsInTetradFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+            break;
+        default:
+            ColorClient.getColorsInAnalogousFamily(options, function (status, response) {
+                renderData(status, response)
+            });
+    }
 }
 
 // This method takes the output of the getColorScheme method and applies it 
 // to our map via a custom updateStyle method, which we'll define next.
-const renderData = (data) => {
-    let outputData = []
+const renderData = (status, data) => {
+    if(status == 403){
+        alert(data.error.message)
+    }
+    let outputData = [];
     if (data) {
         if (data.data.colors) {
             outputData = data.data.colors;
@@ -160,7 +197,6 @@ const renderData = (data) => {
 // their population.  The population metadata lives in the GeoJSON file 
 // that we loaded onto our map.
 const updateStyle = (outputData) => {
-    
     // Set up a series of style classes (From XXXS to XXXXL) and map each one 
     // to an element from an array of colors, passed in as "outputData".
     let styles = {
@@ -216,7 +252,7 @@ const updateStyle = (outputData) => {
         }),
 
     }
-    
+
     // Assign each range of country populations to one of our style classes.
     const layerStyle = function (feature) {
         let population = Number(feature.get('POP2005'))
@@ -273,7 +309,7 @@ window.onload = function a() {
     ];
     updateStyle(defaultData)
     // When click the 'generate' button, set new style according to what the user input.
-    document.getElementById('generate').addEventListener('click', (e) => {
-        getColorscheme()
+    document.getElementById('generate').addEventListener('click', () => {
+        getColorSchemeResult()
     })
 }
