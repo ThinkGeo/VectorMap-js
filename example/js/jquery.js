@@ -92,7 +92,6 @@ const showPopUp = (bestMatchLocation, centerCoordinate) => {
         map.addOverlay(overlay);
         let length = addressArr.length;
         content.html('<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>')
-        // content.innerHTML = '<p>' + (addressArr[0] || '') + '</p><p>' + (addressArr[1] || '') + ',' + (addressArr[length - 2] || '') + '</p>' + '<p>' + (addressArr[4] || '') + ',' + (addressArr[length - 1] || '') + '</p>'
     } else {
         window.alert('No results');
     }
@@ -109,21 +108,30 @@ const showPopUp = (bestMatchLocation, centerCoordinate) => {
 // a collection of places in the vicinity.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
 
-const getReverseGeocoder = (coordinate, apiKey) => {
-    let url = `https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/${coordinate[1]}, ${coordinate[0]}?Srid=3857&apikey=${apiKey}`;
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
-    let xhr = $.get(url, function (response) {
-        let bestMatchLocation = response.data.bestMatchLocation;
-        showPopUp(bestMatchLocation, coordinate)
-    });
+// We need to create the instance of ReverseGeocoding client and authenticate the API key.
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
 
-    xhr.fail(function () {
-        window.alert(
-            "Something goes wrong!"
-        );
-    });
-};
-
+const getReverseGeocoding = (coordinate) => {
+    let opts = {
+        'srid': 3857
+    }
+    const callback = (status, res) => {
+        if (status !== 200) {
+            if(res.error){
+                alert(res.error.message);
+            }else{
+                alert(res.status + '\n' + res.data.pointX + '\n' + res.data.pointY);
+            }
+        } else {
+            let bestMatchLocation = res.data.bestMatchLocation;
+            showPopUp(bestMatchLocation, coordinate)
+        }
+    }
+    reverseGeocodingClient.searchPlaceByPoint(coordinate[1], coordinate[0], callback, opts);
+}
 
 
 /*---------------------------------------------*/
@@ -144,5 +152,5 @@ closer.on('click', () => {
 // result has been recieved, show up the popup panel.
 map.addEventListener('click', (evt) => {
     let coordinate = evt.coordinate;
-    getReverseGeocoder(coordinate, apiKey);
+    getReverseGeocoding(coordinate);
 });

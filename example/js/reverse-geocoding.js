@@ -33,7 +33,7 @@ const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 // In this custom object, we're going to define two styles:
 //   1. The appearance of the red marker icon for the best matched place.
 //   2. The appearance of the blue circle indicating the search area.
-let _styles = {
+let styles = {
     bestMatchLocation: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
@@ -63,7 +63,7 @@ const createReverseGeocodingLayer = function () {
         // restaurants will show a knife and fork symbol.
         style: function (feature) {
             let key = feature.get("type");
-            let style = _styles[key];
+            let style = styles[key];
             if (!style) {
                 style = new ol.style.Style({
                     image: new ol.style.Icon({
@@ -83,7 +83,7 @@ const createReverseGeocodingLayer = function () {
                         })
                     })
                 });
-                _styles[key] = style;
+                styles[key] = style;
             }
             let textStyle = style.getText();
             if (textStyle) {
@@ -198,7 +198,7 @@ const renderBestMatchLocation = function (place, coordinate, address) {
         let addressArr = address.split(",");
         let length = addressArr.length;
         let coordinateTrans = ol.proj.transform(
-            [coordinate[1], coordinate[0]],
+            coordinate,
             "EPSG:3857",
             "EPSG:4326"
         );
@@ -304,19 +304,19 @@ const reverseGeocode = (coordinate, flag)=>{
             if (flag) {
                 renderBestMatchLocation(res.data.bestMatchLocation, coordinate, address);
                 renderNearbyResult(res.data.nearbyLocations);
-                renderSearchCircle(500, [coordinate[1], coordinate[0]])
+                renderSearchCircle(500, coordinate)
                 view.animate({
-                    center: [coordinate[1], coordinate[0]],
+                    center: coordinate,
                     duration: 2000
                 });
             } else {
-                popUp(address, [coordinate[1], coordinate[0]])
+                popUp(address, coordinate)
             }
         } else {
             window.alert('No results be found');
         }
     }
-    reverseGeocodingClient.searchPlaceByPoint(coordinate[0], coordinate[1], callback, opts);
+    reverseGeocodingClient.searchPlaceByPoint(coordinate[1], coordinate[0], callback, opts);
 }
 
 
@@ -387,7 +387,7 @@ let addEventListeners = function (map) {
         let coordinate = evt.coordinate;
         overlay.setPosition(undefined);
         source.clear();
-        reverseGeocode([coordinate[1], coordinate[0]], true);
+        reverseGeocode(coordinate, true);
     });
 
     // This event listener will show the popup bubble we created, any time 
@@ -402,7 +402,7 @@ let addEventListeners = function (map) {
                 pixel,
                 feature => {
                     if (feature.get("name") === "nearbyFeature") {
-                        reverseGeocode([coordinate[1], coordinate[0]], false);
+                        reverseGeocode(coordinate, false);
                     }
                 }, {
                     layerFilter: layer => {
