@@ -133,6 +133,13 @@ const addPopup = (address, coordinates) => {
 // Let's add a list of addresses that will let users visualize the location of what you searched. Every time you 
 // input the address name in the top inptut form, it'll send request to get the relavant places and show you 
 // in a list. You can enter the up button and down button to choose the place you want to perfom Geocode.
+
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// We need to create the instance of Geocoder client and authenticate the API key.
+let geocodingClient = new tg.GeocodingClient(apiKey);
+
 let resultsLength;
 let geocoderResultNode = document.getElementById('geocoderResult');
 
@@ -159,31 +166,19 @@ const renderResult = (locations) => {
 // related to your input address. It will return a collection of addresses that the number will less than 5, while 
 // the MaxResults parameter is 5.
 const geocoder = (val) => {
-    const time = 5000;
-    let url = `https://cloud.thinkgeo.com/api/v1/location/geocode/${val}?apikey=${apiKey}&MaxResults=5`;
-    let timeout = false;
-    let request = new XMLHttpRequest();
-    let timer = setTimeout(() => {
-        timeout = true;
-        request.abort();
-    }, time);
-    request.open("GET", url);
-
-    request.onreadystatechange = () => {
-        if (request.readyState !== 4) {
-            return;
-        }
-        if (timeout) {
-            document.querySelector('.loading').classList.add('hidden');
-            return;
-        }
-        clearTimeout(timer);
-        if (request.status === 200) {
-            let data = JSON.parse(request.response).data;
-            renderResult(data.locations)
+    let opts = {
+        maxResults: 5
+    };
+    const callback = (status, res)=>{
+        if (status !== 200) {
+            alert(res.error.message)
+        } else {
+            let locations = res.data.locations;
+            renderResult(locations);
         }
     };
-    request.send();
+    // Call the searchByPoint API to search the points by the input address.
+    geocodingClient.searchByPoint(val, callback, opts);
 }
 
 // This method will create the address feature where you select, and add it to geocodingLayer which we create earlier.
@@ -273,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Every time you input word into the input box, the value in it will be passed to 
     // geocoder method and perform the Geocoder services.
     let timer = null;
-    let address = document.getElementById('address')
+    let address = document.getElementById('address');
     address.addEventListener('input', () => {
         clearTimeout(timer);
         timer = setTimeout(() => {
@@ -299,8 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             focusIndex = Number(target.getAttribute('data-index'));
             searchPlace(focusIndex);
         }
-    })
-
+    });
 
     // Everytime inputing the address, the ThinkGeo Cloud will return the relative 
     // address list and we'll show them below the input box. You can enter the up button 
@@ -322,7 +316,12 @@ document.addEventListener('DOMContentLoaded', () => {
             case 13:
                 // Enter
                 if (focusIndex !== -1) {
-                    searchPlace(focusIndex)
+                    searchPlace(focusIndex);
+                    focusIndex = -1;
+                }else{
+                    focusIndex = -1;
+                    let value = document.getElementById('address').value;
+                    geocoder(value);
                 }
                 break;
         }

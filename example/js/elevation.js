@@ -318,7 +318,7 @@ const getGrades = (res, wkt) => {
 
 	// Send request to get back the elevation of points along the line.
 	elevationClient.getElevationOfLine(opts, (status, res) => {
-		if (status == 403) {
+		if (status !== 200) {
 			alert(res.error.message);
 		} else {
 			getElevation(res, wkt, grades);
@@ -370,7 +370,7 @@ const drawElevationByLine = (feature) => {
 		opts['numberOfSegments'] = wayPointNumRange.value;
 		opts['wkt'] = wkt;
 		elevationClient.getGradeOfLine(opts, (status, res) => {
-			if (status == 403) {
+			if (status !== 200) {
 				alert(res.error.message);
 			} else {
 				getGrades(res, wkt);
