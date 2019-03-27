@@ -20,7 +20,7 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~"; 
+const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 
 
 /*---------------------------------------------*/
@@ -145,9 +145,15 @@ let initializeMap = function () {
 // actually perform the reverse geocoding using the ThinkGeo Cloud and then 
 // display the results on the map.
 
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// We need to create the instance of ReverseGeocoding client and authenticate the API key.
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
+
 // Define a list of the different types of places for which we have unique 
 // marker icons that can be shown on the map.
-const _supportedMarkers = [
+const supportedMarkers = [
     "aeroway",
     "amenity",
     "barrier",
@@ -209,9 +215,9 @@ const renderBestMatchLocation = function (place, coordinate, address) {
             (addressArr[length - 2] || "") +
             "</p>" +
             "<p>" +
-            coordinateTrans[1].toFixed(4) +
-            " , " +
             coordinateTrans[0].toFixed(4) +
+            " , " +
+            coordinateTrans[1].toFixed(4) +
             "</p>";
     }
 };
@@ -228,7 +234,7 @@ const renderNearbyResult = function (response) {
             feature.set("type", "intersection");
         } else {
             var marker = item.locationCategory.toLowerCase();
-            if (!_supportedMarkers.includes(item.locationCategory.toLowerCase())) {
+            if (!supportedMarkers.includes(item.locationCategory.toLowerCase())) {
                 marker = "others";
             }
             feature = createFeature(item.locationFeatureWellKnownText);
@@ -280,43 +286,38 @@ const renderSearchCircle = function (radius, coordinate) {
 // get back a collection of places in the vicinity of that click, as well as 
 // the closest matching address.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
-const reverseGeocode = function (coordinate, flag) {
-    const baseURL = "https://cloud.thinkgeo.com/api/v1/location/reverse-geocode/";
-    let getURL = `${baseURL}${coordinate}?apikey=${apiKey}&SearchRadius=500&MaxResults=20&Srid=3857&VerboseResults=true`;
 
-    let jqxhr = $.get(getURL, function (data) {
-        if (data.data.bestMatchLocation) {
-            let address = data.data.bestMatchLocation.data.address;
+const reverseGeocode = (coordinate, flag)=>{
+    let opts = {
+        srid: 3857,
+        searchRadius: 500,
+        maxResults: 20,
+        verboseResults: true,
+    };
+    const callback = (status, res)=>{
+        if(status !== 200){
+            alert(res.error.message);
+            return;
+        }
+        if (res.data.bestMatchLocation) {
+            let address = res.data.bestMatchLocation.data.address;
             if (flag) {
-                renderBestMatchLocation(
-                    data.data.bestMatchLocation,
-                    coordinate,
-                    address
-                );
-                renderNearbyResult(data.data.nearbyLocations);
-                renderSearchCircle(500, [coordinate[1], coordinate[0]]);
-                // When clicking on the map, slide the map over to the clicked point
-                // over a duration of 500 milliseconds.
+                renderBestMatchLocation(res.data.bestMatchLocation, coordinate, address);
+                renderNearbyResult(res.data.nearbyLocations);
+                renderSearchCircle(500, [coordinate[1], coordinate[0]])
                 view.animate({
                     center: [coordinate[1], coordinate[0]],
-                    duration: 500
+                    duration: 2000
                 });
             } else {
-                popUp(address, [coordinate[1], coordinate[0]]);
+                popUp(address, [coordinate[1], coordinate[0]])
             }
         } else {
-            window.alert("No results found");
+            window.alert('No results be found');
         }
-    });
-
-    // In case the ThinkGeo Cloud Reverse Geocoding service requests fails for 
-    // any reason, display a message that something went wrong.
-    jqxhr.fail(function (data) {
-        window.alert(
-            "Unable to reverse geocode that location. Please try again."
-        );
-    });
-};
+    }
+    reverseGeocodingClient.searchPlaceByPoint(coordinate[0], coordinate[1], callback, opts);
+}
 
 
 /*---------------------------------------------*/
