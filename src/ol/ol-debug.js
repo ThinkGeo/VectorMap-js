@@ -67877,6 +67877,7 @@ function olInit() {
         // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        //   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         // gl.enable(gl.CULL_FACE);
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
@@ -67891,6 +67892,8 @@ function olInit() {
                     }) ;
                     
                     gl.uniform4fv(this.u_color,u_color)
+                }else{
+                    gl.uniform4fv(this.u_color,[1,1,1,1])
                 }
                
                 var end = groupIndices[i];
@@ -71047,7 +71050,7 @@ function olInit() {
                     image: this.canvas_
                 };
                 this.entries_[id] = entry;
-
+                // this.context_.canvas.style.display = 'none'
                 // render the image on the atlas image
                 renderCallback.call(opt_this, this.context_,
                     block.x / window.devicePixelRatio + this.space_, block.y / window.devicePixelRatio + this.space_);
@@ -71627,7 +71630,7 @@ function olInit() {
                 function (ctx, x, y) {
                     //Parameterize the canvas
                     ctx.font = /** @type {string} */ (state.font);
-                    ctx.fillStyle = "white";
+                    ctx.fillStyle ="white";
                     ctx.strokeStyle = state.strokeColor;
                     ctx.lineWidth = state.lineWidth;                    
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);

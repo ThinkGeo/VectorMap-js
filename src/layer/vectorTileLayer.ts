@@ -1016,16 +1016,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     this.scale = options.scale;
                     this.opacity = options.opacity;
                     var currentImage;
-                    this.styles_.push([255,255,255,1])
+                   
                     if (this.images_.length === 0) {
                         this.images_.push(image);
-                        
+                        this.styles_.push([255,255,255,1])
                     } else {
                         currentImage = this.images_[this.images_.length - 1];
                         if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
                             this.groupIndices.push(this.indices.length);
                             this.images_.push(image);
-                           
+                            this.styles_.push([255,255,255,1])
                         }
                     }
                     
@@ -1372,7 +1372,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
 
             var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
-            (<any>ol).transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+            (<any>ol).transform.scale(offsetScaleMatrix, 2/ size[0], 2/ size[1]);
 
             var offsetRotateMatrix = (<any>ol).transform.reset(this.offsetRotateMatrix_);
             if (rotation !== 0) {
