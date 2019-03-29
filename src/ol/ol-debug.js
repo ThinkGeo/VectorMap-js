@@ -31146,7 +31146,7 @@ function olInit() {
             }
             // FIXME replace it with style.getZIndex()
             var imageReplay = replayGroup.getReplay(
-                1, ol.render.ReplayType.IMAGE);
+                6, ol.render.ReplayType.IMAGE);
             // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
             // imageReplay.drawPoint(geometry, feature);
             feature.pointCoordinates_ = geometry.getFlatCoordinates();
@@ -102676,11 +102676,11 @@ function olInit() {
             // console.log(tileCoord);            
             // console.log(requestTileCoord);
 
-            // if(tileCoord.toString() !== "2,0,-2"){
-            // if(tileCoord.toString() !== "13,2411,-3081"){
-            // if(!(tileCoord.toString() == "19,121173,-211544" || tileCoord.toString() == "19,121174,-211544")){
+            // if(tileCoord.toString() !== "16,13813,-24873"){
+            if(tileCoord.toString() !== "18,60585,-105776"){
+            // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // return
-            // }
+            }
             // TEST END
 
             var tileProjection = new ol.proj.Projection({

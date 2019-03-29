@@ -856,31 +856,19 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             if(this.label){
                 pathLength = textLength
             }
+
             if (textLength * 1.2 <= pathLength) {  
                 let declutterGroups = [];
                 this.extent = (<any>ol.extent).createOrUpdateEmpty();          
-                var ratio = 1.194328566955879 / resolution;
-
-                if(ratio >= 3){
-                    ratio /= 2;
-                }
-                var distance = 160 * ratio;
-                var tmpLength = pathLength - textLength;
-                var centerPoint = tmpLength / 2;
-                var leftPoint = centerPoint;
-                var rightPoint = centerPoint;
+                var pixelDistance = 200;
+                var centerPoint = pathLength / 2;
                 var pointArray = [];
+                
                 pointArray.push(centerPoint);
 
                 if(frameState.currentResolution < 1){
-                    while(leftPoint > ((textLength / 2) + distance)){
-                        leftPoint = leftPoint - distance;
-                        pointArray.push(leftPoint);        
-                    }
-                    while(rightPoint < ((pathLength - textLength / 2) - distance)){
-                        rightPoint = rightPoint + distance;                                   
-                        pointArray.push(rightPoint);                                    
-                    }
+                    findCenterPoints(0, centerPoint, pixelDistance, pointArray);
+                    findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
                 }
 
                 for (var len = 0; len < pointArray.length; len++) {
@@ -890,7 +878,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         tempDeclutterGroup = declutterGroup.slice(0);
                     }                          
 
-                    var startM = pointArray[len];                    
+                    var startM = (pointArray[len] - textLength / 2);                    
                     let parts = (<any>ol.geom).flat.textpath.lineString(lineStringCoordinates, offset, end, 2, text, this, startM, 
                             maxAngle, resolution);
                     
@@ -928,41 +916,35 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
         };
 
+        function findCenterPoints (start, end, pixelDistance, pointArray){
+            var distance = (end - start) / 2;
+            if(distance > pixelDistance){
+                var center = (end + start) / 2;
+                pointArray.push(center);
+                findCenterPoints(start, center, pixelDistance, pointArray);
+                findCenterPoints(center, end, pixelDistance, pointArray);
+            }
+        };
+
         (<any>ol.render).webgl.ImageReplay.prototype.drawLineStringImage = function (geometry, feature, frameState, declutterGroup) {
             var offset = 0;
             var stride = 2;
-            var pixelRatio = frameState.pixelRatio;
             var resolution = frameState.currentResolution;
             var lineStringCoordinates = geometry.getFlatCoordinates();
             var end = lineStringCoordinates.length;
             var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
-            let width = this.width;            
-            let spaceDistance = 0;
+            let width = this.width; 
 
-             if (width * 4 <= pathLength) {  
-                this.extent = (<any>ol.extent).createOrUpdateEmpty();          
-                var ratio = 1.194328566955879 / resolution;
-
-                if(ratio >= 3){
-                    ratio /= 2;
-                }
-                var distance = 110 * ratio;
-                var tmpLength = pathLength - width;
-                var centerPoint = tmpLength / 2 + spaceDistance;
-                var leftPoint = centerPoint;
-                var rightPoint = centerPoint;
+            if (width * 4 <= pathLength) {  
+                this.extent = (<any>ol.extent).createOrUpdateEmpty();         
+                var pixelDistance = 100;
+                var centerPoint = pathLength / 2;
                 var pointArray = [];
                 pointArray.push(centerPoint);
 
                 if(frameState.currentResolution < 1){
-                    while(leftPoint > ((width / 2) + distance)){
-                        leftPoint = leftPoint - distance;
-                        pointArray.push(leftPoint + spaceDistance);        
-                    }
-                    while(rightPoint < ((pathLength - width / 2) - distance)){
-                        rightPoint = rightPoint + distance;                                   
-                        pointArray.push(rightPoint + spaceDistance);                                    
-                    }
+                    findCenterPoints(0, centerPoint, pixelDistance, pointArray);
+                    findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
                 }
 
                 for (var len = 0; len < pointArray.length; len++) {
@@ -972,7 +954,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         tempDeclutterGroup = declutterGroup.slice(0);
                     }                          
 
-                    var startM = pointArray[len];                    
+                    var startM = pointArray[len] - width / 2;                    
                     let parts = (<any>ol.geom).flat.textpath.imagelineString(lineStringCoordinates, offset, end, 2, width, startM, resolution);
                     
                     if(parts){
@@ -1179,16 +1161,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
     
             var chunk = '';
-            var chunkLength = 0;
             var data, index, previousAngle;  
             
             for (var i = 0; i < numChars; ++i) {
                 index = reverse ? numChars - i - 1 : i;
                 var char = text.charAt(index);
                 chunk = reverse ? char + chunk : chunk + char;
-                // var charLength = webglTextReplay.getTextSize_([chunk])[0] - chunkLength;    
                 var charLength = webglTextReplay.getTextSize_([char])[0];    
-                chunkLength += charLength;
                 var charM = startM + charLength / 2;
                 
                 while (segmentM + segmentLength < charM) {
@@ -1234,7 +1213,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     data[4] = chunk;
                 } else {
                     chunk = char;
-                    chunkLength = charLength;
                     data = [x, y, charLength / 2, -angle, chunk];
                     if (reverse) {
                         result.unshift(data);
