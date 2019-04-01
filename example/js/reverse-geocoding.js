@@ -68,7 +68,7 @@ const createReverseGeocodingLayer = function () {
                 style = new ol.style.Style({
                     image: new ol.style.Icon({
                         anchor: [0.5, 1],
-                        src: "https://maps.thinkgeo.com/image/map-icon/" + key + ".png",
+                        src: "../image/map-icons/" + key + ".png",
                         scale: 0.25
                     }),
                     text: new ol.style.Text({

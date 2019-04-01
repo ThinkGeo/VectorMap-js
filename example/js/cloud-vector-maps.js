@@ -45,7 +45,7 @@ let dark = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreet
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
 let map;
-let initializeMap = function () {
+let initializeMap = () => {
     map = new ol.Map({
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
@@ -75,11 +75,10 @@ let initializeMap = function () {
 // 3. Changing the Map Style
 /*---------------------------------------------*/
 
-const changeLayer = function (e) {
+const changeLayer = (e) => {
     let layers = map.getLayers().getArray();
     for (let i = 0; i < layers.length; i++) {
         if (layers[i].get("layerName") == e.target.getAttribute("value")) {
-
             layers[i].setVisible(true);
         } else {
             layers[i].setVisible(false);
@@ -88,16 +87,17 @@ const changeLayer = function (e) {
 }
 
 // When click the different styles button, render the relevant style map.
-document.getElementById('wrap').addEventListener('click', (e) => {
-    const nodeList = document.querySelectorAll(".thumb");
-
-    for (let node of nodeList) {
-        node.style.borderColor = 'transparent';
-    }
-    if (e.target.nodeName == 'DIV') {
-        e.target.style.borderColor = '#ffffff';
-        changeLayer(e);
-    }
+document.addEventListener('DOMContentLoaded', ()=>{
+    document.getElementById('wrap').addEventListener('click', (e) => {
+        const nodeList = document.querySelectorAll(".thumb");    
+        for (let node of nodeList) {
+            node.style.borderColor = 'transparent';
+        }
+        if (e.target.nodeName == 'DIV') {
+            e.target.style.borderColor = '#ffffff';
+            changeLayer(e);
+        }
+    })
 })
 
 

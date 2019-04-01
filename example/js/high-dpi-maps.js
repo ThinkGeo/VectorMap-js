@@ -58,7 +58,7 @@ let map = new ol.Map({
 
     // Add our previously-defined ThinkGeo Cloud High Resolution Raster Tile layer to the map.
     layers: [highDpiLayer],
-    // States that the HTML tag with id="map@2x" should serve as the container for our map.
+    // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
     // Create a default view for the map when it starts up.
     view: new ol.View({

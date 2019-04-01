@@ -34,7 +34,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // https://wiki.thinkgeo.com/wiki/map_suite_portable_data_format_guide
 const wfsStyleJson =
 {
-    "id": "thinkgeo-world-streets-light",
+    "id": "thinkgeo-world-streets",
     "version": 1.3,
     "owner": "ThinkGeo LLC",
     "time": "2018/06/09",
@@ -53,7 +53,7 @@ const wfsStyleJson =
     ],
     "sources": [{
         "id": "data_source",
-        "url": "https://ahocevar.com/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=osm:water_areas&outputFormat=application/json&srsname=EPSG:3857&bbox=-8948502.010602657,5370465.607316485,-8869275.030785069,5393396.715802036,EPSG:3857",
+        "url": "../data/water_areas.geojson",
         "type": "WFS",
         "dataProjection": "EPSG:3857"
     }],
@@ -105,3 +105,6 @@ let map = new ol.Map({
         progressiveZoom: false,    
     })
 });
+
+// Add a button to the map that lets us toggle full-screen display mode.
+map.addControl(new ol.control.FullScreen());

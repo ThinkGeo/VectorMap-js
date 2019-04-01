@@ -93,19 +93,24 @@
             text-align: right;
         }
 
-        .ol-control:hover {
+        .ol-control:hover{
             background-color: unset;
         }
 
-        .ol-control:focus {
-            outline: unset;
+        .ol-control button:hover {
+            background-color: #eee;
+        }
+
+        .ol-control button:focus {
+            outline: none;            
+            background-color: #fff;
         }
 
         .ol-full-screen {
             right: unset;
             left: 0.5em;
             top: 5.5em;
-            background-color: unset
+            background-color: unset;
         }
 
         .ol-full-screen button {
@@ -119,11 +124,6 @@
             border: solid 1px #ccc;
             box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
             border-radius: 0 0 2px 2px;
-        }
-
-        .ol-full-screen button:hover,
-        .ol-full-screen button:focus {
-            background-color: #eee;
         }
     </style>
 </head>

@@ -619,7 +619,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				break;
 		}
 	});
+});
 
+window.addEventListener("load", () => {
 	// Draw the default line and init chart.
 	drawPreDefinedLine(wkts.place1, [-122.405729, 37.802898], 16);
 	drawChart();
