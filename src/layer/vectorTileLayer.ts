@@ -707,6 +707,11 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     continue;
                 }
 
+                // if(style.text_ && !style.text_.includes('Fort')){
+                    if(style.text_ && !style.text_.includes('America')){
+                    // continue
+                }
+                
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
                     
@@ -733,6 +738,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
                             this.height = this.label.height; 
+                            this.originX = lineWidth;
+                            this.originY = 0;
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
                             this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
@@ -982,11 +989,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 
                 // this.startIndices.push(this.indices.length);
                 var flatCoordinates = options.flatCoordinates;
-                if(label){
-                    
+                if(label){  
                     var image = label;
-                    this.originX = 0;
-                    this.originY = 0;
+                    this.originX = options.originX;
+                    this.originY = options.originY;
                     this.width = options.width;
                     this.height = options.height;
                     // this.width = width + lineWidth;
@@ -1033,7 +1039,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this$1.anchorX = anchorX - currX;
                             this$1.anchorY = anchorY - currY;
                             this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                            this$1.originY = charInfo.offsetY;
+                            this$1.originY = charInfo.offsetY - 1;
                             this$1.height = glyphAtlas.height;
                             this$1.width = j === 0 || j === charArr.length - 1 ?
                                 glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];

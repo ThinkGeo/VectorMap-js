@@ -71009,8 +71009,6 @@ function olInit() {
          */
         this.canvas_ = this.context_.canvas;
 
-        this.canvas_ = this.context_.canvas;
-
         this.canvas_.width = size * window.devicePixelRatio;
         this.canvas_.height = size * window.devicePixelRatio;
         this.canvas_.style.width = size + 'px';
@@ -71638,6 +71636,8 @@ function olInit() {
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'top';
+                    // ctx.imageSmoothingEnabled = false;
+                    // ctx.imageSmoothingQuality = "high";
                     if (ol.has.CANVAS_LINE_DASH && state.lineDash) {
                         //FIXME: use pixelRatio
                         ctx.setLineDash(state.lineDash);
@@ -102695,7 +102695,7 @@ function olInit() {
             // console.log(requestTileCoord);
 
             // if(tileCoord.toString() !== "16,13813,-24873"){
-            if(tileCoord.toString() !== "18,60585,-105776"){
+            if(tileCoord.toString() !== "14,12928,-6725"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // return
             }
