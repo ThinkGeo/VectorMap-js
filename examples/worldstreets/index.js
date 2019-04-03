@@ -22,17 +22,18 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
-// var tileGrid = new ol.layer.Tile({
-//     source: new ol.source.TileDebug({
-//         projection: "EPSG:3857",
-//         tileGrid: worldStreetsLayer.createVectorTileGrid()
-//     })
-// });
+var tileGrid = new ol.layer.Tile({
+    source: new ol.source.TileDebug({
+        projection: "EPSG:3857",
+        tileGrid: worldStreetsLayer.createVectorTileGrid()
+    })
+});
 
 var map = new ol.Map({
     layers: [worldStreetsLayer],
     target: 'map',
     view: view,
+    renderer: 'webgl',
     loadTilesWhileInteracting: true
 });
 

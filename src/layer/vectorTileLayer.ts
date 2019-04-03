@@ -4,7 +4,7 @@ import { GeoStyle } from "../style/geoStyle";
 import { GeoMVTFormat } from "../format/geoMvt";
 import { StyleJsonCache } from "../tree/styleJsonCache";
 import { StyleJsonCacheItem } from "../tree/styleJsonCacheItem";
-import { GeoVectorTileLayerRender } from "../render/geoVectorTilelayerRender";
+import { GeoVectorTileLayerRender } from "../renderer/geoVectorTileLayerRender";
 import { TreeNode } from "../tree/TreeNode";
 import { Tree } from "../tree/tree";
 import { WorkerManager } from "../worker/workerManager";
