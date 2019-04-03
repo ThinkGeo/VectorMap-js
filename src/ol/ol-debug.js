@@ -20339,15 +20339,7 @@ function olInit() {
             // upon it
             return;
         }
-        // delta < 0 ? map.isClickZoomOut =true :  map.isClickZoomOut = false;  
-        if(delta > 0){
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }else{
-            view.isClickZoomOut = true;
-        }
+        
         var currentResolution = view.getResolution();
         if (currentResolution) {
             var oldZoom = view.getZoom();
@@ -20738,14 +20730,6 @@ function olInit() {
      */
     ol.interaction.Interaction.zoomByDelta = function (view, delta, opt_anchor, opt_duration) {
         var currentResolution = view.getResolution();
-        if(delta > 0){
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }else{
-            view.isZoomOut = true;
-        }
         var resolution = view.constrainResolution(currentResolution, delta, 0);
 
         if (resolution !== undefined) {
@@ -21177,6 +21161,11 @@ function olInit() {
          * @protected
          */
         this.targetPointers = [];
+
+
+        this.delta =options.angleDelta ? options.angleDelta : 0.08;
+        this.deltaX_ = this.deltaY_ = options.deltaX_ ? options.deltaX_ : 4;
+        this.distance_ = options.distance_ ? options.distance_ : 0.2;
 
     };
     ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
@@ -22671,21 +22660,35 @@ function olInit() {
         var touch0 = this.targetPointers[0];
         var touch1 = this.targetPointers[1];
 
+        var dx = touch0.clientX - touch1.clientX;
+        var dy = touch0.clientY - touch1.clientY;
+
         // angle between touches
         var angle = Math.atan2(
             touch1.clientY - touch0.clientY,
             touch1.clientX - touch0.clientX);
-
+      
+        var distance = Math.sqrt(dx * dx + dy * dy); 
         if (this.lastAngle_ !== undefined) {
             var delta = angle - this.lastAngle_;
+            var deltaX_ = touch0.clientX - this.originX;
+            var deltaY_ = touch0.clientY - this.originY;
+            var distance_  = distance - this.lastDistance_;
+
             this.rotationDelta_ += delta;
-            if (!this.rotating_ &&
-                Math.abs(this.rotationDelta_) > this.threshold_) {
+            if (((Math.abs(delta) > this.delta) && 
+                Math.abs(deltaX_) <= this.deltaX_  && 
+                Math.abs(deltaY_) <= this.deltaY_) 
+                ||(Math.abs(distance_) <= this.distance_ 
+                && Math.abs(distance_)>0)
+            ) {
                 this.rotating_ = true;
             }
             rotationDelta = delta;
         }
+
         this.lastAngle_ = angle;
+        this.lastDistance_ = distance;
 
         var map = mapBrowserEvent.map;
         var view = map.getView();
@@ -22744,9 +22747,16 @@ function olInit() {
     ol.interaction.PinchRotate.handleDownEvent_ = function (mapBrowserEvent) {
         if (this.targetPointers.length >= 2) {
             var map = mapBrowserEvent.map;
+
+            var touch0 = this.targetPointers[0];
+
+            this.originX = touch0.clientX;
+            this.originY = touch0.clientY;
+
             this.anchor_ = null;
             this.lastAngle_ = undefined;
             this.rotating_ = false;
+            // this.lastAngle_ = 0;
             this.rotationDelta_ = 0.0;
             if (!this.handlingDownUpSequence) {
                 map.getView().setHint(ol.ViewHint.INTERACTING, 1);
@@ -22836,6 +22846,7 @@ function olInit() {
 
         var touch0 = this.targetPointers[0];
         var touch1 = this.targetPointers[1];
+
         var dx = touch0.clientX - touch1.clientX;
         var dy = touch0.clientY - touch1.clientY;
 
@@ -22845,8 +22856,7 @@ function olInit() {
         if (this.lastDistance_ !== undefined) {
             scaleDelta = this.lastDistance_ / distance;
         }
-        this.lastDistance_ = distance;
-
+       
 
         var map = mapBrowserEvent.map;
         var view = map.getView();
@@ -22862,21 +22872,33 @@ function olInit() {
             newResolution = minResolution;
         }
 
-        if(scaleDelta > 1 && this.lastScaleDelta_ >=1 )
-        {
-            view.isPinchOut = true;
-        }else{
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }
+        var angle = Math.atan2(
+            touch1.clientY - touch0.clientY,
+            touch1.clientX - touch0.clientX);
 
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
+
+            var delta = angle - this.lastAngle_;
+            var deltaX_ = touch0.clientX - this.originX
+            var deltaY_ = touch0.clientY - this.originY
+
+            var distance_  = distance - this.lastDistance_;
+            // console.log(distance_)
+            if (Math.abs(delta) <= this.delta && 
+                (Math.abs(deltaX_) > this.deltaX_ || 
+                Math.abs(deltaY_) >  this.deltaY_)
+                &&Math.abs(distance_) >this.distance_
+            ) {
+                this.isZoom = true;
+            }
         }
-       
+        this.lastDistance_ = distance;
+
+        this.lastAngle_ = angle
         
+
+
         // scale anchor point.
         var viewportPosition = map.getViewport().getBoundingClientRect();
         var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
@@ -22885,8 +22907,11 @@ function olInit() {
         this.anchor_ = map.getCoordinateFromPixel(centroid);
 
         // scale, bypass the resolution constraint
-        map.render();
-        ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+        if(this.isZoom){
+            map.render();
+            ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+        }
+        
     };
 
 
@@ -22927,10 +22952,20 @@ function olInit() {
      */
     ol.interaction.PinchZoom.handleDownEvent_ = function (mapBrowserEvent) {
         if (this.targetPointers.length >= 2) {
+
+            var touch0 = this.targetPointers[0];
+
             var map = mapBrowserEvent.map;
             this.anchor_ = null;
             this.lastDistance_ = undefined;
             this.lastScaleDelta_ = 1;
+
+            this.isZoom = false;
+
+            this.originX = touch0.clientX;
+            this.originY = touch0.clientY;
+
+            
             if (!this.handlingDownUpSequence) {
                 map.getView().setHint(ol.ViewHint.INTERACTING, 1);
             }

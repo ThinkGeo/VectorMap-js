@@ -54,7 +54,7 @@ function showInfo(event) {
 // disable rotation in mobile devices
 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
     map.getInteractions().forEach(function (element, index, array) {
-        if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
-        if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
+        // if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
+        // if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
     });
 }
