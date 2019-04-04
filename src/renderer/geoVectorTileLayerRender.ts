@@ -133,13 +133,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     covered = tileGrid.forEachTileCoordChildTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom, tileRange
                         );                    
-                    // covered = findLoadedTiles((z + 1), childTileRange);
                 }
 
                 if (!covered) {
-                    tileGrid.minZoom = cacheZoom;
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom);
                 }
             }
         }
