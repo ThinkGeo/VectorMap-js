@@ -137,9 +137,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 }
 
                 if (!covered) {
+                    tileGrid.minZoom = cacheZoom;
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom
-                        );
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
                 }
             }
         }
@@ -317,24 +317,22 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             for (var i = 0, ii = replayData.length; i < ii;) {
                 var replay = replayData[i++];                
                 var screenXY = replayData[i++];
-                var tmpOptions = replay.tmpOptions;                        
-                // if(tmpOptions.length != replay.options.length || currentResolution < 1){
-                    replay.indices.length = 0;
-                    replay.vertices.length = 0;
-                    replay.groupIndices.length = 0;
-                    
-                    for(var k = 0; k < tmpOptions.length; k++){
-                        if(replay instanceof (<any>ol).render.webgl.TextReplay){
-                            replay.drawText(tmpOptions[k]);
-                        }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
-                            replay.drawPoint(tmpOptions[k]);
-                        }
+                var tmpOptions = replay.tmpOptions;   
+                                     
+                replay.indices.length = 0;
+                replay.vertices.length = 0;
+                replay.groupIndices.length = 0;
+                
+                for(var k = 0; k < tmpOptions.length; k++){
+                    if(replay instanceof (<any>ol).render.webgl.TextReplay){
+                        replay.drawText(tmpOptions[k]);
+                    }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
+                        replay.drawPoint(tmpOptions[k]);
                     }
-                    replay.finish(context);
-                    replay.options = tmpOptions;
-                // }else if(!replay.indicesBuffer || replay.indicesBuffer.arr_.length == 0){
-                //     continue;
-                // }
+                }
+                replay.finish(context);
+                // replay.options = tmpOptions;
+               
                 replay.replay(context, rotation, skippedFeatureUids, screenXY);
             }
         }

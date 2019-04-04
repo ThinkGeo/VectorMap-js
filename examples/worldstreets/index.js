@@ -22,11 +22,15 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
-var tileGrid = new ol.layer.Tile({
+var tileGrid1 = new ol.layer.Tile({
     source: new ol.source.TileDebug({
         projection: "EPSG:3857",
         tileGrid: worldStreetsLayer.createVectorTileGrid()
     })
+});
+
+var tileGrid2 = new ol.layer.Tile({
+    source: new ol.source.OSM()
 });
 
 var map = new ol.Map({

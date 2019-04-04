@@ -1,3 +1,6 @@
+import { GeoImageReplay } from './geoImageRepaly';
+import { GeoTextReplay } from './geoTextRepaly';
+
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
     constructor(tolerance: number, maxExtent: any, opt_renderBuffer: number, declutterTree: any) {
@@ -124,9 +127,9 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
     BATCH_CONSTRUCTORS_CUSTOM = {
         "Circle": (<any>ol.render).webgl.PolygonReplay,
         "Default": (<any>ol.render).webgl.Replay,
-        "Image": (<any>ol.render).webgl.ImageReplay,
+        "Image": GeoImageReplay,
         "LineString": (<any>ol.render).webgl.LineStringReplay,
         "Polygon": (<any>ol.render).webgl.PolygonReplay,
-        "Text": (<any>ol.render).webgl.TextReplay
+        "Text": GeoTextReplay
     };
 }

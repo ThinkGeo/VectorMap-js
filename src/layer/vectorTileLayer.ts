@@ -734,7 +734,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         }  
                     }else{                              
                         this.setTextStyle(style);
-                        if(this.label){
+                        if(style.label){
+                            this.label = style.label;
+                            this.maxAngle_ = style.maxAngle_;
                             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
                             this.width = this.label.width + lineWidth; 
                             this.height = this.label.height; 
@@ -1369,19 +1371,18 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
             gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
                 (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-            gl.uniform1f(locations.u_opacity, opacity); 
-            
+            gl.uniform1f(locations.u_opacity, opacity);             
 
            
             // FIXME replace this temp solution with text calculation in worker
 
             if(this instanceof (<any>ol).render.webgl.TextReplay || this instanceof (<any>ol).render.webgl.ImageReplay){
-                gl.uniform1f(locations.u_zIndex, 0);
+                // gl.uniform1f(locations.u_zIndex, 0);
                 this.u_color = locations.u_color;
             }else if(this instanceof (<any>ol).render.webgl.LineStringReplay){
                 this.u_zIndex = locations.u_zIndex;
             }else if(this instanceof (<any>ol).render.webgl.PolygonReplay){
-                this.u_zIndex = locations.u_zIndex;
+                // this.u_zIndex = locations.u_zIndex;
             }           
 
             // draw!

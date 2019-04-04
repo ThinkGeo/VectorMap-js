@@ -6636,10 +6636,10 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom) {
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
         var tileRange, x, y;
         var tileCoordExtent = null;
-       
+        var z = tileCoord[0] - 1;       
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
@@ -6647,9 +6647,7 @@ function olInit() {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
         
-        //the reason that zoom in is blank why is run this. 
-        var z = tileCoord[0] - 1;
-        while (z >= cacheZoom) {
+        while (z >= this.minZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
@@ -9114,11 +9112,10 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    var gl = canvas.getContext('webgl');
+                    var gl = ol.webgl.getContext(canvas, {
+                        failIfMajorPerformanceCaveat: true
+                    });
                     if (gl) {
-                        // gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-                        // gl.clearColor(1.0,0.0,0.0,1.0)
-                        ol.webglContext = {canvas: canvas, gl: gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -16249,7 +16246,6 @@ function olInit() {
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
-                    //isZoom
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
                     var rotation = progress === 1 ?
@@ -17069,23 +17065,23 @@ function olInit() {
      * @param {number=} opt_height Canvas height.
      * @return {object} The context.
      */
-    ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
-        let webglContext = {};
-        if (isMain) {
-            var canvas = document.createElement('CANVAS');
-            if (opt_width) {
-                webglContext.width = opt_width;
-            }
-            if (opt_height) {
-                webglContext.height = opt_height;
-            }
+    // ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
+    //     let webglContext = {};
+    //     if (isMain) {
+    //         var canvas = document.createElement('CANVAS');
+    //         if (opt_width) {
+    //             webglContext.width = opt_width;
+    //         }
+    //         if (opt_height) {
+    //             webglContext.height = opt_height;
+    //         }
 
-            // webglContext.canvas = document.createElement('canvas');
-            return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            // return webglContext;
-        }
+    //         // webglContext.canvas = document.createElement('canvas');
+    //         return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    //         // return webglContext;
+    //     }
 
-    };
+    // };
 
     /**
      * Get the current computed width for the given element including margin,
@@ -26632,54 +26628,42 @@ function olInit() {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        // this.context_ = ol.dom.createCanvasContext2D();
-        // this.context_ = ol.dom.createCanvasContextWebgl();
-        // this.context_.viewport(0, 0, 1680, 906);
-        // this.context_.webglContext = new ol.webgl.Context(this.context_.canvas, this.context_);
-        // this.context_.gl_ = ol.webgl.getContext(this.canvas_, {
-        //     antialias: true,
-        //     depth: true,
-        //     failIfMajorPerformanceCaveat: true,
-        //     preserveDrawingBuffer: false,
-        //     stencil: true
-        // });
+        this.context_ = ol.dom.createCanvasContext2D();
 
         /**
          * @private
          * @type {HTMLCanvasElement}
          */
-        this.canvas_ = /** @type {HTMLCanvasElement} */
-            (document.createElement('CANVAS'));
-        // this.canvas_ = this.context_.canvas;
+        this.canvas_ = this.context_.canvas;
         this.canvas_.style.width = '100%';
         this.canvas_.style.height = '100%';
         this.canvas_.style.display = 'block';
         this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
         container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
-        this.gl_ = ol.webgl.getContext(this.canvas_, {
-            antialias: true,
-            depth: true,
-            failIfMajorPerformanceCaveat: true,
-            preserveDrawingBuffer: false,
-            stencil: true
-        });
+        // this.gl_ = ol.webgl.getContext(this.canvas_, {
+        //     antialias: true,
+        //     depth: true,
+        //     failIfMajorPerformanceCaveat: true,
+        //     preserveDrawingBuffer: false,
+        //     stencil: true
+        // });
         
         // this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-        this.gl_.activeTexture(ol.webgl.TEXTURE0);
-        this.gl_.blendFuncSeparate(
-            ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
-            ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
-        this.gl_.disable(ol.webgl.CULL_FACE);
-        this.gl_.enable(ol.webgl.DEPTH_TEST);
-        this.gl_.disable(ol.webgl.SCISSOR_TEST);
-        this.gl_.disable(ol.webgl.STENCIL_TEST);
+        // this.gl_.activeTexture(ol.webgl.TEXTURE0);
+        // this.gl_.blendFuncSeparate(
+        //     ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+        //     ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
+        // this.gl_.disable(ol.webgl.CULL_FACE);
+        // this.gl_.enable(ol.webgl.DEPTH_TEST);
+        // this.gl_.disable(ol.webgl.SCISSOR_TEST);
+        // this.gl_.disable(ol.webgl.STENCIL_TEST);
         
         /**
          * @private
          * @type {ol.webgl.Context}
          */
-        this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
+        // this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
         /**
          * @private
@@ -26782,28 +26766,18 @@ function olInit() {
             return;
         }
 
-        //this.focus_ = frameState.focus;
         var context = this.context_;
-        var gl = context.getGL();
         var pixelRatio = frameState.pixelRatio;
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
-        
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            gl.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
-            // context.clearRect(0, 0, width, height);
+            context.clearRect(0, 0, width, height);
         }
-        
-        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
-        // gl.enable(gl.BLEND);
-        // gl.enable(gl.DEPTH_TEST);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        // gl.depthMask(true);
-        // gl.depthFunc(gl.NOTEQUAL);
-        // var rotation = frameState.viewState.rotation;
+
+        var rotation = frameState.viewState.rotation;
 
         this.calculateMatrices2D(frameState);
 
@@ -26812,10 +26786,10 @@ function olInit() {
         var layerStatesArray = frameState.layerStatesArray;
         ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
-        // if (rotation) {
-            // context.save();
-            // ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
-        // }
+        if (rotation) {
+            context.save();
+            ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+        }
 
         var viewResolution = frameState.viewState.resolution;
         var i, ii, layer, layerRenderer, layerState;
@@ -26831,31 +26805,10 @@ function olInit() {
                 layerRenderer.composeFrame(frameState, layerState, context);
             }
         }
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-        
-        // gl.disable(gl.DEPTH_TEST);
-        // gl.clear(gl.DEPTH_BUFFER_BIT);
-        // Restore GL parameters.
-        // gl.depthMask(tmpDepthMask);
-        // gl.depthFunc(tmpDepthFunc);
 
-        // if (rotation) {
-            // context.restore();
-        // }
-
-        // FIXME Texture
-        // if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-        //     ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-        //     frameState.postRenderFunctions.push(
-        //   /** @type {ol.PostRenderFunction} */(this.expireCache_.bind(this))
-        //     );
-        // }
-
-        // if (!this.tileTextureQueue_.isEmpty()) {
-        //     frameState.postRenderFunctions.push(this.loadNextTileTexture_);
-        //     frameState.animate = true;
-        // }
+        if (rotation) {
+            context.restore();
+        }
 
         this.dispatchComposeEvent_(
             ol.render.EventType.POSTCOMPOSE, frameState);
@@ -29289,66 +29242,12 @@ function olInit() {
      * @struct
      */
     ol.render.canvas.LineStringReplay = function (
-        tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-        this.fragment = ol.render.webgl.linestringreplay.defaultshader.fragment;
-        this.vertex = ol.render.webgl.linestringreplay.defaultshader.vertex;
-        this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.origin = [0, 0];
-        this.tmpMat4_ = [
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1
-        ];
-
+        tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {  
         ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
-    /**
-     * webgl insert
-     */
-    ol.render.canvas.LineStringReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
-        // get the program
-        var program = context.getProgram(this.fragment, this.vertex);
-
-        // get the locations
-        var locations;
-        if (!this.defaultLocations_) {
-        locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
-            this.defaultLocations_ = locations;
-        } else {
-            locations = this.defaultLocations_;
-        }
-
-        context.useProgram(program);
-
-        // enable the vertex attrib arrays
-        gl.enableVertexAttribArray(locations.a_lastPos);
-        gl.vertexAttribPointer(locations.a_lastPos, 2, gl.FLOAT,
-            false, 28, 0);
-
-        gl.enableVertexAttribArray(locations.a_position);
-        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
-            false, 28, 8);
-
-        gl.enableVertexAttribArray(locations.a_nextPos);
-        gl.vertexAttribPointer(locations.a_nextPos, 2, gl.FLOAT,
-            false, 28, 16);
-
-        gl.enableVertexAttribArray(locations.a_direction);
-        gl.vertexAttribPointer(locations.a_direction, 1, gl.FLOAT,
-            false, 28, 24);
-
-        // Enable renderer specific uniforms.
-        gl.uniform2fv(locations.u_size, size);
-        gl.uniform1f(locations.u_pixelRatio, pixelRatio);
-
-        return locations;
-    }
 
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -29482,91 +29381,12 @@ function olInit() {
      */
     ol.render.canvas.PolygonReplay = function (
         tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-            this.fragment = ol.render.webgl.polygonreplay.defaultshader.fragment;
-            this.vertex = ol.render.webgl.polygonreplay.defaultshader.vertex;    
-            this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.origin = [0, 0];
-            this.tmpMat4_ = [
-                1, 0, 0, 0, 0,
-                1, 0, 0, 0, 0,
-                1, 0, 0, 0, 0,
-                1
-            ];
-
             ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
-
-    /**
-     * webgl insert
-     */
-    ol.render.canvas.PolygonReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
-        // get the program
-        var program = context.getProgram(this.fragment, this.vertex);
-
-        // get the locations
-        var locations;
-        if (!this.defaultLocations_) {
-        locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
-            this.defaultLocations_ = locations;
-        } else {
-            locations = this.defaultLocations_;
-        }
-
-        context.useProgram(program);
-
-        // enable the vertex attrib arrays
-        gl.enableVertexAttribArray(locations.a_position);
-        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
-            false, 8, 0);
-
-        return locations;
-    }
-
-    ol.render.canvas.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
-        var this$1 = this;
-
-        //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-
-        if (!hitDetection) {
-            gl.enable(gl.DEPTH_TEST);
-            // gl.depthMask(true);
-            // gl.depthFunc(gl.NOTEQUAL);
-        }
-
-        if (!isEmpty(skippedFeaturesHash)) {
-            this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-        } else {
-            //Draw by style groups to minimize drawElements() calls.
-            var i, start, end, nextStyle;
-            end = this.startIndices[this.startIndices.length - 1];
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-                start = this$1.styleIndices_[i];
-                nextStyle = this$1.styles_[i];
-                this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-                this$1.drawElements(gl, context, start, end);
-                gl.clear(gl.DEPTH_BUFFER_BIT);
-                end = start;
-            }
-        }
-        if (!hitDetection) {
-            gl.disable(gl.DEPTH_TEST);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-            //Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
-        }
-    };
-
-    ol.render.canvas.PolygonReplay.prototype.setFillStyle_ = function (gl, color) {
-        gl.uniform4fv(this.defaultLocations_.u_color, color);
-    };
-
+    
+    
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
      * @param {number} offset Offset.
@@ -30568,12 +30388,13 @@ function olInit() {
     ol.render.canvas.ReplayGroup.replayDeclutter = function (declutterReplays, context, rotation) {
         var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
         var skippedFeatureUids = {};
+        
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
                 var replay = replayData[i++];                
                 var transform = replayData[i++];
-                replay.replay(context, transform, rotation, skippedFeatureUids, replayData[i++]);
+                replay.replay(context, transform, rotation, skippedFeatureUids);
             }
         }
     };
@@ -30794,18 +30615,18 @@ function olInit() {
      */
     ol.render.canvas.ReplayGroup.prototype.replay = function (context,
         transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
+        
         /** @type {Array.<number>} */
         var zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort(ol.array.numberSafeCompareFunction);
 
         // setup clipping so that the parts of over-simplified geometries are not
         // visible outside the current extent when panning
-        // context.save();
-        // this.clip(context, transform);
+        context.save();
+        this.clip(context, transform);
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
-        var flag=true;
         for (i = 0, ii = zs.length; i < ii; ++i) {
             var zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -30813,9 +30634,6 @@ function olInit() {
                 var replayType = replayTypes[j];
                 replay = replays[replayType];
                 if (replay !== undefined) {
-                    if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
-                        flag=false;                        
-                    }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30824,21 +30642,14 @@ function olInit() {
                         } else {
                             declutter.push(replay, transform.slice(0));
                         }
-                    } else {                        
+                    } else {
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }
             }
         }
-        
-        if(flag===false){
-            // var webglContext = ol.webglContext;
-            // var width = webglContext.canvas.width;
-            // var height = webglContext.canvas.height;
-            // context.drawImage(webglContext.canvas, 0, 0, width, height);
-            // ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
-        }
-        // context.restore();
+
+        context.restore();      
     };
 
 
@@ -30987,7 +30798,7 @@ function olInit() {
      * @template T
      */
     ol.renderer.vector.renderFeature = function (
-        replayGroup, feature, style, squaredTolerance, listener, thisArg,options) {
+        replayGroup, feature, style, squaredTolerance, listener, thisArg) {
         var loading = false;
         var imageStyle, imageState;
         imageStyle = style.getImage();
@@ -31006,7 +30817,7 @@ function olInit() {
             }
         }
         ol.renderer.vector.renderFeature_(replayGroup, feature, style,
-            squaredTolerance,options);
+            squaredTolerance);
 
         return loading;
     };
@@ -31020,7 +30831,7 @@ function olInit() {
      * @private
      */
     ol.renderer.vector.renderFeature_ = function (
-        replayGroup, feature, style, squaredTolerance,options) {
+        replayGroup, feature, style, squaredTolerance) {
         var geometry = style.getGeometryFunction()(feature);
 
         if (!geometry) {
@@ -31034,7 +30845,7 @@ function olInit() {
             var geometryRenderer =
                 ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
                 
-            geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
+            geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
         }
     };
 
@@ -31084,7 +30895,7 @@ function olInit() {
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
      */
-    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature,options) {
+    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature) {
         var strokeStyle = style.getStroke();
         if (strokeStyle) {
             var lineStringReplay = replayGroup.getReplay(
@@ -31158,7 +30969,6 @@ function olInit() {
      * @param {ol.style.Style} style Style.
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
-     * @override_
      */
     ol.renderer.vector.renderPointGeometry_ = function (replayGroup, geometry, style, feature) {
         var imageStyle = style.getImage();
@@ -31974,7 +31784,7 @@ function olInit() {
     ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function (
         tile, frameState, layerState, x, y, w, h, gutter, transition) {
         var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
-        this.createReplayGroup_(vectorImageTile, frameState, x, y);
+        this.createReplayGroup_(vectorImageTile, frameState);
         if (this.context) {
             this.renderTileImage_(vectorImageTile, frameState, layerState);
             ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
@@ -37984,11 +37794,6 @@ function olInit() {
                 fraction * flatCoordinates[offset + stride];
             pointY = (1 - fraction) * flatCoordinates[offset + 1] +
                 fraction * flatCoordinates[offset + stride + 1];
-            // import for rotation
-            flatCoordinates.push(flatCoordinates[offset + stride]);
-            flatCoordinates.push(flatCoordinates[offset + stride + 1]);
-            flatCoordinates[offset + stride] = pointX;
-            flatCoordinates[offset + stride + 1] = pointY;
         } else if (n !== 0) {
             var x1 = flatCoordinates[offset];
             var y1 = flatCoordinates[offset + 1];
@@ -38012,15 +37817,7 @@ function olInit() {
                 pointX = ol.math.lerp(
                     flatCoordinates[o], flatCoordinates[o + stride], t);
                 pointY = ol.math.lerp(
-                    flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
-                
-                // import for rotation         
-                // for(var i = flatCoordinates.length; i > o; i -= 2){
-                    // flatCoordinates[i] = flatCoordinates[i - 2];
-                    // flatCoordinates[i + 1] = flatCoordinates[i - 1];
-                // }       
-                flatCoordinates[o] = pointX;
-                flatCoordinates[o + 1] = pointY;
+                    flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);                
             } else {
                 pointX = flatCoordinates[offset + index * stride];
                 pointY = flatCoordinates[offset + index * stride + 1];
@@ -67051,7 +66848,7 @@ function olInit() {
         'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.texturereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nuniform float u_zIndex;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
+        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
         'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.0,0.0);gl_Position=h*vec4(c,0.0,1.0)+offsets;a=d;b=f;}');
 
     // This file is automatically generated, do not edit
@@ -67097,12 +66894,6 @@ function olInit() {
          */
         this.u_image = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_image' : 'l');
-
-        /**
-         * @type {WebGLUniformLocation}
-         */
-        this.u_zIndex = gl.getUniformLocation(
-            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'm');
 
         /**
          * @type {number}
@@ -67671,8 +67462,10 @@ function olInit() {
                 for (i = 0, ii = textures.length; i < ii; ++i) {
                     gl.deleteTexture(textures[i]);
                 }
-                for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
-                    gl.deleteTexture(texturePerImages[j]);
+                if(texturePerImages){
+                    for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
+                        gl.deleteTexture(texturePerImages[j]);
+                    }
                 }
             }
             context.deleteBuffer(verticesBuffer);
@@ -67880,14 +67673,8 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
         var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-        // gl.enable(gl.STENCIL_TEST);
-        // gl.colorMask(false, false, false, false);
-        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
-        // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        //   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        // gl.enable(gl.CULL_FACE);
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
                 gl, context, skippedFeaturesHash, textures, groupIndices);
@@ -67916,10 +67703,6 @@ function olInit() {
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
         gl.disable(gl.BLEND);
-        // gl.colorMask(true, true, true, true);
-        // gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
-        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-        // gl.disable(gl.STENCIL_TEST);
     };
 
 
@@ -68132,7 +67915,6 @@ function olInit() {
 
     /**
      * @inheritDoc
-     * @override_
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
         var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -68155,24 +67937,23 @@ function olInit() {
         // create, bind, and populate the vertices buffer
         this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
+        var indices = this.indices;
+
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+        this.indicesBuffer = new ol.webgl.Buffer(indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        // var texturePerImage = {};
-        this.textures_ = [];
-   
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+        var texturePerImage = {};
+
+        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-            this.texturePerImage, gl);
+            texturePerImage, gl);
 
-        this.images_ = [];
-        this.hitDetectionImages_ = [];
-        // this.indices = [];
-        // this.vertices = [];
-        // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+        this.images_ = null;
+        this.hitDetectionImages_ = null;
+        ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
 
@@ -68191,29 +67972,28 @@ function olInit() {
         var size = imageStyle.getSize();
         var scale = imageStyle.getScale();
 
-        // var currentImage;
-        // if (this.images_.length === 0) {
-        //     this.images_.push(image);
-        // } else {
-        //     currentImage = this.images_[this.images_.length - 1];
-        //     if (ol.getUid(currentImage) != ol.getUid(image)) {
-        //         this.groupIndices.push(this.indices.length);
-        //         this.images_.push(image);
-        //     }
-        // }
+        var currentImage;
+        if (this.images_.length === 0) {
+            this.images_.push(image);
+        } else {
+            currentImage = this.images_[this.images_.length - 1];
+            if (ol.getUid(currentImage) != ol.getUid(image)) {
+                this.groupIndices.push(this.indices.length);
+                this.images_.push(image);
+            }
+        }
 
-        // if (this.hitDetectionImages_.length === 0) {
-        //     this.hitDetectionImages_.push(hitDetectionImage);
-        // } else {
-        //     currentImage =
-        //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-        //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
-        //         this.hitDetectionGroupIndices.push(this.indices.length);
-        //         this.hitDetectionImages_.push(hitDetectionImage);
-        //     }
-        // }
+        if (this.hitDetectionImages_.length === 0) {
+            this.hitDetectionImages_.push(hitDetectionImage);
+        } else {
+            currentImage =
+                this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+            if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+                this.hitDetectionGroupIndices.push(this.indices.length);
+                this.hitDetectionImages_.push(hitDetectionImage);
+            }
+        }
 
-        this.image = image;
         this.anchorX = anchor[0];
         this.anchorY = anchor[1];
         this.height = size[1];
@@ -69410,7 +69190,7 @@ function olInit() {
         'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform float u_zIndex;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0);\n}\n\n\n' :
+        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n' :
         'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}');
 
     // This file is automatically generated, do not edit
@@ -69456,12 +69236,6 @@ function olInit() {
          */
         this.u_opacity = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_opacity' : 'f');
-
-        /**
-         * @type {WebGLUniformLocation}
-         */
-        this.u_zIndex = gl.getUniformLocation(
-            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'g');
 
         /**
          * @type {number}
@@ -70611,7 +70385,6 @@ function olInit() {
                     var outer = outers[i];
                     this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                 }
-                // outerRing.length > 6 && this.drawCoordinates_(outerRing, [], stride);       
             }
 
             {
@@ -70733,7 +70506,7 @@ function olInit() {
                 start = this.styleIndices_[i];
                 end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
                 nextStyle = this.styles_[i];
-                gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
+                // gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
             }
@@ -70858,24 +70631,6 @@ function olInit() {
         // if (!(fillStyleColor instanceof CanvasGradient) &&
         //     !(fillStyleColor instanceof CanvasPattern)) {
         if(fillStyleColor){
-            // FIXME replace it with other ways,maybe gl.BLEND
-            // var strColor = ol.color.asArray(fillStyleColor);
-            // if(+strColor[3] !== 1){
-            //     const A1 = +strColor[3];
-            //     const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-            //     const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-            //     const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-            //     const A3 = 1;
-            //     strColor[0] = R3.toFixed(6).toString();
-            //     strColor[1] = G3.toFixed(6).toString();
-            //     strColor[2] = B3.toFixed(6).toString();
-            //     strColor[3] = A3.toString();
-            // }
-        
-            // fillStyleColor = strColor.map((val, index) => {
-            //     return index !== 3 ? val / 255 : +val;
-            // });
-
             fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
                 return i != 3 ? c / 255 : c;
             }) || ol.render.webgl.defaultFillStyle;
@@ -70892,78 +70647,17 @@ function olInit() {
         if(this.lineStringReplay){
             if (strokeStyle) {
                 this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+            }else{
+                var nullStrokeStyle = new ol.style.Stroke({
+                    color: [0, 0, 0, 0],
+                    lineWidth: 0
+                });
+                this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
             }
         }
     };
 
-    /**
-     * FIXME: Used for webgl calculation
-     */
-    ol.render.webgl.PolygonReplay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, ends, stride, closed) {
-        var ends_ = [];
-        var extent = this.maxExtent;
-        var skipFirst = this.state_.strokeStyle;        
-        
-        if(!this.webglDrawType){
-            this.webglDrawType = 'polygonReplay';
-            this.webglEnds = [];
-            this.webglFlatCoordinates = [];
-            this.featureIndices = [];
-            this.styleIndices = [];
-        }
-
-        if (this.state_.changed) {
-            this.styleIndices.push(this.webglEnds.length);
-            this.state_.changed = false;
-        } 
-
-        this.featureIndices.push(this.webglEnds.length);         
-        var myEnd = this.webglFlatCoordinates.length;
-
-        for(var i = 0; i < ends.length; i++){
-            var end = ends[i];
-            
-            if (skipFirst) {
-                offset += stride;
-            }
-            var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-            var nextCoord = [NaN, NaN];
-            var skipped = true;
-    
-            var j, lastRel, nextRel;
-            for (j = offset + stride; j < end; j += stride) {
-                nextCoord[0] = flatCoordinates[j];
-                nextCoord[1] = flatCoordinates[j + 1];
-                nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
-                if (nextRel !== lastRel) {
-                    if (skipped) {
-                        this.webglFlatCoordinates[myEnd++] = lastCoord[0];
-                        this.webglFlatCoordinates[myEnd++] = lastCoord[1];
-                    }
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
-                    skipped = false;
-                } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
-                    skipped = false;
-                } else {
-                    skipped = true;
-                }
-                lastCoord[0] = nextCoord[0];
-                lastCoord[1] = nextCoord[1];
-                lastRel = nextRel;
-            }
-    
-            // Last coordinate equals first or only one point to append:
-            if ((closed && skipped) || j === offset + stride) {
-                this.webglFlatCoordinates[myEnd++] = lastCoord[0];
-                this.webglFlatCoordinates[myEnd++] = lastCoord[1];
-            }
-            offset = end;
-            this.webglEnds.push(myEnd);
-        }        
-    };
+   
     goog.provide('ol.style.Atlas');
 
     goog.require('ol.dom');
@@ -71057,7 +70751,6 @@ function olInit() {
                     image: this.canvas_
                 };
                 this.entries_[id] = entry;
-                // this.context_.canvas.style.display = 'none'
                 // render the image on the atlas image
                 renderCallback.call(opt_this, this.context_,
                     block.x / window.devicePixelRatio + this.space_, block.y / window.devicePixelRatio + this.space_);
@@ -71563,7 +71256,7 @@ function olInit() {
                             this$1.images_.push(image);
                         } else {
                             var currentImage = this$1.images_[this$1.images_.length - 1];
-                            if (getUid(currentImage) != getUid(image)) {
+                            if (ol.getUid(currentImage) != ol.getUid(image)) {
                                 this$1.groupIndices.push(this$1.indices.length);
                                 this$1.images_.push(image);
                             }
@@ -71680,7 +71373,7 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.finish = function (context) {
         var gl = context.getGL();
-        
+
         this.groupIndices.push(this.indices.length);
         this.hitDetectionGroupIndices = this.groupIndices;
 
@@ -71692,12 +71385,9 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        // var texturePerImage = {};
-        this.textures_ = [];
+        var texturePerImage = {};
 
-       
-        
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
         this.state_ = {
             strokeColor: null,
@@ -71716,13 +71406,10 @@ function olInit() {
         this.textBaseline_ = undefined;
         this.offsetX_ = undefined;
         this.offsetY_ = undefined;
-        // this.images_ = null;
-        // this.atlases_ = {};
-        // this.currAtlas_ = undefined;
-        this.images_ = [];
-        // this.indices = [];
-        // this.vertices = [];
-        // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+        this.images_ = null;
+        this.atlases_ = {};
+        this.currAtlas_ = undefined;
+        ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
 
@@ -71772,9 +71459,6 @@ function olInit() {
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;            
             this.currAtlas_ = this.getAtlas_(state);
-
-            this.label = textStyle.label;
-            this.maxAngle_ = textStyle.maxAngle_;
         }
     };
 
@@ -71903,7 +71587,6 @@ function olInit() {
     /**
      * @param {ol.style.Style} style Style.
      * @param {boolean} group Group with previous replay.
-     * @override_
      */
     ol.render.webgl.ReplayGroup.prototype.addDeclutter = function (group) { 
         var declutter = null;
@@ -81823,7 +81506,6 @@ function olInit() {
                 var sourceTile = this.getTile(sourceTileKey);
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
-                // sourceTile.tile = this;
                 sourceTile.pixelRatio = this.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
@@ -82197,11 +81879,7 @@ function olInit() {
             minZoom: options.minZoom,
             tileSize: options.tileSize || 512
         });
-        var webglContext=ol.webglContext;
-        var webglSize=ol.has.DEVICE_PIXEL_RATIO*tileGrid.tileSize_;
-        webglContext.canvas.height = webglSize;
-        webglContext.canvas.width=webglSize;
-        webglContext.gl.viewport(0,0,webglSize,webglSize);
+
         ol.source.UrlTile.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
@@ -98136,7 +97814,6 @@ function olInit() {
             var styleIdIndex = 1;
             var geoStyles = {};
             var styleJsonCache = new StyleJsonCache();
-            // debugger;
             styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
@@ -100880,7 +100557,6 @@ function olInit() {
                 }
                 radius += context.canvas.width * 0.5;
                 context.beginPath();
-                debugger
                 context.arc(x + context.canvas.width * 0.5, y + context.canvas.width * 0.5, radius, 0, 2 * Math.PI, false);
                 context.closePath();
                 if (fill) {
@@ -102342,7 +102018,7 @@ function olInit() {
             return GeoBrush;
         }());       
 
-        self.renderFeature = function (feature, squaredTolerance, styles, replayGroup,options) {
+        self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
             if (!styles) {
                 return false;
             }
@@ -102351,7 +102027,7 @@ function olInit() {
                 for (var i = 0, ii = styles.length; i < ii; ++i) {
                     loading = self.renderFeature_(
                         replayGroup, feature, styles[i], squaredTolerance,
-                        this.handleStyleImageChange_, this,options) || loading;
+                        this.handleStyleImageChange_, this) || loading;
                 }
             } else {
                 loading = self.renderFeature_(
