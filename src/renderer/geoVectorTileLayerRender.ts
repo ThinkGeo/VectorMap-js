@@ -281,13 +281,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         }
         
         if (declutterReplays) {
-            // var hints = frameState.viewHints;
-            // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
-            // delete context["quickZoom"]
-            // if (animatingOrInteracting) {
-            //     context["quickZoom"] = frameState["quickZoom"];
-            // }
-            // context["currentResolution"] = frameState["currentResolution"];
             this.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {
@@ -328,9 +321,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         replay.drawPoint(tmpOptions[k]);
                     }
                 }
-                replay.finish(context);
-                // replay.options = tmpOptions;
-               
+                replay.finish(context);               
                 replay.replay(context, rotation, skippedFeatureUids, screenXY);
             }
         }

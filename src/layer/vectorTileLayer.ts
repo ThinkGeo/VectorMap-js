@@ -685,16 +685,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         (<any>ol.render).webgl.Replay.prototype.declutterRepeat_ = function (context, screenXY){
             var startIndicesFeature = this.startIndicesFeature;
             var startIndicesStyle = this.startIndicesStyle;
-            // this.indices.length = 0;
-            // this.vertices.length = 0;
-            // this.groupIndices.length = 0;
-            // this.images_.length = 0;
             var frameState = context.frameState;
             var pixelRatio = frameState.pixelRatio;
-            // var tilePixelExtent = [];           
             this.screenXY = screenXY;
-            // this.tilePixelExtent = tilePixelExtent;
-            this.tmpOptions = [];
 
             for(var i = 0; i < startIndicesFeature.length; i++){
                 var feature = startIndicesFeature[i];
@@ -705,11 +698,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 if(!style){
                     continue;
-                }
-
-                // if(style.text_ && !style.text_.includes('Fort')){
-                    if(style.text_ && !style.text_.includes('America')){
-                    // continue
                 }
                 
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
@@ -775,12 +763,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             var options = declutter[0];
                             var this$1 = declutter[1];
                             this$1.tmpOptions.push(options);
-
-                            // if(this$1 instanceof (<any>ol).render.webgl.TextReplay){
-                            //     this$1.drawText(options);
-                            // }else if(this$1 instanceof (<any>ol).render.webgl.ImageReplay){
-                            //     this$1.drawPoint(options);
-                            // }
                         }
                     }
                     declutterGroup.length = 5;

@@ -93,6 +93,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                     if (opt_declutterReplays &&
                         (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
                         let declutter = opt_declutterReplays[zIndexKey];
+                        replay.tmpOptions = [];
                         if (!declutter) {
                             opt_declutterReplays[zIndexKey] = [replay, screenXY];
                         } else {
