@@ -1009,13 +1009,11 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                    
                     if (this.images_.length === 0) {
                         this.images_.push(image);
-                        this.styles_.push([255,255,255,1])
                     } else {
                         currentImage = this.images_[this.images_.length - 1];
                         if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
                             this.groupIndices.push(this.indices.length);
                             this.images_.push(image);
-                            this.styles_.push([255,255,255,1])
                         }
                     }
                     
@@ -1048,19 +1046,13 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this$1.imageHeight = image.height;
                             this$1.imageWidth = image.width;
                             this$1.rotateWithView = 1;
-                            var fillStyleColor = ol.color.asArray(this$1.state_.fillColor);
                             if (this$1.images_.length === 0) {
                                 this$1.images_.push(image);
-                                
-                                this$1.styles_.push(fillStyleColor)
                             } else {
-
                                 var currentImage = this$1.images_[this$1.images_.length - 1];
                                 if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
                                     this$1.groupIndices.push(this$1.indices.length);
                                     this$1.images_.push(image);
-
-                                    this$1.styles_.push(fillStyleColor)
                                 }
                             }
                             this$1.scale_ = 1 / window.devicePixelRatio;
