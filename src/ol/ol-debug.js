@@ -70135,6 +70135,7 @@ function olInit() {
         var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
+            gl.enable(gl.BLEND);
             gl.enable(gl.DEPTH_TEST);
             gl.depthMask(true);
             gl.depthFunc(gl.NOTEQUAL);
@@ -70155,6 +70156,7 @@ function olInit() {
             }
         }
         if (!hitDetection) {
+            gl.disable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
             gl.clear(gl.DEPTH_BUFFER_BIT);
             //Restore GL parameters.
