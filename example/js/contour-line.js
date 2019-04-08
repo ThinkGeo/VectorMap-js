@@ -1,221 +1,220 @@
-/*===========================================================================*/
-// Precipitation Distribution
-// Sample map by ThinkGeo
-// 
-//   1. ThinkGeo Cloud API Key
-//   2. Map Control Setup
-//   3. Precipitation Distribution Layer Setup
-//   4. ThinkGeo Map Icon Fonts
-/*===========================================================================*/
-
-
-/*---------------------------------------------*/
-// 1. ThinkGeo Cloud API Key
-/*---------------------------------------------*/
-
-// First, let's define our ThinkGeo Cloud API key, which we'll use to
-// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
-// restricted for use only from a given web domain or IP address.  To create your
-// own API key, you'll need to sign up for a ThinkGeo Cloud account at
-// https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-
-/*---------------------------------------------*/
-// 2. Map Control Setup
-/*---------------------------------------------*/
-
-// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
-// Cloud Maps Vector Tile service to display a detailed street map.  For more
-// info, see our wiki:
-// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
 let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json", {
     'apiKey': apiKey,
 });
+let map = new ol.Map({
+    loadTilesWhileAnimating: true,
+    loadTilesWhileInteracting: true,
+    // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
+    layers: [baseLayer],
+    // States that the HTML tag with id="map" should serve as the container for our map.
+    target: 'map',
+    // Create a default view for the map when it starts up.
+    view: new ol.View({
+        // Center the map on San Francisco - Coit Tower and start at zoom level 16.
+        center: ol.proj.fromLonLat([-92.405729, 37.802898]),
+        maxResolution: 40075016.68557849 / 512,
+        zoom: 3,
+        minZoom: 1,
+        maxZoom: 19,
+        progressiveZoom: false,
+    })
+});
 
-// This function will create and initialize our interactive map.
-// We'll call it later when our POI icon font has been fully downloaded,
-// which ensures that the POI icons display as intended.
-let map;
-let initializeMap = function () {
-    map = new ol.Map({
-        loadTilesWhileAnimating: true,
-        loadTilesWhileInteracting: true,
-        // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
-        layers: [baseLayer],
-        // States that the HTML tag with id="map" should serve as the container for our map.
-        target: 'map',
-        // Create a default view for the map when it starts up.
-        view: new ol.View({
-            // Center the map on China and start at zoom level 3.
-            center: [11877713.642017495, 3471206.770222437],
-            maxResolution: 40075016.68557849 / 512,
-            zoom: 3,
-            minZoom: 1,
-            maxZoom: 19,
-            progressiveZoom: false,
+// Add a button to the map that lets us toggle full-screen display mode.
+map.addControl(new ol.control.FullScreen());
+
+let rainfullStyle1 = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+            color: '#ffffffcc',
+            width: 1
+        }),
+        fill: new ol.style.Fill({
+            color: '#86e4ff'
         })
+    })
+});
+let rainfullStyle2 = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+            color: '#ffffffcc',
+            width: 1
+        }),
+        fill: new ol.style.Fill({
+            color: '#0fcaff'
+        })
+    })
+});
+let rainfullStyle3 = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+            color: '#ffffffcc',
+            width: 1
+        }),
+        fill: new ol.style.Fill({
+            color: '#009dca'
+        })
+    })
+});
+let rainfullStyle4 = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+            color: '#ffffffcc',
+            width: 1
+        }),
+        fill: new ol.style.Fill({
+            color: '#006986'
+        })
+    })
+});
+let rainfullStyle5 = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        stroke: new ol.style.Stroke({
+            color: '#ffffffcc',
+            width: 1
+        }),
+        fill: new ol.style.Fill({
+            color: '#004153'
+        })
+    })
+});
+
+let rainfullSource = new ol.source.Vector({
+    url: '../data/RainfallRecords_2018-03_to_2019-03.geojson',
+    format: new ol.format.GeoJSON()
+});
+
+let unit = 'mm';
+
+let levels = [30, 50, 70, 90];
+let rainfullLayer = new ol.layer.Vector({
+    source: rainfullSource,
+    style: (feature) => {
+        let value = feature.get("value");
+        feature.set("type", "rainfull");
+        feature.set("stationName", feature.get('stationName'));
+        feature.set("date", feature.get('date'));
+        feature.set("previousDate", feature.get('previousDate'));
+        feature.set("value", feature.get('value'));
+        feature.set("previousValue", feature.get('previousValue'));
+        feature.set("difference", feature.get('difference'));
+        if (value < levels[0]) {
+            return rainfullStyle1;
+        } else if (value >= levels[0] && value < levels[1]) {
+            return rainfullStyle2;
+        } else if (value >= levels[1] && value < levels[2]) {
+            return rainfullStyle3;
+        } else if (value >= levels[2] && value < levels[3]) {
+            return rainfullStyle4;
+        } else if (value >= levels[3]) {
+            return rainfullStyle5;
+        }
+    }
+});
+
+map.addLayer(rainfullLayer);
+
+
+let container = document.getElementById('popup');
+let content = document.getElementById('popup-content');
+let overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    offset: [-3, 5]
+});
+
+let currentPixel;
+let displayFeatureInfo = (e) => {
+    let pixel = map.getEventPixel(e.originalEvent);
+    currentPixel = pixel;
+    updatePopupBoxInfo(pixel);
+};
+
+const updatePopupBoxInfo = (pixel) => {
+    let feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+        return feature;
     });
 
-    // Add a button to the map that lets us toggle full-screen display mode.
-    map.addControl(new ol.control.FullScreen());
-    addPrecipitationDistributionLayer();
-}
+    if (feature && feature.get("type") === "rainfull") {
+        let value = feature.get("value");
+        let previousValue = feature.get("previousValue");
+        let difference = feature.get("difference");
 
-
-/*---------------------------------------------*/
-// 3. Precipitation Distribution Layer Setup
-/*---------------------------------------------*/
-
-// Now that we've set up our map's base layer, we need to actually create 
-// the precipitation distribution layer.
-
-// Here we uses two styles to show the precipitation distribution layer.
-// Set the style for precipitation distribution layer line and text.
-let styleLineFunc = function (feature) {
-    let color = feature.get("color");
-    let text = feature.get("symbol");
-    color = "rgba(" + color + ")";
-    return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: color,
-            width: 2
-        }),
-        text: new ol.style.Text({
-            text: text,
-            placement: 'line',
-            font: '20px  Calibri,sans-serif',
-            fill: new ol.style.Fill({
-                color: color,
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#fff',
-                width: 2
-            }),
-        })
-    })
-};
-
-// Set the style for filling the sparse space of the precipitation distribution layer.
-let stylePlaneFunc = function (feature) {
-    let color = feature.get("color");
-    color = "rgba(" + color + ")";
-    return new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: color
-        })
-    })
-};
-
-
-// Load the data layer that will let us visualize China's precipitation distribution. 
-// We'll load it from a small JSON file hosted on our servers.
-// We'll call this method when the map has 
-const addPrecipitationDistributionLayer = () => {
-    let precipitationDistributionLayer;
-    const getJson = () => {
-        let readTextFile = new Promise(function (resolve, reject) {
-            // Load the China Rain Fall data from ThinkGeo's servers.
-            let file = "../data/rainfall.json";
-            let rawFile = new XMLHttpRequest();
-            rawFile.overrideMimeType("application/json");
-            rawFile.open("GET", file, true);
-            rawFile.onreadystatechange = function (ERR) {
-                if (rawFile.readyState === 4) {
-                    if (rawFile.status == "200") {
-                        resolve(rawFile.responseText);
-                    } else {
-                        reject(new Error(ERR));
-                    }
-                }
-            };
-            rawFile.send(null);
-        });
-        return readTextFile;
-    };
-
-    getJson().then((data) => {
-        result = JSON.parse(data);
-
-        let geojson = {
-            "type": "FeatureCollection",
-            "totalFeatures": result.contours.length,
-            // Let's build up an array of features, one for each point in our dataset.
-            "features": []
-        };
-
-        // For each feature in the dataset, add it to the feature 
-        // collection array and create a point shape.
-        for (let i = 0; i < result.contours.length; i++) {
-            let contour = result.contours[i];
-            let coords = [];
-            for (let j = 0; j < contour.latAndLong.length; j++) {
-                let latlon = contour.latAndLong[j];
-                coords.push(ol.proj.transform([latlon[1], latlon[0]], 'EPSG:4326', 'EPSG:3857'));
-            }
-            let feature = {
-                "type": "Feature",
-                "geometry_name": "geom",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [coords]
-                },
-                "properties": {
-                    "color": contour.color,
-                    "symbol": contour.symbol
-                }
-            };
-            geojson.features.push(feature);
+        if (unit === "in") {
+            value = Math.round(value * 0.03937007874016 * 100000) / 100000;
+            previousValue = Math.round(previousValue * 0.03937007874016 * 100000) / 100000;
+            difference = Math.round(difference * 0.03937007874016 * 100000) / 100000;
         }
 
-        // Create a vector Source that will enable us to display our data points 
-        // as map, and pass our array of features into it. 
-        let vectorSource = new ol.source.Vector({
-            features: (new ol.format.GeoJSON()).readFeatures(geojson)
-        });
-
-        // Create Precipitation Distribution Layer whose source is our China Rain Fall data, and add it to our map.
-        precipitationDistributionLayer = new ol.layer.Vector({
-            source: vectorSource,
-            style: function (feature) {
-                textStyle.getText().setText(feature.get('symbol'));
-                return textStyle;
-            }
-        });
-
-        // We set the Precipitation Distribution Layer's default style as spare space with color.
-        precipitationDistributionLayer.setStyle(stylePlaneFunc);
-        precipitationDistributionLayer.setOpacity(0.8);
-
-        // Check the status of checkbox to switch the Precipitation Distribution Layer style.
-        document.getElementById('checkbox').addEventListener('change', function () {
-            if (document.getElementById('checkbox').checked) {
-                precipitationDistributionLayer.setStyle(stylePlaneFunc);
-            } else {
-                precipitationDistributionLayer.setStyle(styleLineFunc);
-            }
-        })
-
-        // Add the pre-defined layer to our map.
-        map.addLayer(precipitationDistributionLayer);
-    })
+        let coord = feature.getGeometry().getCoordinates();
+        content.innerHTML = `<p>Station Name: ${feature.get("stationName")}</p>
+                             <p>Date: ${feature.get("date")}</p>
+                             <p>Previous Date: ${feature.get("previousDate")}</p>
+                             <p>Value: ${value} ${unit}</p>
+                             <p>Previous Value: ${previousValue} ${unit}</p>
+                             <p>Difference: ${difference} ${unit}</p>`;
+        overlay.setPosition(coord)
+        map.addOverlay(overlay)
+    } else {
+        map.removeOverlay(overlay);
+    }
 }
 
-/*---------------------------------------------*/
-// 4. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
-// The loaded Icon Fonts will be used to render POI icons on top of the map's 
-// background layer.  We'll initalize the map only once the font has been 
-// downloaded.  For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-WebFont.load({
-    custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-    },
-    // The "active" property defines a function to call when the font has
-    // finished downloading.  Here, we'll call our initializeMap method.
-    active: initializeMap
+map.on('click', function (e) {
+    if (e.dragging) {
+        return;
+    }
+    displayFeatureInfo(e);
 });
+
+
+
+
+const toggleUnit = (value) => {
+    switch (value) {
+        case "Millimeters":
+            return "mm";
+        case "Inches":
+            return "in";
+        default:
+            return "mm";
+    }
+}
+
+const updateLegendBoxInfo = (unit) => {
+    let newLevels = levels.slice(0); // deep copy
+    let currentUnit;
+    if(unit === "in"){
+        currentUnit = "inches";
+        for (let i = 0, l = newLevels.length; i < l; i++) {
+            newLevels[i] = Math.round(newLevels[i] * 0.03937007874016 * 100000) / 100000;
+        }
+    }else{
+        currentUnit = "millimeters";
+    }
+
+    document.getElementsByClassName('level')[0].innerHTML = `&lt${newLevels[0]}`;
+    document.getElementsByClassName('level')[1].innerHTML = `${newLevels[0]}-${newLevels[1]}`;
+    document.getElementsByClassName('level')[2].innerHTML = `${newLevels[1]}-${newLevels[2]}`;
+    document.getElementsByClassName('level')[3].innerHTML = `${newLevels[2]}-${newLevels[3]}`;
+    document.getElementsByClassName('level')[4].innerHTML = `&gt${newLevels[3]}`;
+    document.getElementsByClassName('unit')[0].innerHTML = currentUnit;
+}
+
+let radioInput = document.querySelectorAll('input[type=radio]');
+for (let i = 0, l = radioInput.length; i < l; i++) {
+    radioInput[i].addEventListener('change', (e) => {
+        unit = toggleUnit(e.target.value);
+        if(currentPixel !== undefined){
+            updatePopupBoxInfo(currentPixel);
+        }        
+        updateLegendBoxInfo(unit);
+    })
+}
