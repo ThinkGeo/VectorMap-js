@@ -9,7 +9,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         this.declutterTree_ = (<any>layer).getDeclutter() ? (<any>ol).ext.rbush(9) : null;
         this.VECTOR_REPLAYS = this.VECTOR_REPLAYS_CUSTOM;
         this.prepareFrame = this.prepareFrameCustom;
-        this.renderTileImage_ = this.renderTileImageCustom;
         this.composeFrame = this.composeFrameCustom;
     }
 
@@ -295,7 +294,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
         // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
-        (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);        
+        // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);        
     }
 
     public replayDeclutter(declutterReplays, context, rotation) {
@@ -407,7 +406,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                 /**
                  * @param {ol.Feature|ol.render.Feature} feature Feature.
-                 * @this {ol.renderer.canvas.VectorTileLayer}
+                 * @this {ol.renderer.webgl.VectorTileLayer}
                  */
                 let renderFeature = function (feature, geoStyles, options) {
                     let styles;
@@ -649,45 +648,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             tileState == (<any>ol).TileState.ERROR && !useInterimTilesOnError;
     }
 
-    public renderTileImageCustom(tile, frameState, layerState) {
-        let layer = this.getLayer();
-        let replayState = tile.getReplayState(layer);
-        let revision = layer.getRevision();
-        let replays = (<any>ol).renderer.canvas.VectorTileLayer.IMAGE_REPLAYS[layer.getRenderMode()];
-        if (replays && replayState.renderedTileLoaded && replayState.renderedTileRevision !== revision) {
-            replayState.renderedTileRevision = revision;
-            let tileCoord = tile.wrappedTileCoord;
-            let z = tileCoord[0];
-            let pixelRatio = frameState.pixelRatio;
-            let source = /** @type {ol.source.VectorTile} */ (layer.getSource());
-            let tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-            let resolution = tileGrid.getResolution(z);
-            let context = tile.getContext(layer);
-            let size = source.getTilePixelSize(z, pixelRatio, frameState.viewState.projection);
-            context.canvas.width = size[0];
-            context.canvas.height = size[1];
-            let tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-            if (layer.background) {
-                context.rect(0, 0, size[0], size[1]);
-                context.fillStyle = layer.background;
-                context.fill();
-            }
-            for (let i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
-                let sourceTile = tile.getTile(tile.tileKeys[i]);
-                if (sourceTile.getState() === (<any>ol).TileState.ERROR) {
-                    continue;
-                }
-                let pixelScale = pixelRatio / resolution;
-                let transform = (<any>ol).transform.reset(this.tmpTransform_);
-                (<any>ol).transform.scale(transform, pixelScale, -pixelScale);
-                (<any>ol).transform.translate(transform, -tileExtent[0], -tileExtent[3]);
-                // reuse replayGroup of source Tile to reduce the memory.
-                let replayGroup = sourceTile.getReplayGroup(layer, tileCoord);
-                replayGroup.replay(context, transform, 0, {}, replays);
-            }
-        }
-    }
-
     public static handles(type: string, layer: ol.layer.Layer) {
         return type === (<any>ol).renderer.Type.WEBGL && (<any>layer).getType() === (<any>ol).LayerType.MAPSUITE_VECTORTILE;
     }
@@ -697,10 +657,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     }
 
     disposeInternal() {
-        (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
-        var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
-        workerManager.close();
-        (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
+        // (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
+        // var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
+        // workerManager.close();
+        // (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
     };
 
     public createLoadedTileFinder(source, projection, tiles, tileLayer) {
