@@ -69515,9 +69515,8 @@ function olInit() {
     ol.render.webgl.PolygonReplay = function (tolerance, maxExtent) {
         ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
-        // this.lineStringReplay = new ol.render.webgl.LineStringReplay(
-        //     tolerance, maxExtent);
-        this.lineStringReplay = undefined;
+        this.lineStringReplay = new ol.render.webgl.LineStringReplay(
+            tolerance, maxExtent);
 
         /**
          * @private
@@ -69561,80 +69560,58 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function (
         flatCoordinates, holeFlatCoordinates, stride) {
         // Triangulate the polygon
-        // var outerRing = new ol.structs.LinkedList();        
-        // var rtree = new ol.structs.RBush();
+        var outerRing = new ol.structs.LinkedList();        
+        var rtree = new ol.structs.RBush();
         // Initialize the outer ring
-        // this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+        this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
         // Eliminate holes, if there are any
-        // if(holeFlatCoordinates.length) {
-        //     var maxCoords = this.getMaxCoords_(outerRing);     
-        //     var i, ii;
-        //     var holeLists = [];
-        //     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-        //         var holeList = {
-        //             list: new ol.structs.LinkedList(),
-        //             maxCoords: undefined,
-        //             rtree: new ol.structs.RBush()
-        //         };
-        //         this.processFlatCoordinates_(holeFlatCoordinates[i],
-        //             stride, holeList.list, holeList.rtree, false);
+        if(holeFlatCoordinates.length) {
+            var maxCoords = this.getMaxCoords_(outerRing);     
+            var i, ii;
+            var holeLists = [];
+            for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+                var holeList = {
+                    list: new ol.structs.LinkedList(),
+                    maxCoords: undefined,
+                    rtree: new ol.structs.RBush()
+                };
+                this.processFlatCoordinates_(holeFlatCoordinates[i],
+                    stride, holeList.list, holeList.rtree, false);
                 
-        //         holeLists.push(holeList);
-        //         this.classifyPoints_(holeList.list, holeList.rtree, true);
-        //         holeList.maxCoords = this.getMaxCoords_(holeList.list);
-        //     }
-        //     holeLists.sort(function (a, b) {
-        //         return b.maxCoords[0] === a.maxCoords[0] ?
-        //             a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
-        //     });
-
-        //     for (i = 0; i < holeLists.length; ++i) {
-        //         var currList = holeLists[i].list;
-        //         var start = currList.firstItem();
-        //         var currItem = start;
-        //         var intersection;
-        //         do {
-        //             //TODO: Triangulate holes when they intersect the outer ring.
-        //             if (this.getIntersections_(currItem, rtree).length) {
-        //                 intersection = true;
-        //                 break;
-        //             }
-        //             currItem = currList.nextItem();
-        //         } while (start !== currItem);
-                
-        //         if (!intersection) {
-        //             if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
-        //                 rtree.concat(holeLists[i].rtree);
-        //                 this.classifyPoints_(outerRing, rtree, false);
-        //             }
-        //         }
-        //     }
-        // } else {
-        //     this.classifyPoints_(outerRing, rtree, false);
-        // }
-        // this.triangulate_(outerRing, rtree);
-
-        var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
-        var holeIndices = [];
-        for (var i = 0; i < holeFlatCoordinates.length; i++) {
-            var holeCoords = holeFlatCoordinates[i];
-            holeIndices.push(coords.length / stride);
-            for (var j = 0; j < holeCoords.length - stride; j++) {
-                coords.push(holeCoords[j]);
+                holeLists.push(holeList);
+                this.classifyPoints_(holeList.list, holeList.rtree, true);
+                holeList.maxCoords = this.getMaxCoords_(holeList.list);
             }
-        }
-        // vertices only hold x,y values
-        var baseIndex = this.vertices.length / 2;
-        if (stride === 2) {
-            Array.prototype.push.apply(this.vertices, coords);
+            holeLists.sort(function (a, b) {
+                return b.maxCoords[0] === a.maxCoords[0] ?
+                    a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
+            });
+
+            for (i = 0; i < holeLists.length; ++i) {
+                var currList = holeLists[i].list;
+                var start = currList.firstItem();
+                var currItem = start;
+                var intersection;
+                do {
+                    //TODO: Triangulate holes when they intersect the outer ring.
+                    if (this.getIntersections_(currItem, rtree).length) {
+                        intersection = true;
+                        break;
+                    }
+                    currItem = currList.nextItem();
+                } while (start !== currItem);
+                
+                if (!intersection) {
+                    if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
+                        rtree.concat(holeLists[i].rtree);
+                        this.classifyPoints_(outerRing, rtree, false);
+                    }
+                }
+            }
         } else {
-            for (var i = 0; i < coords; i += stride) {
-                this.vertices.push(coords[i], coords[i + 1]);
-            }
+            this.classifyPoints_(outerRing, rtree, false);
         }
-        var triangles = self.earcut(coords, holeIndices, stride);
-        triangles = triangles.map(function (i) { return i + baseIndex; });
-        Array.prototype.push.apply(this.indices, triangles);
+        this.triangulate_(outerRing, rtree);        
     };
 
 
@@ -70316,73 +70293,31 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
-        var extent = feature.getGeometry().getExtent();
-        if (ends.length > 0) {            
-            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
-            var index = 0;
-            var outers = [];
-            var outerRing = [];
-            var isClockwise;
-            if(!outers[index]){
-                outers[index] = [];
-            }
-
-            if(ends[0] > 6) {
-                outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                    stride, -this.origin[0], -this.origin[1], undefined, extent, true);         
-                // FIXME it is also a anticlockwise, we don't judge for efficiency
-                outers[index].push(outerRing);
-            }else{
-                outers[index].push([]);
-            }
-            
-            var holes = [];
-            var i, ii, holeFlatCoords;
-            for (i = 1, ii = ends.length; i < ii; ++i) {
-                if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
-                    holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                        ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
-                    if(holeFlatCoords.length > 6){
-                        isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
-                        if(isClockwise){
-                            if(!outers[++index]){
-                                outers[index] = [];
-                            }
-                            outers[index].push(holeFlatCoords);
-                        }else{
-                            outers[index].push(holeFlatCoords);
-                        }
+        if (ends.length > 0) {
+            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+            var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
+                stride, -this.origin[0], -this.origin[1]);
+            if (outerRing.length) {
+                var holes = [];
+                var i, ii, holeFlatCoords;
+                for (i = 1, ii = ends.length; i < ii; ++i) {
+                    if (ends[i] !== ends[i - 1]) {
+                        holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                            ends[i], stride, -this.origin[0], -this.origin[1]);
+                        holes.push(holeFlatCoords);
                     }
                 }
-            }
-            
-            {
-                this.startIndices.push(this.indices.length);
-                // this.startIndicesFeature.push(feature);
 
+                this.startIndices.push(this.indices.length);
+                this.startIndicesFeature.push(feature);
                 if (this.state_.changed) {
-                    this.zCoordinates.push(feature.zCoordinate);
                     this.styleIndices_.push(this.indices.length);
                     this.state_.changed = false;
                 }
-                if(this.lineStringReplay){
-                    // this.lineStringReplay.setPolygonStyle(feature);
-                    // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                }
+                this.lineStringReplay.setPolygonStyle(feature);
 
-                for(var i = 0; i < outers.length; i++){
-                    var outer = outers[i];
-                    this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
-                }
-            }
-
-            {
-                // if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                //     this.styles_.push(this.styles_[0]);
-                //     this.zCoordinates.push(feature.zCoordinate);
-                //     this.styleIndices_.push(this.indices.length);
-                //     this.state_.changed = false;
-                // }              
+                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                this.drawCoordinates_(outerRing, holes, stride);
             }
         }
     };
@@ -101470,7 +101405,112 @@ function olInit() {
             return TextReplayCustom;
         }(ol.render.canvas.TextReplay));
 
+        var GeoPolygonReplay = /** @class */ (function (_super) {
+            __extends(GeoPolygonReplay, _super);            
+            function GeoPolygonReplay(tolerance, maxExtent) {
+                var _this = _super.call(this, tolerance, maxExtent) || this;                
+                this.lineStringReplay = null;
+                return _this;
+            }
+            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
+                var ends = polygonGeometry.getEnds();
+                var stride = polygonGeometry.getStride();
+                var extent = feature.getGeometry().getExtent();
+                if (ends.length > 0) {            
+                    var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
+                    var index = 0;
+                    var outers = [];
+                    var outerRing = [];
+                    var isClockwise;
+                    if(!outers[index]){
+                        outers[index] = [];
+                    }
 
+                    if(ends[0] > 6) {
+                        outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
+                            stride, -this.origin[0], -this.origin[1], undefined, extent, true);         
+                        // FIXME it is also a anticlockwise, we don't judge for efficiency
+                        outers[index].push(outerRing);
+                    }else{
+                        outers[index].push([]);
+                    }
+                    
+                    var holes = [];
+                    var i, ii, holeFlatCoords;
+                    for (i = 1, ii = ends.length; i < ii; ++i) {
+                        if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
+                            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                                ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                            if(holeFlatCoords.length > 6){
+                                isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
+                                if(isClockwise){
+                                    if(!outers[++index]){
+                                        outers[index] = [];
+                                    }
+                                    outers[index].push(holeFlatCoords);
+                                }else{
+                                    outers[index].push(holeFlatCoords);
+                                }
+                            }
+                        }
+                    }
+                    
+                    {
+                        this.startIndices.push(this.indices.length);
+                        // this.startIndicesFeature.push(feature);
+
+                        if (this.state_.changed) {
+                            this.zCoordinates.push(feature.zCoordinate);
+                            this.styleIndices_.push(this.indices.length);
+                            this.state_.changed = false;
+                        }
+                        if(this.lineStringReplay){
+                            // this.lineStringReplay.setPolygonStyle(feature);
+                            // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                        }
+
+                        for(var i = 0; i < outers.length; i++){
+                            var outer = outers[i];
+                            this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
+                        }
+                    }
+
+                    {
+                        // if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                        //     this.styles_.push(this.styles_[0]);
+                        //     this.zCoordinates.push(feature.zCoordinate);
+                        //     this.styleIndices_.push(this.indices.length);
+                        //     this.state_.changed = false;
+                        // }              
+                    }
+                }
+            };
+
+            GeoPolygonReplay.prototype.drawCoordinates_ = function (flatCoordinates, holeFlatCoordinates, stride) {
+                var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
+                var holeIndices = [];
+                for (var i = 0; i < holeFlatCoordinates.length; i++) {
+                    var holeCoords = holeFlatCoordinates[i];
+                    holeIndices.push(coords.length / stride);
+                    for (var j = 0; j < holeCoords.length - stride; j++) {
+                        coords.push(holeCoords[j]);
+                    }
+                }
+                // vertices only hold x,y values
+                var baseIndex = this.vertices.length / 2;
+                if (stride === 2) {
+                    Array.prototype.push.apply(this.vertices, coords);
+                } else {
+                    for (var i = 0; i < coords; i += stride) {
+                        this.vertices.push(coords[i], coords[i + 1]);
+                    }
+                }
+                var triangles = self.earcut(coords, holeIndices, stride);
+                triangles = triangles.map(function (i) { return i + baseIndex; });
+                Array.prototype.push.apply(this.indices, triangles);
+            }
+            return GeoPolygonReplay;
+        }(ol.render.webgl.PolygonReplay));
 
         var ReplayGroupCustom = /** @class */ (function (_super) {
             __extends(ReplayGroupCustom, _super);
@@ -101481,7 +101521,7 @@ function olInit() {
                     "Default": ol.render.webgl.Replay,
                     "Image": ol.render.webgl.ImageReplay,
                     "LineString": ol.render.webgl.LineStringReplay,
-                    "Polygon": ol.render.webgl.PolygonReplay,
+                    "Polygon": GeoPolygonReplay,
                     "Text": TextReplayCustom
                 };
                 _this.minimalist = minimalist;
