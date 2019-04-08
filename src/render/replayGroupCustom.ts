@@ -1,5 +1,6 @@
 import { GeoImageReplay } from './geoImageRepaly';
 import { GeoTextReplay } from './geoTextRepaly';
+import { GeoPolygonReplay } from './geoPolygonRepaly';
 
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
@@ -130,7 +131,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         "Default": (<any>ol.render).webgl.Replay,
         "Image": GeoImageReplay,
         "LineString": (<any>ol.render).webgl.LineStringReplay,
-        "Polygon": (<any>ol.render).webgl.PolygonReplay,
+        "Polygon": GeoPolygonReplay,
         "Text": GeoTextReplay
     };
 }
