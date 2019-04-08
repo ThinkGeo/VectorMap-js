@@ -648,6 +648,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             tileState == (<any>ol).TileState.ERROR && !useInterimTilesOnError;
     }
 
+    public handleStyleImageChange_ = function (event) {
+        this.renderIfReadyAndVisible();
+    }
+
     public static handles(type: string, layer: ol.layer.Layer) {
         return type === (<any>ol).renderer.Type.WEBGL && (<any>layer).getType() === (<any>ol).LayerType.MAPSUITE_VECTORTILE;
     }
@@ -655,7 +659,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public static create(mapRenderer: any, layer: ol.layer.Tile) {
         return new GeoVectorTileLayerRender(<any>mapRenderer, <any>layer);
     }
-
+    
     disposeInternal() {
         // (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
         // var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
