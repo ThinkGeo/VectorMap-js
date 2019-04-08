@@ -70316,7 +70316,7 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
-        var extent = feature.getExtent();
+        var extent = feature.getGeometry().getExtent();
         if (ends.length > 0) {            
             var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
             var index = 0;
@@ -100624,7 +100624,7 @@ function olInit() {
 
         var TextReplayCustom = /** @class */ (function (_super) {
             __extends(TextReplayCustom, _super);
-            function TextReplayCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+            function TextReplayCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {                
                 var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) || this;
                 _this.renderDeclutterChar_ = function (declutterGroup, feature) {
                     if (declutterGroup && declutterGroup.length > 5) {
@@ -101477,18 +101477,18 @@ function olInit() {
             function ReplayGroupCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer, minimalist) {
                 var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) || this;
                 _this.BATCH_CONSTRUCTORS_CUSTOM = {
-                    "Circle": ol.render.canvas.PolygonReplay,
-                    "Default": ol.render.canvas.Replay,
-                    "Image": ol.render.canvas.ImageReplay,
-                    "LineString": ol.render.canvas.LineStringReplay,
-                    "Polygon": ol.render.canvas.PolygonReplay,
+                    "Circle": ol.render.webgl.PolygonReplay,
+                    "Default": ol.render.webgl.Replay,
+                    "Image": ol.render.webgl.ImageReplay,
+                    "LineString": ol.render.webgl.LineStringReplay,
+                    "Polygon": ol.render.webgl.PolygonReplay,
                     "Text": TextReplayCustom
                 };
                 _this.minimalist = minimalist;
                 _this.getReplay = _this.getReplayCustom;
                 _this.BATCH_CONSTRUCTORS_ = _this.BATCH_CONSTRUCTORS_CUSTOM;
+
                 return _this;
-                // this.replay = this.replayCustom;
             }
 
             ReplayGroupCustom.prototype.getReplayCustom = function (zIndex, replayType) {
@@ -101508,7 +101508,7 @@ function olInit() {
                 return replay;
             };
             return ReplayGroupCustom;
-        }(ol.render.canvas.ReplayGroup));
+        }(ol.render.webgl.ReplayGroup));
 
 
         var Grid = /** @class */ (function () {
@@ -102411,9 +102411,8 @@ function olInit() {
             var pixelToCoordinateTransform=messageData[13]
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-            var replayGroup = new ol.render.webgl.ReplayGroup(
+            var replayGroup = new ReplayGroupCustom(
                 replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
-            // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;

@@ -4,6 +4,6 @@ import { VectorTileLayerThreadMode } from "./worker/vectorTileLayerThreadMode";
 (<any>ol).mapsuite = {};
 
 (<any>ol).mapsuite["VectorTileLayer"] = VectorTileLayer;
-// (<any>ol).mapsuite["VectorTileLayerThreadMode"] = VectorTileLayerThreadMode;
+(<any>ol).mapsuite["VectorTileLayerThreadMode"] = VectorTileLayerThreadMode;
 
-// (<any>window)["ol"] = ol;
+(<any>window)["ol"] = ol;

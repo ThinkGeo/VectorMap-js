@@ -53,4 +53,46 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     this.scale = scale;
     this.width = size[0];
   }
+
+  public drawPoint(options) {
+    var offset = 0;
+    var end = 2;
+    var stride = 2;
+    var flatCoordinates = options.flatCoordinates;
+    var image = options.image;
+    this.originX = options.originX;
+    this.originY = options.originY;
+    this.imageWidth = options.imageWidth;
+    this.imageHeight = options.imageHeight;
+    this.opacity = options.opacity;
+    this.width = options.width;
+    this.height = options.height;
+    this.rotation = options.rotation;
+    this.rotateWithView = 1;
+    this.scale = options.scale;
+    this.anchorX = options.anchorX;
+    this.anchorY = options.anchorY;
+    var currentImage;
+    if (this.images_.length === 0) {
+        this.images_.push(image);
+    }
+    else {
+        currentImage = this.images_[this.images_.length - 1];
+        if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
+            this.groupIndices.push(this.indices.length);
+            this.images_.push(image);
+        }
+    }
+    // if (this.hitDetectionImages_.length === 0) {
+    //     this.hitDetectionImages_.push(hitDetectionImage);
+    // } else {
+    //     currentImage =
+    //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+    //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+    //         this.hitDetectionGroupIndices.push(this.indices.length);
+    //         this.hitDetectionImages_.push(hitDetectionImage);
+    //     }
+    // }
+    this.drawCoordinates(flatCoordinates, offset, end, stride);
+  }
 }

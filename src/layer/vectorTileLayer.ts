@@ -1046,51 +1046,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
         };
 
-        (<any>ol.render).webgl.ImageReplay.prototype.drawPoint = function (options) {
-            var offset = 0;
-            var end = 2;
-            var stride = 2;    
-            var flatCoordinates = options.flatCoordinates;
-            var image = options.image;
-            this.originX = options.originX;
-            this.originY = options.originY;
-            this.imageWidth = options.imageWidth;
-            this.imageHeight = options.imageHeight;
-            this.opacity = options.opacity;
-            this.width = options.width;
-            this.height = options.height;
-            this.rotation = options.rotation;
-            this.rotateWithView = 1;
-            this.scale = options.scale; 
-            this.anchorX = options.anchorX;
-            this.anchorY = options.anchorY;
-
-            var currentImage;
-            if (this.images_.length === 0) {
-                this.images_.push(image);
-            } else {
-                currentImage = this.images_[this.images_.length - 1];
-                if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
-                    this.groupIndices.push(this.indices.length);
-                    this.images_.push(image);
-                }
-            }
-
-            // if (this.hitDetectionImages_.length === 0) {
-            //     this.hitDetectionImages_.push(hitDetectionImage);
-            // } else {
-            //     currentImage =
-            //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-            //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
-            //         this.hitDetectionGroupIndices.push(this.indices.length);
-            //         this.hitDetectionImages_.push(hitDetectionImage);
-            //     }
-            // }
-
-            this.drawCoordinates(
-                flatCoordinates, offset, end, stride);
-        };
-
         // Blocking repeat
         (<any>ol.render).webgl.Replay.prototype.replayImage_ = function (frameState, declutterGroup, flatCoordinates, scale){
             var box = [];
@@ -1388,7 +1343,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             return result;
         };
 
-        (<any>ol).renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function (coordinate, frameState, hitTolerance, callback, thisArg) {
+        function forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
             var resolution = frameState.viewState.resolution;
             var rotation = frameState.viewState.rotation;
             hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -1410,31 +1365,30 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
                 bufferedExtent = ol.extent.buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
                 if (!ol.extent.containsCoordinate(bufferedExtent, coordinate)) {
-                    continue;
+                continue;
                 }
                 for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
-                    var sourceTile = tile.getTile(tile.tileKeys[t]);
-                    if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
-                        continue;
-                    }
-                    replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
-                    found = found || replayGroup.forEachFeatureAtCoordinate(
-                        coordinate, resolution, rotation, hitTolerance, {},
-                        /**
-                         * @param {ol.Feature|ol.render.Feature} feature Feature.
-                         * @return {?} Callback result.
-                         */
-                        function (feature) {
-                            var key = (<any>ol).getUid(feature).toString();
-                            if (!(key in features)) {
-                                features[key] = true;
-                                return callback.call(thisArg, feature, layer);
-                            }
-                        }, null);
+                var sourceTile = tile.getTile(tile.tileKeys[t]);
+                if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
+                    continue;
+                }
+                replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+                found = found || replayGroup.forEachFeatureAtCoordinate(
+                    coordinate, resolution, rotation, hitTolerance, {},
+                    /**
+                     * @param {ol.Feature|ol.render.Feature} feature Feature.
+                     * @return {?} Callback result.
+                     */
+                    function(feature) {
+                        var key = (<any>ol).getUid(feature).toString();
+                        if (!(key in features)) {
+                        features[key] = true;
+                        return callback.call(thisArg, feature, layer);
+                        }
+                    }, null);
                 }
             }
             return found;
         };
-
     }
 }
