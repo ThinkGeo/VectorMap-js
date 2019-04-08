@@ -105,4 +105,27 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
 
     return result;
   }
+
+  public drawReplay(gl, context, skippedFeaturesHash, hitDetection) {
+    if (!hitDetection) {
+        gl.enable(gl.BLEND);
+    }
+
+    if (!(<any>ol).obj.isEmpty(skippedFeaturesHash)) {
+        this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+    } else {
+        //Draw by style groups to minimize drawElements() calls.
+        var i, start, end, nextStyle;
+        for (i = 0; i < this.styleIndices_.length; ++i) {                
+            start = this.styleIndices_[i];
+            end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
+            nextStyle = this.styles_[i];
+            this.setFillStyle_(gl, nextStyle);
+            this.drawElements(gl, context, start, end);
+        }
+    }
+    if (!hitDetection) {
+        gl.disable(gl.BLEND);
+    }
+  }
 }

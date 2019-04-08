@@ -66004,30 +66004,8 @@ function olInit() {
      * @abstract
      * @param {ol.webgl.Context} context Context.
      */
-    ol.render.webgl.Replay.prototype.finish = function (context) { };
+    ol.render.webgl.Replay.prototype.finish = function (context) { };    
     
-    /**
-     * @private
-     * @param {Array.<string>} lines Label to draw split to lines.
-     * @return {Array.<number>} Size of the label in pixels.
-     */
-    ol.render.webgl.Replay.prototype.renderCharDeclutter_ = function (extent, feature) {
-        var box = {
-            minX: extent[0],
-            minY: extent[1],
-            maxX: extent[2],
-            maxY: extent[3],
-            value: feature,
-        }
-
-        if(!this.declutterTree.collides(box)){
-            this.declutterTree.insert(box);
-            
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * @abstract
@@ -69997,7 +69975,6 @@ function olInit() {
 
     /**
      * @inheritDoc
-     * @override_
      */
     ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
         var ends = polygonGeometry.getEnds();
@@ -70121,13 +70098,13 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+
         if (!hitDetection) {
-            gl.enable(gl.BLEND);
-            // gl.disable(gl.DEPTH_TEST);
-            // gl.depthMask(true);
-            // gl.depthFunc(gl.NOTEQUAL);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthMask(true);
+            gl.depthFunc(gl.NOTEQUAL);
         }
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -70135,31 +70112,21 @@ function olInit() {
         } else {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
-            for (i = 0; i < this.styleIndices_.length; ++i) {                
+            end = this.startIndices[this.startIndices.length - 1];
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
                 start = this.styleIndices_[i];
-                end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
                 nextStyle = this.styles_[i];
-                // gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
+                end = start;
             }
-            // end = this.startIndices[this.startIndices.length - 1];
-            // for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
-            //     start = this.styleIndices_[i];
-            //     nextStyle = this.styles_[i];                
-            //     gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
-            //     this.setFillStyle_(gl, nextStyle);
-            //     this.drawElements(gl, context, start, end);
-            //     end = start;
-            // }
         }
         if (!hitDetection) {
-            gl.disable(gl.BLEND);
-            // gl.enable(gl.DEPTH_TEST);
-            // gl.clear(gl.DEPTH_BUFFER_BIT);
-            // // Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
+            gl.disable(gl.DEPTH_TEST);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            //Restore GL parameters.
+            gl.depthMask(tmpDepthMask);
+            gl.depthFunc(tmpDepthFunc);
         }
     };
 
@@ -101455,13 +101422,13 @@ function olInit() {
                             this.zCoordinates.push(z_order);
                             this.state_.changed = false;
                         }
-                                    this.startIndices.push(this.indices.length);
-                                    // this.startIndicesFeature.push(feature);
-                                    this.drawCoordinates_(
-                                        clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
-                                }
-                            }
-                            drawLineString_.call(this, flatCoordinates)
+                            this.startIndices.push(this.indices.length);
+                            // this.startIndicesFeature.push(feature);
+                            this.drawCoordinates_(
+                                clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
+                        }
+                    }
+                    drawLineString_.call(this, flatCoordinates)
                 }
                 LineStringReplayCustom.prototype.drawMultiLineString =function(multiLineStringGeometry, feature){
                     var indexCount = this.indices.length;
@@ -101572,8 +101539,6 @@ function olInit() {
                         
                    }
                 };
-
-
 
                 return LineStringReplayCustom;
         }(ol.render.webgl.LineStringReplay));
@@ -102514,11 +102479,10 @@ function olInit() {
             self["devicePixelRatio"] = messageData[6];
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
-            var pixelToCoordinateTransform=messageData[13]
+            var pixelToCoordinateTransform=messageData[13];
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-            var replayGroup = new ReplayGroupCustom(
-                replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
+            var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
