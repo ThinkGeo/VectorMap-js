@@ -67295,7 +67295,7 @@ function olInit() {
      */
     ol.webgl.Context.createEmptyTexture = function (
         gl, width, height, opt_wrapS, opt_wrapT) {
-        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
+        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT, gl.LINEAR);
         gl.texImage2D(
             gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
             null);
@@ -73792,14 +73792,14 @@ function olInit() {
                 minX, minY,
                 minX + framebufferExtentDimension, minY + framebufferExtentDimension
             ];
-
+            
             this.bindFramebuffer(frameState, framebufferDimension);
             gl.viewport(0, 0, framebufferDimension, framebufferDimension);
-
+            
             gl.clearColor(0, 0, 0, 1);
             gl.clear(ol.webgl.COLOR_BUFFER_BIT);
             gl.disable(ol.webgl.BLEND);
-
+            
             var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
             context.useProgram(program);
             if (!this.locations_) {
