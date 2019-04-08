@@ -1,6 +1,8 @@
 import { GeoImageReplay } from './geoImageRepaly';
 import { GeoTextReplay } from './geoTextRepaly';
 import { GeoPolygonReplay } from './geoPolygonRepaly';
+import { GeoLineStringReplay } from './geoLineStringReplay';
+
 
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
 
@@ -109,6 +111,9 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
     }
    
     public getReplayCustom(zIndex: any, replayType: any) {
+        // if(replayType == "LineString"){
+        //     debugger;
+        // }
         let zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
         let replays = this.replaysByZIndex_[zIndexKey];
         if (replays === undefined) {
@@ -130,7 +135,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         "Circle": (<any>ol.render).webgl.PolygonReplay,
         "Default": (<any>ol.render).webgl.Replay,
         "Image": GeoImageReplay,
-        "LineString": (<any>ol.render).webgl.LineStringReplay,
+        "LineString": GeoLineStringReplay,
         "Polygon": GeoPolygonReplay,
         "Text": GeoTextReplay
     };

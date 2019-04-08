@@ -1,5 +1,6 @@
 import { ReplayGroupCustom } from "../render/replayGroupCustom";
 import { VecorRenderFeature } from "./geoVector";
+import { GeoLineStyle } from './../style/geoLineStyle';
 
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLayer as { new(a: any, p: ol.layer.Tile): any; }) {
     constructor(mapRenderer: any, layer: ol.layer.VectorTile) {
@@ -281,6 +282,13 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         }
         
         if (declutterReplays) {
+            // var hints = frameState.viewHints;
+            // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
+            // delete context["quickZoom"]
+            // if (animatingOrInteracting) {
+            //     context["quickZoom"] = frameState["quickZoom"];
+            // }
+            // context["currentResolution"] = frameState["currentResolution"];
             this.replayDeclutter(declutterReplays, context, rotation);
         }
         if (rotation) {
@@ -321,7 +329,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         replay.drawPoint(tmpOptions[k]);
                     }
                 }
-                replay.finish(context);               
+                replay.finish(context);
+                // replay.options = tmpOptions;
+               
                 replay.replay(context, rotation, skippedFeatureUids, screenXY);
             }
         }
@@ -401,6 +411,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                  */
                 let renderFeature = function (feature, geoStyles, options) {
                     let styles;
+                    if(geoStyles instanceof GeoLineStyle){
+                        debugger;
+                    }
                     if (geoStyles) {
                         if (geoStyles && geoStyles.length > 0) {
                             for (let i = 0, ii = geoStyles.length; i < ii; i++) {
@@ -515,6 +528,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 let geoStyle = geoStyles[geoStyleId];
 
                                 let featureInfo = features[instructs[i][0]];
+                              
                                 let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
