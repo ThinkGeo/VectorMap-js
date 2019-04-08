@@ -22882,7 +22882,6 @@ function olInit() {
             var deltaY_ = touch0.clientY - this.originY
 
             var distance_  = distance - this.lastDistance_;
-            // console.log(distance_)
             if (Math.abs(delta) <= this.delta && 
                 (Math.abs(deltaX_) > this.deltaX_ || 
                 Math.abs(deltaY_) >  this.deltaY_)
@@ -102530,10 +102529,6 @@ function olInit() {
                 }
 
                 if (styles) {
-                    if(feature.type_ == 'LineString'){
-                        // debugger;
-                    }
-                    console.log(feature.type_)
                     var dirty = this.renderFeature(feature, squaredTolerance, styles,
                         replayGroup,options);
                     this.dirty_ = this.dirty_ || dirty;
