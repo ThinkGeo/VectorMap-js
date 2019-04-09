@@ -12702,14 +12702,14 @@ function olInit() {
                     // if b is outside the clip window (a->b goes out of screen)
                     if (codeB & edge) {
                         p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
-                        clippedPoints.push(...p);
+                        clippedPoints=clippedPoints.concat(p);
                     }
-                    clippedPoints.push(...a);
+                    clippedPoints=clippedPoints.concat(a);
     
                 // else if b is inside the clip window (a->b enters the screen)
                 } else if (!(codeB & edge)) {
                     p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
-                    clippedPoints.push(...p);
+                    clippedPoints=clippedPoints.concat(p);
                 }
             }
             points = clippedPoints;
@@ -100329,7 +100329,7 @@ function olInit() {
                     var xEnd = seg.x2;
                     var yEnd = seg.y2;
                 
-                    for (let i = 0; i < num; i++) {
+                    for (var i = 0; i < num; i++) {
                         x = xAver * i + xOrig;
                         y = yAver * i + yOrin;
                         pixelArr.push(x);
@@ -100339,9 +100339,9 @@ function olInit() {
                 
                 }
                 function myCreateSegDirection(coordPxs,chaLength){
-                    let coordArr=[];
-                    for(let i=0;i<coordPxs.length;i+=2){
-                        let coord=[coordPxs[i],coordPxs[i+1]];
+                    var coordArr=[];
+                    for(var i=0;i<coordPxs.length;i+=2){
+                        var coord=[coordPxs[i],coordPxs[i+1]];
                         coordArr.push(coord);
                     }
                     coordArr = getPixelFromCoord(coordArr);
@@ -100367,7 +100367,7 @@ function olInit() {
                         }
                         else {
                         //   nowLengthFlag = true;
-                            let splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
+                            var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
                             findPixelArr = findPixelArr.concat( splitPixelArr );
                         }
                         if(tempLength.pixelLength > chaLength) {
@@ -100375,11 +100375,11 @@ function olInit() {
                             tempLength.y2=segments[i].y2;
                             tempLength.x1=segments[i].x1;
                             tempLength.y1=segments[i].y1;
-                            let residueLength=tempLength.pixelLength-chaLength
-                            let lastSeg={
+                            var residueLength=tempLength.pixelLength-chaLength
+                            var lastSeg={
                                 residueLength:residueLength
                             }
-                            let splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
+                            var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
                             findPixelArr = findPixelArr.concat( splitPixelArr );
                             tempLength.pixelLength=0;
                         }
@@ -100393,8 +100393,7 @@ function olInit() {
                     var angle_ = getRotation(ptEnd, ptStart) + Math.PI/2;
                     var start_ = getPointByAngle(ptStart, radius, angle_);
                     var end_  = getPointByAngle(ptEnd, radius, angle_);
-                    
-                    var arr=[...start,...start_,...end,...end_];
+                    var arr=start.concat(start_,end,end);
                     
                     return arr
                 }
@@ -100424,21 +100423,21 @@ function olInit() {
                     var widthHalf =strokeStyleWidth / 2;
                     var strokeStyleLineDash = strokeStyle.getLineDash();
                     flatCoordinates=myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1]);
-                    let arr=[];
-                    for(let i=0;i<flatCoordinates.length-2;i+=2){
-                        let start=[flatCoordinates[i],flatCoordinates[i+1]];
-                        let end =[flatCoordinates[i+2],flatCoordinates[i+3] ]
+                    var arr=[];
+                    for(var i=0;i<flatCoordinates.length-2;i+=2){
+                        var start=[flatCoordinates[i],flatCoordinates[i+1]];
+                        var end =[flatCoordinates[i+2],flatCoordinates[i+3] ]
                         arr=arr.concat(getLineStruct(start,end,widthHalf))
                     }
-                    let result=[];
-                    for(let i=0;i<arr.length;i+=2){
-                        let a=arr.slice(i,i+2);
-                        let arrTemp=ol.transform.apply(options.frameState.pixelToCoordinateTransform,a );
+                    var result=[];
+                    for(var j=0;j<arr.length;j+=2){
+                        var a=arr.slice(j,j+2);
+                        var arrTemp=ol.transform.apply(options.frameState.pixelToCoordinateTransform,a );
                         result.push(arrTemp[0],arrTemp[1]);
                     }
                     var tempCoordinates = result;
-                    for(let i=0;i<tempCoordinates.length;i+=4){
-                        let railWayChildCoord=tempCoordinates.slice(i,i+4);
+                    for(var m=0;m<tempCoordinates.length;m+=4){
+                        var railWayChildCoord=tempCoordinates.slice(m,m+4);
                         
                         flatCoordinates=railWayChildCoord;
                         drawLineString_.call(this, flatCoordinates);
@@ -100553,18 +100552,18 @@ function olInit() {
             
                         var strColor = ol.color.asArray(strokeStyleColor) || ol.render.webgl.defaultStrokeStyle;
                         if(+strColor[3] !== 1){
-                            const A1 = +strColor[3];
-                            const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-                            const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-                            const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                            const A3 = A1 == 0 ? 0 : 1;
+                            var A1 = +strColor[3];
+                            var R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
+                            var G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
+                            var B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
+                            var A3 = A1 == 0 ? 0 : 1;
                             strColor[0] = R3.toFixed(6).toString();
                             strColor[1] = G3.toFixed(6).toString();
                             strColor[2] = B3.toFixed(6).toString();
                             strColor[3] = A3.toString();
                         }
                     
-                        strokeStyleColor = strColor.map((val, index) => {
+                        strokeStyleColor = strColor.map(function(val, index) {
                             return index !== 3 ? val / 255 : +val;
                         });
                     } else {
@@ -100614,15 +100613,15 @@ function olInit() {
             }
 
             ReplayGroupCustom.prototype.getReplayCustom = function (zIndex, replayType) {
-                let zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
-                let replays = this.replaysByZIndex_[zIndexKey];
+                var zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
+                var replays = this.replaysByZIndex_[zIndexKey];
                 if (replays === undefined) {
                     replays = {};
                     this.replaysByZIndex_[zIndexKey] = replays;
                 }
-                let replay = replays[replayType];
+                var replay = replays[replayType];
                 if (replay === undefined) {
-                    let Constructor = this.BATCH_CONSTRUCTORS_[replayType];
+                    var Constructor = this.BATCH_CONSTRUCTORS_[replayType];
                     replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree);
         
                     replays[replayType] = replay;
@@ -101630,7 +101629,8 @@ function olInit() {
             var topRight = ol.extent.getTopRight(bbox);
             var topLeft = ol.extent.getTopLeft(bbox);
 
-            var feature = new ol.render.Feature('Polygon', [...bottomLeft,...bottomRight,...topRight,...topLeft], [8], {layerName: "ocean"}, 0);
+            var coords = bottomLeft.concat(bottomRight,topRight,topLeft);
+            var feature = new ol.render.Feature('Polygon',coords, [8], {layerName: "ocean"}, 0);
             var geoStyle = geoStyles["ocean#0"];
             renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, [0,'ocean#0',0]);
 
@@ -101695,7 +101695,7 @@ function olInit() {
             for(var j = 0; j < clipped.length; j++){
                 var coords = clipped[j];
                 if(coords.length > 2){
-                    clippedFlatCoordinates.push(...coords);
+                    clippedFlatCoordinates=clippedFlatCoordinates.concat(coords);
                     clippedEnds.push(clippedFlatCoordinates.length);
                 }
             }
@@ -101718,15 +101718,15 @@ function olInit() {
                 clippedFlatCoordinates = clipped.flatCoordinates;
                 clippedEnds = clipped.ends;
                 if(clippedFlatCoordinates.length > 2){
-                    clippedEnds = clippedEnds.map(item => item + flatCoordinates.length);
-                    ends_.push(...clippedEnds);
-                    flatCoordinates.push(...clippedFlatCoordinates);
+                    clippedEnds = clippedEnds.map(function(item) {return item + flatCoordinates.length} );
+                    ends_ = ends_.concat(clippedEnds);
+                    flatCoordinates = flatCoordinates.concat(clippedFlatCoordinates);
                 }
             }            
 
             return {
-                flatCoordinates,
-                ends: ends_
+                "flatCoordinates":flatCoordinates,
+                "ends": ends_
             }
         }
 
@@ -101749,12 +101749,12 @@ function olInit() {
                 
                 var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
                 if(!shortDistance){
-                    parts[k].push(...segment[0]);
+                    parts[k] = parts[k].concat(segment[0]);
                 }
 
                 // if segment goes out of screen, or it's the last one, it's the end of the line part
                 if ((segment[1][0] !== points[i + 2]) || (segment[1][1] !== points[i + 3]) || (i === len - 4)) {
-                    parts[k].push(...segment[1]);
+                    parts[k] = parts[k].concat(segment[1]);
                     k++;
                 }
             }

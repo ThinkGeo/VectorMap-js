@@ -10,7 +10,7 @@
  * @param {WebGLProgram} program Program.
  * @struct
  */
-export const Locations = function(gl, program) {
+export var Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
