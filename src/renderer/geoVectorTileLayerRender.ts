@@ -229,6 +229,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     }
 
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
+        let gl = context.getGL();
+        gl.enable(gl.DEPTH_TEST);
+        
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);
 
@@ -294,7 +297,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
         // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
-        // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);        
+        // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);      
+        
+        gl.disable(gl.DEPTH_TEST);
     }
 
     public replayDeclutter(declutterReplays, context, rotation) {

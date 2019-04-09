@@ -72832,7 +72832,7 @@ function olInit() {
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
         gl.disable(ol.webgl.CULL_FACE);
-        gl.enable(ol.webgl.DEPTH_TEST);
+        gl.disable(ol.webgl.DEPTH_TEST);
         gl.disable(ol.webgl.SCISSOR_TEST);
         gl.disable(ol.webgl.STENCIL_TEST);
     };
@@ -72903,7 +72903,6 @@ function olInit() {
 
         gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-        gl.enable(ol.webgl.BLEND);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
