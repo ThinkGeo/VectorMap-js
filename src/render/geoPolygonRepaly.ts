@@ -1,3 +1,6 @@
+import { fragment, vertex } from './geoPolygonReplay/defaultshader';
+import { Locations } from './geoPolygonReplay/defaultshader/Locations';
+
 export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as { new(tolerance: number, maxExtent: any) }) {
   constructor(tolerance, maxExtent){
     super(tolerance, maxExtent);
@@ -77,6 +80,9 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
     gl.uniform1f(locations.u_opacity, opacity);             
 
+    // FIXME replace this temp solution with text calculation in worker
+    this.u_zIndex = locations.u_zIndex;
+
     // draw!
     var result;
     if (featureCallback === undefined) { 
@@ -120,6 +126,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
             start = this.styleIndices_[i];
             end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
             nextStyle = this.styles_[i];
+            gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
             this.setFillStyle_(gl, nextStyle);
             this.drawElements(gl, context, start, end);
         }
@@ -127,5 +134,31 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     if (!hitDetection) {
         gl.disable(gl.BLEND);
     }
+  }
+
+  public setUpProgram(gl, context, size, pixelRatio) {
+    // get the program
+    var fragmentShader, vertexShader;
+    fragmentShader = fragment;
+    vertexShader = vertex;
+    var program = context.getProgram(fragmentShader, vertexShader);
+
+    // get the locations
+    var locations;
+    if (!this.defaultLocations_) {
+        locations = new Locations(gl, program);
+        this.defaultLocations_ = locations;
+    } else {
+        locations = this.defaultLocations_;
+    }
+
+    context.useProgram(program);
+
+    // enable the vertex attrib arrays
+    gl.enableVertexAttribArray(locations.a_position);
+    gl.vertexAttribPointer(locations.a_position, 2, (<any>ol).webgl.FLOAT,
+        false, 8, 0);
+
+    return locations;
   }
 }

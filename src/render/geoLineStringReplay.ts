@@ -1,3 +1,6 @@
+import { fragment, vertex } from './geoLineStringReplay/defaultshader';
+import { Locations } from './geoLineStringReplay/defaultshader/Locations';
+
 export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringReplay as { new(tolerance: number, maxExtent: any) }) {
     constructor(tolerance, maxExtent){
         super(tolerance, maxExtent);
@@ -10,7 +13,7 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
       }
     
       public drawReplay(gl, context, skippedFeaturesHash, hitDetection){
-           //Save GL parameters.
+        //Save GL parameters.
         // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
         // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
@@ -45,17 +48,18 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
             // gl.depthFunc(tmpDepthFunc);
         }
       }
+
       public setUpProgram = function (gl, context, size, pixelRatio) {
         // get the program
         var fragmentShader, vertexShader;
-        fragmentShader = (<any>ol).render.webgl.linestringreplaycustom.defaultshader.fragment;
-        vertexShader = (<any>ol).render.webgl.linestringreplaycustom.defaultshader.vertex;
+        fragmentShader = fragment;
+        vertexShader = vertex;
         var program = context.getProgram(fragmentShader, vertexShader);
 
         // get the locations
         var locations;
         if (!this.defaultLocations_) {
-            locations = new (<any>ol).render.webgl.linestringreplaycustom.defaultshader.Locations(gl, program);
+            locations = new Locations(gl, program);
             this.defaultLocations_ = locations;
         } else {
             locations = this.defaultLocations_;
