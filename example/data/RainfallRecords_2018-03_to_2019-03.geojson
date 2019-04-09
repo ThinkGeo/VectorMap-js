@@ -76,24 +76,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-03-01",
-                "por": "38",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0017D07S",
-                "difference": 2.6,
-                "stationName": "TAYLOR GREEN, OR US",
-                "previousDate": "2011-03-21",
-                "value": 35.6,
-                "previousValue": 33,
-                "PreviousRecordAgeInDays": 2537
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-117.55, 45.08]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-01",
                 "por": "36",
                 "dataType": "HPCP",
                 "station": "GHCND:USS0019A02S",
@@ -327,24 +309,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-03-16",
-                "por": "83",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00267192",
-                "difference": 18,
-                "stationName": "RYE PATCH DAM, NV US",
-                "previousDate": "2005-03-22",
-                "value": 42.9,
-                "previousValue": 24.9,
-                "PreviousRecordAgeInDays": 4742
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-118.3047, 40.4661]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-03-18",
                 "por": "101",
                 "dataType": "HPCP",
@@ -468,25 +432,7 @@
                 "type": "Point",
                 "coordinates": [-111.99, 44.44]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-22",
-                "por": "39",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0012E07S",
-                "difference": 0,
-                "stationName": "DIVIDE, MT US",
-                "previousDate": "1985-03-18",
-                "value": 22.9,
-                "previousValue": 22.9,
-                "PreviousRecordAgeInDays": 12057
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.06, 44.79]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-03-22",
@@ -503,60 +449,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-118.19, 41.97]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-22",
-                "por": "36",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0019A02S",
-                "difference": 7.6,
-                "stationName": "SALMON MEADOWS, WA US",
-                "previousDate": "2018-03-01",
-                "value": 40.6,
-                "previousValue": 33,
-                "PreviousRecordAgeInDays": 21
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-119.84, 48.66]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-22",
-                "por": "37",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0020K27S",
-                "difference": 5.1,
-                "stationName": "TAHOE CITY CROSS, CA US",
-                "previousDate": "2012-03-16",
-                "value": 76.2,
-                "previousValue": 71.1,
-                "PreviousRecordAgeInDays": 2197
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-120.15, 39.17]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-22",
-                "por": "64",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00094143",
-                "difference": 1.5,
-                "stationName": "IDAHO FALLS 46 W, ID US",
-                "previousDate": "1991-03-04",
-                "value": 24.1,
-                "previousValue": 22.6,
-                "PreviousRecordAgeInDays": 9880
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.9422, 43.5316]
             }
         }, {
             "type": "Feature",
@@ -683,24 +575,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-102.5869, 47.3466]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-24",
-                "por": "103",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00452675",
-                "difference": 11.7,
-                "stationName": "EVERETT, WA US",
-                "previousDate": "2015-03-16",
-                "value": 50.8,
-                "previousValue": 39.1,
-                "PreviousRecordAgeInDays": 1104
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-122.195, 47.9752]
             }
         }, {
             "type": "Feature",
@@ -990,25 +864,7 @@
                 "type": "Point",
                 "coordinates": [-97.7604, 30.3208]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-03-28",
-                "por": "111",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093987",
-                "difference": 9.4,
-                "stationName": "LUFKIN ANGELINA CO AIRPORT, TX US",
-                "previousDate": "1995-03-07",
-                "value": 114.3,
-                "previousValue": 104.9,
-                "PreviousRecordAgeInDays": 8422
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-94.75444, 31.23611]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-03-29",
@@ -1173,24 +1029,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-03-29",
-                "por": "102",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00419491",
-                "difference": 11.9,
-                "stationName": "WASHINGTON STATE PARK, TX US",
-                "previousDate": "1973-03-24",
-                "value": 156.7,
-                "previousValue": 144.8,
-                "PreviousRecordAgeInDays": 16441
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-96.1594, 30.3237]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-03-30",
                 "por": "30",
                 "dataType": "HPCP",
@@ -1201,24 +1039,6 @@
                 "value": 10.2,
                 "previousValue": 10.2,
                 "PreviousRecordAgeInDays": 9884
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-145.4, 63.94]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-01",
-                "por": "30",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0045O04S",
-                "difference": 0,
-                "stationName": "GRANITE CRK, AK US",
-                "previousDate": "2017-04-01",
-                "value": 2.5,
-                "previousValue": 2.5,
-                "PreviousRecordAgeInDays": 365
             },
             "geometry": {
                 "type": "Point",
@@ -1331,24 +1151,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-86.28168, 39.72517]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-04",
-                "por": "122",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00120784",
-                "difference": 59.7,
-                "stationName": "BLOOMINGTON INDIANA UNIVERSITY, IN US",
-                "previousDate": "1996-04-29",
-                "value": 152.4,
-                "previousValue": 92.7,
-                "PreviousRecordAgeInDays": 8010
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-86.5214, 39.1742]
             }
         }, {
             "type": "Feature",
@@ -1529,24 +1331,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-123.6363, 40.9466]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-06",
-                "por": "41",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00107644",
-                "difference": 1.8,
-                "stationName": "REXBURG BYU IDAHO, ID US",
-                "previousDate": "2000-04-17",
-                "value": 22.4,
-                "previousValue": 20.6,
-                "PreviousRecordAgeInDays": 6563
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-111.7892, 43.8083]
             }
         }, {
             "type": "Feature",
@@ -1984,24 +1768,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-04-14",
-                "por": "104",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00252145",
-                "difference": 0,
-                "stationName": "DALTON, NE US",
-                "previousDate": "2018-04-13",
-                "value": 127,
-                "previousValue": 127,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-102.9661, 41.4086]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-14",
                 "por": "70",
                 "dataType": "HPCP",
                 "station": "GHCND:USW00024234",
@@ -2146,24 +1912,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-04-15",
-                "por": "42",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00331777",
-                "difference": 0,
-                "stationName": "COLUMBUS HAP CREMEAN WP, OH US",
-                "previousDate": "1993-04-26",
-                "value": 52.1,
-                "previousValue": 52.1,
-                "PreviousRecordAgeInDays": 9120
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-82.8941, 40.0604]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-15",
                 "por": "76",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00514758",
@@ -2303,24 +2051,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-79.7297, 33.8641]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-16",
-                "por": "48",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00389412",
-                "difference": 6.4,
-                "stationName": "WOODRUFF 5 NW, SC US",
-                "previousDate": "1998-04-09",
-                "value": 69.9,
-                "previousValue": 63.5,
-                "PreviousRecordAgeInDays": 7312
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-82.1061, 34.7636]
             }
         }, {
             "type": "Feature",
@@ -2542,24 +2272,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-04-16",
-                "por": "76",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00514750",
-                "difference": 52.3,
-                "stationName": "KOLOA MAUKA 994, HI US",
-                "previousDate": "1986-04-07",
-                "value": 215.9,
-                "previousValue": 163.6,
-                "PreviousRecordAgeInDays": 11697
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-159.46694, 21.94833]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-16",
                 "por": "73",
                 "dataType": "HPCP",
                 "station": "GHCND:USW00013773",
@@ -2627,24 +2339,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-89.409, 35.9986]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-04-24",
-                "por": "38",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00310982",
-                "difference": 6.6,
-                "stationName": "BOONE, NC US",
-                "previousDate": "2018-04-16",
-                "value": 100.1,
-                "previousValue": 93.5,
-                "PreviousRecordAgeInDays": 8
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-81.64563, 36.21395]
             }
         }, {
             "type": "Feature",
@@ -2754,24 +2448,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-111.1325, 39.0875]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-03",
-                "por": "36",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00059096",
-                "difference": 0.5,
-                "stationName": "WILLIAMS FORK DAM, CO US",
-                "previousDate": "2016-05-16",
-                "value": 21.3,
-                "previousValue": 20.8,
-                "PreviousRecordAgeInDays": 717
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-106.2038, 40.0375]
             }
         }, {
             "type": "Feature",
@@ -2992,24 +2668,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-05-14",
-                "por": "44",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00461324",
-                "difference": 20.3,
-                "stationName": "CACAPON ST PARK NUMBER 2, WV US",
-                "previousDate": "2014-05-16",
-                "value": 76.2,
-                "previousValue": 55.9,
-                "PreviousRecordAgeInDays": 1459
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-78.29739, 39.50932]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-05-16",
                 "por": "69",
                 "dataType": "HPCP",
@@ -3173,60 +2831,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-05-18",
-                "por": "72",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013728",
-                "difference": 33,
-                "stationName": "DANVILLE REGIONAL AIRPORT, VA US",
-                "previousDate": "2014-05-15",
-                "value": 100.6,
-                "previousValue": 67.6,
-                "PreviousRecordAgeInDays": 1464
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-79.3351, 36.5729]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-18",
-                "por": "79",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013740",
-                "difference": 20.5,
-                "stationName": "RICHMOND INTERNATIONAL AIRPORT, VA US",
-                "previousDate": "1981-05-11",
-                "value": 98,
-                "previousValue": 77.5,
-                "PreviousRecordAgeInDays": 13521
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.32344, 37.51151]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-18",
-                "por": "73",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013773",
-                "difference": 2.6,
-                "stationName": "QUANTICO MCAS, VA US",
-                "previousDate": "2005-05-20",
-                "value": 58.2,
-                "previousValue": 55.6,
-                "PreviousRecordAgeInDays": 4746
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.30503, 38.50362]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-18",
                 "por": "69",
                 "dataType": "HPCP",
                 "station": "GHCND:USW00093720",
@@ -3330,24 +2934,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-77.8997, 34.2675]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-21",
-                "por": "37",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0018H01S",
-                "difference": 2.6,
-                "stationName": "DISASTER PEAK, NV US",
-                "previousDate": "2017-05-16",
-                "value": 30.5,
-                "previousValue": 27.9,
-                "PreviousRecordAgeInDays": 370
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-118.19, 41.97]
             }
         }, {
             "type": "Feature",
@@ -3551,24 +3137,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-05-26",
-                "por": "109",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00355020",
-                "difference": 14.2,
-                "stationName": "LONG CREEK, OR US",
-                "previousDate": "1989-05-09",
-                "value": 45.2,
-                "previousValue": 31,
-                "PreviousRecordAgeInDays": 10609
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-119.1018, 44.7135]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-26",
                 "por": "48",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00389412",
@@ -3618,24 +3186,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-106.9597, 45.5397]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-28",
-                "por": "111",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093990",
-                "difference": 53.9,
-                "stationName": "HILL CITY MUNICIPAL AIRPORT, KS US",
-                "previousDate": "1968-05-06",
-                "value": 142.5,
-                "previousValue": 88.6,
-                "PreviousRecordAgeInDays": 18284
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-99.82972, 39.37556]
             }
         }, {
             "type": "Feature",
@@ -3690,24 +3240,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-99.82787, 39.36184]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-29",
-                "por": "125",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00146637",
-                "difference": 70.4,
-                "stationName": "QUINTER, KS US",
-                "previousDate": "2018-05-19",
-                "value": 175,
-                "previousValue": 104.6,
-                "PreviousRecordAgeInDays": 10
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-100.239, 39.0667]
             }
         }, {
             "type": "Feature",
@@ -3803,24 +3335,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-05-30",
-                "por": "37",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00013930",
-                "difference": 1.2,
-                "stationName": "HOLT LOCK AND DAM, AL US",
-                "previousDate": "1986-05-29",
-                "value": 69.3,
-                "previousValue": 68.1,
-                "PreviousRecordAgeInDays": 11689
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.45, 33.2533]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-30",
                 "por": "123",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00017366",
@@ -3834,24 +3348,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-87.0144, 32.411]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-30",
-                "por": "62",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00094230",
-                "difference": 33.3,
-                "stationName": "HELEN, GA US",
-                "previousDate": "1973-05-28",
-                "value": 147.6,
-                "previousValue": 114.3,
-                "PreviousRecordAgeInDays": 16438
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-83.7261, 34.6996]
             }
         }, {
             "type": "Feature",
@@ -3906,24 +3402,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-87.1898, 32.929]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-05-31",
-                "por": "60",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00018673",
-                "difference": 4.3,
-                "stationName": "WARRIOR LOCK AND DAM, AL US",
-                "previousDate": "1983-05-16",
-                "value": 125,
-                "previousValue": 120.7,
-                "PreviousRecordAgeInDays": 12799
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.8306, 32.7744]
             }
         }, {
             "type": "Feature",
@@ -4108,24 +3586,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-06-09",
-                "por": "98",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00456898",
-                "difference": 20.3,
-                "stationName": "RAINIER PARADISE RANGER STATION, WA US",
-                "previousDate": "1985-06-07",
-                "value": 88.9,
-                "previousValue": 68.6,
-                "PreviousRecordAgeInDays": 12055
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-121.7425, 46.7858]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-06-11",
                 "por": "43",
                 "dataType": "HPCP",
@@ -4140,24 +3600,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-88.78266, 39.18122]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-11",
-                "por": "45",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00114739",
-                "difference": 40.4,
-                "stationName": "KINCAID 3 W, IL US",
-                "previousDate": "2000-06-21",
-                "value": 132.6,
-                "previousValue": 92.2,
-                "PreviousRecordAgeInDays": 6564
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-89.4555, 39.5894]
             }
         }, {
             "type": "Feature",
@@ -4361,24 +3803,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-06-17",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00293142",
-                "difference": 1.5,
-                "stationName": "FARMINGTON AG SCIENCE CNT, NM US",
-                "previousDate": "2015-06-06",
-                "value": 14.2,
-                "previousValue": 12.7,
-                "PreviousRecordAgeInDays": 1107
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-108.3086, 36.6897]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-17",
                 "por": "89",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00471131",
@@ -4559,24 +3983,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-06-18",
-                "por": "89",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00471131",
-                "difference": 0,
-                "stationName": "BRULE RANGER STATION, WI US",
-                "previousDate": "2018-06-17",
-                "value": 89.9,
-                "previousValue": 89.9,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-91.5919, 46.5378]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-18",
                 "por": "70",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00478241",
@@ -4669,24 +4075,6 @@
                 "date": "2018-06-18",
                 "por": "39",
                 "dataType": "HPCP",
-                "station": "GHCND:USS0012B17S",
-                "difference": 2.6,
-                "stationName": "WOOD CREEK, MT US",
-                "previousDate": "2018-06-16",
-                "value": 99.1,
-                "previousValue": 96.5,
-                "PreviousRecordAgeInDays": 2
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.81, 47.45]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-18",
-                "por": "39",
-                "dataType": "HPCP",
                 "station": "GHCND:USS0012C11S",
                 "difference": 0,
                 "stationName": "ROCKER PEAK, MT US",
@@ -4698,24 +4086,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-112.26, 46.36]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-18",
-                "por": "34",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0049L10S",
-                "difference": 35.6,
-                "stationName": "COOPER LAKE, AK US",
-                "previousDate": "2004-06-16",
-                "value": 68.6,
-                "previousValue": 33,
-                "PreviousRecordAgeInDays": 5115
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-149.69, 60.39]
             }
         }, {
             "type": "Feature",
@@ -5022,24 +4392,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-100.55, 42.8783]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-21",
-                "por": "125",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00137664",
-                "difference": 15.5,
-                "stationName": "SIBLEY 3 NE, IA US",
-                "previousDate": "2018-06-14",
-                "value": 120.9,
-                "previousValue": 105.4,
-                "PreviousRecordAgeInDays": 7
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-95.7483, 43.4047]
             }
         }, {
             "type": "Feature",
@@ -5368,42 +4720,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-06-24",
-                "por": "114",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013975",
-                "difference": 7.4,
-                "stationName": "GAGE AIRPORT, OK US",
-                "previousDate": "2008-06-08",
-                "value": 97.3,
-                "previousValue": 89.9,
-                "PreviousRecordAgeInDays": 3668
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-99.7689, 36.2967]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-25",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00256336",
-                "difference": 0,
-                "stationName": "ORD NUMBER 2, NE US",
-                "previousDate": "1989-06-25",
-                "value": 68.8,
-                "previousValue": 68.8,
-                "PreviousRecordAgeInDays": 10592
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-98.9269, 41.6028]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-06-25",
                 "por": "58",
                 "dataType": "HPCP",
@@ -5436,24 +4752,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-97.2608, 42.6166]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-06-28",
-                "por": "42",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00403370",
-                "difference": 43.7,
-                "stationName": "GAINESBORO, TN US",
-                "previousDate": "2018-06-01",
-                "value": 121.2,
-                "previousValue": 77.5,
-                "PreviousRecordAgeInDays": 27
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-85.6552, 36.3661]
             }
         }, {
             "type": "Feature",
@@ -5547,24 +4845,6 @@
             }
         },
         {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-01",
-                "por": "47",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00143665",
-                "difference": 48.2,
-                "stationName": "HILL CITY 1 E, KS US",
-                "previousDate": "2015-07-19",
-                "value": 138.4,
-                "previousValue": 90.2,
-                "PreviousRecordAgeInDays": 1078
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-99.82787, 39.36184]
-            }
-        }, {
             "type": "Feature",
             "properties": {
                 "date": "2018-07-01",
@@ -5676,24 +4956,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-07-05",
-                "por": "112",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00255525",
-                "difference": 0.3,
-                "stationName": "MILLER, NE US",
-                "previousDate": "1958-07-19",
-                "value": 78.5,
-                "previousValue": 78.2,
-                "PreviousRecordAgeInDays": 21901
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-99.3886, 40.9283]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-05",
                 "por": "87",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00363130",
@@ -5707,24 +4969,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-77.6516, 41.7356]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-05",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00414325",
-                "difference": 63.8,
-                "stationName": "HOUSTON WESTBURY, TX US",
-                "previousDate": "2010-07-03",
-                "value": 174.5,
-                "previousValue": 110.7,
-                "PreviousRecordAgeInDays": 2924
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-95.6275, 29.66]
             }
         }, {
             "type": "Feature",
@@ -5887,24 +5131,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-109.26, 42.65]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-12",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00014858",
-                "difference": 0.8,
-                "stationName": "HANCOCK HOUGHTON CO AIRPORT, MI US",
-                "previousDate": "2006-07-16",
-                "value": 76.7,
-                "previousValue": 75.9,
-                "PreviousRecordAgeInDays": 4379
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-88.48889, 47.16861]
             }
         }, {
             "type": "Feature",
@@ -6180,42 +5406,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-07-21",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00448084",
-                "difference": 14,
-                "stationName": "WEATHER FORECAST OFFICE STERLING, VA US",
-                "previousDate": "2005-07-08",
-                "value": 112.3,
-                "previousValue": 98.3,
-                "PreviousRecordAgeInDays": 4761
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.4869, 38.9764]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-21",
-                "por": "73",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013773",
-                "difference": 12.2,
-                "stationName": "QUANTICO MCAS, VA US",
-                "previousDate": "1975-07-13",
-                "value": 105.4,
-                "previousValue": 93.2,
-                "PreviousRecordAgeInDays": 15714
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.30503, 38.50362]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-21",
                 "por": "81",
                 "dataType": "HPCP",
                 "station": "GHCND:USW00023185",
@@ -6229,24 +5419,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-119.7711, 39.4838]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-21",
-                "por": "56",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093738",
-                "difference": 33.3,
-                "stationName": "WASHINGTON DULLES INTERNATIONAL AIRPORT, VA US",
-                "previousDate": "2013-07-11",
-                "value": 127.5,
-                "previousValue": 94.2,
-                "PreviousRecordAgeInDays": 1836
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.4473, 38.9349]
             }
         }, {
             "type": "Feature",
@@ -6468,24 +5640,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-07-24",
-                "por": "41",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00361212",
-                "difference": 22.1,
-                "stationName": "CANTON, PA US",
-                "previousDate": "2018-07-22",
-                "value": 78.7,
-                "previousValue": 56.6,
-                "PreviousRecordAgeInDays": 2
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-76.8463, 41.6516]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-24",
                 "por": "91",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00368668",
@@ -6499,24 +5653,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-76.7891, 40.8532]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-07-25",
-                "por": "80",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00517194",
-                "difference": 36.6,
-                "stationName": "PAAKEA 350, HI US",
-                "previousDate": "1956-07-19",
-                "value": 160,
-                "previousValue": 123.4,
-                "PreviousRecordAgeInDays": 22651
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-156.1186, 20.8137]
             }
         }, {
             "type": "Feature",
@@ -6684,42 +5820,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-08-02",
-                "por": "123",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00040943",
-                "difference": 10.7,
-                "stationName": "BODIE CALIFORNIA STATE HISTORIC PARK, CA US",
-                "previousDate": "2018-08-01",
-                "value": 43.7,
-                "previousValue": 33,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-119.0142, 38.2119]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-02",
-                "por": "39",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00091863",
-                "difference": 31.3,
-                "stationName": "CHATSWORTH 2, GA US",
-                "previousDate": "2017-08-11",
-                "value": 102.4,
-                "previousValue": 71.1,
-                "PreviousRecordAgeInDays": 356
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-84.7642, 34.7582]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-08-03",
                 "por": "66",
                 "dataType": "HPCP",
@@ -6810,24 +5910,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-08-06",
-                "por": "30",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0045O04S",
-                "difference": 0,
-                "stationName": "GRANITE CRK, AK US",
-                "previousDate": "2007-08-06",
-                "value": 30.5,
-                "previousValue": 30.5,
-                "PreviousRecordAgeInDays": 4018
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-145.4, 63.94]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-08-09",
                 "por": "106",
                 "dataType": "HPCP",
@@ -6878,24 +5960,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-136.3435, 58.1916]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-09",
-                "por": "51",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00507141",
-                "difference": 11.9,
-                "stationName": "PELICAN, AK US",
-                "previousDate": "2015-08-18",
-                "value": 155.7,
-                "previousValue": 143.8,
-                "PreviousRecordAgeInDays": 1087
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-136.2213, 57.9577]
             }
         }, {
             "type": "Feature",
@@ -6986,42 +6050,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-99.6541, 37.826]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-14",
-                "por": "36",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00345713",
-                "difference": 19.6,
-                "stationName": "MCGEE CREEK DAM, OK US",
-                "previousDate": "1994-08-08",
-                "value": 92.5,
-                "previousValue": 72.9,
-                "PreviousRecordAgeInDays": 8772
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-95.8675, 34.3098]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-14",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013967",
-                "difference": 11.2,
-                "stationName": "OKLAHOMA CITY WILL ROGERS WORLD AIRPORT, OK US",
-                "previousDate": "2008-08-11",
-                "value": 128.5,
-                "previousValue": 117.3,
-                "PreviousRecordAgeInDays": 3655
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-97.6006, 35.3889]
             }
         }, {
             "type": "Feature",
@@ -7315,24 +6343,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-08-21",
-                "por": "115",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00424508",
-                "difference": 2,
-                "stationName": "KANAB, UT US",
-                "previousDate": "1997-08-10",
-                "value": 50.8,
-                "previousValue": 48.8,
-                "PreviousRecordAgeInDays": 7681
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.53606, 37.02872]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-21",
                 "por": "125",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00470645",
@@ -7531,24 +6541,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-08-27",
-                "por": "125",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00470645",
-                "difference": 3.3,
-                "stationName": "BEAVER DAM, WI US",
-                "previousDate": "2018-08-21",
-                "value": 91.4,
-                "previousValue": 88.1,
-                "PreviousRecordAgeInDays": 6
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-88.8477, 43.4447]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-27",
                 "por": "124",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00471568",
@@ -7598,42 +6590,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-88.4113, 43.3311]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-27",
-                "por": "76",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00514750",
-                "difference": 7.6,
-                "stationName": "KOLOA MAUKA 994, HI US",
-                "previousDate": "1959-08-07",
-                "value": 182.9,
-                "previousValue": 175.3,
-                "PreviousRecordAgeInDays": 21570
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-159.46694, 21.94833]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-27",
-                "por": "80",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00517194",
-                "difference": 355.6,
-                "stationName": "PAAKEA 350, HI US",
-                "previousDate": "1982-08-02",
-                "value": 609.6,
-                "previousValue": 254,
-                "PreviousRecordAgeInDays": 13174
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-156.1186, 20.8137]
             }
         }, {
             "type": "Feature",
@@ -7693,24 +6649,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-08-27",
-                "por": "30",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0010E07S",
-                "difference": 0,
-                "stationName": "THUMB DIVIDE, WY US",
-                "previousDate": "2005-08-18",
-                "value": 25.4,
-                "previousValue": 25.4,
-                "PreviousRecordAgeInDays": 4757
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.58, 44.37]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-27",
                 "por": "37",
                 "dataType": "HPCP",
                 "station": "GHCND:USS0010E17S",
@@ -7724,24 +6662,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-110.22, 44.15]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-27",
-                "por": "37",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0010F23S",
-                "difference": 0,
-                "stationName": "PHILLIPS BENCH, WY US",
-                "previousDate": "2004-08-25",
-                "value": 25.4,
-                "previousValue": 25.4,
-                "PreviousRecordAgeInDays": 5115
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.91, 43.52]
             }
         }, {
             "type": "Feature",
@@ -7819,24 +6739,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-08-28",
-                "por": "62",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00479062",
-                "difference": 71.4,
-                "stationName": "WESTBY 3 ENE, WI US",
-                "previousDate": "2007-08-19",
-                "value": 253.5,
-                "previousValue": 182.1,
-                "PreviousRecordAgeInDays": 4027
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-90.8077, 43.6749]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-08-28",
                 "por": "43",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00516128",
@@ -7887,24 +6789,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-92.405, 42.08]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-01",
-                "por": "125",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00238712",
-                "difference": 22.9,
-                "stationName": "WARRENSBURG 4 NW, MO US",
-                "previousDate": "1998-09-14",
-                "value": 177.8,
-                "previousValue": 154.9,
-                "PreviousRecordAgeInDays": 7292
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-93.8008, 38.7841]
             }
         }, {
             "type": "Feature",
@@ -8162,24 +7046,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-09-04",
-                "por": "31",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00473022",
-                "difference": 22,
-                "stationName": "GAYS MILLS, WI US",
-                "previousDate": "2016-09-22",
-                "value": 133.3,
-                "previousValue": 111.3,
-                "PreviousRecordAgeInDays": 712
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-90.8486, 43.3145]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-04",
                 "por": "81",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00474937",
@@ -8193,24 +7059,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-91.0985, 43.2118]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-04",
-                "por": "113",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00475178",
-                "difference": 47.5,
-                "stationName": "MAUSTON 1 SE, WI US",
-                "previousDate": "1986-09-11",
-                "value": 144.8,
-                "previousValue": 97.3,
-                "PreviousRecordAgeInDays": 11681
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-90.0597, 43.7899]
             }
         }, {
             "type": "Feature",
@@ -8557,24 +7405,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-09-08",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093814",
-                "difference": 4.1,
-                "stationName": "CINCINNATI NORTHERN KENTUCKY INTERNATIONAL AIRPORT, KY US",
-                "previousDate": "2011-09-26",
-                "value": 99.6,
-                "previousValue": 95.5,
-                "PreviousRecordAgeInDays": 2539
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-84.6724, 39.0444]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-09-09",
                 "por": "129",
                 "dataType": "HPCP",
@@ -8589,42 +7419,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-92.0185, 34.2255]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-09",
-                "por": "41",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00111700",
-                "difference": 1.3,
-                "stationName": "CLAY CITY 6 SSE, IL US",
-                "previousDate": "2012-09-02",
-                "value": 127,
-                "previousValue": 125.7,
-                "PreviousRecordAgeInDays": 2198
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-88.3117, 38.6058]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-09",
-                "por": "55",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00114957",
-                "difference": 11.7,
-                "stationName": "LAWRENCEVILLE 2 WSW, IL US",
-                "previousDate": "2018-09-08",
-                "value": 108.5,
-                "previousValue": 96.8,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.7196, 38.7239]
             }
         }, {
             "type": "Feature",
@@ -8679,24 +7473,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-88.94586, 38.64027]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-09",
-                "por": "122",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00120784",
-                "difference": 9.1,
-                "stationName": "BLOOMINGTON INDIANA UNIVERSITY, IN US",
-                "previousDate": "1993-09-03",
-                "value": 110.7,
-                "previousValue": 101.6,
-                "PreviousRecordAgeInDays": 9137
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-86.5214, 39.1742]
             }
         }, {
             "type": "Feature",
@@ -8769,42 +7545,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-86.77048, 39.28385]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-09",
-                "por": "124",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00129112",
-                "difference": 8.7,
-                "stationName": "VINCENNES 4 E, IN US",
-                "previousDate": "1950-09-01",
-                "value": 124,
-                "previousValue": 115.3,
-                "PreviousRecordAgeInDays": 24845
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.4632, 38.6786]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-09",
-                "por": "36",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00129113",
-                "difference": 33.6,
-                "stationName": "VINCENNES 5 NE, IN US",
-                "previousDate": "2012-09-26",
-                "value": 109.5,
-                "previousValue": 75.9,
-                "PreviousRecordAgeInDays": 2174
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.4877, 38.7386]
             }
         }, {
             "type": "Feature",
@@ -8954,24 +7694,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-09-10",
-                "por": "87",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00361377",
-                "difference": 29.3,
-                "stationName": "CHARLEROI LOCK 4, PA US",
-                "previousDate": "2004-09-18",
-                "value": 111.3,
-                "previousValue": 82,
-                "PreviousRecordAgeInDays": 5105
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-79.8986, 40.1468]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-10",
                 "por": "35",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00367167",
@@ -8985,24 +7707,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-78.5551, 40.6515]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-10",
-                "por": "90",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00465002",
-                "difference": 15,
-                "stationName": "LAKE LYNN, WV US",
-                "previousDate": "1996-09-17",
-                "value": 77.5,
-                "previousValue": 62.5,
-                "PreviousRecordAgeInDays": 8028
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-79.8561, 39.7204]
             }
         }, {
             "type": "Feature",
@@ -9111,42 +7815,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-156.6753, 20.9625]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-13",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00516128",
-                "difference": 5.1,
-                "stationName": "MANOA LYON ARBO 785.2, HI US",
-                "previousDate": "2015-09-15",
-                "value": 178.6,
-                "previousValue": 173.5,
-                "PreviousRecordAgeInDays": 1094
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-157.8025, 21.3331]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-13",
-                "por": "80",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00517194",
-                "difference": 61,
-                "stationName": "PAAKEA 350, HI US",
-                "previousDate": "2015-09-30",
-                "value": 297.2,
-                "previousValue": 236.2,
-                "PreviousRecordAgeInDays": 1079
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-156.1186, 20.8137]
             }
         }, {
             "type": "Feature",
@@ -9404,24 +8072,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-09-19",
-                "por": "30",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00023668",
-                "difference": 24.1,
-                "stationName": "GREEN VALLEY, AZ US",
-                "previousDate": "2018-09-02",
-                "value": 87.6,
-                "previousValue": 63.5,
-                "PreviousRecordAgeInDays": 17
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.9977, 31.893]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-19",
                 "por": "45",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00198757",
@@ -9454,25 +8104,7 @@
                 "type": "Point",
                 "coordinates": [-93.202, 42.756]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-20",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00137152",
-                "difference": 9.4,
-                "stationName": "ROCK VALLEY, IA US",
-                "previousDate": "2010-09-24",
-                "value": 130.6,
-                "previousValue": 121.2,
-                "PreviousRecordAgeInDays": 2918
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-96.3061, 43.2044]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-09-20",
@@ -9904,25 +8536,7 @@
                 "type": "Point",
                 "coordinates": [-71.9031, 41.9442]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-09-28",
-                "por": "31",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00513317",
-                "difference": 0.8,
-                "stationName": "KAPALUA W. MAUI AIRPORT 462.4, HI US",
-                "previousDate": "2018-09-13",
-                "value": 57.2,
-                "previousValue": 56.4,
-                "PreviousRecordAgeInDays": 15
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-156.6753, 20.9625]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-09-30",
@@ -9940,26 +8554,7 @@
                 "type": "Point",
                 "coordinates": [-112.73, 47.08]
             }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-01",
-                "por": "105",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00020080",
-                "difference": 2.8,
-                "stationName": "AJO, AZ US",
-                "previousDate": "1940-10-05",
-                "value": 50.8,
-                "previousValue": 48,
-                "PreviousRecordAgeInDays": 28485
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.8599, 32.3698]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-10-01",
@@ -9981,24 +8576,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-10-02",
-                "por": "105",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00020080",
-                "difference": 25.4,
-                "stationName": "AJO, AZ US",
-                "previousDate": "2018-10-01",
-                "value": 76.2,
-                "previousValue": 50.8,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.8599, 32.3698]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-02",
                 "por": "95",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00029464",
@@ -10012,24 +8589,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-112.523, 33.7776]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-02",
-                "por": "34",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00112745",
-                "difference": 0,
-                "stationName": "ELIZABETH, IL US",
-                "previousDate": "2009-10-22",
-                "value": 48.3,
-                "previousValue": 48.3,
-                "PreviousRecordAgeInDays": 3267
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-90.2269, 42.3162]
             }
         }, {
             "type": "Feature",
@@ -10841,25 +9400,7 @@
                 "type": "Point",
                 "coordinates": [-90.1892, 46.4656]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-10",
-                "por": "88",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00014847",
-                "difference": 24.4,
-                "stationName": "SAULT STE MARIE SANDERSON FIELD, MI US",
-                "previousDate": "2014-10-14",
-                "value": 81.3,
-                "previousValue": 56.9,
-                "PreviousRecordAgeInDays": 1457
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-84.3572, 46.4794]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-10-11",
@@ -10917,42 +9458,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-10-11",
-                "por": "63",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00098661",
-                "difference": 29.7,
-                "stationName": "THOMASTON 4 SE, GA US",
-                "previousDate": "1989-10-01",
-                "value": 120.9,
-                "previousValue": 91.2,
-                "PreviousRecordAgeInDays": 10602
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-84.2654, 32.867]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-11",
-                "por": "63",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00313565",
-                "difference": 9.7,
-                "stationName": "GRANDFATHER MOUNTAIN, NC US",
-                "previousDate": "2017-10-09",
-                "value": 152.4,
-                "previousValue": 142.7,
-                "PreviousRecordAgeInDays": 367
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-81.8311, 36.0963]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-11",
                 "por": "72",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00386775",
@@ -11003,43 +9508,7 @@
                 "type": "Point",
                 "coordinates": [-79.3351, 36.5729]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-11",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093720",
-                "difference": 19.3,
-                "stationName": "SALISBURY WICOMICO REGIONAL AIRPORT, MD US",
-                "previousDate": "2012-10-29",
-                "value": 166.6,
-                "previousValue": 147.3,
-                "PreviousRecordAgeInDays": 2173
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-75.51325, 38.34083]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-12",
-                "por": "91",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00185865",
-                "difference": 8.6,
-                "stationName": "MECHANICSVILLE 5 NE, MD US",
-                "previousDate": "2012-10-30",
-                "value": 140.2,
-                "previousValue": 131.6,
-                "PreviousRecordAgeInDays": 2173
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-76.7259, 38.4927]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-10-12",
@@ -11110,24 +9579,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-79.7433, 36.4742]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-12",
-                "por": "63",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00313565",
-                "difference": 0,
-                "stationName": "GRANDFATHER MOUNTAIN, NC US",
-                "previousDate": "2018-10-11",
-                "value": 152.4,
-                "previousValue": 152.4,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-81.8311, 36.0963]
             }
         }, {
             "type": "Feature",
@@ -11237,25 +9688,7 @@
                 "type": "Point",
                 "coordinates": [-76.8, 37.5658]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-13",
-                "por": "95",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00029464",
-                "difference": 5.6,
-                "stationName": "WITTMANN 1 SE, AZ US",
-                "previousDate": "2018-10-02",
-                "value": 60.7,
-                "previousValue": 55.1,
-                "PreviousRecordAgeInDays": 11
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.523, 33.7776]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-10-13",
@@ -11272,24 +9705,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-116.073, 33.5697]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-15",
-                "por": "119",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00402489",
-                "difference": 10.2,
-                "stationName": "DICKSON, TN US",
-                "previousDate": "1977-10-25",
-                "value": 99.1,
-                "previousValue": 88.9,
-                "PreviousRecordAgeInDays": 14965
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.3959, 36.0749]
             }
         }, {
             "type": "Feature",
@@ -11380,24 +9795,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-98.4707, 30.8837]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-10-16",
-                "por": "51",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00419504",
-                "difference": 7.6,
-                "stationName": "WATSON, TX US",
-                "previousDate": "2015-10-24",
-                "value": 160,
-                "previousValue": 152.4,
-                "PreviousRecordAgeInDays": 1088
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-98.022, 30.9297]
             }
         }, {
             "type": "Feature",
@@ -11885,43 +10282,7 @@
                 "type": "Point",
                 "coordinates": [-107.96838, 44.01134]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-04",
-                "por": "82",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00130389",
-                "difference": 6.1,
-                "stationName": "AUGUSTA, IA US",
-                "previousDate": "1968-11-15",
-                "value": 51.8,
-                "previousValue": 45.7,
-                "PreviousRecordAgeInDays": 18251
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-91.275, 40.7472]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-04",
-                "por": "79",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00286979",
-                "difference": 10.2,
-                "stationName": "PHILLIPSBURG EASTON BRIDGE, NJ US",
-                "previousDate": "2018-11-03",
-                "value": 97.8,
-                "previousValue": 87.6,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-75.19994, 40.69555]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-11-05",
@@ -11939,25 +10300,7 @@
                 "type": "Point",
                 "coordinates": [-83.1819, 30.1063]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-06",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00339050",
-                "difference": 1.8,
-                "stationName": "WEST UNION 6 ENE, OH US",
-                "previousDate": "1986-11-26",
-                "value": 59.2,
-                "previousValue": 57.4,
-                "PreviousRecordAgeInDays": 11668
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-83.4353, 38.8053]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-11-08",
@@ -11993,25 +10336,7 @@
                 "type": "Point",
                 "coordinates": [-107.27, 41.05]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-10",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00246672",
-                "difference": 0.3,
-                "stationName": "PORT OF MORGAN, MT US",
-                "previousDate": "2012-11-09",
-                "value": 25.4,
-                "previousValue": 25.1,
-                "PreviousRecordAgeInDays": 2192
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-107.833, 48.9977]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-11-12",
@@ -12047,25 +10372,7 @@
                 "type": "Point",
                 "coordinates": [-94.6533, 32.3466]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-12",
-                "por": "73",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00013728",
-                "difference": 1,
-                "stationName": "DANVILLE REGIONAL AIRPORT, VA US",
-                "previousDate": "2009-11-11",
-                "value": 68.8,
-                "previousValue": 67.8,
-                "PreviousRecordAgeInDays": 3288
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-79.3351, 36.5729]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-11-12",
@@ -12119,43 +10426,7 @@
                 "type": "Point",
                 "coordinates": [-82.4547, 34.6427]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-16",
-                "por": "79",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00286979",
-                "difference": 29.2,
-                "stationName": "PHILLIPSBURG EASTON BRIDGE, NJ US",
-                "previousDate": "2018-11-04",
-                "value": 127,
-                "previousValue": 97.8,
-                "PreviousRecordAgeInDays": 12
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-75.19994, 40.69555]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-18",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00246672",
-                "difference": 0,
-                "stationName": "PORT OF MORGAN, MT US",
-                "previousDate": "2018-11-10",
-                "value": 25.4,
-                "previousValue": 25.4,
-                "PreviousRecordAgeInDays": 8
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-107.833, 48.9977]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-11-24",
@@ -12173,25 +10444,7 @@
                 "type": "Point",
                 "coordinates": [-106.23, 41.36]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-11-24",
-                "por": "36",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0006H23S",
-                "difference": 5.1,
-                "stationName": "SAND LAKE, WY US",
-                "previousDate": "2010-11-16",
-                "value": 48.3,
-                "previousValue": 43.2,
-                "PreviousRecordAgeInDays": 2930
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-106.28, 41.46]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-11-24",
@@ -12628,24 +10881,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-12-02",
-                "por": "112",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00219033",
-                "difference": 1.3,
-                "stationName": "WINDOM, MN US",
-                "previousDate": "1987-12-28",
-                "value": 29.5,
-                "previousValue": 28.2,
-                "PreviousRecordAgeInDays": 11297
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-95.1159, 43.877]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-02",
                 "por": "43",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00246672",
@@ -12678,43 +10913,7 @@
                 "type": "Point",
                 "coordinates": [-96.7261, 42.2822]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-02",
-                "por": "54",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00421163",
-                "difference": 7.6,
-                "stationName": "CANYONLANDS THE NECK, UT US",
-                "previousDate": "1999-12-10",
-                "value": 33,
-                "previousValue": 25.4,
-                "PreviousRecordAgeInDays": 6932
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-109.8213, 38.46]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-02",
-                "por": "87",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00094911",
-                "difference": 1.5,
-                "stationName": "YANKTON 2 E, SD US",
-                "previousDate": "2006-12-21",
-                "value": 33.3,
-                "previousValue": 31.8,
-                "PreviousRecordAgeInDays": 4364
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-97.36361, 42.87856]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-12-07",
@@ -12750,25 +10949,7 @@
                 "type": "Point",
                 "coordinates": [-93.0626, 32.81]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-08",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00167738",
-                "difference": 0.5,
-                "stationName": "RED RIVER RESEARCH STATION, LA US",
-                "previousDate": "2002-12-24",
-                "value": 102.6,
-                "previousValue": 102.1,
-                "PreviousRecordAgeInDays": 5828
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-93.638, 32.4219]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-12-08",
@@ -12969,24 +11150,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-12-13",
-                "por": "96",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00485355",
-                "difference": 0,
-                "stationName": "LAMAR RANGER STATION, WY US",
-                "previousDate": "1925-12-23",
-                "value": 20.3,
-                "previousValue": 20.3,
-                "PreviousRecordAgeInDays": 33958
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.23416, 44.89553]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-12-15",
                 "por": "41",
                 "dataType": "HPCP",
@@ -13132,24 +11295,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2018-12-20",
-                "por": "84",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00085973",
-                "difference": 35.8,
-                "stationName": "MOUNTAIN LAKE, FL US",
-                "previousDate": "1986-12-24",
-                "value": 132.3,
-                "previousValue": 96.5,
-                "PreviousRecordAgeInDays": 11684
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-81.5993, 27.9378]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-20",
                 "por": "126",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00087205",
@@ -13257,42 +11402,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2018-12-21",
-                "por": "58",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00444039",
-                "difference": 10.4,
-                "stationName": "BIG ISLAND, VA US",
-                "previousDate": "2008-12-12",
-                "value": 70.1,
-                "previousValue": 59.7,
-                "PreviousRecordAgeInDays": 3661
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-79.403, 37.5443]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-22",
-                "por": "80",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00189570",
-                "difference": 0,
-                "stationName": "WILLIAMSPORT, MD US",
-                "previousDate": "2018-12-16",
-                "value": 63.5,
-                "previousValue": 63.5,
-                "PreviousRecordAgeInDays": 6
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-77.8471, 39.6109]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2018-12-24",
                 "por": "142",
                 "dataType": "HPCP",
@@ -13362,25 +11471,7 @@
                 "type": "Point",
                 "coordinates": [-97.86056, 38.06528]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-27",
-                "por": "124",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00136800",
-                "difference": 5.6,
-                "stationName": "PRIMGHAR, IA US",
-                "previousDate": "2007-12-01",
-                "value": 34,
-                "previousValue": 28.4,
-                "PreviousRecordAgeInDays": 4044
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-95.6291, 43.0863]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2018-12-27",
@@ -13524,25 +11615,7 @@
                 "type": "Point",
                 "coordinates": [-98.9269, 41.6028]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2018-12-27",
-                "por": "124",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00257515",
-                "difference": 10.7,
-                "stationName": "SAINT PAUL, NE US",
-                "previousDate": "2018-12-01",
-                "value": 52.6,
-                "previousValue": 41.9,
-                "PreviousRecordAgeInDays": 26
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-98.4608, 41.2077]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2018-12-27",
@@ -13974,26 +12047,7 @@
                 "type": "Point",
                 "coordinates": [-108.3086, 36.6897]
             }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-01-02",
-                "por": "57",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00053489",
-                "difference": 10.7,
-                "stationName": "GRAND JUNCTION 6 ESE, CO US",
-                "previousDate": "2005-01-12",
-                "value": 25.4,
-                "previousValue": 14.7,
-                "PreviousRecordAgeInDays": 5103
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-108.4663, 39.0422]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-01-03",
@@ -14011,25 +12065,7 @@
                 "type": "Point",
                 "coordinates": [-94.1819, 30.793]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-01-05",
-                "por": "33",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0007H04S",
-                "difference": 7.6,
-                "stationName": "BATTLE MOUNTAIN, WY US",
-                "previousDate": "2017-01-04",
-                "value": 33,
-                "previousValue": 25.4,
-                "PreviousRecordAgeInDays": 731
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-107.27, 41.05]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2019-01-07",
@@ -14284,24 +12320,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2019-01-17",
-                "por": "125",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00056832",
-                "difference": 0.8,
-                "stationName": "RANGELY 1 E, CO US",
-                "previousDate": "1956-01-16",
-                "value": 25.4,
-                "previousValue": 24.6,
-                "PreviousRecordAgeInDays": 23012
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-108.7727, 40.0889]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2019-01-18",
                 "por": "110",
                 "dataType": "HPCP",
@@ -14447,24 +12465,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-01-23",
-                "por": "44",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00110500",
-                "difference": 0,
-                "stationName": "BEECHER CITY, IL US",
-                "previousDate": "2005-01-05",
-                "value": 55.9,
-                "previousValue": 55.9,
-                "PreviousRecordAgeInDays": 5131
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-88.78266, 39.18122]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-01-23",
                 "por": "117",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00350694",
@@ -14479,25 +12479,7 @@
                 "type": "Point",
                 "coordinates": [-121.285, 44.0569]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-01-24",
-                "por": "119",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00018385",
-                "difference": 35.8,
-                "stationName": "TUSCALOOSA OLIVER DAM, AL US",
-                "previousDate": "1996-01-27",
-                "value": 141,
-                "previousValue": 105.2,
-                "PreviousRecordAgeInDays": 8398
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-87.5936, 33.2097]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-01-24",
@@ -14604,24 +12586,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-117.86484, 45.19852]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-02",
-                "por": "45",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00461324",
-                "difference": 5.1,
-                "stationName": "CACAPON ST PARK NUMBER 2, WV US",
-                "previousDate": "2008-02-13",
-                "value": 106.7,
-                "previousValue": 101.6,
-                "PreviousRecordAgeInDays": 4007
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-78.29739, 39.50932]
             }
         }, {
             "type": "Feature",
@@ -14789,24 +12753,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-02-04",
-                "por": "62",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00093729",
-                "difference": 11.9,
-                "stationName": "CAPE HATTERAS BILLY MITCHELL FIELD, NC US",
-                "previousDate": "2008-02-18",
-                "value": 88.9,
-                "previousValue": 77,
-                "PreviousRecordAgeInDays": 4004
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-75.6219, 35.2326]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-04",
                 "por": "59",
                 "dataType": "HPCP",
                 "station": "GHCND:USW00094010",
@@ -14838,24 +12784,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-109.09, 36.9233]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-06",
-                "por": "74",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00360457",
-                "difference": 41.2,
-                "stationName": "BEAR GAP, PA US",
-                "previousDate": "2007-02-14",
-                "value": 100.6,
-                "previousValue": 59.4,
-                "PreviousRecordAgeInDays": 4375
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-76.49831, 40.82086]
             }
         }, {
             "type": "Feature",
@@ -14987,24 +12915,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-02-08",
-                "por": "107",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00126056",
-                "difference": 22.1,
-                "stationName": "NASHVILLE 2 NNE, IN US",
-                "previousDate": "1999-02-07",
-                "value": 82.3,
-                "previousValue": 60.2,
-                "PreviousRecordAgeInDays": 7306
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-86.2295, 39.2401]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-08",
                 "por": "126",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00127999",
@@ -15127,25 +13037,7 @@
                 "type": "Point",
                 "coordinates": [-123.1025, 45.5247]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-12",
-                "por": "46",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00451939",
-                "difference": 71.1,
-                "stationName": "CUSHMAN POWERHOUSE NUMBER 2, WA US",
-                "previousDate": "2019-02-11",
-                "value": 241.3,
-                "previousValue": 170.2,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-123.16, 47.3705]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-02-12",
@@ -15198,24 +13090,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-75.83689, 44.27543]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-13",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00489025",
-                "difference": 1.2,
-                "stationName": "TOWER FALLS, WY US",
-                "previousDate": "2019-02-04",
-                "value": 24.1,
-                "previousValue": 22.9,
-                "PreviousRecordAgeInDays": 9
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.42033, 44.91653]
             }
         }, {
             "type": "Feature",
@@ -15451,25 +13325,7 @@
                 "type": "Point",
                 "coordinates": [-109.8213, 38.46]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-15",
-                "por": "54",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00426053",
-                "difference": 7.1,
-                "stationName": "NATURAL BRIDGES N.M., UT US",
-                "previousDate": "1997-02-27",
-                "value": 27.9,
-                "previousValue": 20.8,
-                "PreviousRecordAgeInDays": 8023
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-109.9772, 37.6094]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-02-15",
@@ -15504,24 +13360,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-104.3567, 44.4121]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-16",
-                "por": "126",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00317615",
-                "difference": 9.1,
-                "stationName": "SALISBURY, NC US",
-                "previousDate": "1929-02-28",
-                "value": 88.9,
-                "previousValue": 79.8,
-                "PreviousRecordAgeInDays": 32860
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-80.4822, 35.6836]
             }
         }, {
             "type": "Feature",
@@ -15833,24 +13671,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-02-24",
-                "por": "70",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00142980",
-                "difference": 6.9,
-                "stationName": "GARDEN CITY EXPERIMENTAL STATION, KS US",
-                "previousDate": "2013-02-21",
-                "value": 34.3,
-                "previousValue": 27.4,
-                "PreviousRecordAgeInDays": 2194
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-100.8121, 37.993]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-24",
                 "por": "53",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00200770",
@@ -15977,24 +13797,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-02-24",
-                "por": "71",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00478241",
-                "difference": 1.6,
-                "stationName": "STRATFORD 1 NW, WI US",
-                "previousDate": "2017-02-21",
-                "value": 22.9,
-                "previousValue": 21.3,
-                "PreviousRecordAgeInDays": 733
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-90.0899, 44.8175]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-24",
                 "por": "40",
                 "dataType": "HPCP",
                 "station": "GHCND:USS0011E30S",
@@ -16008,24 +13810,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-111.15, 44.61]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-24",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0012E07S",
-                "difference": 2.6,
-                "stationName": "DIVIDE, MT US",
-                "previousDate": "2019-02-03",
-                "value": 22.9,
-                "previousValue": 20.3,
-                "PreviousRecordAgeInDays": 21
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-112.06, 44.79]
             }
         }, {
             "type": "Feature",
@@ -16121,24 +13905,6 @@
             "type": "Feature",
             "properties": {
                 "date": "2019-02-25",
-                "por": "59",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00245603",
-                "difference": 2.6,
-                "stationName": "MELVILLE 4 W, MT US",
-                "previousDate": "2007-02-12",
-                "value": 19.1,
-                "previousValue": 16.5,
-                "PreviousRecordAgeInDays": 4396
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-110.05, 46.1047]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-25",
                 "por": "87",
                 "dataType": "HPCP",
                 "station": "GHCND:USC00249067",
@@ -16207,25 +13973,7 @@
                 "type": "Point",
                 "coordinates": [-82.9838, 36.4161]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-25",
-                "por": "40",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0011E35S",
-                "difference": 10.2,
-                "stationName": "BLACK BEAR, MT US",
-                "previousDate": "2019-02-13",
-                "value": 61,
-                "previousValue": 50.8,
-                "PreviousRecordAgeInDays": 12
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-111.13, 44.51]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-02-25",
@@ -16354,24 +14102,6 @@
         }, {
             "type": "Feature",
             "properties": {
-                "date": "2019-02-25",
-                "por": "37",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0016E05S",
-                "difference": 2.6,
-                "stationName": "SQUAW FLAT, ID US",
-                "previousDate": "2019-02-24",
-                "value": 73.7,
-                "previousValue": 71.1,
-                "PreviousRecordAgeInDays": 1
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-116.25, 44.77]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
                 "date": "2019-02-26",
                 "por": "116",
                 "dataType": "HPCP",
@@ -16404,24 +14134,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-110.559, 45.4955]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-26",
-                "por": "112",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00246157",
-                "difference": 0.8,
-                "stationName": "NORRIS MADISON POWER HOUSE, MT US",
-                "previousDate": "1986-02-18",
-                "value": 19.1,
-                "previousValue": 18.3,
-                "PreviousRecordAgeInDays": 12061
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-111.6336, 45.4875]
             }
         }, {
             "type": "Feature",
@@ -16477,43 +14189,7 @@
                 "type": "Point",
                 "coordinates": [-109.13736, 44.93651]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-27",
-                "por": "38",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0009E07S",
-                "difference": 0,
-                "stationName": "PARKER PEAK, WY US",
-                "previousDate": "2017-02-04",
-                "value": 30.5,
-                "previousValue": 30.5,
-                "PreviousRecordAgeInDays": 753
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-109.91, 44.73]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-02-27",
-                "por": "32",
-                "dataType": "HPCP",
-                "station": "GHCND:USS0014F11S",
-                "difference": 20.3,
-                "stationName": "SOLDIER RANGER STATION, ID US",
-                "previousDate": "2019-02-24",
-                "value": 63.5,
-                "previousValue": 43.2,
-                "PreviousRecordAgeInDays": 3
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-114.83, 43.48]
-            }
-        }, {
+        },  {
             "type": "Feature",
             "properties": {
                 "date": "2019-02-27",
@@ -16837,24 +14513,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-114.7734, 39.4136]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-10",
-                "por": "71",
-                "dataType": "HPCP",
-                "station": "GHCND:USW00014858",
-                "difference": 4.6,
-                "stationName": "HANCOCK HOUGHTON CO AIRPORT, MI US",
-                "previousDate": "1977-03-12",
-                "value": 54.1,
-                "previousValue": 49.5,
-                "PreviousRecordAgeInDays": 15338
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-88.48889, 47.16861]
             }
         }, {
             "type": "Feature",
@@ -17252,43 +14910,7 @@
                 "type": "Point",
                 "coordinates": [-97.6436, 42.5938]
             }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-14",
-                "por": "100",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00255830",
-                "difference": 6.4,
-                "stationName": "NELIGH, NE US",
-                "previousDate": "1987-03-17",
-                "value": 62.5,
-                "previousValue": 56.1,
-                "PreviousRecordAgeInDays": 11685
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-98.0275, 42.1302]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-14",
-                "por": "126",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00391076",
-                "difference": 15.7,
-                "stationName": "BROOKINGS 2 NE, SD US",
-                "previousDate": "2002-03-15",
-                "value": 49.5,
-                "previousValue": 33.8,
-                "PreviousRecordAgeInDays": 6208
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-96.7686, 44.3252]
-            }
-        }, {
+        },{
             "type": "Feature",
             "properties": {
                 "date": "2019-03-14",
@@ -17359,24 +14981,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-97.36361, 42.87856]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-18",
-                "por": "52",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00507141",
-                "difference": 22,
-                "stationName": "PELICAN, AK US",
-                "previousDate": "2004-03-11",
-                "value": 104.6,
-                "previousValue": 82.6,
-                "PreviousRecordAgeInDays": 5485
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-136.2213, 57.9577]
             }
         }, {
             "type": "Feature",
@@ -17467,42 +15071,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [-109.9772, 37.6094]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-25",
-                "por": "43",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00246672",
-                "difference": 25.4,
-                "stationName": "PORT OF MORGAN, MT US",
-                "previousDate": "2011-03-22",
-                "value": 38.1,
-                "previousValue": 12.7,
-                "PreviousRecordAgeInDays": 2925
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-107.833, 48.9977]
-            }
-        }, {
-            "type": "Feature",
-            "properties": {
-                "date": "2019-03-28",
-                "por": "60",
-                "dataType": "HPCP",
-                "station": "GHCND:USC00357857",
-                "difference": 0.5,
-                "stationName": "SISTERS, OR US",
-                "previousDate": "2019-03-06",
-                "value": 51.3,
-                "previousValue": 50.8,
-                "PreviousRecordAgeInDays": 22
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-121.5486, 44.2842]
             }
         }, {
             "type": "Feature",
