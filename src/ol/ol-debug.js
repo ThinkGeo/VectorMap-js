@@ -58757,9 +58757,9 @@ function olInit() {
          * @type {Image|HTMLCanvasElement}
          */
         this.image_ = new Image();
-        if (crossOrigin !== null) {
-            this.image_.crossOrigin = crossOrigin;
-        }
+        // if (crossOrigin !== null) {
+            this.image_.crossOrigin = "anonymous";
+        // }
 
         /**
          * @private
@@ -100249,7 +100249,6 @@ function olInit() {
             
             LineStringReplayCustom.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
                 var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-                // debugger;
                 function bearing(seg){
                     var firstPoint = [seg.x1,seg.y1];
                     var secondPoint = [seg.x2,seg.y2];
@@ -100445,9 +100444,7 @@ function olInit() {
                 }
      
                 function drawLineString_(flatCoordinates){
-
                     var stride = lineStringGeometry.getStride();
-                    // var extent = feature.getExtent();
                     if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
                         var clippedFlatCoordinates =ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                             stride, -this.origin[0], -this.origin[1]);
@@ -100545,26 +100542,9 @@ function olInit() {
                     // if (!(strokeStyleColor instanceof CanvasGradient) &&
                     //     !(strokeStyleColor instanceof CanvasPattern)) {
                     if(strokeStyleColor){
-                        // strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
-                        //     return i != 3 ? c / 255 : c;
-                        // }) || ol.render.webgl.defaultStrokeStyle;
-            
-                        var strColor = ol.color.asArray(strokeStyleColor) || ol.render.webgl.defaultStrokeStyle;
-                        if(+strColor[3] !== 1){
-                            var A1 = +strColor[3];
-                            var R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-                            var G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-                            var B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                            var A3 = A1 == 0 ? 0 : 1;
-                            strColor[0] = R3.toFixed(6).toString();
-                            strColor[1] = G3.toFixed(6).toString();
-                            strColor[2] = B3.toFixed(6).toString();
-                            strColor[3] = A3.toString();
-                        }
-                    
-                        strokeStyleColor = strColor.map(function(val, index) {
-                            return index !== 3 ? val / 255 : +val;
-                        });
+                        strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
+                            return i != 3 ? c / 255 : c;
+                        }) || ol.render.webgl.defaultStrokeStyle;
                     } else {
                         strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
                     }
@@ -101220,6 +101200,7 @@ function olInit() {
                 var lineStringReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.LINE_STRING);
                 lineStringReplay.setFillStrokeStyle(null, strokeStyle,geometry);
+                
                 lineStringReplay.drawLineString(geometry, feature,strokeStyle,options);
             }
             var textStyle = style.getText();
@@ -101561,15 +101542,14 @@ function olInit() {
             var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
 
-            // TEST
-            // console.log(tileCoord);            
-            // console.log(requestTileCoord);
+            // TEST     
 
-            // if(tileCoord.toString() !== "16,13813,-24873"){
+            if(tileCoord.toString() !== "2,1,-2"){
             // if(tileCoord.toString() !== "14,12928,-6725"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
+                // debugger;
                 // return
-            // }
+            }
             // TEST END
 
             var tileProjection = new ol.proj.Projection({

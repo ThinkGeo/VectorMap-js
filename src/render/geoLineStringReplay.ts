@@ -14,12 +14,12 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
     
       public drawReplay(gl, context, skippedFeaturesHash, hitDetection){
         //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
-            // gl.enable(gl.BLEND);
-            // gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.BLEND);
+            gl.enable(gl.DEPTH_TEST);
             // gl.depthMask(true);
             // gl.depthFunc(gl.NOTEQUAL);
         }
@@ -40,12 +40,12 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
             }
         }
         if (!hitDetection) {
-            // gl.disable(gl.BLEND);
-            // gl.disable(gl.DEPTH_TEST);
-            // gl.clear(gl.DEPTH_BUFFER_BIT);
-            // //Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
+            gl.disable(gl.BLEND);
+            gl.disable(gl.DEPTH_TEST);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            //Restore GL parameters.
+            gl.depthMask(tmpDepthMask);
+            gl.depthFunc(tmpDepthFunc);
         }
       }
 
@@ -108,20 +108,20 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
             tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
         
         if (this.lineStringReplay) {
-            tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
-            tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
-            tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
-            tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
-            tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
-            tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
-            tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
-            tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
+            // tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
+            // tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
+            // tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
+            // tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
+            // tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
+            // tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
+            // tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
+            // tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
     
-            gl.enable(gl.STENCIL_TEST);
-            gl.clear(gl.STENCIL_BUFFER_BIT);
-            gl.stencilMask(255);
-            gl.stencilFunc(gl.ALWAYS, 1, 255);
-            gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+            // gl.enable(gl.STENCIL_TEST);
+            // gl.clear(gl.STENCIL_BUFFER_BIT);
+            // gl.stencilMask(255);
+            // gl.stencilFunc(gl.ALWAYS, 1, 255);
+            // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
     
             // this.lineStringReplay.replay(context,
             //     center, resolution, rotation, size, pixelRatio,
