@@ -100184,7 +100184,7 @@ function olInit() {
                     
                     {
                         this.startIndices.push(this.indices.length);
-                        // this.startIndicesFeature.push(feature);
+                        this.startIndicesFeature.push(feature);
 
                         if (this.state_.changed) {
                             this.zCoordinates.push(feature.zCoordinate);
@@ -100470,7 +100470,7 @@ function olInit() {
                             this.state_.changed = false;
                         }
                             this.startIndices.push(this.indices.length);
-                            // this.startIndicesFeature.push(feature);
+                            this.startIndicesFeature.push(feature);
                             this.drawCoordinates_(
                                 clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
                         }
@@ -100498,7 +100498,7 @@ function olInit() {
                     
                     if (this.indices.length > indexCount) {
                         this.startIndices.push(indexCount);
-                        // this.startIndicesFeature.push(feature);
+                        this.startIndicesFeature.push(feature);
                         if (this.state_.changed) {
                             var z_order = multiLineStringGeometry.properties_.layer;
                             var styleId = multiLineStringGeometry.styleId;
@@ -101544,12 +101544,12 @@ function olInit() {
 
             // TEST     
 
-            if(tileCoord.toString() !== "2,1,-2"){
+            // if(tileCoord.toString() !== "2,1,-2"){
             // if(tileCoord.toString() !== "14,12928,-6725"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // debugger;
                 // return
-            }
+            // }
             // TEST END
 
             var tileProjection = new ol.proj.Projection({

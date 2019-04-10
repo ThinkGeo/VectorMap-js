@@ -14,8 +14,8 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
     
       public drawReplay(gl, context, skippedFeaturesHash, hitDetection){
         //Save GL parameters.
-        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
             gl.enable(gl.BLEND);
@@ -44,8 +44,8 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
             // gl.disable(gl.DEPTH_TEST);
             // gl.clear(gl.DEPTH_BUFFER_BIT);
             //Restore GL parameters.
-            gl.depthMask(tmpDepthMask);
-            gl.depthFunc(tmpDepthFunc);
+            // gl.depthMask(tmpDepthMask);
+            // gl.depthFunc(tmpDepthFunc);
         }
       }
 

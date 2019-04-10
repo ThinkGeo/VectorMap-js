@@ -114,9 +114,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
     gl.uniform1f(locations.u_opacity, opacity);             
 
-    // FIXME replace this temp solution with text calculation in worker
-    this.u_color = locations.u_color;
-
     // draw!
     var result;
     if (featureCallback === undefined) { 

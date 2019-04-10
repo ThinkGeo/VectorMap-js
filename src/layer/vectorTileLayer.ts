@@ -908,53 +908,5 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
             return length;
         };
-
-        function forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-            var resolution = frameState.viewState.resolution;
-            var rotation = frameState.viewState.rotation;
-            hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
-            var layer = this.getLayer();
-            /** @type {Object.<string, boolean>} */
-            var features = {};
-
-            /** @type {Array.<ol.VectorImageTile>} */
-            var renderedTiles = this.renderedTiles;
-
-            var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
-            var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-            var bufferedExtent, found;
-            var i, ii, replayGroup;
-            var tile, tileCoord, tileExtent;
-            for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
-                tile = renderedTiles[i];
-                tileCoord = tile.wrappedTileCoord;
-                tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-                bufferedExtent = ol.extent.buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
-                if (!ol.extent.containsCoordinate(bufferedExtent, coordinate)) {
-                continue;
-                }
-                for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
-                var sourceTile = tile.getTile(tile.tileKeys[t]);
-                if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
-                    continue;
-                }
-                replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-                found = found || replayGroup.forEachFeatureAtCoordinate(
-                    coordinate, resolution, rotation, hitTolerance, {},
-                    /**
-                     * @param {ol.Feature|ol.render.Feature} feature Feature.
-                     * @return {?} Callback result.
-                     */
-                    function(feature) {
-                        var key = (<any>ol).getUid(feature).toString();
-                        if (!(key in features)) {
-                        features[key] = true;
-                        return callback.call(thisArg, feature, layer);
-                        }
-                    }, null);
-                }
-            }
-            return found;
-        };
     }
 }
