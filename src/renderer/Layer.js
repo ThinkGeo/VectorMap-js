@@ -26,6 +26,7 @@ class LayerRenderer extends Observable {
 
   }
 
+  
   /**
    * Create a function that adds loaded tiles to the tile lookup.
    * @param {import("../source/Tile.js").default} source Tile source.
