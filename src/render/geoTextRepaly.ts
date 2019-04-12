@@ -3,7 +3,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     super(tolerance, maxExtent, declutterTree);
   } 
   
-  public finish(context){
+  public finish(context, textureCache){
     var gl = context.getGL();        
     this.groupIndices.push(this.indices.length);
     this.hitDetectionGroupIndices = this.groupIndices;
@@ -18,7 +18,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     /** @type {Object.<string, WebGLTexture>} */
     this.textures_ = [];
     
-    this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+    this.createTextures(this.textures_, this.images_, textureCache, gl);
 
     this.state_ = {
         strokeColor: null,
@@ -38,6 +38,27 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     this.offsetX_ = undefined;
     this.offsetY_ = undefined;
     this.images_ = [];
+  }
+
+  public createTextures = function (textures, images, textureCache, gl) {
+    var texture, image, uid, i, textureCacheEntry;
+    var ii = images.length;
+    for (i = 0; i < ii; ++i) {
+        image = images[i];
+
+        uid = (<any>ol).getUid(image).toString();
+        if (textureCache.containsKey(uid)) {
+            textureCacheEntry = textureCache.get(uid);
+            texture = textureCacheEntry.texture;
+        } else {
+            texture = (<any>ol).webgl.Context.createTexture(
+                gl, image, (<any>ol).webgl.CLAMP_TO_EDGE, (<any>ol).webgl.CLAMP_TO_EDGE, this.label? gl.NEAREST: gl.LINEAR);
+            textureCache.set(uid, {
+                texture
+            });
+        }
+        textures[i] = texture;
+    }
   }
 
   public replay(context, viewRotation, skippedFeaturesHash, screenXY){

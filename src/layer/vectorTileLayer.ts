@@ -594,10 +594,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     currentResolution: viewState.resolution,
                     wantedTiles: {},
                     context: this.renderer_.context_
-                    // isDrag: view.isDrag,
-                    // isZoomOut:view.isZoomOut,
-                    // isPinchOut:view.isPinchOut,
-                    // isClickZoomOut:view.isClickZoomOut
                 });
             }
 
@@ -610,7 +606,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.renderer_.renderFrame(frameState);
             if (frameState) {
                 if (frameState.animate) {
-                    this.render();
+                    this.render();                    
                 }
                 Array.prototype.push.apply(
                     this.postRenderFunctions_, frameState.postRenderFunctions);

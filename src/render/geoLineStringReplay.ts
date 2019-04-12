@@ -132,8 +132,8 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
             // gl.stencilFunc(context.NOTEQUAL, 1, 255);
         }
     
-        context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer, true);
-        context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer, true);
+        context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
+        context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
     
         var locations = this.setUpProgram(gl, context, size, pixelRatio);
             

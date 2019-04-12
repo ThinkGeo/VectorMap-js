@@ -5,6 +5,7 @@ import { GeoLineStyle } from './../style/geoLineStyle';
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLayer as { new(a: any, p: ol.layer.Tile): any; }) {
     constructor(mapRenderer: any, layer: ol.layer.VectorTile) {
         super(mapRenderer, layer);
+        this.zDirection = 1;
         this.renderedTiles = [];
         this.declutterTree_ = (<any>layer).getDeclutter() ? (<any>ol).ext.rbush(9) : null;
         this.VECTOR_REPLAYS = this.VECTOR_REPLAYS_CUSTOM;
@@ -156,6 +157,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 highWaterMark : tileSource.tileCache.highWaterMark;
             
             tileSource.tileCache.zoom = tile.tileCoord[0];
+
+            // control the textureCache size
+            (<any>ol).WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = highWaterMark * 10;
         }  
     
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
@@ -180,13 +184,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
-            let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
+
+            // let currentResolution, currentScale, currentTilePixelSize;
+            let currentZ, i, ii;
             let tileExtent, tilesToDraw;
             for (i = 0, ii = zs.length; i < ii; ++i) {
                 currentZ = zs[i];
-                currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
-                currentResolution = tileGrid.getResolution(currentZ);
-                currentScale = currentResolution / tileResolution;
+                // currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
+                // currentResolution = tileGrid.getResolution(currentZ);
+                // currentScale = currentResolution / tileResolution;
                 tilesToDraw = tilesToDrawByZ[currentZ];
                 for (let tileCoordKey in tilesToDraw) {                    
                     tile = tilesToDraw[tileCoordKey];
@@ -206,7 +212,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             this.renderedExtent_ = imageExtent;
         }
 
-        let scale = this.renderedResolution / viewResolution;
+        // let scale = this.renderedResolution / viewResolution;
         // let transform = (<any>ol).transform.compose(this.imageTransform_, pixelRatio * size[0] / 2, pixelRatio * size[1] / 2, scale, scale, 0, (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio, (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
         // (<any>ol).transform.compose(this.coordinateToCanvasPixelTransform, pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5], pixelRatio / viewResolution, -pixelRatio / viewResolution, 0, -viewCenter[0], -viewCenter[1]);
 
@@ -231,7 +237,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
         let gl = context.getGL();
         gl.enable(gl.DEPTH_TEST);
-        
+        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);
 
@@ -312,7 +320,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 var screenXY = replayData[i++];
                 replay.declutterRepeat_(context, screenXY);
             }
-        }
+        }        
 
         // draw
         for (var z = 0, zz = zs.length; z < zz; ++z) {
@@ -333,7 +341,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         replay.drawPoint(tmpOptions[k]);
                     }
                 }
-                replay.finish(context);
+                replay.finish(context, this.mapRenderer.textureCache_);
                 // replay.options = tmpOptions;
                
                 replay.replay(context, rotation, skippedFeatureUids, screenXY);
@@ -403,9 +411,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 }
             }
             else {
-                var replayGroup = new ReplayGroupCustom(
+                let replayGroup = new ReplayGroupCustom(
                     0, sharedExtent, layer.getRenderBuffer(), this.declutterTree_);
-                // let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
                 let squaredTolerance = (<any>ol).renderer.vector.getSquaredTolerance(resolution, pixelRatio);
                 let strategyTree = (<any>ol).ext.rbush(9);
 

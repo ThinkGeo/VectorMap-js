@@ -53,8 +53,8 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         // gl.stencilFunc(context.NOTEQUAL, 1, 255);
     }
 
-    context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer, true);
-    context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer, true);
+    context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
+    context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
     var locations = this.setUpProgram(gl, context, size, pixelRatio);
         

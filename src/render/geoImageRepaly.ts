@@ -3,7 +3,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     super(tolerance, maxExtent, declutterTree);
   } 
   
-  public finish(context){
+  public finish(context, textureCache){
     var gl = context.getGL();
 
     this.groupIndices.push(this.indices.length);
@@ -18,13 +18,34 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     // create textures
     this.textures_ = [];
 
-    this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+    this.createTextures(this.textures_, this.images_, textureCache, gl);
 
     this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
         this.texturePerImage, gl);
 
     this.images_ = [];
     this.hitDetectionImages_ = [];
+  }
+
+  public createTextures = function (textures, images, textureCache, gl) {
+    var texture, image, uid, i, textureCacheEntry;
+    var ii = images.length;
+    for (i = 0; i < ii; ++i) {
+        image = images[i];
+
+        uid = (<any>ol).getUid(image).toString();
+        if (textureCache.containsKey(uid)) {
+            textureCacheEntry = textureCache.get(uid);
+            texture = textureCacheEntry.texture;
+        } else {
+            texture = (<any>ol).webgl.Context.createTexture(
+                gl, image, (<any>ol).webgl.CLAMP_TO_EDGE, (<any>ol).webgl.CLAMP_TO_EDGE, this.label? gl.NEAREST: gl.LINEAR);
+            textureCache.set(uid, {
+                texture
+            });
+        }
+        textures[i] = texture;
+    }
   }
 
   public setImageStyle(imageStyle) {
