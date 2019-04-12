@@ -159,7 +159,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             tileSource.tileCache.zoom = tile.tileCoord[0];
 
             // control the textureCache size
-            (<any>ol).WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = highWaterMark * 10;
+            (<any>ol).WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = highWaterMark * 24 / pixelRatio;
         }  
     
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
@@ -237,8 +237,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
         let gl = context.getGL();
         gl.enable(gl.DEPTH_TEST);
-        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
 
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);

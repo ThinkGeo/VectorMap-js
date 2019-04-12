@@ -72888,6 +72888,8 @@ function olInit() {
         }
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
+        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
