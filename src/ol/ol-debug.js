@@ -67006,7 +67006,7 @@ function olInit() {
                     new Uint32Array(arr) : new Uint16Array(arr);
             }
             gl.bufferData(target, arrayBuffer, buf.getUsage());
-            if(shouldBeCached){
+            if(shouldBeCached == undefined || shouldBeCached){
                 this.bufferCache_[bufferKey] = {
                     buf: buf,
                     buffer: buffer

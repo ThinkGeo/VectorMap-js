@@ -594,10 +594,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     currentResolution: viewState.resolution,
                     wantedTiles: {},
                     context: this.renderer_.context_
-                    // isDrag: view.isDrag,
-                    // isZoomOut:view.isZoomOut,
-                    // isPinchOut:view.isPinchOut,
-                    // isClickZoomOut:view.isClickZoomOut
                 });
             }
 

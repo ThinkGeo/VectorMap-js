@@ -6636,54 +6636,71 @@ function olInit() {
      * @return {boolean} Callback succeeded.
      * @template T
      */
-    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent,judgeZoomOut) {
-        var tileRange, x, y , c ,d, tileRange1;
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom) {
+        var tileRange, x, y;
         var tileCoordExtent = null;
-       
+        var z = tileCoord[0] - 1;       
         if (this.zoomFactor_ === 2) {
             x = tileCoord[1];
             y = tileCoord[2];
-            c = tileCoord[1];
-            d = tileCoord[2];
         } else {
             tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
         }
         
-        //the reason that zoom in is blank why is run this. 
-        var z_ = tileCoord[0] - 1;
-        while (z_ >= this.minZoom) {
+        var minZoom = cacheZoom || this.minZoom;
+
+        while (z >= minZoom) {
             if (this.zoomFactor_ === 2) {
                 x = Math.floor(x / 2);
                 y = Math.floor(y / 2);
                 tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
             } else {
-                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z_, opt_tileRange);
+                tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
             }
-            if (callback.call(opt_this, z_, tileRange)) {
+            if (callback.call(opt_this, z, tileRange)) {
                 return true;
             }
-            --z_;
+            --z;
         }
-        if(judgeZoomOut.isZoomOut || judgeZoomOut.isPinchOut || judgeZoomOut.isClickZoomOut){
-            let z = tileCoord[0] + 1;
-            while (z <= this.maxZoom && z> 1) {
-                if (this.zoomFactor_ === 2) {
-                    c =(c * 2);
-                    d =(d * 2);
-                    tileRange1 = ol.TileRange.createOrUpdate(c , c + 1, d, d + 1, opt_tileRange);
-                } else {
-                    tileRange1 = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
-                }
-                if (callback.call(opt_this, z, tileRange1)) {
-                    // return true;
-                }
-                ++z;
-            }
-        }
-        
         return false;
     };
 
+    ol.tilegrid.TileGrid.prototype.forEachTileCoordChildTileRange = function (tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom, tileRange) {
+        var tileRange_, x, y;
+        var tileCoordExtent = null;
+       
+        if (this.zoomFactor_ === 2) {
+            x = tileCoord[1];
+            y = tileCoord[2];
+        } else {
+            tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+        }
+        //the reason that zoom in is blank why is run this. 
+        var z = tileCoord[0] + 1;
+        var interval;
+        var rangeX = 3;
+        var rangeY = 3;
+        var intervalX = tileRange.maxX - tileRange.minX + 2;
+        var intervalY = tileRange.maxY - tileRange.minY + 2;
+
+        while (z <= cacheZoom) {            
+            if (this.zoomFactor_ === 2) {
+                interval = Math.pow(2, z - tileCoord[0]) - 1;
+                rangeX = interval > intervalX ? intervalX : interval;
+                rangeY = interval > intervalY ? intervalY : interval;
+                x = Math.floor(x * 2);
+                y = Math.floor(y * 2);
+                tileRange_ = ol.TileRange.createOrUpdate(x, x + rangeX, y, y + rangeY, opt_tileRange);
+            } else {
+                tileRange_ = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+            }
+            if (callback.call(opt_this, z, tileRange_)) {
+                return true;
+            }
+            ++z;
+        }
+        return false;
+    };
 
     /**
      * Get the extent for this tile grid, if it was configured.
@@ -9097,11 +9114,10 @@ function olInit() {
                 try {
                     var canvas = /** @type {HTMLCanvasElement} */
                         (document.createElement('CANVAS'));
-                    var gl = canvas.getContext('webgl');
+                    var gl = ol.webgl.getContext(canvas, {
+                        failIfMajorPerformanceCaveat: true
+                    });
                     if (gl) {
-                        // gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-                        // gl.clearColor(1.0,0.0,0.0,1.0)
-                        ol.webglContext = {canvas: canvas, gl: gl};
                         hasWebGL = true;
                         textureSize = /** @type {number} */
                             (gl.getParameter(gl.MAX_TEXTURE_SIZE));
@@ -12632,24 +12648,123 @@ function olInit() {
      * @param {Array.<number>=} opt_dest Destination.
      * @return {Array.<number>} Transformed coordinates.
      */
-    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+    ol.geom.flat.transform.translate = function (flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest, extent, isPolygon) {
         var dest = opt_dest ? opt_dest : [];
         var i = 0;
         var j, k;
+        var points;
 
-        for (j = offset; j < end; j += stride) {
-            dest[i++] = flatCoordinates[j] + deltaX;
-            dest[i++] = flatCoordinates[j + 1] + deltaY;
+        if(extent && isPolygon){
+            points = ol.geom.flat.transform.clipPolygon(flatCoordinates.slice(offset, end), extent);            
 
-            for (k = j + 2; k < j + stride; ++k) {
-                dest[i++] = flatCoordinates[k];
+            for (j = 0; j < points.length; j += 2) {       
+                dest[i++] = points[j] + deltaX;
+                dest[i++] = points[j + 1] + deltaY;
+            }     
+        }else{
+            for (j = offset; j < end; j += stride) {
+                dest[i++] = flatCoordinates[j] + deltaX;
+                dest[i++] = flatCoordinates[j + 1] + deltaY;
+    
+                for (k = j + 2; k < j + stride; ++k) {
+                    dest[i++] = flatCoordinates[k];
+                }
             }
         }
+
         if (opt_dest && dest.length != i) {
             dest.length = i;
         }
         
         return dest;
+    };
+
+    ol.geom.flat.transform.clipPolygon = function (points, bounds) {
+        var clippedPoints,
+            edges = [1, 4, 2, 8],
+            i, j, k,
+            a, b,
+            len, edge, p;   
+
+        // for each edge (left, bottom, right, top)
+        for (k = 0; k < 4; k++) {
+            edge = edges[k];
+            clippedPoints = [];
+            
+            for (i = 0, len = points.length, j = len - 2; i < len - 1; j = i, i += 2) {
+                a = [points[i], points[i + 1]];
+                b = [points[j], points[j + 1]];
+                var codeA = ol.geom.flat.transform.getBitCode(a, bounds);
+                var codeB = ol.geom.flat.transform.getBitCode(b, bounds);
+
+                // if a is inside the clip window
+                if (!(codeA & edge)) {
+                    // if b is outside the clip window (a->b goes out of screen)
+                    if (codeB & edge) {
+                        p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
+                        clippedPoints=clippedPoints.concat(p);
+                    }
+                    clippedPoints=clippedPoints.concat(a);
+    
+                // else if b is inside the clip window (a->b enters the screen)
+                } else if (!(codeB & edge)) {
+                    p = ol.geom.flat.transform.getEdgeIntersection(b, a, edge, bounds);
+                    clippedPoints=clippedPoints.concat(p);
+                }
+            }
+            points = clippedPoints;
+        }
+
+        if(points[0] != points[points.length - 2] || points[1] != points[points.length - 1]){
+            points.push(points[0]);
+            points.push(points[1]);
+        }    
+
+        return points;
+    };
+    
+    // square distance (to avoid unnecessary Math.sqrt calls)
+	ol.geom.flat.transform.sqDist = function (p1, p2) {
+		var dx = p2[0] - p1[0],
+            dy = p2[1] - p1[1];
+            
+		return dx * dx + dy * dy;
+    };
+    
+    ol.geom.flat.transform.getEdgeIntersection = function(a, b, code, bounds) {
+		var dx = b[0] - a[0],
+		    dy = b[1] - a[1],
+		    minX = bounds[0],
+		    minY = bounds[1],
+		    maxX = bounds[2],
+		    maxY = bounds[3];
+
+		if (code & 8) { // top
+			return [a[0] + dx * (maxY - a[1]) / dy, maxY];
+		} else if (code & 4) { // bottom
+			return [a[0] + dx * (minY - a[1]) / dy, minY];
+		} else if (code & 2) { // right
+			return [maxX, a[1] + dy * (maxX - a[0]) / dx];
+		} else if (code & 1) { // left
+			return [minX, a[1] + dy * (minX - a[0]) / dx];
+		}
+    };
+    
+    ol.geom.flat.transform.getBitCode = function(p, bounds) {
+		var code = 0;
+
+		if (p[0] < bounds[0]) { // left
+			code |= 1;
+		} else if (p[0] > bounds[2]) { // right
+			code |= 2;
+		}
+		if (p[1] < bounds[1]) { // bottom
+			code |= 4;
+		} else if (p[1] > bounds[3]) { // top
+			code |= 8;
+		}
+
+		return code;
     };
 
     ol.geom.flat.transform.transform2DRound = function (flatCoordinates, offset, end, stride, transform, opt_dest) {
@@ -16011,7 +16126,6 @@ function olInit() {
                 animation.sourceCenter = center;
                 animation.targetCenter = options.center;
                 center = animation.targetCenter;
-            
             }
 
             if (options.zoom !== undefined) {
@@ -16133,7 +16247,6 @@ function olInit() {
                             this.calculateCenterZoom(resolution, animation.anchor));
                     }
                     this.set(ol.ViewProperty.RESOLUTION, resolution);
-                    //isZoom
                 }
                 if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
                     var rotation = progress === 1 ?
@@ -16953,23 +17066,23 @@ function olInit() {
      * @param {number=} opt_height Canvas height.
      * @return {object} The context.
      */
-    ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
-        let webglContext = {};
-        if (isMain) {
-            var canvas = document.createElement('CANVAS');
-            if (opt_width) {
-                webglContext.width = opt_width;
-            }
-            if (opt_height) {
-                webglContext.height = opt_height;
-            }
+    // ol.dom.createCanvasContextWebgl = function (opt_width, opt_height) {
+    //     let webglContext = {};
+    //     if (isMain) {
+    //         var canvas = document.createElement('CANVAS');
+    //         if (opt_width) {
+    //             webglContext.width = opt_width;
+    //         }
+    //         if (opt_height) {
+    //             webglContext.height = opt_height;
+    //         }
 
-            // webglContext.canvas = document.createElement('canvas');
-            return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            // return webglContext;
-        }
+    //         // webglContext.canvas = document.createElement('canvas');
+    //         return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    //         // return webglContext;
+    //     }
 
-    };
+    // };
 
     /**
      * Get the current computed width for the given element including margin,
@@ -17935,7 +18048,7 @@ function olInit() {
         // setProperties will trigger the rendering of the map if the map
         // is "defined" already.
         this.setProperties(optionsInternal.values);
-        
+
         this.controls.forEach(
             /**
              * @param {ol.control.Control} control Control.
@@ -18493,14 +18606,11 @@ function olInit() {
             // coordinates so interactions cannot be used.
             return;
         }
-
         this.focus_ = mapBrowserEvent.coordinate;
         mapBrowserEvent.frameState = this.frameState_;
         var interactionsArray = this.getInteractions().getArray();
         var i;
         if (this.dispatchEvent(mapBrowserEvent) !== false) {
-
-
             for (i = interactionsArray.length - 1; i >= 0; i--) {
                 var interaction = interactionsArray[i];
                 if (!interaction.getActive()) {
@@ -18532,7 +18642,6 @@ function olInit() {
         //   tile loads to remain reactive to view changes and to reduce the chance of
         //   loading tiles that will quickly disappear from view.
         var tileQueue = this.tileQueue_;
-        
         if (!tileQueue.isEmpty()) {
             var maxTotalLoading = 16;
             var maxNewLoads = maxTotalLoading;
@@ -18548,7 +18657,6 @@ function olInit() {
                 }
             }
             if (tileQueue.getTilesLoading() < maxTotalLoading) {
-              
                 tileQueue.reprioritize(); // FIXME only call if view has changed
                 tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
             }
@@ -18775,8 +18883,9 @@ function olInit() {
      * @param {number} time Time.
      * @private
      */
-    ol.PluggableMap.prototype.renderFrame_ = function (time) {  
+    ol.PluggableMap.prototype.renderFrame_ = function (time) {
         var i, ii, viewState;
+
         var size = this.getSize();
         var view = this.getView();
         var extent = ol.extent.createEmpty();
@@ -18817,6 +18926,7 @@ function olInit() {
                 wantedTiles: {}
             });
         }
+
         if (frameState) {
             frameState.extent = ol.extent.getForViewAndSize(viewState.center,
                 viewState.resolution, viewState.rotation, frameState.size, extent);
@@ -18824,6 +18934,7 @@ function olInit() {
 
         this.frameState_ = frameState;
         this.renderer_.renderFrame(frameState);
+
         if (frameState) {
             if (frameState.animate) {
                 this.render();
@@ -20223,15 +20334,6 @@ function olInit() {
             // upon it
             return;
         }
-        // delta < 0 ? map.isClickZoomOut =true :  map.isClickZoomOut = false;  
-        if(delta > 0){
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }else{
-            view.isClickZoomOut = true;
-        }
         var currentResolution = view.getResolution();
         if (currentResolution) {
             var oldZoom = view.getZoom();
@@ -20622,14 +20724,6 @@ function olInit() {
      */
     ol.interaction.Interaction.zoomByDelta = function (view, delta, opt_anchor, opt_duration) {
         var currentResolution = view.getResolution();
-        if(delta > 0){
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }else{
-            view.isZoomOut = true;
-        }
         var resolution = view.constrainResolution(currentResolution, delta, 0);
 
         if (resolution !== undefined) {
@@ -21061,6 +21155,11 @@ function olInit() {
          * @protected
          */
         this.targetPointers = [];
+
+
+        this.delta =options.angleDelta ? options.angleDelta : 0.08;
+        this.deltaX_ = this.deltaY_ = options.deltaX_ ? options.deltaX_ : 4;
+        this.distance_ = options.distance_ ? options.distance_ : 0.2;
 
     };
     ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
@@ -22555,21 +22654,35 @@ function olInit() {
         var touch0 = this.targetPointers[0];
         var touch1 = this.targetPointers[1];
 
+        var dx = touch0.clientX - touch1.clientX;
+        var dy = touch0.clientY - touch1.clientY;
+
         // angle between touches
         var angle = Math.atan2(
             touch1.clientY - touch0.clientY,
             touch1.clientX - touch0.clientX);
-
+      
+        var distance = Math.sqrt(dx * dx + dy * dy); 
         if (this.lastAngle_ !== undefined) {
             var delta = angle - this.lastAngle_;
+            var deltaX_ = touch0.clientX - this.originX;
+            var deltaY_ = touch0.clientY - this.originY;
+            var distance_  = distance - this.lastDistance_;
+
             this.rotationDelta_ += delta;
-            if (!this.rotating_ &&
-                Math.abs(this.rotationDelta_) > this.threshold_) {
+            if (((Math.abs(delta) > this.delta) && 
+                Math.abs(deltaX_) <= this.deltaX_  && 
+                Math.abs(deltaY_) <= this.deltaY_) 
+                ||(Math.abs(distance_) <= this.distance_ 
+                && Math.abs(distance_)>0)
+            ) {
                 this.rotating_ = true;
             }
             rotationDelta = delta;
         }
+
         this.lastAngle_ = angle;
+        this.lastDistance_ = distance;
 
         var map = mapBrowserEvent.map;
         var view = map.getView();
@@ -22628,9 +22741,16 @@ function olInit() {
     ol.interaction.PinchRotate.handleDownEvent_ = function (mapBrowserEvent) {
         if (this.targetPointers.length >= 2) {
             var map = mapBrowserEvent.map;
+
+            var touch0 = this.targetPointers[0];
+
+            this.originX = touch0.clientX;
+            this.originY = touch0.clientY;
+
             this.anchor_ = null;
             this.lastAngle_ = undefined;
             this.rotating_ = false;
+            // this.lastAngle_ = 0;
             this.rotationDelta_ = 0.0;
             if (!this.handlingDownUpSequence) {
                 map.getView().setHint(ol.ViewHint.INTERACTING, 1);
@@ -22720,6 +22840,7 @@ function olInit() {
 
         var touch0 = this.targetPointers[0];
         var touch1 = this.targetPointers[1];
+
         var dx = touch0.clientX - touch1.clientX;
         var dy = touch0.clientY - touch1.clientY;
 
@@ -22729,8 +22850,7 @@ function olInit() {
         if (this.lastDistance_ !== undefined) {
             scaleDelta = this.lastDistance_ / distance;
         }
-        this.lastDistance_ = distance;
-
+       
 
         var map = mapBrowserEvent.map;
         var view = map.getView();
@@ -22746,20 +22866,32 @@ function olInit() {
             newResolution = minResolution;
         }
 
+        var angle = Math.atan2(
+            touch1.clientY - touch0.clientY,
+            touch1.clientX - touch0.clientX);
+
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
+
+            var delta = angle - this.lastAngle_;
+            var deltaX_ = touch0.clientX - this.originX
+            var deltaY_ = touch0.clientY - this.originY
+
+            var distance_  = distance - this.lastDistance_;
+            if (Math.abs(delta) <= this.delta && 
+                (Math.abs(deltaX_) > this.deltaX_ || 
+                Math.abs(deltaY_) >  this.deltaY_)
+                &&Math.abs(distance_) >this.distance_
+            ) {
+                this.isZoom = true;
+            }
         }
-       
-        if(scaleDelta <= 1){
-            view.isZoomOut = false;
-            view.isPinchOut =false;
-            view.isClickZoomOut = false;
-            view.isDrag = false;
-        }
-        if(scaleDelta > 1)
-        {
-            view.isPinchOut = true;
-        }
+        this.lastDistance_ = distance;
+
+        this.lastAngle_ = angle
+        
+
+
         // scale anchor point.
         var viewportPosition = map.getViewport().getBoundingClientRect();
         var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
@@ -22768,8 +22900,11 @@ function olInit() {
         this.anchor_ = map.getCoordinateFromPixel(centroid);
 
         // scale, bypass the resolution constraint
-        map.render();
-        ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+        if(this.isZoom){
+            map.render();
+            ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+        }
+        
     };
 
 
@@ -22810,10 +22945,20 @@ function olInit() {
      */
     ol.interaction.PinchZoom.handleDownEvent_ = function (mapBrowserEvent) {
         if (this.targetPointers.length >= 2) {
+
+            var touch0 = this.targetPointers[0];
+
             var map = mapBrowserEvent.map;
             this.anchor_ = null;
             this.lastDistance_ = undefined;
             this.lastScaleDelta_ = 1;
+
+            this.isZoom = false;
+
+            this.originX = touch0.clientX;
+            this.originY = touch0.clientY;
+
+            
             if (!this.handlingDownUpSequence) {
                 map.getView().setHint(ol.ViewHint.INTERACTING, 1);
             }
@@ -25320,7 +25465,7 @@ function olInit() {
 
             frameState.postRenderFunctions.push(
           /** @type {ol.PostRenderFunction} */(postRenderFunction)
-            );            
+            );
         }
     };
 
@@ -25406,7 +25551,6 @@ function olInit() {
                 for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
                     if (currentZ - z <= preload) {
                         tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-                        // FIXME Eric
                         if (tile.getState() == ol.TileState.IDLE || tile.getState() == ol.TileState.CANCEL) {
                             wantedTiles[tile.getKey()] = true;
                             if (!tileQueue.isKeyQueued(tile.getKey())) {
@@ -26481,54 +26625,24 @@ function olInit() {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        // this.context_ = ol.dom.createCanvasContext2D();
-        // this.context_ = ol.dom.createCanvasContextWebgl();
-        // this.context_.viewport(0, 0, 1680, 906);
-        // this.context_.webglContext = new ol.webgl.Context(this.context_.canvas, this.context_);
-        // this.context_.gl_ = ol.webgl.getContext(this.canvas_, {
-        //     antialias: true,
-        //     depth: true,
-        //     failIfMajorPerformanceCaveat: true,
-        //     preserveDrawingBuffer: false,
-        //     stencil: true
-        // });
+        this.context_ = ol.dom.createCanvasContext2D();
 
         /**
          * @private
          * @type {HTMLCanvasElement}
          */
-        this.canvas_ = /** @type {HTMLCanvasElement} */
-            (document.createElement('CANVAS'));
-        // this.canvas_ = this.context_.canvas;
+        this.canvas_ = this.context_.canvas;
         this.canvas_.style.width = '100%';
         this.canvas_.style.height = '100%';
         this.canvas_.style.display = 'block';
         this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
         container.insertBefore(this.canvas_, container.childNodes[0] || null);
-
-        this.gl_ = ol.webgl.getContext(this.canvas_, {
-            antialias: true,
-            depth: true,
-            failIfMajorPerformanceCaveat: true,
-            preserveDrawingBuffer: false,
-            stencil: true
-        });
-        
-        // this.gl_.viewport(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-        this.gl_.activeTexture(ol.webgl.TEXTURE0);
-        this.gl_.blendFuncSeparate(
-            ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
-            ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
-        this.gl_.disable(ol.webgl.CULL_FACE);
-        this.gl_.enable(ol.webgl.DEPTH_TEST);
-        this.gl_.disable(ol.webgl.SCISSOR_TEST);
-        this.gl_.disable(ol.webgl.STENCIL_TEST);
-        
+       
         /**
          * @private
          * @type {ol.webgl.Context}
          */
-        this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
+        // this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
         /**
          * @private
@@ -26631,28 +26745,18 @@ function olInit() {
             return;
         }
 
-        //this.focus_ = frameState.focus;
         var context = this.context_;
-        var gl = context.getGL();
         var pixelRatio = frameState.pixelRatio;
         var width = Math.round(frameState.size[0] * pixelRatio);
         var height = Math.round(frameState.size[1] * pixelRatio);
-        
         if (this.canvas_.width != width || this.canvas_.height != height) {
-            gl.viewport(0, 0, width, height);
             this.canvas_.width = width;
             this.canvas_.height = height;
         } else {
-            // context.clearRect(0, 0, width, height);
+            context.clearRect(0, 0, width, height);
         }
-        
-        gl.clearColor(0.6666666666666666, 0.7764705882352941, 0.9333333333333333, 1);
-        // gl.enable(gl.BLEND);
-        // gl.enable(gl.DEPTH_TEST);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        // gl.depthMask(true);
-        // gl.depthFunc(gl.NOTEQUAL);
-        // var rotation = frameState.viewState.rotation;
+
+        var rotation = frameState.viewState.rotation;
 
         this.calculateMatrices2D(frameState);
 
@@ -26661,10 +26765,10 @@ function olInit() {
         var layerStatesArray = frameState.layerStatesArray;
         ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
-        // if (rotation) {
-            // context.save();
-            // ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
-        // }
+        if (rotation) {
+            context.save();
+            ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+        }
 
         var viewResolution = frameState.viewState.resolution;
         var i, ii, layer, layerRenderer, layerState;
@@ -26680,31 +26784,10 @@ function olInit() {
                 layerRenderer.composeFrame(frameState, layerState, context);
             }
         }
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-        
-        // gl.disable(gl.DEPTH_TEST);
-        // gl.clear(gl.DEPTH_BUFFER_BIT);
-        // Restore GL parameters.
-        // gl.depthMask(tmpDepthMask);
-        // gl.depthFunc(tmpDepthFunc);
 
-        // if (rotation) {
-            // context.restore();
-        // }
-
-        // FIXME Texture
-        // if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-        //     ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-        //     frameState.postRenderFunctions.push(
-        //   /** @type {ol.PostRenderFunction} */(this.expireCache_.bind(this))
-        //     );
-        // }
-
-        // if (!this.tileTextureQueue_.isEmpty()) {
-        //     frameState.postRenderFunctions.push(this.loadNextTileTexture_);
-        //     frameState.animate = true;
-        // }
+        if (rotation) {
+            context.restore();
+        }
 
         this.dispatchComposeEvent_(
             ol.render.EventType.POSTCOMPOSE, frameState);
@@ -27683,12 +27766,12 @@ function olInit() {
 
         var chunk = '';
         var chunkLength = 0;
-        var data, index, previousAngle;        
+        var data, index, previousAngle;
         for (var i = 0; i < numChars; ++i) {
             index = reverse ? numChars - i - 1 : i;
             var char = text.charAt(index);
             chunk = reverse ? char + chunk : chunk + char;
-            var charLength = measure(chunk) - chunkLength;            
+            var charLength = measure(chunk) - chunkLength;
             chunkLength += charLength;
             var charM = startM + charLength / 2;
             while (offset < end - stride && segmentM + segmentLength < charM) {
@@ -27711,10 +27794,10 @@ function olInit() {
                 if (Math.abs(delta) > maxAngle) {
                     return null;
                 }
-            }            
+            }
             var interpolate = segmentPos / segmentLength;
             var x = ol.math.lerp(x1, x2, interpolate);
-            var y = ol.math.lerp(y1, y2, interpolate);            
+            var y = ol.math.lerp(y1, y2, interpolate);
             if (previousAngle == angle) {
                 if (reverse) {
                     data[0] = x;
@@ -27732,10 +27815,9 @@ function olInit() {
                     result.push(data);
                 }
                 previousAngle = angle;
-            }            
+            }
             startM += charLength;
         }
-        
         return result;
     };
 
@@ -28115,6 +28197,7 @@ function olInit() {
      * @return {number} My end.
      */
     ol.render.canvas.Replay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, end, stride, closed, skipFirst) {
+
         var myEnd = this.coordinates.length;
         var extent = this.getBufferedMaxExtent();
         if (skipFirst) {
@@ -28154,9 +28237,6 @@ function olInit() {
             this.coordinates[myEnd++] = lastCoord[0];
             this.coordinates[myEnd++] = lastCoord[1];
         }
-
-        this.webglEnds && this.webglEnds.push(myEnd);
-
         return myEnd;
     };
 
@@ -28299,7 +28379,6 @@ function olInit() {
                 if (!this.declutterTree.collides(box)) {
                     this.declutterTree.insert(box);
                     var drawImage = ol.render.canvas.drawImage;
-                    // FIXME Eric
                     for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
                         var declutterData = /** @type {Array} */ (declutterGroup[j]);
                         if (declutterData) {
@@ -29139,65 +29218,11 @@ function olInit() {
      */
     ol.render.canvas.LineStringReplay = function (
         tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-        this.fragment = ol.render.webgl.linestringreplay.defaultshader.fragment;
-        this.vertex = ol.render.webgl.linestringreplay.defaultshader.vertex;
-        this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
-        this.origin = [0, 0];
-        this.tmpMat4_ = [
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1, 0, 0, 0, 0,
-            1
-        ];
-
         ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
-    /**
-     * webgl insert
-     */
-    ol.render.canvas.LineStringReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
-        // get the program
-        var program = context.getProgram(this.fragment, this.vertex);
-
-        // get the locations
-        var locations;
-        if (!this.defaultLocations_) {
-        locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
-            this.defaultLocations_ = locations;
-        } else {
-            locations = this.defaultLocations_;
-        }
-
-        context.useProgram(program);
-
-        // enable the vertex attrib arrays
-        gl.enableVertexAttribArray(locations.a_lastPos);
-        gl.vertexAttribPointer(locations.a_lastPos, 2, gl.FLOAT,
-            false, 28, 0);
-
-        gl.enableVertexAttribArray(locations.a_position);
-        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
-            false, 28, 8);
-
-        gl.enableVertexAttribArray(locations.a_nextPos);
-        gl.vertexAttribPointer(locations.a_nextPos, 2, gl.FLOAT,
-            false, 28, 16);
-
-        gl.enableVertexAttribArray(locations.a_direction);
-        gl.vertexAttribPointer(locations.a_direction, 1, gl.FLOAT,
-            false, 28, 24);
-
-        // Enable renderer specific uniforms.
-        gl.uniform2fv(locations.u_size, size);
-        gl.uniform1f(locations.u_pixelRatio, pixelRatio);
-
-        return locations;
-    }
 
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -29214,9 +29239,7 @@ function olInit() {
         var moveToLineToInstruction =
             [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
         this.instructions.push(moveToLineToInstruction);
-        this.hitDetectionInstructions.push(moveToLineToInstruction);        
-        this.webglStyle.push(Object.assign({}, this.state));
-
+        this.hitDetectionInstructions.push(moveToLineToInstruction);
         return end;
     };
 
@@ -29231,7 +29254,6 @@ function olInit() {
         if (strokeStyle === undefined || lineWidth === undefined) {
             return;
         }
-
         this.updateStrokeStyle(state, this.applyStroke);
         this.beginGeometry(lineStringGeometry, feature);
         this.hitDetectionInstructions.push([
@@ -29306,7 +29328,7 @@ function olInit() {
         state.lastStroke = 0;
         ol.render.canvas.Replay.prototype.applyStroke.call(this, state);
         this.instructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
-    };    
+    };
 
     goog.provide('ol.render.canvas.PolygonReplay');
 
@@ -29331,90 +29353,11 @@ function olInit() {
      */
     ol.render.canvas.PolygonReplay = function (
         tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-            this.fragment = ol.render.webgl.polygonreplay.defaultshader.fragment;
-            this.vertex = ol.render.webgl.polygonreplay.defaultshader.vertex;    
-            this.projectionMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.offsetScaleMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.offsetRotateMatrix_ = [1, 0, 0, 1, 0, 0];
-            this.origin = [0, 0];
-            this.tmpMat4_ = [
-                1, 0, 0, 0, 0,
-                1, 0, 0, 0, 0,
-                1, 0, 0, 0, 0,
-                1
-            ];
-
-            ol.render.canvas.Replay.call(this,
+        ol.render.canvas.Replay.call(this,
             tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     };
     ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
-    /**
-     * webgl insert
-     */
-    ol.render.canvas.PolygonReplay.prototype.setUpProgram = function (gl, context, size, pixelRatio) {
-        // get the program
-        var program = context.getProgram(this.fragment, this.vertex);
-
-        // get the locations
-        var locations;
-        if (!this.defaultLocations_) {
-        locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
-            this.defaultLocations_ = locations;
-        } else {
-            locations = this.defaultLocations_;
-        }
-
-        context.useProgram(program);
-
-        // enable the vertex attrib arrays
-        gl.enableVertexAttribArray(locations.a_position);
-        gl.vertexAttribPointer(locations.a_position, 2, gl.FLOAT,
-            false, 8, 0);
-
-        return locations;
-    }
-
-    ol.render.canvas.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
-        var this$1 = this;
-
-        //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-
-        if (!hitDetection) {
-            gl.enable(gl.DEPTH_TEST);
-            // gl.depthMask(true);
-            // gl.depthFunc(gl.NOTEQUAL);
-        }
-
-        if (!isEmpty(skippedFeaturesHash)) {
-            this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-        } else {
-            //Draw by style groups to minimize drawElements() calls.
-            var i, start, end, nextStyle;
-            end = this.startIndices[this.startIndices.length - 1];
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-                start = this$1.styleIndices_[i];
-                nextStyle = this$1.styles_[i];
-                this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-                this$1.drawElements(gl, context, start, end);
-                gl.clear(gl.DEPTH_BUFFER_BIT);
-                end = start;
-            }
-        }
-        if (!hitDetection) {
-            gl.disable(gl.DEPTH_TEST);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-            //Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
-        }
-    };
-
-    ol.render.canvas.PolygonReplay.prototype.setFillStyle_ = function (gl, color) {
-        gl.uniform4fv(this.defaultLocations_.u_color, color);
-    };
 
     /**
      * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -29437,7 +29380,6 @@ function olInit() {
             var myBegin = this.coordinates.length;
             var myEnd = this.appendFlatCoordinates(
                 flatCoordinates, offset, end, stride, true, !stroke);
-            this.webglStyle.push({ color: state.fillStyle });
             var moveToLineToInstruction =
                 [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
             this.instructions.push(moveToLineToInstruction);
@@ -30420,9 +30362,9 @@ function olInit() {
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
-                var replay = replayData[i++];                
+                var replay = replayData[i++];
                 var transform = replayData[i++];
-                replay.replay(context, transform, rotation, skippedFeatureUids, replayData[i++]);
+                replay.replay(context, transform, rotation, skippedFeatureUids);
             }
         }
     };
@@ -30643,18 +30585,18 @@ function olInit() {
      */
     ol.render.canvas.ReplayGroup.prototype.replay = function (context,
         transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
+
         /** @type {Array.<number>} */
         var zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort(ol.array.numberSafeCompareFunction);
 
         // setup clipping so that the parts of over-simplified geometries are not
         // visible outside the current extent when panning
-        // context.save();
-        // this.clip(context, transform);
+        context.save();
+        this.clip(context, transform);
 
         var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
         var i, ii, j, jj, replays, replay;
-        var flag=true;
         for (i = 0, ii = zs.length; i < ii; ++i) {
             var zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -30662,9 +30604,6 @@ function olInit() {
                 var replayType = replayTypes[j];
                 replay = replays[replayType];
                 if (replay !== undefined) {
-                    if((replayType==='Polygon' || replayType ==='LineString') && flag===true){
-                        flag=false;                        
-                    }
                     if (opt_declutterReplays &&
                         (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
                         var declutter = opt_declutterReplays[zIndexKey];
@@ -30673,21 +30612,14 @@ function olInit() {
                         } else {
                             declutter.push(replay, transform.slice(0));
                         }
-                    } else {                        
+                    } else {
                         replay.replay(context, transform, viewRotation, skippedFeaturesHash);
                     }
                 }
             }
         }
-        
-        if(flag===false){
-            // var webglContext = ol.webglContext;
-            // var width = webglContext.canvas.width;
-            // var height = webglContext.canvas.height;
-            // context.drawImage(webglContext.canvas, 0, 0, width, height);
-            // ol.webglContext.gl.clear(ol.webglContext.gl.COLOR_BUFFER_BIT);
-        }
-        // context.restore();
+
+        context.restore();
     };
 
 
@@ -30819,7 +30751,7 @@ function olInit() {
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.TEXT);
-            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));            
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
             textReplay.drawText(geometry, feature);
         }
     };
@@ -30836,7 +30768,7 @@ function olInit() {
      * @template T
      */
     ol.renderer.vector.renderFeature = function (
-        replayGroup, feature, style, squaredTolerance, listener, thisArg,options) {
+        replayGroup, feature, style, squaredTolerance, listener, thisArg) {
         var loading = false;
         var imageStyle, imageState;
         imageStyle = style.getImage();
@@ -30855,7 +30787,7 @@ function olInit() {
             }
         }
         ol.renderer.vector.renderFeature_(replayGroup, feature, style,
-            squaredTolerance,options);
+            squaredTolerance);
 
         return loading;
     };
@@ -30869,12 +30801,11 @@ function olInit() {
      * @private
      */
     ol.renderer.vector.renderFeature_ = function (
-        replayGroup, feature, style, squaredTolerance,options) {
+        replayGroup, feature, style, squaredTolerance) {
         var geometry = style.getGeometryFunction()(feature);
-
         if (!geometry) {
             return;
-        }        
+        }
         var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
         var renderer = style.getRenderer();
         if (renderer) {
@@ -30882,7 +30813,7 @@ function olInit() {
         } else {
             var geometryRenderer =
                 ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-            geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
+            geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
         }
     };
 
@@ -30932,28 +30863,23 @@ function olInit() {
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
      */
-    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature,options) {
+    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature) {
         var strokeStyle = style.getStroke();
         if (strokeStyle) {
             var lineStringReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.LINE_STRING);
-            lineStringReplay.setFillStrokeStyle(null, strokeStyle,geometry);
-            lineStringReplay.drawLineString(geometry, feature,strokeStyle,options);
+            lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+            lineStringReplay.drawLineString(geometry, feature);
         }
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                3, ol.render.ReplayType.TEXT);
-            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            // textReplay.drawText(geometry, feature);
-            textReplay.startIndicesFeature.push(feature); 
-            var textStyleClone = textStyle.clone();
-            textStyleClone.label = textStyle.label;
-            textStyleClone.labelPosition = textStyle.labelPosition;
-            textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);            
-            textReplay.startIndicesStyle.push(textStyleClone); 
+                style.getZIndex(), ol.render.ReplayType.TEXT);
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            textReplay.drawText(geometry, feature);
         }
     };
+
 
     /**
      * @param {ol.render.ReplayGroup} replayGroup Replay group.
@@ -30973,15 +30899,9 @@ function olInit() {
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                3, ol.render.ReplayType.TEXT);
-            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
-            // textReplay.drawText(geometry, feature); 
-            textReplay.startIndicesFeature.push(feature);
-            var textStyleClone = textStyle.clone();
-            textStyleClone.label = textStyle.label;
-            textStyleClone.labelPosition = textStyle.labelPosition;
-            textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-            textReplay.startIndicesStyle.push(textStyleClone);
+                style.getZIndex(), ol.render.ReplayType.TEXT);
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+            textReplay.drawText(geometry, feature);
         }
     };
 
@@ -31018,7 +30938,6 @@ function olInit() {
      * @param {ol.style.Style} style Style.
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
-     * @override_
      */
     ol.renderer.vector.renderPointGeometry_ = function (replayGroup, geometry, style, feature) {
         var imageStyle = style.getImage();
@@ -31026,32 +30945,20 @@ function olInit() {
             if (imageStyle.getImageState() != ol.ImageState.LOADED) {
                 return;
             }
-            // FIXME replace it with style.getZIndex()
             var imageReplay = replayGroup.getReplay(
-                1, ol.render.ReplayType.IMAGE);
-            // imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
-            // imageReplay.drawPoint(geometry, feature);
-            feature.flatCoordinates_ = geometry.getFlatCoordinates();
-            feature.ends_ = [2];
-            imageReplay.startIndicesFeature.push(feature);
-            var imageStyleClone = imageStyle.clone();
-            imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-            imageReplay.startIndicesStyle.push(imageStyleClone);
+                style.getZIndex(), ol.render.ReplayType.IMAGE);
+            imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
+            imageReplay.drawPoint(geometry, feature);
         }
         var textStyle = style.getText();
         if (textStyle) {
             var textReplay = replayGroup.getReplay(
-                2, ol.render.ReplayType.TEXT);
-            // textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));            
-            // textReplay.drawText(geometry, feature);
-            textReplay.startIndicesFeature.push(feature);
-            var textStyleClone = textStyle.clone();
-            textStyleClone.label = textStyle.label;
-            textStyleClone.labelPosition = textStyle.labelPosition;
-            textStyleClone.declutterGroup_ = replayGroup.addDeclutter(!!imageStyle);
-            textReplay.startIndicesStyle.push(textStyleClone);
+                style.getZIndex(), ol.render.ReplayType.TEXT);
+            textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
+            textReplay.drawText(geometry, feature);
         }
     };
+
 
     /**
      * @param {ol.render.ReplayGroup} replayGroup Replay group.
@@ -31093,9 +31000,8 @@ function olInit() {
         var strokeStyle = style.getStroke();
         if (fillStyle || strokeStyle) {
             var polygonReplay = replayGroup.getReplay(
-                style.getZIndex(), ol.render.ReplayType.POLYGON); 
-            polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
-            feature.zCoordinate = style.zCoordinate;
+                style.getZIndex(), ol.render.ReplayType.POLYGON);
+            polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
             polygonReplay.drawPolygon(geometry, feature);
         }
         var textStyle = style.getText();
@@ -31847,7 +31753,7 @@ function olInit() {
     ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function (
         tile, frameState, layerState, x, y, w, h, gutter, transition) {
         var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
-        this.createReplayGroup_(vectorImageTile, frameState, x, y);
+        this.createReplayGroup_(vectorImageTile, frameState);
         if (this.context) {
             this.renderTileImage_(vectorImageTile, frameState, layerState);
             ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
@@ -37365,6 +37271,7 @@ function olInit() {
              * @this {ol.source.Vector|ol.VectorTile}
              */
             function (extent, resolution, projection) {
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET',
                     typeof url === 'function' ? url(extent, resolution, projection) : url,
@@ -37857,11 +37764,6 @@ function olInit() {
                 fraction * flatCoordinates[offset + stride];
             pointY = (1 - fraction) * flatCoordinates[offset + 1] +
                 fraction * flatCoordinates[offset + stride + 1];
-            // import for rotation
-            flatCoordinates.push(flatCoordinates[offset + stride]);
-            flatCoordinates.push(flatCoordinates[offset + stride + 1]);
-            flatCoordinates[offset + stride] = pointX;
-            flatCoordinates[offset + stride + 1] = pointY;
         } else if (n !== 0) {
             var x1 = flatCoordinates[offset];
             var y1 = flatCoordinates[offset + 1];
@@ -37886,14 +37788,6 @@ function olInit() {
                     flatCoordinates[o], flatCoordinates[o + stride], t);
                 pointY = ol.math.lerp(
                     flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
-                
-                // import for rotation         
-                // for(var i = flatCoordinates.length; i > o; i -= 2){
-                    // flatCoordinates[i] = flatCoordinates[i - 2];
-                    // flatCoordinates[i + 1] = flatCoordinates[i - 1];
-                // }       
-                flatCoordinates[o] = pointX;
-                flatCoordinates[o + 1] = pointY;
             } else {
                 pointX = flatCoordinates[offset + index * stride];
                 pointY = flatCoordinates[offset + index * stride + 1];
@@ -58863,9 +58757,9 @@ function olInit() {
          * @type {Image|HTMLCanvasElement}
          */
         this.image_ = new Image();
-        if (crossOrigin !== null) {
-            this.image_.crossOrigin = crossOrigin;
-        }
+        // if (crossOrigin !== null) {
+            this.image_.crossOrigin = "anonymous";
+        // }
 
         /**
          * @private
@@ -66079,29 +65973,7 @@ function olInit() {
      * @param {ol.webgl.Context} context Context.
      */
     ol.render.webgl.Replay.prototype.finish = function (context) { };
-    
-    /**
-     * @private
-     * @param {Array.<string>} lines Label to draw split to lines.
-     * @return {Array.<number>} Size of the label in pixels.
-     */
-    ol.render.webgl.Replay.prototype.renderCharDeclutter_ = function (extent, feature) {
-        var box = {
-            minX: extent[0],
-            minY: extent[1],
-            maxX: extent[2],
-            maxY: extent[3],
-            value: feature,
-        }
 
-        if(!this.declutterTree.collides(box)){
-            this.declutterTree.insert(box);
-            
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * @abstract
@@ -66924,7 +66796,7 @@ function olInit() {
         'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.texturereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nuniform float u_zIndex;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
+        'varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n' :
         'varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.0,0.0);gl_Position=h*vec4(c,0.0,1.0)+offsets;a=d;b=f;}');
 
     // This file is automatically generated, do not edit
@@ -66972,12 +66844,6 @@ function olInit() {
             program, ol.DEBUG_WEBGL ? 'u_image' : 'l');
 
         /**
-         * @type {WebGLUniformLocation}
-         */
-        this.u_zIndex = gl.getUniformLocation(
-            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'm');
-
-        /**
          * @type {number}
          */
         this.a_position = gl.getAttribLocation(
@@ -67006,7 +66872,6 @@ function olInit() {
          */
         this.a_rotateWithView = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_rotateWithView' : 'g');
-
     };
 
     goog.provide('ol.webgl.ContextEventType');
@@ -67349,8 +67214,6 @@ function olInit() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
-        // gl.enable(gl.BLEND);
-        // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         // fix for WebGL not to unpremultiply      
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
@@ -67377,7 +67240,7 @@ function olInit() {
      */
     ol.webgl.Context.createEmptyTexture = function (
         gl, width, height, opt_wrapS, opt_wrapT) {
-        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
+        var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT, gl.LINEAR);
         gl.texImage2D(
             gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
             null);
@@ -67543,8 +67406,10 @@ function olInit() {
                 for (i = 0, ii = textures.length; i < ii; ++i) {
                     gl.deleteTexture(textures[i]);
                 }
-                for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
-                    gl.deleteTexture(texturePerImages[j]);
+                if(texturePerImages){
+                    for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
+                        gl.deleteTexture(texturePerImages[j]);
+                    }
                 }
             }
             context.deleteBuffer(verticesBuffer);
@@ -67573,7 +67438,7 @@ function olInit() {
         var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
         // this.rotation_ is anti-clockwise, but rotation is clockwise
         var rotation = /** @type {number} */ (-this.rotation);
-        var scale = /** @type {number} */ (this.scale);
+        var scale = this.scale_ || /** @type {number} */ (this.scale);
         var width = /** @type {number} */ (this.width);
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);        
@@ -67604,16 +67469,15 @@ function olInit() {
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;            
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
             this.vertices[numVertices++] = originX / imageWidth;
             this.vertices[numVertices++] = (originY + height) / imageHeight;
             this.vertices[numVertices++] = opacity;
             this.vertices[numVertices++] = rotateWithView;
-            
+
             // bottom-right corner
             offsetX = scale * (width - anchorX);
-            offsetY = -scale * (height - anchorY);          
-
+            offsetY = -scale * (height - anchorY);
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -67626,7 +67490,6 @@ function olInit() {
             // top-right corner
             offsetX = scale * (width - anchorX);
             offsetY = scale * anchorY;
-
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -67639,7 +67502,6 @@ function olInit() {
             // top-left corner
             offsetX = -scale * anchorX;
             offsetY = scale * anchorY;
-
             this.vertices[numVertices++] = x;
             this.vertices[numVertices++] = y;
             this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -67752,13 +67614,8 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
         var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-        // gl.enable(gl.STENCIL_TEST);
-        // gl.colorMask(false, false, false, false);
-        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
-        // gl.stencilFunc(gl.ALWAYS, 1, 0xff);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
                 gl, context, skippedFeaturesHash, textures, groupIndices);
@@ -67766,6 +67623,7 @@ function olInit() {
             var i, ii, start;
             for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
                 gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
+               
                 var end = groupIndices[i];
                 this.drawElements(gl, context, start, end);
                 start = end;
@@ -67776,10 +67634,6 @@ function olInit() {
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
         gl.disable(gl.BLEND);
-        // gl.colorMask(true, true, true, true);
-        // gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
-        // gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-        // gl.disable(gl.STENCIL_TEST);
     };
 
 
@@ -67992,14 +67846,14 @@ function olInit() {
 
     /**
      * @inheritDoc
-     * @override_
      */
     ol.render.webgl.ImageReplay.prototype.drawPoint = function (pointGeometry, feature) {
+        this.startIndices.push(this.indices.length);
+        this.startIndicesFeature.push(feature);
         var flatCoordinates = pointGeometry.getFlatCoordinates();
         var stride = pointGeometry.getStride();
-        
         this.drawCoordinates(
-            flatCoordinates, 0, flatCoordinates.length, stride);                    
+            flatCoordinates, 0, flatCoordinates.length, stride);
     };
 
 
@@ -68015,24 +67869,23 @@ function olInit() {
         // create, bind, and populate the vertices buffer
         this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
+        var indices = this.indices;
+
         // create, bind, and populate the indices buffer
-        this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+        this.indicesBuffer = new ol.webgl.Buffer(indices);
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        // var texturePerImage = {};
-        this.textures_ = [];
-        
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+        var texturePerImage = {};
+
+        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-            this.texturePerImage, gl);
+            texturePerImage, gl);
 
-        this.images_ = [];
-        this.hitDetectionImages_ = [];
-        // this.indices = [];
-        // this.vertices = [];
-        // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+        this.images_ = null;
+        this.hitDetectionImages_ = null;
+        ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
 
@@ -68116,7 +67969,7 @@ function olInit() {
         'precision mediump float;varying float a;varying vec2 aVertex;varying float c;uniform float m;uniform vec4 n;uniform vec2 o;uniform float p;void main(void){if(a>0.0){vec2 windowCoords=vec2((aVertex.x+1.0)/2.0*o.x*p,(aVertex.y+1.0)/2.0*o.y*p);if(length(windowCoords-gl_FragCoord.xy)>c*p){discard;}} gl_FragColor=n;float alpha=n.a*m;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.linestringreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        'varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\nuniform float u_zIndex;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, u_zIndex, 1.0);\n  }\n}\n\n\n' :
+        'varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, 0.0, 1.0);\n  }\n}\n\n\n' :
         'varying float a;varying vec2 aVertex;varying float c;attribute vec2 d;attribute vec2 e;attribute vec2 f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;bool nearlyEquals(in float value,in float ref){float epsilon=0.000000000001;return value>=ref-epsilon&&value<=ref+epsilon;}void alongNormal(out vec2 offset,in vec2 nextP,in float turnDir,in float direction){vec2 dirVect=nextP-e;vec2 normal=normalize(vec2(-turnDir*dirVect.y,turnDir*dirVect.x));offset=k/2.0*normal*direction;}void miterUp(out vec2 offset,out float round,in bool isRound,in float direction){float halfWidth=k/2.0;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=f-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;round=0.0;if(isRound){round=1.0;}else if(miterLength>l+k){offset=halfWidth*tmpNormal*direction;}} bool miterDown(out vec2 offset,in vec4 projPos,in mat4 offsetMatrix,in float direction){bool degenerate=false;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=d-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));vec2 longOffset,shortOffset,longVertex;vec4 shortProjVertex;float halfWidth=k/2.0;if(length(f-e)>length(d-e)){longOffset=tmpNormal*direction*halfWidth;shortOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=f;shortProjVertex=h*vec4(d,0.0,1.0);}else{shortOffset=tmpNormal*direction*halfWidth;longOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=d;shortProjVertex=h*vec4(f,0.0,1.0);}vec4 p1=h*vec4(longVertex,0.0,1.0)+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p2=projPos+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p3=shortProjVertex+offsetMatrix*vec4(-shortOffset,0.0,0.0);vec4 p4=shortProjVertex+offsetMatrix*vec4(shortOffset,0.0,0.0);float denom=(p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y);float firstU=((p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x))/denom;float secondU=((p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x))/denom;float epsilon=0.000000000001;if(firstU>epsilon&&firstU<1.0-epsilon&&secondU>epsilon&&secondU<1.0-epsilon){shortProjVertex.x=p1.x+firstU*(p2.x-p1.x);shortProjVertex.y=p1.y+firstU*(p2.y-p1.y);offset=shortProjVertex.xy;degenerate=true;}else{float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;}return degenerate;}void squareCap(out vec2 offset,out float round,in bool isRound,in vec2 nextP,in float turnDir,in float direction){round=0.0;vec2 dirVect=e-nextP;vec2 firstNormal=normalize(dirVect);vec2 secondNormal=vec2(turnDir*firstNormal.y*direction,-turnDir*firstNormal.x*direction);vec2 hypotenuse=normalize(firstNormal-secondNormal);vec2 normal=vec2(turnDir*hypotenuse.y*direction,-turnDir*hypotenuse.x*direction);float length=sqrt(c*c*2.0);offset=normal*length;if(isRound){round=1.0;}} void main(void){bool degenerate=false;float direction=float(sign(g));mat4 offsetMatrix=i*j;vec2 offset;vec4 projPos=h*vec4(e,0.0,1.0);bool round=nearlyEquals(mod(g,2.0),0.0);a=0.0;c=k/2.0;aVertex=projPos.xy;if(nearlyEquals(mod(g,3.0),0.0)||nearlyEquals(mod(g,17.0),0.0)){alongNormal(offset,f,1.0,direction);}else if(nearlyEquals(mod(g,5.0),0.0)||nearlyEquals(mod(g,13.0),0.0)){alongNormal(offset,d,-1.0,direction);}else if(nearlyEquals(mod(g,23.0),0.0)){miterUp(offset,a,round,direction);}else if(nearlyEquals(mod(g,19.0),0.0)){degenerate=miterDown(offset,projPos,offsetMatrix,direction);}else if(nearlyEquals(mod(g,7.0),0.0)){squareCap(offset,a,round,f,1.0,direction);}else if(nearlyEquals(mod(g,11.0),0.0)){squareCap(offset,a,round,d,-1.0,direction);}if(!degenerate){vec4 offsets=offsetMatrix*vec4(offset,0.0,0.0);gl_Position=projPos+offsets;}else{gl_Position=vec4(offset,0.0,1.0);}}');
 
     // This file is automatically generated, do not edit
@@ -68186,12 +68039,6 @@ function olInit() {
          */
         this.u_pixelRatio = gl.getUniformLocation(
             program, ol.DEBUG_WEBGL ? 'u_pixelRatio' : 'p');
-        
-        /**
-         * @type {WebGLUniformLocation}
-         */
-        this.u_zIndex = gl.getUniformLocation(
-            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'q');
 
         /**
          * @type {number}
@@ -68216,9 +68063,6 @@ function olInit() {
          */
         this.a_direction = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_direction' : 'g');
-
-        
-    
     };
 
     goog.provide('ol.render.webgl.LineStringReplay');
@@ -68523,317 +68367,21 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
+    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature) {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-    
-        // let spacingPoints=[];
-        // function calculateLambda(s,n){
-        //    let lambda = n / (s - n);
-        //     return lambda;
-        // }
-        // function calculateX(lambda ,x1 ,x2)
-        // {
-        //     let x = (x1 + lambda * x2) / (1 + lambda);
-        //     return x;
-        // }
-        // function calculateY(lambda ,y1 ,y2)
-        // {
-        //     let y = (y1 + lambda * y2) / (1 + lambda);
-        //     return y;
-        // }
-        // function doCalculate(coordPxs,spacing)
-        // {
-        //     let pointArr=[];
-        //     for(let i=0;i<coordPxs.length;i+=2){
-        //         let coord=[coordPxs[i],coordPxs[i+1]];
-        //         pointArr.push(coord);
-        //     }
-        //     pointArr = getPixelFromCoord(pointArr);
-        //     for (let i= 0;i < pointArr.length - 1;i++) {
-        //         let _surplusDistance =0;
-        //         let startPoint = pointArr[i];
-        //         let endPoint   = pointArr[i+1];
-        //         let d=Math.sqrt(Math.pow((endPoint[0] - startPoint[0]), 2) + Math.pow((endPoint[1] - startPoint[1]), 2));
-        //         // 存在的点个数
-        //         let pointNum = ((d + _surplusDistance) / spacing);
-        //         if (pointNum > 0) {
-        //             for (let j = 0; j < pointNum; j++) {
-        //                 let n = 0;
-        //                 let s = 0;  
-        //                 if (j == 0) {
-        //                     n = spacing - _surplusDistance;
-        //                     s =d;
-        //                 } else {
-        //                     n = (j + 1) * spacing - _surplusDistance;
-        //                     s = d;
-        //                 }
-                        
-        //                 if (n != s) {
-        //                     let lambda = calculateLambda(s,n);
-        //                     let x =  calculateX(lambda, startPoint[0], endPoint[0]);
-        //                     let y =  calculateY(lambda, startPoint[1] ,endPoint[1]);
-        //                     spacingPoints.push(x,y)
-        //                 } else {
-        //                     let x =   endPoint[0];
-        //                     let y =  endPoint[1];
-        //                     spacingPoints.push(x,y)
-        //                     // [self.spacingPoints addObject:[NSValue valueWithCGPoint:endPoint]];
-        //                 }
-        //             }
-        //             _surplusDistance += d - pointNum * spacing;
-                    
-        //         } else {
-        //             _surplusDistance +=d - pointNum * spacing;
-        //         }
-        //     }
-        //     return spacingPoints
-        // }
-        /*aaaaaa*/
-        function bearing(seg){
-            var firstPoint = [seg.x1,seg.y1];
-            var secondPoint = [seg.x2,seg.y2];
-            var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
-            angle = angle?angle:angle+0.0001;
-            return angle;
+        var stride = lineStringGeometry.getStride();
+        if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+            flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+                stride, -this.origin[0], -this.origin[1]);
+            if (this.state_.changed) {
+                this.styleIndices_.push(this.indices.length);
+                this.state_.changed = false;
+            }
+            this.startIndices.push(this.indices.length);
+            this.startIndicesFeature.push(feature);
+            this.drawCoordinates_(
+                flatCoordinates, 0, flatCoordinates.length, stride);
         }
-        function getSegmentFromPixel(coordPixel){
-            var segments = [];
-            var seg = null;
-            var ps = null;
-            var pt = null;
-            for( var i = 0; i < coordPixel.length-1; i ++ ){
-                ps = coordPixel[i];
-                pt = coordPixel[ i+1];
-                seg = {
-                    x1:ps[0],
-                    y1:ps[1],
-                    x2:pt[0],
-                    y2:pt[1]
-                }
-                var length = Math.sqrt(Math.pow((seg.x2 - seg.x1), 2) + Math.pow((seg.y2 - seg.y1), 2));
-                var angle = bearing( seg );
-                seg.pixelLength = length;
-                seg.pixelAngle = angle;
-                // seg.startToEndLength = length;
-                segments.push( seg );
-            }
-            return segments;
-        }
-        function getPixelFromCoord ( coordLLs ){
-            var coordPxs = [];
-            var pts = [];
-            var pxs = null;
-            for( var i = 0; i < coordLLs.length; i++ ) {
-               pts = coordLLs[i];
-               pxs =ol.transform.apply(options.frameState.coordinateToPixelTransform,
-                pts.slice(0, 2));
-               coordPxs.push( pxs );
-            }
-            return coordPxs;
-         }
-        function getNeedPixelFromLine( seg,chaLength,lastSeg ) {
-            var segLen = seg.pixelLength;
-            if (lastSeg) {
-                var numTemp = Math.floor(lastSeg.pixelLength / chaLength);
-                if(lastSeg.residueLength){
-                    var startLength=chaLength-lastSeg.residueLength;
-                   
-                }else{
-                    var startLength =chaLength-(lastSeg.pixelLength - numTemp * chaLength);
-                   
-                }
-                var num =(segLen - startLength) / chaLength ;
-                var x = seg.x1 + (seg.x2 - seg.x1) * startLength / segLen;
-                var y = seg.y1 + (seg.y2 - seg.y1) * startLength / segLen;
-                seg.pixelLength = segLen - startLength
-              
-            } else {
-                startLength = 0;
-                var x = seg.x1;
-                var y = seg.y1;
-                var num =segLen / chaLength;
-            }
-        
-            var xOper = true;
-            var yOper = false;
-            var xCha = seg.x2 - x;
-            var yCha = seg.y2 - y;
-            var xAver = xCha / num;
-            var yAver = yCha / num;
-            var pixelArr = [];
-        
-            var xOrig = x;
-            var yOrin = y;
-            var xEnd = seg.x2;
-            var yEnd = seg.y2;
-        
-            for (let i = 0; i < num; i++) {
-                x = xAver * i + xOrig;
-                y = yAver * i + yOrin;
-                pixelArr.push(x);
-                pixelArr.push(y);
-            }
-            return pixelArr;
-      
-        }
-        function myCreateSegDirection(coordPxs,chaLength){
-            let coordArr=[];
-            for(let i=0;i<coordPxs.length;i+=2){
-                let coord=[coordPxs[i],coordPxs[i+1]];
-                coordArr.push(coord);
-            }
-             coordArr = getPixelFromCoord(coordArr);
-            var segments =getSegmentFromPixel( coordArr );
-            var tempLength = {
-                pixelLength:0,
-                x1:0,
-                y1:0,
-                x2:0,
-                y2:0
-            };
-            var nowSeg = null;
-            var nowLengthFlag = true;
-            var findPixelArr = [];
-            for( var i = 0; i < segments.length; i++ ) {
-               nowSeg = segments[i];
-               if( nowSeg.pixelLength < chaLength ) {
-                   if(nowLengthFlag){
-                        
-                   }
-                   nowLengthFlag=false;
-                  tempLength.pixelLength += nowSeg.pixelLength;
-               }
-               else {
-                //   nowLengthFlag = true;
-                  let splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
-                  findPixelArr = findPixelArr.concat( splitPixelArr );
-               }
-               if(tempLength.pixelLength > chaLength) {
-                    tempLength.x2=segments[i].x2;
-                    tempLength.y2=segments[i].y2;
-                    tempLength.x1=segments[i].x1;
-                    tempLength.y1=segments[i].y1;
-                    let residueLength=tempLength.pixelLength-chaLength
-                    let lastSeg={
-                        residueLength:residueLength
-                    }
-                    let splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
-                    findPixelArr = findPixelArr.concat( splitPixelArr );
-                    tempLength.pixelLength=0;
-               }
-            }
-            // if( findPixelArr.length == 0 ) {
-            //    var lastSeg = segments[segments.length - 1];
-            //    findPixelArr.push( lastSeg.x2 );
-            //    findPixelArr.push( lastSeg.y2 );
-            // }
-            return findPixelArr;
-         }
-        if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
-            function getLineStruct(ptStart, ptEnd, radius){
-                var angle = getRotation(ptEnd, ptStart) - Math.PI/2;
-                var start = getPointByAngle(ptStart, radius, angle);
-                var end  = getPointByAngle(ptEnd, radius, angle);
-                var angle = getRotation(ptEnd, ptStart) + Math.PI/2;
-                var start_ = getPointByAngle(ptStart, radius, angle);
-                var end_  = getPointByAngle(ptEnd, radius, angle);
-
-                // let  A=(ptEnd[1]-ptStart[1])/(ptEnd[0]-ptStart[0]);
-                // let B=-1;
-                // let C=ptStart[1]-A*ptStart[0];
-                // let k  = - 2 * ( A*start[0] + B*start[1] + C) / (A*A+B*B);
-                // let k_ = - 2 * ( A*end[0]   + B*end[1]   + C) / (A*A+B*B);
-
-                // x=  start[0] + k * A;
-                // y= start[1] + k * B;
-                // x_ = end[0] + k_ * A;
-                // y_ =end[1] + k_ * B;
-                // var arr=[...start,x,y,...end,x_,y_];
-                var arr=[...start,...start_,...end,...end_];
-                
-                return arr
-            }
-            function getRotation(pt, ptCenter){
-                var dx = pt[0] - ptCenter[0];
-                var dy = pt[1] - ptCenter[1];			
-                var dis = Math.sqrt(dx * dx + dy * dy);	
-                if(dis == 0){ 
-                    return 0;
-                }
-                var q;
-                if(dy > 0){    
-                    q = Math.acos(dx / dis);
-                }else{        
-                    q = Math.PI * 2 - Math.acos(dx / dis);
-                } 
-                return q;
-            }
-            function getPointByAngle(ptCenter, radius, angle){
-                var x = ptCenter[0] + radius * Math.cos(angle);
-                var y = ptCenter[1] + radius * Math.sin(angle);
-                return [x, y];
-            }	
-            var strokeStyleWidth=strokeStyle.getWidth();
-            var widthHalf =strokeStyleWidth / 2;
-            var strokeStyleLineDash = strokeStyle.getLineDash();
-            flatCoordinates=myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1]);
-            let arr=[];
-            for(let i=0;i<flatCoordinates.length-2;i+=2){
-                let start=[flatCoordinates[i],flatCoordinates[i+1]];
-                let end =[flatCoordinates[i+2],flatCoordinates[i+3] ]
-                arr=arr.concat(getLineStruct(start,end,widthHalf))
-            }
-            let result=[];
-            for(let i=0;i<arr.length;i+=2){
-                let a=arr.slice(i,i+2);
-                let arrTemp=ol.transform.apply(options.frameState.pixelToCoordinateTransform,a );
-                result.push(arrTemp[0],arrTemp[1]);
-            }
-            var tempCoordinates = result;
-            for(let i=0;i<tempCoordinates.length;i+=4){
-                let railWayChildCoord=tempCoordinates.slice(i,i+4);
-                
-                flatCoordinates=railWayChildCoord;
-                drawLineString_.call(this, flatCoordinates);
-            }
-            return;
-        }
-       
-        function drawLineString_(flatCoordinates){
-            var stride = lineStringGeometry.getStride();
-            var extent = feature.getExtent();
-            if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-                flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                    stride, -this.origin[0], -this.origin[1]);
-                    
-                if (this.state_.changed) {
-                    var z_order = lineStringGeometry.properties_.z_order;
-                    var styleId = lineStringGeometry.styleId;               
-
-                    // for railway
-                    if(z_order == undefined){
-                        z_order = 0;
-                    }
-                    
-                    z_order += 100;
-
-                    if(styleId.includes('#c')){
-                        z_order = 1 / (z_order + 0.5);
-                    }else{
-                        z_order = 1 / (z_order);   
-                    }
-
-                    this.zCoordinates.push(z_order);
-                    this.styleIndices_.push(this.indices.length);
-                    this.state_.changed = false;
-                }
-                this.startIndices.push(this.indices.length);
-                // this.startIndicesFeature.push(feature);
-                this.drawCoordinates_(
-                    flatCoordinates, 0, flatCoordinates.length, stride);
-            }
-        }
-        drawLineString_.call(this, flatCoordinates)
     };
 
 
@@ -68845,12 +68393,8 @@ function olInit() {
         var ends = multiLineStringGeometry.getEnds();
         ends.unshift(0);
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
-        // if(multiLineStringGeometry.properties_.class === 'rail' && multiLineStringGeometry.styleId.includes('c')){
-            // console.log('railway')
-        // }
         var stride = multiLineStringGeometry.getStride();
         var i, ii;
-        var extent = feature.getExtent();
         if (ends.length > 1) {
             for (i = 1, ii = ends.length; i < ii; ++i) {
                 if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
@@ -68861,28 +68405,10 @@ function olInit() {
                 }
             }
         }
-        
         if (this.indices.length > indexCount) {
             this.startIndices.push(indexCount);
-            // this.startIndicesFeature.push(feature);
+            this.startIndicesFeature.push(feature);
             if (this.state_.changed) {
-                var z_order = multiLineStringGeometry.properties_.z_order;
-                var styleId = multiLineStringGeometry.styleId;
-
-                // for railway
-                if(z_order == undefined){
-                    z_order = 0;
-                }
-                
-                z_order += 100;
-
-                if(styleId.includes('#c')){
-                    z_order = 1 / (z_order + 0.5);
-                }else{
-                    z_order = 1 / (z_order);   
-                }
-
-                this.zCoordinates.push(z_order);
                 this.styleIndices_.push(indexCount);
                 this.state_.changed = false;
             }
@@ -68915,9 +68441,6 @@ function olInit() {
                     holeFlatCoordinates[i].length, stride);
             }
         }
-
-        // delete
-
     };
 
 
@@ -69040,39 +68563,38 @@ function olInit() {
      * @inheritDoc
      */
     ol.render.webgl.LineStringReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
-        //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-
-        if (!hitDetection) {
-            // gl.enable(gl.DEPTH_TEST);
-            // gl.depthMask(true);
-            // gl.depthFunc(gl.NOTEQUAL);
-        }
-
-        if (!ol.obj.isEmpty(skippedFeaturesHash)) {
-            this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-        } else {
-            // Draw by style groups to minimize drawElements() calls.
-            var i, start, end, nextStyle;
-            end = this.startIndices[this.startIndices.length - 1];
-            
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-                start = this.styleIndices_[i];
-                nextStyle = this.styles_[i];
-                gl.uniform1f(this.u_zIndex, this.zCoordinates[i]);
-                this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-                this.drawElements(gl, context, start, end);
-                end = start;
-            }
-        }
-        if (!hitDetection) {
-            // gl.disable(gl.DEPTH_TEST);
-            // gl.clear(gl.DEPTH_BUFFER_BIT);
-            // //Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
-        }
+         //Save GL parameters.
+         var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+         var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+ 
+         if (!hitDetection) {
+             gl.enable(gl.DEPTH_TEST);
+             gl.depthMask(true);
+             gl.depthFunc(gl.NOTEQUAL);
+         }
+ 
+         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+             this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+         } else {
+             //Draw by style groups to minimize drawElements() calls.
+             var i, start, end, nextStyle;
+             end = this.startIndices[this.startIndices.length - 1];
+             for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+                 start = this.styleIndices_[i];
+                 nextStyle = this.styles_[i];
+                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+                 this.drawElements(gl, context, start, end);
+                 gl.clear(gl.DEPTH_BUFFER_BIT);
+                 end = start;
+             }
+         }
+         if (!hitDetection) {
+             gl.disable(gl.DEPTH_TEST);
+             gl.clear(gl.DEPTH_BUFFER_BIT);
+             //Restore GL parameters.
+             gl.depthMask(tmpDepthMask);
+             gl.depthFunc(tmpDepthFunc);
+         }
     };
 
 
@@ -69192,35 +68714,13 @@ function olInit() {
         // if (!(strokeStyleColor instanceof CanvasGradient) &&
         //     !(strokeStyleColor instanceof CanvasPattern)) {
         if(strokeStyleColor){
-            // strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
-            //     return i != 3 ? c / 255 : c;
-            // }) || ol.render.webgl.defaultStrokeStyle;
-
-            var strColor = ol.color.asArray(strokeStyleColor) || ol.render.webgl.defaultStrokeStyle;
-            if(+strColor[3] !== 1){
-                const A1 = +strColor[3];
-                const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-                const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-                const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                const A3 = A1 == 0 ? 0 : 1;
-                strColor[0] = R3.toFixed(6).toString();
-                strColor[1] = G3.toFixed(6).toString();
-                strColor[2] = B3.toFixed(6).toString();
-                strColor[3] = A3.toString();
-            }
-        
-            strokeStyleColor = strColor.map((val, index) => {
-                return index !== 3 ? val / 255 : +val;
-            });
+            strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
+                return i != 3 ? c / 255 : c;
+            }) || ol.render.webgl.defaultStrokeStyle;
         } else {
             strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
         }
         var strokeStyleWidth = strokeStyle.getWidth();
-        if( lineStringGeometry && 
-            lineStringGeometry.properties_.class === 'rail' && 
-            lineStringGeometry.styleId.includes('c')){
-            strokeStyleWidth = strokeStyleLineDash[0];
-        }
         strokeStyleWidth = strokeStyleWidth !== undefined ?
             strokeStyleWidth : ol.render.webgl.defaultLineWidth;
         var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
@@ -69233,8 +68733,7 @@ function olInit() {
             this.state_.lineWidth = strokeStyleWidth;
             this.state_.miterLimit = strokeStyleMiterLimit;
             this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
-            
-       }
+        }
     };
 
     /**
@@ -69266,7 +68765,7 @@ function olInit() {
         'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
     ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
-        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform float u_zIndex;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, u_zIndex, 1.0);\n}\n\n\n' :
+        '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n' :
         'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}');
 
     // This file is automatically generated, do not edit
@@ -69314,17 +68813,10 @@ function olInit() {
             program, ol.DEBUG_WEBGL ? 'u_opacity' : 'f');
 
         /**
-         * @type {WebGLUniformLocation}
-         */
-        this.u_zIndex = gl.getUniformLocation(
-            program, ol.DEBUG_WEBGL ? 'u_zIndex' : 'g');
-
-        /**
          * @type {number}
          */
         this.a_position = gl.getAttribLocation(
             program, ol.DEBUG_WEBGL ? 'a_position' : 'a');
-
     };
 
     goog.provide('ol.structs.LinkedList');
@@ -69608,9 +69100,8 @@ function olInit() {
     ol.render.webgl.PolygonReplay = function (tolerance, maxExtent) {
         ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
-        // this.lineStringReplay = new ol.render.webgl.LineStringReplay(
-        //     tolerance, maxExtent);
-        this.lineStringReplay = undefined;
+        this.lineStringReplay = new ol.render.webgl.LineStringReplay(
+            tolerance, maxExtent);
 
         /**
          * @private
@@ -69654,80 +69145,58 @@ function olInit() {
     ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function (
         flatCoordinates, holeFlatCoordinates, stride) {
         // Triangulate the polygon
-        // var outerRing = new ol.structs.LinkedList();        
-        // var rtree = new ol.structs.RBush();
+        var outerRing = new ol.structs.LinkedList();
+        var rtree = new ol.structs.RBush();
         // Initialize the outer ring
-        // this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+        this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
         // Eliminate holes, if there are any
-        // if(holeFlatCoordinates.length) {
-        //     var maxCoords = this.getMaxCoords_(outerRing);     
-        //     var i, ii;
-        //     var holeLists = [];
-        //     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-        //         var holeList = {
-        //             list: new ol.structs.LinkedList(),
-        //             maxCoords: undefined,
-        //             rtree: new ol.structs.RBush()
-        //         };
-        //         this.processFlatCoordinates_(holeFlatCoordinates[i],
-        //             stride, holeList.list, holeList.rtree, false);
+        if(holeFlatCoordinates.length) {
+            var maxCoords = this.getMaxCoords_(outerRing);     
+            var i, ii;
+            var holeLists = [];
+            for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+                var holeList = {
+                    list: new ol.structs.LinkedList(),
+                    maxCoords: undefined,
+                    rtree: new ol.structs.RBush()
+                };
+                this.processFlatCoordinates_(holeFlatCoordinates[i],
+                    stride, holeList.list, holeList.rtree, false);
                 
-        //         holeLists.push(holeList);
-        //         this.classifyPoints_(holeList.list, holeList.rtree, true);
-        //         holeList.maxCoords = this.getMaxCoords_(holeList.list);
-        //     }
-        //     holeLists.sort(function (a, b) {
-        //         return b.maxCoords[0] === a.maxCoords[0] ?
-        //             a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
-        //     });
-
-        //     for (i = 0; i < holeLists.length; ++i) {
-        //         var currList = holeLists[i].list;
-        //         var start = currList.firstItem();
-        //         var currItem = start;
-        //         var intersection;
-        //         do {
-        //             //TODO: Triangulate holes when they intersect the outer ring.
-        //             if (this.getIntersections_(currItem, rtree).length) {
-        //                 intersection = true;
-        //                 break;
-        //             }
-        //             currItem = currList.nextItem();
-        //         } while (start !== currItem);
-                
-        //         if (!intersection) {
-        //             if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
-        //                 rtree.concat(holeLists[i].rtree);
-        //                 this.classifyPoints_(outerRing, rtree, false);
-        //             }
-        //         }
-        //     }
-        // } else {
-        //     this.classifyPoints_(outerRing, rtree, false);
-        // }
-        // this.triangulate_(outerRing, rtree);
-
-        var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
-        var holeIndices = [];
-        for (var i = 0; i < holeFlatCoordinates.length; i++) {
-            var holeCoords = holeFlatCoordinates[i];
-            holeIndices.push(coords.length / stride);
-            for (var j = 0; j < holeCoords.length - stride; j++) {
-                coords.push(holeCoords[j]);
+                holeLists.push(holeList);
+                this.classifyPoints_(holeList.list, holeList.rtree, true);
+                holeList.maxCoords = this.getMaxCoords_(holeList.list);
             }
-        }
-        // vertices only hold x,y values
-        var baseIndex = this.vertices.length / 2;
-        if (stride === 2) {
-            Array.prototype.push.apply(this.vertices, coords);
+            holeLists.sort(function (a, b) {
+                return b.maxCoords[0] === a.maxCoords[0] ?
+                    a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
+            });
+
+            for (i = 0; i < holeLists.length; ++i) {
+                var currList = holeLists[i].list;
+                var start = currList.firstItem();
+                var currItem = start;
+                var intersection;
+                do {
+                    //TODO: Triangulate holes when they intersect the outer ring.
+                    if (this.getIntersections_(currItem, rtree).length) {
+                        intersection = true;
+                        break;
+                    }
+                    currItem = currList.nextItem();
+                } while (start !== currItem);
+                
+                if (!intersection) {
+                    if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
+                        rtree.concat(holeLists[i].rtree);
+                        this.classifyPoints_(outerRing, rtree, false);
+                    }
+                }
+            }
         } else {
-            for (var i = 0; i < coords; i += stride) {
-                this.vertices.push(coords[i], coords[i + 1]);
-            }
+            this.classifyPoints_(outerRing, rtree, false);
         }
-        var triangles = self.earcut(coords, holeIndices, stride);
-        triangles = triangles.map(function (i) { return i + baseIndex; });
-        Array.prototype.push.apply(this.indices, triangles);
+        this.triangulate_(outerRing, rtree);        
     };
 
 
@@ -69806,7 +69275,8 @@ function olInit() {
 
         return maxCoords;
     };
-    
+
+
     /**
      * Classifies the points of a polygon list as convex, reflex. Removes collinear vertices.
      * @private
@@ -69928,7 +69398,8 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.triangulate_ = function (list, rtree) {
         var ccw = false;
-        var simple = this.isSimple_(list, rtree);     
+        var simple = this.isSimple_(list, rtree);
+
         // Start clipping ears
         while (list.getLength() > 3) {
             if (simple) {
@@ -70400,16 +69871,14 @@ function olInit() {
 
     /**
      * @inheritDoc
-     * @override_
      */
-    ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {        
+    ol.render.webgl.PolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
         var ends = polygonGeometry.getEnds();
         var stride = polygonGeometry.getStride();
-        if (ends.length > 0) {            
-            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
+        if (ends.length > 0) {
+            var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
             var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                 stride, -this.origin[0], -this.origin[1]);
-
             if (outerRing.length) {
                 var holes = [];
                 var i, ii, holeFlatCoords;
@@ -70417,40 +69886,20 @@ function olInit() {
                     if (ends[i] !== ends[i - 1]) {
                         holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
                             ends[i], stride, -this.origin[0], -this.origin[1]);
-                        if(holeFlatCoords.length > 6){
-                            holes.push(holeFlatCoords);
-                        }
+                        holes.push(holeFlatCoords);
                     }
-                }
-                
-                {
-                    this.startIndices.push(this.indices.length);
-                    // this.startIndicesFeature.push(feature);
-
-                    if (this.state_.changed) {
-                        this.zCoordinates.push(feature.zCoordinate);
-                        this.styleIndices_.push(this.indices.length);
-                        this.state_.changed = false;
-                    }
-                    if(this.lineStringReplay){
-                        // this.lineStringReplay.setPolygonStyle(feature);
-                        // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                    }
-                    outerRing.length > 6 && this.drawCoordinates_(outerRing, [], stride);       
                 }
 
-                {
-                    if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                        this.styles_.push(this.styles_[0]);
-                        this.zCoordinates.push(feature.zCoordinate);
-                        this.styleIndices_.push(this.indices.length);
-                        this.state_.changed = false;
-                    }
-    
-                    for(var i = 0; i < holes.length; i++){
-                        this.drawCoordinates_(holes[i], [], stride);
-                    }                 
+                this.startIndices.push(this.indices.length);
+                this.startIndicesFeature.push(feature);
+                if (this.state_.changed) {
+                    this.styleIndices_.push(this.indices.length);
+                    this.state_.changed = false;
                 }
+                this.lineStringReplay.setPolygonStyle(feature);
+
+                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                this.drawCoordinates_(outerRing, holes, stride);
             }
         }
     };
@@ -70545,12 +69994,14 @@ function olInit() {
      */
     ol.render.webgl.PolygonReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         //Save GL parameters.
-        // var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-        // var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+        var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+        var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+
         if (!hitDetection) {
-            // gl.enable(gl.DEPTH_TEST);
-            // gl.depthMask(true);
-            // gl.depthFunc(gl.NOTEQUAL);
+            gl.enable(gl.BLEND);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthMask(true);
+            gl.depthFunc(gl.NOTEQUAL);
         }
 
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -70559,21 +70010,21 @@ function olInit() {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
             end = this.startIndices[this.startIndices.length - 1];
-            for (i = this.styleIndices_.length - 1; i >= 0; --i) {                
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
                 start = this.styleIndices_[i];
                 nextStyle = this.styles_[i];
-                gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
                 this.setFillStyle_(gl, nextStyle);
                 this.drawElements(gl, context, start, end);
                 end = start;
             }
         }
         if (!hitDetection) {
-            // gl.disable(gl.DEPTH_TEST);
-            // gl.clear(gl.DEPTH_BUFFER_BIT);
-            // // Restore GL parameters.
-            // gl.depthMask(tmpDepthMask);
-            // gl.depthFunc(tmpDepthFunc);
+            gl.disable(gl.BLEND);
+            gl.disable(gl.DEPTH_TEST);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            //Restore GL parameters.
+            gl.depthMask(tmpDepthMask);
+            gl.depthFunc(tmpDepthFunc);
         }
     };
 
@@ -70678,27 +70129,9 @@ function olInit() {
         // if (!(fillStyleColor instanceof CanvasGradient) &&
         //     !(fillStyleColor instanceof CanvasPattern)) {
         if(fillStyleColor){
-            // FIXME replace it with other ways,maybe gl.BLEND
-            var strColor = ol.color.asArray(fillStyleColor);
-            if(+strColor[3] !== 1){
-                const A1 = +strColor[3];
-                const R3 = +strColor[0] * A1 + 240 * (1 - A1); //240  238  232
-                const G3 = +strColor[1] * A1 + 238 * (1 - A1); //240  238  232
-                const B3 = +strColor[2] * A1 + 232 * (1 - A1); //240  238  232
-                const A3 = 1;
-                strColor[0] = R3.toFixed(6).toString();
-                strColor[1] = G3.toFixed(6).toString();
-                strColor[2] = B3.toFixed(6).toString();
-                strColor[3] = A3.toString();
-            }
-        
-            fillStyleColor = strColor.map((val, index) => {
-                return index !== 3 ? val / 255 : +val;
-            });
-
-            // fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
-            //     return i != 3 ? c / 255 : c;
-            // }) || ol.render.webgl.defaultFillStyle;
+            fillStyleColor = ol.color.asArray(fillStyleColor).map(function (c, i) {                
+                return i != 3 ? c / 255 : c;
+            }) || ol.render.webgl.defaultFillStyle;
         } else {
             fillStyleColor = ol.render.webgl.defaultFillStyle;
         }
@@ -70712,78 +70145,17 @@ function olInit() {
         if(this.lineStringReplay){
             if (strokeStyle) {
                 this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+            }else{
+                var nullStrokeStyle = new ol.style.Stroke({
+                    color: [0, 0, 0, 0],
+                    lineWidth: 0
+                });
+                this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
             }
         }
     };
 
-    /**
-     * FIXME: Used for webgl calculation
-     */
-    ol.render.webgl.PolygonReplay.prototype.appendFlatCoordinates = function (flatCoordinates, offset, ends, stride, closed) {
-        var ends_ = [];
-        var extent = this.maxExtent;
-        var skipFirst = this.state_.strokeStyle;        
-        
-        if(!this.webglDrawType){
-            this.webglDrawType = 'polygonReplay';
-            this.webglEnds = [];
-            this.webglFlatCoordinates = [];
-            this.featureIndices = [];
-            this.styleIndices = [];
-        }
-
-        if (this.state_.changed) {
-            this.styleIndices.push(this.webglEnds.length);
-            this.state_.changed = false;
-        } 
-
-        this.featureIndices.push(this.webglEnds.length);         
-        var myEnd = this.webglFlatCoordinates.length;
-
-        for(var i = 0; i < ends.length; i++){
-            var end = ends[i];
-            
-            if (skipFirst) {
-                offset += stride;
-            }
-            var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-            var nextCoord = [NaN, NaN];
-            var skipped = true;
-    
-            var j, lastRel, nextRel;
-            for (j = offset + stride; j < end; j += stride) {
-                nextCoord[0] = flatCoordinates[j];
-                nextCoord[1] = flatCoordinates[j + 1];
-                nextRel = ol.extent.coordinateRelationship(extent, nextCoord);
-                if (nextRel !== lastRel) {
-                    if (skipped) {
-                        this.webglFlatCoordinates[myEnd++] = lastCoord[0];
-                        this.webglFlatCoordinates[myEnd++] = lastCoord[1];
-                    }
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
-                    skipped = false;
-                } else if (nextRel === ol.extent.Relationship.INTERSECTING) {
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[0];
-                    this.webglFlatCoordinates[myEnd++] = nextCoord[1];
-                    skipped = false;
-                } else {
-                    skipped = true;
-                }
-                lastCoord[0] = nextCoord[0];
-                lastCoord[1] = nextCoord[1];
-                lastRel = nextRel;
-            }
-    
-            // Last coordinate equals first or only one point to append:
-            if ((closed && skipped) || j === offset + stride) {
-                this.webglFlatCoordinates[myEnd++] = lastCoord[0];
-                this.webglFlatCoordinates[myEnd++] = lastCoord[1];
-            }
-            offset = end;
-            this.webglEnds.push(myEnd);
-        }        
-    };
+   
     goog.provide('ol.style.Atlas');
 
     goog.require('ol.dom');
@@ -70830,13 +70202,18 @@ function olInit() {
          * @private
          * @type {CanvasRenderingContext2D}
          */
-        this.context_ = ol.dom.createCanvasContext2D(size, size);
+        this.context_ = ol.dom.createCanvasContext2D(size * window.devicePixelRatio, size * window.devicePixelRatio);
 
         /**
          * @private
          * @type {HTMLCanvasElement}
          */
         this.canvas_ = this.context_.canvas;
+
+        this.canvas_.width = size * window.devicePixelRatio;
+        this.canvas_.height = size * window.devicePixelRatio;
+        this.canvas_.style.width = size + 'px';
+        this.canvas_.style.height = size + 'px';
     };
 
 
@@ -70861,6 +70238,7 @@ function olInit() {
      */
     ol.style.Atlas.prototype.add = function (id, width, height, renderCallback, opt_this) {
         var block, i, ii;
+        // (this.context_.ol_uid = ++ol.uidCounter_)
         for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
             block = this.emptyBlocks_[i];
             if (block.width >= width + this.space_ &&
@@ -70872,10 +70250,9 @@ function olInit() {
                     image: this.canvas_
                 };
                 this.entries_[id] = entry;
-
                 // render the image on the atlas image
                 renderCallback.call(opt_this, this.context_,
-                    block.x + this.space_, block.y + this.space_);
+                    block.x / window.devicePixelRatio + this.space_, block.y / window.devicePixelRatio + this.space_);
 
                 // split the block after the insertion, either horizontally or vertically
                 this.split_(i, block, width + this.space_, height + this.space_);
@@ -71219,6 +70596,7 @@ function olInit() {
          * @private
          * @type {Array.<WebGLTexture>}
          */
+
         this.textures_ = [];
 
         /**
@@ -71376,7 +70754,7 @@ function olInit() {
                             this$1.images_.push(image);
                         } else {
                             var currentImage = this$1.images_[this$1.images_.length - 1];
-                            if (getUid(currentImage) != getUid(image)) {
+                            if (ol.getUid(currentImage) != ol.getUid(image)) {
                                 this$1.groupIndices.push(this$1.indices.length);
                                 this$1.images_.push(image);
                             }
@@ -71411,13 +70789,14 @@ function olInit() {
                 }
                 sum += glyphAtlas.width[curr] ? glyphAtlas.width[curr] : 0;
             }
-            return sum;
+            return sum / window.devicePixelRatio;
         }).reduce(function (max, curr) {
             return Math.max(max, curr);
         });
 
         return [textWidth, textHeight];
     };    
+
 
     /**
      * @private
@@ -71445,13 +70824,12 @@ function olInit() {
             var state = this.state_;
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
-            var width = Math.ceil(mCtx.measureText(char).width * state.scale);
-
+            var width = Math.ceil((mCtx.measureText(char).width +state.lineWidth/2)* state.scale * window.devicePixelRatio );
             var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height,
                 function (ctx, x, y) {
                     //Parameterize the canvas
                     ctx.font = /** @type {string} */ (state.font);
-                    ctx.fillStyle = state.fillColor;
+                    ctx.fillStyle =state.fillColor;
                     ctx.strokeStyle = state.strokeColor;
                     ctx.lineWidth = state.lineWidth;                    
                     ctx.lineCap = /*** @type {string} */ (state.lineCap);
@@ -71459,16 +70837,18 @@ function olInit() {
                     ctx.miterLimit = /** @type {number} */ (state.miterLimit);
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'top';
+                    // ctx.imageSmoothingEnabled = false;
+                    // ctx.imageSmoothingQuality = "high";
                     if (ol.has.CANVAS_LINE_DASH && state.lineDash) {
                         //FIXME: use pixelRatio
                         ctx.setLineDash(state.lineDash);
                         ctx.lineDashOffset = /** @type {number} */ (state.lineDashOffset);
                     }
-                    if (state.scale !== 1) {
+                    // if (state.scale !== 1) {
                         //FIXME: use pixelRatio
-                        ctx.setTransform(/** @type {number} */(state.scale), 0, 0,
-                        /** @type {number} */(state.scale), 0, 0);
-                    }
+                        ctx.setTransform(/** @type {number} */(state.scale * window.devicePixelRatio), 0, 0,
+                        /** @type {number} */(state.scale * window.devicePixelRatio), 0, 0);
+                    // }
 
                     // Draw the character on the canvas
                     if (state.strokeColor) {
@@ -71492,7 +70872,7 @@ function olInit() {
      */
     ol.render.webgl.TextReplay.prototype.finish = function (context) {
         var gl = context.getGL();
-        
+
         this.groupIndices.push(this.indices.length);
         this.hitDetectionGroupIndices = this.groupIndices;
 
@@ -71504,10 +70884,9 @@ function olInit() {
 
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
-        // var texturePerImage = {};
-        this.textures_ = [];
-        
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+        var texturePerImage = {};
+
+        this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
         this.state_ = {
             strokeColor: null,
@@ -71526,13 +70905,10 @@ function olInit() {
         this.textBaseline_ = undefined;
         this.offsetX_ = undefined;
         this.offsetY_ = undefined;
-        // this.images_ = null;
-        // this.atlases_ = {};
-        // this.currAtlas_ = undefined;
-        this.images_ = [];
-        // this.indices = [];
-        // this.vertices = [];
-        // ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+        this.images_ = null;
+        this.atlases_ = {};
+        this.currAtlas_ = undefined;
+        ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
     };
 
 
@@ -71580,11 +70956,9 @@ function olInit() {
             this.offsetX_ = textStyle.getOffsetX() || 0;
             this.offsetY_ = textStyle.getOffsetY() || 0;
             this.rotateWithView = !!textStyle.getRotateWithView();
-            this.rotation = textStyle.getRotation() || 0;            
-            this.currAtlas_ = this.getAtlas_(state);
+            this.rotation = textStyle.getRotation() || 0;
 
-            this.label = textStyle.label;
-            this.maxAngle_ = textStyle.maxAngle_;
+            this.currAtlas_ = this.getAtlas_(state);
         }
     };
 
@@ -71611,11 +70985,11 @@ function olInit() {
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
             var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-                state.lineWidth / 2) * state.scale);
+                state.lineWidth / 2) * state.scale*window.devicePixelRatio);
 
             this.atlases_[hash] = {
                 atlas: new ol.style.AtlasManager({
-                    space: state.lineWidth + 1
+                    space: state.lineWidth/2 + 1
                 }),
                 width: {},
                 height: height
@@ -71713,7 +71087,6 @@ function olInit() {
     /**
      * @param {ol.style.Style} style Style.
      * @param {boolean} group Group with previous replay.
-     * @override_
      */
     ol.render.webgl.ReplayGroup.prototype.addDeclutter = function (group) { 
         var declutter = null;
@@ -73529,9 +72902,8 @@ function olInit() {
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
 
-        gl.clearColor(0, 0, 0, 1);
+        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-        gl.enable(ol.webgl.BLEND);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
@@ -73931,14 +73303,14 @@ function olInit() {
                 minX, minY,
                 minX + framebufferExtentDimension, minY + framebufferExtentDimension
             ];
-
+            
             this.bindFramebuffer(frameState, framebufferDimension);
             gl.viewport(0, 0, framebufferDimension, framebufferDimension);
-
+            
             gl.clearColor(0, 0, 0, 1);
             gl.clear(ol.webgl.COLOR_BUFFER_BIT);
             gl.disable(ol.webgl.BLEND);
-
+            
             var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
             context.useProgram(program);
             if (!this.locations_) {
@@ -81633,7 +81005,6 @@ function olInit() {
                 var sourceTile = this.getTile(sourceTileKey);
                 sourceTile.tileRange = this.tileRange;
                 sourceTile.vectorImageTileCoord = this.tileCoord;
-                // sourceTile.tile = this;
                 sourceTile.pixelRatio = this.pixelRatio;
                 if (sourceTile.state == ol.TileState.CANCEL) {
                     sourceTile.state = ol.TileState.IDLE;
@@ -82007,11 +81378,7 @@ function olInit() {
             minZoom: options.minZoom,
             tileSize: options.tileSize || 512
         });
-        var webglContext=ol.webglContext;
-        var webglSize=ol.has.DEVICE_PIXEL_RATIO*tileGrid.tileSize_;
-        webglContext.canvas.height = webglSize;
-        webglContext.canvas.width=webglSize;
-        webglContext.gl.viewport(0,0,webglSize,webglSize);
+
         ol.source.UrlTile.call(this, {
             attributions: options.attributions,
             cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
@@ -82088,7 +81455,6 @@ function olInit() {
         var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
         if (this.tileCache.containsKey(tileCoordKey)) {
             return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
-            
         } else {
             var tileCoord = [z, x, y];
             var urlTileCoord = this.getTileCoordForTileUrlFunction(
@@ -97601,7 +96967,6 @@ function olInit() {
 
                 if (cacheTrees && cacheTrees.length > 0) {
                     replaceFiltersToIndexOfPbfLayer(cacheTrees, pbfLayer);
-
                     for (var i = 0; i < pbfLayer.length; i++) {
                         var rawFeature = readRawFeature_(pbf, pbfLayer, i);
                         var feature = undefined;
@@ -97652,6 +97017,7 @@ function olInit() {
                             if (matchedNode) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName, offset);
+
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
                                 }
@@ -97683,6 +97049,7 @@ function olInit() {
                 cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
+
             return [allFeatures, instructsCache, extent];
         }
 
@@ -97949,11 +97316,13 @@ function olInit() {
             styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
+                
                 var item = new StyleJsonCacheItem(json, 0, 24, "layerName", styleIdIndex);
 
                 for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                     var treeNode = new TreeNode(item);
                     createChildrenNode(treeNode, item, zoom);
+                  
                     styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
                 }
 
@@ -98807,7 +98176,7 @@ function olInit() {
                         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex;
+                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
                         this.styles[length++] = GeoAreaStyle.areaShadowStyle;
                     }
                     if (this.fill) {
@@ -98826,7 +98195,6 @@ function olInit() {
                     }
                     GeoAreaStyle.areaStyle.setGeometry(feature);                    
                     GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
-                    // GeoAreaStyle.areaStyle.setZIndex(this.zIndex);
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;
@@ -100763,875 +100131,465 @@ function olInit() {
             };
             GeoTextStyle.placementsName = "text-placements";
             return GeoTextStyle;
-        }(GeoStyle));
+        }(GeoStyle));        
 
-        var TextReplayCustom = /** @class */ (function (_super) {
-            __extends(TextReplayCustom, _super);
-            function TextReplayCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-                var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) || this;
-                _this.renderDeclutterChar_ = function (declutterGroup, feature) {
-                    if (declutterGroup && declutterGroup.length > 5) {
-                        var groupCount = declutterGroup[4];
-                        if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-                            /** @type {ol.RBushEntry} */
-                            var box = {
-                                minX: /** @type {number} */ (declutterGroup[0]),
-                                minY: /** @type {number} */ (declutterGroup[1]),
-                                maxX: /** @type {number} */ (declutterGroup[2]),
-                                maxY: /** @type {number} */ (declutterGroup[3]),
-                                value: feature
-                            };
-                            if (!this.declutterTree.collides(box)) {
-                                this.declutterTree.insert(box);
-                                var drawImage = ol.render.canvas.drawImage;
-                                for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
-                                    var declutterData = (declutterGroup[j]);
-                                    if (declutterData) {
-                                        if (declutterData.length > 11) {
-                                            this.replayTextBackground_(declutterData[0], declutterData[13], declutterData[14], declutterData[15], declutterData[16], declutterData[11], declutterData[12]);
-                                        }
-                                        var labelInfo = declutterData[3];
-                                        var labelImage = this.getImage(labelInfo["text"], labelInfo["textKey"], labelInfo["fillKey"], labelInfo["strokeKey"]);
-                                        declutterData[3] = labelImage;
-                                        drawImage.apply(undefined, declutterData);
-                                    }
-                                }
-                            }
-                            declutterGroup.length = 5;
-                            ol.extent.createOrUpdateEmpty(declutterGroup);
-                        }
-                    }
-                };
-                _this.drawText = _this.drawTextCustom;
-                _this.setTextStyle = _this.setTextStyleCustom;
-                _this.replay_ = _this.replayCustom;
-                _this.labelInfoCache = new ol.structs.LRUCache();
+        var GeoPolygonReplay = /** @class */ (function (_super) {
+            __extends(GeoPolygonReplay, _super);            
+            function GeoPolygonReplay(tolerance, maxExtent) {
+                var _this = _super.call(this, tolerance, maxExtent) || this;                
+                this.lineStringReplay = null;
                 return _this;
             }
-            TextReplayCustom.prototype.replayCustom = function (context, transform, skippedFeaturesHash, instructions, featureCallback, opt_hitExtent) {
-                /** @type {Array.<number>} */
-                var pixelExten;
-                pixelExten = ol.geom.flat.transform.transform2D(this.maxExtent, 0, this.maxExtent.length, 2, transform, this["pixelExten"]);
-                var pixelCoordinates;
-                if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
-                    pixelCoordinates = this.pixelCoordinates_;
-                }
-                else {
-                    if (!this.pixelCoordinates_) {
-                        this.pixelCoordinates_ = [];
+            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
+                var ends = polygonGeometry.getEnds();
+                var stride = polygonGeometry.getStride();
+                var extent = feature.getGeometry().getExtent();
+                if (ends.length > 0) {            
+                    var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
+                    var index = 0;
+                    var outers = [];
+                    var outerRing = [];
+                    var isClockwise;
+                    if(!outers[index]){
+                        outers[index] = [];
                     }
-                    pixelCoordinates = ol.geom.flat.transform.transform2D(this.coordinates, 0, this.coordinates.length, 2, transform, this.pixelCoordinates_);
-                    ol.transform.setFromArray(this.renderedTransform_, transform);
-                }
-                var quickZoom = false;
-                if (context["quickZoom"] !== undefined) {
-                    quickZoom = context["quickZoom"];
-                }
-                var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
-                var i = 0; // instruction index
-                var ii = instructions.length; // end of instructions
-                var d = 0; // data index
-                var dd; // end of per-instruction data
-                var anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image;
-                var pendingFill = 0;
-                var pendingStroke = 0;
-                var lastFillInstruction = null;
-                var lastStrokeInstruction = null;
-                var coordinateCache = this.coordinateCache_;
-                var viewRotation = this.viewRotation_;
-                var state = ({
-                    context: context,
-                    pixelRatio: this.pixelRatio,
-                    resolution: this.resolution,
-                    rotation: viewRotation
-                });
-                // When the batch size gets too big, performance decreases. 200 is a good
-                // balance between batch size and number of fill/stroke instructions.
-                var batchSize = this.instructions !== instructions || this.overlaps ? 0 : 200;
-                while (i < ii) {
-                    var instruction = instructions[i];
-                    var type = (instruction[0]);
-                    var /** @type {ol.Feature|ol.render.Feature} */ feature = void 0, x = void 0, y = void 0;
-                    switch (type) {
-                        case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-                            feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-                            if ((skipFeatures && skippedFeaturesHash[ol.getUid(feature).toString()]) || !feature.getGeometry()) {
-                                i = /** @type {number} */ (instruction[2]);
-                            }
-                            else if (opt_hitExtent !== undefined && !ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent())) {
-                                i = /** @type {number} */ (instruction[2]) + 1;
-                            }
-                            else {
-                                ++i;
-                            }
-                            break;
-                        case ol.render.canvas.Instruction.BEGIN_PATH:
-                            if (pendingFill > batchSize) {
-                                this.fill_(context);
-                                pendingFill = 0;
-                            }
-                            if (pendingStroke > batchSize) {
-                                context.stroke();
-                                pendingStroke = 0;
-                            }
-                            if (!pendingFill && !pendingStroke) {
-                                context.beginPath();
-                                prevX = prevY = NaN;
-                            }
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.CIRCLE:
-                            d = /** @type {number} */ (instruction[1]);
-                            var x1 = pixelCoordinates[d];
-                            var y1 = pixelCoordinates[d + 1];
-                            var x2 = pixelCoordinates[d + 2];
-                            var y2 = pixelCoordinates[d + 3];
-                            var dx = x2 - x1;
-                            var dy = y2 - y1;
-                            var r = Math.sqrt(dx * dx + dy * dy);
-                            context.moveTo(x1 + r, y1);
-                            context.arc(x1, y1, r, 0, 2 * Math.PI, true);
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.CLOSE_PATH:
-                            context.closePath();
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.CUSTOM:
-                            d = /** @type {number} */ (instruction[1]);
-                            dd = instruction[2];
-                            var geometry = (instruction[3]);
-                            var renderer = instruction[4];
-                            var fn = instruction.length === 6 ? instruction[5] : undefined;
-                            state.geometry = geometry;
-                            state.feature = feature;
-                            if (!(i in coordinateCache)) {
-                                coordinateCache[i] = [];
-                            }
-                            var coords = coordinateCache[i];
-                            if (fn) {
-                                fn(pixelCoordinates, d, dd, 2, coords);
-                            }
-                            else {
-                                coords[0] = pixelCoordinates[d];
-                                coords[1] = pixelCoordinates[d + 1];
-                                coords.length = 2;
-                            }
-                            renderer(coords, state);
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.DRAW_IMAGE:
-                            d = /** @type {number} */ (instruction[1]);
-                            dd = /** @type {number} */ (instruction[2]);
-                            image = /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */ (instruction[3]);
-                            // Remaining arguments in DRAW_IMAGE are in alphabetical order
-                            anchorX = /** @type {number} */ (instruction[4]);
-                            anchorY = /** @type {number} */ (instruction[5]);
-                            declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[6]);
-                            var height = (instruction[7]);
-                            var opacity = (instruction[8]);
-                            var originX = (instruction[9]);
-                            var originY = (instruction[10]);
-                            var rotateWithView = (instruction[11]);
-                            var rotation = (instruction[12]);
-                            var scale = (instruction[13]);
-                            var snapToPixel = (instruction[14]);
-                            var width = (instruction[15]);
-                            var padding = void 0, backgroundFill = void 0, backgroundStroke = void 0;
-                            if (instruction.length > 16) {
-                                padding = /** @type {Array.<number>} */ (instruction[16]);
-                                backgroundFill = /** @type {boolean} */ (instruction[17]);
-                                backgroundStroke = /** @type {boolean} */ (instruction[18]);
-                            }
-                            else {
-                                padding = ol.render.canvas.defaultPadding;
-                                backgroundFill = backgroundStroke = false;
-                            }
-                            if (rotateWithView) {
-                                rotation += viewRotation;
-                            }
-                            for (; d < dd; d += 2) {
-                                this.replayImage_(context, pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY, declutterGroup, height, opacity, originX, originY, rotation, scale, snapToPixel, width, padding, backgroundFill ? /** @type {Array.<*>} */ (lastFillInstruction) : null, backgroundStroke ? /** @type {Array.<*>} */ (lastStrokeInstruction) : null);
-                            }
-                            this.renderDeclutter_(declutterGroup, feature);
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.DRAW_CHARS:
-                            if (!quickZoom) {
-                                var begin = (instruction[1]);
-                                var end = (instruction[2]);
-                                var baseline = (instruction[3]);
-                                declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[4]);
-                                var overflow = (instruction[5]);
-                                var fillKey = (instruction[6]);
-                                var maxAngle = (instruction[7]);
-                                var measure = (instruction[8]);
-                                var offsetY = (instruction[9]);
-                                var strokeKey = (instruction[10]);
-                                var strokeWidth = (instruction[11]);
-                                var text = (instruction[12]);
-                                var textKey = (instruction[13]);
-                                var textScale = (instruction[14]);
-                                var declutterGroups = [];
-                                var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
-                                var textLength = measure(text);
-                                if (overflow || textLength * 1.2 <= pathLength) {
-                                    // The original logical is create label image --> declutterGroup --> draw label image to context
-                                    // The newest logical is  create label info and create image instruction --> declutterGroup --> create label image --> draw label image to context
-                                    var labelInstructions = [];
-                                    var labelIndex = 0;
-                                    if (this.resolution < 0.6) {
-                                        var tmpLength = pathLength - textLength;
-                                        var tmpStart = 200 * window.devicePixelRatio;
-                                        var tmpDist = 600 * window.devicePixelRatio;
-                                        for (var len = tmpStart; len < tmpLength; len += tmpDist) {
-                                            var tempDeclutterGroup = void 0;
-                                            if (declutterGroup) {
-                                                tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
-                                            }
-                                            var startM = len;
-                                            var parts = ol.geom.flat.textpath.lineString(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
-                                            if (parts) {
-                                                var c = void 0, cc = void 0, chars = void 0, label = void 0, part = void 0;
-                                                if (strokeKey) {
-                                                    for (c = 0, cc = parts.length; c < cc; ++c) {
-                                                        part = parts[c]; // x, y, anchorX, rotation, chunk
-                                                        chars = /** @type {string} */ (part[4]);
-                                                        var labelInfo = undefined;
-                                                        if (tempDeclutterGroup) {
-                                                            labelInfo = this.getImageInfo(chars, textKey, "", strokeKey);
-                                                            labelInstructions[labelIndex] = {
-                                                                chars: chars,
-                                                                textKey: textKey,
-                                                                fillKey: fillKey,
-                                                                strokeKey: ""
-                                                            };
-                                                            labelIndex += 1;
-                                                        }
-                                                        else {
-                                                            labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
-                                                        }
-                                                        anchorX = /** @type {number} */ (part[2]) + strokeWidth;
-                                                        anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                                                        this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
-                                                    }
-                                                }
-                                                if (fillKey) {
-                                                    for (c = 0, cc = parts.length; c < cc; ++c) {
-                                                        part = parts[c]; // x, y, anchorX, rotation, chunk
-                                                        chars = /** @type {string} */ (part[4]);
-                                                        var labelInfo = undefined;
-                                                        if (tempDeclutterGroup) {
-                                                            labelInfo = this.getImageInfo(chars, textKey, fillKey, "");
-                                                            labelInstructions[labelIndex] = {
-                                                                chars: chars,
-                                                                textKey: textKey,
-                                                                fillKey: fillKey,
-                                                                strokeKey: ""
-                                                            };
-                                                            labelIndex += 1;
-                                                        }
-                                                        else {
-                                                            labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, "");
-                                                        }
-                                                        anchorX = /** @type {number} */ (part[2]);
-                                                        anchorY = baseline * labelInfo["height"] - offsetY;
-                                                        this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
-                                                    }
-                                                }
-                                                declutterGroups.push(tempDeclutterGroup);
-                                            }
-                                        }
+
+                    if(ends[0] > 6) {
+                        outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
+                            stride, -this.origin[0], -this.origin[1], undefined, extent, true);         
+                        // FIXME it is also a anticlockwise, we don't judge for efficiency
+                        outers[index].push(outerRing);
+                    }else{
+                        outers[index].push([]);
+                    }
+                    
+                    var holes = [];
+                    var i, ii, holeFlatCoords;
+                    for (i = 1, ii = ends.length; i < ii; ++i) {
+                        if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
+                            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                                ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                            if(holeFlatCoords.length > 6){
+                                isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
+                                if(isClockwise){
+                                    if(!outers[++index]){
+                                        outers[index] = [];
                                     }
-                                    else {
-                                        var tempDeclutterGroup = void 0;
-                                        if (declutterGroup) {
-                                            tempDeclutterGroup = featureCallback ? null : declutterGroup.slice(0);
-                                        }
-                                        var textAlign = (this).textStates[textKey].textAlign;
-                                        var startM = (pathLength - textLength) * ol.render.replay.TEXT_ALIGN[textAlign];
-                                        var parts = ol.geom.flat.textpath.lineString(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
-                                        if (parts) {
-                                            var c = void 0, cc = void 0, chars = void 0, label = void 0, part = void 0;
-                                            if (strokeKey) {
-                                                for (c = 0, cc = parts.length; c < cc; ++c) {
-                                                    part = parts[c]; // x, y, anchorX, rotation, chunk
-                                                    chars = /** @type {string} */ (part[4]);
-                                                    var labelInfo = undefined;
-                                                    if (tempDeclutterGroup) {
-                                                        labelInfo = this.getImageInfo(chars, textKey, "", strokeKey);
-                                                        labelInstructions[labelIndex] = {
-                                                            chars: chars,
-                                                            textKey: textKey,
-                                                            fillKey: fillKey,
-                                                            strokeKey: ""
-                                                        };
-                                                        labelIndex += 1;
-                                                    }
-                                                    else {
-                                                        labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
-                                                    }
-                                                    // label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, "", strokeKey);
-                                                    anchorX = /** @type {number} */ (part[2]) + strokeWidth;
-                                                    anchorY = baseline * labelInfo["height"] + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
-                                                }
-                                            }
-                                            if (fillKey) {
-                                                for (c = 0, cc = parts.length; c < cc; ++c) {
-                                                    part = parts[c]; // x, y, anchorX, rotation, chunk
-                                                    chars = /** @type {string} */ (part[4]);
-                                                    var labelInfo = undefined;
-                                                    if (tempDeclutterGroup) {
-                                                        labelInfo = this.getImageInfo(chars, textKey, fillKey, "");
-                                                        labelInstructions[labelIndex] = {
-                                                            chars: chars,
-                                                            textKey: textKey,
-                                                            fillKey: fillKey,
-                                                            strokeKey: ""
-                                                        };
-                                                        labelIndex += 1;
-                                                    }
-                                                    else {
-                                                        labelInfo = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, "");
-                                                    }
-                                                    anchorX = /** @type {number} */ (part[2]);
-                                                    anchorY = baseline * labelInfo["height"] - offsetY;
-                                                    this.replayImage_(context, /** @type {number} */(part[0]), /** @type {number} */(part[1]), labelInfo, anchorX, anchorY, tempDeclutterGroup, labelInfo["height"], 1, 0, 0, /** @type {number} */(part[3]), textScale, false, labelInfo["width"], ol.render.canvas.defaultPadding, null, null);
-                                                }
-                                            }
-                                            declutterGroups.push(tempDeclutterGroup);
-                                        }
-                                    }
-                                }
-                                for (var d_1 = 0; d_1 < declutterGroups.length; d_1++) {
-                                    var targetDeclutterGroup = declutterGroups[d_1];
-                                    if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
-                                        var targetExtent = [targetDeclutterGroup[0], targetDeclutterGroup[1], targetDeclutterGroup[2], targetDeclutterGroup[3]];
-                                        if (targetExtent[0] > pixelExten[0] && targetExtent[1] > pixelExten[3] && targetExtent[2] < pixelExten[2] && targetExtent[3] < pixelExten[1]) {
-                                            this.renderDeclutterChar_(targetDeclutterGroup, feature);
-                                        }
-                                    }
+                                    outers[index].push(holeFlatCoords);
+                                }else{
+                                    outers[index].push(holeFlatCoords);
                                 }
                             }
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.END_GEOMETRY:
-                            if (featureCallback !== undefined) {
-                                feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-                                var result = featureCallback(feature);
-                                if (result) {
-                                    return result;
-                                }
-                            }
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.FILL:
-                            if (batchSize) {
-                                pendingFill++;
-                            }
-                            else {
-                                this.fill_(context);
-                            }
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
-                            d = /** @type {number} */ (instruction[1]);
-                            dd = /** @type {number} */ (instruction[2]);
-                            x = pixelCoordinates[d];
-                            y = pixelCoordinates[d + 1];
-                            roundX = (x + 0.5) | 0;
-                            roundY = (y + 0.5) | 0;
-                            if (roundX !== prevX || roundY !== prevY) {
-                                context.moveTo(x, y);
-                                prevX = roundX;
-                                prevY = roundY;
-                            }
-                            for (d += 2; d < dd; d += 2) {
-                                x = pixelCoordinates[d];
-                                y = pixelCoordinates[d + 1];
-                                roundX = (x + 0.5) | 0;
-                                roundY = (y + 0.5) | 0;
-                                if (d === dd - 2 || roundX !== prevX || roundY !== prevY) {
-                                    context.lineTo(x, y);
-                                    prevX = roundX;
-                                    prevY = roundY;
-                                }
-                            }
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.SET_FILL_STYLE:
-                            lastFillInstruction = instruction;
-                            this.fillOrigin_ = instruction[2];
-                            if (pendingFill) {
-                                this.fill_(context);
-                                pendingFill = 0;
-                                if (pendingStroke) {
-                                    context.stroke();
-                                    pendingStroke = 0;
-                                }
-                            }
-                            context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-                            lastStrokeInstruction = instruction;
-                            if (pendingStroke) {
-                                context.stroke();
-                                pendingStroke = 0;
-                            }
-                            this.setStrokeStyle_(context, /** @type {Array.<*>} */(instruction));
-                            ++i;
-                            break;
-                        case ol.render.canvas.Instruction.STROKE:
-                            if (batchSize) {
-                                pendingStroke++;
-                            }
-                            else {
-                                context.stroke();
-                            }
-                            ++i;
-                            break;
-                        default:
-                            ++i; // consume the instruction anyway, to avoid an infinite loop
-                            break;
-                    }
-                }
-                if (pendingFill) {
-                    this.fill_(context);
-                }
-                if (pendingStroke) {
-                    context.stroke();
-                }
-                return undefined;
-            };
-            TextReplayCustom.prototype.replayImage_ = function (context, x, y, labelInfo, anchorX, anchorY, declutterGroup, height, opacity, originX, originY, rotation, scale, snapToPixel, width, padding, fillInstruction, strokeInstruction) {
-                var fillStroke = fillInstruction || strokeInstruction;
-                var localTransform = this.tmpLocalTransform_;
-                anchorX *= scale;
-                anchorY *= scale;
-                x -= anchorX;
-                y -= anchorY;
-                if (snapToPixel) {
-                    x = Math.ceil(x);
-                    y = Math.ceil(y);
-                }
-                var w = (width + originX > labelInfo.width) ? labelInfo.width - originX : width;
-                var h = (height + originY > labelInfo.height) ? labelInfo.height - originY : height;
-                var box = this.tmpExtent_;
-                var boxW = padding[3] + w * scale + padding[1];
-                var boxH = padding[0] + h * scale + padding[2];
-                var boxX = x - padding[3];
-                var boxY = y - padding[0];
-                /** @type {ol.Coordinate} */
-                var p1;
-                /** @type {ol.Coordinate} */
-                var p2;
-                /** @type {ol.Coordinate} */
-                var p3;
-                /** @type {ol.Coordinate} */
-                var p4;
-                if (fillStroke || rotation !== 0) {
-                    p1 = [boxX, boxY];
-                    p2 = [boxX + boxW, boxY];
-                    p3 = [boxX + boxW, boxY + boxH];
-                    p4 = [boxX, boxY + boxH];
-                }
-                var transform = null;
-                if (rotation !== 0) {
-                    var centerX = x + anchorX;
-                    var centerY = y + anchorY;
-                    transform = ol.transform.compose(localTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
-                    ol.extent.createOrUpdateEmpty(box);
-                    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p1));
-                    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p2));
-                    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p3));
-                    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p4));
-                }
-                else {
-                    ol.extent.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
-                }
-                var canvas = context.canvas;
-                var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
-                if (declutterGroup) {
-                    if (!intersects && declutterGroup[4] == 1) {
-                        return;
-                    }
-                    ol.extent.extend(declutterGroup, box);
-                    var declutterArgs = intersects ?
-                        [context, transform ? transform.slice(0) : null, opacity, labelInfo, originX, originY, w, h, x, y, scale] :
-                        null;
-                    if (declutterArgs && fillStroke) {
-                        declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
-                    }
-                    declutterGroup.push(declutterArgs);
-                }
-                else if (intersects) {
-                    if (fillStroke) {
-                        this.replayTextBackground_(context, p1, p2, p3, p4,
-                        /** @type {Array.<*>} */(fillInstruction),
-                        /** @type {Array.<*>} */(strokeInstruction));
-                    }
-                    ol.render.canvas.drawImage(context, transform, opacity, labelInfo, originX, originY, w, h, x, y, scale);
-                }
-            };
-            ;
-            // Get the image info, such as width, height
-            TextReplayCustom.prototype.getImageInfo = function (text, textKey, fillKey, strokeKey) {
-                var labelInfo = {};
-                labelInfo["text"] = text;
-                labelInfo["textKey"] = textKey;
-                labelInfo["fillKey"] = fillKey;
-                labelInfo["strokeKey"] = strokeKey;
-                var label;
-                var key = strokeKey + textKey + text + fillKey + this.pixelRatio;
-                if (!this.labelInfoCache.containsKey(key)) {
-                    var strokeState = strokeKey ? this.strokeStates[strokeKey] || this.textStrokeState_ : null;
-                    var fillState = fillKey ? this.fillStates[fillKey] || this.textFillState_ : null;
-                    var textState = this.textStates[textKey] || this.textState_;
-                    var pixelRatio = this.pixelRatio;
-                    var scale = textState.scale * pixelRatio;
-                    var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
-                    var strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
-                    var lines = text.split('\n');
-                    var numLines = lines.length;
-                    var widths = [];
-                    var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
-                    var lineHeight = textState.lineHeight;
-                    var height = lineHeight * numLines;
-                    var renderWidth = (width + strokeWidth);
-                    labelInfo["width"] = Math.ceil(renderWidth * scale);
-                    labelInfo["widths"] = widths;
-                    labelInfo["height"] = Math.ceil((height + strokeWidth) * scale);
-                    this.labelInfoCache.set(key, labelInfo);
-                    return labelInfo;
-                }
-                return this.labelInfoCache.get(key);
-            };
-            TextReplayCustom.prototype.getImage = function (text, textKey, fillKey, strokeKey) {
-                var label;
-                var key = strokeKey + textKey + text + fillKey + this.pixelRatio;
-                var labelCache = ol.render.canvas.labelCache;
-                if (!labelCache.containsKey(key)) {
-                    var labelInfo = this.labelInfoCache["key"];
-                    var strokeState = strokeKey ? this.strokeStates[strokeKey] || this.textStrokeState_ : null;
-                    var fillState = fillKey ? this.fillStates[fillKey] || this.textFillState_ : null;
-                    var textState = this.textStates[textKey] || this.textState_;
-                    var pixelRatio = this.pixelRatio;
-                    var scale = textState.scale * pixelRatio;
-                    var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
-                    var strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
-                    var lines = text.split('\n');
-                    var numLines = lines.length;
-                    var widths = [];
-                    var width;
-                    var lineHeight;
-                    if (labelInfo) {
-                        width = labelInfo["width"];
-                    }
-                    else {
-                        width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
-                    }
-                    var lineHeight = textState["lineHeight"];
-                    var height = lineHeight * numLines;
-                    var renderWidth = (width + strokeWidth);
-                    var context = ol.dom.createCanvasContext2D(Math.ceil(renderWidth * scale), Math.ceil((height + strokeWidth) * scale));
-                    label = context.canvas;
-                    labelCache.set(key, label);
-                    if (scale != 1) {
-                        context.scale(scale, scale);
-                    }
-                    context.font = textState.font;
-                    if (strokeKey) {
-                        context.strokeStyle = strokeState.strokeStyle;
-                        context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
-                        context.lineCap = strokeState.lineCap;
-                        context.lineJoin = strokeState.lineJoin;
-                        context.miterLimit = strokeState.miterLimit;
-                        if (ol.has.CANVAS_LINE_DASH && strokeState.lineDash.length) {
-                            context.setLineDash(strokeState.lineDash);
-                            context.lineDashOffset = strokeState.lineDashOffset;
                         }
                     }
-                    if (fillKey) {
-                        context.fillStyle = fillState.fillStyle;
-                    }
-                    context.textBaseline = 'middle';
-                    context.textAlign = 'center';
-                    var leftRight = (0.5 - align);
-                    var x = align * label.width / scale + leftRight * strokeWidth;
-                    var i;
-                    if (strokeKey) {
-                        for (i = 0; i < numLines; ++i) {
-                            context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
+                    
+                    {
+                        this.startIndices.push(this.indices.length);
+                        this.startIndicesFeature.push(feature);
+
+                        if (this.state_.changed) {
+                            this.zCoordinates.push(feature.zCoordinate);
+                            this.styleIndices_.push(this.indices.length);
+                            this.state_.changed = false;
+                        }
+                        if(this.lineStringReplay){
+                            // this.lineStringReplay.setPolygonStyle(feature);
+                            // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                        }
+
+                        for(var i = 0; i < outers.length; i++){
+                            var outer = outers[i];
+                            this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                         }
                     }
-                    if (fillKey) {
-                        for (i = 0; i < numLines; ++i) {
-                            context.fillText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
-                        }
+
+                    {
+                        // if(holes.length > 0 && feature.properties_.layerName == 'building'){
+                        //     this.styles_.push(this.styles_[0]);
+                        //     this.zCoordinates.push(feature.zCoordinate);
+                        //     this.styleIndices_.push(this.indices.length);
+                        //     this.state_.changed = false;
+                        // }              
                     }
-                }
-                return labelCache.get(key);
-            };
-            ;
-            TextReplayCustom.prototype.drawChars_ = function (begin, end, declutterGroup) {
-                var strokeState = this.textStrokeState_;
-                var textState = this.textState_;
-                var fillState = this.textFillState_;
-                var strokeKey = this.strokeKey_;
-                if (strokeState) {
-                    if (!(strokeKey in this.strokeStates)) {
-                        this.strokeStates[strokeKey] = /** @type {ol.CanvasStrokeState} */ ({
-                            strokeStyle: strokeState.strokeStyle,
-                            lineCap: strokeState.lineCap,
-                            lineDashOffset: strokeState.lineDashOffset,
-                            lineWidth: strokeState.lineWidth,
-                            lineJoin: strokeState.lineJoin,
-                            miterLimit: strokeState.miterLimit,
-                            lineDash: strokeState.lineDash
-                        });
-                    }
-                }
-                var textKey = this.textKey_;
-                if (!(this.textKey_ in this.textStates)) {
-                    this.textStates[this.textKey_] = /** @type {ol.CanvasTextState} */ ({
-                        font: textState.font,
-                        lineHeight: ol.render.canvas.measureTextHeight(textState.font),
-                        textAlign: textState.textAlign || ol.render.canvas.defaultTextAlign,
-                        scale: textState.scale
-                    });
-                }
-                var fillKey = this.fillKey_;
-                if (fillState) {
-                    if (!(fillKey in this.fillStates)) {
-                        this.fillStates[fillKey] = /** @type {ol.CanvasFillState} */ ({
-                            fillStyle: fillState.fillStyle
-                        });
-                    }
-                }
-                var pixelRatio = this.pixelRatio;
-                var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
-                var offsetY = this.textOffsetY_ * pixelRatio;
-                var text = this.text_;
-                var font = textState.font;
-                var textScale = textState.scale;
-                var strokeWidth = strokeState ? strokeState.lineWidth * textScale / 2 : 0;
-                var widths = this.widths_[font];
-                if (!widths) {
-                    this.widths_[font] = widths = {};
-                }
-                this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-                    begin, end, baseline, declutterGroup,
-                textState.overflow, fillKey, textState.maxAngle,
-                function (text) {
-                    var width = widths[text];
-                    if (!width) {
-                        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
-                    }
-                    return width * textScale * pixelRatio;
-                },
-                    offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
-                ]);
-                this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-                    begin, end, baseline, declutterGroup,
-                textState.overflow, fillKey, textState.maxAngle,
-                function (text) {
-                    var width = widths[text];
-                    if (!width) {
-                        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
-                    }
-                    return width * textScale;
-                },
-                    offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio
-                ]);
-            };
-            ;
-            TextReplayCustom.prototype.setTextStyleCustom = function (textStyle, declutterGroup) {
-                var textState, fillState, strokeState;
-                if (!textStyle) {
-                    this.text_ = "";
-                }
-                else {
-                    this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
-                    var textFillStyle = textStyle.getFill();
-                    if (!textFillStyle) {
-                        fillState = this.textFillState_ = null;
-                    }
-                    else {
-                        fillState = this.textFillState_;
-                        if (!fillState) {
-                            fillState = this.textFillState_ = /** @type {ol.CanvasFillState} */ ({});
-                        }
-                        fillState.fillStyle = ol.colorlike.asColorLike(textFillStyle.getColor() || ol.render.canvas.defaultFillStyle);
-                    }
-                    var textStrokeStyle = textStyle.getStroke();
-                    if (!textStrokeStyle) {
-                        strokeState = this.textStrokeState_ = null;
-                    }
-                    else {
-                        strokeState = this.textStrokeState_;
-                        if (!strokeState) {
-                            strokeState = this.textStrokeState_ = /** @type {ol.CanvasStrokeState} */ ({});
-                        }
-                        var lineDash = textStrokeStyle.getLineDash();
-                        var lineDashOffset = textStrokeStyle.getLineDashOffset();
-                        var lineWidth = textStrokeStyle.getWidth();
-                        var miterLimit = textStrokeStyle.getMiterLimit();
-                        strokeState.lineCap = textStrokeStyle.getLineCap() || ol.render.canvas.defaultLineCap;
-                        strokeState.lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
-                        strokeState.lineDashOffset =
-                            lineDashOffset === undefined ? ol.render.canvas.defaultLineDashOffset : lineDashOffset;
-                        strokeState.lineJoin = textStrokeStyle.getLineJoin() || ol.render.canvas.defaultLineJoin;
-                        strokeState.lineWidth =
-                            lineWidth === undefined ? ol.render.canvas.defaultLineWidth : lineWidth;
-                        strokeState.miterLimit =
-                            miterLimit === undefined ? ol.render.canvas.defaultMiterLimit : miterLimit;
-                        strokeState.strokeStyle = ol.colorlike.asColorLike(textStrokeStyle.getColor() || ol.render.canvas.defaultStrokeStyle);
-                    }
-                    textState = this.textState_;
-                    var font = textStyle.getFont() || ol.render.canvas.defaultFont;
-                    // TODO
-                    // ol.render.canvas.checkFont(font);
-                    var textScale = textStyle.getScale();
-                    textState.overflow = textStyle.getOverflow();
-                    textState.font = font;
-                    textState.maxAngle = textStyle.getMaxAngle();
-                    textState.placement = textStyle.getPlacement();
-                    textState.textAlign = textStyle.getTextAlign();
-                    textState.textBaseline = textStyle.getTextBaseline() || ol.render.canvas.defaultTextBaseline;
-                    textState.backgroundFill = textStyle.getBackgroundFill();
-                    textState.backgroundStroke = textStyle.getBackgroundStroke();
-                    textState.padding = textStyle.getPadding() || ol.render.canvas.defaultPadding;
-                    textState.scale = textScale === undefined ? 1 : textScale;
-                    var textOffsetX = textStyle.getOffsetX();
-                    var textOffsetY = textStyle.getOffsetY();
-                    var textRotateWithView = textStyle.getRotateWithView();
-                    var textRotation = textStyle.getRotation();
-                    this.text_ = textStyle.getText() || "";
-                    this.textOffsetX_ = textOffsetX === undefined ? 0 : textOffsetX;
-                    this.textOffsetY_ = textOffsetY === undefined ? 0 : textOffsetY;
-                    this.textRotateWithView_ = textRotateWithView === undefined ? false : textRotateWithView;
-                    this.textRotation_ = textRotation === undefined ? 0 : textRotation;
-                    this.strokeKey_ = strokeState ?
-                        (typeof strokeState.strokeStyle === "string" ? strokeState.strokeStyle : ol.getUid(strokeState.strokeStyle)) +
-                        strokeState.lineCap + strokeState.lineDashOffset + "|" + strokeState.lineWidth +
-                        strokeState.lineJoin + strokeState.miterLimit + "[" + strokeState.lineDash.join() + "]" :
-                        "";
-                    this.textKey_ = textState.font + textState.scale + (textState.textAlign || "?");
-                    this.fillKey_ = fillState ?
-                        (typeof fillState.fillStyle === "string" ? fillState.fillStyle : ("|" + ol.getUid(fillState.fillStyle))) :
-                        "";
-                    this.label = textStyle.label;
-                    this.labelPosition = textStyle.labelPosition;
                 }
             };
-            TextReplayCustom.prototype.drawTextCustom = function (geometry, feature) {
-                var fillState = this.textFillState_;
-                var strokeState = this.textStrokeState_;
-                var textState = this.textState_;
-                var geometryType = geometry.getType();
-                if (this.text_ === "" || !textState || (!fillState && !strokeState)) {
-                    return;
+
+            GeoPolygonReplay.prototype.drawCoordinates_ = function (flatCoordinates, holeFlatCoordinates, stride) {
+                var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
+                var holeIndices = [];
+                for (var i = 0; i < holeFlatCoordinates.length; i++) {
+                    var holeCoords = holeFlatCoordinates[i];
+                    holeIndices.push(coords.length / stride);
+                    for (var j = 0; j < holeCoords.length - stride; j++) {
+                        coords.push(holeCoords[j]);
+                    }
                 }
-                if (this.labelPosition === undefined) {
-                    return;
+                // vertices only hold x,y values
+                var baseIndex = this.vertices.length / 2;
+                if (stride === 2) {
+                    Array.prototype.push.apply(this.vertices, coords);
+                } else {
+                    for (var i = 0; i < coords; i += stride) {
+                        this.vertices.push(coords[i], coords[i + 1]);
+                    }
                 }
-                if ((geometryType === ol.geom.GeometryType.LINE_STRING || geometryType === ol.geom.GeometryType.MULTI_LINE_STRING) && !this.label) {
-                    var begin_1 = this.coordinates.length;
-                    var geometryType_1 = geometry.getType();
-                    var flatCoordinates_1 = this.labelPosition;
-                    var end_1 = 2;
-                    var stride_1 = 2;
-                    var i = void 0, ii = void 0;
-                    // if (!ol.extent.intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
-                    //     return;
-                    // }
-                    var ends = void 0;
-                    // flatCoordinates = geometry.getFlatCoordinates();
-                    stride_1 = geometry.getStride();
-                    if (geometryType_1 === ol.geom.GeometryType.LINE_STRING) {
-                        ends = [flatCoordinates_1.length];
-                    }
-                    else if (geometryType_1 === ol.geom.GeometryType.MULTI_LINE_STRING) {
-                        ends = geometry.getEnds();
-                    }
-                    else if (geometryType_1 === ol.geom.GeometryType.POLYGON) {
-                        ends = geometry.getEnds().slice(0, 1);
-                    }
-                    else if (geometryType_1 === ol.geom.GeometryType.MULTI_POLYGON) {
-                        var endss = geometry.getEndss();
-                        ends = [];
-                        for (i = 0, ii = endss.length; i < ii; ++i) {
-                            ends.push(endss[i][0]);
+                var triangles = self.earcut(coords, holeIndices, stride);
+                triangles = triangles.map(function (i) { return i + baseIndex; });
+                Array.prototype.push.apply(this.indices, triangles);
+            }
+            return GeoPolygonReplay;
+        }(ol.render.webgl.PolygonReplay));
+
+
+        var LineStringReplayCustom = /** @class */ (function (_super) {
+            __extends(LineStringReplayCustom, _super);
+            function LineStringReplayCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {                
+                var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) || this;
+                return _this;
+            }
+            
+            LineStringReplayCustom.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
+                var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+                function bearing(seg){
+                    var firstPoint = [seg.x1,seg.y1];
+                    var secondPoint = [seg.x2,seg.y2];
+                    var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
+                    angle = angle?angle:angle+0.0001;
+                    return angle;
+                }
+                function getSegmentFromPixel(coordPixel){
+                    var segments = [];
+                    var seg = null;
+                    var ps = null;
+                    var pt = null;
+                    for( var i = 0; i < coordPixel.length-1; i ++ ){
+                        ps = coordPixel[i];
+                        pt = coordPixel[ i+1];
+                        seg = {
+                            x1:ps[0],
+                            y1:ps[1],
+                            x2:pt[0],
+                            y2:pt[1]
                         }
+                        var length = Math.sqrt(Math.pow((seg.x2 - seg.x1), 2) + Math.pow((seg.y2 - seg.y1), 2));
+                        var angle = bearing( seg );
+                        seg.pixelLength = length;
+                        seg.pixelAngle = angle;
+                        // seg.startToEndLength = length;
+                        segments.push( seg );
                     }
-                    this.beginGeometry(geometry, feature);
-                    var textAlign = textState.textAlign;
-                    var flatOffset = 0;
-                    var flatEnd = void 0;
-                    for (var o = 0, oo = ends.length; o < oo; ++o) {
-                        if (textAlign === undefined) {
-                            var range = ol.geom.flat.straightchunk.lineString(textState.maxAngle, flatCoordinates_1, flatOffset, ends[o], stride_1);
-                            flatOffset = range[0];
-                            flatEnd = range[1];
+                    return segments;
+                }
+                function getPixelFromCoord ( coordLLs ){
+                    var coordPxs = [];
+                    var pts = [];
+                    var pxs = null;
+                    for( var i = 0; i < coordLLs.length; i++ ) {
+                        pts = coordLLs[i];
+                        pxs =ol.transform.apply(options.frameState.coordinateToPixelTransform,
+                        pts.slice(0, 2));
+                        coordPxs.push( pxs );
+                    }
+                    return coordPxs;
+                }
+                function getNeedPixelFromLine( seg,chaLength,lastSeg ) {
+                    var segLen = seg.pixelLength;
+                    if (lastSeg) {
+                        var numTemp = Math.floor(lastSeg.pixelLength / chaLength);
+                        if(lastSeg.residueLength){
+                            var startLength=chaLength-lastSeg.residueLength;
+                            
+                        }else{
+                            var startLength =chaLength-(lastSeg.pixelLength - numTemp * chaLength);
+                            
+                        }
+                        var num =(segLen - startLength) / chaLength ;
+                        var x = seg.x1 + (seg.x2 - seg.x1) * startLength / segLen;
+                        var y = seg.y1 + (seg.y2 - seg.y1) * startLength / segLen;
+                        seg.pixelLength = segLen - startLength
+                        
+                    } else {
+                        startLength = 0;
+                        var x = seg.x1;
+                        var y = seg.y1;
+                        var num =segLen / chaLength;
+                    }
+                
+                    var xOper = true;
+                    var yOper = false;
+                    var xCha = seg.x2 - x;
+                    var yCha = seg.y2 - y;
+                    var xAver = xCha / num;
+                    var yAver = yCha / num;
+                    var pixelArr = [];
+                
+                    var xOrig = x;
+                    var yOrin = y;
+                    var xEnd = seg.x2;
+                    var yEnd = seg.y2;
+                
+                    for (var i = 0; i < num; i++) {
+                        x = xAver * i + xOrig;
+                        y = yAver * i + yOrin;
+                        pixelArr.push(x);
+                        pixelArr.push(y);
+                    }
+                    return pixelArr;
+                
+                }
+                function myCreateSegDirection(coordPxs,chaLength){
+                    var coordArr=[];
+                    for(var i=0;i<coordPxs.length;i+=2){
+                        var coord=[coordPxs[i],coordPxs[i+1]];
+                        coordArr.push(coord);
+                    }
+                    coordArr = getPixelFromCoord(coordArr);
+                    var segments =getSegmentFromPixel( coordArr );
+                    var tempLength = {
+                        pixelLength:0,
+                        x1:0,
+                        y1:0,
+                        x2:0,
+                        y2:0
+                    };
+                    var nowSeg = null;
+                    var nowLengthFlag = true;
+                    var findPixelArr = [];
+                    for( var i = 0; i < segments.length; i++ ) {
+                        nowSeg = segments[i];
+                        if( nowSeg.pixelLength < chaLength ) {
+                            if(nowLengthFlag){
+                                
+                            }
+                            nowLengthFlag=false;
+                            tempLength.pixelLength += nowSeg.pixelLength;
                         }
                         else {
-                            flatEnd = ends[o];
+                        //   nowLengthFlag = true;
+                            var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
+                            findPixelArr = findPixelArr.concat( splitPixelArr );
                         }
-                        for (i = flatOffset; i < flatEnd; i += stride_1) {
-                            this.coordinates.push(flatCoordinates_1[i], flatCoordinates_1[i + 1]);
+                        if(tempLength.pixelLength > chaLength) {
+                            tempLength.x2=segments[i].x2;
+                            tempLength.y2=segments[i].y2;
+                            tempLength.x1=segments[i].x1;
+                            tempLength.y1=segments[i].y1;
+                            var residueLength=tempLength.pixelLength-chaLength
+                            var lastSeg={
+                                residueLength:residueLength
+                            }
+                            var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
+                            findPixelArr = findPixelArr.concat( splitPixelArr );
+                            tempLength.pixelLength=0;
                         }
-                        end_1 = this.coordinates.length;
-                        flatOffset = ends[o];
-                        this.drawChars_(begin_1, end_1, this.declutterGroup_);
-                        begin_1 = end_1;
                     }
-                    this.endGeometry(geometry, feature);
+                    return findPixelArr;
+                }
+                function getLineStruct(ptStart, ptEnd, radius){
+                    var angle = getRotation(ptEnd, ptStart) - Math.PI/2;
+                    var start = getPointByAngle(ptStart, radius, angle);
+                    var end  = getPointByAngle(ptEnd, radius, angle);
+                    var angle_ = getRotation(ptEnd, ptStart) + Math.PI/2;
+                    var start_ = getPointByAngle(ptStart, radius, angle_);
+                    var end_  = getPointByAngle(ptEnd, radius, angle_);
+                    var arr=start.concat(start_,end,end);
+                    
+                    return arr
+                }
+                function getRotation(pt, ptCenter){
+                    var dx = pt[0] - ptCenter[0];
+                    var dy = pt[1] - ptCenter[1];			
+                    var dis = Math.sqrt(dx * dx + dy * dy);	
+                    if(dis == 0){ 
+                        return 0;
+                    }
+                    var q;
+                    if(dy > 0){    
+                        q = Math.acos(dx / dis);
+                    }else{        
+                        q = Math.PI * 2 - Math.acos(dx / dis);
+                    } 
+                    return q;
+                }
+                function getPointByAngle(ptCenter, radius, angle){
+                    var x = ptCenter[0] + radius * Math.cos(angle);
+                    var y = ptCenter[1] + radius * Math.sin(angle);
+                    return [x, y];
+                }
+                if(lineStringGeometry.properties_.class === 'rail' && lineStringGeometry.styleId.includes('c')){
+                        
+                    var strokeStyleWidth=strokeStyle.getWidth();
+                    var widthHalf =strokeStyleWidth / 2;
+                    var strokeStyleLineDash = strokeStyle.getLineDash();
+                    flatCoordinates=myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1]);
+                    var arr=[];
+                    for(var i=0;i<flatCoordinates.length-2;i+=2){
+                        var start=[flatCoordinates[i],flatCoordinates[i+1]];
+                        var end =[flatCoordinates[i+2],flatCoordinates[i+3] ]
+                        arr=arr.concat(getLineStruct(start,end,widthHalf))
+                    }
+                    var result=[];
+                    for(var j=0;j<arr.length;j+=2){
+                        var a=arr.slice(j,j+2);
+                        var arrTemp=ol.transform.apply(options.frameState.pixelToCoordinateTransform,a );
+                        result.push(arrTemp[0],arrTemp[1]);
+                    }
+                    var tempCoordinates = result;
+                    for(var m=0;m<tempCoordinates.length;m+=4){
+                        var railWayChildCoord=tempCoordinates.slice(m,m+4);
+                        
+                        flatCoordinates=railWayChildCoord;
+                        drawLineString_.call(this, flatCoordinates);
+                    }
                     return;
                 }
-                // if (this.label === undefined) { return; }
-                var begin = this.coordinates.length;
-                var flatCoordinates = this.labelPosition;
-                var end = 2;
-                var stride = 2;
-                var label = this.label;
-                if (geometry.getType() === ol.geom.GeometryType.POLYGON) {
-                    stride = 3;
-                }
-                end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
-                this.beginGeometry(geometry, feature);
-                if (textState.backgroundFill || textState.backgroundStroke) {
-                    this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
-                    this.updateFillStyle(this.state, this.applyFill, geometry);
-                    this.updateStrokeStyle(this.state, this.applyStroke);
-                }
-                this.drawTextImage_(label, begin, end);
-                this.endGeometry(geometry, feature);
-                // }
-            };
-            return TextReplayCustom;
-        }(ol.render.canvas.TextReplay));
+     
+                function drawLineString_(flatCoordinates){
+                    var stride = lineStringGeometry.getStride();
+                    if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+                        var clippedFlatCoordinates =ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+                            stride, -this.origin[0], -this.origin[1]);
+                            
+                        if (this.state_.changed) {
+                            var z_order = lineStringGeometry.properties_.layer;
+                            var styleId = lineStringGeometry.styleId;
+                                                
+                            if(z_order == undefined){
+                                z_order = 0;
+                            }
 
+                            z_order += 100;
 
+                            if(styleId.includes('#c')){
+                                z_order = 1 / (z_order + 0.5);
+                            }else{
+                                z_order = 1 / z_order;   
+                            }
+
+                            this.styleIndices_.push(this.indices.length);
+                            this.zCoordinates.push(z_order);
+                            this.state_.changed = false;
+                        }
+                            this.startIndices.push(this.indices.length);
+                            this.startIndicesFeature.push(feature);
+                            this.drawCoordinates_(
+                                clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
+                        }
+                    }
+                    drawLineString_.call(this, flatCoordinates)
+                }
+                LineStringReplayCustom.prototype.drawMultiLineString =function(multiLineStringGeometry, feature){
+                    var indexCount = this.indices.length;
+                    var ends = multiLineStringGeometry.getEnds();
+                    ends.unshift(0);
+                    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+                    var stride = multiLineStringGeometry.getStride();
+                    var i, ii;
+                    // var extent = feature.getExtent();
+                    if (ends.length > 1) {
+                        for (i = 1, ii = ends.length; i < ii; ++i) {
+                            if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
+                                var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
+                                    stride, -this.origin[0], -this.origin[1]);
+                                this.drawCoordinates_(
+                                    lineString, 0, lineString.length, stride);
+                            }
+                        }
+                    }
+                    
+                    if (this.indices.length > indexCount) {
+                        this.startIndices.push(indexCount);
+                        this.startIndicesFeature.push(feature);
+                        if (this.state_.changed) {
+                            var z_order = multiLineStringGeometry.properties_.layer;
+                            var styleId = multiLineStringGeometry.styleId;
+
+                            // for railway
+                            if(z_order == undefined){
+                                z_order = 0;
+                            }
+                            
+                            z_order += 100;
+
+                            if(styleId.includes('#c')){
+                                z_order = 1 / (z_order + 0.5);
+                            }else{
+                                z_order = 1 / (z_order);   
+                            }
+
+                            this.zCoordinates.push(z_order);
+                            this.styleIndices_.push(indexCount);
+                            this.state_.changed = false;
+                        }
+                    }else if(this.state_.changed){
+                        this.state_.changed = false;
+                        this.styles_.pop();
+                    }
+                }
+                LineStringReplayCustom.prototype.setFillStrokeStyle = function (fillStyle, strokeStyle,lineStringGeometry) {
+                    var strokeStyleLineCap = strokeStyle.getLineCap();
+                    this.state_.lineCap = strokeStyleLineCap !== undefined ?
+                        strokeStyleLineCap : ol.render.webgl.defaultLineCap;
+                    var strokeStyleLineDash = strokeStyle.getLineDash();
+                    this.state_.lineDash = strokeStyleLineDash ?
+                        strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+                    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+                    this.state_.lineDashOffset = strokeStyleLineDashOffset ?
+                        strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+                    var strokeStyleLineJoin = strokeStyle.getLineJoin();
+                    this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
+                        strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
+                    var strokeStyleColor = strokeStyle.getColor();
+                    // if (!(strokeStyleColor instanceof CanvasGradient) &&
+                    //     !(strokeStyleColor instanceof CanvasPattern)) {
+                    if(strokeStyleColor){
+                        strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function (c, i) {
+                            return i != 3 ? c / 255 : c;
+                        }) || ol.render.webgl.defaultStrokeStyle;
+                    } else {
+                        strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
+                    }
+                    var strokeStyleWidth = strokeStyle.getWidth();
+                    if( lineStringGeometry && 
+                        lineStringGeometry.properties_.class === 'rail' && 
+                        lineStringGeometry.styleId.includes('c')){
+                        strokeStyleWidth = strokeStyleLineDash[0];
+                    }
+                    strokeStyleWidth = strokeStyleWidth !== undefined ?
+                        strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+                    var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+                    strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
+                        strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
+                    if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
+                        this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
+                        this.state_.changed = true;
+                        this.state_.strokeColor = strokeStyleColor;
+                        this.state_.lineWidth = strokeStyleWidth;
+                        this.state_.miterLimit = strokeStyleMiterLimit;
+                        this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
+                        
+                   }
+                };
+
+                return LineStringReplayCustom;
+        }(ol.render.webgl.LineStringReplay));
 
         var ReplayGroupCustom = /** @class */ (function (_super) {
             __extends(ReplayGroupCustom, _super);
             function ReplayGroupCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer, minimalist) {
                 var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) || this;
                 _this.BATCH_CONSTRUCTORS_CUSTOM = {
-                    "Circle": ol.render.canvas.PolygonReplay,
-                    "Default": ol.render.canvas.Replay,
-                    "Image": ol.render.canvas.ImageReplay,
-                    "LineString": ol.render.canvas.LineStringReplay,
-                    "Polygon": ol.render.canvas.PolygonReplay,
-                    "Text": TextReplayCustom
+                    "Circle": ol.render.webgl.PolygonReplay,
+                    "Default": ol.render.webgl.Replay,
+                    "Image": ol.render.webgl.ImageReplay,
+                    "LineString": LineStringReplayCustom,
+                    "Polygon": GeoPolygonReplay
                 };
                 _this.minimalist = minimalist;
                 _this.getReplay = _this.getReplayCustom;
                 _this.BATCH_CONSTRUCTORS_ = _this.BATCH_CONSTRUCTORS_CUSTOM;
+
                 return _this;
-                // this.replay = this.replayCustom;
             }
 
             ReplayGroupCustom.prototype.getReplayCustom = function (zIndex, replayType) {
@@ -101644,14 +100602,15 @@ function olInit() {
                 var replay = replays[replayType];
                 if (replay === undefined) {
                     var Constructor = this.BATCH_CONSTRUCTORS_[replayType];
-                    replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
-                    replay.minimalist = this.minimalist;
+                    replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree);
+        
                     replays[replayType] = replay;
                 }
+        
                 return replay;
             };
             return ReplayGroupCustom;
-        }(ol.render.canvas.ReplayGroup));
+        }(ol.render.webgl.ReplayGroup));
 
 
         var Grid = /** @class */ (function () {
@@ -102147,7 +101106,7 @@ function olInit() {
                 Percent90: GeoBrush.getPercent90Pattern,
             };
             return GeoBrush;
-        }());
+        }());       
 
         self.renderFeature = function (feature, squaredTolerance, styles, replayGroup,options) {
             if (!styles) {
@@ -102156,50 +101115,135 @@ function olInit() {
             var loading = false;
             if (Array.isArray(styles)) {
                 for (var i = 0, ii = styles.length; i < ii; ++i) {
-                    loading = ol.renderer.vector.renderFeature(
+                    loading = self.renderFeature_(
                         replayGroup, feature, styles[i], squaredTolerance,
                         this.handleStyleImageChange_, this,options) || loading;
                 }
             } else {
-                loading = ol.renderer.vector.renderFeature(
+                loading = self.renderFeature_(
                     replayGroup, feature, styles, squaredTolerance,
                     this.handleStyleImageChange_, this);
             }
             return loading;
         };
 
-        ol.render.canvas.Replay.prototype.beginGeometry = function (geometry, feature) {
-            this.beginGeometryInstruction1_ =
-                [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
-            if (!this.minimalist) {
-                this.instructions.push(this.beginGeometryInstruction1_);
+        self.renderFeature_ = function (
+            replayGroup, feature, style, squaredTolerance, listener, thisArg,options) {
+            var loading = false;
+            var imageStyle, imageState;
+            imageStyle = style.getImage();
+            if (imageStyle) {
+                imageState = imageStyle.getImageState();
+                if (imageState == ol.ImageState.LOADED ||
+                    imageState == ol.ImageState.ERROR) {
+                    imageStyle.unlistenImageChange(listener, thisArg);
+                } else {
+                    if (imageState == ol.ImageState.IDLE) {
+                        imageStyle.load();
+                    }
+                    imageState = imageStyle.getImageState();
+                    imageStyle.listenImageChange(listener, thisArg);
+                    loading = true;
+                }
             }
-            this.beginGeometryInstruction2_ =
-                [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
-            if (!this.minimalist) {
-                this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
+            self.renderFeatureByType(replayGroup, feature, style,
+                squaredTolerance,options);
+    
+            return loading;
+        };
+
+        self.renderFeatureByType = function (
+            replayGroup, feature, style, squaredTolerance,options) {
+            var geometry = style.getGeometryFunction()(feature);
+    
+            if (!geometry) {
+                return;
+            }        
+            var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
+            var renderer = style.getRenderer();
+            if (renderer) {
+                ol.renderer.vector.renderGeometry_(replayGroup, simplifiedGeometry, style, feature);
+            } else {
+                var type = simplifiedGeometry.getType();
+                var geometryRenderer;
+                switch(type){
+                    case 'Polygon': geometryRenderer = self.renderPolygonGeometry_; break;
+                    case 'LineString': geometryRenderer = self.renderLineStringGeometry_; break;
+                    case 'MultiLineString': geometryRenderer = self.renderMultiLineStringGeometry_; break;
+                }
+                    
+                geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
+            }
+        };
+    
+        self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
+            var fillStyle = style.getFill();
+            var strokeStyle = style.getStroke();
+            if (fillStyle || strokeStyle) {
+                var polygonReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.POLYGON); 
+                polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
+                feature.zCoordinate = style.zCoordinate;
+                polygonReplay.drawPolygon(geometry, feature);
+            }
+            var textStyle = style.getText();
+            if (textStyle) {
+                var textReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.TEXT);
+                textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+                textReplay.drawText(geometry, feature);
             }
         };
 
-        ol.render.canvas.Replay.prototype.endGeometry = function (geometry, feature) {
-            this.beginGeometryInstruction1_[2] = this.instructions.length;
-            this.beginGeometryInstruction1_ = null;
-            this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
-            this.beginGeometryInstruction2_ = null;
-            var endGeometryInstruction =
-                [ol.render.canvas.Instruction.END_GEOMETRY, feature];
-            if (!this.minimalist) {
-                this.instructions.push(endGeometryInstruction);
-                this.hitDetectionInstructions.push(endGeometryInstruction);
+        self.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature,options){
+            var strokeStyle = style.getStroke();
+            if (strokeStyle) {
+                var lineStringReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+                lineStringReplay.setFillStrokeStyle(null, strokeStyle,geometry);
+                
+                lineStringReplay.drawLineString(geometry, feature,strokeStyle,options);
+            }
+            var textStyle = style.getText();
+            if (textStyle) {
+                var textReplay = replayGroup.getReplay(
+                    3, ol.render.ReplayType.TEXT);
+                textReplay.startIndicesFeature.push(feature); 
+                var textStyleClone = textStyle.clone();
+                textStyleClone.label = textStyle.label;
+                textStyleClone.labelPosition = textStyle.labelPosition;
+                textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);            
+                textReplay.startIndicesStyle.push(textStyleClone); 
             }
         };
 
+        self.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+            var strokeStyle = style.getStroke();
+            if (strokeStyle) {
+                var lineStringReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+                lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+                lineStringReplay.drawMultiLineString(geometry, feature);
+            }
+            var textStyle = style.getText();
+            if (textStyle) {
+                var textReplay = replayGroup.getReplay(
+                    3, ol.render.ReplayType.TEXT);
+                textReplay.startIndicesFeature.push(feature);
+                var textStyleClone = textStyle.clone();
+                textStyleClone.label = textStyle.label;
+                textStyleClone.labelPosition = textStyle.labelPosition;
+                textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
+                textReplay.startIndicesStyle.push(textStyleClone);
+            }
+        };
 
         self.vectorTilesData = {};
         self.requestCache = {};
         self.styleJsonCache = {};
         self.tileCoordWithSourceCoord = {};
         self.postCancelMessageData = {};
+        self.lastCode = undefined;
 
         self.onmessage = function (msg) {
             var methodInfo = msg.data["methodInfo"];
@@ -102279,10 +101323,7 @@ function olInit() {
             }
             else {
                 var xhr = new XMLHttpRequest();
-                // debugger;
                 xhr.open("GET", requestInfo.url, true);
-                // console.log(requestInfo.requestCoord)
-                // console.log(requestInfo.url)
                 // TODO others type, such as geojson.
                 xhr.responseType = "arraybuffer";
 
@@ -102442,13 +101483,10 @@ function olInit() {
             self["devicePixelRatio"] = messageData[6];
             var formatId = messageData[7];
             var coordinateToPixelTransform = messageData[8];
-            var pixelToCoordinateTransform=messageData[13]
+            var pixelToCoordinateTransform=messageData[13];
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-            var replayGroup = new ol.render.webgl.ReplayGroup(
-                replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
-            // var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3], replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6], replayGroupInfo[7]);
-
+            var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
@@ -102505,15 +101543,13 @@ function olInit() {
             var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
 
-            // TEST
-            // console.log(tileCoord);
-            
-            // console.log(requestTileCoord);
-            // if(!(requestTileCoord.toString() == "2,0,-2")){
-            // if(tileCoord.toString() !== "16,15147,-26446"){
-            // if(tileCoord.toString() !== "17,30288,-52741"){
+            // TEST     
+            // console.log(tileCoord.toString());
+            // if(tileCoord.toString() !== "2,1,-2"){
+            if(tileCoord.toString() !== "14,13720,-6696"){
+            // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // return
-            // }
+            }
             // TEST END
 
             var tileProjection = new ol.proj.Projection({
@@ -102564,53 +101600,64 @@ function olInit() {
             var strategyTree = ol.ext.rbush(9);
 
             var tileGrid = new ol.source.XYZ().getTileGrid();
-            
-            if (instructs && instructs.length > 0) {                
+            var bbox = tileGrid.getTileCoordExtent(tileCoord);
+
+
+            var bottomLeft = ol.extent.getBottomLeft(bbox);
+            var bottomRight = ol.extent.getBottomRight(bbox);
+            var topRight = ol.extent.getTopRight(bbox);
+            var topLeft = ol.extent.getTopLeft(bbox);
+
+            var coords = bottomLeft.concat(bottomRight,topRight,topLeft);
+            var feature = new ol.render.Feature('Polygon',coords, [8], {layerName: "ocean"}, 0);
+            var geoStyle = geoStyles["ocean#0"];
+            renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, [0,'ocean#0',0]);
+
+            if (instructs && instructs.length > 0) {           
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
                     if (mainGeoStyleIds[geoStyleId] === undefined) {
                         var geoStyle = geoStyles[geoStyleId];
-                        var featureInfo = features[instructs[i][0]]
+                        var featureInfo = features[instructs[i][0]];               
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
-                        var cloneEnds = featureInfo.ends_.slice(0);                        
+                        var cloneEnds = featureInfo.ends_.slice(0);      
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
-                        feature["styleId"] = geoStyleId;                       
+                        feature.extent_ = bbox;                        
+                        feature["styleId"] = geoStyleId; 
+
+                        // clip line segment
+                        var type = feature.type_;
+                        if(type == 'LineString'){
+                            var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);                            
+                            var flatCoordinates = clipped.flatCoordinates;
+                            var ends = clipped.ends;
+                            
+                            if(flatCoordinates.length <= 2){                                
+                                continue;
+                            }
+
+                            if(ends.length > 1) {
+                                feature.type_ = 'MultiLineString';
+                            }
+                            feature.flatCoordinates_ = flatCoordinates;
+                            feature.ends_ = ends; 
+                        }else if(type == 'MultiLineString'){  
+                            var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
+                            var flatCoordinates = clipped.flatCoordinates;
+                            var ends = clipped.ends;
+                            
+                            if(flatCoordinates.length <= 2){                                
+                                continue;
+                            }
+                            feature.flatCoordinates_ = flatCoordinates;
+                            feature.ends_ = ends; 
+                        }
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, instructs[i]);
                     }
                 }
             }
-            // replayGroup.finish();
             strategyTree.clear();
-
-            //serilize
-            // for (var zIndex in replayGroup.replaysByZIndex_) {
-            //     var replays = replayGroup.replaysByZIndex_[zIndex];
-               
-            //     for (var replayType in replays) {                    
-            //         var replay = replays[replayType];
-            //         var indicesBuffers = new ArrayBuffer(replay.indices.length * 4);
-            //         var indicesView = new Int32Array(indicesBuffers);
-            //         for (var i = 0; i < indicesView.length; i++) {
-            //             indicesView[i] = replay.indices[i];
-            //         }
-            //         replayGroup.replaysByZIndex_[zIndex][replayType]['indices'] = indicesBuffers;
-
-            //         var verticesBuffers = new ArrayBuffer(replay.vertices.length * 4);
-            //         var verticesView = new Int32Array(verticesBuffers);
-            //         for (var i = 0; i < verticesView.length; i++) {
-            //             verticesView[i] = replay.vertices[i];
-            //         }
-            //         replayGroup.replaysByZIndex_[zIndex][replayType]['vertices'] = verticesBuffers;
-            //     }
-            // }
-
-            // var pixelScale = replayGroupInfo[3] / replayGroupInfo[2];
-            // var transform = ol.transform.create();
-            // ol.transform.scale(transform, pixelScale, -pixelScale);
-            // ol.transform.translate(transform, -replayGroupInfo[1][0], -replayGroupInfo[1][3]);
-            
-            // transform.length = 0;
 
             return { 
                 'replays': replayGroup.replaysByZIndex_,
@@ -102618,7 +101665,115 @@ function olInit() {
                 instructs: mainDrawingInstructs
             };
         }
-        
+
+        self.clipLine = function(points, bounds, squaredTolerance){
+            var clippedFlatCoordinates = [];
+            var clippedEnds = [];
+            var clipped = self.clipPoint(points, bounds, squaredTolerance);
+
+            for(var j = 0; j < clipped.length; j++){
+                var coords = clipped[j];
+                if(coords.length > 2){
+                    clippedFlatCoordinates=clippedFlatCoordinates.concat(coords);
+                    clippedEnds.push(clippedFlatCoordinates.length);
+                }
+            }
+
+            return {
+                flatCoordinates: clippedFlatCoordinates,
+                ends: clippedEnds
+            }
+        }
+
+        self.clipMultiLine = function(points, ends, bounds, squaredTolerance){
+            var clippedFlatCoordinates;
+            var clippedEnds;
+            var clipped; 
+            var flatCoordinates = [], ends_ = [];
+            ends.unshift(0);
+
+            for(var i = 1; i < ends.length; i++){
+                clipped = self.clipLine(points.slice(ends[i - 1], ends[i]), bounds, squaredTolerance);
+                clippedFlatCoordinates = clipped.flatCoordinates;
+                clippedEnds = clipped.ends;
+                if(clippedFlatCoordinates.length > 2){
+                    clippedEnds = clippedEnds.map(function(item) {return item + flatCoordinates.length} );
+                    ends_ = ends_.concat(clippedEnds);
+                    flatCoordinates = flatCoordinates.concat(clippedFlatCoordinates);
+                }
+            }            
+
+            return {
+                "flatCoordinates":flatCoordinates,
+                "ends": ends_
+            }
+        }
+
+        self.clipPoint = function (points, bounds, squaredTolerance) {
+            var i, k, segment;
+            var parts = [];
+            var len = points.length;
+            var a = [];
+            var b = [];
+            self.lastCode = undefined;
+
+            for (i = 0, k = 0; i < len - 3; i += 2) {
+                a = [points[i], points[i + 1]];
+                b = [points[i + 2], points[i + 3]];
+                segment = self.clipSegment(a, b, bounds, i);
+                if (!segment) {
+                    continue;
+                }
+                parts[k] = parts[k] || [];
+                
+                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
+                if(!shortDistance){
+                    parts[k] = parts[k].concat(segment[0]);
+                }
+
+                // if segment goes out of screen, or it's the last one, it's the end of the line part
+                if ((segment[1][0] !== points[i + 2]) || (segment[1][1] !== points[i + 3]) || (i === len - 4)) {
+                    parts[k] = parts[k].concat(segment[1]);
+                    k++;
+                }
+            }
+            
+            return parts;
+        }
+
+        // Cohen-Sutherland line clipping algorithm.
+        // Used to avoid rendering parts of a polyline that are not currently visible.
+        self.clipSegment = function (a, b, bounds, useLastCode) {
+            var codeA = useLastCode ? self.lastCode : ol.geom.flat.transform.getBitCode(a, bounds),
+                codeB = ol.geom.flat.transform.getBitCode(b, bounds),
+                codeOut, p, newCode;
+
+            self.lastCode = codeB;
+
+            while (true) {
+                // if a,b is inside the clip window (trivial accept)
+                if (!(codeA | codeB)) {
+                    return [a, b];
+                // if a,b is outside the clip window (trivial reject)
+                } else if (codeA & codeB) {
+                    return false;
+                // other cases
+                } else {
+                    codeOut = codeA || codeB;
+                    p = ol.geom.flat.transform.getEdgeIntersection(a, b, codeOut, bounds);
+                    newCode = ol.geom.flat.transform.getBitCode(p, bounds);
+
+                    if (codeOut === codeA) {
+                        a = p;
+                        codeA = newCode;
+                    } else {
+                        b = p;
+                        codeB = newCode;
+                    }
+                }
+            }
+        }
+
         self.getMainInstructs = function (oTile, mainGeoStyleIds) {
             var features = {};
             var allFeatures = oTile.features;

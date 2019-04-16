@@ -17,6 +17,10 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     // create textures
     /** @type {Object.<string, WebGLTexture>} */
     this.textures_ = [];
+
+    for(var uid in this.texturePerImage){
+        gl.deleteTexture(this.texturePerImage[uid]);
+    }
     this.texturePerImage = {};
 
     this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
@@ -163,8 +167,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                   var declutter = declutterGroup[j];
                   var options = declutter[0];
                   var this$1 = declutter[1]; 
-                  
-                  this$1.getTextSize_([options.text]);
+                  this$1.getText_([options.text]);
                   options.currAtlas = this.currAtlas_;
                   this$1.tmpOptions.push(options);
               }
@@ -380,6 +383,21 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.rotateWithView = !!textStyle.getRotateWithView();
         this.rotation = textStyle.getRotation() || 0;
     }
+  }
+
+  public getText_(lines) {
+    var self = this;
+    var glyphAtlas = this.currAtlas_;
+    //Split every line to an array of chars, sum up their width, and select the longest.
+    lines.map(function (str) {
+        var i, ii;
+        for (i = 0, ii = str.length; i < ii; ++i) {
+            var curr = str[i];
+            if (!glyphAtlas.width[curr]) {
+                self.addCharToAtlas_(curr);
+            }
+        }
+    })
   }
 
   public measure(text){

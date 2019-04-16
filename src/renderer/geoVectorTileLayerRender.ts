@@ -181,13 +181,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
             }); 
-            let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
+            
+            // let currentResolution, currentScale, currentTilePixelSize;
+            let currentZ, i, ii;
             let tileExtent, tilesToDraw;
             for (i = 0, ii = zs.length; i < ii; ++i) {
                 currentZ = zs[i];
-                currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
-                currentResolution = tileGrid.getResolution(currentZ);
-                currentScale = currentResolution / tileResolution;
+                // currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
+                // currentResolution = tileGrid.getResolution(currentZ);
+                // currentScale = currentResolution / tileResolution;
                 tilesToDraw = tilesToDrawByZ[currentZ];
                 for (let tileCoordKey in tilesToDraw) {                    
                     tile = tilesToDraw[tileCoordKey];
@@ -207,7 +209,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             this.renderedExtent_ = imageExtent;
         }
 
-        let scale = this.renderedResolution / viewResolution;
+        // let scale = this.renderedResolution / viewResolution;
         // let transform = (<any>ol).transform.compose(this.imageTransform_, pixelRatio * size[0] / 2, pixelRatio * size[1] / 2, scale, scale, 0, (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio, (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
         // (<any>ol).transform.compose(this.coordinateToCanvasPixelTransform, pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5], pixelRatio / viewResolution, -pixelRatio / viewResolution, 0, -viewCenter[0], -viewCenter[1]);
 
