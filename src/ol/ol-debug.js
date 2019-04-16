@@ -67381,12 +67381,6 @@ function olInit() {
          * @protected
          */
         this.options = [];
-
-        /**
-         * @type {Array.<number>}
-         * @protected
-         */
-        this.texturePerImage = {};
     };
     ol.inherits(ol.render.webgl.TextureReplay, ol.render.webgl.Replay);
 
@@ -67397,21 +67391,15 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.getDeleteResourcesFunction = function (context) {
         var verticesBuffer = this.verticesBuffer;
         var indicesBuffer = this.indicesBuffer;
-        var textures = this.getTextures(true);
-        var texturePerImages = Object.values(this.texturePerImage);
-        var gl = context.getGL();    
+        // var textures = this.getTextures(true);
+        // var gl = context.getGL();    
         return function () {
-            if (!gl.isContextLost()) {
-                var i, ii;
-                for (i = 0, ii = textures.length; i < ii; ++i) {
-                    gl.deleteTexture(textures[i]);
-                }
-                if(texturePerImages){
-                    for (var j = 0, jj = texturePerImages.length; j < jj; ++j) {
-                        gl.deleteTexture(texturePerImages[j]);
-                    }
-                }
-            }
+            // if (!gl.isContextLost()) {                
+                // var i, ii;
+                // for (i = 0, ii = textures.length; i < ii; ++i) {
+                //     gl.deleteTexture(textures[i]);
+                // }
+            // }
             context.deleteBuffer(verticesBuffer);
             context.deleteBuffer(indicesBuffer);
         };
@@ -72869,8 +72857,8 @@ function olInit() {
 
         this.focus_ = frameState.focus;
 
-        this.textureCache_.set((-frameState.index).toString(), null);
-        ++this.textureCacheFrameMarkerCount_;
+        // this.textureCache_.set((-frameState.index).toString(), null);
+        // ++this.textureCacheFrameMarkerCount_;
 
         this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
@@ -72900,9 +72888,8 @@ function olInit() {
         }
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
-
         gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
-        gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
@@ -72934,7 +72921,6 @@ function olInit() {
 
         this.scheduleRemoveUnusedLayerRenderers(frameState);
         this.scheduleExpireIconCache(frameState);
-
     };
 
 

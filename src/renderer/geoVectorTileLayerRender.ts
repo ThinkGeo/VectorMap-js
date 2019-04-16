@@ -157,6 +157,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 highWaterMark : tileSource.tileCache.highWaterMark;
             
             tileSource.tileCache.zoom = tile.tileCoord[0];
+
+            // control the textureCache size
+            (<any>ol).WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = highWaterMark * 24 / pixelRatio;
         }  
     
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
@@ -234,7 +237,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
         let gl = context.getGL();
         gl.enable(gl.DEPTH_TEST);
-        
+
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);
 
@@ -315,7 +318,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 var screenXY = replayData[i++];
                 replay.declutterRepeat_(context, screenXY);
             }
-        }
+        }        
 
         // draw
         for (var z = 0, zz = zs.length; z < zz; ++z) {
@@ -405,9 +408,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 }
             }
             else {
-                var replayGroup = new ReplayGroupCustom(
+                let replayGroup = new ReplayGroupCustom(
                     0, sharedExtent, layer.getRenderBuffer(), this.declutterTree_);
-                // let replayGroup = new ReplayGroupCustom(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
                 let squaredTolerance = (<any>ol).renderer.vector.getSquaredTolerance(resolution, pixelRatio);
                 let strategyTree = (<any>ol).ext.rbush(9);
 
