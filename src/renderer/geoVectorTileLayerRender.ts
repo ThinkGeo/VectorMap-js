@@ -157,9 +157,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 highWaterMark : tileSource.tileCache.highWaterMark;
             
             tileSource.tileCache.zoom = tile.tileCoord[0];
-
-            // control the textureCache size
-            (<any>ol).WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = highWaterMark * 24 / pixelRatio;
         }  
     
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
