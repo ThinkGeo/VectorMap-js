@@ -5,6 +5,7 @@ import { GeoLineStyle } from './../style/geoLineStyle';
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLayer as { new(a: any, p: ol.layer.Tile): any; }) {
     constructor(mapRenderer: any, layer: ol.layer.VectorTile) {
         super(mapRenderer, layer);
+        this.zDirection = 1;
         this.renderedTiles = [];
         this.declutterTree_ = (<any>layer).getDeclutter() ? (<any>ol).ext.rbush(9) : null;
         this.VECTOR_REPLAYS = this.VECTOR_REPLAYS_CUSTOM;
@@ -334,7 +335,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     }
                 }
                 replay.finish(context);
-                // replay.options = tmpOptions;
                
                 replay.replay(context, rotation, skippedFeatureUids, screenXY);
             }

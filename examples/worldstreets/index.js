@@ -1,6 +1,6 @@
 var view = new ol.View({
-    center: ol.proj.fromLonLat([-96.79748, 32.78819]),
-    zoom: 2,
+    center: ol.proj.fromLonLat([121.47857666015625, 31.213975956122024]),
+    zoom: 14,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
@@ -22,16 +22,16 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
-var tileGrid1 = new ol.layer.Tile({
-    source: new ol.source.TileDebug({
-        projection: "EPSG:3857",
-        tileGrid: worldStreetsLayer.createVectorTileGrid()
-    })
-});
+// var tileGrid1 = new ol.layer.Tile({
+//     source: new ol.source.TileDebug({
+//         projection: "EPSG:3857",
+//         tileGrid: worldStreetsLayer.createVectorTileGrid()
+//     })
+// });
 
-var tileGrid2 = new ol.layer.Tile({
-    source: new ol.source.OSM()
-});
+// var tileGrid2 = new ol.layer.Tile({
+//     source: new ol.source.OSM()
+// });
 
 var map = new ol.Map({
     layers: [worldStreetsLayer],

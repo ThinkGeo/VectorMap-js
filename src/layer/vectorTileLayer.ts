@@ -662,7 +662,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 if(!style){
                     continue;
                 }
-                
+
                 if(this instanceof (<any>ol).render.webgl.ImageReplay){
                     this.setImageStyle(style);
                     
@@ -683,7 +683,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.setTextStyle(style);
                             this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
                         }  
-                    }else{                              
+                    }else{     
                         this.setTextStyle(style);
                         if(style.label){
                             this.label = style.label;
@@ -696,8 +696,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                             this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                             this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
                             this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
-                            this.renderDeclutter_(declutterGroup, feature);
-                        }else{   
+                            this.renderDeclutterLabel_(declutterGroup, feature);
+                        }else{  
                             // draw chars 
                             this.roadText = true;
                             this.drawLineStringText(geometry, feature, frameState, declutterGroup);
@@ -705,69 +705,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                 }
             }
-        };
-       
-        (<any>ol.render).webgl.Replay.prototype.replayCharImage_ = function (frameState, declutterGroup, part){
-            var scale = this.scale ;
-            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
-            var x = part[0];
-            var y = part[1];
-            var rotation = part[3];
-            var text = part[4];
-            var cos = Math.cos(rotation);
-            var sin = Math.sin(rotation); 
-            var anchorX = part[2] * window.devicePixelRatio;
-            var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-            var width = this.width*window.devicePixelRatio;
-            var height = this.height;
-            var bottomLeft = [];
-            var bottomRight = [];
-            var topLeft = [];
-            var topRight = [];
-            var offsetX, offsetY;
-            var pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
-                [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
-            x = pixelCoordinate[0];
-            y = pixelCoordinate[1];
-
-            // bottom-left corner
-            offsetX = -scale * anchorX;
-            offsetY = -scale * (height - anchorY);
-            bottomLeft[0] = x + (offsetX * cos - offsetY * sin);
-            bottomLeft[1] = y + (offsetX * sin + offsetY * cos);
-
-            // bottom-right corner
-            offsetX = scale * (width - anchorX);
-            offsetY = -scale * (height - anchorY);
-            bottomRight[0] = x + (offsetX * cos - offsetY * sin);
-            bottomRight[1] = y + (offsetX * sin + offsetY * cos);
-
-            // top-right corner
-            offsetX = scale * (width - anchorX);
-            offsetY = scale * anchorY;
-            topRight[0] = x + (offsetX * cos - offsetY * sin);
-            topRight[1] = y + (offsetX * sin + offsetY * cos);
-
-            // top-left corner
-            offsetX = -scale * anchorX;
-            offsetY = scale * anchorY;
-            topLeft[0] = x + (offsetX * cos - offsetY * sin);
-            topLeft[1] = y + (offsetX * sin + offsetY * cos);
-
-            (<any>ol).extent.extendCoordinate(declutterGroup, bottomLeft);
-            (<any>ol).extent.extendCoordinate(declutterGroup, bottomRight);
-            (<any>ol).extent.extendCoordinate(declutterGroup, topRight);
-            (<any>ol).extent.extendCoordinate(declutterGroup, topLeft);
-
-            var declutterArgs = [{
-                anchorX,
-                anchorY,
-                rotation,
-                flatCoordinates: [part[0], part[1]],
-                text,
-                currAtlas: this.currAtlas_
-            }, this];
-            declutterGroup.push(declutterArgs);
         };
   
         (<any>ol.geom).flat.textpath.lineString = function (
@@ -794,7 +731,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 index = reverse ? numChars - i - 1 : i;
                 var char = text.charAt(index);
                 chunk = reverse ? char + chunk : chunk + char;
-                var charLength = webglTextReplay.getTextSize_([char])[0];    
+                var charLength = webglTextReplay.measure(char); 
                 var charM = startM + charLength / 2;
                 
                 while (segmentM + segmentLength < charM) {

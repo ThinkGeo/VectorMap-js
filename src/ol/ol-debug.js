@@ -101543,11 +101543,10 @@ function olInit() {
             var tileCoord = messageData[2];
 
             // TEST     
-
+            // console.log(tileCoord.toString());
             // if(tileCoord.toString() !== "2,1,-2"){
-            // if(tileCoord.toString() !== "14,12928,-6725"){
+            // if(tileCoord.toString() !== "14,13720,-6696"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
-                // debugger;
                 // return
             // }
             // TEST END

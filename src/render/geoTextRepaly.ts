@@ -17,7 +17,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     // create textures
     /** @type {Object.<string, WebGLTexture>} */
     this.textures_ = [];
-    
+    this.texturePerImage = {};
+
     this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
     this.state_ = {
@@ -156,10 +157,42 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
           if(!this.declutterTree.collides(box)){
               this.declutterTree.insert(box);
+              this.currAtlas_ = this.getAtlas_(this.state_);
+              
               for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
                   var declutter = declutterGroup[j];
                   var options = declutter[0];
-                  var this$1 = declutter[1];
+                  var this$1 = declutter[1]; 
+                  
+                  this$1.getTextSize_([options.text]);
+                  options.currAtlas = this.currAtlas_;
+                  this$1.tmpOptions.push(options);
+              }
+          }
+          declutterGroup.length = 5;
+          (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
+      }
+    }
+  }
+
+  public renderDeclutterLabel_(declutterGroup, feature){
+    if(declutterGroup && declutterGroup.length > 5){
+      var groupCount = declutterGroup[4];
+      if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
+          var box = {
+              minX: /** @type {number} */ (declutterGroup[0]),
+              minY: /** @type {number} */ (declutterGroup[1]),
+              maxX: /** @type {number} */ (declutterGroup[2]),
+              maxY: /** @type {number} */ (declutterGroup[3]),
+              value: feature
+          };
+
+          if(!this.declutterTree.collides(box)){
+              this.declutterTree.insert(box);
+              for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
+                  var declutter = declutterGroup[j];
+                  var options = declutter[0];
+                  var this$1 = declutter[1]; 
                   this$1.tmpOptions.push(options);
               }
           }
@@ -178,12 +211,12 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     var lineStringCoordinates = geometry.getFlatCoordinates();
     var end = lineStringCoordinates.length;
     var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
-    let textLength = this.getTextSize_([text])[0];
-    if(this.label){
-      
+    let textLength = this.measure(text);
+
+    if(this.label){      
         pathLength = textLength
     }
-
+    
     if (textLength * 1.2 <= pathLength) {  
         let declutterGroups = [];
         this.extent = (<any>ol.extent).createOrUpdateEmpty();          
@@ -197,6 +230,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.findCenterPoints(0, centerPoint, pixelDistance, pointArray);
             this.findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
         }
+
+        this.height = this.measureTextHeight();
 
         for (var len = 0; len < pointArray.length; len++) {
             let tempDeclutterGroup;
@@ -213,10 +248,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 for(let i = 0; i < parts.length; i++){
                     var part = parts[i];
                     var lines = part[4];
-                    var textSize = this.getTextSize_([lines]);
-                    this.width = textSize[0];
-                    this.height = textSize[1];
-
+                    this.width = this.measure(lines);
                     this.replayCharImage_(frameState, tempDeclutterGroup, part);
                 }   
                 var canvas = frameState.context.canvas_;
@@ -230,7 +262,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 }
             }
         }
-
+        
         for (let d = 0; d < declutterGroups.length; d++) {
             let targetDeclutterGroup = declutterGroups[d];
             if (targetDeclutterGroup && targetDeclutterGroup.length > 5) {
@@ -241,6 +273,136 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
         }
     }
+  }  
+       
+  public replayCharImage_(frameState, declutterGroup, part){
+    var scale = this.scale ;
+    var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
+    var x = part[0];
+    var y = part[1];
+    var rotation = part[3];
+    var text = part[4];
+    var cos = Math.cos(rotation);
+    var sin = Math.sin(rotation); 
+    var anchorX = part[2] * window.devicePixelRatio;
+    var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+    var width = this.width*window.devicePixelRatio;
+    var height = this.height;
+    var bottomLeft = [];
+    var bottomRight = [];
+    var topLeft = [];
+    var topRight = [];
+    var offsetX, offsetY;
+    var pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
+        [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
+    x = pixelCoordinate[0];
+    y = pixelCoordinate[1];
+
+    // bottom-left corner
+    offsetX = -scale * anchorX;
+    offsetY = -scale * (height - anchorY);
+    bottomLeft[0] = x + (offsetX * cos - offsetY * sin);
+    bottomLeft[1] = y + (offsetX * sin + offsetY * cos);
+
+    // bottom-right corner
+    offsetX = scale * (width - anchorX);
+    offsetY = -scale * (height - anchorY);
+    bottomRight[0] = x + (offsetX * cos - offsetY * sin);
+    bottomRight[1] = y + (offsetX * sin + offsetY * cos);
+
+    // top-right corner
+    offsetX = scale * (width - anchorX);
+    offsetY = scale * anchorY;
+    topRight[0] = x + (offsetX * cos - offsetY * sin);
+    topRight[1] = y + (offsetX * sin + offsetY * cos);
+
+    // top-left corner
+    offsetX = -scale * anchorX;
+    offsetY = scale * anchorY;
+    topLeft[0] = x + (offsetX * cos - offsetY * sin);
+    topLeft[1] = y + (offsetX * sin + offsetY * cos);
+
+    (<any>ol).extent.extendCoordinate(declutterGroup, bottomLeft);
+    (<any>ol).extent.extendCoordinate(declutterGroup, bottomRight);
+    (<any>ol).extent.extendCoordinate(declutterGroup, topRight);
+    (<any>ol).extent.extendCoordinate(declutterGroup, topLeft);
+
+    var declutterArgs = [{
+        anchorX,
+        anchorY,
+        rotation,
+        flatCoordinates: [part[0], part[1]],
+        text
+    }, this];
+    declutterGroup.push(declutterArgs);
+  }
+
+  public setTextStyle(textStyle) {
+    var state = this.state_;
+    var textFillStyle = textStyle.getFill();
+    var textStrokeStyle = textStyle.getStroke();
+    if (!textStyle || !textStyle.getText() || (!textFillStyle && !textStrokeStyle)) {
+        this.text_ = '';
+    } else {
+        if (!textFillStyle) {
+            state.fillColor = null;
+        } else {
+            var textFillStyleColor = textFillStyle.getColor();
+            state.fillColor = ol.colorlike.asColorLike(textFillStyleColor ?
+                textFillStyleColor : (<any>ol.render).webgl.defaultFillStyle);
+        }
+        if (!textStrokeStyle) {
+            state.strokeColor = null;
+            state.lineWidth = 0;
+        } else {
+            var textStrokeStyleColor = textStrokeStyle.getColor();
+            state.strokeColor = ol.colorlike.asColorLike(textStrokeStyleColor ?
+                textStrokeStyleColor : (<any>ol.render).webgl.defaultStrokeStyle);
+            state.lineWidth = textStrokeStyle.getWidth() || (<any>ol.render).webgl.defaultLineWidth;
+            state.lineCap = textStrokeStyle.getLineCap() || (<any>ol.render).webgl.defaultLineCap;
+            state.lineDashOffset = textStrokeStyle.getLineDashOffset() || (<any>ol.render).webgl.defaultLineDashOffset;
+            state.lineJoin = textStrokeStyle.getLineJoin() || (<any>ol.render).webgl.defaultLineJoin;
+            state.miterLimit = textStrokeStyle.getMiterLimit() || (<any>ol.render).webgl.defaultMiterLimit;
+            var lineDash = textStrokeStyle.getLineDash();
+            state.lineDash = lineDash ? lineDash.slice() : (<any>ol.render).webgl.defaultLineDash;
+        }
+        state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
+        state.scale = textStyle.getScale() || 1;
+        this.text_ = /** @type {string} */ (textStyle.getText());
+        var textAlign = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextAlign()];
+        var textBaseline = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextBaseline()];
+        this.textAlign_ = textAlign === undefined ?
+            (<any>ol.render).webgl.defaultTextAlign : textAlign;
+        this.textBaseline_ = textBaseline === undefined ?
+            (<any>ol.render).webgl.defaultTextBaseline : textBaseline;
+        this.offsetX_ = textStyle.getOffsetX() || 0;
+        this.offsetY_ = textStyle.getOffsetY() || 0;
+        this.rotateWithView = !!textStyle.getRotateWithView();
+        this.rotation = textStyle.getRotation() || 0;
+    }
+  }
+
+  public measure(text){
+    var mCtx = this.measureCanvas_.getContext('2d');
+    var state = this.state_;
+    var sum = 0;
+    var i, ii;
+    for(i = 0, ii = text.length; i < ii; ++i){
+        var curr = text[i];
+        sum += Math.ceil((mCtx.measureText(curr).width + state.lineWidth / 2) * state.scale);
+    }
+
+    return sum;
+  }
+
+  public measureTextHeight(){
+    var mCtx = this.measureCanvas_.getContext('2d');
+    var state = this.state_;
+    mCtx.font = state.font;
+    var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
+        state.lineWidth / 2) * state.scale * window.devicePixelRatio);
+
+    return height;
   }
 
   public findCenterPoints(start, end, pixelDistance, pointArray){
@@ -336,8 +498,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             
             this.drawText_(flatCoordinates, offset, end, stride);
         }else{
-            // this.scale = 1;
-           
+            // this.scale = 1;           
             var glyphAtlas = options.currAtlas;
             var j, jj, currX, currY, charArr, charInfo;
             var anchorX = options.anchorX;
@@ -347,12 +508,12 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             currX = 0;
             currY = 0;
             charArr = text.split('');
-            // return;
+
             for (j = 0, jj = charArr.length; j < jj; ++j) {
                 charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
     
                 if (charInfo) {
-                    var image = charInfo.image;    
+                    var image = charInfo.image;                        
                     this$1.anchorX = anchorX - currX;
                     this$1.anchorY = anchorY - currY;
                     this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
