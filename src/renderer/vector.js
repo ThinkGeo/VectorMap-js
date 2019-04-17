@@ -96,7 +96,7 @@ function renderCircleGeometry(replayGroup, geometry, style, feature) {
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, thisArg,options) {
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
@@ -112,7 +112,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
       loading = true;
     }
   }
-  renderFeatureInternal(replayGroup, feature, style, squaredTolerance);
+  renderFeatureInternal(replayGroup, feature, style, squaredTolerance,options);
 
   return loading;
 }
@@ -124,7 +124,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  */
-function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
+function renderFeatureInternal(replayGroup, feature, style, squaredTolerance,options) {
   const geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
     return;
@@ -135,7 +135,7 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
     renderGeometry(replayGroup, simplifiedGeometry, style, feature);
   } else {
     const geometryRenderer = GEOMETRY_RENDERERS[simplifiedGeometry.getType()];
-    geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
+    geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
   }
 }
 
@@ -182,12 +182,12 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
-function renderLineStringGeometry(replayGroup, geometry, style, feature) {
+function renderLineStringGeometry(replayGroup, geometry, style, feature,options) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
     const lineStringReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.LINE_STRING);
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-    lineStringReplay.drawLineString(geometry, feature);
+    lineStringReplay.drawLineString(geometry, feature,strokeStyle,options);
   }
   const textStyle = style.getText();
   if (textStyle) {

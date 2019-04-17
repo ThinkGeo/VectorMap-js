@@ -3,14 +3,9 @@
 import ImageReplay from "ol/render/webgl/ImageReplay"
 import { getUid } from 'ol/util';
 import Buffer from "ol/webgl/Buffer"
-import {
-    compose,
-    reset ,
-    scale,
-    rotate,
-    apply,
-    translate 
-} from 'ol/transform.js';
+import {compose,reset , scale, rotate,apply,translate} from 'ol/transform.js';
+
+
 import { createOrUpdateEmpty,extend} from 'ol/extent';
 import {create,fromTransform}  from "ol/vec/mat4"
 
@@ -18,8 +13,11 @@ import {create,fromTransform}  from "ol/vec/mat4"
 export class GeoImageReplay extends ImageReplay {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
+    this.declutterTree = declutterTree;
     this.startIndicesStyle = [];
+    this.zCoordinates = [];
     this.indices =[];
+    this.texturePerImage = {};
   } 
   
     finish(context){

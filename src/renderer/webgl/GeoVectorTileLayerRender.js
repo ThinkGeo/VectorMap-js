@@ -109,45 +109,85 @@ class GeoVectorTileLayerRender extends TileLayer {
 
         const tmpExtent = this.tmpExtent;
         const tmpTileRange = this.tmpTileRange_;
-        this.newTiles_ = false;
+        let newTiles = false;
         let tile, x, y;
+        let allLoaded = true;
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-                if (Date.now() - frameState.time > 16 && animatingOrInteracting) {
-                    continue;
-                }
-                // tile = this.getTile(z, x, y, pixelRatio, projection, frameState);
                 tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-
-                // for cancel.
                 tile.tileRange = tileRange;
-                if (this.isTileToDraw_(tile)) {
-                    const uid = getUid(this);
-                    if (tile.getState() == TileState.LOADED) {
-                        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-                        const inTransition = tile.inTransition(uid);
-                        if (!this.newTiles_ && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
-                            this.newTiles_ = true;
-                        }
+                tile.pixelRatio = pixelRatio;
+                if (tile.getState() === TileState.ERROR) {
+                    if (!tileLayer.getUseInterimTilesOnError()) {
+                        // When useInterimTilesOnError is false, we consider the error tile as loaded.
+                        tile.setState(TileState.LOADED);
+                    } else if (tileLayer.getPreload() > 0) {
+                        // Preloaded tiles for lower resolutions might have finished loading.
+                        newTiles = true;
                     }
-                    if (tile.getAlpha(uid, frameState.time) === 1) {
+                }
+                
+                if (!this.isDrawableTile_(tile)) {
+                    tile = tile.getInterimTile();
+                }               
+
+                if (this.isDrawableTile_(tile)) {
+                    let uid = getUid(this);
+                    if (tile.getState() === (TileState.LOADED)) {
+                        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+                        let inTransition = tile.inTransition(uid);
+                        if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
+                            newTiles = true;
+                        }
+                        // continue;
+                    }else if(tile.getState() ===TileState.EMPTY){
+                        continue;
+                    }
+                    // judge the data of replayGroup for drawing
+                    let sourceTile = tile.getTile(tile.tileKeys[0]);
+                    let replayGroup = sourceTile && sourceTile.getReplayGroup(this.getLayer(), sourceTile.tileCoord.toString());
+                    if (tile.getAlpha(uid, frameState.time) === 1 && (replayGroup && Object.keys(replayGroup.replaysByZIndex_).length > 0)) {
                         // don't look for alt tiles if alpha is 1
                         continue;
                     }
                 }
 
-                const childTileRange = tileGrid.getTileCoordChildTileRange(
+                if(y <= tileRange.maxY){
+                    allLoaded = false;
+                }
+
+                let childTileRange = tileGrid.getTileCoordChildTileRange(
                     tile.tileCoord, tmpTileRange, tmpExtent);
                 let covered = false;
-                if (childTileRange) {
-                    covered = findLoadedTiles(z + 1, childTileRange);
+                var cacheZoom = tileSource.tileCache.zoom || 0;
+                if (childTileRange) { 
+                    covered = tileGrid.forEachTileCoordChildTileRange(
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom, tileRange
+                        );                    
                 }
+
                 if (!covered) {
                     tileGrid.forEachTileCoordParentTileRange(
-                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+                        tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom);
                 }
             }
         }
+
+        // current tile range has been all loaded
+        if(allLoaded){                        
+            var tileCache = tileSource.tileCache;
+            var highWaterMark = 0;
+            tileCache.forEach(function(tile){
+                var keyZ = tile.tileCoord[0];
+                if(keyZ == z){
+                    highWaterMark += 1;
+                }         
+            });
+            tileSource.tileCache.highWaterMark = tileSource.tileCache.highWaterMark > highWaterMark ?
+                highWaterMark : tileSource.tileCache.highWaterMark;
+            
+            tileSource.tileCache.zoom = tile.tileCoord[0];
+        }  
 
         const renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
@@ -495,6 +535,10 @@ class GeoVectorTileLayerRender extends TileLayer {
                                 let ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
                                 if (styles === undefined) {
                                     styles = [];
+                                }
+                                console.log(ol4Styles)
+                                if(!ol4Styles.length){
+                                    continue;
                                 }
                                 Array.prototype.push.apply(styles, ol4Styles);
                             }

@@ -3,61 +3,62 @@
 import TextReplay from "ol/render/webgl/TextReplay"
 import { getUid } from 'ol/util';
 import Buffer from "ol/webgl/Buffer"
-import {
-    compose,
-    reset ,
-    scale,
-    rotate,
-    apply,
-    translate 
-} from 'ol/transform.js';
+import {compose,reset , scale, rotate,apply,translate} from 'ol/transform.js';
+import {CLAMP_TO_EDGE, FLOAT, TEXTURE_2D} from 'ol/webgl.js';
+
 import { createOrUpdateEmpty,extend} from 'ol/extent';
 import {create,fromTransform}  from "ol/vec/mat4"
+
+
+import {createTexture} from "../../ol/webgl/Context"
+
 
 export class GeoTextReplay extends TextReplay {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
+    this.declutterTree = declutterTree;
     this.startIndicesStyle = [];
     this.zCoordinates = [];
     this.indices =[];
+    this.texturePerImage = {};
   } 
   
-//    finish(context){
-//     var gl = context.getGL();        
-//     this.groupIndices.push(this.indices.length);
-//     this.hitDetectionGroupIndices = this.groupIndices;
+   finish(context){
+    var gl = context.getGL();        
+    this.groupIndices.push(this.indices.length);
+    this.hitDetectionGroupIndices = this.groupIndices;
 
-//     // create, bind, and populate the vertices buffer
-//     this.verticesBuffer = new Buffer(this.vertices);
+    // create, bind, and populate the vertices buffer
+    this.verticesBuffer = new Buffer(this.vertices);
 
-//     // create, bind, and populate the indices buffer
-//     this.indicesBuffer = new Buffer(this.indices);
+    // create, bind, and populate the indices buffer
+    this.indicesBuffer = new Buffer(this.indices);
 
-//     // create textures
-//     /** @type {Object.<string, WebGLTexture>} */
-//     this.textures_ = [];
+    // create textures
+    /** @type {Object.<string, WebGLTexture>} */
+    this.textures_ = [];
     
-//     this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+    this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
 
-//     this.state_ = {
-//         strokeColor: null,
-//         lineCap: undefined,
-//         lineDash: null,
-//         lineDashOffset: undefined,
-//         lineJoin: undefined,
-//         lineWidth: 0,
-//         miterLimit: undefined,
-//         fillColor: null,
-//         font: undefined,
-//         scale: undefined
-//     };
-//     this.text_ = '';
-//     this.textAlign_ = undefined;
-//     this.textBaseline_ = undefined;
-//     this.offsetX_ = undefined;
-//     this.offsetY_ = undefined;
-//     this.images_ = [];
-//   }
+    this.state_ = {
+        strokeColor: null,
+        lineCap: undefined,
+        lineDash: null,
+        lineDashOffset: undefined,
+        lineJoin: undefined,
+        lineWidth: 0,
+        miterLimit: undefined,
+        fillColor: null,
+        font: undefined,
+        scale: undefined
+    };
+    this.text_ = '';
+    this.textAlign_ = undefined;
+    this.textBaseline_ = undefined;
+    this.offsetX_ = undefined;
+    this.offsetY_ = undefined;
+    this.images_ = [];
+  }
 
    replay(context, viewRotation, skippedFeaturesHash, screenXY){
     this.viewRotation_ = viewRotation;
@@ -399,4 +400,21 @@ export class GeoTextReplay extends TextReplay {
         }
     }
   }
+  createTextures  (textures, images, texturePerImage, gl) {
+    var texture, image, uid, i;
+    var ii = images.length;
+    for (i = 0; i < ii; ++i) {
+        image = images[i];
+
+        uid = ol.getUid(image).toString();
+        if (uid in texturePerImage) {
+            texture = texturePerImage[uid];
+        } else {
+            texture = createTexture(
+                gl, image, CLAMP_TO_EDGE, CLAMP_TO_EDGE, this.label? gl.NEAREST: gl.LINEAR);
+            texturePerImage[uid] = texture;
+        }
+        textures[i] = texture;
+    }
+};
 }

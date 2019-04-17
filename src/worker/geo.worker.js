@@ -740,7 +740,6 @@ self.createReplayGroup = function (messageData, methodInfo) {
     if(!vectorTileData){
         return false;
     }
-    debugger;
     var features = vectorTileData.features;
     var styleJsonCache = vectorTileData.styleJsonCache;
     var subTileInstructCaches = vectorTileData.subTileInstructCaches;
@@ -1013,7 +1012,7 @@ self.createApplyTileInstructions = function (features, formatId, vectorImageTile
     return [outputFeatures, instructs]
 }
 
-self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
+self.renderFeature = function (feature, squaredTolerance, styles, replayGroup,options) {
     if (!styles) {
         return false;
     }
@@ -1022,7 +1021,7 @@ self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
         for (let i = 0, ii = styles.length; i < ii; ++i) {
             loading = renderFeature(
                 replayGroup, feature, styles[i], squaredTolerance,
-                self.handleStyleImageChange_, this) || loading;
+                self.handleStyleImageChange_, this,options) || loading;
         }
     } else {
         loading = renderFeature(

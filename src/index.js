@@ -770,6 +770,47 @@ PluggableMap.prototype.renderFrame_ = function (time) {
     setTimeout(this.handlePostRender.bind(this), 0);
 };   
 
+import TileGrid from 'ol/tilegrid/TileGrid';
+import {createOrUpdate} from 'ol/TileRange';
+
+TileGrid.prototype.forEachTileCoordChildTileRange = function(tileCoord, callback, opt_this, opt_tileRange, opt_extent, cacheZoom, tileRange) {
+    var tileRange_, x, y;
+    var tileCoordExtent = null;
+   
+    if (this.zoomFactor_ === 2) {
+        x = tileCoord[1];
+        y = tileCoord[2];
+    } else {
+        tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+    }
+    //the reason that zoom in is blank why is run this. 
+    var z = tileCoord[0] + 1;
+    var interval;
+    var rangeX = 3;
+    var rangeY = 3;
+    var intervalX = tileRange.maxX - tileRange.minX + 2;
+    var intervalY = tileRange.maxY - tileRange.minY + 2;
+
+    while (z <= cacheZoom) {            
+        if (this.zoomFactor_ === 2) {
+            interval = Math.pow(2, z - tileCoord[0]) - 1;
+            rangeX = interval > intervalX ? intervalX : interval;
+            rangeY = interval > intervalY ? intervalY : interval;
+            x = Math.floor(x * 2);
+            y = Math.floor(y * 2);
+            tileRange_ = createOrUpdate(x, x + rangeX, y, y + rangeY, opt_tileRange);
+        } else {
+            tileRange_ = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+        }
+        if (callback.call(opt_this, z, tileRange_)) {
+            return true;
+        }
+        ++z;
+    }
+    return false;
+};
+
+
 import Replay from 'ol/render/webgl/Replay';
 import ImageReplay from 'ol/render/webgl/ImageReplay';
 import Feature from 'ol/render/Feature';

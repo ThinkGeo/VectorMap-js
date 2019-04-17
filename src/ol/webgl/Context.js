@@ -312,12 +312,13 @@ var WebGLContext = /*@__PURE__*/(function (Disposable) {
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
+function createTextureInternal(gl, opt_wrapS, opt_wrapT,texParameteriType) {
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texParameteriType);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texParameteriType);
 
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   if (opt_wrapS !== undefined) {
     gl.texParameteri(
       TEXTURE_2D, TEXTURE_WRAP_S, opt_wrapS);
@@ -353,8 +354,8 @@ export function createEmptyTexture(gl, width, height, opt_wrapS, opt_wrapT) {
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
-  var texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
+export function createTexture(gl, image, opt_wrapS, opt_wrapT,texParameteriType) {
+  var texture = createTextureInternal(gl, opt_wrapS, opt_wrapT,texParameteriType);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   return texture;
 }

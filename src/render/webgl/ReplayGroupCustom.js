@@ -154,7 +154,19 @@ class ReplayGroupCustom extends ReplayGroup {
         return replay;
     }
 
-    
+    addDeclutter (group) { 
+        var declutter = null;
+        if (this.declutterTree) {
+            if (group) {
+                declutter = this.declutterGroup_;
+        /** @type {number} */ (declutter[4])++;
+            } else {
+                declutter = this.declutterGroup_ = createEmpty();
+                declutter.push(1);
+            }
+        }
+        return declutter;
+    };
 }
 
 export default ReplayGroupCustom;
