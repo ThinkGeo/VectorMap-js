@@ -4,8 +4,9 @@ class GeoStyle {
     constructor(styleJson) {
         this.styles = [];
         if (styleJson) {
+            this.styleJson = styleJson;
             this.id = styleJson["id"];
-            this.uid = getUid(this);
+            // this.uid = getUid(this);
             this.visible = styleJson["visible"] === undefined ? true : styleJson["visible"];
         }
     }

@@ -1,4 +1,4 @@
-import MVT from './MVT';
+import MVT from 'ol/format/MVT';
 import PBF from 'pbf';
 import LRUCache from 'ol/structs/LRUCache'
 

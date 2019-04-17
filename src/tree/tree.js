@@ -10,11 +10,12 @@ class Tree {
 
     traverseNode(callback, select) {
         (function recurse(currentNode) {
-
             if (callback(currentNode)) {
                 if (currentNode.children.length > 0) {
-                    for (let i = 0, length = currentNode.children.length; i < length; i++) {
+                    var hasMatchedChildren = false;
+                    for (var i = 0, length_1 = currentNode.children.length; i < length_1; i++) {
                         if (recurse(currentNode.children[i])) {
+                            hasMatchedChildren = true;
                             break;
                         }
                     }
@@ -23,7 +24,6 @@ class Tree {
                     // current node is matched, and without children
                     select(currentNode);
                 }
-
                 // true: the currentNode is matched.
                 return true;
             }

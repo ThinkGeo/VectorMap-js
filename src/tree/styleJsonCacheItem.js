@@ -11,7 +11,7 @@ import GeoTextStyle from '../style/geoTextStyle';
 import GeoShieldStyle from '../style/geoShieldStyle';
 
 class StyleJsonCacheItem {
-    constructor(styleJson, minZoom, maxZoom, dataLayerColumnName) {
+    constructor(styleJson, minZoom, maxZoom, dataLayerColumnName,styleIdIndex) {
         this.childrenGeoStyles = [];
         this.subStyleCacheItems = [];
         this.minZoom = minZoom;
@@ -19,8 +19,9 @@ class StyleJsonCacheItem {
         this.zIndex = styleJson["z-index"];
         this.styleFirst = styleJson["style-first"];
         this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-        this.createSubItems(styleJson, dataLayerColumnName);
+        this.createSubItems(styleJson, dataLayerColumnName,styleIdIndex);
         this.geoStyle = this.createGeoStyle(styleJson);
+        this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
         this.createChildrenGeoStyle(styleJson);
     }
 
@@ -111,7 +112,7 @@ class StyleJsonCacheItem {
         return filterGroup;
     }
 
-    createSubItems(styleJson, dataLayerColumnName) {
+    createSubItems(styleJson, dataLayerColumnName,styleIdIndex) {
         if (styleJson.style) {
             // apply the property to sub style.
             for (let key in styleJson) {
@@ -131,7 +132,7 @@ class StyleJsonCacheItem {
             let subItemMinZoom;
             let subItemMaxZoom;
             for (let subStyle of styleJson.style) {
-                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName);
+                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName,styleIdIndex);
 
                 if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
                     subItemMaxZoom = styleJsonCacheSubItem.maxZoom;

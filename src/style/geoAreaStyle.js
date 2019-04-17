@@ -151,6 +151,7 @@ class GeoAreaStyle extends GeoStyle {
                 GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
 
                 GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
+                GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
                 this.styles[length++] = GeoAreaStyle.areaShadowStyle;
             }
 
@@ -175,18 +176,19 @@ class GeoAreaStyle extends GeoStyle {
                 GeoAreaStyle.areaStyle.setStroke(undefined);
             }
 
-            // GeoAreaStyle.areaStyle.setGeometry(feature);
+            GeoAreaStyle.areaStyle.setGeometry(feature);                    
+            GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
             this.styles[length++] = GeoAreaStyle.areaStyle;
 
-            // if (this.gamma !== undefined && options.layer) {
-            //     let styleGamma = this.gamma;
-            //     options.layer.on("precompose", function (evt) {
-            //         evt.context.imageSmoothingEnabled = styleGamma;
-            //         evt.context.webkitImageSmoothingEnabled = styleGamma;
-            //         evt.context.mozImageSmoothingEnabled = styleGamma;
-            //         evt.context.msImageSmoothingEnabled = styleGamma;
-            //     });
-            // }
+            if (this.gamma !== undefined && options.layer) {
+                let styleGamma = this.gamma;
+                options.layer.on("precompose", function (evt) {
+                    evt.context.imageSmoothingEnabled = styleGamma;
+                    evt.context.webkitImageSmoothingEnabled = styleGamma;
+                    evt.context.mozImageSmoothingEnabled = styleGamma;
+                    evt.context.msImageSmoothingEnabled = styleGamma;
+                });
+            }
         }
 
         return this.styles;

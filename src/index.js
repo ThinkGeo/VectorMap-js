@@ -564,8 +564,12 @@ ol.xml.getAllTextContent = _ol_xml$getAllTextContent;
 ol.xml.parse = _ol_xml$parse;
 
 
+
+
+
 // custome ol mmethod
 import { zoomByDelta as $ol$interaction$Interaction$zoomByDelta } from 'ol/interaction/Interaction';
+
 
 ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function handleWheelZoom_(map) {
     var view = map.getView();
@@ -668,6 +672,103 @@ TileQueue.prototype.handleTileChange = function (event) {
     }
 }
 
+import PluggableMap  from 'ol/PluggableMap';
+import MapEvent  from 'ol/MapEvent';
+import MapEventType  from 'ol/MapEventType';
+import ViewHint from 'ol/ViewHint';
+import { equals, isEmpty,getForViewAndSize,createEmpty,createOrUpdateEmpty } from 'ol/extent';
+import {assign} from 'ol/obj';
+import { getUid } from 'ol/util';
+import {hasArea} from 'ol/size';
+PluggableMap.prototype.renderFrame_ = function (time) {
+    var i, ii, viewState;
+
+    var size = this.getSize();
+    var view = this.getView();
+    var extent = createEmpty();
+    var previousFrameState = this.frameState_;
+    /** @type {?olx.FrameState} */
+    var frameState = null;
+    if (size !== undefined && hasArea(size) && view && view.isDef()) {
+        var viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
+        var quickZoom = view["quickZoom"];
+        var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
+        var layerStates = {};
+        for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+            layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+        }
+        viewState = view.getState();
+        var center = viewState.center;
+        var pixelResolution = viewState.resolution / this.pixelRatio_;
+        center[0] = Math.round(center[0] / pixelResolution) * pixelResolution;
+        center[1] = Math.round(center[1] / pixelResolution) * pixelResolution;
+        frameState = /** @type {olx.FrameState} */ ({
+            animate: false,
+            coordinateToPixelTransform: this.coordinateToPixelTransform_,
+            extent: extent,
+            focus: !this.focus_ ? center : this.focus_,
+            index: this.frameIndex_++,
+            layerStates: layerStates,
+            layerStatesArray: layerStatesArray,
+            logos: assign({}, this.logos_),
+            pixelRatio: this.pixelRatio_,
+            pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
+            postRenderFunctions: [],
+            size: size,
+            skippedFeatureUids: this.skippedFeatureUids_,
+            tileQueue: this.tileQueue_,
+            time: time,
+            usedTiles: {},
+            viewState: viewState,
+            viewHints: viewHints,
+            quickZoom: quickZoom,
+            currentResolution: viewState.resolution,
+            wantedTiles: {},
+            context: this.renderer_.context_
+        });
+    }
+
+    if (frameState) {
+        frameState.extent = getForViewAndSize(viewState.center,
+            viewState.resolution, viewState.rotation, frameState.size, extent);
+    }
+
+    this.frameState_ = frameState;
+    this.renderer_.renderFrame(frameState);
+    if (frameState) {
+        if (frameState.animate) {
+            this.render();
+        }
+        Array.prototype.push.apply(
+            this.postRenderFunctions_, frameState.postRenderFunctions);
+
+        if (previousFrameState) {
+            var moveStart = !this.previousExtent_ ||
+                (!isEmpty(this.previousExtent_) &&
+                    !equals(frameState.extent, this.previousExtent_));
+            if (moveStart) {
+                this.dispatchEvent(
+                    new MapEvent(MapEventType.MOVESTART, this, previousFrameState));
+                this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
+            }
+        }
+
+        var idle = this.previousExtent_ &&
+            !frameState.viewHints[ViewHint.ANIMATING] &&
+            !frameState.viewHints[ViewHint.INTERACTING] &&
+            !ol.extent.equals(frameState.extent, this.previousExtent_);
+
+        if (idle) {
+            this.dispatchEvent(
+                new MapEvent(MapEventType.MOVEEND, this, frameState));
+            ol.extent.clone(frameState.extent, this.previousExtent_);
+        }
+    }
+    this.dispatchEvent(
+        new MapEvent(MapEventType.POSTRENDER, this, frameState));
+    setTimeout(this.handlePostRender.bind(this), 0);
+};   
+
 // ol.mapsiute namespace
 import GeoVectorTileLayer from "./layer/GeoVectorTileLayer";
 import GeoVectorLayer from "./layer/GeoVector";
@@ -678,25 +779,38 @@ ol.mapsuite.VectorLayer = GeoVectorLayer;
 ol.mapsuite.version = "2.0.2";
 ol.mapsuite.devVersion = "2.0.0-beta037";
 
-import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
-import CanvasTileLayerRenderer from './renderer/canvas/TileLayer';
-import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer';
-import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer';
-import GeoCanvasVectorTileLayerRenderer from "./renderer/canvas/GeoVectorTileLayer";
-import GeoCanvasVectorLayerRenderer from "./renderer/canvas/GeoVectorLayer";
+// import CanvasImageLayerRenderer from 'ol/renderer/canvas/ImageLayer';
+// import CanvasTileLayerRenderer from './renderer/canvas/TileLayer';
+// import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer';
+// import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer';
+// import GeoCanvasVectorTileLayerRenderer from "./renderer/canvas/GeoVectorTileLayer";
+// import GeoCanvasVectorLayerRenderer from "./renderer/canvas/GeoVectorLayer";
 
-ol.Map.prototype.createRenderer = function createRenderer() {
-    var renderer = new ol.renderer.canvas.Map(this);
+// ol.Map.prototype.createRenderer = function createRenderer() {
+//     var renderer = new ol.renderer.canvas.Map(this);
+//     renderer.registerLayerRenderers([
+//         CanvasImageLayerRenderer,
+//         CanvasTileLayerRenderer,
+//         CanvasVectorLayerRenderer,
+//         CanvasVectorTileLayerRenderer,
+//         GeoCanvasVectorTileLayerRenderer,
+//         GeoCanvasVectorLayerRenderer
+//     ]);
+//     return renderer;
+// };
+
+
+
+import GeoVectorTileLayerRender from "./renderer/webgl/GeoVectorTileLayerRender";
+
+ol.WebGLMap.prototype.createRenderer = function createRenderer() {
+    var renderer = new ol.renderer.webgl.Map(this);
     renderer.registerLayerRenderers([
-        CanvasImageLayerRenderer,
-        CanvasTileLayerRenderer,
-        CanvasVectorLayerRenderer,
-        CanvasVectorTileLayerRenderer,
-        GeoCanvasVectorTileLayerRenderer,
-        GeoCanvasVectorLayerRenderer
+        GeoVectorTileLayerRender,
     ]);
     return renderer;
 };
+
 
 
 

@@ -250,21 +250,33 @@ function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderPointGeometry(replayGroup, geometry, style, feature) {
-  const imageStyle = style.getImage();
+
+  var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
-      return;
-    }
-    const imageReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.IMAGE);
-    imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
-    imageReplay.drawPoint(geometry, feature);
+          return;
+        }
+      // FIXME replace it with style.getZIndex()
+      var imageReplay = replayGroup.getReplay(
+          6, ReplayType.IMAGE);
+      feature.pointCoordinates_ = geometry.getFlatCoordinates();
+      imageReplay.startIndicesFeature.push(feature);
+      var imageStyleClone = imageStyle.clone();
+      imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
+      imageReplay.startIndicesStyle.push(imageStyleClone);
   }
-  const textStyle = style.getText();
+  var textStyle = style.getText();
   if (textStyle) {
-    const textReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
-    textReplay.drawText(geometry, feature);
+      var textReplay = replayGroup.getReplay(
+          2, ReplayType.TEXT);
+      textReplay.startIndicesFeature.push(feature);
+      var textStyleClone = textStyle.clone();
+      textStyleClone.label = textStyle.label;
+      textStyleClone.labelPosition = textStyle.labelPosition;
+      textStyleClone.declutterGroup_ = replayGroup.addDeclutter(!!imageStyle);
+      textReplay.startIndicesStyle.push(textStyleClone);
   }
+  
 }
 
 
@@ -305,6 +317,7 @@ function renderPolygonGeometry(replayGroup, geometry, style, feature) {
   if (fillStyle || strokeStyle) {
     const polygonReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.POLYGON);
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+    feature.zCoordinate = style.zCoordinate;
     polygonReplay.drawPolygon(geometry, feature);
   }
   const textStyle = style.getText();

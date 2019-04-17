@@ -19,6 +19,418 @@ import { renderFeature } from '../renderer/vector';
 import { intersects } from 'ol/extent';
 import GeoLineStyle from "../style/geoLineStyle";
 import Instruction from "ol/render/canvas/Instruction";
+import ReplayGroupCustom from '../render/webgl/ReplayGroupCustom';
+import XYZ from 'ol/source/XYZ';
+import {getBottomLeft,getBottomRight,getTopRight,getTopLeft} from 'ol/extent';
+import MVT from 'ol/format/MVT';
+import {getHeight} from "ol/extent"
+
+
+
+
+
+
+var readFeaturesAndCreateInstructTrees = function (source, zoom, dataZoom, styleJsonCache, layerName, tileExtent, tileResolution) {
+    var pbf = new PBF((source));
+    var pbfLayers = pbf.readFields(layersPBFReader, {});
+    var features = [];
+    var pbfLayer = undefined;
+
+    var layerIdMatchedGeoStylesGroupByPbfLayerName = styleJsonCache.geoStyleGroupByZoom[zoom];
+
+    if (!layerIdMatchedGeoStylesGroupByPbfLayerName) {
+        return features;
+    }
+
+    var pbfLayerNamesWithGeoStyle = [];
+    for (var pbfLayerName in layerIdMatchedGeoStylesGroupByPbfLayerName) {
+        pbfLayerNamesWithGeoStyle.push(pbfLayerName);
+    }
+
+    var allFeatures = {};
+    var featureIndex = 0;
+    var instructsCache = [];
+    var treeStyleFirstCache = [];
+    var extent = undefined;
+    for (var name in pbfLayers) {
+        if (self.layers_ && self.layers_.indexOf(name) === -1) {
+            continue;
+        }
+        if (pbfLayerNamesWithGeoStyle.indexOf(name) === -1 && !pbfLayerNamesWithGeoStyle.includes("undefined")) {
+            continue;
+        }
+
+        pbfLayer = pbfLayers[name];
+        extent = pbfLayer.extent;
+
+        var skipOffset = 1;
+        var scale = getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
+        var offset = (tileResolution / scale) * skipOffset;
+
+        var cacheTrees = [];
+        Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
+        Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName[name]);
+
+        if (cacheTrees && cacheTrees.length > 0) {
+            replaceFiltersToIndexOfPbfLayer(cacheTrees, pbfLayer);
+            for (var i = 0; i < pbfLayer.length; i++) {
+                var rawFeature = readRawFeature_(pbf, pbfLayer, i);
+                var feature = undefined;
+                for (var j = 0; j < cacheTrees.length; j++) {
+                    var cacheTree = cacheTrees[j];
+                    var treeIndex = cacheTree.treeIndex;
+                    if (instructsCache[treeIndex] === undefined) {
+                        instructsCache[treeIndex] = {
+                            min: 10,
+                            max: -10
+                        };
+                        treeStyleFirstCache[treeIndex] = cacheTree.root.data.styleFirst;
+                    }
+
+                    var matchedNode = undefined;
+                    var checkNodeMatched = function (node) {
+                        var styleJsonCacheItem = node.data;
+                        var matched = false;
+                        if (styleJsonCacheItem.filterGroup.length > 0) {
+                            for (var i = 0; i < styleJsonCacheItem.filterGroup.length; i++) {
+                                var filters = styleJsonCacheItem.filterGroup[i];
+                                var groupMatched = true;
+                                for (var j = 0; j < filters.length; j++) {
+                                    var filter = filters[j];
+                                    if (!filter.matchOLFeature(rawFeature, zoom)) {
+                                        groupMatched = false;
+                                        break;
+                                    }
+                                }
+                                if (groupMatched) {
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            matched = true;
+                        }
+
+                        return matched;
+                    };
+
+                    var selectNode = function (node) {
+                        matchedNode = node.data;
+                    };
+                    cacheTree.traverseNode(checkNodeMatched, selectNode);
+
+                    if (matchedNode) {
+                        if (feature === undefined) {
+                            feature = self.createFeature_(pbf, rawFeature, layerName, offset);
+
+                            featureIndex += 1;
+                            allFeatures[featureIndex] = feature;
+                        }
+
+                        var zindex = 0;
+                        if (cacheTree.root.data.zIndex) {
+                            zindex = feature.properties_[cacheTree.root.data.zIndex]
+                        }
+
+                        if (isNaN(zindex)) {
+                            zindex = 0;
+                        }
+                        if (instructsCache[treeIndex][zindex] === undefined) {
+                            instructsCache[treeIndex][zindex] = [];
+                            if (zindex < instructsCache[treeIndex]["min"]) {
+                                instructsCache[treeIndex]["min"] = zindex;
+                            }
+                            if (zindex > instructsCache[treeIndex]["max"]) {
+                                instructsCache[treeIndex]["max"] = zindex;
+                            }
+                        }
+                        instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
+
+                        feature.extent_ = undefined;
+                    }
+                }
+            }
+        }
+        cacheTrees.length = 0;
+        self.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+    }
+
+    return [allFeatures, instructsCache, extent];
+}
+var getInstructs = function (instructsTree) {
+    var instructs = [];
+    var mainGeoStyleIds = {};
+    if (instructsTree) {
+        // the tress index means the index of SyleId.
+        for (var i = 0; i < instructsTree.length; i++) {
+            var instructsInOneTree = instructsTree[i];
+            if (instructsInOneTree) {
+                for (var j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
+                    var instructsInOneZIndex = instructsInOneTree[j];
+                    if (instructsInOneZIndex) {
+                        var childrenInstructs = [];
+                        for (var h = 0; h < instructsInOneZIndex.length; h++) {
+                            var instruct = instructsInOneZIndex[h];
+                            var geoStyle = instruct[1].geoStyle;
+                            if (geoStyle) {
+                                instructs.push([instruct[0], geoStyle.id, i]);
+                                // if (geoStyle.constructor.name === "GeoPointStyle" || geoStyle.constructor.name === "GeoTextStyle" || geoStyle.constructor.name === "GeoShieldStyle" || (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined)) {
+                                //     mainGeoStyleIds[geoStyle.id] = "";
+                                // }
+                            }
+                            var childrenGeoStyles = instruct[1].childrenGeoStyles;
+                            if (childrenGeoStyles) {
+                                for (var k = 0; k < childrenGeoStyles.length; k++) {
+                                    childrenInstructs.push([instruct[0], childrenGeoStyles[k].id, i]);
+                                    // if (childrenGeoStyles[k].constructor.name === "GeoPointStyle" || childrenGeoStyles[k].constructor.name === "GeoTextStyle" || childrenGeoStyles[k].constructor.name === "GeoShieldStyle" || (childrenGeoStyles[k].constructor.name === "GeoLineStyle" && childrenGeoStyles[k].onewaySymbol === true)) {
+                                    //     mainGeoStyleIds[childrenGeoStyles[k].id] = "";
+                                    // }
+                                }
+                            }
+                        }
+                        Array.prototype.push.apply(instructs, childrenInstructs);
+                        childrenInstructs.length = 0;
+                        instructsInOneZIndex.length = 0;
+                    }
+                }
+            }
+        }
+        instructsTree.length = 0;
+    }
+    return [instructs, mainGeoStyleIds];
+};
+
+var createSubTileInstructCaches = function (features, instructs, extent, tileCoord, requestCoord) {
+    var subTileCachedInstruct = {};
+
+    var offsetZ = tileCoord[0] - requestCoord[0];
+    var tileSize = extent / Math.pow(2, offsetZ);
+
+    var tileRange = getTileRange(requestCoord, tileCoord[0]);
+    var tiles = {};
+    for (var x = tileRange[0]; x <= tileRange[2]; x++) {
+        var minX = (x - tileRange[0]) * tileSize;
+        var maxX = (x - tileRange[0] + 1) * tileSize;
+        for (var y = tileRange[3]; y >= tileRange[1]; y--) {
+            var minY = (tileRange[3] - y) * tileSize;
+            var maxY = (tileRange[3] - y + 1) * tileSize;
+            tiles["" + [x, y]] = [minX, minY, maxX, maxY];
+        }
+    }
+
+    for (var i = 0; i < instructs.length; i++) {
+        var instruct = instructs[i];
+        var feature = features[instruct[0]];
+        var featureExtent = feature.getExtent();
+
+        var featureTileRange = getFeatureTileRange(featureExtent, extent, tileSize, requestCoord, offsetZ);
+        for (var x = tileRange[0] > featureTileRange[0] ? tileRange[0] : featureTileRange[0], xx = featureTileRange[2] > tileRange[2] ? tileRange[2] : featureTileRange[2]; x <= xx; x++) {
+            for (var y = tileRange[1] > featureTileRange[1] ? tileRange[1] : featureTileRange[1], yy = featureTileRange[3] > tileRange[3] ? tileRange[3] : featureTileRange[3]; y <= yy; y++) {
+                var tileKey = "" + [x, y];
+                var tileExtent = tiles[tileKey];
+                if (subTileCachedInstruct[tileKey] === undefined) {
+                    subTileCachedInstruct[tileKey] = [];
+                }
+                subTileCachedInstruct[tileKey].push(instruct);
+            }
+        }
+        feature.extent_ = undefined;
+    }
+    return subTileCachedInstruct;
+}
+
+var getTileRange = function (tileCoord, zoom) {
+    var x = tileCoord[1];
+    var y = tileCoord[2];
+    var minX = x;
+    var maxX = x;
+    var minY = y;
+    var maxY = y;
+
+    for (var i = tileCoord[0]; i < zoom; i++) {
+        minX = minX * 2;
+        maxX = maxX * 2 + 1;
+        minY = minY * 2;
+        maxY = maxY * 2 + 1;
+    }
+    return [minX, minY, maxX, maxY];
+}
+
+var getFeatureTileRange = function (featureExtent, extent, tileSize, requestTileCoord, offsetZ) {
+
+    var minX = requestTileCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[0] / tileSize);
+    var maxX = requestTileCoord[1] * Math.pow(2, offsetZ) + Math.floor(featureExtent[2] / tileSize);
+    var minY = requestTileCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[3]) / tileSize);
+    var maxY = requestTileCoord[2] * Math.pow(2, offsetZ) + Math.floor((extent - featureExtent[1]) / tileSize);
+
+    return [minX, minY, maxX, maxY];
+}
+
+
+
+var readRawGeometry_ = function (pbf, feature, flatCoordinates, ends, offset) {
+    var prevX = 0;
+    var prevY = 0;
+    var isBegin = true;
+
+    pbf.pos = feature.geometry;
+
+    var end = pbf.readVarint() + pbf.pos;
+    var cmd = 1;
+    var length = 0;
+    var x = 0;
+    var y = 0;
+    var coordsLen = 0;
+    var currentEnd = 0;
+
+    while (pbf.pos < end) {
+        if (!length) {
+            var cmdLen = pbf.readVarint();
+            cmd = cmdLen & 0x7;
+            length = cmdLen >> 3;
+            isBegin = true;
+        }
+
+        length--;
+
+        if (cmd === 1 || cmd === 2) {
+            x += pbf.readSVarint();
+            y += pbf.readSVarint();
+
+            if (cmd === 1) { // moveTo
+                if (coordsLen > currentEnd) {
+                    ends.push(coordsLen);
+                    currentEnd = coordsLen;
+                }
+            }
+
+            if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
+                flatCoordinates.push(x, y);
+                prevX = x;
+                prevY = y;
+                coordsLen += 2;
+                isBegin = false;
+            }
+        } else if (cmd === 7) {
+
+            if (coordsLen > currentEnd) {
+                // close polygon
+                flatCoordinates.push(
+                    flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+                coordsLen += 2;
+                isBegin = true;
+            }
+
+        } else {
+            assert(false, 59); // Invalid command found in the PBF
+        }
+    }
+
+    if (coordsLen > currentEnd) {
+        ends.push(coordsLen);
+        currentEnd = coordsLen;
+    }
+
+};
+
+
+
+var readRawFeature_ = function (pbf, layer, i) {
+    pbf.pos = layer.features[i];
+    var end = pbf.readVarint() + pbf.pos;
+    var feature = {
+        layer: layer,
+        type: 0,
+        properties: {},
+        propertiesIndex: {}
+    };
+    pbf.readFields(featureColumnValue, feature, end);
+    return feature;
+};
+
+var featureColumnValue = function (tag, feature, pbf) {
+    if (tag === 1) {
+        feature.id = pbf.readVarint();
+    }
+    else if (tag === 2) {
+        var end = pbf.readVarint() + pbf.pos;
+        while (pbf.pos < end) {
+            var key = pbf.readVarint();
+            var value = pbf.readVarint();
+            feature.propertiesIndex[key] = value;
+            key = feature.layer.keys[key];
+            value = feature.layer.values[value];
+            feature.properties[key] = value;
+        }
+    }
+    else if (tag === 3) {
+        feature.type = pbf.readVarint();
+    }
+    else if (tag === 4) {
+        feature.geometry = pbf.pos;
+    }
+};
+
+var replaceFiltersToIndexOfPbfLayer = function (cacheTrees, pbfLayer) {
+    for (var i = 0, ii = cacheTrees.length; i < ii; i++) {
+        var cacheTree = cacheTrees[i];
+        replaceCacheItemFiltersToIndexOfPbfLayer(cacheTree.root, pbfLayer);
+    }
+}
+var replaceCacheItemFiltersToIndexOfPbfLayer = function (node, pbfLayer) {
+    var data = node.data;
+
+    for (var i = 0; i < data.filterGroup.length; i++) {
+        var filters = data.filterGroup[i];
+        var geoFilter;
+        for (var j = 0; j < filters.length; j++) {
+            geoFilter = filters[j];
+            geoFilter.replaceVaulesToPbfIndex(pbfLayer);
+        }
+    }
+
+    if (node.children) {
+        for (var i = 0, ii = node.children.length; i < ii; i++) {
+            replaceCacheItemFiltersToIndexOfPbfLayer(node.children[i], pbfLayer);
+        }
+    }
+}
+
+var createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
+    var styleIdIndex = 1;
+    var geoStyles = {};
+    var styleJsonCache = new StyleJsonCache();
+    styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
+    for (var id in stylejson) {
+        var json = stylejson[id];
+        
+        var item = new StyleJsonCacheItem(json, 0, 24, "layerName", styleIdIndex);
+
+        for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+            var treeNode = new TreeNode(item);
+            createChildrenNode(treeNode, item, zoom);
+          
+            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+        }
+
+        styleIdIndex += 1;
+    }
+    return styleJsonCache;
+}
+
+var createChildrenNode = function (currentNode, item, zoom) {
+    if (item.subStyleCacheItems && item.subStyleCacheItems.length > 0) {
+        for (var i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
+            var subStyleItem = item.subStyleCacheItems[i];
+            if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                var node = new TreeNode(subStyleItem);
+                currentNode.children.push(node);
+                createChildrenNode(node, subStyleItem, zoom);
+            }
+        }
+    }
+}
 
 
 self.styleJsonCache = {};
@@ -215,53 +627,94 @@ self.request = function (requestInfo, methodInfo) {
     }
 }
 
-self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
-    let replayGroupInfo = createReplayGroupInfo["replayGroupInfo"];
-    let resolution = replayGroupInfo[2];
-    let requestCoord = createReplayGroupInfo["requestCoord"];
-    let sourceTileCoord = createReplayGroupInfo["sourceTileCoord"];
-    let tileProjectionInfo = createReplayGroupInfo["tileProjectionInfo"];
-    let projectInfo = createReplayGroupInfo["projectInfo"];
-    let sourceTileExtent = createReplayGroupInfo["sourceTileExtent"];
-    let bufferedExtent = createReplayGroupInfo["bufferedExtent"];
-    let squaredTolerance = createReplayGroupInfo["squaredTolerance"];
-    let coordinateToPixelTransform = createReplayGroupInfo["coordinateToPixelTransform"];
-    let pixelRatio = createReplayGroupInfo["pixelRatio"]
-    let vectorImageTileCoord = createReplayGroupInfo["vectorImageTileCoord"];
-    let formatId = createReplayGroupInfo["formatId"];
-    let minimalist = createReplayGroupInfo["minimalist"];
+self.createReplayGroup = function (messageData, methodInfo) {
 
-    let frameState = {
-        coordinateToPixelTransform: coordinateToPixelTransform,
-        pixelRatio: pixelRatio
+    var replayGroupInfo = messageData[0];
+    var resolution = replayGroupInfo[2];
+    self["devicePixelRatio"] = messageData[6];
+    var formatId = messageData[7];
+    var coordinateToPixelTransform = messageData[8];
+    var pixelToCoordinateTransform=messageData[13];
+    var maxDataZoom = messageData[9];
+    var vectorTileDataCahceSize = messageData[10];
+    var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
+    var mainDrawingInstructs = [];
+    var mainFeatures = [];
+    var mainFeatureIndex = 0;
+    var renderFeature = function (feature, geoStyles, options, instruct) {
+        var styles = undefined;
+        if (geoStyles) {
+            if (geoStyles && geoStyles.length > 0) {
+                for (var i = 0, ii = geoStyles.length; i < ii; i++) {
+                    if (geoStyles[i]) {
+                        if (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) {
+                            mainFeatures.push(feature);
+                            mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
+                            mainFeatureIndex++;
+                        }
+                        else {
+                            var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
+                            if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
+                                if (ol4Styles) {
+                                    mainFeatures.push(feature);
+                                    mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
+                                    mainFeatureIndex++;
+                                }
+                            }
+                            else {
+                                if (styles === undefined) {
+                                    styles = [];
+                                }
+                                Array.prototype.push.apply(styles, ol4Styles);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            var styleFunction = feature.getStyleFunction();
+            if (styleFunction) {
+                styles = styleFunction.call(/** @type {ol.Feature} */(feature), resolution);
+            } else {
+                styleFunction = layer.getStyleFunction();
+                if (styleFunction) {
+                    styles = styleFunction(feature, resolution);
+                }
+            }
+        }
+
+        if (styles) {
+            var dirty = self.renderFeature(feature, squaredTolerance, styles,
+                replayGroup,options);
+            self.dirty_ = self.dirty_ || dirty;
+        }
     };
 
-    var cacheKey = requestCoord.join(",") + "," + sourceTileCoord[0];
-    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, sourceTileCoord);
-    if (tileFeatureAndInstrictions === undefined) {
-        debugger;
-    }
-    if (sourceTileCoord.toString() != vectorImageTileCoord.toString()) {
-        let newFeatureAndInstructs = self.getApplyTileInstructions(sourceTileCoord, vectorImageTileCoord[0]);
-        if (newFeatureAndInstructs === undefined) {
-            newFeatureAndInstructs = self.createApplyTileInstructions(tileFeatureAndInstrictions[0], formatId, vectorImageTileCoord[0]);
-            self.saveApplyTileInstructions(newFeatureAndInstructs, sourceTileCoord, vectorImageTileCoord[0]);
-        }
-        tileFeatureAndInstrictions = newFeatureAndInstructs;
-    }
-    let features = tileFeatureAndInstrictions[0];
-    let instructs = tileFeatureAndInstrictions[1];
-    let strategyTree = rbush(9);
+    var requestTileCoord = messageData[1];
+    var tileCoord = messageData[2];
 
-    let tileProjection = new Projection({
+    // TEST     
+
+    if(tileCoord.toString() !== "2,1,-2"){
+    // if(tileCoord.toString() !== "14,12928,-6725"){
+    // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
+        // debugger;
+        // return
+    }
+    // TEST END
+
+    var tileProjection = new Projection({
+        code: 'EPSG:3857',
+        units:Units.TILE_PIXELS
+    });
+    var projection = new Projection({
         code: 'EPSG:3857',
         units: Units.TILE_PIXELS
-    })
-    let projection = new Projection({
-        code: 'EPSG:3857',
-        units: Units.TILE_PIXELS
-    })
+    });
 
+    var tileProjectionInfo = messageData[3];
+    var projectInfo = messageData[4];
     for (var name in tileProjectionInfo) {
         tileProjection[name] = tileProjectionInfo[name];
     }
@@ -269,93 +722,104 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
         projection[name] = projectInfo[name];
     }
 
-    let replayGroup = new GeoCanvasReplayGroup(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[2], replayGroupInfo[3],
-        replayGroupInfo[4], replayGroupInfo[5], replayGroupInfo[6]);
+    var squaredTolerance = messageData[5];
+    var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
+    var vectorTileData = null;
 
-    let drawingFeatures = {};
-    let mainDrawingInstructs = [];
-    const render = function (feature, geostyle) {
-        let styles;
-        if (geostyle) {
-            if (geostyle instanceof GeoLineStyle && geostyle.onewaySymbol !== undefined) {
-                drawingFeatures[getUid(feature)] = feature;
-                mainDrawingInstructs.push([getUid(feature), geostyle.id]);
-            }
-            else {
-                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
-                if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
-                    drawingFeatures[getUid(feature)] = feature;
-                    mainDrawingInstructs.push([getUid(feature), geostyle.id]);
-                }
-                else {
-                    if (styles === undefined) {
-                        styles = [];
+    if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
+        vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
+    }
+    else {
+        self.console.log("missing", tileCoord, tileCoordKey)
+    }            
+
+    if (tileCoord[0] < maxDataZoom) {
+        self.vectorTilesData[formatId].remove(tileCoordKey);
+    }
+
+    if(!vectorTileData){
+        return false;
+    }
+    debugger;
+    var features = vectorTileData.features;
+    var styleJsonCache = vectorTileData.styleJsonCache;
+    var subTileInstructCaches = vectorTileData.subTileInstructCaches;
+    var mainGeoStyleIds = vectorTileData.mainGeoStyleIds;
+    var tileKey = "" + [tileCoord[1], tileCoord[2]];
+
+    var geoStyles = styleJsonCache.geoStyles;
+    var instructs = subTileInstructCaches[tileKey];
+
+    var strategyTree = rbush(9);
+
+    var tileGrid = new XYZ().getTileGrid();
+    var bbox = tileGrid.getTileCoordExtent(tileCoord);
+
+
+    var bottomLeft = getBottomLeft(bbox);
+    var bottomRight = getBottomRight(bbox);
+    var topRight = getTopRight(bbox);
+    var topLeft =getTopLeft(bbox);
+
+    var coords = bottomLeft.concat(bottomRight,topRight,topLeft);
+    var feature = new RenderFeature('Polygon',coords, [8], {layerName: "ocean"}, 0);
+    var geoStyle = geoStyles["ocean#0"];
+    renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, [0,'ocean#0',0]);
+
+    if (instructs && instructs.length > 0) {           
+        for (var i = 0; i < instructs.length; i++) {
+            var geoStyleId = instructs[i][1];
+
+            if (mainGeoStyleIds[geoStyleId] === undefined) {
+                var geoStyle = geoStyles[geoStyleId];
+                var featureInfo = features[instructs[i][0]];               
+                var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
+                var cloneEnds = featureInfo.ends_.slice(0);      
+                var feature = new RenderFeature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
+                feature.getGeometry().transform(tileProjection, projection);
+                feature.extent_ = bbox;                        
+                feature["styleId"] = geoStyleId; 
+
+                // clip line segment
+                var type = feature.type_;
+                if(type == 'LineString'){
+                    var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);                            
+                    var flatCoordinates = clipped.flatCoordinates;
+                    var ends = clipped.ends;
+                    
+                    if(flatCoordinates.length <= 2){                                
+                        continue;
                     }
-                    Array.prototype.push.apply(styles, ol4Styles);
+
+                    if(ends.length > 1) {
+                        feature.type_ = 'MultiLineString';
+                    }
+                    feature.flatCoordinates_ = flatCoordinates;
+                    feature.ends_ = ends; 
+                }else if(type == 'MultiLineString'){  
+                    var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
+                    var flatCoordinates = clipped.flatCoordinates;
+                    var ends = clipped.ends;
+                    
+                    if(flatCoordinates.length <= 2){                                
+                        continue;
+                    }
+                    feature.flatCoordinates_ = flatCoordinates;
+                    feature.ends_ = ends; 
                 }
+                renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform,pixelToCoordinateTransform:pixelToCoordinateTransform } }, instructs[i]);
             }
-        }
-        else {
-            const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
-            if (styleFunction) {
-                styles = styleFunction(feature, resolution);
-            }
-        }
-
-        if (styles) {
-            const dirty = self.renderFeature(feature, squaredTolerance, styles, replayGroup);
-            if (!minimalist) {
-                drawingFeatures[getUid(feature)] = feature;
-            }
-        }
-    };
-
-    for (let i = 0, ii = instructs.length; i < ii; i++) {
-        const featureIndex = instructs[i][0];
-        const featureInfo = features[featureIndex];
-
-        let feature = new RenderFeature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-        let geoStyle = instructs[i][1];
-        if (!featureInfo["projected"]) {
-            feature.getGeometry().transform(tileProjection, projection);
-            feature.extent_ = null;
-            featureInfo["projected"] = true;
-        }
-        if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-            render(feature, geoStyle);
         }
     }
-    replayGroup.finish();
-    var resultData = {
+    strategyTree.clear();
+
+    return { 
+        'replays': replayGroup.replaysByZIndex_,
+        features: mainFeatures, 
+        instructs: mainDrawingInstructs
     };
-
-    for (var zIndex in replayGroup.replaysByZIndex_) {
-        var replays = replayGroup.replaysByZIndex_[zIndex];
-        if (!resultData[zIndex]) {
-            resultData[zIndex] = {};
-        }
-        for (var replayType in replays) {
-            if (!resultData[zIndex][replayType]) {
-                resultData[zIndex][replayType] = {};
-            }
-            var replay = replays[replayType];
-            resultData[zIndex][replayType]["instructions"] = [];
-            for (let i = 0; i < replay.instructions.length; i++) {
-                let instruction = replay.instructions[i];
-                if (instruction[0] === Instruction.BEGIN_GEOMETRY || instruction[0] === Instruction.END_GEOMETRY) {
-                    let feature = instruction[1];
-                    instruction[1] = getUid(feature);
-                }
-                resultData[zIndex][replayType]["instructions"].push(instruction);
-            }
-            resultData[zIndex][replayType]["coordinates"] = replay.coordinates.slice(0);
-            replay.coordinates.length = 0;
-            replay.instructions.length = 0;
-        }
-    }
-
-    return { "replays": resultData, "features": drawingFeatures, "mainDrawingInstructs": mainDrawingInstructs };
 }
+
 
 self.disposeSourceTile = function (disposeSourceTileInfo, methodInfo) {
     var sourceTileCoord = disposeSourceTileInfo["sourceTileCoord"];
@@ -434,7 +898,7 @@ self.createApplyTileInstructions = function (features, formatId, vectorImageTile
         if (cacheTrees && cacheTrees.length > 0) {
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
-                if (feature.get(this.layerName) === pbfLayerName) {
+                if (feature.get(self.layerName) === pbfLayerName) {
                     let matchedFeature = undefined;
                     for (let j = 0; j < cacheTrees.length; j++) {
 
@@ -558,12 +1022,12 @@ self.renderFeature = function (feature, squaredTolerance, styles, replayGroup) {
         for (let i = 0, ii = styles.length; i < ii; ++i) {
             loading = renderFeature(
                 replayGroup, feature, styles[i], squaredTolerance,
-                this.handleStyleImageChange_, this) || loading;
+                self.handleStyleImageChange_, this) || loading;
         }
     } else {
         loading = renderFeature(
             replayGroup, feature, styles, squaredTolerance,
-            this.handleStyleImageChange_, this);
+            self.handleStyleImageChange_, this);
     }
     return loading;
 }
@@ -575,12 +1039,12 @@ self.createStyleJsonCache = function (stylejson, geoTextStyleInfos) {
     styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
     for (var id in stylejson) {
         var json = stylejson[id];
-        var item = new StyleJsonCacheItem(json, 0, 24, "layerName");
+        var item = new StyleJsonCacheItem(json, 0, 24, "layerName",styleIdIndex);
 
         for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
             var treeNode = new TreeNode(item);
             self.createChildrenNode(treeNode, item, zoom);
-            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex,styleIdIndex));
         }
 
         styleIdIndex += 1;
@@ -602,17 +1066,52 @@ self.createChildrenNode = function (currentNode, item, zoom) {
 }
 
 self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
-    var featuresAndInstructions = self.readFeaturesAndInstructions(source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution);
 
-    var homologousTilesInstructions = CreateInstructionsForHomologousTiles(featuresAndInstructions, requestCoord, tileCoord[0]);
-    let cacheKey = requestCoord + "," + zoom;
-    self.saveTileInstructions(cacheKey, featuresAndInstructions[0], homologousTilesInstructions);
-    var tileFeatureAndInstrictions = self.getTileInstructions(cacheKey, tileCoord);
+    var styleJsonCache = self.styleJsonCache[formatId];  
+    var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
-    if (tileFeatureAndInstrictions === undefined) {
-        debugger;
-    }
+    var features = readData[0];
+    var instructsTree = readData[1];
+    var extent = readData[2];
+
+    var instructsData = getInstructs(instructsTree);
+    var instructs = instructsData[0];
+    var mainGeoStyleIds = instructsData[1];
+
+    var subTileInstructCaches = createSubTileInstructCaches(features, instructs, extent, tileCoord, requestCoord);
+    instructs.length = 0;
+    var sourceProject = {};
+
+    var oTile = {
+        features: features,
+        styleJsonCache: styleJsonCache,
+        subTileInstructCaches: subTileInstructCaches,
+        sourceProject: sourceProject,
+        lastExtent: extent,
+        mainGeoStyleIds: mainGeoStyleIds
+    };
+
     var requestKey = requestCoord.join(",") + "," + zoom;
+
+    var vectorTileCache = null;
+    vectorTileDataCahceSize = vectorTileDataCahceSize === undefined ? 1024 : vectorTileDataCahceSize;
+
+    if (self.vectorTilesData[formatId] === undefined) {     
+        self.vectorTilesData[formatId] = new LRUCache(vectorTileDataCahceSize);
+    }
+    
+    vectorTileCache = self.vectorTilesData[formatId];
+    vectorTileCache.highWaterMark = vectorTileDataCahceSize;
+    while (vectorTileCache.canExpireCache()) {
+        vectorTileCache.pop();
+    }
+
+    if (!vectorTileCache.containsKey(requestKey)) {
+        vectorTileCache.set(requestKey, oTile);
+    }
+
+    var tileKey = tileCoord[1] + "," + tileCoord[2];
+
     var resultData = {
         status: "succeed",
         requestKey: requestKey
@@ -837,7 +1336,7 @@ self.createFeature_ = function (pbf, rawFeature, opt_options) {
     let feature;
     const id = rawFeature.id;
     const values = rawFeature.properties;
-    values[this.layerName_] = rawFeature.layer.name;
+    values[self.layerName_] = rawFeature.layer.name;
 
     const flatCoordinates = [];
     const ends = [];
@@ -921,6 +1420,9 @@ self.getGeometryType = function (type, numEnds) {
     return geometryType;
 }
 
+
+
+
 self.CreateInstructionsForHomologousTiles = function (featuresAndInstructions, requestCoord, zoom) {
     let subTileCachedInstruct = {};
     let offsetZ = zoom - requestCoord[0];
@@ -990,7 +1492,7 @@ self.saveTileInstructions = function (cacheKey, features, homologousTilesInstruc
     else {
         // TODO: the condition for clearing the cache is that the tile is released. 
         self.features.set(cacheKey, features);
-        // while (this.features.canExpireCache()) {
+        // while (self.features.canExpireCache()) {
         //     const lastKey = self.features.peekLastKey();
         //     self.features.remove(lastKey);
         //     delete self.vectorTilesData[lastKey]
@@ -1002,7 +1504,7 @@ self.getTileInstructions = function (cacheKey, tileCoord) {
     let featuresAndInstructs = undefined;
     if (self.features && self.features.containsKey(cacheKey)) {
         if (self.vectorTilesData && self.vectorTilesData[cacheKey]) {
-            featuresAndInstructs = [this.features.get(cacheKey), this.vectorTilesData[cacheKey][tileCoord] === undefined ? [] : this.vectorTilesData[cacheKey][tileCoord]];
+            featuresAndInstructs = [self.features.get(cacheKey), self.vectorTilesData[cacheKey][tileCoord] === undefined ? [] : self.vectorTilesData[cacheKey][tileCoord]];
         }
     }
 
@@ -1016,3 +1518,150 @@ self.removeTileInstructions = function (cacheKey) {
     }
 }
 
+
+self.clipMultiLine = function(points, ends, bounds, squaredTolerance){
+    var clippedFlatCoordinates;
+    var clippedEnds;
+    var clipped; 
+    var flatCoordinates = [], ends_ = [];
+    ends.unshift(0);
+
+    for(var i = 1; i < ends.length; i++){
+        clipped = self.clipLine(points.slice(ends[i - 1], ends[i]), bounds, squaredTolerance);
+        clippedFlatCoordinates = clipped.flatCoordinates;
+        clippedEnds = clipped.ends;
+        if(clippedFlatCoordinates.length > 2){
+            clippedEnds = clippedEnds.map(function(item) {return item + flatCoordinates.length} );
+            ends_ = ends_.concat(clippedEnds);
+            flatCoordinates = flatCoordinates.concat(clippedFlatCoordinates);
+        }
+    }            
+
+    return {
+        "flatCoordinates":flatCoordinates,
+        "ends": ends_
+    }
+}
+self.clipLine = function(points, bounds, squaredTolerance){
+    var clippedFlatCoordinates = [];
+    var clippedEnds = [];
+    var clipped = self.clipPoint(points, bounds, squaredTolerance);
+
+    for(var j = 0; j < clipped.length; j++){
+        var coords = clipped[j];
+        if(coords.length > 2){
+            clippedFlatCoordinates=clippedFlatCoordinates.concat(coords);
+            clippedEnds.push(clippedFlatCoordinates.length);
+        }
+    }
+
+    return {
+        flatCoordinates: clippedFlatCoordinates,
+        ends: clippedEnds
+    }
+}
+
+self.clipPoint = function (points, bounds, squaredTolerance) {
+    var i, k, segment;
+    var parts = [];
+    var len = points.length;
+    var a = [];
+    var b = [];
+    self.lastCode = undefined;
+
+    for (i = 0, k = 0; i < len - 3; i += 2) {
+        a = [points[i], points[i + 1]];
+        b = [points[i + 2], points[i + 3]];
+        segment = self.clipSegment(a, b, bounds, i);
+        if (!segment) {
+            continue;
+        }
+        parts[k] = parts[k] || [];
+        
+        var shortDistance = (sqDist(segment[0], segment[1]) <= squaredTolerance);
+        if(!shortDistance){
+            parts[k] = parts[k].concat(segment[0]);
+        }
+
+        // if segment goes out of screen, or it's the last one, it's the end of the line part
+        if ((segment[1][0] !== points[i + 2]) || (segment[1][1] !== points[i + 3]) || (i === len - 4)) {
+            parts[k] = parts[k].concat(segment[1]);
+            k++;
+        }
+    }
+    
+    return parts;
+}
+self.clipSegment = function (a, b, bounds, useLastCode) {
+    var codeA = useLastCode ? self.lastCode : getBitCode(a, bounds),
+        codeB =getBitCode(b, bounds),
+        codeOut, p, newCode;
+
+    self.lastCode = codeB;
+
+    while (true) {
+        // if a,b is inside the clip window (trivial accept)
+        if (!(codeA | codeB)) {
+            return [a, b];
+        // if a,b is outside the clip window (trivial reject)
+        } else if (codeA & codeB) {
+            return false;
+        // other cases
+        } else {
+            codeOut = codeA || codeB;
+            p = getEdgeIntersection(a, b, codeOut, bounds);
+            newCode = getBitCode(p, bounds);
+
+            if (codeOut === codeA) {
+                a = p;
+                codeA = newCode;
+            } else {
+                b = p;
+                codeB = newCode;
+            }
+        }
+    }
+}
+
+function getBitCode (p, bounds) {
+    var code = 0;
+
+    if (p[0] < bounds[0]) { // left
+        code |= 1;
+    } else if (p[0] > bounds[2]) { // right
+        code |= 2;
+    }
+    if (p[1] < bounds[1]) { // bottom
+        code |= 4;
+    } else if (p[1] > bounds[3]) { // top
+        code |= 8;
+    }
+
+    return code;
+};
+
+function getEdgeIntersection (a, b, code, bounds) {
+    var dx = b[0] - a[0],
+        dy = b[1] - a[1],
+        minX = bounds[0],
+        minY = bounds[1],
+        maxX = bounds[2],
+        maxY = bounds[3];
+
+    if (code & 8) { // top
+        return [a[0] + dx * (maxY - a[1]) / dy, maxY];
+    } else if (code & 4) { // bottom
+        return [a[0] + dx * (minY - a[1]) / dy, minY];
+    } else if (code & 2) { // right
+        return [maxX, a[1] + dy * (maxX - a[0]) / dx];
+    } else if (code & 1) { // left
+        return [minX, a[1] + dy * (minX - a[0]) / dx];
+    }
+};
+
+function sqDist(p1, p2) {
+    var dx = p2[0] - p1[0],
+        dy = p2[1] - p1[1];
+        
+    return dx * dx + dy * dy;
+};

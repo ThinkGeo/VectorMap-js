@@ -144,7 +144,7 @@ class GeoVectorTileLayer extends VectorTileLayer {
 
                         if (styleJson) {
                             styleJsonCache.styleJson[styleId] = styleJson;
-                            let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
+                            let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName,styleIdIndex);
 
                             for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                                 let treeNode = new TreeNode(item);

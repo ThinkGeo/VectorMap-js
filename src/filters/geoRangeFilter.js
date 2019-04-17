@@ -59,19 +59,13 @@ class GeoRangeFilter extends GeoFilter {
     }
 
     matchFeatureCore(feature, zoom) {
-        let currentValue;
+        var currentValue;
         if (this.replacedValueToIndex) {
-            currentValue = feature.propertiesIndex[this.key];
+            currentValue = feature.properties[this.key];
         }
         else {
-            if (feature.properties !== undefined) {
-                currentValue = feature.properties[this.key];
-            }
-            else {
-                currentValue = feature.get(this.key)
-            }
+            currentValue = feature.properties[this.key];
         }
-
         return this.isInRange(+currentValue);
     }
 
