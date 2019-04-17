@@ -901,23 +901,17 @@ var View = /*@__PURE__*/(function (BaseObject) {
    * @return {State} View state.
    */
   View.prototype.getState = function getState(pixelRatio) {
-    var center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
-    var projection = this.getProjection();
-    var resolution = /** @type {number} */ (this.getResolution());
-    var pixelResolution = resolution / pixelRatio;
-    var rotation = this.getRotation();
-    return (
-      /** @type {State} */ ({
-        center: [
-          Math.round(center[0] / pixelResolution) * pixelResolution,
-          Math.round(center[1] / pixelResolution) * pixelResolution
-        ],
-        projection: projection !== undefined ? projection : null,
-        resolution: resolution,
-        rotation: rotation,
-        zoom: this.getZoom()
-      })
-    );
+    var center = /** @type {ol.Coordinate} */ (this.getCenter());
+        var projection = this.getProjection();
+        var resolution = /** @type {number} */ (this.getResolution());
+        var rotation = this.getRotation();
+        return /** @type {olx.ViewState} */ ({
+            center: center.slice(),
+            projection: projection !== undefined ? projection : null,
+            resolution: resolution,
+            rotation: rotation,
+            zoom: this.getZoom()
+        });
   };
 
   /**

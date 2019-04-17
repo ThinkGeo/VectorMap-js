@@ -19,6 +19,7 @@ export class GeoTextReplay extends TextReplay {
     super(tolerance, maxExtent, declutterTree);
     this.startIndicesStyle = [];
     this.zCoordinates = [];
+    this.indices =[];
   } 
   
 //    finish(context){

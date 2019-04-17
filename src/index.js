@@ -676,7 +676,7 @@ import PluggableMap  from 'ol/PluggableMap';
 import MapEvent  from 'ol/MapEvent';
 import MapEventType  from 'ol/MapEventType';
 import ViewHint from 'ol/ViewHint';
-import { equals, isEmpty,getForViewAndSize,createEmpty,createOrUpdateEmpty } from 'ol/extent';
+import { equals, isEmpty,getForViewAndSize,createEmpty,createOrUpdateEmpty,clone } from 'ol/extent';
 import {assign} from 'ol/obj';
 import { getUid } from 'ol/util';
 import {hasArea} from 'ol/size';
@@ -725,6 +725,7 @@ PluggableMap.prototype.renderFrame_ = function (time) {
             currentResolution: viewState.resolution,
             wantedTiles: {},
             context: this.renderer_.context_
+            
         });
     }
 
@@ -761,13 +762,81 @@ PluggableMap.prototype.renderFrame_ = function (time) {
         if (idle) {
             this.dispatchEvent(
                 new MapEvent(MapEventType.MOVEEND, this, frameState));
-            ol.extent.clone(frameState.extent, this.previousExtent_);
+            clone(frameState.extent, this.previousExtent_);
         }
     }
     this.dispatchEvent(
         new MapEvent(MapEventType.POSTRENDER, this, frameState));
     setTimeout(this.handlePostRender.bind(this), 0);
 };   
+
+import Replay from 'ol/render/webgl/Replay';
+import ImageReplay from 'ol/render/webgl/ImageReplay';
+import Feature from 'ol/render/Feature';
+
+Replay.prototype.declutterRepeat_ = function (context, screenXY){
+    var startIndicesFeature = this.startIndicesFeature;
+    var startIndicesStyle = this.startIndicesStyle;
+    var frameState = context.frameState;
+    var pixelRatio = frameState.pixelRatio;
+    this.screenXY = screenXY;
+
+    for(var i = 0; i < startIndicesFeature.length; i++){
+        var feature = startIndicesFeature[i];
+        var style = startIndicesStyle[i];
+        var declutterGroup = style.declutterGroup_;
+        var geometry = feature.getGeometry();
+        var type = feature.getType(); 
+
+        if(!style){
+            continue;
+        }
+        
+        if(this instanceof ImageReplay){
+            this.setImageStyle(style);
+            
+            var type = geometry.getType();
+            if(type == 'LineString'){
+                this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
+            }else{
+                this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
+                this.renderDeclutter_(declutterGroup, feature);
+            }
+        }else{ 
+            if(type == 'MultiLineString'){
+                var ends = geometry.getEnds();
+                for(var k = 0; k < ends.length; k++){
+                    var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                    var newFeature = new Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                    
+                    this.setTextStyle(style);
+                    this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                }  
+            }else{                              
+                this.setTextStyle(style);
+                if(style.label){
+                    this.label = style.label;
+                    this.maxAngle_ = style.maxAngle_;
+                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                    this.width = this.label.width + lineWidth; 
+                    this.height = this.label.height; 
+                    this.originX = lineWidth;
+                    this.originY = 0;
+                    this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                    this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
+                    this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
+                    this.renderDeclutter_(declutterGroup, feature);
+                }else{   
+                    // draw chars 
+                    this.roadText = true;
+                    this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                }
+            }
+        }
+    }
+};
+
+
 
 // ol.mapsiute namespace
 import GeoVectorTileLayer from "./layer/GeoVectorTileLayer";

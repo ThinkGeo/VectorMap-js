@@ -18,6 +18,8 @@ import {create,fromTransform}  from "ol/vec/mat4"
 export class GeoImageReplay extends ImageReplay {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
+    this.startIndicesStyle = [];
+    this.indices =[];
   } 
   
     finish(context){

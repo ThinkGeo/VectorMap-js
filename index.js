@@ -1,5 +1,6 @@
 let layer = new ol.mapsuite.VectorTileLayer(light, {
-    multithread: true
+    multithread: true,
+    renderMode:"vector"
 });
 
 var geoVectorLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
@@ -52,7 +53,7 @@ view.on("change:resolution", function (e) {
     document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
-var map = new ol.Map({
+var map = new ol.WebGLMap({
     target: 'map',
     layers: [
         layer
