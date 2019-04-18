@@ -70252,7 +70252,7 @@ function olInit() {
                 this.entries_[id] = entry;
                 // render the image on the atlas image
                 renderCallback.call(opt_this, this.context_,
-                    block.x / window.devicePixelRatio + this.space_, block.y / window.devicePixelRatio + this.space_);
+                    block.x + this.space_, block.y + this.space_);
 
                 // split the block after the insertion, either horizontally or vertically
                 this.split_(i, block, width + this.space_, height + this.space_);
@@ -70824,7 +70824,7 @@ function olInit() {
             var state = this.state_;
             var mCtx = this.measureCanvas_.getContext('2d');
             mCtx.font = state.font;
-            var width = Math.ceil((mCtx.measureText(char).width +state.lineWidth/2)* state.scale * window.devicePixelRatio );
+            var width = Math.ceil(mCtx.measureText(char).width * state.scale);
             var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height,
                 function (ctx, x, y) {
                     //Parameterize the canvas
@@ -70989,7 +70989,7 @@ function olInit() {
 
             this.atlases_[hash] = {
                 atlas: new ol.style.AtlasManager({
-                    space: state.lineWidth/2 + 1
+                    space: state.lineWidth + 1
                 }),
                 width: {},
                 height: height
@@ -101544,7 +101544,7 @@ function olInit() {
             // TEST     
             // console.log(tileCoord.toString());
             // if(tileCoord.toString() !== "2,1,-2"){
-            // if(tileCoord.toString() !== "14,13720,-6696"){
+            // if(tileCoord.toString() !== "17,30293,-52889"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // return
             // }

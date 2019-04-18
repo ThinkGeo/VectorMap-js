@@ -233,8 +233,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
         let gl = context.getGL();
-        gl.clear(gl.DEPTH_BUFFER_BIT);
         gl.enable(gl.DEPTH_TEST);
+        gl.clear(gl.DEPTH_BUFFER_BIT);
 
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);

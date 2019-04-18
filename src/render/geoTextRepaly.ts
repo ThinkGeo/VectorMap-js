@@ -287,9 +287,9 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     var text = part[4];
     var cos = Math.cos(rotation);
     var sin = Math.sin(rotation); 
-    var anchorX = part[2] * window.devicePixelRatio;
+    var anchorX = part[2];
     var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
-    var width = this.width*window.devicePixelRatio;
+    var width = this.width;
     var height = this.height;
     var bottomLeft = [];
     var bottomRight = [];
@@ -407,7 +407,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     var i, ii;
     for(i = 0, ii = text.length; i < ii; ++i){
         var curr = text[i];
-        sum += Math.ceil((mCtx.measureText(curr).width + state.lineWidth / 2) * state.scale);
+        sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
     }
 
     return sum;
@@ -418,7 +418,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     var state = this.state_;
     mCtx.font = state.font;
     var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-        state.lineWidth / 2) * state.scale * window.devicePixelRatio);
+        state.lineWidth / 2) * state.scale);
 
     return height;
   }
@@ -494,7 +494,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.originY = options.originY;
             this.width = options.width;
             this.height = options.height;
-            // this.width = width + lineWidth;
             this.imageHeight = image.height;
             this.imageWidth = image.width;
             this.anchorX = options.anchorX;
@@ -516,12 +515,12 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             
             this.drawText_(flatCoordinates, offset, end, stride);
         }else{
-            // this.scale = 1;           
+            var devicePixelRatio = window.devicePixelRatio;                  
             var glyphAtlas = options.currAtlas;
             var j, jj, currX, currY, charArr, charInfo;
-            var anchorX = options.anchorX;
-            var anchorY = options.anchorY;          
-            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale * window.devicePixelRatio;
+            var anchorX = options.anchorX * devicePixelRatio;
+            var anchorY = options.anchorY * devicePixelRatio;          
+            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
             this$1.rotation = options.rotation;
             currX = 0;
             currY = 0;
@@ -534,11 +533,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var image = charInfo.image;                        
                     this$1.anchorX = anchorX - currX;
                     this$1.anchorY = anchorY - currY;
-                    this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-                    this$1.originY = charInfo.offsetY - 1;
-                    this$1.height = glyphAtlas.height;
-                    this$1.width = j === 0 || j === charArr.length - 1 ?
-                        glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+                    this$1.originX = (j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX) * devicePixelRatio;
+                    this$1.originY = (charInfo.offsetY - 1) * devicePixelRatio;
+                    this$1.height = glyphAtlas.height * devicePixelRatio;
+                    this$1.width = (j === 0 || j === charArr.length - 1 ?
+                        glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]]) * devicePixelRatio;
                     this$1.imageHeight = image.height;
                     this$1.imageWidth = image.width;
                     this$1.rotateWithView = 1;
@@ -551,7 +550,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                             this$1.images_.push(image);
                         }
                     }
-                    this$1.scale_ = 1 / window.devicePixelRatio;
+                    this$1.scale_ = 1 / devicePixelRatio;
                     this$1.drawText_(flatCoordinates, offset, end, stride);
                 }
                 currX += this$1.width;

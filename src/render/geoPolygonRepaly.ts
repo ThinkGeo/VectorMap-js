@@ -28,7 +28,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
         tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
     
-    if (this.lineStringReplay) {
+    if (false && this.lineStringReplay) {
         tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
         tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
         tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
@@ -96,7 +96,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     // disable the vertex attrib arrays
     this.shutDownProgram(gl, locations);
     
-    if (this.lineStringReplay) {
+    if (false && this.lineStringReplay) {
         if (!tmpStencil) {
             gl.disable(gl.STENCIL_TEST);
         }
