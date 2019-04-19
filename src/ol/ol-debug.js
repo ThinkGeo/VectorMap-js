@@ -21156,11 +21156,6 @@ function olInit() {
          */
         this.targetPointers = [];
 
-
-        this.delta =options.angleDelta ? options.angleDelta : 0.08;
-        this.deltaX_ = this.deltaY_ = options.deltaX_ ? options.deltaX_ : 4;
-        this.distance_ = options.distance_ ? options.distance_ : 0.2;
-
     };
     ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
@@ -22661,28 +22656,18 @@ function olInit() {
         var angle = Math.atan2(
             touch1.clientY - touch0.clientY,
             touch1.clientX - touch0.clientX);
-      
-        var distance = Math.sqrt(dx * dx + dy * dy); 
+
         if (this.lastAngle_ !== undefined) {
             var delta = angle - this.lastAngle_;
-            var deltaX_ = touch0.clientX - this.originX;
-            var deltaY_ = touch0.clientY - this.originY;
-            var distance_  = distance - this.lastDistance_;
-
             this.rotationDelta_ += delta;
-            if (((Math.abs(delta) > this.delta) && 
-                Math.abs(deltaX_) <= this.deltaX_  && 
-                Math.abs(deltaY_) <= this.deltaY_) 
-                ||(Math.abs(distance_) <= this.distance_ 
-                && Math.abs(distance_)>0)
-            ) {
+            if (!this.rotating_ &&
+                Math.abs(this.rotationDelta_) > this.threshold_) {
                 this.rotating_ = true;
             }
             rotationDelta = delta;
         }
-
         this.lastAngle_ = angle;
-        this.lastDistance_ = distance;
+
 
         var map = mapBrowserEvent.map;
         var view = map.getView();
@@ -22700,7 +22685,7 @@ function olInit() {
         this.anchor_ = map.getCoordinateFromPixel(centroid);
 
         // rotate
-        if (this.rotating_) {
+        if (!view.isZoom) {
             var rotation = view.getRotation();
             map.render();
             ol.interaction.Interaction.rotateWithoutConstraints(view,
@@ -22820,6 +22805,8 @@ function olInit() {
          */
         this.lastDistance_ = undefined;
 
+        
+
         /**
          * @private
          * @type {number}
@@ -22838,6 +22825,9 @@ function olInit() {
     ol.interaction.PinchZoom.handleDragEvent_ = function (mapBrowserEvent) {
         var scaleDelta = 1.0;
 
+        var map = mapBrowserEvent.map;
+        var view = map.getView();
+
         var touch0 = this.targetPointers[0];
         var touch1 = this.targetPointers[1];
 
@@ -22851,9 +22841,6 @@ function olInit() {
             scaleDelta = this.lastDistance_ / distance;
         }
        
-
-        var map = mapBrowserEvent.map;
-        var view = map.getView();
         var resolution = view.getResolution();
         var maxResolution = view.getMaxResolution();
         var minResolution = view.getMinResolution();
@@ -22869,25 +22856,32 @@ function olInit() {
         var angle = Math.atan2(
             touch1.clientY - touch0.clientY,
             touch1.clientX - touch0.clientX);
-
+            
         if (scaleDelta != 1.0) {
             this.lastScaleDelta_ = scaleDelta;
+        }
+        
 
-            var delta = angle - this.lastAngle_;
-            var deltaX_ = touch0.clientX - this.originX
-            var deltaY_ = touch0.clientY - this.originY
+        var height = window.screen.height;
+        var width = window.screen.width;
+        var diagonal  = Math.sqrt(width * width + height * height);
+        
+        var delta = angle - this.lastAngle_;
+        var distance_  = distance - this.lastDistance_;
 
-            var distance_  = distance - this.lastDistance_;
-            if (Math.abs(delta) <= this.delta && 
-                (Math.abs(deltaX_) > this.deltaX_ || 
-                Math.abs(deltaY_) >  this.deltaY_)
-                &&Math.abs(distance_) >this.distance_
-            ) {
-                this.isZoom = true;
+        if((Math.abs(delta)>0 && Math.abs(distance_)>0) && !view.flag){
+            console.log(Math.abs(distance_/delta), diagonal / 6)
+            if (Math.abs(distance_/delta) > diagonal / 6) {
+                view.isZoom = true;
+                view.flag = true;
+            }else{
+                view.isZoom = false;
+                view.flag = true;
             }
         }
-        this.lastDistance_ = distance;
+        
 
+        this.lastDistance_ = distance;
         this.lastAngle_ = angle
         
 
@@ -22900,7 +22894,7 @@ function olInit() {
         this.anchor_ = map.getCoordinateFromPixel(centroid);
 
         // scale, bypass the resolution constraint
-        if(this.isZoom){
+        if(view.isZoom){
             map.render();
             ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
         }
@@ -22918,6 +22912,7 @@ function olInit() {
         if (this.targetPointers.length < 2) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
+            view.isZoom = false;
             view.setHint(ol.ViewHint.INTERACTING, -1);
             var resolution = view.getResolution();
             if (this.constrainResolution_ ||
@@ -22949,12 +22944,14 @@ function olInit() {
             var touch0 = this.targetPointers[0];
 
             var map = mapBrowserEvent.map;
+            var view = map.getView();
+            view.isZoom = false;
             this.anchor_ = null;
             this.lastDistance_ = undefined;
+
             this.lastScaleDelta_ = 1;
-
             this.isZoom = false;
-
+            view.flag = undefined;
             this.originX = touch0.clientX;
             this.originY = touch0.clientY;
 
