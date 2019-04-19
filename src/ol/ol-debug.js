@@ -20092,7 +20092,7 @@ function olInit() {
 
         var className = options.className !== undefined ? options.className : 'ol-rotate';
 
-        var label = options.label !== undefined ? options.label : '\u21E7';
+        var label = options.label !== undefined ? options.label : '';
 
         /**
          * @type {Element}
@@ -20112,7 +20112,7 @@ function olInit() {
         var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
         var button = document.createElement('button');
-        button.className = className + '-reset';
+        button.className = className + '-reset'; 
         button.setAttribute('type', 'button');
         button.title = tipLabel;
         button.appendChild(this.label_);
@@ -70789,7 +70789,7 @@ function olInit() {
                 }
                 sum += glyphAtlas.width[curr] ? glyphAtlas.width[curr] : 0;
             }
-            return sum / window.devicePixelRatio;
+            return sum;
         }).reduce(function (max, curr) {
             return Math.max(max, curr);
         });
