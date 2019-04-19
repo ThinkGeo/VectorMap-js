@@ -244,6 +244,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let renderMode = layer.getRenderMode();
         let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
         let rotation = frameState.viewState.rotation;
+        let lineStringReplayArray = [];
+
         if (declutterReplays) {
             this.declutterTree_.clear();
         }
@@ -273,20 +275,16 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     continue;
                 } 
                 
-                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY);            
-                
-                if(Object.keys(replayGroup.replaysByZIndex_).length){                    
-                    var uid = this.ol_uid;
-                    var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
-                    if (alpha !== 1) {
-                        frameState.animate = true;
-                    } else if (tile.transition) {
-                        tile.endTransition(uid);
-                    }
-                }
+                // draw polygon
+                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY, lineStringReplayArray);         
             }
+        }     
+
+        // draw lineString
+        for(let i = 0; i < lineStringReplayArray.length; i += 2){            
+            lineStringReplayArray[i].replay(context, rotation, {}, lineStringReplayArray[i + 1]);
         }
-        
+
         if (declutterReplays) {
             // var hints = frameState.viewHints;
             // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];

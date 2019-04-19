@@ -80,12 +80,13 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
             skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
     }
     
-    public replayCustom(context: CanvasRenderingContext2D, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any) {
+    public replayCustom(context: CanvasRenderingContext2D, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any, lineStringReplayArray: any) {
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
         let replayTypes = opt_replayTypes ? opt_replayTypes : (<any>ol.render).replay.ORDER;
         let i, ii, j, jj, replays, replay;
+
         for (i = 0, ii = zs.length; i < ii; ++i) {
             let zIndexKey = zs[i].toString();
             replays = this.replaysByZIndex_[zIndexKey];
@@ -102,8 +103,10 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                         } else {
                             declutter.push(replay, screenXY);
                         }
-                    } else {          
+                    } else if(replayType == (<any>ol.render).ReplayType.POLYGON) {          
                         replay.replay(context, viewRotation, skippedFeaturesHash, screenXY);
+                    }else{
+                        lineStringReplayArray.push(replay, screenXY);
                     }
                 }
             }
@@ -111,9 +114,6 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
     }
    
     public getReplayCustom(zIndex: any, replayType: any) {
-        // if(replayType == "LineString"){
-        //     debugger;
-        // }
         let zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
         let replays = this.replaysByZIndex_[zIndexKey];
         if (replays === undefined) {
