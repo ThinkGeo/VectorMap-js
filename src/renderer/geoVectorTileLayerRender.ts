@@ -276,7 +276,17 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 } 
                 
                 // draw polygon
-                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY, lineStringReplayArray);         
+                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY, lineStringReplayArray);     
+                
+                if(Object.keys(replayGroup.replaysByZIndex_).length){                    
+                    var uid = this.ol_uid;
+                    var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
+                    if (alpha !== 1) {
+                        frameState.animate = true;
+                    } else if (tile.transition) {
+                        tile.endTransition(uid);
+                    }
+                }
             }
         }     
 
