@@ -22870,8 +22870,7 @@ function olInit() {
         var distance_  = distance - this.lastDistance_;
 
         if((Math.abs(delta)>0 && Math.abs(distance_)>0) && !view.flag){
-            console.log(Math.abs(distance_/delta), diagonal / 6)
-            if (Math.abs(distance_/delta) > diagonal / 6) {
+            if (Math.abs(distance_/delta) > diagonal / 8) {
                 view.isZoom = true;
                 view.flag = true;
             }else{
