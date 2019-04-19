@@ -22683,9 +22683,10 @@ function olInit() {
         centroid[0] -= viewportPosition.left;
         centroid[1] -= viewportPosition.top;
         this.anchor_ = map.getCoordinateFromPixel(centroid);
-
         // rotate
-        if (!view.isZoom) {
+        if (this.rotating_ && !view.isZoom) {
+            view.flag = true;
+            
             var rotation = view.getRotation();
             map.render();
             ol.interaction.Interaction.rotateWithoutConstraints(view,
@@ -22869,14 +22870,14 @@ function olInit() {
         var delta = angle - this.lastAngle_;
         var distance_  = distance - this.lastDistance_;
 
-        if((Math.abs(delta)>0 && Math.abs(distance_)>0) && !view.flag){
-            if (Math.abs(distance_/delta) > diagonal / 6.5) {
-                view.isZoom = true;
-                view.flag = true;
-            }else{
-                view.isZoom = false;
-                view.flag = true;
-            }
+        if(!isNaN(distance_)){
+            window.distance += distance_;
+        }else{
+            window.distance = 0;
+        }
+
+        if (!view.flag && Math.abs(window.distance) > 40) {
+            view.isZoom = true;
         }
         
 
@@ -22892,12 +22893,8 @@ function olInit() {
         centroid[1] -= viewportPosition.top;
         this.anchor_ = map.getCoordinateFromPixel(centroid);
 
-        // scale, bypass the resolution constraint
-        if(view.isZoom){
-            map.render();
-            ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
-        }
-        
+        map.render();
+        ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
     };
 
 
@@ -22911,7 +22908,6 @@ function olInit() {
         if (this.targetPointers.length < 2) {
             var map = mapBrowserEvent.map;
             var view = map.getView();
-            view.isZoom = false;
             view.setHint(ol.ViewHint.INTERACTING, -1);
             var resolution = view.getResolution();
             if (this.constrainResolution_ ||
