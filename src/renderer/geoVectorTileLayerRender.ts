@@ -701,14 +701,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     }
 
     public forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-        var viewState = frameState.viewState;
+        var viewState = frameState.viewState;       
+        var context = frameState.context;
         var resolution = viewState.resolution;
         var rotation = viewState.rotation;
         hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
         var layer = this.getLayer();
         /** @type {Object.<string, boolean>} */
         var features = {};
-
         /** @type {Array.<ol.VectorImageTile>} */
         var renderedTiles = this.renderedTiles;
 
@@ -717,7 +717,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         var bufferedExtent, found;
         var i, ii, replayGroup;
         var tile, tileCoord, tileExtent;
-        var layerState = this.layerState_;
+        var layerState = context.layerState;
+
         for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
             tile = renderedTiles[i];
             tileCoord = tile.wrappedTileCoord;
