@@ -718,6 +718,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         var i, ii, replayGroup;
         var tile, tileCoord, tileExtent;
         var layerState = context.layerState;
+        var opacity = 1;
+
+        if(layerState && layerState.opacity != undefined){
+            opacity = layerState.opacity; 
+        }
 
         for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
             tile = renderedTiles[i];
@@ -734,7 +739,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             }
             replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
             found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, frameState.context, viewState.center, 
-                    resolution, rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {},
+                    resolution, rotation, frameState.size, frameState.pixelRatio, opacity, {},
                 /**
                  * @param {ol.Feature|ol.render.Feature} feature Feature.
                  * @return {?} Callback result.
