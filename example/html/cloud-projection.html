@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> Maps WMS </title>
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+
+    <!-- Define some custom styles for the UI of our sample page. -->
+    <style rel="stylesheet" type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ol-control:hover {
+            background-color: unset;
+        }
+
+        .ol-control button:focus {
+            outline: unset;
+        }
+
+        .ol-full-screen {
+            right: unset;
+            left: 0.5em;
+            top: 5.5em;
+            background-color: unset
+        }
+
+        .ol-full-screen button {
+            height: 1.2em;
+            width: 1.2em;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin: 0px;
+            background-color: #fff !important;
+            color: #2d3c4d;
+            border: solid 1px #ccc;
+            box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+            border-radius: 0 0 2px 2px;
+        }
+
+        .ol-full-screen button:hover {
+            background-color: #eee !important;
+        }
+
+        .loading {
+            position: absolute;
+            top: 60%;
+            left: calc(75% - 41.5px);
+            width: 150px;
+            height: 20px;
+            z-index: 9;
+        }
+
+        .loading div {
+            display: inline-block;
+            border-radius: 50%;
+            height: 20px;
+            width: 20px;
+            background-color: #5c5c5c;
+            margin-left: 10px;
+        }
+
+        .loading div:nth-child(1) {
+            animation: loading1 1s ease-in-out infinite;
+        }
+
+        .loading div:nth-child(2) {
+            animation: loading2 1s ease-in-out infinite;
+            animation-delay: -0.8s;
+        }
+
+        .loading div:nth-child(3) {
+            animation: loading3 1s ease-in-out infinite;
+            animation-delay: -1.6s;
+        }
+
+        @keyframes loading1 {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        @keyframes loading2 {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        @keyframes loading3 {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        .loading div:nth-child(1) {
+            margin-left: calc(50% - 50px);
+        }
+
+        .loading.hide {
+            display: none;
+        }
+
+        .projection-area-wrap {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        h3 {
+            margin-bottom: 0;
+            margin-top: 0;
+            background-color: rgb(223, 223, 223);
+            padding: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .projection-area-wrap>div {
+            display: inline-block;
+            width: calc(50% - 70px);
+        }
+
+        .spherical-mercator {
+            margin-left: 134px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            word-break: break-all;
+            resize: none;
+            border: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: 0;
+            box-shadow: 0px 0px 27px #b7b7b7;
+        }
+
+        .projection-area-wrap button {
+            width: 100px;
+            height: 30px;
+            position: absolute;
+            top: calc(50% - 15px);
+            left: calc(50% - 50px);
+            border-radius: 2px;
+            border: 1px solid #cacaca;
+            background-color: rgb(0, 139, 194);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .projection-area-wrap button:hover,
+        .projection-area-wrap button:focus {
+            box-shadow: 0 0 10px #c6c6c6;
+            outline: none;
+        }
+
+        @media (max-width: 767px) {
+            h3 {
+                font-size: 12px;
+            }
+
+            textarea {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="projection-area-wrap">
+        <div class="decimal-degree">
+            <h3>Well Known Text – 4326 (Decimal Degrees): </h3>
+            <textarea name="" cols="30" rows="6"></textarea>
+        </div>
+        <button id="transform">&gt;&gt;</button>
+        <div class="spherical-mercator">
+            <h3>Well Known Text – 3857 (Spherical Mercator): </h3>
+            <div class="loading hide">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <textarea name="" cols="30" rows="6">
+
+            </textarea>
+        </div>
+    </div>
+
+    <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
+    <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
+    <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+
+    <!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
+    <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.1/thinkgeocloudclient.js"></script>
+
+    <script src="../js/cloud-projection.js"></script>
+</body>
+
+</html>
