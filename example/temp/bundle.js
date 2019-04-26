@@ -569,6 +569,20 @@
         htmlPath: './example/html/satellite-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
         jsPath: './example/js/satellite-with-labels.js'
+      },
+      {
+        comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
+        title: "WMS Maps",
+        htmlPath: './example/html/cloud-maps-wms.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-maps-wms.js'
+      },
+      {
+        comments: 'Transform projection via Cloud Projection Service.',
+        title: "Transform Projection",
+        htmlPath: './example/html/cloud-projection.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-projection.js'
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
         title: 'Raster Maps (High Resolution)',
