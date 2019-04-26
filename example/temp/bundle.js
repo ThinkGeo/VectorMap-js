@@ -583,6 +583,12 @@
         htmlPath: './example/html/cloud-projection.html',
         codePenUrl: '..',
         jsPath: './example/js/cloud-projection.js'
+      },{
+        comments: 'Get the time zone in the world except for the ocean.',
+        title: "Cloud Time Zone",
+        htmlPath: './example/html/cloud-time-zone.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-time-zone.js'
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
         title: 'Raster Maps (High Resolution)',
