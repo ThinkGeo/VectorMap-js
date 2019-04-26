@@ -43,11 +43,9 @@ const initializeMap = () => {
     });
     map.addControl(new ol.control.FullScreen());
     addWktToMap(defaultWkt);
-    // view.calculateExtent(map.getSize());
 }
 
 const addWktToMap = (wkt) => {
-    projectionLayer.getSource().clear();
     const format = new ol.format.WKT();
     const feature = format.readFeature(wkt, {
         dataProjection: 'EPSG:4326',
@@ -58,8 +56,6 @@ const addWktToMap = (wkt) => {
         padding: [20, 20, 20, 20]
     })
 }
-
-
 const projectionClient = new tg.ProjectionClient(apiKey);
 
 
@@ -69,7 +65,12 @@ const performTransform = (wkt) => {
     projectionClient.projectForGeometry(wkt, fromProj, toProj, (status, res) => {
         if (status !== 200) {
             document.querySelector('.loading').classList.add('hide');
-            document.querySelector('.spherical-mercator textarea').value = `${res.status}: ${res.data.wkt}`;
+            if(res.data){
+                document.querySelector('.spherical-mercator textarea').value = `${res.status}: ${res.data.wkt}`;
+            }else{
+                document.querySelector('.spherical-mercator textarea').value = `${res.status}: ${res.error.message}`;
+            }
+            
         } else {
             document.querySelector('.loading').classList.add('hide');
             document.querySelector('.spherical-mercator textarea').value = res.data.wkt;
@@ -81,6 +82,7 @@ const performTransform = (wkt) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('transform').addEventListener('click', () => {
+        projectionLayer.getSource().clear();
         document.querySelector('.loading').classList.remove('hide');
         document.querySelector('.spherical-mercator textarea').value = '';
         const wkt = document.querySelector('.decimal-degree textarea').value;
