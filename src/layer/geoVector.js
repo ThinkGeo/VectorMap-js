@@ -1,9 +1,10 @@
-import GeoStyle from '../style/geoStyle';
+import {GeoStyle} from '../style/geoStyle';
 import GeoVectorSource from "../source/geoVector";
-import StyleJsonCache from '../tree/styleJsonCache';
-import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
-import TreeNode from '../tree/treeNode';
-import Tree from '../tree/tree';
+import {StyleJsonCache} from '../tree/styleJsonCache';
+import {StyleJsonCacheItem} from '../tree/styleJsonCacheItem';
+import {TreeNode} from '../tree/treeNode';
+import {Tree} from '../tree/tree';
+import { GeoVectorLayerRender } from "../renderer/geoVectorLayerRender";
 
 export class GeoVector extends ol.layer.Vector {
     constructor(stylejson, opt_options) {
@@ -28,6 +29,7 @@ export class GeoVector extends ol.layer.Vector {
 
         ol.LayerType["GEOVECTOR"] = "GEOVECTOR";
         this.type = ol.LayerType.GEOVECTOR;
+        ol.plugins.register(ol.PluginType.LAYER_RENDERER, GeoVectorLayerRender);
     }
 
     isStyleJsonUrl(styleJson) {
@@ -222,7 +224,7 @@ export class GeoVector extends ol.layer.Vector {
             url: sourceJson["url"],
             clientId: this.clientId,
             clientSecret: this.clientSecret,
-            format: format,
+            format: format
         });
         return source;
     }
@@ -281,6 +283,69 @@ export class GeoVector extends ol.layer.Vector {
                     let node = new TreeNode(subStyleItem);
                     currentNode.children.push(node);
                     this.createChildrenNode(node, subStyleItem, zoom);
+                }
+            }
+        }
+    }
+
+    // recalculate the verctices of text for resolution changed                 
+    declutterRepeat_(context, screenXY){
+        var startIndicesFeature = this.startIndicesFeature;
+        var startIndicesStyle = this.startIndicesStyle;
+        var frameState = context.frameState;
+        var pixelRatio = frameState.pixelRatio;
+        this.screenXY = screenXY;
+
+        for(var i = 0; i < startIndicesFeature.length; i++){
+            var feature = startIndicesFeature[i];
+            var style = startIndicesStyle[i];
+            var declutterGroup = style.declutterGroup_;
+            var geometry = feature.getGeometry();
+            var type = feature.getType(); 
+
+            if(!style){
+                continue;
+            }
+
+            if(this instanceof ol.render.webgl.ImageReplay){
+                this.setImageStyle(style);
+                
+                var type = geometry.getType();
+                if(type == 'LineString'){
+                    this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
+                }else{
+                    this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
+                    this.renderDeclutter_(declutterGroup, feature);
+                }
+            }else{ 
+                if(type == 'MultiLineString'){
+                    var ends = geometry.getEnds();
+                    for(var k = 0; k < ends.length; k++){
+                        var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new ol.render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                        
+                        this.setTextStyle(style);
+                        this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                    }  
+                }else{     
+                    this.setTextStyle(style);
+                    if(style.label){
+                        this.label = style.label;
+                        this.maxAngle_ = style.maxAngle_;
+                        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                        this.width = this.label.width + lineWidth; 
+                        this.height = this.label.height; 
+                        this.originX = lineWidth;
+                        this.originY = 0;
+                        this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                        this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
+                        this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
+                        this.renderDeclutterLabel_(declutterGroup, feature);
+                    }else{  
+                        // draw chars 
+                        this.roadText = true;
+                        this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                    }
                 }
             }
         }

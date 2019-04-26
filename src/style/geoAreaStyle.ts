@@ -202,7 +202,7 @@ export class GeoAreaStyle extends GeoStyle {
                 GeoAreaStyle.areaStyle.setStroke(undefined);
             }
 
-            GeoAreaStyle.areaStyle.setGeometry(feature);
+            GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
             this.styles[length++] = GeoAreaStyle.areaStyle;
 
             if (this.gamma !== undefined && options.layer) {

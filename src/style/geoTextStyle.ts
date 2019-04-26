@@ -213,7 +213,7 @@ export class GeoTextStyle extends GeoStyle {
         this.placements = this.propertyPlacements.getValue(featureProperties);
 
         this.style.getText().setText(featureText);
-        if (this.setLabelPosition(featureText, feature, resolution, this.style.getText(), options.strategyTree, options.frameState)) {
+        if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             let featureZindex = feature["tempTreeZindex"];
             if (featureZindex === undefined) {
                 featureZindex = 0;
@@ -276,9 +276,22 @@ export class GeoTextStyle extends GeoStyle {
                     break;
                 case (<any>ol.geom).GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
+                    if (flatCoordinates[2] / resolution < tmpLabelWidth) {
+                        flatCoordinates = undefined;
+                    }
                     break;
                 case (<any>ol.geom).GeometryType.MULTI_POLYGON:
-                    let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatMidpoint();
+                    let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+                    // flatCoordinates = interiorPoints;
+                    flatCoordinates = [];
+                    for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+                        if (interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
+                            flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+                        }
+                    }
+                    if(!flatCoordinates.length){
+                        return;
+                    }
                     break;
                 default:
             }

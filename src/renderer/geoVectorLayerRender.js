@@ -1,7 +1,10 @@
 
-export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
+import { ReplayGroupCustom } from "../render/replayGroupCustom";
+
+export class GeoVectorLayerRender extends ol.renderer.webgl.VectorLayer{
     constructor(mapRenderer, layer) {
         super(mapRenderer, layer);
+        this.declutterTree_ = layer.getDeclutter() ? ol.ext.rbush(9) : null;
         this.instructionsByZoom = {};
     }
 
@@ -38,18 +41,18 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
             vectorLayerRenderBuffer * resolution);
         const projectionExtent = viewState.projection.getExtent();
 
-        // if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-        //     !containsExtent(projectionExtent, frameState.extent)) {
-        //     // For the replay group, we need an extent that intersects the real world
-        //     // (-180° to +180°). To support geometries in a coordinate range from -540°
-        //     // to +540°, we add at least 1 world width on each side of the projection
-        //     // extent. If the viewport is wider than the world, we need to add half of
-        //     // the viewport width to make sure we cover the whole viewport.
-        //     const worldWidth = getWidth(projectionExtent);
-        //     const gutter = Math.max(getWidth(extent) / 2, worldWidth);
-        //     extent[0] = projectionExtent[0] - gutter;
-        //     extent[2] = projectionExtent[2] + gutter;
-        // }
+        if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
+            !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+            // For the replay group, we need an extent that intersects the real world
+            // (-180° to +180°). To support geometries in a coordinate range from -540°
+            // to +540°, we add at least 1 world width on each side of the projection
+            // extent. If the viewport is wider than the world, we need to add half of
+            // the viewport width to make sure we cover the whole viewport.
+            const worldWidth = ol.extent.getWidth(projectionExtent);
+            const gutter = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
+            extent[0] = projectionExtent[0] - gutter;
+            extent[2] = projectionExtent[2] + gutter;
+        }
 
         if (!this.dirty_ &&
             this.renderedResolution_ == resolution &&
@@ -69,15 +72,16 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
 
         this.dirty_ = false;
 
-        const replayGroup = new ReplayGroupCustom(
-            ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, vectorLayer.getRenderBuffer(), this.declutterTree_);
+        const replayGroup = new ol.render.webgl.ReplayGroup(
+            ol.renderer.vector.getTolerance(resolution, pixelRatio), 
+            extent, vectorLayer.getRenderBuffer(), this.declutterTree_);
         vectorSource.loadFeatures(extent, resolution, projection);
         let strategyTree = ol.ext.rbush(9);
         
         const render = function (feature, geostyle) {
             let styles;
             if (geostyle) {
-                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree: strategyTree });
                 if (styles === undefined) {
                     styles = [];
                 }
@@ -114,14 +118,15 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
             else {
                 // Get drawing instructions for drawing features;
                 let drawinginstructions = this.getDrawingInstructions(features, Math.round(frameState.viewState.zoom));
-
                 for (let i = 0, ii = drawinginstructions.length; i < ii; ++i) {
+                    drawinginstructions[i][0].coordinateToPixelTransform = frameState.coordinateToPixelTransform;
+                    drawinginstructions[i][0].center = frameState.viewState.center;
+                    drawinginstructions[i][0].resolution = resolution;
                     render(drawinginstructions[i][0], drawinginstructions[i][1]);
                 }
             }
-
         } else {
-            vectorSource.forEachFeatureInExtent(extent, render);
+            vectorSource.forEachFeatureInExtent(extent, render, this);
         }
 
         replayGroup.finish(context);
@@ -135,6 +140,80 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
         // this.replayGroupChanged = true;
         return true;
     }
+
+    // composeFrame(frameState, layerState, context) {
+    //     this.layerState_ = layerState;
+    //     var viewState = frameState.viewState;
+    //     var rotation = viewState.rotation;
+    //     var resolution = viewState.resolution;
+    //     var center = viewState.center;
+    //     var opacity = layerState.opacity;
+    //     var replayGroup = this.replayGroup_;
+    //     var size = frameState.size;
+    //     var pixelRatio = frameState.pixelRatio;
+    //     var gl = this.mapRenderer.getGL();
+    //     var layerExtent = frameState.extent;
+    //     var screenXY = [(layerExtent[0] + layerExtent[2]) / 2,(layerExtent[1] + layerExtent[3]) / 2];
+
+    //     let layer = this.getLayer();
+    //     let declutterReplays = layer.getDeclutter() ? {} : null;
+
+    //     if (declutterReplays) {
+    //         this.declutterTree_.clear();
+    //     }
+
+    //     context.frameState = frameState;
+
+    //     if (replayGroup && !replayGroup.isEmpty()) {
+    //         gl.enable(gl.SCISSOR_TEST);
+    //         gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
+    //         replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+    //             opacity, layerState.managed ? frameState.skippedFeatureUids : {}, 
+    //             declutterReplays, screenXY);
+    //         gl.disable(gl.SCISSOR_TEST);
+    //     }
+
+    //     if (declutterReplays) {
+    //         this.replayDeclutter(declutterReplays, context, rotation);
+    //     }
+    // }
+
+    // replayDeclutter(declutterReplays, context, rotation) {
+    //     var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
+    //     var skippedFeatureUids = {};
+    //     for (var z = 0, zz = zs.length; z < zz; ++z) {
+    //         var replayData = declutterReplays[zs[z].toString()];
+    //         for (var i = 0, ii = replayData.length; i < ii;) {
+    //             var replay = replayData[i++];                
+    //             var screenXY = replayData[i++];
+    //             replay.declutterRepeat_(context, screenXY);
+    //         }
+    //     }        
+
+    //     // draw
+    //     for (var z = 0, zz = zs.length; z < zz; ++z) {
+    //         var replayData = declutterReplays[zs[z].toString()];
+    //         for (var i = 0, ii = replayData.length; i < ii;) {
+    //             var replay = replayData[i++];                
+    //             var screenXY = replayData[i++];
+    //             var tmpOptions = replay.tmpOptions;   
+                                     
+    //             replay.indices.length = 0;
+    //             replay.vertices.length = 0;
+    //             replay.groupIndices.length = 0;
+                
+    //             for(var k = 0; k < tmpOptions.length; k++){
+    //                 if(replay instanceof ol.render.webgl.TextReplay){
+    //                     replay.drawText(tmpOptions[k]);
+    //                 }else if(replay instanceof ol.render.webgl.ImageReplay){
+    //                     replay.drawPoint(tmpOptions[k]);
+    //                 }
+    //             }
+    //             replay.finish(context);               
+    //             replay.replay(context, rotation, skippedFeatureUids, screenXY);
+    //         }
+    //     }
+    // }
 
     getDrawingInstructions(features, zoom) {
         let drawinginstructions = [];
@@ -152,7 +231,7 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
 
     getInstructionsByZoom(zoom) {
         let zoomedInstructions = this.instructionsByZoom[zoom];
-        if (zoomedInstructions === undefined) {
+        if (zoomedInstructions === undefined || !zoomedInstructions.length) {
             zoomedInstructions = this.createInstructions(zoom);
         }
         return zoomedInstructions;
@@ -266,12 +345,12 @@ export class GeoVectorLayerRenderer extends ol.renderer.webgl.VectorLayer {
         this.instructionsByZoom[zoom] = instructs;
         return instructs;
     }
+}
 
-    public static handles(type, layer) {
-        return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.GEOVECTOR;;
-    }
-    
-    public static create(mapRenderer, layer) {
-        return new GeoVectorLayerRenderer(mapRenderer, layer);
-    }
+GeoVectorLayerRender['handles'] = function(type, layer) {
+    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.GEOVECTOR;;
+}
+
+GeoVectorLayerRender['create'] = function(mapRenderer, layer) {
+    return new GeoVectorLayerRender(mapRenderer, layer);
 }

@@ -12,79 +12,58 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         this.BATCH_CONSTRUCTORS_ = this.BATCH_CONSTRUCTORS_CUSTOM;
         this.replay = this.replayCustom;
         this.declutterTree = declutterTree;
-        // this.forEachFeatureAtCoordinate = this.forEachFeatureAtCoordinateCustom;
     }
 
-    public forEachFeatureAtCoordinateCustom(coordinate: any, resolution: number, rotation: number, hitTolerance: number, skippedFeaturesHash: any, callback: any, declutterReplays: any) {
-        hitTolerance = Math.round(hitTolerance);
-        let contextSize = hitTolerance * 2 + 1;
-        let transform = (<any>ol).transform.compose(this.hitDetectionTransform_,
-            hitTolerance + 0.5, hitTolerance + 0.5,
-            1 / resolution, -1 / resolution,
-            -rotation,
-            -coordinate[0], -coordinate[1]);
-        let context = this.hitDetectionContext_;
+    // FIXME: change the feature(ol.render.Feature) to ol.Feature
+    public forEachFeatureAtCoordinate = function (
+        coordinate, context, center, resolution, rotation, size, pixelRatio,
+        opacity, skippedFeaturesHash,
+        callback) {
 
-        if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
-            context.canvas.width = contextSize;
-            context.canvas.height = contextSize;
-        } else {
-            context.clearRect(0, 0, contextSize, contextSize);
-        }
+        return;
+
+        var gl = context.getGL();
+        gl.bindFramebuffer(
+            gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
         /**
          * @type {ol.Extent}
          */
-        let hitExtent;
+        var hitExtent;
         if (this.renderBuffer_ !== undefined) {
-            hitExtent = ol.extent.createEmpty();
-            (<any>ol.extent).extendCoordinate(hitExtent, coordinate);
-            ol.extent.buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
+            // build an extent around the coordinate, so that only features that
+            // intersect this extent are checked
+            hitExtent = ol.extent.buffer(
+                (<any>ol.extent).createOrUpdateFromCoordinate(coordinate),
+                resolution * this.renderBuffer_);
         }
 
-        let mask = (<any>ol.render.canvas).ReplayGroup.getCircleArray_(hitTolerance);
-        let declutteredFeatures;
-        // if (this.declutterTree_) {
-        //     declutteredFeatures = this.declutterTree_.all().map(function (entry) {
-        //         return entry.value;
-        //     });
-        // }
+        return this.replayHitDetection_(context,
+            coordinate, resolution, rotation, (<any>ol.render).webgl.ReplayGroup.HIT_DETECTION_SIZE_,
+            pixelRatio, opacity, skippedFeaturesHash,
+            /**
+             * @param {ol.Feature|ol.render.Feature} feature Feature.
+             * @return {?} Callback result.
+             */
+            function (feature) {
+                var imageData = new Uint8Array(4);
+                gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
-        /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @return {?} Callback result.
-         */
-        function hitDetectionCallback(feature) {
-            let imageData = context.getImageData(0, 0, contextSize, contextSize).data;
-            for (let i = 0; i < contextSize; i++) {
-                for (let j = 0; j < contextSize; j++) {
-                    if (mask[i][j]) {
-                        if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-                            let result;
-                            if (!declutteredFeatures || declutteredFeatures.indexOf(feature) !== -1) {
-                                result = callback(feature);
-                            }
-                            if (result) {
-                                return result;
-                            } else {
-                                context.clearRect(0, 0, contextSize, contextSize);
-                                return undefined;
-                            }
-                        }
+                if (imageData[3] > 0) {
+                    var result = callback(feature);
+                    if (result) {
+                        return result;
                     }
                 }
-            }
-        }
-
-        return this.replayHitDetection_(context, transform, rotation,
-            skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
+            }, true, hitExtent);
     }
     
-    public replayCustom(context: CanvasRenderingContext2D, viewRotation: number, skippedFeaturesHash: any, opt_replayTypes: any, opt_declutterReplays: any, screenXY: any, lineStringReplayArray: any) {
+    public replayCustom(context, center, resolution, rotation, size, pixelRatio, opacity, 
+        skippedFeaturesHash, opt_declutterReplays, screenXY, lineStringReplayArray) {
         /** @type {Array.<number>} */
         let zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort((<any>ol).array.numberSafeCompareFunction);
-        let replayTypes = opt_replayTypes ? opt_replayTypes : (<any>ol.render).replay.ORDER;
+        let replayTypes = (<any>ol.render).replay.ORDER;
         let i, ii, j, jj, replays, replay;
 
         for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -104,7 +83,8 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                             declutter.push(replay, screenXY);
                         }
                     } else if(replayType == (<any>ol.render).ReplayType.POLYGON) {          
-                        replay.replay(context, viewRotation, skippedFeaturesHash, screenXY);
+                        replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
+                            skippedFeaturesHash, undefined, false, {}, screenXY);
                     }else{
                         lineStringReplayArray.push(replay, screenXY);
                     }

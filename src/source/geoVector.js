@@ -15,8 +15,8 @@ class GeoVectorSource extends ol.source.Vector {
         }
     }
 
-    public xhr(url, format) {
-        return loadFeaturesXhr(url, format,
+    xhr(url, format) {
+        return this.loadFeaturesXhr(url, format,
             /**
              * @param {Array<import("./Feature.js").default>} features The loaded features.
              * @param {import("./proj/Projection.js").default} dataProjection Data
@@ -24,15 +24,14 @@ class GeoVectorSource extends ol.source.Vector {
              * @this {import("./source/Vector").default|import("./VectorTile.js").default}
              */
             function (features, dataProjection) {
-                var VOID = function() {};
                 const sourceOrTile = /** @type {?} */ (this);
                 if (typeof sourceOrTile.addFeatures === 'function') {
             /** @type {import("./source/Vector").default} */ (sourceOrTile).addFeatures(features);
                 }
-            }, /* FIXME handle error */ VOID);
+            }, /* FIXME handle error */ function() {});
     }
 
-    public loadFeaturesXhr(url, format, success, failure) {
+    loadFeaturesXhr(url, format, success, failure) {
         return (
             /**
              * @param {import("./extent.js").Extent} extent Extent.

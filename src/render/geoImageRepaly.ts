@@ -96,23 +96,10 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     this.drawCoordinates(flatCoordinates, offset, end, stride);
   }
 
-  public replay(context, viewRotation, skippedFeaturesHash, screenXY){
-    this.viewRotation_ = viewRotation;
-    this.webglReplay_(context, 
-        skippedFeaturesHash, undefined, undefined, screenXY);
-  }
 
-  public webglReplay_(context, skippedFeaturesHash, featureCallback, opt_hitExtent, screenXY) {
-    var frameState = context.frameState;
-    var layerState = context.layerState;
-    var viewState = frameState.viewState;
-    var center = viewState.center;
-    var size = frameState.size;
-    var pixelRatio = frameState.pixelRatio;
-    var resolution = viewState.resolution;
-    var opacity = layerState.opacity;
-    var rotation = viewState.rotation;
-    var oneByOne = undefined;
+
+  public replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash,
+    featureCallback, oneByOne, opt_hitExtent, screenXY) {
 
     var gl = context.getGL();
     var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
@@ -152,7 +139,12 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     var projectionMatrix = (<any>ol).transform.reset(this.projectionMatrix_);
     (<any>ol).transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
     (<any>ol).transform.rotate(projectionMatrix, -rotation);
-    (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
+    
+    if(!screenXY){
+        (<any>ol).transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+    }else{
+        (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
+    }
 
     var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
     (<any>ol).transform.scale(offsetScaleMatrix, 2/ size[0], 2/ size[1]);

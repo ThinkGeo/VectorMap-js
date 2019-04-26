@@ -26359,7 +26359,8 @@ function olInit() {
         }
 
         var projection = viewState.projection;
-
+        
+        // wrapX
         var translatedCoordinate = coordinate;
         if (projection.canWrapX()) {
             var projectionExtent = projection.getExtent();
@@ -30797,7 +30798,7 @@ function olInit() {
         var geometry = style.getGeometryFunction()(feature);
         if (!geometry) {
             return;
-        }
+        }        
         var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
         var renderer = style.getRenderer();
         if (renderer) {
@@ -66093,7 +66094,7 @@ function olInit() {
     ol.render.webgl.Replay.prototype.replay = function (context,
         center, resolution, rotation, size, pixelRatio,
         opacity, skippedFeaturesHash,
-        featureCallback, oneByOne, opt_hitExtent) {
+        featureCallback, oneByOne, opt_hitExtent, offsetX) {
         var gl = context.getGL();
         var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
             tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
@@ -66117,7 +66118,7 @@ function olInit() {
             this.lineStringReplay.replay(context,
                 center, resolution, rotation, size, pixelRatio,
                 opacity, skippedFeaturesHash,
-                featureCallback, oneByOne, opt_hitExtent);
+                featureCallback, oneByOne, opt_hitExtent, offsetX);
 
             gl.stencilMask(0);
             gl.stencilFunc(gl.NOTEQUAL, 1, 255);
@@ -66133,7 +66134,13 @@ function olInit() {
         var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
         ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
         ol.transform.rotate(projectionMatrix, -rotation);
-        ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+        
+        // wrapX
+        if(offsetX != undefined){
+            ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0] - offsetX), -(center[1] - this.origin[1]));
+        }else{
+            ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+        }
 
         var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
         ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
@@ -66898,7 +66905,7 @@ function olInit() {
      * @param {WebGLRenderingContext} gl GL.
      */
     ol.webgl.Context = function (canvas, gl) {
-
+    
         /**
          * @private
          * @type {HTMLCanvasElement}
@@ -70714,18 +70721,62 @@ function olInit() {
             this.startIndicesFeature.push(feature);
 
             var glyphAtlas = this.currAtlas_;
-            var lines = this.text_.split('\n');
+            var lines = this.text_.split(' ');
             var textSize = this.getTextSize_(lines);
             var i, ii, j, jj, currX, currY, charArr, charInfo;
-            var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+            // var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
             var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
             var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+            var resolution = feature.resolution;
+            
+            // remove labels that exceeds the polygon
+            if(resolution && geometry.getType() === ol.geom.GeometryType.MULTI_POLYGON){
+                var tmpCoords = [];
+                for (var i = 0, ii = flatCoordinates.length; i < ii; i += 3) {
+                    if (flatCoordinates[i + 2] / resolution >= textSize[0]) {
+                        tmpCoords.push(flatCoordinates[i], flatCoordinates[i + 1]);
+                    }
+                }
+                end = tmpCoords.length;
+                if (end == 0) {
+                    return;
+                }
+                flatCoordinates = tmpCoords;
+            }
 
+            // renderDeclutter
+            var group;
+            // if(feature.coordinateToPixelTransform){
+                // var box = [];
+                // var width = textSize[0];
+                // var height = textSize[1];
+                // var scale = this.scale;
+                // var pixelCoordinate = ol.transform.apply(feature.coordinateToPixelTransform,
+                //     [flatCoordinates[0], flatCoordinates[1]]);
+                // box[0] = pixelCoordinate[0] - scale * anchorX;
+                // box[3] = pixelCoordinate[1] + scale * (height - anchorY);
+                // box[2] = pixelCoordinate[0] + scale * (width - anchorX);
+                // box[1] = pixelCoordinate[1] - scale * anchorY;
+                // group = {
+                //     minX: box[0],
+                //     minY: box[1],
+                //     maxX: box[2],
+                //     maxY: box[3],
+                //     value: feature
+                // }
+            // }
+            // if(group && this.declutterTree.collides(group)){
+                // return;
+            // }
+            // group && this.declutterTree.insert(group);
+            
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 currX = 0;
                 currY = glyphAtlas.height * i;
                 charArr = lines[i].split('');
-
+                var size = this.getTextSize_([lines[i]]);
+                var anchorX = Math.round(size[0] * this.textAlign_ - this.offsetX_);
+                // var anchorY = Math.round(size[1] * this.textBaseline_ - this.offsetY_);
                 for (j = 0, jj = charArr.length; j < jj; ++j) {
                     charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
 
@@ -71045,7 +71096,7 @@ function olInit() {
      * @param {number=} opt_renderBuffer Render buffer.
      * @struct
      */
-    ol.render.webgl.ReplayGroup = function (tolerance, maxExtent, opt_renderBuffer) {
+    ol.render.webgl.ReplayGroup = function (tolerance, maxExtent, opt_renderBuffer, declutterTree) {
         ol.render.ReplayGroup.call(this);
 
         /**
@@ -71072,7 +71123,12 @@ function olInit() {
          *        Object.<ol.render.ReplayType, ol.render.webgl.Replay>>}
          */
         this.replaysByZIndex_ = {};
-
+        
+        /**
+         * @private
+         * @type {Object}
+         */
+        this.declutterTree = declutterTree || {};
     };
     ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
 
@@ -71152,7 +71208,7 @@ function olInit() {
              * @type {Function}
              */
             var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-            replay = new Constructor(this.tolerance_, this.maxExtent_);
+            replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree_);
             replays[replayType] = replay;
         }
         return replay;
@@ -71180,7 +71236,7 @@ function olInit() {
      */
     ol.render.webgl.ReplayGroup.prototype.replay = function (context,
         center, resolution, rotation, size, pixelRatio,
-        opacity, skippedFeaturesHash) {
+        opacity, skippedFeaturesHash, offsetX) {
         /** @type {Array.<number>} */
         var zs = Object.keys(this.replaysByZIndex_).map(Number);
         zs.sort(ol.array.numberSafeCompareFunction);
@@ -71194,7 +71250,7 @@ function olInit() {
                     replay.replay(context,
                         center, resolution, rotation, size, pixelRatio,
                         opacity, skippedFeaturesHash,
-                        undefined, false);
+                        undefined, false, undefined, offsetX);
                 }
             }
         }
@@ -72893,8 +72949,9 @@ function olInit() {
         }
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
-        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
+        gl.clearColor(0, 0, 0, 0);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+        // gl.enable(gl.BLEND);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
@@ -72941,6 +72998,20 @@ function olInit() {
         }
 
         var viewState = frameState.viewState;
+        var projection = viewState.projection;
+
+        var translatedCoordinate = coordinate;
+        if (projection.canWrapX()) {
+            var projectionExtent = projection.getExtent();
+            var worldWidth = ol.extent.getWidth(projectionExtent);
+            var x = coordinate[0];
+            if (x < projectionExtent[0] || x > projectionExtent[2]) {
+                var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
+                translatedCoordinate = [x + worldWidth * worldsAway, coordinate[1]];
+            }
+        }
+
+
 
         var layerStates = frameState.layerStatesArray;
         var numLayers = layerStates.length;
@@ -72952,7 +73023,8 @@ function olInit() {
                 layerFilter.call(thisArg2, layer)) {
                 var layerRenderer = this.getLayerRenderer(layer);
                 result = layerRenderer.forEachFeatureAtCoordinate(
-                    coordinate, frameState, hitTolerance, callback, thisArg);
+                    layer.getSource().getWrapX() ? translatedCoordinate : coordinate, 
+                    frameState, hitTolerance, callback, thisArg);
                 if (result) {
                     return result;
                 }
@@ -73593,18 +73665,55 @@ function olInit() {
         var viewState = frameState.viewState;
         var replayGroup = this.replayGroup_;
         var size = frameState.size;
+        var center = viewState.center;
+        var resolution = viewState.resolution;
+        var rotation = viewState.rotation;
+        var opacity = layerState.opacity;
         var pixelRatio = frameState.pixelRatio;
         var gl = this.mapRenderer.getGL();
+        var vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
+        var projection = viewState.projection;
+        var projectionExtent = projection.getExtent();
+        var extent = frameState.extent;
+
         if (replayGroup && !replayGroup.isEmpty()) {
             gl.enable(gl.SCISSOR_TEST);
             gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
-            replayGroup.replay(context,
-                viewState.center, viewState.resolution, viewState.rotation,
-                size, pixelRatio, layerState.opacity,
-                layerState.managed ? frameState.skippedFeatureUids : {});
+            replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                opacity, layerState.managed ? frameState.skippedFeatureUids : {});
             gl.disable(gl.SCISSOR_TEST);
         }
 
+        // wrapX
+        if (vectorSource.getWrapX() && projection.canWrapX() &&
+            !ol.extent.containsExtent(projectionExtent, extent)) {
+            var startX = extent[0];
+            var worldWidth = ol.extent.getWidth(projectionExtent);
+            var world = 0;
+            var offsetX;
+            while (startX < projectionExtent[0]) {
+                --world;
+                offsetX = worldWidth * world;
+                // transform = this.getTransform(frameState, offsetX);
+                replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                    opacity, layerState.managed ? frameState.skippedFeatureUids : {}, offsetX);
+                // replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+                startX += worldWidth;
+            }
+            world = 0;
+            startX = extent[2];
+            while (startX > projectionExtent[2]) {
+                ++world;
+                offsetX = worldWidth * world;
+                // transform = this.getTransform(frameState, offsetX);
+                replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                    opacity, layerState.managed ? frameState.skippedFeatureUids : {}, offsetX);
+                // replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+                startX -= worldWidth;
+            }
+            // restore original transform for render and compose events
+            // transform = this.getTransform(frameState, 0);
+        }
     };
 
 
@@ -73733,6 +73842,20 @@ function olInit() {
 
         var extent = ol.extent.buffer(frameStateExtent,
             vectorLayerRenderBuffer * resolution);
+        const projectionExtent = viewState.projection.getExtent();
+
+        if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
+            !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+            // For the replay group, we need an extent that intersects the real world
+            // (-180° to +180°). To support geometries in a coordinate range from -540°
+            // to +540°, we add at least 1 world width on each side of the projection
+            // extent. If the viewport is wider than the world, we need to add half of
+            // the viewport width to make sure we cover the whole viewport.
+            const worldWidth = ol.extent.getWidth(projectionExtent);
+            const gutter = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
+            extent[0] = projectionExtent[0] - gutter;
+            extent[2] = projectionExtent[2] + gutter;
+        }
 
         if (!this.dirty_ &&
             this.renderedResolution_ == resolution &&
@@ -98183,7 +98306,7 @@ function olInit() {
                     else {
                         GeoAreaStyle.areaStyle.setStroke(undefined);
                     }
-                    GeoAreaStyle.areaStyle.setGeometry(feature);                    
+                    GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());                    
                     GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
                     this.styles[length++] = GeoAreaStyle.areaStyle;
                     if (this.gamma !== undefined && options.layer) {
@@ -99664,7 +99787,17 @@ function olInit() {
                             flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
                             break;
                         case ol.geom.GeometryType.MULTI_POLYGON:
-                            var interiorPoints = (geometry).getFlatMidpoint();
+                            let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+                            // flatCoordinates = interiorPoints;
+                            flatCoordinates = [];
+                            for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+                                if (interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
+                                    flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+                                }
+                            }
+                            if(!flatCoordinates.length){
+                                return;
+                            }
                             break;
                         default:
                     }

@@ -240,11 +240,17 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);
 
         let layer = this.getLayer();
+        let viewState = frameState.viewState;
         let declutterReplays = layer.getDeclutter() ? {} : null;
         let renderMode = layer.getRenderMode();
         let replayTypes = this.VECTOR_REPLAYS_CUSTOM[renderMode];
-        let rotation = frameState.viewState.rotation;
         let lineStringReplayArray = [];
+        let center = viewState.center;
+        let rotation = viewState.rotation;
+        let resolution = viewState.resolution;
+        let size = frameState.size;
+        let pixelRatio = frameState.pixelRatio;
+        let opacity = layerState.opacity;
 
         if (declutterReplays) {
             this.declutterTree_.clear();
@@ -252,7 +258,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let tiles = this.renderedTiles;
         context.globalAlpha = layerState.opacity;        
         context.frameState = frameState;
-        context.layerState = layerState;
+        // context.layerState = layerState;
 
         for (let i = tiles.length - 1; i >= 0; --i) {
             let tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
@@ -276,7 +282,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 } 
                 
                 // draw polygon
-                replayGroup.replay(context, rotation, {}, replayTypes, declutterReplays, screenXY, lineStringReplayArray);     
+                replayGroup.replay(context, center, resolution, rotation, size, pixelRatio,
+                    opacity, {}, declutterReplays, screenXY, lineStringReplayArray);     
                 
                 if(Object.keys(replayGroup.replaysByZIndex_).length){                    
                     var uid = this.ol_uid;
@@ -292,18 +299,13 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
         // draw lineString
         for(let i = 0; i < lineStringReplayArray.length; i += 2){            
-            lineStringReplayArray[i].replay(context, rotation, {}, lineStringReplayArray[i + 1]);
+            lineStringReplayArray[i].replay(context, center, resolution, rotation, size, pixelRatio,
+                opacity, {}, undefined, false, {}, lineStringReplayArray[i + 1]);
         }
 
         if (declutterReplays) {
-            // var hints = frameState.viewHints;
-            // var animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
-            // delete context["quickZoom"]
-            // if (animatingOrInteracting) {
-            //     context["quickZoom"] = frameState["quickZoom"];
-            // }
-            // context["currentResolution"] = frameState["currentResolution"];
-            this.replayDeclutter(declutterReplays, context, rotation);
+            this.replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio,
+                opacity, {}, undefined, false, {});
         }
         if (rotation) {
         //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
@@ -314,9 +316,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         gl.disable(gl.DEPTH_TEST);
     }
 
-    public replayDeclutter(declutterReplays, context, rotation) {
+    public replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio, 
+        opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+        
         var zs = Object.keys(declutterReplays).map(Number).sort((<any>ol).array.numberSafeCompareFunction);
-        var skippedFeatureUids = {};
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
@@ -347,7 +350,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 }
                 replay.finish(context);
                
-                replay.replay(context, rotation, skippedFeatureUids, screenXY);
+                replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
+                    skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, screenXY);
             }
         }
     }
@@ -425,9 +429,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                  */
                 let renderFeature = function (feature, geoStyles, options) {
                     let styles;
-                    if(geoStyles instanceof GeoLineStyle){
-                        debugger;
-                    }
+                    
                     if (geoStyles) {
                         if (geoStyles && geoStyles.length > 0) {
                             for (let i = 0, ii = geoStyles.length; i < ii; i++) {
@@ -557,9 +559,18 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 let replay = replayGroup.getReplay(zindex, replayType);    
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
                                 for(let key in workerReplay){      
-                                    // if(key === 'indices' || key === 'vertices'){
-                                    //     replay[key] = new Int32Array(workerReplay[key]);
-                                    // }else 
+                                    // if(key == 'startIndicesFeature'){
+                                    //     replay[key] = workerReplay[key].map(function(feature){
+                                    //         var renderFeature = new ol.render.Feature(feature.type_, feature.flatCoordinates_, feature.ends_, 
+                                    //             feature.properties_);
+                                    //         (<any>renderFeature).zCoordinate = feature.zCoordinate;
+                                    //         (<any>renderFeature).extent_ = feature.extent_;
+                                    //         (<any>renderFeature).id_ = feature.id_;
+
+                                    //         return renderFeature;
+                                    //     });
+                                    // }
+                                     
                                     if(key !== 'lineStringReplay'){
                                         replay[key] = workerReplay[key];
                                     }
@@ -702,7 +713,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
     public forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
         var viewState = frameState.viewState;       
-        var context = frameState.context;
+        var context = this.mapRenderer.getContext();
         var resolution = viewState.resolution;
         var rotation = viewState.rotation;
         hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -717,7 +728,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         var bufferedExtent, found;
         var i, ii, replayGroup;
         var tile, tileCoord, tileExtent;
-        var layerState = context.layerState;
+        var layerState = layer.state_;
 
         for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
             tile = renderedTiles[i];
@@ -733,6 +744,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 continue;
             }
             replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+            if(!replayGroup || !layerState){
+                continue;
+            }
+
             found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, frameState.context, viewState.center, 
                     resolution, rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {},
                 /**
