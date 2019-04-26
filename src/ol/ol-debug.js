@@ -26360,8 +26360,7 @@ function olInit() {
         }
 
         var projection = viewState.projection;
-        
-        // wrapX
+
         var translatedCoordinate = coordinate;
         if (projection.canWrapX()) {
             var projectionExtent = projection.getExtent();
@@ -30762,7 +30761,7 @@ function olInit() {
      * @template T
      */
     ol.renderer.vector.renderFeature = function (
-        replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+        replayGroup, feature, style, squaredTolerance, listener, thisArg,frameState) {
         var loading = false;
         var imageStyle, imageState;
         imageStyle = style.getImage();
@@ -30781,7 +30780,7 @@ function olInit() {
             }
         }
         ol.renderer.vector.renderFeature_(replayGroup, feature, style,
-            squaredTolerance);
+            squaredTolerance,frameState);
 
         return loading;
     };
@@ -30795,11 +30794,11 @@ function olInit() {
      * @private
      */
     ol.renderer.vector.renderFeature_ = function (
-        replayGroup, feature, style, squaredTolerance) {
+        replayGroup, feature, style, squaredTolerance,frameState) {
         var geometry = style.getGeometryFunction()(feature);
         if (!geometry) {
             return;
-        }        
+        }
         var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
         var renderer = style.getRenderer();
         if (renderer) {
@@ -30807,7 +30806,7 @@ function olInit() {
         } else {
             var geometryRenderer =
                 ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-            geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
+            geometryRenderer(replayGroup, simplifiedGeometry, style, feature,frameState);
         }
     };
 
@@ -30857,13 +30856,13 @@ function olInit() {
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @private
      */
-    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature) {
+    ol.renderer.vector.renderLineStringGeometry_ = function (replayGroup, geometry, style, feature,frameState) {
         var strokeStyle = style.getStroke();
         if (strokeStyle) {
             var lineStringReplay = replayGroup.getReplay(
                 style.getZIndex(), ol.render.ReplayType.LINE_STRING);
             lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-            lineStringReplay.drawLineString(geometry, feature);
+            lineStringReplay.drawLineString(geometry, feature,frameState);
         }
         var textStyle = style.getText();
         if (textStyle) {
@@ -68368,21 +68367,193 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature) {
+    ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature,frameState) {
+        
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-        var stride = lineStringGeometry.getStride();
-        if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-            flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-                stride, -this.origin[0], -this.origin[1]);
-            if (this.state_.changed) {
-                this.styleIndices_.push(this.indices.length);
-                this.state_.changed = false;
+        if(this.state_.lineDash.length > 0){
+            function bearing(seg){
+                var firstPoint = [seg.x1,seg.y1];
+                var secondPoint = [seg.x2,seg.y2];
+                var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
+                angle = angle?angle:angle+0.0001;
+                return angle;
             }
-            this.startIndices.push(this.indices.length);
-            this.startIndicesFeature.push(feature);
-            this.drawCoordinates_(
-                flatCoordinates, 0, flatCoordinates.length, stride);
+            function getSegmentFromPixel(coordPixel){
+                var segments = [];
+                var seg = null;
+                var ps = null;
+                var pt = null;
+                for( var i = 0; i < coordPixel.length-1; i ++ ){
+                    ps = coordPixel[i];
+                    pt = coordPixel[ i+1];
+                    seg = {
+                        x1:ps[0],
+                        y1:ps[1],
+                        x2:pt[0],
+                        y2:pt[1]
+                    }
+                    var length = Math.sqrt(Math.pow((seg.x2 - seg.x1), 2) + Math.pow((seg.y2 - seg.y1), 2));
+                    var angle = bearing( seg );
+                    seg.pixelLength = length;
+                    seg.pixelAngle = angle;
+                    // seg.startToEndLength = length;
+                    segments.push( seg );
+                }
+                return segments;
+            }
+            function getPixelFromCoord ( coordLLs ){
+                var coordPxs = [];
+                var pts = [];
+                var pxs = null;
+                for( var i = 0; i < coordLLs.length; i++ ) {
+                    pts = coordLLs[i];
+                    pxs =ol.transform.apply(frameState.coordinateToPixelTransform,
+                    pts.slice(0, 2));
+                    coordPxs.push( pxs );
+                }
+                return coordPxs;
+            }
+            function getNeedPixelFromLine( seg,chaLength,lastSeg ) {
+                var segLen = seg.pixelLength;
+                if (lastSeg) {
+                    var numTemp = Math.ceil(lastSeg.pixelLength / chaLength);
+                    if(lastSeg.residueLength){
+                        var startLength=chaLength-lastSeg.residueLength;
+                        
+                    }else{
+                        var startLength =chaLength-(lastSeg.pixelLength - numTemp * chaLength);
+                        
+                    }
+                    var num =(segLen - startLength) / chaLength ;
+                    var x = seg.x1 + (seg.x2 - seg.x1) * startLength / segLen;
+                    var y = seg.y1 + (seg.y2 - seg.y1) * startLength / segLen;
+                    seg.pixelLength = segLen - startLength
+                    
+                } else {
+                    startLength = 0;
+                    var x = seg.x1;
+                    var y = seg.y1;
+                    var num =segLen / chaLength;
+                }
+            
+                var xOper = true;
+                var yOper = false;
+                var xCha = seg.x2 - x;
+                var yCha = seg.y2 - y;
+                var xAver = xCha / num;
+                var yAver = yCha / num;
+                var pixelArr = [];
+            
+                var xOrig = x;
+                var yOrin = y;
+                var xEnd = seg.x2;
+                var yEnd = seg.y2;
+            
+                for (var i = 0; i < num; i++) {
+                    x = xAver * i + xOrig;
+                    y = yAver * i + yOrin;
+                    pixelArr.push(x);
+                    pixelArr.push(y);
+                }
+                return pixelArr;
+            
+            }
+            function myCreateSegDirection(coordPxs,chaLength){
+                var coordArr=[];
+                for(var i=0;i<coordPxs.length;i+=2){
+                    var coord=[coordPxs[i],coordPxs[i+1]];
+                    coordArr.push(coord);
+                }
+                coordArr = getPixelFromCoord(coordArr);
+                var segments =getSegmentFromPixel( coordArr );
+                var tempLength = {
+                    pixelLength:0,
+                    x1:0,
+                    y1:0,
+                    x2:0,
+                    y2:0
+                };
+                var nowSeg = null;
+                var nowLengthFlag = true;
+                var findPixelArr = [];
+                for( var i = 0; i < segments.length; i++ ) {
+                    nowSeg = segments[i];
+                    if( nowSeg.pixelLength < chaLength ) {
+                        if(nowLengthFlag){
+                            
+                        }
+                        nowLengthFlag=false;
+                        tempLength.pixelLength += nowSeg.pixelLength;
+                    }
+                    else {
+                    //   nowLengthFlag = true;
+                        var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
+                        findPixelArr = findPixelArr.concat( splitPixelArr );
+                    }
+                    if(tempLength.pixelLength > chaLength) {
+                        tempLength.x2=segments[i].x2;
+                        tempLength.y2=segments[i].y2;
+                        tempLength.x1=segments[i].x1;
+                        tempLength.y1=segments[i].y1;
+                        var residueLength=tempLength.pixelLength-chaLength
+                        var lastSeg={
+                            residueLength:residueLength
+                        }
+                        var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
+                        findPixelArr = findPixelArr.concat( splitPixelArr );
+                        tempLength.pixelLength=0;
+                    }
+                }
+                return findPixelArr;
+            }
+
+            var dashChar = this.state_.lineDash[0] + this.state_.lineDash[1];
+
+            var firstCoord = myCreateSegDirection(flatCoordinates,this.state_.lineDash[0])
+                firstCoord =firstCoord.slice(2,4)
+                firstCoord = ol.transform.apply(frameState.pixelToCoordinateTransform,firstCoord);
+
+            var flatCoordinates1=myCreateSegDirection(flatCoordinates,dashChar);
+            var flatCoordinatesCopy = flatCoordinates.concat();
+            flatCoordinatesCopy.splice(0,2,firstCoord[0],firstCoord[1]);
+            var flatCoordinates2=myCreateSegDirection(flatCoordinatesCopy,dashChar);
+
+            var resultCoord = [];
+            for(let h = 0; h < flatCoordinates1.length ; h+=2 ){
+
+                var arrTemp1=ol.transform.apply(frameState.pixelToCoordinateTransform,[flatCoordinates1[h],flatCoordinates1[h+1]] );
+                if(!isNaN(flatCoordinates2[h])){
+                    var arrTemp2=ol.transform.apply(frameState.pixelToCoordinateTransform,[flatCoordinates2[h],flatCoordinates2[h+1]] );
+                    resultCoord.push(...arrTemp2);
+                }
+                resultCoord.push(...arrTemp1);
+               
+            }
+            
+            for(let m=0;m<resultCoord.length;m+=4){
+                var childCoord=resultCoord.slice(m,m+4);
+                drawLineString_.call(this, childCoord);
+            }
+        }else{
+            drawLineString_.call(this, flatCoordinates);
         }
+       
+        function drawLineString_(resultCoord){
+            var stride = lineStringGeometry.getStride();
+            if (this.isValid_(resultCoord, 0, resultCoord.length, stride)) {
+                resultCoord = ol.geom.flat.transform.translate(resultCoord, 0, resultCoord.length,
+                    stride, -this.origin[0], -this.origin[1]);
+                if (this.state_.changed) {
+                    this.styleIndices_.push(this.indices.length);
+                    this.state_.changed = false;
+                }
+                this.startIndices.push(this.indices.length);
+                this.startIndicesFeature.push(feature);
+                this.drawCoordinates_(
+                    resultCoord, 0, resultCoord.length, stride);
+            }
+        }
+        
     };
 
 
@@ -72950,9 +73121,8 @@ function olInit() {
         }
 
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
-        gl.clearColor(0, 0, 0, 0);
+        gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-        // gl.enable(gl.BLEND);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
@@ -73370,7 +73540,7 @@ function olInit() {
             this.bindFramebuffer(frameState, framebufferDimension);
             gl.viewport(0, 0, framebufferDimension, framebufferDimension);
             
-            gl.clearColor(0, 0, 0, 1);
+            gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
             gl.clear(ol.webgl.COLOR_BUFFER_BIT);
             gl.disable(ol.webgl.BLEND);
             
@@ -73896,7 +74066,7 @@ function olInit() {
             }
             if (styles) {
                 var dirty = this.renderFeature(
-                    feature, resolution, pixelRatio, styles, replayGroup);
+                    feature, resolution, pixelRatio, styles, replayGroup,frameState);
                 this.dirty_ = this.dirty_ || dirty;
             }
         };
@@ -73911,7 +74081,7 @@ function olInit() {
                     features.push(feature);
                 }, this);
             features.sort(vectorLayerRenderOrder);
-            features.forEach(renderFeature, this);
+            features.forEach(renderFeature, this,frameState);
         } else {
             vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
         }
@@ -73936,7 +74106,7 @@ function olInit() {
      * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
      * @return {boolean} `true` if an image is loading.
      */
-    ol.renderer.webgl.VectorLayer.prototype.renderFeature = function (feature, resolution, pixelRatio, styles, replayGroup) {
+    ol.renderer.webgl.VectorLayer.prototype.renderFeature = function (feature, resolution, pixelRatio, styles, replayGroup,frameState) {
         if (!styles) {
             return false;
         }
@@ -73946,7 +74116,7 @@ function olInit() {
                 loading = ol.renderer.vector.renderFeature(
                     replayGroup, feature, styles[i],
                     ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-                    this.handleStyleImageChange_, this) || loading;
+                    this.handleStyleImageChange_, this,frameState) || loading;
             }
         } else {
             loading = ol.renderer.vector.renderFeature(
@@ -100563,7 +100733,7 @@ function olInit() {
                     var tempCoordinates = result;
                     for(var m=0;m<tempCoordinates.length;m+=4){
                         var railWayChildCoord=tempCoordinates.slice(m,m+4);
-                        
+                        this.zCoordinates.push(0.01);
                         flatCoordinates=railWayChildCoord;
                         drawLineString_.call(this, flatCoordinates);
                     }
