@@ -36,9 +36,6 @@ const initializeMap = () => {
     map.addControl(new ol.control.FullScreen());
     map.addOverlay(overlay);
     map.on('click', (e) => {
-        if(timer !== undefined && timer !== null){
-            clearTimeout(timer);
-        }
         overlay.setPosition(undefined);
         const coord = e.coordinate;
         getTimeZone(coord)
@@ -53,6 +50,7 @@ const getTimeZone = (coord) => {
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 ) {
             if(xhr.status === 200){
+                document.getElementById('error-message').classList.remove('show');
                 const res = JSON.parse(xhr.response)
                 const data = res.data;
                 document.querySelector('#popup-content').innerHTML = `
@@ -65,6 +63,9 @@ const getTimeZone = (coord) => {
                 <p><label>OffsetSeconds: </label> ${data.offsetSeconds}</p>`;
                 overlay.setPosition(coord);
             }else if(xhr.status === 404){
+                if(timer !== undefined && timer !== null){
+                    clearTimeout(timer);
+                }
                 document.getElementById('error-message').classList.add('show');
                 timer = setTimeout(()=>{
                     document.getElementById('error-message').classList.remove('show');
