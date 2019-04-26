@@ -748,7 +748,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 continue;
             }
 
-            found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, frameState.context, viewState.center, 
+            found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, context, viewState.center, 
                     resolution, rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {},
                 /**
                  * @param {ol.Feature|ol.render.Feature} feature Feature.

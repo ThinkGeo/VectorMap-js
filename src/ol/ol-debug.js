@@ -40,6 +40,7 @@ function olInit() {
     var OPENLAYERS = {};
     var goog = this.goog = {};
     this.CLOSURE_NO_DEPS = true;
+    var Node = window.Node;
     // Copyright 2006 The Closure Library Authors. All Rights Reserved.
     //
     // Licensed under the Apache License, Version 2.0 (the "License");
@@ -73661,6 +73662,7 @@ function olInit() {
      * @inheritDoc
      */
     ol.renderer.webgl.VectorLayer.prototype.composeFrame = function (frameState, layerState, context) {
+
         this.layerState_ = layerState;
         var viewState = frameState.viewState;
         var replayGroup = this.replayGroup_;
@@ -73683,6 +73685,7 @@ function olInit() {
                 opacity, layerState.managed ? frameState.skippedFeatureUids : {});
             gl.disable(gl.SCISSOR_TEST);
         }
+        // var transform = this.getTransform(frameState, 0);
 
         // wrapX
         if (vectorSource.getWrapX() && projection.canWrapX() &&
@@ -102616,3 +102619,4 @@ function olInit() {
         root.ol = factory();
     }
 }(this, olInit));
+
