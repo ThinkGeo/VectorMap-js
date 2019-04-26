@@ -68519,18 +68519,18 @@ function olInit() {
             var flatCoordinates2=myCreateSegDirection(flatCoordinatesCopy,dashChar);
 
             var resultCoord = [];
-            for(let h = 0; h < flatCoordinates1.length ; h+=2 ){
+            for(var h = 0; h < flatCoordinates1.length ; h+=2 ){
 
                 var arrTemp1=ol.transform.apply(frameState.pixelToCoordinateTransform,[flatCoordinates1[h],flatCoordinates1[h+1]] );
                 if(!isNaN(flatCoordinates2[h])){
                     var arrTemp2=ol.transform.apply(frameState.pixelToCoordinateTransform,[flatCoordinates2[h],flatCoordinates2[h+1]] );
-                    resultCoord.push(...arrTemp2);
+                    resultCoord.push(arrTemp2[0],arrTemp2[1]);
                 }
-                resultCoord.push(...arrTemp1);
+                resultCoord.push(arrTemp1[0],arrTemp1[1]);
                
             }
             
-            for(let m=0;m<resultCoord.length;m+=4){
+            for(var m=0;m<resultCoord.length;m+=4){
                 var childCoord=resultCoord.slice(m,m+4);
                 drawLineString_.call(this, childCoord);
             }
@@ -74015,7 +74015,7 @@ function olInit() {
 
         var extent = ol.extent.buffer(frameStateExtent,
             vectorLayerRenderBuffer * resolution);
-        const projectionExtent = viewState.projection.getExtent();
+        var projectionExtent = viewState.projection.getExtent();
 
         if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
             !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
@@ -74024,8 +74024,8 @@ function olInit() {
             // to +540°, we add at least 1 world width on each side of the projection
             // extent. If the viewport is wider than the world, we need to add half of
             // the viewport width to make sure we cover the whole viewport.
-            const worldWidth = ol.extent.getWidth(projectionExtent);
-            const gutter = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
+            var worldWidth = ol.extent.getWidth(projectionExtent);
+            var gutter = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
             extent[0] = projectionExtent[0] - gutter;
             extent[2] = projectionExtent[2] + gutter;
         }
@@ -99960,10 +99960,10 @@ function olInit() {
                             flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
                             break;
                         case ol.geom.GeometryType.MULTI_POLYGON:
-                            let interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+                            var interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
                             // flatCoordinates = interiorPoints;
                             flatCoordinates = [];
-                            for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+                            for (var i = 0, ii = interiorPoints.length; i < ii; i += 3) {
                                 if (interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
                                     flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
                                 }
