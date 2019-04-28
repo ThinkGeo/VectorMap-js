@@ -56,8 +56,8 @@ const addWktToMap = (wkt) => {
         padding: [20, 20, 20, 20]
     })
 }
-const projectionClient = new tg.ProjectionClient(apiKey);
 
+const projectionClient = new tg.ProjectionClient(apiKey);
 
 const performTransform = (wkt) => {
     const fromProj = 4326;
@@ -69,8 +69,7 @@ const performTransform = (wkt) => {
                 document.querySelector('.spherical-mercator textarea').value = `${res.status}: ${res.data.wkt}`;
             }else{
                 document.querySelector('.spherical-mercator textarea').value = `${res.status}: ${res.error.message}`;
-            }
-            
+            }            
         } else {
             document.querySelector('.loading').classList.add('hide');
             document.querySelector('.spherical-mercator textarea').value = res.data.wkt;
