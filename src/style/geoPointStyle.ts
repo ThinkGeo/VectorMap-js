@@ -121,9 +121,11 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
+
+        let geometryFeature = feature.getGeometry();
         if (this.pointType === "glyph") {
             if (this.glyph && this.glyphName) {
-                (<any>this.textStyle).labelPosition = feature.getFlatCoordinates();
+                (<any>this.textStyle).labelPosition = geometryFeature.getFlatCoordinates();
             }
         }
 

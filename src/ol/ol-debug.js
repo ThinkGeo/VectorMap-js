@@ -68756,13 +68756,13 @@ function olInit() {
                  nextStyle = this.styles_[i];
                  this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                  this.drawElements(gl, context, start, end);
-                 gl.clear(gl.DEPTH_BUFFER_BIT);
+                //  gl.clear(gl.DEPTH_BUFFER_BIT);
                  end = start;
              }
          }
          if (!hitDetection) {
              gl.disable(gl.DEPTH_TEST);
-             gl.clear(gl.DEPTH_BUFFER_BIT);
+            //  gl.clear(gl.DEPTH_BUFFER_BIT);
              //Restore GL parameters.
              gl.depthMask(tmpDepthMask);
              gl.depthFunc(tmpDepthFunc);
@@ -70193,7 +70193,7 @@ function olInit() {
         if (!hitDetection) {
             gl.disable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
+            // gl.clear(gl.DEPTH_BUFFER_BIT);
             //Restore GL parameters.
             gl.depthMask(tmpDepthMask);
             gl.depthFunc(tmpDepthFunc);
@@ -73123,6 +73123,7 @@ function olInit() {
         gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+        gl.clear(gl.DEPTH_BUFFER_BIT);
         gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
