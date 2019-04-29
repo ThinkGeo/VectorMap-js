@@ -65312,8 +65312,8 @@ function olInit() {
     ol.layer.Heatmap.prototype.setRadius = function (radius) {
         this.set(ol.layer.Heatmap.Property_.RADIUS, radius);
     };
-
-
+    
+    
     /**
      * @enum {string}
      * @private
@@ -72532,6 +72532,7 @@ function olInit() {
         this.canvas_.style.width = '100%';
         this.canvas_.style.height = '100%';
         this.canvas_.style.display = 'block';
+        this.canvas_.style.position = 'absolute';
         this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
         container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
