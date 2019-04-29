@@ -18,9 +18,12 @@
   "devDependencies": {
     "@types/openlayers": "^4.3.12",
     "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^10.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "earcut": "^2.1.3",
     "gulp": "^3.9.1",
