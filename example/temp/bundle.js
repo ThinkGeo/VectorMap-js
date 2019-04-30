@@ -569,6 +569,26 @@
         htmlPath: './example/html/satellite-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
         jsPath: './example/js/satellite-with-labels.js'
+      },
+      {
+        comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
+        title: "WMS Maps",
+        htmlPath: './example/html/cloud-maps-wms.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-maps-wms.js'
+      },
+      {
+        comments: 'Convert a WKT feature from Decimal Degrees to Spherical Mercator.  Our Cloud Projection API also supports a large number of other coordinate systems.',
+        title: "Transform Projection",
+        htmlPath: './example/html/cloud-projection.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-projection.js'
+      },{
+        comments: 'Get information about the time zone for any point in the world (excluding oceans).',
+        title: "Get Time Zone for a Point",
+        htmlPath: './example/html/cloud-time-zone.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-time-zone.js'
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
         title: 'Raster Maps (High Resolution)',
