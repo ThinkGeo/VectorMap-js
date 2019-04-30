@@ -2,56 +2,49 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>Using OpenLayers with Webpack</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" href="ol.css" type="text/css">
-  <script src="./webfontloader.js"></script>
-  <script>
-    WebFont.load({
-      custom: {
-        families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
-      }
-    });
-  </script>
-  <style>
-    html,
-    body {
-      margin: 0;
-      height: 100%;
-    }
-
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-
-    #olzoom {
-      position: absolute;
-      z-index: 1000;
-      top: 10.5em;
-      left: .5em;
-    }
-
-    #canvasSize {
-      position: absolute;
-      z-index: 1000;
-      top: 6.5em;
-      left: .5em;
-    }
-  </style>
+    <title>ThinkGeo Vector Tile Map</title>
+    <link rel="stylesheet" href="mapsuite.css">
+    <script src="./webfontloader.js"></script>
+    <!-- <script>
+        WebFont.load({
+            custom: {
+                families: ["vectormap-icons"],
+                urls:["map-icon/vectormap-icons.css"]
+            }
+        });
+    </script> -->
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-size: .85em;
+            font-family: Arial, Verdana, Helvetica, Sans-Serif;
+            width: 100%;
+            height: 100%;
+        }
+        #map {
+            height: 100%;
+            background-color: #f0eee8;
+        }
+        #olzoom {
+            position: absolute;
+            z-index: 1000;
+            top: 9.5em;
+            left: .5em;
+        }
+    </style>
+    <script src="../../src/ol/ol-debug.js"></script>
+    <script src="dist/ol.mapsuite.js"></script>
 </head>
 
 <body>
-  <label id="olzoom"></label>
-  <!-- <label id="canvasSize"></label> -->
-  <div id="map"></div>
-  <script src="../dist/vectormap-dev.js"></script>
-  <script src="thinkgeo-world-streets-light.js"></script>
-  <script src="index.js"></script>
+    <label id="olzoom"></label>
+    <div id="map" class="map" tabindex="0"> </div>
+    <script src="index.js"></script>
 </body>
 
 </html>

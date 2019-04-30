@@ -1,59 +1,36 @@
-const webpack = require('webpack');
+const path = require('path');
 
-
-var developConfig = {
-  entry: './src/index.js',
-  devtool: 'inline-source-map',
-  output: {
-    filename: 'vectormap-dev.js',
-    library: 'ol',
-    libraryTarget: 'umd',
-    libraryExport: 'default'
-  },
-  mode: 'development',
-  module: {
-    rules: [
-      {
-        test: /\.worker\.js$/,
-        use: {
-          loader: 'worker-loader',
-          options: { inline: true, fallback: false }
-        }
-      }
-    ]
-  },
-  devServer: {
-    openPage: "./debug",
-    host: 'localhost',
-    compress: true,
-    port: 8080
-  },
+module.exports = {
+    devtool: 'inline-source-map',
+    entry: {
+        'ol.mapsuite': './src/main.ts'
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: "babel-loader"
+            }, 
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            }
+        ]
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
+    },
+    devServer: {
+        openPage: "./debug",
+        publicPath: '/debug/dist',
+        compress: true,
+        port: 8080
+    },
+    mode: 'development'
 };
-
-var releaseConfig= {
-  entry: './src/index.js',
-  output: {
-    filename: 'vectormap.js',
-    library: 'ol',
-    libraryTarget: 'umd',
-    libraryExport: 'default'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.worker\.js$/,
-        use: {
-          loader: 'worker-loader',
-          options: { inline: true, fallback: false }
-        }
-      }
-    ]
-  },
-  devServer: {
-    openPage: "./debug",
-    host: 'localhost',
-    compress: true,
-    port: 8080
-  },
-};
-module.exports = [developConfig,releaseConfig];

@@ -1,42 +1,8 @@
-let layer = new ol.mapsuite.VectorTileLayer(light, {
-    multithread: true
-});
-
-var tilegrid = new ol.layer.Tile({
-    source: new ol.source.TileDebug({
-        projection: "EPSG:3857",
-        tileGrid: ol.tilegrid.createXYZ({ tileSize: 512, maxZoom: 22 })
-    })
-})
-
-var style = new ol.style.Style({
-    text: new ol.style.Text({
-        font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
-        placement: 'line',
-        fill: new ol.style.Fill({
-            color: '#cccccc'
-        })
-    })
-});
-
-var vectorTileLayer = new ol.layer.VectorTile({
-    updateWhileAnimating: true,
-    updateWhileInteracting: true,
-    source: new ol.source.VectorTile({
-        format: new ol.format.MVT({
-        }),
-        url: "https://cloud.thinkgeo.com/api/v1/maps/vector/streets/3857/{z}/{x}/{y}.pbf?apiKey=WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~"
-    }),
-    declutter: true
-})
-
-
 var view = new ol.View({
-    center: [-10775718.490585351, 3868389.0226015863],
-    zoom: 4,
+    center: ol.proj.fromLonLat([-96.79748, 32.78819]),
+    zoom: 2,
     maxZoom: 19,
-    maxResolution: 40075016.68557849 / 512,
-    progressiveZoom: true
+    maxResolution: 40075016.68557849 / 512
 });
 var zoom = view.getZoom();
 document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
@@ -48,11 +14,51 @@ view.on("change:resolution", function (e) {
     document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
+var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-light.json", {
+    declutter: true,
+    // threadMode:ol.mapsuite.VectorTileLayerThreadMode.Default,
+    // backgroundWorkerCount:2,
+    multithread: true,
+    minimalist: true,
+});
+
+// var tileGrid1 = new ol.layer.Tile({
+//     source: new ol.source.TileDebug({
+//         projection: "EPSG:3857",
+//         tileGrid: worldStreetsLayer.createVectorTileGrid()
+//     })
+// });
+
+// var tileGrid2 = new ol.layer.Tile({
+//     source: new ol.source.OSM()
+// });
+
 var map = new ol.Map({
+    layers: [worldStreetsLayer],
     target: 'map',
-    layers: [
-        layer
-    ],
     view: view,
+    renderer: 'webgl',
     loadTilesWhileInteracting: true
 });
+
+// map.on('pointermove', showInfo);
+var info = document.getElementById('info');
+function showInfo(event) {
+    var features = map.getFeaturesAtPixel(event.pixel);
+    if(features)
+    {
+        for(var i=0;i<features.length;i++)
+        {
+            console.log(features[i].styleId);
+        }
+        console.log("--")
+    }
+}
+
+// disable rotation in mobile devices
+if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+    map.getInteractions().forEach(function (element, index, array) {
+        // if (element instanceof ol.interaction.DragRotateAndZoom) element.setActive(false);
+        // if (element instanceof ol.interaction.PinchRotate) element.setActive(false);
+    });
+}

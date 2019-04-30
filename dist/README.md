@@ -15,34 +15,45 @@ With Map Suite VectorMap.js, you will have full access to [OpenLayers](https://o
 
 ## Examples - [View It Online](https://vectormapsamples.thinkgeo.com/):
 
-| <a href="https://vectormapsamples.thinkgeo.com/#VectorMaps"><img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
-        </a> 
-	
+<a href="https://vectormapsamples.thinkgeo.com/#VectorMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/LightMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RasterMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/DarkMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#HybridMaps">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/HybridMap.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RoadCongestionHeatmap">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-heatmap.jpg" width="210" height="210" alt="">
+</a> 
 	
 
-| <a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime"><img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#FindNearbyPlaces">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/find_nearby.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#RenderPOIs">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
-        </a> 
+<a href="https://vectormapsamples.thinkgeo.com/#AverageRoundTripCommuteTime">
+   <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-commute.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#ImagerywithLabels">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-imagerylabel.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#FindNearbyPlaces">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/find_nearby.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#RenderPOIs">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/render_pois.png" width="210" height="210" alt="">
+</a> 
 	
-| <a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution"><img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
- </a> | <a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#GPX">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
-        </a> | <a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
-            <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
-        </a> 
+<a href="https://vectormapsamples.thinkgeo.com/#PrecipitationDistribution">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/precipitation_distribution.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#AQIRadar">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/aqirader.png" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#GPX">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-gpx.jpg" width="210" height="210" alt="">
+</a>  
+<a href="https://vectormapsamples.thinkgeo.com/#StylingLines">
+    <img src="https://vectormapsamples.thinkgeo.com/example/image/vector-map-stylelines.jpg" width="210" height="210" alt="">
+</a> 
 	
  
 	
@@ -107,12 +118,12 @@ __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
 __Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control with one vector layer created. 
 ```javascript
 <script>
-    var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";    
+    var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
     var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
             apiKey:'your-ThinkGeo-Cloud-Service-key'
         });
-    let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+    let map =  new ol.Map({                         
         layers: [worldstreets],
         target: 'map',
         view: new ol.View({
@@ -133,17 +144,18 @@ __NOTE:__
  
 `World Streets Style` is a syntax of map styling language, similar to CSS. It's define the styles of your vector data. `Map Suite World Streets Styles` is professionally designed map styles from ThinkGeo experts, you can use it in your application without any changes, if you are consuming the Vector Tile data from ThinkGeo Cloud Service.
 
-__Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with.
+__Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your demo, please load __[ThinkGeo Map Icons](https://github.com/ThinkGeo/VectorMap-icons)__ as an  requirement, as all icons are drawn with. Once the Icon Fonts have been completely downloaded, the `initMapFuntion` will be called to init map.
 
 
 ```
-<script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["vectormap-icons"],
-            urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
-        }
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        },
+        active: initMapFuntion
     });
 </script>
 ```
@@ -164,12 +176,12 @@ After all the above steps completed, your HTML page should be:
        <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
-        <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+        <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
         <script>
             WebFont.load({
                 custom: {
                     families: ["vectormap-icons"],
-                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/1.0.0/vectormap-icons.css"]
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
                 }
             });
         </script>
@@ -177,12 +189,12 @@ After all the above steps completed, your HTML page should be:
     <body>
         <div id="map" style="width:800px;height:600px;"></div>
         <script>
-            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/light.json";    
+            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'      // please go to https://cloud.thinkgeo.com to create
             });
-            let map =  new ol.Map({                         loadTilesWhileAnimating: true,                         loadTilesWhileInteracting: true,
+            let map =  new ol.Map({                        
                 layers: [worldstreets],
                 target: 'map',
                 view: new ol.View({

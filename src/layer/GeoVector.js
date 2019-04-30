@@ -1,33 +1,12 @@
-import LayerType from '../ol/LayerType';
-import GeoStyle from '../style/geoStyle';
-import Map from '../ol/Map';
-import { getUid } from '../ol/util'
-import WorkerManager from "../worker/workerManager";
-import VectorLayer from "./Vector";
-import GeoVectorSource from "../source/GeoVector";
-import GeoJSON from '../ol/format/GeoJSON';
-import StyleJsonCache from '../tree/styleJsonCache';
-import StyleJsonCacheItem from '../tree/styleJsonCacheItem';
-import TreeNode from '../tree/treeNode';
-import Tree from '../tree/tree';
-import CanvasMapRenderer from '../ol/renderer/canvas/Map';
-import CanvasImageLayerRenderer from '../ol/renderer/canvas/ImageLayer';
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer';
-import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer';
-import GeoCanvasVectorTileLayerRenderer from "../renderer/canvas/GeoVectorTileLayer";
-import GeoCanvasVectorLayerRenderer from "../renderer/canvas/GeoVectorLayer";
-import ImageCanvas from '../ol/ImageCanvas';
+import {GeoStyle} from '../style/geoStyle';
+import GeoVectorSource from "../source/geoVector";
+import {StyleJsonCache} from '../tree/styleJsonCache';
+import {StyleJsonCacheItem} from '../tree/styleJsonCacheItem';
+import {TreeNode} from '../tree/treeNode';
+import {Tree} from '../tree/tree';
+import { GeoVectorLayerRender } from "../renderer/geoVectorLayerRender";
 
-import EsriJSON from '../ol/format/EsriJSON';
-import TopoJSON from '../ol/format/TopoJSON';
-import IGC from '../ol/format/IGC';
-import Polyline from '../ol/format/Polyline';
-import WKT from '../ol/format/WKT';
-import GPX from '../ol/format/GPX';
-import KML from '../ol/format/KML';
-
-class GeoVectorLayer extends VectorLayer {
+export class GeoVector extends ol.layer.Vector {
     constructor(stylejson, opt_options) {
         const options = opt_options ? opt_options : ({});
         options["declutter"] = options["declutter"] === undefined ? true : options["declutter"];
@@ -48,8 +27,9 @@ class GeoVectorLayer extends VectorLayer {
             this.loadStyleJson(stylejson);
         }
 
-        LayerType["GEOVECTOR"] = "GEOVECTOR";
-        this.type = LayerType.GEOVECTOR;
+        ol.LayerType["GEOVECTOR"] = "GEOVECTOR";
+        this.type = ol.LayerType.GEOVECTOR;
+        ol.plugins.register(ol.PluginType.LAYER_RENDERER, GeoVectorLayerRender);
     }
 
     isStyleJsonUrl(styleJson) {
@@ -60,6 +40,7 @@ class GeoVectorLayer extends VectorLayer {
         }
         return false;
     }
+
     loadStyleJsonAsyn(styleJsonUrl) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", styleJsonUrl, false);
@@ -200,24 +181,24 @@ class GeoVectorLayer extends VectorLayer {
         }
 
         if (sourceType === "geojson") {
-            format = new GeoJSON(options);
+            format = new ol.format.GeoJSON(options);
         }
         else if (sourceType === "esrijson") {
 
-            format = new EsriJSON(options);
+            format = new ol.format.EsriJSON(options);
         }
         else if (sourceType === "topojson") {
             // TODO: support "layers", http://openlayers.org/en/latest/examples/topojson.html?q=topojson.
-            format = new TopoJSON(options);
+            format = new ol.format.TopoJSON(options);
         }
         else if (sourceType === "igc") {
-            format = new IGC(options);
+            format = new ol.format.IGC(options);
         }
         else if (sourceType === "polyline") {
-            format = new Polyline(options);
+            format = new ol.format.Polyline(options);
         }
         else if (sourceType === "wkt") {
-            format = new WKT(options);
+            format = new ol.format.WKT(options);
             // The options of WKT format didn't have projection.
             if(options["dataProjection"])
             {
@@ -229,21 +210,21 @@ class GeoVectorLayer extends VectorLayer {
             }
         }
         else if (sourceType === "gpx") {
-            format = new GPX(options);
+            format = new ol.format.GPX(options);
         }
         else if (sourceType === "kml") {
-            format = new KML(options);
+            format = new ol.format.KML(options);
         }
         else if (sourceType === "wfs") {
             // Format is GeoJSON.
-            format = new GeoJSON(options);
+            format = new ol.format.GeoJSON(options);
         }
 
         var source = new GeoVectorSource({
             url: sourceJson["url"],
             clientId: this.clientId,
             clientSecret: this.clientSecret,
-            format: format,
+            format: format
         });
         return source;
     }
@@ -306,6 +287,67 @@ class GeoVectorLayer extends VectorLayer {
             }
         }
     }
-}
 
-export default GeoVectorLayer;
+    // recalculate the verctices of text for resolution changed                 
+    declutterRepeat_(context, screenXY){
+        var startIndicesFeature = this.startIndicesFeature;
+        var startIndicesStyle = this.startIndicesStyle;
+        var frameState = context.frameState;
+        var pixelRatio = frameState.pixelRatio;
+        this.screenXY = screenXY;
+
+        for(var i = 0; i < startIndicesFeature.length; i++){
+            var feature = startIndicesFeature[i];
+            var style = startIndicesStyle[i];
+            var declutterGroup = style.declutterGroup_;
+            var geometry = feature.getGeometry();
+            var type = feature.getType(); 
+
+            if(!style){
+                continue;
+            }
+
+            if(this instanceof ol.render.webgl.ImageReplay){
+                this.setImageStyle(style);
+                
+                var type = geometry.getType();
+                if(type == 'LineString'){
+                    this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
+                }else{
+                    this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
+                    this.renderDeclutter_(declutterGroup, feature);
+                }
+            }else{ 
+                if(type == 'MultiLineString'){
+                    var ends = geometry.getEnds();
+                    for(var k = 0; k < ends.length; k++){
+                        var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new ol.render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                        
+                        this.setTextStyle(style);
+                        this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                    }  
+                }else{     
+                    this.setTextStyle(style);
+                    if(style.label){
+                        this.label = style.label;
+                        this.maxAngle_ = style.maxAngle_;
+                        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                        this.width = this.label.width + lineWidth; 
+                        this.height = this.label.height; 
+                        this.originX = lineWidth;
+                        this.originY = 0;
+                        this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                        this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
+                        this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
+                        this.renderDeclutterLabel_(declutterGroup, feature);
+                    }else{  
+                        // draw chars 
+                        this.roadText = true;
+                        this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                    }
+                }
+            }
+        }
+    }
+}
