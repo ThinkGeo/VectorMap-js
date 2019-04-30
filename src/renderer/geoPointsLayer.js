@@ -107,7 +107,7 @@ class GeoPointsLayerRenderer extends ol.renderer.webgl.Layer {
     }
 
     // add canvas
-    var childCanvas = frameState.context.canvas_;
+    var childCanvas = document.getElementsByClassName('ol-unselectable')[0];
     this.insertAfter(canvas, childCanvas);
 
     return canvas;
