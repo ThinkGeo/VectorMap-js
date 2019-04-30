@@ -578,14 +578,14 @@
         jsPath: './example/js/cloud-maps-wms.js'
       },
       {
-        comments: 'Transform projection via Cloud Projection Service.',
+        comments: 'Convert a WKT feature from Decimal Degrees to Spherical Mercator.  Our Cloud Projection API also supports a large number of other coordinate systems.',
         title: "Transform Projection",
         htmlPath: './example/html/cloud-projection.html',
         codePenUrl: '..',
         jsPath: './example/js/cloud-projection.js'
       },{
-        comments: 'Get the time zone in the world except for the ocean.',
-        title: "Cloud Time Zone",
+        comments: 'Get information about the time zone for any point in the world (excluding oceans).',
+        title: "Get Time Zone for a Point",
         htmlPath: './example/html/cloud-time-zone.html',
         codePenUrl: '..',
         jsPath: './example/js/cloud-time-zone.js'
