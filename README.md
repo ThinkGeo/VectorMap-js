@@ -149,12 +149,12 @@ __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your 
 
 
 ```
-<script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-icons/3.0.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["vectormap-icons"],
-            urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/3.0.0/vectormap-icons.css"]
         },
         active: initMapFuntion
     });
@@ -177,12 +177,12 @@ After all the above steps completed, your HTML page should be:
        <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
-        <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+        <script src="https://cdn.thinkgeo.com/vectormap-icons/3.0.0/webfontloader.js"></script>
         <script>
             WebFont.load({
                 custom: {
                     families: ["vectormap-icons"],
-                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/3.0.0/vectormap-icons.css"]
                 }
             });
         </script>
@@ -190,7 +190,7 @@ After all the above steps completed, your HTML page should be:
     <body>
         <div id="map" style="width:800px;height:600px;"></div>
         <script>
-            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'      // please go to https://cloud.thinkgeo.com to create
