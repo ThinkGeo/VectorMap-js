@@ -112,12 +112,57 @@ function renderMultiLineStringGeometry_ (replayGroup, geometry, style, feature) 
   }
 }
 
+function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
+    var fillStyle = style.getFill();
+    var strokeStyle = style.getStroke();
+    if (fillStyle || strokeStyle) {
+        var polygonReplay = replayGroup.getReplay(
+            style.getZIndex(), (<any>ol.render).ReplayType.POLYGON);
+        polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+        polygonReplay.drawPolygon(geometry, feature);
+    }
+    var textStyle = style.getText();
+    if (textStyle) {
+        var textReplay = replayGroup.getReplay(
+            style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
+        textReplay.startIndicesFeature.push(feature);
+        var textStyleClone = textStyle.clone();
+        textStyleClone.label = textStyle.label;
+        textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
+        textReplay.startIndicesStyle.push(textStyleClone);
+    }
+}
+
+function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
+    var fillStyle = style.getFill();
+    var strokeStyle = style.getStroke();
+    if (strokeStyle || fillStyle) {
+        var polygonReplay = replayGroup.getReplay(
+            style.getZIndex(), (<any>ol.render).ReplayType.POLYGON);
+        polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+        polygonReplay.drawMultiPolygon(geometry, feature);
+    }
+    var textStyle = style.getText();
+    if (textStyle) {
+        var textReplay = replayGroup.getReplay(
+            style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
+        textReplay.startIndicesFeature.push(feature);
+        var textStyleClone = textStyle.clone();
+        textStyleClone.label = textStyle.label;
+        textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
+        textReplay.startIndicesStyle.push(textStyleClone);
+    }
+}
+
 var GEOMETRY_RENDERERS_ = {
   'Point': renderPointGeometry_,
   'LineString': renderLineStringGeometry_,
   'MultiPoint': (<any>ol).renderer.vector.renderMultiPointGeometry_,
   'MultiLineString': renderMultiLineStringGeometry_,
-  'MultiPolygon': (<any>ol).renderer.vector.renderMultiPolygonGeometry_,
+  'Polygon': renderPolygonGeometry_,
+  'MultiPolygon': renderMultiPolygonGeometry_,
   'GeometryCollection': (<any>ol).renderer.vector.renderGeometryCollectionGeometry_,
   'Circle': (<any>ol).renderer.vector.renderCircleGeometry_
 };

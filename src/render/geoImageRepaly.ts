@@ -1,3 +1,6 @@
+import {imagelineString as textpathImageLineString} from '../geom/flat/textpath.js';
+import {lineString as lengthLineString} from '../geom/flat/length.js';
+
 export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
@@ -96,7 +99,67 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     this.drawCoordinates(flatCoordinates, offset, end, stride);
   }
 
+  public declutterRepeat_(context, screenXY){
+    var startIndicesFeature = this.startIndicesFeature;
+    var startIndicesStyle = this.startIndicesStyle;
+    var frameState = context.frameState;
+    var pixelRatio = frameState.pixelRatio;
+    this.screenXY = screenXY;
 
+    for(var i = 0; i < startIndicesFeature.length; i++){
+        var feature = startIndicesFeature[i];
+        var style = startIndicesStyle[i];
+        var declutterGroup = style.declutterGroup_;
+        var geometry = feature.getGeometry();
+        var type = geometry.getType(); 
+
+        if(!style){
+            continue;
+        }
+
+        if(this instanceof (<any>ol).render.webgl.ImageReplay){
+            this.setImageStyle(style);
+            
+            // var type = geometry.getType();
+            if(type == 'LineString'){
+                this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
+            }else{
+                this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
+                this.renderDeclutter_(declutterGroup, feature);
+            }
+        }else{ 
+            if(type == 'MultiLineString'){
+                var ends = geometry.getEnds();
+                for(var k = 0; k < ends.length; k++){
+                    var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
+                    var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
+                    
+                    this.setTextStyle(style);
+                    this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                }  
+            }else{     
+                this.setTextStyle(style);
+                if(style.label){
+                    this.label = style.label;
+                    this.maxAngle_ = style.maxAngle_;
+                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                    this.width = this.label.width + lineWidth; 
+                    this.height = this.label.height; 
+                    this.originX = lineWidth;
+                    this.originY = 0;
+                    this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                    this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
+                    this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
+                    this.renderDeclutterLabel_(declutterGroup, feature);
+                }else{  
+                    // draw chars 
+                    this.roadText = true;
+                    this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                }
+            }
+        }
+    }
+  }
 
   public replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent, screenXY) {
@@ -226,7 +289,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     var resolution = frameState.currentResolution;
     var lineStringCoordinates = geometry.getFlatCoordinates();
     var end = lineStringCoordinates.length;
-    var pathLength = (<any>ol.geom).flat.length.lineString(lineStringCoordinates, offset, end, stride, resolution);
+    var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
     let width = this.width; 
 
     if (width * 4 <= pathLength) {  
@@ -249,7 +312,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             }                          
 
             var startM = pointArray[len] - width / 2;                    
-            let parts = (<any>ol.geom).flat.textpath.imagelineString(lineStringCoordinates, offset, end, 2, width, startM, resolution);
+            let parts = textpathImageLineString(lineStringCoordinates, offset, end, 2, width, startM, resolution);
             
             if(parts){
                 for(let i = 0; i < parts.length; i++){

@@ -28,7 +28,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             var options = {}
             options["declutter"] = true;
             options["minimalist"] = true;
-            opt_options["renderMode"] = 'vector';
+            options["renderMode"] = 'vector';
             super(<any>options);
         }
 
@@ -69,7 +69,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
     loadStyleJsonAsyn(styleJsonUrl) {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", styleJsonUrl);
+        xhr.open("GET", styleJsonUrl, false);
 
         xhr.onload = function (event: any) {
             if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
@@ -313,12 +313,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         (<any>ol).LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";
         // TODO: check the plugin had been registed.
         (<any>ol).plugins.register((<any>ol).PluginType.LAYER_RENDERER, GeoVectorTileLayerRender);
-        // (<any>ol.VectorTile).Event = function (type, xhr) {
-        //     ol.events.Event.call(this, type);
-
-        //     this.xhr = xhr;
-        // };
-        // ol.inherits((<any>ol.VectorTile), (<any>ol.events).Event);
 
         (<any>ol).VectorImageTile.prototype.disposeInternal = function (context) {
             for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
@@ -638,208 +632,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                
             setTimeout(this.handlePostRender.bind(this), 0);
 
-        };      
-
-        // recalculate the verctices of text for resolution changed                 
-        (<any>ol.render).webgl.Replay.prototype.declutterRepeat_ = function (context, screenXY){
-            var startIndicesFeature = this.startIndicesFeature;
-            var startIndicesStyle = this.startIndicesStyle;
-            var frameState = context.frameState;
-            var pixelRatio = frameState.pixelRatio;
-            this.screenXY = screenXY;
-
-            for(var i = 0; i < startIndicesFeature.length; i++){
-                var feature = startIndicesFeature[i];
-                var style = startIndicesStyle[i];
-                var declutterGroup = style.declutterGroup_;
-                var geometry = feature.getGeometry();
-                var type = feature.getType(); 
-
-                if(!style){
-                    continue;
-                }
-
-                if(this instanceof (<any>ol).render.webgl.ImageReplay){
-                    this.setImageStyle(style);
-                    
-                    var type = geometry.getType();
-                    if(type == 'LineString'){
-                        this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
-                    }else{
-                        this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
-                        this.renderDeclutter_(declutterGroup, feature);
-                    }
-                }else{ 
-                    if(type == 'MultiLineString'){
-                        var ends = geometry.getEnds();
-                        for(var k = 0; k < ends.length; k++){
-                            var flatCoordinates = geometry.getFlatCoordinates().slice(ends[k - 1] || 0, ends[k]);
-                            var newFeature = new (<any>ol).render.Feature('LineString', flatCoordinates, [flatCoordinates.length], feature.properties_, feature.id_);
-                            
-                            this.setTextStyle(style);
-                            this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
-                        }  
-                    }else{     
-                        this.setTextStyle(style);
-                        if(style.label){
-                            this.label = style.label;
-                            this.maxAngle_ = style.maxAngle_;
-                            var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
-                            this.width = this.label.width + lineWidth; 
-                            this.height = this.label.height; 
-                            this.originX = lineWidth;
-                            this.originY = 0;
-                            this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
-                            this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
-                            this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), this.state_.scale / pixelRatio);
-                            this.renderDeclutterLabel_(declutterGroup, feature);
-                        }else{  
-                            // draw chars 
-                            this.roadText = true;
-                            this.drawLineStringText(geometry, feature, frameState, declutterGroup);
-                        }
-                    }
-                }
-            }
-        };
-  
-        (<any>ol.geom).flat.textpath.lineString = function (
-            flatCoordinates, offset, end, stride, text, webglTextReplay, startM, maxAngle, resolution) {
-            var result = [];
-    
-            // Keep text upright
-            var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
-            
-            var numChars = text.length;
-    
-            var x1 = flatCoordinates[offset];
-            var y1 = flatCoordinates[offset + 1];
-            offset += stride;
-            var x2 = flatCoordinates[offset];
-            var y2 = flatCoordinates[offset + 1];
-            var segmentM = 0;
-            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-    
-            var chunk = '';
-            var data, index, previousAngle;  
-            
-            for (var i = 0; i < numChars; ++i) {
-                index = reverse ? numChars - i - 1 : i;
-                var char = text.charAt(index);
-                chunk = reverse ? char + chunk : chunk + char;
-                var charLength = webglTextReplay.measure(char); 
-                var charM = startM + charLength / 2;
-                
-                while (segmentM + segmentLength < charM) {
-                    x1 = x2;
-                    y1 = y2;
-                    offset += stride;
-                    x2 = flatCoordinates[offset];
-                    y2 = flatCoordinates[offset + 1];
-                    segmentM += segmentLength;
-                    segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-                }
-
-                if((x1 > x2) !== reverse){
-                    return false;
-                }
-
-                // label exceed the road range
-                if(offset > end - stride){
-                    return false;
-                }
-
-                var segmentPos = charM - segmentM;
-                var angle = Math.atan2(y2 - y1, x2 - x1);
-                if (reverse) {
-                    angle += angle > 0 ? -Math.PI : Math.PI;
-                }
-                if (previousAngle !== undefined) {
-                    var delta = angle - previousAngle;
-                    delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
-                    if (Math.abs(delta) > maxAngle) {
-                        return null;
-                    }
-                }            
-                var interpolate = segmentPos / segmentLength;
-                var x = (<any>ol).math.lerp(x1, x2, interpolate);
-                var y = (<any>ol).math.lerp(y1, y2, interpolate);            
-                if (previousAngle == angle) {
-                    if (reverse) {                                            
-                        data[0] = x;
-                        data[1] = y;
-                        data[2] = charLength / 2;
-                    }
-                    data[4] = chunk;
-                } else {
-                    chunk = char;
-                    data = [x, y, charLength / 2, -angle, chunk];
-                    if (reverse) {
-                        result.unshift(data);
-                    } else {
-                        result.push(data);
-                    }
-                    previousAngle = angle;
-                }            
-                startM += charLength;
-            }
-            
-            return result;
-        };
-
-        (<any>ol.geom).flat.textpath.imagelineString = function (
-            flatCoordinates, offset, end, stride, width, startM, resolution) {
-            var result = [];
-            var x1 = flatCoordinates[offset];
-            var y1 = flatCoordinates[offset + 1];
-            offset += stride;
-            var x2 = flatCoordinates[offset];
-            var y2 = flatCoordinates[offset + 1];
-            var segmentM = 0;
-            var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-            var data; 
-            var charM = startM + width / 2;
-
-            while (segmentM + segmentLength < charM) {
-                x1 = x2;
-                y1 = y2;
-                offset += stride;
-                x2 = flatCoordinates[offset];
-                y2 = flatCoordinates[offset + 1];
-                segmentM += segmentLength;
-                segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-            }
-
-            // label exceed the road range
-            if(offset > end - stride){
-                return false;
-            }
-
-            var segmentPos = charM - segmentM;
-            var angle = Math.atan2(y2 - y1, x2 - x1);      
-            var interpolate = segmentPos / segmentLength;            
-            var x = (<any>ol).math.lerp(x1, x2, interpolate);
-            var y = (<any>ol).math.lerp(y1, y2, interpolate);   
-
-            data = [x, y, width / 2, -angle];
-            result.push(data);
-           
-            return result;
-        };
-
-        (<any>ol.geom).flat.length.lineString = function (flatCoordinates, offset, end, stride, resolution) {
-            var x1 = flatCoordinates[offset];
-            var y1 = flatCoordinates[offset + 1];
-            var length = 0;
-            var i;
-            for (i = offset + stride; i < end; i += stride) {
-                var x2 = flatCoordinates[i];
-                var y2 = flatCoordinates[i + 1];
-                length += (Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) / resolution);
-                x1 = x2;
-                y1 = y2;
-            }
-            return length;
-        };
+        };    
     }
 }

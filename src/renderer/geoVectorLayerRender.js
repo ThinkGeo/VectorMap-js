@@ -1,5 +1,6 @@
 
 import { ReplayGroupCustom } from "../render/replayGroupCustom";
+import { VecorRenderFeature } from "./geoVector";
 
 export class GeoVectorLayerRender extends ol.renderer.webgl.VectorLayer{
     constructor(mapRenderer, layer) {
@@ -72,7 +73,7 @@ export class GeoVectorLayerRender extends ol.renderer.webgl.VectorLayer{
 
         this.dirty_ = false;
 
-        const replayGroup = new ol.render.webgl.ReplayGroup(
+        const replayGroup = new ReplayGroupCustom(
             ol.renderer.vector.getTolerance(resolution, pixelRatio), 
             extent, vectorLayer.getRenderBuffer(), this.declutterTree_);
         vectorSource.loadFeatures(extent, resolution, projection);
@@ -94,8 +95,8 @@ export class GeoVectorLayerRender extends ol.renderer.webgl.VectorLayer{
                 }
             }
             if (styles) {
-                const dirty = this.renderFeature(
-                    feature, resolution, pixelRatio, styles, replayGroup);
+                let squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio);
+                const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
                 this.dirty_ = this.dirty_ || dirty;
             }
         }.bind(this);
@@ -141,79 +142,134 @@ export class GeoVectorLayerRender extends ol.renderer.webgl.VectorLayer{
         return true;
     }
 
-    // composeFrame(frameState, layerState, context) {
-    //     this.layerState_ = layerState;
-    //     var viewState = frameState.viewState;
-    //     var rotation = viewState.rotation;
-    //     var resolution = viewState.resolution;
-    //     var center = viewState.center;
-    //     var opacity = layerState.opacity;
-    //     var replayGroup = this.replayGroup_;
-    //     var size = frameState.size;
-    //     var pixelRatio = frameState.pixelRatio;
-    //     var gl = this.mapRenderer.getGL();
-    //     var layerExtent = frameState.extent;
-    //     var screenXY = [(layerExtent[0] + layerExtent[2]) / 2,(layerExtent[1] + layerExtent[3]) / 2];
+    renderFeature(feature, squaredTolerance, styles, replayGroup) {
+        if (!styles) {
+            return false;
+        }
+        var loading = false;
+        if (Array.isArray(styles)) {
+            for (var i = 0, ii = styles.length; i < ii; ++i) {
+                loading = VecorRenderFeature(
+                    replayGroup, feature, styles[i], squaredTolerance,
+                    this.handleStyleImageChange_, this, undefined) || loading;
+            }
+        } else {
+            loading = VecorRenderFeature(
+                replayGroup, feature, styles, squaredTolerance,
+                this.handleStyleImageChange_, this, undefined);
+        }
+        return loading;
+    }
 
-    //     let layer = this.getLayer();
-    //     let declutterReplays = layer.getDeclutter() ? {} : null;
+    composeFrame(frameState, layerState, context) {
+        this.layerState_ = layerState;
+        var viewState = frameState.viewState;
+        var replayGroup = this.replayGroup_;
+        var size = frameState.size;
+        var center = viewState.center;
+        var resolution = viewState.resolution;
+        var rotation = viewState.rotation;
+        var opacity = layerState.opacity;
+        var pixelRatio = frameState.pixelRatio;
+        var gl = this.mapRenderer.getGL();
+        var vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
+        var projection = viewState.projection;
+        var projectionExtent = projection.getExtent();
+        var extent = frameState.extent;
+        let layer = this.getLayer();
+        let declutterReplays = layer.getDeclutter() ? {} : null;
+        context.frameState = frameState;
+        
+        gl.enable(gl.DEPTH_TEST);
+        
+        if(declutterReplays){
+            this.declutterTree_.clear();
+        }
 
-    //     if (declutterReplays) {
-    //         this.declutterTree_.clear();
-    //     }
+        if (replayGroup && !replayGroup.isEmpty()) {
+            gl.enable(gl.SCISSOR_TEST);
+            gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
+            replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                opacity, layerState.managed ? frameState.skippedFeatureUids : {}, declutterReplays);
+            gl.disable(gl.SCISSOR_TEST);
+        }
 
-    //     context.frameState = frameState;
+        // wrapX
+        if (vectorSource.getWrapX() && projection.canWrapX() &&
+            !ol.extent.containsExtent(projectionExtent, extent)) {
+            var startX = extent[0];
+            var worldWidth = ol.extent.getWidth(projectionExtent);
+            var world = 0;
+            var offsetX;
+            while (startX < projectionExtent[0]) {
+                --world;
+                offsetX = worldWidth * world;
+                // transform = this.getTransform(frameState, offsetX);
+                replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                    opacity, layerState.managed ? frameState.skippedFeatureUids : {}, declutterReplays, offsetX);
+                // replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+                startX += worldWidth;
+            }
+            world = 0;
+            startX = extent[2];
+            while (startX > projectionExtent[2]) {
+                ++world;
+                offsetX = worldWidth * world;
+                // transform = this.getTransform(frameState, offsetX);
+                replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
+                    opacity, layerState.managed ? frameState.skippedFeatureUids : {}, declutterReplays, offsetX);
+                // replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+                startX -= worldWidth;
+            }
+        }
 
-    //     if (replayGroup && !replayGroup.isEmpty()) {
-    //         gl.enable(gl.SCISSOR_TEST);
-    //         gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
-    //         replayGroup.replay(context, center, resolution, rotation, size, pixelRatio, 
-    //             opacity, layerState.managed ? frameState.skippedFeatureUids : {}, 
-    //             declutterReplays, screenXY);
-    //         gl.disable(gl.SCISSOR_TEST);
-    //     }
+        if (declutterReplays) {
+            this.replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio,
+                opacity, {}, undefined, false, {});
+        }
 
-    //     if (declutterReplays) {
-    //         this.replayDeclutter(declutterReplays, context, rotation);
-    //     }
-    // }
+        gl.disable(gl.DEPTH_TEST);
+    }
 
-    // replayDeclutter(declutterReplays, context, rotation) {
-    //     var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
-    //     var skippedFeatureUids = {};
-    //     for (var z = 0, zz = zs.length; z < zz; ++z) {
-    //         var replayData = declutterReplays[zs[z].toString()];
-    //         for (var i = 0, ii = replayData.length; i < ii;) {
-    //             var replay = replayData[i++];                
-    //             var screenXY = replayData[i++];
-    //             replay.declutterRepeat_(context, screenXY);
-    //         }
-    //     }        
+    replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio, 
+        opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+        
+        var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
+        for (var z = 0, zz = zs.length; z < zz; ++z) {
+            var replayData = declutterReplays[zs[z].toString()];
+            for (var i = 0, ii = replayData.length; i < ii;) {
+                var replay = replayData[i++];                
+                var screenXY = replayData[i++];
+                replay.declutterRepeat_(context, screenXY);
+            }
+        }        
 
-    //     // draw
-    //     for (var z = 0, zz = zs.length; z < zz; ++z) {
-    //         var replayData = declutterReplays[zs[z].toString()];
-    //         for (var i = 0, ii = replayData.length; i < ii;) {
-    //             var replay = replayData[i++];                
-    //             var screenXY = replayData[i++];
-    //             var tmpOptions = replay.tmpOptions;   
+        // draw
+        for (var z = 0, zz = zs.length; z < zz; ++z) {
+            var replayData = declutterReplays[zs[z].toString()];
+            for (var i = 0, ii = replayData.length; i < ii;) {
+                var replay = replayData[i++];                
+                var screenXY = replayData[i++];
+                var tmpOptions = replay.tmpOptions;   
                                      
-    //             replay.indices.length = 0;
-    //             replay.vertices.length = 0;
-    //             replay.groupIndices.length = 0;
+                replay.indices.length = 0;
+                replay.vertices.length = 0;
+                replay.groupIndices.length = 0;
                 
-    //             for(var k = 0; k < tmpOptions.length; k++){
-    //                 if(replay instanceof ol.render.webgl.TextReplay){
-    //                     replay.drawText(tmpOptions[k]);
-    //                 }else if(replay instanceof ol.render.webgl.ImageReplay){
-    //                     replay.drawPoint(tmpOptions[k]);
-    //                 }
-    //             }
-    //             replay.finish(context);               
-    //             replay.replay(context, rotation, skippedFeatureUids, screenXY);
-    //         }
-    //     }
-    // }
+                for(var k = 0; k < tmpOptions.length; k++){
+                    if(replay instanceof ol.render.webgl.TextReplay){
+                        replay.drawText(tmpOptions[k]);
+                    }else if(replay instanceof ol.render.webgl.ImageReplay){
+                        replay.drawPoint(tmpOptions[k]);
+                    }
+                }
+                replay.finish(context);
+               
+                replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
+                    skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, screenXY);
+            }
+        }
+    }
 
     getDrawingInstructions(features, zoom) {
         let drawinginstructions = [];
