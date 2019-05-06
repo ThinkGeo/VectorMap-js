@@ -69,10 +69,10 @@ Load from CDN in your project:
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
 ```
 
 ### NPM
@@ -104,10 +104,10 @@ __Step 2__. In the `<head>`of your HTML page, import the vectormap.js and relate
 
 ```html
 <!-- style sheet for vectormap.js -->
-<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
+<link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css"></link>
 	
 <!-- latest minified version of vectormap.js -->
-<script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
 ```
  
 __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
@@ -118,7 +118,7 @@ __Step 3__. In the `<body>` of your HTML page, add a div with "id=`"map"`".
 __Step 4__. At the bottom of the html page, add a JavaScript section to create an instance of map control with one vector layer created. 
 ```javascript
 <script>
-    var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+    var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json";    
     var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
         {
             apiKey:'your-ThinkGeo-Cloud-Service-key'
@@ -130,6 +130,7 @@ __Step 4__. At the bottom of the html page, add a JavaScript section to create a
             center: ol.proj.fromLonLat([-96.79620, 32.79423]),
             zoom: 4,
         }),
+	renderer: 'webgl'
     });
 </script>
 ```
@@ -148,12 +149,12 @@ __Step 5 (Option)__. If `Map Suite World Streets Styles` is referenced in  your 
 
 
 ```
-<script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+<script src="https://cdn.thinkgeo.com/vectormap-icons/3.0.0/webfontloader.js"></script>
 <script>
     WebFont.load({
         custom: {
             families: ["vectormap-icons"],
-            urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+            urls: ["https://cdn.thinkgeo.com/vectormap-icons/3.0.0/vectormap-icons.css"]
         },
         active: initMapFuntion
     });
@@ -170,18 +171,18 @@ After all the above steps completed, your HTML page should be:
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- style sheet for vectormap.js -->
-        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css"></link>
+        <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css"></link>
         
         <!-- latest minified version of vectormap.js -->
-       <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+       <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
 
         <!-- option: Map Suite World Streets Styles -->
-        <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+        <script src="https://cdn.thinkgeo.com/vectormap-icons/3.0.0/webfontloader.js"></script>
         <script>
             WebFont.load({
                 custom: {
                     families: ["vectormap-icons"],
-                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+                    urls: ["https://cdn.thinkgeo.com/vectormap-icons/3.0.0/vectormap-icons.css"]
                 }
             });
         </script>
@@ -189,7 +190,7 @@ After all the above steps completed, your HTML page should be:
     <body>
         <div id="map" style="width:800px;height:600px;"></div>
         <script>
-            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";    
+            var worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json";    
             var worldstreets = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, 
             {
                 apiKey:'your-ThinkGeo-Cloud-Service-key'      // please go to https://cloud.thinkgeo.com to create
@@ -201,6 +202,7 @@ After all the above steps completed, your HTML page should be:
                     center: ol.proj.fromLonLat([-96.79620, 32.79423]),
                     zoom: 4,
                 }),
+		renderer: 'webgl'
             });
         </script>
     </body>
