@@ -4,8 +4,7 @@ import { Locations } from './geoLineStringReplay/defaultshader/Locations';
 export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringReplay as { new(tolerance: number, maxExtent: any) }) {
     constructor(tolerance, maxExtent){
         super(tolerance, maxExtent);
-    }      
-
+    }    
     
     public drawReplay(gl, context, skippedFeaturesHash, hitDetection){
     //Save GL parameters.
@@ -28,7 +27,7 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
         for (i = this.styleIndices_.length - 1; i >= 0; --i) {
             start = this.styleIndices_[i];
             nextStyle = this.styles_[i];
-            gl.uniform1f(this.u_zIndex, this.zCoordinates[i]);
+            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] || 0.2);
             this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
             this.drawElements(gl, context, start, end);
             end = start;

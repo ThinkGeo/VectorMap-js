@@ -1,9 +1,12 @@
 import { fragment, vertex } from './geoPolygonReplay/defaultshader';
 import { Locations } from './geoPolygonReplay/defaultshader/Locations';
+import { GeoLineStringReplay } from './geoLineStringReplay';
 
 export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as { new(tolerance: number, maxExtent: any) }) {
   constructor(tolerance, maxExtent){
     super(tolerance, maxExtent);
+    
+    this.lineStringReplay = new GeoLineStringReplay(tolerance, maxExtent);
   } 
 
 
@@ -14,7 +17,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
         tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
     
-    if (false && this.lineStringReplay) {
+    if (this.lineStringReplay && this.lineStringReplay.indicesBuffer.getArray().length) {
         tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
         tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
         tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
@@ -30,12 +33,12 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         gl.stencilFunc(gl.ALWAYS, 1, 255);
         gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
 
-        // this.lineStringReplay.replay(context,
-        //     center, resolution, rotation, size, pixelRatio,
-        //     opacity, skippedFeaturesHash,
-        //     featureCallback, oneByOne, opt_hitExtent);
+        this.lineStringReplay.replay(context,
+            center, resolution, rotation, size, pixelRatio,
+            opacity, skippedFeaturesHash,
+            featureCallback, oneByOne, opt_hitExtent, screenXY);
 
-        // gl.stencilMask(0);
+        gl.stencilMask(0);
         // gl.stencilFunc(context.NOTEQUAL, 1, 255);
     }
 
@@ -87,7 +90,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     // disable the vertex attrib arrays
     this.shutDownProgram(gl, locations);
     
-    if (false && this.lineStringReplay) {
+    if (this.lineStringReplay && this.lineStringReplay.indicesBuffer.getArray().length) {
         if (!tmpStencil) {
             gl.disable(gl.STENCIL_TEST);
         }
@@ -97,7 +100,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         gl.stencilMask(/** @type {number} */ (tmpStencilMask));
         gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
             /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
-        // gl.stencilMask(0);
+        gl.stencilMask(0);
     }
 
     return result;
@@ -117,7 +120,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
             start = this.styleIndices_[i];
             end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
             nextStyle = this.styles_[i];
-            gl.uniform1f(this.u_zIndex, (0.1 / this.zCoordinates[i]));
+            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] ? (0.1 / this.zCoordinates[i]) : 0.3);
             this.setFillStyle_(gl, nextStyle);
             this.drawElements(gl, context, start, end);
         }

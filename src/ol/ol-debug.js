@@ -70915,32 +70915,6 @@ function olInit() {
                 }
                 flatCoordinates = tmpCoords;
             }
-
-            // renderDeclutter
-            var group;
-            // if(feature.coordinateToPixelTransform){
-                // var box = [];
-                // var width = textSize[0];
-                // var height = textSize[1];
-                // var scale = this.scale;
-                // var pixelCoordinate = ol.transform.apply(feature.coordinateToPixelTransform,
-                //     [flatCoordinates[0], flatCoordinates[1]]);
-                // box[0] = pixelCoordinate[0] - scale * anchorX;
-                // box[3] = pixelCoordinate[1] + scale * (height - anchorY);
-                // box[2] = pixelCoordinate[0] + scale * (width - anchorX);
-                // box[1] = pixelCoordinate[1] - scale * anchorY;
-                // group = {
-                //     minX: box[0],
-                //     minY: box[1],
-                //     maxX: box[2],
-                //     maxY: box[3],
-                //     value: feature
-                // }
-            // }
-            // if(group && this.declutterTree.collides(group)){
-                // return;
-            // }
-            // group && this.declutterTree.insert(group);
             
             for (i = 0, ii = lines.length; i < ii; ++i) {
                 currX = 0;
@@ -73542,9 +73516,9 @@ function olInit() {
             this.bindFramebuffer(frameState, framebufferDimension);
             gl.viewport(0, 0, framebufferDimension, framebufferDimension);
             
-            gl.clearColor(0.9411764705882353, 0.9333333333333333, 0.9098039215686275, 1);
+            gl.clearColor(0, 0, 0, 0);
             gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-            gl.disable(ol.webgl.BLEND);
+            gl.enable(ol.webgl.BLEND);
             
             var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
             context.useProgram(program);
@@ -73657,6 +73631,7 @@ function olInit() {
                 frameState.animate = true;
             }
 
+            gl.disable(ol.webgl.BLEND);
         }
 
         this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
@@ -101840,6 +101815,15 @@ function olInit() {
 
             var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
+
+            // TEST     
+            // console.log(tileCoord.toString());
+            // if(tileCoord.toString() !== "2,1,-2"){
+            // if(tileCoord.toString() !== "17,30293,-52889"){
+            // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
+                // return
+            // }
+            // TEST END
 
             var tileProjection = new ol.proj.Projection({
                 code: 'EPSG:3857',

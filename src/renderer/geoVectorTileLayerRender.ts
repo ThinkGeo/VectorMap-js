@@ -1,6 +1,5 @@
 import { ReplayGroupCustom } from "../render/replayGroupCustom";
 import { VecorRenderFeature } from "./geoVector";
-import { GeoLineStyle } from './../style/geoLineStyle';
 
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLayer as { new(a: any, p: ol.layer.Tile): any; }) {
     constructor(mapRenderer: any, layer: ol.layer.VectorTile) {
@@ -234,7 +233,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public composeFrameCustom(frameState: any, layerState: any, context: any) {
         let gl = context.getGL();
         gl.enable(gl.DEPTH_TEST);
-        // gl.clear(gl.DEPTH_BUFFER_BIT);
 
         this.dispatchComposeEvent_(
             (<any>ol.render).EventType.PRECOMPOSE, context, frameState);
@@ -306,10 +304,6 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         if (declutterReplays) {
             this.replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio,
                 opacity, {}, undefined, false, {});
-        }
-        if (rotation) {
-        //     (<any>ol.render.canvas).rotateAtOffset(context, rotation,
-        // /** @type {number} */(offsetX), /** @type {number} */(offsetY));
         }
         // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);      
         

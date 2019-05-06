@@ -14,13 +14,19 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         this.declutterTree = declutterTree;
     }
 
-    // FIXME: change the feature(ol.render.Feature) to ol.Feature
     public forEachFeatureAtCoordinate = function (
         coordinate, context, center, resolution, rotation, size, pixelRatio,
         opacity, skippedFeaturesHash,
         callback) {
 
-        return;
+        // FIXME: change the feature(ol.render.Feature) to ol.Feature
+        if(this.replaysByZIndex_[0]){
+            var featureFlag = this.replaysByZIndex_[0].Polygon || this.replaysByZIndex_[0].LineString;
+            var startIndicesFeature = featureFlag && featureFlag.startIndicesFeature[0];
+            if(!(startIndicesFeature instanceof ol.Feature)){
+                return;
+            }
+        }
 
         var gl = context.getGL();
         gl.bindFramebuffer(
@@ -73,6 +79,10 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                 let replayType = replayTypes[j];
                 replay = replays[replayType];
                 if (replay !== undefined) {
+                    if(screenXY && !Array.isArray(screenXY)){
+                        screenXY = [screenXY, replay.origin[1]];
+                    }
+                    
                     if (opt_declutterReplays &&
                         (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
                         let declutter = opt_declutterReplays[zIndexKey];
@@ -82,7 +92,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                         } else {
                             declutter.push(replay, screenXY);
                         }
-                    } else if(replayType == (<any>ol.render).ReplayType.POLYGON) {          
+                    } else if(replayType == (<any>ol.render).ReplayType.POLYGON || !lineStringReplayArray) {          
                         replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
                             skippedFeaturesHash, undefined, false, {}, screenXY);
                     }else{
