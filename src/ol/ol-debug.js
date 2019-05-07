@@ -73630,8 +73630,6 @@ function olInit() {
                 this.renderedRevision_ = -1;
                 frameState.animate = true;
             }
-
-            gl.disable(ol.webgl.BLEND);
         }
 
         this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);

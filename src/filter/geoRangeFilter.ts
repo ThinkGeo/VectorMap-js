@@ -62,10 +62,10 @@ export abstract class GeoRangeFilter extends GeoFilter {
     matchFeatureCore(feature: any, zoom: number): boolean {
         let currentValue;
         if (this.replacedValueToIndex) {
-            currentValue = feature.properties[this.key];
+            currentValue = feature.getProperties()[this.key];
         }
         else {
-            currentValue = feature.properties[this.key];
+            currentValue = feature.getProperties()[this.key];
         }
 
         return this.isInRange(+currentValue);

@@ -120,7 +120,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
             start = this.styleIndices_[i];
             end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
             nextStyle = this.styles_[i];
-            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] ? (0.1 / this.zCoordinates[i]) : 0.3);
+            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] ? (0.1 / this.zCoordinates[i]) : 0.003);
             this.setFillStyle_(gl, nextStyle);
             this.drawElements(gl, context, start, end);
         }

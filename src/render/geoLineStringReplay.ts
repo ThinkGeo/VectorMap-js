@@ -27,7 +27,7 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
         for (i = this.styleIndices_.length - 1; i >= 0; --i) {
             start = this.styleIndices_[i];
             nextStyle = this.styles_[i];
-            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] || 0.2);
+            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] || 0.002);
             this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
             this.drawElements(gl, context, start, end);
             end = start;

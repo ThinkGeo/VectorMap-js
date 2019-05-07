@@ -339,10 +339,15 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
 
   public replayImage_(frameState, declutterGroup, flatCoordinates, scale){
     var box = [];
-    var screenXY = this.screenXY;
-    var pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
-    var canvas = frameState.context.canvas_;
+    var pixelCoordinate;
     var rotation = this.rotation;            
+    var center = frameState.viewState.center;
+
+    if(!this.screenXY){
+        pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + center[0], flatCoordinates[1] - this.origin[1] + center[1]]);
+    }else{
+        pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + this.screenXY[0], flatCoordinates[1] - this.origin[1] + this.screenXY[1]]);
+    }
 
     var offsetX = -scale * (this.anchorX);
     var offsetY = -scale * (this.height - this.anchorY);
@@ -354,7 +359,8 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     box[2] = pixelCoordinate[0] + offsetX;
     box[1] = pixelCoordinate[1] - offsetY;
 
-    var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+    var size = frameState.size;
+    var intersects = box[0] <= size[0] && box[2] >= 0 && box[1] <= size[1] && box[3] >= 0;
     if(declutterGroup){    
         if(!intersects && declutterGroup[4] == 1){
             return;
