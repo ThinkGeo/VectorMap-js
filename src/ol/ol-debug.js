@@ -21408,7 +21408,7 @@ function olInit() {
         var view = map.getView();
         if (this.targetPointers.length === 0) {
             if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-                var distance = this.kinetic_.getDistance() / 1.5;
+                var distance = this.kinetic_.getDistance();
                 var angle = this.kinetic_.getAngle();
                 var center = /** @type {!ol.Coordinate} */ (view.getCenter());
                 var centerpx = map.getPixelFromCoordinate(center);
@@ -22528,13 +22528,13 @@ function olInit() {
 
         var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
         var delta = this.delta_ / 100;
-        if (delta > 0) {
-            delta = delta * 2 - 1;
-        }
-        else {
-            delta = delta * 2 + 1;
-        }
-        delta *= 0.15;
+        // if (delta > 0) {
+        //     delta = delta * 2 ;
+        // }
+        // else {
+            delta = delta * 2;
+        // }
+        delta *= 0.1;
 
         var delta = ol.math.clamp(delta, -maxDelta, maxDelta);
         ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
