@@ -1,6 +1,7 @@
 import { fragment, vertex } from './geoPolygonReplay/defaultshader';
 import { Locations } from './geoPolygonReplay/defaultshader/Locations';
 import { GeoLineStringReplay } from './geoLineStringReplay';
+import earcut from '../webgl/earcut';
 
 export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as { new(tolerance: number, maxExtent: any) }) {
   constructor(tolerance, maxExtent){
@@ -8,7 +9,6 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     
     this.lineStringReplay = new GeoLineStringReplay(tolerance, maxExtent);
   } 
-
 
   public replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent, screenXY) {
@@ -154,5 +154,71 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         false, 8, 0);
 
     return locations;
+  }
+
+  public drawMultiPolygon(multiPolygonGeometry, feature) {
+    var endss = multiPolygonGeometry.getEndss();
+    var stride = multiPolygonGeometry.getStride();
+    var currIndex = this.indices.length;
+    var currLineIndex = this.lineStringReplay.getCurrentIndex();
+    var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+    var i, ii, j, jj;
+    var start = 0;
+    for (i = 0, ii = endss.length; i < ii; ++i) {
+        var ends = endss[i];
+        if (ends.length > 0) {
+            var outerRing = (<any>ol.geom).flat.transform.translate(flatCoordinates, start, ends[0],
+                stride, -this.origin[0], -this.origin[1]);
+            if (outerRing.length) {
+                var holes = [];
+                var holeFlatCoords;
+                for (j = 1, jj = ends.length; j < jj; ++j) {
+                    if (ends[j] !== ends[j - 1]) {
+                        holeFlatCoords = (<any>ol.geom).flat.transform.translate(flatCoordinates, ends[j - 1],
+                            ends[j], stride, -this.origin[0], -this.origin[1]);
+                        holes.push(holeFlatCoords);
+                    }
+                }
+                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                this.drawCoordinates_(outerRing, holes, stride);
+            }
+        }
+        start = ends[ends.length - 1];
+    }
+    if (this.indices.length > currIndex) {
+        this.startIndices.push(currIndex);
+        this.startIndicesFeature.push(feature);
+        if (this.state_.changed) {
+            this.styleIndices_.push(currIndex);
+            this.state_.changed = false;
+        }
+    }
+    if (this.lineStringReplay.getCurrentIndex() > currLineIndex) {
+        this.lineStringReplay.setPolygonStyle(feature, currLineIndex);
+    }
+  }
+
+  public drawCoordinates_(flatCoordinates, holeFlatCoordinates, stride) {
+    var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
+    var holeIndices = [];
+    for (var i = 0; i < holeFlatCoordinates.length; i++) {
+        var holeCoords = holeFlatCoordinates[i];
+        holeIndices.push(coords.length / stride);
+        for (var j = 0; j < holeCoords.length - stride; j++) {
+            coords.push(holeCoords[j]);
+        }
+    }
+    // vertices only hold x,y values
+    var baseIndex = this.vertices.length / 2;
+    if (stride === 2) {
+        Array.prototype.push.apply(this.vertices, coords);
+    } else {
+        for (var i = 0; i < coords; i += stride) {
+            this.vertices.push(coords[i], coords[i + 1]);
+        }
+    }
+    var triangles = earcut(coords, holeIndices, stride);
+    triangles = triangles.map(function (i) { return i + baseIndex; });
+    Array.prototype.push.apply(this.indices, triangles);
   }
 }
