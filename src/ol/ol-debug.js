@@ -18863,6 +18863,14 @@ function olInit() {
      * @api
      */
     ol.PluggableMap.prototype.removeLayer = function (layer) {
+        // remove workers
+        var workerManager = layer.workerManager;
+        if(workerManager){
+            var workers = workerManager.workers;
+            for(var i = 0; i < workers.length; i++){
+                workers[i].terminate();
+            }
+        }
         var layers = this.getLayerGroup().getLayers();
         return layers.remove(layer);
     };
@@ -73417,7 +73425,7 @@ function olInit() {
     /**
      * @inheritDoc
      */
-    ol.renderer.webgl.TileLayer.prototype.disposeInternal = function () {
+    ol.renderer.webgl.TileLayer.prototype.disposeInternal = function () {        
         var context = this.mapRenderer.getContext();
         context.deleteBuffer(this.renderArrayBuffer_);
         ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);

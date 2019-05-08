@@ -680,11 +680,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         return new GeoVectorTileLayerRender(<any>mapRenderer, <any>layer);
     }
     
-    disposeInternal() {
+    public disposeInternal() {
         // (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
-        // var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
-        // workerManager.close();
-        // (<any>ol).renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
+        var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
+        workerManager.close();
+        (<any>ol).renderer.webgl.TileLayer.prototype.disposeInternal.call(this);
     };
 
     public createLoadedTileFinder(source, projection, tiles, tileLayer) {
