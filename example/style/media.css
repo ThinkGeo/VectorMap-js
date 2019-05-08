@@ -21,6 +21,7 @@
 
     .navbar-text h4 {
         font-size: 1.4rem;
+        margin-bottom: 0;
     }
 
     .sidebar {
@@ -38,10 +39,6 @@
 
     .navbar-text h6 {
         display: none;
-    }
-
-    .navbar-text h4 {
-        margin-bottom: 0;
     }
 
     .navbar-toggler {
@@ -66,6 +63,30 @@
 
     .tab-content{
         height: calc(100% - 59px);
+    }
+}
+
+@media (max-width: 400px){
+    .navbar-text h4 {
+        font-size: 1.15rem;
+        margin-bottom: 0;
+    }
+
+    #child-page-title h1{
+        font-size: 1.8rem;
+    }
+
+    .navbar-toggler span{
+        font-size: 1rem;
+    }
+
+    .navbar-toggler{
+        margin-right: 0.8rem!important;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .navbar-brand{
+        margin-right: 0.5rem;
     }
 }
 
