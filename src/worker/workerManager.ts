@@ -30,7 +30,7 @@ export class WorkerManager {
         try {
             let callbacks = this.workerCallback;
             for (let i = 0; i < this.workerCount; i++) {
-                let source = '(' + window["olInit"] + ')()';
+                let source = '(' + ol["olInit"] + ')()';
                 let blob = new Blob([source]);
                 let worker = new Worker(window.URL.createObjectURL(blob));
                 worker.onmessage = function (e) {
