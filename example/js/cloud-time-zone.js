@@ -37,40 +37,61 @@ const initializeMap = () => {
     map.addOverlay(overlay);
     map.on('click', (e) => {
         overlay.setPosition(undefined);
-        const coord = e.coordinate;
-        getTimeZone(coord)
+        let coord = e.coordinate;
+        let lonLatCoord = ol.proj.toLonLat(coord);
+        getTimeZone(lonLatCoord, coord);
     });
 }
 
-const getTimeZone = (coord) => {
-    const url = `https://cloud.thinkgeo.com/api/v1/timezones/${coord[1]},${coord[0]}?apiKey=${apiKey}&Srid=3857`;
+const getTimeZone = (lonLatCoord, coord) => {
+    const url = `https://cloud.thinkgeo.com/api/v1/timezones/${lonLatCoord[1]},${lonLatCoord[0]}?apiKey=${apiKey}`;
     const xhr = new XMLHttpRequest();
+    const errorMessage = document.getElementById('error-message');
     xhr.open('get', url, true);
     xhr.send();
     xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 ) {
-            if(xhr.status === 200){
-                document.getElementById('error-message').classList.remove('show');
+        const errorModal = document.querySelector('#error-modal');
+        errorModal.classList.add('hide');
+        if (xhr.readyState === 4) {
+            const res = JSON.parse(xhr.response);
+            if (xhr.status === 200) {
+                errorModal.classList.add('hide');
+                errorMessage.classList.remove('show');
                 const res = JSON.parse(xhr.response)
                 const data = res.data;
+                let localMoment = moment(data.currentLocalTime);
+                let utcMoment = moment.utc(data.currentUtcTime);
+                let utcOffsetHours = parseFloat(data.offsetSeconds) / 60 / 60;
+                let offsetString = utcOffsetHours > 0 ? '+' + utcOffsetHours.toString() : utcOffsetHours.toString();
+
                 document.querySelector('#popup-content').innerHTML = `
-                <p><label>Timezone: </label> ${data.timezone}</p>
-                <p><label>CountryName: </label> ${data.countryName}</p>
-                <p><label>CountryCode: </label> ${data.countryCode}</p>
+                <p><label>Time Zone: </label> ${data.timezone}</p>
+                <p><label>Country: </label> ${data.countryName}</p>
+                <p><label>Country Code: </label> ${data.countryCode}</p>
                 <p><label>Comment: </label> ${data.comment}</p>
-                <p><label>CurrentLocalTime: </label> ${data.currentLocalTime}</p>
-                <p><label>CurrentUtcTime: </label> ${data.currentUtcTime}</p>
-                <p><label>OffsetSeconds: </label> ${data.offsetSeconds}</p>`;
+                <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
+                <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
+                <p><label>UTC Offset: </label> ${offsetString}</p>`;
+
                 overlay.setPosition(coord);
-            }else if(xhr.status === 404){
-                if(timer !== undefined && timer !== null){
+            }
+            if (xhr.status === 404) {
+                if (timer !== undefined && timer !== null) {
                     clearTimeout(timer);
                 }
-                document.getElementById('error-message').classList.add('show');
-                timer = setTimeout(()=>{
-                    document.getElementById('error-message').classList.remove('show');
-                },5000)
-            }           
+                errorMessage.classList.add('show');
+                timer = setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000)
+            } else if (xhr.status === 401) {
+                errorModal.classList.remove('hide');
+                const messageHtml = `Your ThinkGeo Cloud API key is either unauthorized or missing.  Please check the API key being used and ensure it has access to the ThinkGeo Cloud services you are requesting.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
+                document.querySelector('#error-modal p').innerHTML = messageHtml;
+            } else if (xhr.status === 403) {
+                errorModal.classList.remove('hide');
+                const messageHtml = `This ThinkGeo Cloud API key cannot be used.  Make sure you have changed the API key in this sample’s source code to a key from your own ThinkGeo Cloud account.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
+                document.querySelector('#error-modal p').innerHTML = messageHtml;
+            }
         }
     }
 }
@@ -82,3 +103,7 @@ WebFont.load({
     },
     active: initializeMap
 });
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})
