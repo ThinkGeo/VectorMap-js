@@ -133,53 +133,57 @@ closer.onclick = () => {
 // actually perform the Time Zone using the ThinkGeo Cloud and then 
 // display the results on the popup.
 
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// We need to create the instance of Time Zone client and authenticate the API key.
+const tzClient = new tg.TimeZoneClient(apiKey);
+
 // This method will recieve a coordinates array in decimal degreee. When 
 // you click somewhere on the map, we'll call this method to perform Time Zone service.
 let timer;
 const getTimeZone = (lonLatCoord) => {
-    const url = `https://cloud.thinkgeo.com/api/v1/timezones/${lonLatCoord[1]},${lonLatCoord[0]}?apiKey=${apiKey}`;
-    const xhr = new XMLHttpRequest();
     const errorMessage = document.getElementById('error-message');
-    xhr.open('get', url, true);
-    xhr.send();
-    xhr.onreadystatechange = () => {
-        const errorModal = document.querySelector('#error-modal');
-        errorModal.classList.add('hide');
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const res = JSON.parse(xhr.response);
-                errorModal.classList.add('hide');
-                errorMessage.classList.remove('show');
-                const data = res.data;
-                let localMoment = moment(data.currentLocalTime);
-                let utcMoment = moment.utc(data.currentUtcTime);
-                let utcOffsetHours = parseFloat(data.offsetSeconds) / 60 / 60;
-                let offsetString = utcOffsetHours > 0 ? '+' + utcOffsetHours.toString() : utcOffsetHours.toString();
+    const errorModal = document.querySelector('#error-modal');
+    errorModal.classList.add('hide');
+    tzClient.getTimeZoneByCoordinate(lonLatCoord[1], lonLatCoord[0], function (status, res) {
+        if (status === 200) {
+            errorModal.classList.add('hide');
+            errorMessage.classList.remove('show');
+            const data = res.data;
+            let localMoment = moment(data.currentLocalTime);
+            let utcMoment = moment.utc(data.currentUtcTime);
+            let utcOffsetHours = parseFloat(data.offsetSeconds) / 60 / 60;
+            let offsetString = utcOffsetHours > 0 ? '+' + utcOffsetHours.toString() : utcOffsetHours.toString();
 
-                // Render the result that we go from server to popup.
-                document.querySelector('#popup-content').innerHTML = `
-                <p><label>Time Zone: </label> ${data.timezone}</p>
-                <p><label>Country: </label> ${data.countryName}</p>
-                <p><label>Country Code: </label> ${data.countryCode}</p>
-                <p><label>Comment: </label> ${data.comment}</p>
+            // Render the result that we go from server to popup.
+            document.querySelector('#popup-content').innerHTML = `
+                    <p><label>Time Zone: </label> ${data.timezone}</p>
+                    <p><label>Country: </label> ${data.countryName}</p>
+                    <p><label>Country Code: </label> ${data.countryCode}</p>
+                    <p><label>Comment: </label> ${data.comment}</p>
+                    <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
                 <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
+                    <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
+                    <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
                 <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
-                <p><label>UTC Offset: </label> ${offsetString}</p>`;
+                    <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
+                    <p><label>UTC Offset: </label> ${offsetString}</p>`;
 
-                overlay.setPosition(clickCoord);
-            }
-            // Set up a error tips when there is no time zone data is available for that location.
-            if (xhr.status === 404) {
-                if (timer !== undefined && timer !== null) {
-                    clearTimeout(timer);
-                }
-                errorMessage.classList.add('show');
-                timer = setTimeout(() => {
-                    errorMessage.classList.remove('show');
-                }, 5000)
-            }
+            overlay.setPosition(clickCoord);
         }
-    }
+        // Set up a error tips when there is no time zone data is available for that location.
+        if (status === 404) {
+            if (timer !== undefined && timer !== null) {
+                clearTimeout(timer);
+            }
+            errorMessage.classList.add('show');
+            timer = setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000)
+        }
+
+    })
 }
 
 
