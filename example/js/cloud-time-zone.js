@@ -4,10 +4,11 @@
 // 
 //   1. ThinkGeo Cloud API Key
 //   2. Map Control Setup
-//   3. Popup Setup
-//   4. Time Zoom Performing Setup
-//   5. ThinkGeo Map Icon Fonts
-//   6. Event Listeners
+//   3. Tile Loading Event Handlers
+//   4. Popup Setup
+//   5. Time Zoom Performing Setup
+//   6. ThinkGeo Map Icon Fonts
+//   7. Event Listeners
 /*===========================================================================*/
 
 
@@ -31,7 +32,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // Cloud Maps Vector Tile service to display a detailed street map.  For more
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
-const defaultLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/2.0.0/light.json', {
+let defaultLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
@@ -78,7 +79,35 @@ const initializeMap = () => {
 
 
 /*---------------------------------------------*/
-// 3. Popup Setup
+// 3. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile starts loading, finishes loading successfully, 
+// or encounters an error while loading.
+const errorLoadingTile = (e) => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Set up a error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+        const messageHtml = `Your ThinkGeo Cloud API key is either unauthorized or missing.  Please check the API key being used and ensure it has access to the ThinkGeo Cloud services you are requesting.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
+        document.querySelector('#error-modal p').innerHTML = messageHtml;
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function (e) {
+        errorLoadingTile(e);
+    });
+    layer.setSource(layerSource);
+    return layer;
+}
+
+defaultLayer = setLayerSourceEventHandlers(defaultLayer);
+
+/*---------------------------------------------*/
+// 4. Popup Setup
 /*---------------------------------------------*/
 
 // Now, we need to create the popup container for our time zone data information. We'll create an 
@@ -97,7 +126,7 @@ closer.onclick = () => {
 
 
 /*---------------------------------------------*/
-// 4. Time Zoom Performing Setup
+// 5. Time Zoom Performing Setup
 /*---------------------------------------------*/
 
 // At this point we'll build up the methods and functionality that will  
@@ -117,11 +146,10 @@ const getTimeZone = (lonLatCoord) => {
         const errorModal = document.querySelector('#error-modal');
         errorModal.classList.add('hide');
         if (xhr.readyState === 4) {
-            const res = JSON.parse(xhr.response);
             if (xhr.status === 200) {
+                const res = JSON.parse(xhr.response);
                 errorModal.classList.add('hide');
                 errorMessage.classList.remove('show');
-                const res = JSON.parse(xhr.response)
                 const data = res.data;
                 let localMoment = moment(data.currentLocalTime);
                 let utcMoment = moment.utc(data.currentUtcTime);
@@ -150,25 +178,13 @@ const getTimeZone = (lonLatCoord) => {
                     errorMessage.classList.remove('show');
                 }, 5000)
             }
-            // Set up a error tips when ThinkGeo Cloud API key is either unauthorized or missing.   
-            else if (xhr.status === 401) {
-                errorModal.classList.remove('hide');
-                const messageHtml = `Your ThinkGeo Cloud API key is either unauthorized or missing.  Please check the API key being used and ensure it has access to the ThinkGeo Cloud services you are requesting.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
-                document.querySelector('#error-modal p').innerHTML = messageHtml;
-            }
-            // Set up a error tips when ThinkGeo Cloud API key cannot be used. 
-            else if (xhr.status === 403) {
-                errorModal.classList.remove('hide');
-                const messageHtml = `This ThinkGeo Cloud API key cannot be used.  Make sure you have changed the API key in this sample’s source code to a key from your own ThinkGeo Cloud account.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
-                document.querySelector('#error-modal p').innerHTML = messageHtml;
-            }
         }
     }
 }
 
 
 /*---------------------------------------------*/
-// 5. ThinkGeo Map Icon Fonts
+// 6. ThinkGeo Map Icon Fonts
 /*---------------------------------------------*/
 
 // Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
@@ -181,7 +197,7 @@ WebFont.load({
         families: ["vectormap-icons"],
         urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
     },
-    
+
     // The "active" property defines a function to call when the font has
     // finished downloading.  Here, we'll call our initializeMap method.
     active: initializeMap
@@ -189,7 +205,7 @@ WebFont.load({
 
 
 /*---------------------------------------------*/
-// 6. Event Listeners
+// 7. Event Listeners
 /*---------------------------------------------*/
 
 // These event listeners tell the UI when it's time to execute all of the 
