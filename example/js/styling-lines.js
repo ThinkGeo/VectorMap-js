@@ -167,6 +167,7 @@ let riverLayer = new ol.mapsuite.VectorLayer(riverStyleJson, {
 
 // Create and initialize our map.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined layers to the map.

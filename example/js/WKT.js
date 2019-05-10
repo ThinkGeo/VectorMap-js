@@ -75,7 +75,7 @@ let wktVectorLayer = new ol.mapsuite.VectorLayer(wktStyleJson, {
 // Now we'll create the base layer for our map. The light style of layers uses ThinkGeo Cloud 
 // Maps Vector Tile service to display the detailed base map. For more info, see our wiki: 
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles 
-let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
+let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
@@ -85,6 +85,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worlds
 // which ensures that the POI icons display as intended.
 let initializeMap = function () {
     let map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         // States that the HTML tag with id="map" should serve as the container for our map.

@@ -39,6 +39,7 @@
  let map;
  let initializeMap = function () {
      map = new ol.Map({
+         renderer: 'webgl',
          loadTilesWhileAnimating: true,
          loadTilesWhileInteracting: true,
          // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
@@ -94,8 +95,8 @@
  let stylejson;
  getJson().then((data) => {
      stylejson = JSON.parse(data);
-    // Once the styleJSON data has been downloaded, call the addRefreshListener 
-    // method that user can custom the map style by click the Refresh button.
+     // Once the styleJSON data has been downloaded, call the addRefreshListener 
+     // method that user can custom the map style by click the Refresh button.
      addRefreshListener();
  })
 

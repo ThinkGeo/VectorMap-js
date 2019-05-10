@@ -1,8 +1,40 @@
+/*===========================================================================*/
+// Transform Projection
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+/*===========================================================================*/
+
+
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
+
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
+
+/*---------------------------------------------*/
+// 2. Default Polygon Setup
+/*---------------------------------------------*/
+
+// Now, define a default area which is a rectangle around the ThinkGeo U.S. office park.  
 const defaultWkt = "POLYGON((-96.81058934136763 33.129382039876546,-96.80844357415572 33.129382039876546,-96.80844357415572 33.12814213686314,-96.81058934136763 33.12814213686314,-96.81058934136763 33.129382039876546))";
 
-const defaultLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
+
+/*---------------------------------------------*/
+// 3. Map Control Setup
+/*---------------------------------------------*/
+
+// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
+// Cloud Maps Vector Tile service to display a detailed street map.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
+const defaultLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
@@ -35,6 +67,7 @@ const view = new ol.View({
 let map;
 const initializeMap = () => {
     map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         layers: [defaultLayer, projectionLayer],

@@ -41,13 +41,14 @@ let imageryLayer = new ol.layer.Tile({
 });
 
 // Create the vector street map layer using ThinkGeo Cloud.
-let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json", {
+let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/transparent-background.json", {
     apiKey: apiKey, 
     visible: true
 });
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     

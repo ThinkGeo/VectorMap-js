@@ -1,9 +1,10 @@
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json", {
+let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json", {
     'apiKey': apiKey,
 });
 let map = new ol.Map({
+    renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.
@@ -191,12 +192,12 @@ const toggleUnit = (value) => {
 const updateLegendBoxInfo = (unit) => {
     let newLevels = levels.slice(0); // deep copy
     let currentUnit;
-    if(unit === "in"){
+    if (unit === "in") {
         currentUnit = "inches";
         for (let i = 0, l = newLevels.length; i < l; i++) {
             newLevels[i] = Math.round(newLevels[i] * 0.03937007874016 * 100000) / 100000;
         }
-    }else{
+    } else {
         currentUnit = "millimeters";
     }
 
@@ -212,9 +213,9 @@ let radioInput = document.querySelectorAll('input[type=radio]');
 for (let i = 0, l = radioInput.length; i < l; i++) {
     radioInput[i].addEventListener('change', (e) => {
         unit = toggleUnit(e.target.value);
-        if(currentPixel !== undefined){
+        if (currentPixel !== undefined) {
             updatePopupBoxInfo(currentPixel);
-        }        
+        }
         updateLegendBoxInfo(unit);
     })
 }

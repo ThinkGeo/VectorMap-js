@@ -53,6 +53,7 @@ let highDpiLayer = new ol.layer.Tile({
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
 

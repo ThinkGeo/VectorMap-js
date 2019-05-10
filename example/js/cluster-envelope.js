@@ -27,9 +27,9 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'
 /*---------------------------------------------*/
 
 // Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
-// Cloud Maps Vector Tile service to display a detailed street map.  For more
+// Cloud Maps Raster Tile service to display a detailed street map.  For more
 // info, see our wiki:
-// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
 let defaultLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
@@ -39,10 +39,11 @@ let defaultLayer = new ol.layer.Tile({
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
+	renderer:'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
 
-    // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
+    // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
     layers: [defaultLayer],
     // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',

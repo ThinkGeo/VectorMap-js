@@ -75,10 +75,10 @@ const createReverseGeocodingLayer = function () {
                         font: "14px Arial",
                         text: "",
                         fill: new ol.style.Fill({
-                            color: "black"
+                            color: [0,0,0,1]
                         }),
                         stroke: new ol.style.Stroke({
-                            color: "white",
+                            color: [255,255,255,1],
                             width: 1
                         })
                     })

@@ -73,6 +73,7 @@ let baseMapLayer = new ol.mapsuite.VectorLayer(baseMapStyleJson, {
 
 // Create and initialize our custom map.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined layer to the map.

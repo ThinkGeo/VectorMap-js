@@ -116,10 +116,10 @@ let styles = {
 			radius: 3,
 			snapToPixel: false,
 			fill: new ol.style.Fill({
-				color: 'black'
+				color: [0, 0, 0, 1]
 			}),
 			stroke: new ol.style.Stroke({
-				color: 'white',
+				color: [255, 255, 255, 1],
 				width: 1
 			})
 		})
@@ -145,7 +145,7 @@ let styles = {
 	route: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 2,
-			color: [181, 232, 88]
+			color: [181, 232, 88, 1]
 		})
 	})
 };

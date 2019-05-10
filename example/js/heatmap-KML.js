@@ -65,7 +65,7 @@ heatMapLayer.getSource().on('addfeature', function (event) {
 // Cloud Maps Vector Tile service to display a detailed street map.  For more
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
-let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json", {
+let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json", {
     'apiKey': apiKey,
 });
 

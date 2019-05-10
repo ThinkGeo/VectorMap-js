@@ -99,7 +99,8 @@ let transparentBackground = new ol.layer.Tile({
 });
 
 // Create and initialize our raster map control.
-let map = new ol.Map({
+let map = new ol.Map({    
+	renderer:'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
 
