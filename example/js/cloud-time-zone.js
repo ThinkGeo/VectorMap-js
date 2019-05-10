@@ -163,10 +163,6 @@ const getTimeZone = (lonLatCoord) => {
                     <p><label>Country Code: </label> ${data.countryCode}</p>
                     <p><label>Comment: </label> ${data.comment}</p>
                     <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
-                <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
-                    <p><label>Current Local Time: </label> ${localMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
-                    <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
-                <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
                     <p><label>Current UTC Time: </label> ${utcMoment.format('MMM D, YYYY h:mm:ss A')}</p>                
                     <p><label>UTC Offset: </label> ${offsetString}</p>`;
 
