@@ -22540,9 +22540,9 @@ function olInit() {
         //     delta = delta * 2 ;
         // }
         // else {
-            delta = delta * 2;
+            // delta = delta * 2;
         // }
-        delta *= 0.1;
+        delta *= 0.2;
 
         var delta = ol.math.clamp(delta, -maxDelta, maxDelta);
         ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
