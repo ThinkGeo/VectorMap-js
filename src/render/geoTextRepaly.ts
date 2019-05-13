@@ -181,46 +181,35 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 flatCoordinates = geometry.getFlatCoordinates();
                 break;
         }
-
-        if(this instanceof (<any>ol).render.webgl.ImageReplay){
-            this.setImageStyle(style);
-            if(type == 'LineString'){
-                this.drawLineStringImage(geometry, feature, frameState, declutterGroup);                    
-            }else{
-                this.replayImage_(frameState, declutterGroup, flatCoordinates, style.scale_, end);
-                this.renderDeclutter_(declutterGroup, feature);
-            }
-        }else{ 
-            if(type == 'MultiLineString'){
-                var ends = geometry.getEnds();
-                for(var k = 0; k < ends.length; k++){
-                    var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                    var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
-                    
-                    this.setTextStyle(style);
-                    this.drawLineStringText(geometry, newFeature, frameState, declutterGroup);
-                }  
-            }else{   
+        
+        if(type == 'MultiLineString'){
+            var ends = geometry.getEnds();
+            for(var k = 0; k < ends.length; k++){
+                var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+                
                 this.setTextStyle(style);
-                if(style.label){      
-                    this.label = style.label;
-                    this.maxAngle_ = style.maxAngle_;
-                    var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
-                    this.width = this.label.width + lineWidth; 
-                    this.height = this.label.height; 
-                    this.originX = lineWidth;
-                    this.originY = 0;
-                    this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
-                    this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
-                    this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end);
-                    this.renderDeclutterLabel_(declutterGroup, feature);
-                }else{  
-                    // draw chars 
-                    this.roadText = true;
-                    this.drawLineStringText(geometry, feature, frameState, declutterGroup);
-                }
+                this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+            }  
+        }else{   
+            this.setTextStyle(style);
+            if(style.label){      
+                this.label = style.label;
+                this.maxAngle_ = style.maxAngle_;
+                var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;        
+                this.width = this.label.width + lineWidth; 
+                this.height = this.label.height; 
+                this.originX = lineWidth;
+                this.originY = 0;
+                this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
+                this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
+                this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end);
+                this.renderDeclutterLabel_(declutterGroup, feature);
+            }else{  
+                // draw chars 
+                this.drawLineStringText(geometry, feature, frameState, declutterGroup);
             }
-        }
+        }        
     }
   }
   
@@ -466,6 +455,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.offsetY_ = textStyle.getOffsetY() || 0;
         this.rotateWithView = !!textStyle.getRotateWithView();
         this.rotation = textStyle.getRotation() || 0;
+        this.maxAngle_ = textStyle.getMaxAngle();
     }
   }
 
