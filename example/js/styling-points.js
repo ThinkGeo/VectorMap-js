@@ -105,7 +105,7 @@ const geosjonStyle = {
 // which can be downloaded and use it in your application for free.  
 // For more information, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_stylejson
-const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json";
+const worldstreetsStyle = "https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json";
 
 // Create the base layer for our map.
 const baseLayer = new ol.mapsuite.VectorTileLayer(worldstreetsStyle, {
@@ -123,6 +123,7 @@ let pointLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 // which ensures that the POI icons display as intended.
 let initializeMap = function () {
     let map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         // Add our previously-defined ThinkGeo Cloud Vector Tile layer and POI points data layer to the map.

@@ -95,6 +95,7 @@ let kmlLayer = new ol.mapsuite.VectorLayer(geosjonStyle, {
 
 // Create and initialize our map control.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // States that the HTML tag with id="map" should serve as the container for our map.

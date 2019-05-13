@@ -8,7 +8,7 @@
     <title>Hybrid Maps </title>
 
     <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
-    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
 
     <!-- Define some custom styles for the UI of our sample page. -->
     <style>
@@ -17,11 +17,18 @@
             height: 100%;
         }
 
-        .ol-control:hover {
-            background-color: unset;
+        .ol-control button {
+            height: 1.2em !important;
+            width: 1.2em !important;
+            border: solid 1px #ccc;
+            font-size: 1.5em !important;
+            background-color: #fff !important;
+            color: #2d3c4d;
+            cursor: pointer;
+            border-radius: 2px;
         }
 
-        .ol-control:focus {
+        .ol-control button:focus {
             outline: unset;
         }
 
@@ -29,24 +36,6 @@
             right: unset;
             left: 0.5em;
             top: 5.5em;
-            background-color: unset
-        }
-
-        .ol-full-screen button {
-            height: 1.2em;
-            width: 1.2em;
-            font-size: 1.5em;
-            cursor: pointer;
-            margin: 0px;
-            background-color: #fff !important;
-            color: #2d3c4d;
-            border: solid 1px #ccc;
-            box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
-            border-radius: 0 0 2px 2px;
-        }
-
-        .ol-full-screen button:hover {
-            background-color: #eee !important;
         }
     </style>
 </head>
@@ -56,7 +45,7 @@
     <div id="map"></div>
 
     <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
-    <script src="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.js"></script>
+    <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
 
     <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>

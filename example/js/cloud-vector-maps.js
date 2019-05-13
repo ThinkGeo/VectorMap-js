@@ -30,12 +30,12 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // display the detailed light style street map and dark style street map.
 // For more info, see our wiki: 
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
-let light = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
+let light = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
 
-let dark = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json', {
+let dark = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json', {
     apiKey: apiKey,
     visible: false,
     layerName: 'dark'
@@ -47,6 +47,7 @@ let dark = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreet
 let map;
 let initializeMap = () => {
     map = new ol.Map({
+        renderer:'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
 

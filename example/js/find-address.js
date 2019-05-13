@@ -49,6 +49,7 @@ let view = new ol.View({
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
+    renderer:'webgl',
     // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
     layers: [baseMap],
     // States that the HTML tag with id="map" should serve as the container for our map.

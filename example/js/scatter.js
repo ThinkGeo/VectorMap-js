@@ -29,7 +29,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // ThinkGeo Cloud Maps Vector Tile service to display a detailed map. For more
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles 
-let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/dark.json", {
+let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json", {
     'apiKey': apiKey,
 });
 
@@ -39,6 +39,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worlds
 let map;
 const initializeMap = function () {
     map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         // Add our previously-defined ThinkGeo Cloud Vector Tile Layer to the map.

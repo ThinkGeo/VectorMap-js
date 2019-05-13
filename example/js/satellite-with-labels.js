@@ -51,6 +51,7 @@ let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.c
 // which ensures that the POI icons display as intended.
 let initializeMap = function () {
     let map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
 

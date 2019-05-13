@@ -83,6 +83,7 @@ const initializeMap = function () {
         });
 
         map = new ol.Map({
+            renderer: 'webgl',
             oadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.

@@ -38,6 +38,7 @@ let baseLayer = new ol.layer.Tile({
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
+	renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.

@@ -86,6 +86,7 @@ class StreetMap extends React.Component {
 		// which ensures that the POI icons display as intended.
 		let initializeMap = function() {
 			map = new ol.Map({
+				renderer: 'webgl',
 				loadTilesWhileAnimating: true,
 				loadTilesWhileInteracting: true,
 				layers: [ layer ],

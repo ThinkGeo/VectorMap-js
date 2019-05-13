@@ -88,6 +88,7 @@ let view = new ol.View({
 
 // Create and initialize our raster map control.
 let map = new ol.Map({
+    renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined ThinkGeo Cloud Raster Tile layers to the map.
@@ -97,6 +98,10 @@ let map = new ol.Map({
     // Add the default view to the map when it starts up.
     view: view
 });
+
+
+// Add a button to the map that lets us toggle full-screen display mode.
+map.addControl(new ol.control.FullScreen());
 
 
 /*---------------------------------------------*/
@@ -561,10 +566,10 @@ map.getView().on('change:resolution', function () {
         lifewayIconStyle.getImage().setScale(iconScale);
         if (changeToLogo) {
             // If it's time for to change the point style from colored circle to store logo. We'll reset the 
-			// If it's time for to change the point style from colored circle to store logo. We'll reset the 
+            // If it's time for to change the point style from colored circle to store logo. We'll reset the 
             // If it's time for to change the point style from colored circle to store logo. We'll reset the 
             // changeToLogo to false, which means even we are at a zoom greater than 4, but we have no need to 
-			// changeToLogo to false, which means even we are at a zoom greater than 4, but we have no need to 
+            // changeToLogo to false, which means even we are at a zoom greater than 4, but we have no need to 
             // changeToLogo to false, which means even we are at a zoom greater than 4, but we have no need to 
             // change the circle to logo, because we already have done.
             changeToLogo = false;
