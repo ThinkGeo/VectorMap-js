@@ -626,6 +626,13 @@
         htmlPath: './example/html/find-address.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
         jsPath: './example/js/find-address.js'
+      },
+      {
+        comments: 'Plan your route from one place to another via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
+        title: "Routing",
+        htmlPath: './example/html/routing.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
+        jsPath: './example/js/routing.js'
       }]
     }, {
       dataTarget: 'display-your-data',
