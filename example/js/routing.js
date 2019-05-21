@@ -366,6 +366,7 @@ const startStyle = new ol.style.Style({
 		anchorXUnits: 'fraction',
 		anchorYUnits: 'fraction',
 		opacity: 1,
+		crossOrigin: "Anonymous",
 		src: '../image/starting.png'
 	})
 });
@@ -376,17 +377,8 @@ const endStyle = new ol.style.Style({
 		anchorXUnits: 'fraction',
 		anchorYUnits: 'fraction',
 		opacity: 1,
+		crossOrigin: "Anonymous",
 		src: '../image/ending.png'
-	})
-});
-
-const turnStyle = new ol.style.Style({
-	image: new ol.style.Icon({
-		anchor: [0.5, 0.9],
-		anchorXUnits: 'fraction',
-		anchorYUnits: 'fraction',
-		opacity: 1,
-		src: '../image/direction-straight-red.png'
 	})
 });
 
@@ -869,6 +861,7 @@ const addArrow = (penultCoord, lastCoord) => {
 			anchor: [0.5, 0.5],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
+			crossOrigin: "Anonymous",
 			src: '../image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
