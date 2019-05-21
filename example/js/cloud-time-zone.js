@@ -85,20 +85,20 @@ const initializeMap = () => {
 // These events allow you to perform custom actions when 
 // a map tile starts loading, finishes loading successfully, 
 // or encounters an error while loading.
-const errorLoadingTile = (e) => {
+const errorLoadingTile = () => {
     const errorModal = document.querySelector('#error-modal');
     if (errorModal.classList.contains('hide')) {
         // Set up a error tips when Tile loaded error.
         errorModal.classList.remove('hide');
-        const messageHtml = `Your ThinkGeo Cloud API key is either unauthorized or missing.  Please check the API key being used and ensure it has access to the ThinkGeo Cloud services you are requesting.  You can create and manage your API keys at <a href="https://cloud.thinkgeo.com">https://cloud.thinkgeo.com</a>.`
+        const messageHtml = `We're having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in this sample's JavaScript source code, and ensure it has access to the ThinkGeo Cloud services you are requesting. You can create and manage your API keys at <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>.`
         document.querySelector('#error-modal p').innerHTML = messageHtml;
     }
 }
 
 const setLayerSourceEventHandlers = (layer) => {
     let layerSource = layer.getSource();
-    layerSource.on('tileloaderror', function (e) {
-        errorLoadingTile(e);
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
     });
     layer.setSource(layerSource);
     return layer;
@@ -168,8 +168,8 @@ const getTimeZone = (lonLatCoord) => {
 
             overlay.setPosition(clickCoord);
         }
-        // Set up a error tips when there is no time zone data is available for that location.
-        if (status === 404) {
+        // Set up an error tip when there is no time zone data is available for that location.
+        else if (status === 404) {
             if (timer !== undefined && timer !== null) {
                 clearTimeout(timer);
             }
@@ -179,6 +179,10 @@ const getTimeZone = (lonLatCoord) => {
             }, 5000)
         }
 
+        // Set up an error tip when we're having trouble communicating with ThinkGeo Cloud.
+        else{
+            errorLoadingTile();
+        }
     })
 }
 
