@@ -268,7 +268,7 @@ export class GeoLineStyle extends GeoStyle {
                         let values = this.getTransformValues(this.geometryTransform);
 
                         if (this.geometryTransform.indexOf("translate") === 0) {
-                            geometry.translate(+values[0].trim(), +values[1].trim());
+                            geometry.translate(+values[0].trim() * resolution, +values[1].trim() * resolution);
                         } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
                         } else if (this.geometryTransform.indexOf("rotate") === 0) {
@@ -278,6 +278,8 @@ export class GeoLineStyle extends GeoStyle {
                         } else if (this.geometryTransform.indexOf("skew") === 0) {
                             this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                         }
+
+                        feature.flatCoordinates_ = (<any>geometry).getFlatCoordinates();
                     }
                 }
                 return feature.getGeometry();

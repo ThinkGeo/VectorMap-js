@@ -465,10 +465,12 @@ export class GeoPointStyle extends GeoStyle {
                 })) : undefined,
                 rotation: this.angle * Math.PI / 180
             }));
+
+            this.applyTransForm(this.textStyle);
         }
     }
 
-    private applyTransForm(style: ol.style.Style) {
+    private applyTransForm(style) {
         let transformRgx = /([a-z]+)\((.*?)\)/i;
         if (this.transform && transformRgx.test(this.transform)) {
             let matchedResults = this.transform.match(transformRgx);
@@ -476,15 +478,19 @@ export class GeoPointStyle extends GeoStyle {
             let transFormValue = matchedResults.length > 2 ? matchedResults[2] : "";
             switch (transFormType) {
                 case "rotate":
-                    style.getImage() && style.getImage().setRotation(parseInt(transFormValue));
-                    style.getText() && style.getText().setRotation(parseInt(transFormValue));
+                    // style.getImage() && style.getImage().setRotation(parseInt(transFormValue));
+                    style.setRotation(parseInt(transFormValue));
                     break;
                 case "scale":
                     let scale = parseInt(transFormValue.split(",")[0]);
-                    style.getImage() && style.getImage().setScale(scale);
-                    style.getText() && style.getText().setScale(scale);
+                    // style.getImage() && style.getImage().setScale(scale);
+                    style.setScale(scale);
                     break;
                 case "translate":
+                    let offsets = transFormValue.split(",");
+                    style.setOffsetX(parseInt(offsets[0]));
+                    style.setOffsetY(parseInt(offsets[1]));
+                    break;
                 default:
                     throw "not support " + this.transform;
             }

@@ -117,7 +117,7 @@ export class GeoAreaStyle extends GeoStyle {
         return values;
     }
 
-    GetTransformedCoordinates(feature) {
+    GetTransformedCoordinates(feature, resolution) {
         let tmpFlatCoordinates = feature.getFlatCoordinates();
         let tmpCoordinates: ol.Coordinate[][] = [[]];
         let index = 0;
@@ -131,7 +131,7 @@ export class GeoAreaStyle extends GeoStyle {
         let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
 
         if (this.geometryTransform.indexOf("translate") === 0) {
-            geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
+            geometry.translate(+this.geometryTransformValue[0].trim() * resolution, +this.geometryTransformValue[1].trim() * resolution);
         }
         else if (this.geometryTransform.indexOf("scale") === 0) {
             geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
@@ -153,7 +153,7 @@ export class GeoAreaStyle extends GeoStyle {
         this.styles = [];
         if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
-                feature.flatCoordinates_ = this.GetTransformedCoordinates(feature);
+                feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
             }
 
             if (this.shadowDx || this.shadowDy) {

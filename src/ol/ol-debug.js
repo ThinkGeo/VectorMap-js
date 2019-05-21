@@ -98357,12 +98357,12 @@ function olInit() {
                 if (this.geometryTransform) {
                     this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
                 }
-                if (this.brushType === "solid") {
+                if (this.brushType === "solid" || this.brushType === "hatch") {
                     this.geoBrush = GeoBrush.createBrushByType(this.brushType, null, null, this.brushOptions);
                 }
-                if (this.brushType === "hatch") {
-                    this.geoBrush = "hatch|" + this.id;
-                }
+                // if (this.brushType === "hatch") {
+                //     this.geoBrush = "hatch|" + this.id;
+                // }
                 if (this.outlineColor) {
                     this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.outlineOpacity);
                 }
@@ -98388,7 +98388,7 @@ function olInit() {
                 }
                 return values;
             };
-            GeoAreaStyle.prototype.GetTransformedCoordinates = function (feature) {
+            GeoAreaStyle.prototype.GetTransformedCoordinates = function (feature, resolution) {
                 var tmpFlatCoordinates = feature.getFlatCoordinates();
                 var tmpCoordinates = [[]];
                 var index = 0;
@@ -98401,7 +98401,7 @@ function olInit() {
                 }
                 var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                 if (this.geometryTransform.startsWith("translate")) {
-                    geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
+                    geometry.translate(-this.geometryTransformValue[0].trim() * resolution, -this.geometryTransformValue[1].trim() * resolution);
                 }
                 else if (this.geometryTransform.startsWith("scale")) {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
@@ -98421,7 +98421,7 @@ function olInit() {
                 this.styles = [];
                 if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
                     if (this.geometryTransform) {
-                        feature.flatCoordinates_ = this.GetTransformedCoordinates(feature);
+                        feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
                     }
                     if (this.shadowDx || this.shadowDy) {
                         var shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
@@ -98686,7 +98686,7 @@ function olInit() {
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    geometry.translate(+values[0].trim(), +values[1].trim());
+                                    geometry.translate(+values[0].trim() * resolution, +values[1].trim() * resolution);
                                 }
                                 else if (_this.geometryTransform.startsWith("scale")) {
                                     geometry.scale(+values[0].trim(), +values[1].trim());
@@ -98699,8 +98699,11 @@ function olInit() {
                                 else if (_this.geometryTransform.startsWith("skew")) {
                                     _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
                                 }
+
+                                feature.flatCoordinates_ = geometry.getFlatCoordinates();
                             }
                         }
+
                         return feature.getGeometry();
                     };
                     this.lineStyle.setGeometry(geometryFunction);
