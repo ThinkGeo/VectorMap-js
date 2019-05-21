@@ -217,7 +217,7 @@ app.Drag.prototype.handleUpEvent = function (e) {
 
 
 const routingApikey = 'IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~';
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 const routingClient = new tg.RoutingClient(routingApikey);
 
