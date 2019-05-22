@@ -142,9 +142,6 @@ export class GeoShieldStyle extends GeoStyle {
     }
 
     initializeCore() {
-        let font;
-        let size;
-
         this.textStyle = new ol.style.Text({
             stroke: new ol.style.Stroke()
         });
@@ -153,8 +150,10 @@ export class GeoShieldStyle extends GeoStyle {
             this.textStyle.setTextAlign(this.align);
         }
 
-        if (this.font) {
-            this.textStyle.setFont(this.font ? this.font : "10px sans-serif");
+        this.textStyle.setFont(this.font ? this.font : "10px sans-serif");
+
+        if(this.faceName){
+            this.textStyle.setFont(this.faceName);
         }
 
         if (this.fill) {
