@@ -110,7 +110,7 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 
 
 	this.timeEvent = setTimeout(function () {
-		deleteOneFeature('line');
+		removeOneFeature('line');
 		overlay.setPosition(undefined);
 		this.flag_ = false
 		let coord_ = [];
@@ -177,8 +177,8 @@ app.Drag.prototype.handleUpEvent = function (e) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
 	if (this.flag_) {
-		deleteOneFeature('line');
-		removeResultRadius();
+		removeOneFeature('line');
+		removeOneFeature('resultRadiusFeature');
 		overlay.setPosition(undefined);
 		const coord = this.feature_.getGeometry().getCoordinates();
 		const featureType = this.feature_.get('name');
@@ -214,14 +214,12 @@ app.Drag.prototype.handleUpEvent = function (e) {
 
 };
 
-
-
 const routingApikey = 'IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~';
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 const routingClient = new tg.RoutingClient(routingApikey);
 
-const light = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
+let lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
 	apiKey: apiKey,
 	layerName: 'light'
 });
@@ -241,7 +239,7 @@ const initializeMap = () => {
 		renderer: 'webgl',
 		loadTilesWhileAnimating: true,
 		loadTilesWhileInteracting: true,
-		layers: [light],
+		layers: [lightLayer],
 		target: 'map',
 		view: view,
 		interactions: ol.interaction.defaults().extend([new app.Drag()])
@@ -270,7 +268,9 @@ const initializeMap = () => {
 	let clientWidth = document.documentElement.clientWidth;
 	let clientHeight = document.documentElement.clientHeight;
 	const contextmenu = document.querySelector('#ol-contextmenu');
+	const insTip = document.querySelector('#instruction-tip');
 	let timeOutEvent;
+	const contextWidth = 165;
 	if (isiOS) {
 		map.getViewport().addEventListener('gesturestart', function (e) {
 			clearTimeout(timeOutEvent);
@@ -289,8 +289,8 @@ const initializeMap = () => {
 				if (e.touches.length == 1) {
 					timeOutEvent = 0;
 					left =
-						e.changedTouches[0].clientX + contextmenu.offsetWidth > clientWidth ?
-						clientWidth - contextmenu.offsetWidth :
+						e.changedTouches[0].clientX + contextWidth > clientWidth ?
+						clientWidth - contextWidth :
 						e.changedTouches[0].clientX;
 					top =
 						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight ?
@@ -301,6 +301,7 @@ const initializeMap = () => {
 					let point = map.getEventCoordinate(e);
 					curCoord = point;
 					hideOrShowContextMenu('show');
+					insTip.classList.add('gone');
 				}
 			}, 500);
 		});
@@ -321,9 +322,9 @@ const initializeMap = () => {
 	} else {
 		map.getViewport().addEventListener('contextmenu', (e) => {
 			hideOrShowContextMenu('show');
-
+			insTip.classList.add('gone');
 			left =
-				e.clientX + contextmenu.offsetWidth > clientWidth ? clientWidth - contextmenu.offsetWidth : e.clientX;
+				e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
 			top =
 				e.clientY + contextmenu.offsetHeight > clientHeight ?
 				clientHeight - contextmenu.offsetHeight :
@@ -334,6 +335,13 @@ const initializeMap = () => {
 			let point = map.getEventCoordinate(e);
 			curCoord = point;
 		});
+	}
+
+	// Show the mobile instruction tip on Android and IOS, and show pc tip on PC.
+	if (isiOS || isAndroid) {
+		document.querySelector('.mobile-tip').classList.remove('hide');
+	} else {
+		document.querySelector('.pc-tip').classList.remove('hide');
 	}
 
 	map.on('pointermove', function (e) {
@@ -359,6 +367,26 @@ const initializeMap = () => {
 		map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
 	});
 };
+
+const errorLoadingTile = () => {
+	const errorModal = document.querySelector('#error-modal');
+	if (errorModal.classList.contains('hide')) {
+		// Show the error tips when Tile loaded error.
+		errorModal.classList.remove('hide');
+	}
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+	let layerSource = layer.getSource();
+	layerSource.on('tileloaderror', function () {
+		document.querySelector('.sidebar').classList.add('hide');
+		errorLoadingTile();
+	});
+	layer.setSource(layerSource);
+	return layer;
+}
+
+lightLayer = setLayerSourceEventHandlers(lightLayer);
 
 const startStyle = new ol.style.Style({
 	image: new ol.style.Icon({
@@ -475,18 +503,8 @@ const addWalkFeatures = () => {
 	source.addFeatures([startWalkFeature, endWalkFeature]);
 };
 
-const removeResultRadius = () => {
-	const features = source.getFeatures();
-	for (let i = 0, l = features.length; i < l; i++) {
-		let feature = features[i];
-		if (feature.get('name') === 'resultRadiusFeature') {
-			source.removeFeature(feature);
-		}
-	}
-}
-
 const addResultRadius = (coord) => {
-	removeResultRadius();
+	removeOneFeature('resultRadiusFeature');
 	let center = coord;
 	let resultRadiusFeature = new ol.Feature({
 		geometry: new ol.geom.Point(center),
@@ -554,8 +572,8 @@ const generateBox = (routes) => {
 				`;
 	totalDom.innerHTML = total;
 	boxesDom.innerHTML = '';
-	deleteOneFeature('line');
-	removeResultRadius();
+	removeOneFeature('line');
+	removeOneFeature('resultRadiusFeature');
 	let lastLinePenultCoord = [];
 	let lastLineLastCoord = [];
 	var isTurn = true;
@@ -748,12 +766,14 @@ const hideOrShowContextMenu = (style) => {
 	}
 };
 
-const deleteOneFeature = (featureName) => {
-	const features = source.getFeatures();
-	for (let i = 0, l = features.length; i < l; i++) {
-		let feature = features[i];
-		if (feature.get('name') === featureName) {
-			source.removeFeature(feature);
+const removeOneFeature = (featureName) => {
+	if (source) {
+		const features = source.getFeatures();
+		for (let i = 0, l = features.length; i < l; i++) {
+			let feature = features[i];
+			if (feature.get('name') === featureName) {
+				source.removeFeature(feature);
+			}
 		}
 	}
 }
@@ -795,10 +815,9 @@ const gotResponse = (res) => {
 
 const performRouting = () => {
 	if (startPoint.length > 0 && endPoint && endPoint.length > 0) {
-		deleteOneFeature('arrow');
+		removeOneFeature('arrow');
 		document.querySelector('.loading').classList.remove('hide');
 		document.querySelector('#result').classList.add('hide');
-
 
 		const options = {
 			turnByTurn: true
@@ -826,8 +845,8 @@ const performRouting = () => {
 				} else if (status === 401 || status === 410) {
 					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error.message}</div>`;
 				} else if (status === 'error') {
-					const message = 'We\'re having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in this sample\'s JavaScript source code, and ensure it has access to the ThinkGeo Cloud services you are requesting. You can create and manage your API keys at <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>';
-					result.querySelector('#boxes').innerHTML = `<div class="error-message">${message}</div>`;
+					document.querySelector('.sidebar').classList.add('hide');
+					errorLoadingTile();
 				}
 			}
 		}
@@ -844,7 +863,7 @@ const addDestination = () => {
 
 let arrowFeature;
 const addArrow = (penultCoord, lastCoord) => {
-	deleteOneFeature('arrow');
+	removeOneFeature('arrow');
 
 	arrowFeature = new ol.Feature({
 		geometry: new ol.geom.Point(lastCoord),
@@ -861,7 +880,6 @@ const addArrow = (penultCoord, lastCoord) => {
 			anchor: [0.5, 0.5],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
-			crossOrigin: "Anonymous",
 			src: '../image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
@@ -1012,7 +1030,7 @@ document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
 			add = 1;
 			addStartFeature(curCoord);
 			hideOrShowContextMenu('hide');
-			deleteOneFeature('line');
+			removeOneFeature('line');
 			overlay.setPosition(undefined);
 			document.querySelector('#clear-start').classList.remove('hide');
 			curCoord = ol.proj.transform(curCoord, 'EPSG:3857', 'EPSG:4326');
@@ -1021,7 +1039,7 @@ document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
 			add = 2;
 			addEndFeature(curCoord);
 			hideOrShowContextMenu('hide');
-			deleteOneFeature('line');
+			removeOneFeature('line');
 			overlay.setPosition(undefined);
 			document.querySelector('#clear-end').classList.remove('hide');
 			curCoord = ol.proj.transform(curCoord, 'EPSG:3857', 'EPSG:4326');
@@ -1051,7 +1069,7 @@ document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
 	}
 });
 
-document.querySelector('#result').addEventListener('mouseover', (e) => {
+document.querySelector('#map').addEventListener('mouseover', (e) => {
 	let target = e.target;
 	let boxDom;
 	if (target.nodeName === 'SPAN' && target.parentNode.classList.contains('box')) {
@@ -1065,6 +1083,8 @@ document.querySelector('#result').addEventListener('mouseover', (e) => {
 		let coord = [Number(attrCoord[0]), Number(attrCoord[1])];
 		coord = new ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857');
 		addResultRadius(coord)
+	} else {
+		removeOneFeature('resultRadiusFeature');
 	}
 })
 
@@ -1087,7 +1107,7 @@ document.querySelector('#result').addEventListener('click', (e) => {
 	}
 
 	if (boxDom !== undefined) {
-		removeResultRadius();
+		removeOneFeature('resultRadiusFeature');
 		let penult = boxDom.getAttribute('lastlinepenultcoord');
 		if (penult) {
 			penult = penult.split(' ');
@@ -1254,9 +1274,9 @@ const inputValue = () => {
 	document.querySelector('.sidebar').classList.add('hide');
 	document.querySelector('#total').innerHTML = '';
 	document.querySelector('#boxes').innerHTML = '';
-	removeResultRadius()
-	deleteOneFeature('line');
-	deleteOneFeature('arrow');
+	removeOneFeature('resultRadiusFeature')
+	removeOneFeature('line');
+	removeOneFeature('arrow');
 }
 
 startInputNode.addEventListener('input', () => {
@@ -1289,18 +1309,22 @@ clearEndInput.addEventListener('click', () => {
 	endInputNode.value = null
 	inputValue()
 	endPoint = [];
-deleteOneFeature('arrow');
+	removeOneFeature('arrow');
 	removeEndFeature()
 	endFeature = null;
 	clearEndInput.classList.add('hide');
 })
 
 clearStartInput.addEventListener('click', () => {
-deleteOneFeature('arrow');
-	startInputNode.value=null
+	removeOneFeature('arrow');
+	startInputNode.value = null
 	inputValue()
 	startPoint = [];
 	removeStartFeature()
 	startFeature = null;
 	clearStartInput.classList.add('hide');
+})
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+	document.querySelector('#error-modal').classList.add('hide');
 })

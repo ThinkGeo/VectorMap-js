@@ -602,33 +602,33 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/vbvmQb',
         jsPath: './example/js/imagery-with-labels.js'
       }, {
-        comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.`,
+        comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.`,
         title: 'Get Elevation Along Path',
         htmlPath: './example/html/elevation.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZWQN',
         jsPath: './example/js/elevation.js'
       }, {
-        comments: 'Convert a coordinate to address via <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
+        comments: 'Convert a coordinate to address via <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
         title: 'Find Nearby Places',
         htmlPath: './example/html/reverse-geocoding.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ErGmGo',
         jsPath: './example/js/reverse-geocoding.js'
       }, {
-        comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo Cloud Service</a>.',
+        comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
         title: 'Generate Color Themes',
         htmlPath: './example/html/color-creation.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/qgLmLK',
         jsPath: './example/js/color-creation.js'
       },
       {
-        comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
+        comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo  Cloud Service</a>.',
         title: "Find an Address in the US",
         htmlPath: './example/html/find-address.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
         jsPath: './example/js/find-address.js'
       },
       {
-        comments: 'Plan your route from one place to another via  <a href="https://cloud.thinkgeo.com/login.html">ThinkGeo  Cloud Service</a>.',
+        comments: 'Plan your route from one place to another in the U.S., Canada or Mexico with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
         title: "Routing",
         htmlPath: './example/html/routing.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
