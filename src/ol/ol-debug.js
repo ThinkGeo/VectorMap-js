@@ -68758,15 +68758,26 @@ function olInit() {
          } else {
              //Draw by style groups to minimize drawElements() calls.
              var i, start, end, nextStyle;
-             end = this.startIndices[this.startIndices.length - 1];
-             for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-                 start = this.styleIndices_[i];
-                 nextStyle = this.styles_[i];
-                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-                 this.drawElements(gl, context, start, end);
-                //  gl.clear(gl.DEPTH_BUFFER_BIT);
-                 end = start;
-             }
+            //  end = this.startIndices[this.startIndices.length - 1];
+
+             for (i = 0; i < this.styleIndices_.length; ++i) {
+                start = this.styleIndices_[i];
+                end = this.styleIndices_[i + 1] || this.startIndices[this.startIndices.length - 1];
+                nextStyle = this.styles_[i];
+                this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+                this.drawElements(gl, context, start, end);
+                // gl.clear(gl.DEPTH_BUFFER_BIT);
+                // end = start;
+            }
+
+            //  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+            //      start = this.styleIndices_[i];
+            //      nextStyle = this.styles_[i];
+            //      this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+            //      this.drawElements(gl, context, start, end);
+            //     //  gl.clear(gl.DEPTH_BUFFER_BIT);
+            //      end = start;
+            //  }
          }
          if (!hitDetection) {
              gl.disable(gl.DEPTH_TEST);
@@ -73039,6 +73050,7 @@ function olInit() {
         gl.disable(ol.webgl.DEPTH_TEST);
         gl.disable(ol.webgl.SCISSOR_TEST);
         gl.disable(ol.webgl.STENCIL_TEST);
+        gl.enable(ol.webgl.BLEND);
     };
 
 
@@ -73107,7 +73119,8 @@ function olInit() {
         gl.clearColor(0, 0, 0, 0);
         gl.clear(ol.webgl.COLOR_BUFFER_BIT);
         gl.clear(gl.DEPTH_BUFFER_BIT);
-        gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
+        gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);        
+        gl.enable(gl.BLEND);
 
         for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
             layerState = layerStatesToDraw[i];
