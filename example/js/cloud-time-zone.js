@@ -88,10 +88,8 @@ const initializeMap = () => {
 const errorLoadingTile = () => {
     const errorModal = document.querySelector('#error-modal');
     if (errorModal.classList.contains('hide')) {
-        // Set up a error tips when Tile loaded error.
+        // Show the error tips when Tile loaded error.
         errorModal.classList.remove('hide');
-        const messageHtml = `We're having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in this sample's JavaScript source code, and ensure it has access to the ThinkGeo Cloud services you are requesting. You can create and manage your API keys at <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>.`
-        document.querySelector('#error-modal p').innerHTML = messageHtml;
     }
 }
 
