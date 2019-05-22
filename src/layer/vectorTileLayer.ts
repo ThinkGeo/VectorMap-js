@@ -118,15 +118,15 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let styleJsonCache = new StyleJsonCache();
                 let styleIdIndex = 0;
                 for (let styleId of styleIds) {
-                    let styleJson;
+                    let styleJsonTmp;
                     for (let index = 0; index < styleJsons.length; index++) {
                         if (styleJsons[index].id === styleId) {
-                            styleJson = styleJsons[index];
+                            styleJsonTmp = styleJsons[index];
                         }
                     }
-                    if (styleJson) {
-                        styleJsonCache.styleJson[styleId] = styleJson;
-                        let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
+                    if (styleJsonTmp) {
+                        styleJsonCache.styleJson[styleId] = styleJsonTmp;
+                        let item = new StyleJsonCacheItem(styleJsonTmp, minZoom, maxZoom, layerName);
 
                         for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                             let treeNode = new TreeNode<StyleJsonCacheItem>(item);

@@ -88,7 +88,8 @@ export class GeoTextStyle extends GeoStyle {
 
             this.opacity = styleJson["text-opacity"];
             this.rotateAngle = styleJson["text-rotate-angle"];
-            this.propertyPlacements = new GeoStyleProperty(styleJson[GeoTextStyle.placementsName], "U,B,L,R");
+            // this.propertyPlacements = new GeoStyleProperty(styleJson[GeoTextStyle.placementsName], "U,B,L,R");
+            this.placements = styleJson[GeoTextStyle.placementsName];
             this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
             this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
             this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
@@ -119,8 +120,8 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     initializeCore() {
-        this.propertyPlacements.initialize();
-        this.placements = this.propertyPlacements.getValue();
+        // this.propertyPlacements.initialize();
+        // this.placements = this.propertyPlacements.getValue();
 
         if (this.fill) {
             this.fillColor = GeoStyle.toRGBAColor(this.fill, this.opacity);
@@ -166,7 +167,6 @@ export class GeoTextStyle extends GeoStyle {
         if (this.haloFillColor === undefined && this.haloRadius === undefined) {
             textStyle.setStroke(undefined);
         }
-
         if (this.rotateAngle) {
             textStyle.setRotation(this.rotateAngle);
         }
@@ -210,7 +210,7 @@ export class GeoTextStyle extends GeoStyle {
 
         featureText = this.getTextTransform(featureText);
 
-        this.placements = this.propertyPlacements.getValue(featureProperties);
+        // this.placements = this.propertyPlacements.getValue(featureProperties);
 
         this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {

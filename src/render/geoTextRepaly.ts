@@ -152,35 +152,35 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var declutterGroup = style.declutterGroup_;
         var geometry = feature.getGeometry();
         var type = geometry.getType(); 
-        var resolution = feature.resolution;
-        var flatCoordinates = [];
-        var end = 2;
+        // var resolution = feature.resolution;
+        var flatCoordinates = geometry.getFlatCoordinates();
+        // var end = 2;
 
         if(!style){
             continue;
         }
 
-        switch (type) {
-            case (<any>ol.geom).GeometryType.POLYGON:
-                flatCoordinates = geometry.getFlatInteriorPoint();
-                break;
-            case (<any>ol.geom).GeometryType.MULTI_POLYGON:
-                var flatInteriorCoordinates = geometry.getFlatInteriorPoints();
-                // remove labels that exceeds the polygon
-                for (var j = 0, jj = flatInteriorCoordinates.length; j < jj; j += 3) {
-                    if (flatInteriorCoordinates[j + 2] / resolution >= style.label.width) {
-                        flatCoordinates.push(flatInteriorCoordinates[j], flatInteriorCoordinates[j + 1]);
-                    }
-                }
-                end = flatCoordinates.length;
-                if (end == 0) {
-                    return;
-                }
-                break;
-            default: 
-                flatCoordinates = geometry.getFlatCoordinates();
-                break;
-        }
+        // switch (type) {
+        //     case (<any>ol.geom).GeometryType.POLYGON:
+        //         flatCoordinates = geometry.getFlatInteriorPoint();
+        //         break;
+        //     case (<any>ol.geom).GeometryType.MULTI_POLYGON:
+        //         var flatInteriorCoordinates = geometry.getFlatInteriorPoints();
+        //         // remove labels that exceeds the polygon
+        //         for (var j = 0, jj = flatInteriorCoordinates.length; j < jj; j += 3) {
+        //             if (flatInteriorCoordinates[j + 2] / resolution >= style.label.width) {
+        //                 flatCoordinates.push(flatInteriorCoordinates[j], flatInteriorCoordinates[j + 1]);
+        //             }
+        //         }
+        //         end = flatCoordinates.length;
+        //         if (end == 0) {
+        //             return;
+        //         }
+        //         break;
+        //     default: 
+        //         flatCoordinates = geometry.getFlatCoordinates();
+        //         break;
+        // }
         
         if(type == 'MultiLineString'){
             var ends = geometry.getEnds();
@@ -203,7 +203,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.originY = 0;
                 this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                 this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
-                this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end);
+                this.replayImage_(frameState, declutterGroup, style.labelPosition, this.state_.scale / pixelRatio, end);
                 this.renderDeclutterLabel_(declutterGroup, feature);
             }else{  
                 // draw chars 

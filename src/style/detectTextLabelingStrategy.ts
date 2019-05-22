@@ -12,20 +12,18 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
             case (<any>ol.geom).GeometryType.POINT:
             case (<any>ol.geom).GeometryType.MULTI_POINT:
             case (<any>ol.geom).GeometryType.CIRCLE:
-                if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
-                    flatCoordinates = this.movePointLabel(flatCoordinates, width, height, resolution, textStyle, grid, frameState);
-                }
+                // if (!this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
+                return this.movePointLabel(flatCoordinates, width, height, resolution, textStyle, grid, frameState);
+                // }
                 break;
             case (<any>ol.geom).GeometryType.LINE_STRING:
             case (<any>ol.geom).GeometryType.MULTI_LINE_STRING:
             case (<any>ol.geom).GeometryType.POLYGON:
             case (<any>ol.geom).GeometryType.MULTI_POLYGON:
                 if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
-                    flatCoordinates = undefined;
+                    return undefined;
                 }
         }
-
-        return flatCoordinates;
     }
 
     movePointLabel(flatCoordinates: any, width: number, height: number, resolution: any, textStyle: GeoTextStyle, grid: any, frameState: olx.FrameState) {
@@ -82,7 +80,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] + distance);
         newFlatCoordinates.push(flatCoordinates[1] + distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -90,7 +88,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0]);
         newFlatCoordinates.push(flatCoordinates[1] + distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -98,7 +96,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] - distance);
         newFlatCoordinates.push(flatCoordinates[1] + distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -106,7 +104,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0]);
         newFlatCoordinates.push(flatCoordinates[1] - distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -114,7 +112,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] + distance);
         newFlatCoordinates.push(flatCoordinates[1] - distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -122,7 +120,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] - distance);
         newFlatCoordinates.push(flatCoordinates[1] - distance);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -130,7 +128,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] - distance);
         newFlatCoordinates.push(flatCoordinates[1]);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 
@@ -138,7 +136,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let newFlatCoordinates = new Array();
         newFlatCoordinates.push(flatCoordinates[0] + distance);
         newFlatCoordinates.push(flatCoordinates[1]);
-        newFlatCoordinates.push(flatCoordinates[2]);
+        flatCoordinates[2] && newFlatCoordinates.push(flatCoordinates[2]);
         return newFlatCoordinates;
     }
 }
