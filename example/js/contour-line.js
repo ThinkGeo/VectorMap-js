@@ -175,9 +175,6 @@ map.on('click', function (e) {
     displayFeatureInfo(e);
 });
 
-
-
-
 const toggleUnit = (value) => {
     switch (value) {
         case "Millimeters":

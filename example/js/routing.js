@@ -544,7 +544,7 @@ const formatDistanceAndDuration = (distance, duration) => {
 };
 
 const generateBox = (routes) => {
-	const lineWkt = routes.geometryWellKnownText;
+	const lineWkt = routes.geometry;
 	let segments = routes.segments;
 	let count = 0;
 
@@ -582,7 +582,7 @@ const generateBox = (routes) => {
 	addRouteFeature(lineWkt);
 
 	let segments_ = segments.map(item => {
-		let polyline = item.geometryWellKnownText;
+		let polyline = item.geometry;
 		let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
 		let secondPointFromStart = findSecondPointFromStart(polylineCoord);
 
@@ -591,7 +591,7 @@ const generateBox = (routes) => {
 
 	segments_.forEach((item) => {
 		count++;
-		let polyline = item.geometryWellKnownText;
+		let polyline = item.geometry;
 		let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
 		let secondPointFromStart = findSecondPointFromStart(polylineCoord);
 		let secondPointFromEnd = findSecondPointFromEnd(polylineCoord);
@@ -880,6 +880,7 @@ const addArrow = (penultCoord, lastCoord) => {
 			anchor: [0.5, 0.5],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
+			crossOrigin: "Anonymous",
 			src: '../image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
