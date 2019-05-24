@@ -6,6 +6,7 @@
 //   2. WKT Setup
 //   3. Map Control Setup
 //   4. ThinkGeo Map Icon Fonts
+//   5. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -127,3 +128,31 @@ WebFont.load({
     // finished downloading.  Here, we'll call our initializeMap method.
     active: initializeMap
 });
+
+
+/*---------------------------------------------*/
+// 5. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(baseLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})
