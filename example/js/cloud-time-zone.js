@@ -83,8 +83,7 @@ const initializeMap = () => {
 /*---------------------------------------------*/
 
 // These events allow you to perform custom actions when 
-// a map tile starts loading, finishes loading successfully, 
-// or encounters an error while loading.
+// a map tile encounters an error while loading.
 const errorLoadingTile = () => {
     const errorModal = document.querySelector('#error-modal');
     if (errorModal.classList.contains('hide')) {
