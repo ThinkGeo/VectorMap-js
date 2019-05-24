@@ -104,6 +104,78 @@
             background-color: rgba(255, 255, 255, 0.6);
         }
 
+        #error-message {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            width: auto;
+            min-width: 300px;
+            margin-left: auto;
+            text-align: center;
+            transform: translate(-50%, 0);
+            transition: top 0.6s;
+        }
+
+        #error-message.show {
+            top: 15px;
+            transition: top 0.6s;
+        }
+
+        #error-message p {
+            line-height: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 3px;
+            border-color: #f5c6cb;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #error-modal {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 99;
+            background-color: #0000006e;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: auto;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            background-color: #f0f0f0;
+            border: 1px solid #b8b8b8;
+        }
+
+        .modal-content p {
+            text-align: left;
+        }
+
+        .modal-content button {
+            color: #fff;
+            background-color: #3d3d3e;
+            border-color: #3d3d3e;
+            border-radius: 4px;
+            padding: 0 7px;
+            height: 30px;
+            width: 60px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .hide {
+            display: none;
+        }
+
         @media (max-width: 767px) {
             .legend {
                 top: unset;
@@ -117,13 +189,29 @@
             #map-credit {
                 font-size: 0.75em;
             }
+
+            .modal-content {
+                width: 80vw;
+            }
         }
     </style>
 </head>
 
 <body>
-   <!-- This <div> is the container into which our map control will be loaded. -->
-    <div id="map"></div>
+    <!-- This <div> is the container into which our map control will be loaded. -->
+    <div id="map">
+        <!-- Set up error message tip. -->
+        <div id="error-modal" class="hide">
+            <div class="modal-content">
+                <p>We're having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in
+                    this
+                    sample's JavaScript source code, and ensure it has access to the ThinkGeo Cloud services you are
+                    requesting. You can create and manage your API keys at <a href="https://cloud.thinkgeo.com"
+                        target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>.</p>
+                <button>OK</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Set up a button group to switch out the base map style.-->
     <div class="map-btn-group">
