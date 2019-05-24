@@ -6,6 +6,7 @@
 //   2. Map Control Setup
 //   3. Generating a New Color Scheme
 //   4. Page Load and Event Listeners
+//   5. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -178,7 +179,7 @@ const getColorSchemeResult = () => {
 // to our map via a custom updateStyle method, which we'll define next.
 const renderData = (status, data) => {
     if(status == 403){
-        alert(data.error.message)
+        errorLoadingTile();
     }
     let outputData = [];
     if (data) {
@@ -313,3 +314,23 @@ window.onload = function a() {
         getColorSchemeResult()
     })
 }
+
+
+
+/*---------------------------------------------*/
+// 5. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})

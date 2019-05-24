@@ -7,6 +7,7 @@
 //   3. Popup Setup
 //   4. Geocoder Setup
 //   5. Event Listeners
+//   6. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -30,7 +31,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // Cloud Maps Raster Tile service to display a detailed street map.  For more
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
-let baseMap = new ol.layer.Tile({
+let baseLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
         tileSize: 512,
@@ -49,9 +50,9 @@ let view = new ol.View({
 
 // Create and initialize our interactive map.
 let map = new ol.Map({
-    renderer:'webgl',
+    renderer: 'webgl',
     // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
-    layers: [baseMap],
+    layers: [baseLayer],
     // States that the HTML tag with id="map" should serve as the container for our map.
     target: 'map',
     loadTilesWhileAnimating: true,
@@ -170,9 +171,9 @@ const geocoder = (val) => {
     let opts = {
         maxResults: 5
     };
-    const callback = (status, res)=>{
+    const callback = (status, res) => {
         if (status !== 200) {
-            alert(res.error.message)
+            errorLoadingTile();
         } else {
             let locations = res.data.locations;
             renderResult(locations);
@@ -319,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (focusIndex !== -1) {
                     searchPlace(focusIndex);
                     focusIndex = -1;
-                }else{
+                } else {
                     focusIndex = -1;
                     let value = document.getElementById('address').value;
                     geocoder(value);
@@ -327,4 +328,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     })
+})
+
+
+
+/*---------------------------------------------*/
+// 6. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(baseLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
 })
