@@ -6,8 +6,9 @@
 //   2. Load World Streets Style JSON File
 //   3. Map Control Setup
 //   4. Customize Map Style
-//   5. ThinkGeo Map Icon Fonts
-//   6. Render Data to DOM
+//   5. Tile Loading Event Handlers
+//   6. ThinkGeo Map Icon Fonts
+//   7. Render Data to DOM
 /*===========================================================================*/
 
 
@@ -65,6 +66,7 @@ const getJson = (filePath) => {
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
 let map;
+let layer;
 const initializeMap = function () {
     // Here we use the light theme style to render our map. 
     // We have several professionally-designed map themes for your application or project, 
@@ -78,7 +80,7 @@ const initializeMap = function () {
         json = JSON.parse(data);
 
         // Create the base layer for our map.
-        let layer = new ol.mapsuite.VectorTileLayer(json, {
+        layer = new ol.mapsuite.VectorTileLayer(json, {
             'apiKey': apiKey
         });
 
@@ -103,6 +105,8 @@ const initializeMap = function () {
 
         // Add a button to the map that lets us toggle full-screen display mode.
         map.addControl(new ol.control.FullScreen());
+
+        setLayerSourceEventHandlers(layer);
     })
 }
 
@@ -143,12 +147,43 @@ const handleRefresh = (poiSize, waterColor) => {
     let newLayer = new ol.mapsuite.VectorTileLayer(json, {
         'apiKey': apiKey
     });
+
+    setLayerSourceEventHandlers(newLayer);
     map.addLayer(newLayer);
 }
 
+/*---------------------------------------------*/
+// 5. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+const hideErrorTip = () => {
+    document.querySelector('#error-modal').classList.add('hide');
+}
+
+// document.querySelector('#error-modal button').addEventListener('click', () => {
+//     document.querySelector('#error-modal').classList.add('hide');
+// })
+
 
 /*---------------------------------------------*/
-// 5. ThinkGeo Map Icon Fonts
+// 6. ThinkGeo Map Icon Fonts
 /*---------------------------------------------*/
 
 // Now we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
@@ -168,11 +203,11 @@ WebFont.load({
 
 
 /*---------------------------------------------*/
-// 6. Render Data to DOM
+// 7. Render Data to DOM
 /*---------------------------------------------*/
 
 // Finally, we need to actually render the data to DOM, then we'll see a reactive map.
-new Vue({
+const refresh = new Vue({
     el: '#panel',
     data: {
         poiSize: 50,
@@ -181,6 +216,15 @@ new Vue({
     methods: {
         refresh: function () {
             handleRefresh(this.poiSize, this.waterColor)
+        }
+    }
+})
+
+const hideBtn = new Vue({
+    el: '#error-modal',
+    methods: {
+        closeErrorTip: function () {
+            hideErrorTip();
         }
     }
 })

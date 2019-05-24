@@ -34,7 +34,8 @@ class StreetMap extends React.Component {
 			json: {
 				styles: []
 			},
-			newLayer: ''
+			newLayer: '',
+			errorMessage: 'hide'
 		};
 		this.clickRefresh = this.clickRefresh.bind(this);
 		this.parkFillColorHandleChange = this.parkFillColorHandleChange.bind(this);
@@ -42,6 +43,9 @@ class StreetMap extends React.Component {
 		this.maskTypeHandleChange = this.maskTypeHandleChange.bind(this);
 		this.poiSizeHandleChange = this.poiSizeHandleChange.bind(this);
 		this.getJson = this.getJson.bind(this);
+		this.closeErrorTip = this.closeErrorTip.bind(this);
+		this.errorLoadingTile = this.errorLoadingTile.bind(this);
+		this.setLayerSourceEventHandlers = this.setLayerSourceEventHandlers.bind(this);
 	}
 
 	/*---------------------------------------------*/
@@ -116,6 +120,24 @@ class StreetMap extends React.Component {
 			// The "active" property defines a function to call when the font has
 			// finished downloading.  Here, we'll call our initializeMap method.
 			active: initializeMap
+		});
+
+		this.setLayerSourceEventHandlers(layer);
+	};
+
+	// These events allow you to perform custom actions when
+	// a map tile encounters an error while loading.
+	errorLoadingTile() {
+		this.setState({
+			errorMessage: 'show'
+		});
+	}
+
+	setLayerSourceEventHandlers(layer) {
+		const layerSource = layer.getSource();
+		const showError = this.errorLoadingTile;
+		layerSource.on('tileloaderror', function() {
+			showError();
 		});
 	};
 
@@ -239,7 +261,14 @@ class StreetMap extends React.Component {
 		let newLayer = new ol.mapsuite.VectorTileLayer(this.state.json, {
 			apiKey: apiKey
 		});
+		this.setLayerSourceEventHandlers(newLayer);
 		map.addLayer(newLayer);
+	}
+
+	closeErrorTip() {
+		this.setState({
+			errorMessage: 'hide'
+		});
 	}
 
 	/*---------------------------------------------*/
@@ -249,9 +278,9 @@ class StreetMap extends React.Component {
 	// After all the settings we have done, it's time to update the DOM tree.
 	render() {
 		return (
-			<div id="mapWrap">				
+			<div id="mapWrap">
 				{/* This <div> is the container into which our map control will be loaded. */}
-				<div id="map">					
+				<div id="map">
 					{/* Set up a control panel for the map that we'll change the style of the map. */}
 					<div className="controlPanel">
 						<div>
@@ -283,6 +312,21 @@ class StreetMap extends React.Component {
 						</div>
 						<div className="refresh-btn">
 							<button onClick={this.clickRefresh}> Refresh </button>
+						</div>
+					</div>
+
+					{/* Set up error message tip.*/}
+					<div id="error-modal" className={this.state.errorMessage === 'hide' ? 'hide' : ''}>
+						<div className="modal-content">
+							<p>
+								We're having trouble communicating with the ThinkGeo Cloud. Please check the API key
+								being used in this sample's JavaScript source code, and ensure it has access to the
+								ThinkGeo Cloud services you are requesting. You can create and manage your API keys at
+								<a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">
+									https://cloud.thinkgeo.com
+								</a>.
+							</p>
+							<button onClick={this.closeErrorTip}>OK</button>
 						</div>
 					</div>
 				</div>
