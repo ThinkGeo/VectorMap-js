@@ -122,7 +122,7 @@ const getColorSchemeResult = () => {
     let isRandom = document.getElementById('colorRandom').checked;
     let category = categoryColor.options[categoryColor.selectedIndex].value;
     let options = {
-        numberOfColors: 12,
+        numberOfColors: 10,
     }
 
     // If you want to get back a color family based on a specific color, we'll add a property 
@@ -178,7 +178,7 @@ const getColorSchemeResult = () => {
 // This method takes the output of the getColorScheme method and applies it 
 // to our map via a custom updateStyle method, which we'll define next.
 const renderData = (status, data) => {
-    if(status == 403){
+    if (status == 403 || status === 'error') {
         errorLoadingTile();
     }
     let outputData = [];
@@ -203,47 +203,47 @@ const updateStyle = (outputData) => {
     let styles = {
         'XXXS': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[19]}`
+                color: `#${outputData[9]}`
             })
         }),
         'XXS': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[17]}`
+                color: `#${outputData[8]}`
             })
         }),
         'XS': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[15]}`
+                color: `#${outputData[7]}`
             })
         }),
         'S': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[13]}`
+                color: `#${outputData[6]}`
             })
         }),
         'M': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[11]}`
+                color: `#${outputData[5]}`
             }),
         }),
         'L': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[9]}`
+                color: `#${outputData[4]}`
             }),
         }),
         'XL': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[7]}`
+                color: `#${outputData[3]}`
             })
         }),
         'XXL': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[5]}`
+                color: `#${outputData[2]}`
             })
         }),
         'XXXL': new ol.style.Style({
             fill: new ol.style.Fill({
-                color: `#${outputData[3]}`
+                color: `#${outputData[1]}`
             })
         }),
         'XXXXL': new ol.style.Style({
@@ -251,7 +251,6 @@ const updateStyle = (outputData) => {
                 color: `#${outputData[0]}`
             })
         }),
-
     }
 
     // Assign each range of country populations to one of our style classes.
@@ -304,9 +303,7 @@ window.onload = function a() {
         "C39494",
         "C8A5A5",
         "CFB6B6",
-        "D6C5C5",
-        "DED4D4",
-        "E8E2E2"
+        "D6C5C5"
     ];
     updateStyle(defaultData)
     // When click the 'generate' button, set new style according to what the user input.

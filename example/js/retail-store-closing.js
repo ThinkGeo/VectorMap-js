@@ -89,7 +89,6 @@ let view = new ol.View({
 
 // Create and initialize our raster map control.
 let map = new ol.Map({
-    renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined ThinkGeo Cloud Raster Tile layers to the map.

@@ -33,7 +33,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 // Create heat map layer. It uses an xml format data, which is hosted on our server, 
 // to display the heat layer.
-let heatMapLayer = new ol.layer.Heatmap({
+let heatMapLayer = new ol.mapsuite.Heatmap({
     source: new ol.source.Vector({
         url: '../data/2012_Earthquakes_Mag5.xml',
         // Define the data format as KML.
@@ -74,8 +74,9 @@ let baseLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worlds
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
 let map;
-let initializeMap = function () {
+let initializeMap = () => {
     map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
 

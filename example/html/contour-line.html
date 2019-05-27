@@ -12,9 +12,13 @@
 
     <!-- Define some custom styles for the UI of our sample page. -->
     <style rel="stylesheet" type="text/css">
+        body {
+            background-color: #2D3035;
+        }
+
         #map {
             width: 100%;
-            height: 100%;
+            height: 70%;
         }
 
         .legend {
@@ -70,6 +74,7 @@
             top: 5.5em;
         }
 
+
         .ol-popup {
             position: absolute;
             background-color: white;
@@ -112,6 +117,14 @@
             border-width: 6px;
             left: 3.5rem;
             margin-left: -11px;
+        }
+
+        #container {
+            width: 100%;
+            padding-top: 5px;
+            height: 26%;
+            z-index: 1000;
+            background-color: #2D3035;
         }
 
         #error-message {
@@ -240,11 +253,18 @@
             <input type="radio" id="inches" value="Inches" name="unit">
             <label for="inches">Inches</label>
         </div>
+    </div>
 
+    <!-- This <div> is the container into which our diagram will be rendered. -->
+    <div id="container">
+        <canvas id="canvas"></canvas>
     </div>
 
     <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
+
+    <!-- Load the Chart library dependency for diagrammatic presentation. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 
     <script src="../js/contour-line.js"></script>
 </body>

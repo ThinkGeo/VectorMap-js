@@ -97,11 +97,9 @@ const setLayerSourceEventHandlers = (layer) => {
     layerSource.on('tileloaderror', function () {
         errorLoadingTile();
     });
-    layer.setSource(layerSource);
-    return layer;
 }
 
-defaultLayer = setLayerSourceEventHandlers(defaultLayer);
+setLayerSourceEventHandlers(defaultLayer);
 
 /*---------------------------------------------*/
 // 4. Popup Setup

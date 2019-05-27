@@ -43,7 +43,7 @@ let rasterAerialLayer = new ol.layer.Tile({
 });
 
 // Create the vector street map layer.
-let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/transparent-background.json", {
+let vectorStreetsLayer = new ol.mapsuite.VectorTileLayer("https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/transparent-background.json", {
     apiKey: apiKey
 });
 

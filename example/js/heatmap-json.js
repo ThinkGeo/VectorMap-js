@@ -38,6 +38,7 @@ let baseLayer = new ol.layer.Tile({
 
 // Now we'll create and initialize our interactive map.
 let map = new ol.Map({
+    renderer: 'webgl',
     loadTilesWhileAnimating: true,
     loadTilesWhileInteracting: true,
     // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
@@ -113,7 +114,7 @@ getJson().then((data) => {
     vectorSource.addFeatures(featuresArr);
 
     // Create a Heatmap Layer whose source is our Road Congestion Source, and add it to our map.
-    let heatmapLayer = new ol.layer.Heatmap({
+    let heatmapLayer = new ol.mapsuite.Heatmap({
         source: vectorSource,
         // Set Heatmap data blur size.
         blur: 15,
