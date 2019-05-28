@@ -602,7 +602,7 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/vbvmQb',
         jsPath: './example/js/imagery-with-labels.js'
       }, {
-        comments: `Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.`,
+        comments: 'Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
         title: 'Get Elevation Along Path',
         htmlPath: './example/html/elevation.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZWQN',

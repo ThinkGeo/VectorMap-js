@@ -219,7 +219,7 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 const routingClient = new tg.RoutingClient(routingApikey);
 
-let lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
+const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
 	apiKey: apiKey,
 	layerName: 'light'
 });
@@ -382,11 +382,9 @@ const setLayerSourceEventHandlers = (layer) => {
 		document.querySelector('.sidebar').classList.add('hide');
 		errorLoadingTile();
 	});
-	layer.setSource(layerSource);
-	return layer;
 }
 
-lightLayer = setLayerSourceEventHandlers(lightLayer);
+setLayerSourceEventHandlers(lightLayer);
 
 const startStyle = new ol.style.Style({
 	image: new ol.style.Icon({
@@ -1008,7 +1006,10 @@ const handleEnterEvent = () => {
 WebFont.load({
 	custom: {
 		families: ["vectormap-icons"],
-		urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+		urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
 	},
 	// The "active" property defines a function to call when the font has
 	// finished downloading.  Here, we'll call our initializeMap method.
