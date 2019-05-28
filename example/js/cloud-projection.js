@@ -184,7 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
     },
     // The "active" property defines a function to call when the font has
     // finished downloading.  Here, we'll call our initializeMap method.
