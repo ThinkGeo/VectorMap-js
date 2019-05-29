@@ -185,9 +185,29 @@ export class GeoAreaStyle extends GeoStyle {
                 this.styles[length++] = GeoAreaStyle.areaShadowStyle;
             }
 
-            if (this.fill) {
-                this.geoBrush = GeoBrush.createBrushByType(this.brushType, feature, resolution, this.brushOptions);
+            if (this.fill && this.geoBrush) {
+                // this.geoBrush = GeoBrush.createBrushByType(this.brushType, feature, resolution, this.brushOptions);
                 GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
+            }
+
+            if(this.brushType === 'texture' && this.textureFile){
+                // let xhr = new XMLHttpRequest();
+                // xhr.open("GET", this.textureFile, false);
+
+                // // xhr.responseType = 'text';
+                // xhr.onload = function (event: any) {
+                //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+                //         debugger
+                //         // var test = window.URL.createObjectURL(xhr.response);
+                //     }
+                // }.bind(this);
+                // xhr.onerror = function () {
+                // }.bind(this);
+                // xhr.send();
+                
+                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
+                    src: this.textureFile
+                }));
             }
 
             // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth

@@ -132,6 +132,17 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyle.push(textStyleClone);
     }
+    var imageStyle = style.getImage();
+    if(imageStyle){
+        if (imageStyle.getImageState() != (<any>ol).ImageState.LOADED) {
+            return;
+        }
+        var imageReplay = replayGroup.getReplay(
+            style.getZIndex(), (<any>ol.render).ReplayType.BACKGROUNDIMAGE);
+        imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
+        imageReplay.indices = polygonReplay.indices.slice();
+        imageReplay.vertices = polygonReplay.vertices.slice();
+    }
 }
 
 function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {

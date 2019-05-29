@@ -552,19 +552,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 // merge worker to main with replaysByZIndex_
                                 let replay = replayGroup.getReplay(zindex, replayType);    
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
-                                for(let key in workerReplay){      
-                                    // if(key == 'startIndicesFeature'){
-                                    //     replay[key] = workerReplay[key].map(function(feature){
-                                    //         var renderFeature = new ol.render.Feature(feature.type_, feature.flatCoordinates_, feature.ends_, 
-                                    //             feature.properties_);
-                                    //         (<any>renderFeature).zCoordinate = feature.zCoordinate;
-                                    //         (<any>renderFeature).extent_ = feature.extent_;
-                                    //         (<any>renderFeature).id_ = feature.id_;
-
-                                    //         return renderFeature;
-                                    //     });
-                                    // }
-                                     
+                                for(let key in workerReplay){                                   
                                     if(key !== 'lineStringReplay'){
                                         replay[key] = workerReplay[key];
                                     }

@@ -2,6 +2,7 @@ import { GeoImageReplay } from './geoImageRepaly';
 import { GeoTextReplay } from './geoTextRepaly';
 import { GeoPolygonReplay } from './geoPolygonRepaly';
 import { GeoLineStringReplay } from './geoLineStringReplay';
+import { GeoBackgroundImageReplay } from './geoBackgroundImageRepaly';
 
 
 export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { new(tolerance: number, maxExtent: any, opt_renderBuffer: number) }) {
@@ -81,8 +82,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                 if (replay !== undefined) {
                     if(screenXY && !Array.isArray(screenXY)){
                         screenXY = [screenXY, replay.origin[1]];
-                    }
-                    
+                    }                    
                     if (opt_declutterReplays &&
                         (replayType === (<any>ol.render).ReplayType.IMAGE || replayType === (<any>ol.render).ReplayType.TEXT)) {
                         let declutter = opt_declutterReplays[zIndexKey];
@@ -92,10 +92,11 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
                         } else {
                             declutter.push(replay, screenXY);
                         }
-                    } else if(replayType == (<any>ol.render).ReplayType.POLYGON || !lineStringReplayArray) {          
+                    } else if((replayType == (<any>ol.render).ReplayType.POLYGON || replayType == (<any>ol.render).ReplayType.BACKGROUNDIMAGE) 
+                        || !lineStringReplayArray) {          
                         replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
                             skippedFeaturesHash, undefined, false, {}, screenXY);
-                    }else{
+                    } else{
                         lineStringReplayArray.push(replay, screenXY);
                     }
                 }
@@ -125,6 +126,7 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         "Circle": (<any>ol.render).webgl.PolygonReplay,
         "Default": (<any>ol.render).webgl.Replay,
         "Image": GeoImageReplay,
+        "BackgroundImage": GeoBackgroundImageReplay,
         "LineString": GeoLineStringReplay,
         "Polygon": GeoPolygonReplay,
         "Text": GeoTextReplay
