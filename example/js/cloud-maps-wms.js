@@ -1,5 +1,3 @@
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
-
 if (!navigator.geolocation) {
     document.getElementsByClassName('your-location')[0].classList.add('hide');
 }

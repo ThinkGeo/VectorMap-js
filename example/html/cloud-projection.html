@@ -34,7 +34,7 @@
             border-radius: 2px;
         }
 
-        .ol-control button:focus{
+        .ol-control button:focus {
             outline: unset;
         }
 
@@ -63,48 +63,20 @@
         }
 
         .loading div:nth-child(1) {
-            animation: loading1 1s ease-in-out infinite;
+            animation: loading 1s ease-in-out infinite;
         }
 
         .loading div:nth-child(2) {
-            animation: loading2 1s ease-in-out infinite;
+            animation: loading 1s ease-in-out infinite;
             animation-delay: -0.8s;
         }
 
         .loading div:nth-child(3) {
-            animation: loading3 1s ease-in-out infinite;
+            animation: loading 1s ease-in-out infinite;
             animation-delay: -1.6s;
         }
 
-        @keyframes loading1 {
-            0% {
-                transform: scale(0);
-            }
-
-            50% {
-                transform: scale(1);
-            }
-
-            100% {
-                transform: scale(0);
-            }
-        }
-
-        @keyframes loading2 {
-            0% {
-                transform: scale(0);
-            }
-
-            50% {
-                transform: scale(1);
-            }
-
-            100% {
-                transform: scale(0);
-            }
-        }
-
-        @keyframes loading3 {
+        @keyframes loading {
             0% {
                 transform: scale(0);
             }
@@ -126,15 +98,6 @@
             display: none;
         }
 
-        .projection-area-wrap {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            background-color: rgb(223, 223, 223);
-        }
-
         h5 {
             margin-bottom: 0;
             margin-top: 0;
@@ -142,12 +105,6 @@
             padding: 5px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-        }
-
-        .projection-area-wrap>div {
-            display: inline-block;
-            width: calc(50% - 120px);
-            padding: 0 15px 10px 15px;
         }
 
         .spherical-mercator {
@@ -173,6 +130,15 @@
             box-shadow: 0px 0px 27px #b7b7b7;
         }
 
+        .projection-area-wrap {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background-color: rgb(223, 223, 223);
+        }
+
         .projection-area-wrap button {
             width: 140px;
             height: 30px;
@@ -193,7 +159,72 @@
             outline: none;
         }
 
+        .projection-area-wrap>div {
+            display: inline-block;
+            width: calc(50% - 120px);
+            padding: 0 15px 10px 15px;
+        }
+
+        #error-message p {
+            line-height: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 3px;
+            border-color: #f5c6cb;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #error-modal {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 99;
+            background-color: #0000006e;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: auto;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            background-color: #f0f0f0;
+            border: 1px solid #b8b8b8;
+        }
+
+        .modal-content p {
+            text-align: left;
+        }
+
+        .modal-content button {
+            color: #fff;
+            background-color: #3d3d3e;
+            border-color: #3d3d3e;
+            border-radius: 4px;
+            padding: 0 7px;
+            height: 30px;
+            width: 60px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .hide {
+            display: none;
+        }
+
         @media (max-width: 767px) {
+            .modal-content {
+                width: 80vw;
+            }
+
             h5 {
                 font-size: 12px;
             }
@@ -207,7 +238,19 @@
 
 <body>
     <!-- This <div> is the container into which our map control will be loaded. -->
-    <div id="map"></div>
+    <div id="map">
+        <!-- Set up error message tip. -->
+        <div id="error-modal" class="hide">
+            <div class="modal-content">
+                <p>We're having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in
+                    this
+                    sample's JavaScript source code, and ensure it has access to the ThinkGeo Cloud services you are
+                    requesting. You can create and manage your API keys at <a href="https://cloud.thinkgeo.com"
+                        target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>.</p>
+                <button>OK</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Set up a textarea box for the projection info. -->
     <div class="projection-area-wrap">

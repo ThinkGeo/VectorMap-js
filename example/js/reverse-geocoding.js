@@ -8,6 +8,7 @@
 //   4. Point Details Popup Bubble
 //   5. Event Listeners
 //   6. ThinkGeo Map Icon Fonts
+//   7. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -75,10 +76,10 @@ const createReverseGeocodingLayer = function () {
                         font: "14px Arial",
                         text: "",
                         fill: new ol.style.Fill({
-                            color: [0,0,0,1]
+                            color: [0, 0, 0, 1]
                         }),
                         stroke: new ol.style.Stroke({
-                            color: [255,255,255,1],
+                            color: [255, 255, 255, 1],
                             width: 1
                         })
                     })
@@ -287,16 +288,16 @@ const renderSearchCircle = function (radius, coordinate) {
 // the closest matching address.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
 
-const reverseGeocode = (coordinate, flag)=>{
+const reverseGeocode = (coordinate, flag) => {
     let opts = {
         srid: 3857,
         searchRadius: 500,
         maxResults: 20,
         verboseResults: true,
     };
-    const callback = (status, res)=>{
-        if(status !== 200){
-            alert(res.error.message);
+    const callback = (status, res) => {
+        if (status !== 200) {
+            errorLoadingTile();
             return;
         }
         if (res.data.bestMatchLocation) {
@@ -431,9 +432,40 @@ let addEventListeners = function (map) {
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
     },
     // The "active" property defines a function to call when the font has
     // finished downloading.  Here, we'll call our initializeMap method.
     active: initializeMap
 });
+
+
+/*---------------------------------------------*/
+// 7. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(light);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})

@@ -6,6 +6,7 @@
 //   2. GPX Setup
 //   3. Map Control Setup
 //   4. ThinkGeo Map Icon Fonts
+//   5. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -41,14 +42,16 @@ const gpxStyleJson = {
     "background": "#aac6ee",
     "variables": {},
     "styles": [{
-        "id": "Line",
+        "id": "line",
         "style": [{
-            "line-color": "	#00008B",
+            "filter": "zoom>=1;zoom<=19",
+            "line-color": "#00008B",
             "line-width": 3,
         }]
-    }, {
-        "id": "Point",
+    },{
+        "id": "point",
         "style": [{
+            "filter": "zoom>=1;zoom<=19",
             "point-type": "symbol",
             "point-symbol-type": "circle",
             "point-outline-color": "#ed6c82",
@@ -66,7 +69,7 @@ const gpxStyleJson = {
         "id": "gpx_layer",
         "source": "data_source",
         "styles": [
-            "Line", "Point"
+            "line", "point"
         ]
     }]
 }
@@ -84,7 +87,7 @@ let gpxVectorLayer = new ol.mapsuite.VectorLayer(gpxStyleJson, {
 // Now we'll create the base layer for our map. The light style of layers uses ThinkGeo Cloud 
 // Maps Vector Tile service to display the detailed base map. For more info, see our wiki: 
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles 
-let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0/light.json', {
+let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
     apiKey: apiKey,
     layerName: 'light'
 });
@@ -94,6 +97,7 @@ let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worlds
 // which ensures that the POI icons display as intended.
 let initializeMap = function () {
     let map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         // States that the HTML tag with id="map" should serve as the container for our map.
@@ -130,9 +134,40 @@ let initializeMap = function () {
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
     },
     // The "active" property defines a function to call when the font has
     // finished downloading.  Here, we'll call our initializeMap method.
     active: initializeMap
 });
+
+
+/*---------------------------------------------*/
+// 5. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(baseLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})

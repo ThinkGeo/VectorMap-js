@@ -6,6 +6,7 @@
 //   2. Map Control Setup
 //   3. Commute Times Layer Setup
 //   4. Displaying Commute Times Points Info
+//   5. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -208,3 +209,31 @@ map.on('pointermove', function (evt) {
     }
     displayFeatureInfo(evt);
 });
+
+
+/*---------------------------------------------*/
+// 5. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(baseLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})

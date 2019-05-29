@@ -83,8 +83,7 @@ const initializeMap = () => {
 /*---------------------------------------------*/
 
 // These events allow you to perform custom actions when 
-// a map tile starts loading, finishes loading successfully, 
-// or encounters an error while loading.
+// a map tile encounters an error while loading.
 const errorLoadingTile = () => {
     const errorModal = document.querySelector('#error-modal');
     if (errorModal.classList.contains('hide')) {
@@ -98,11 +97,9 @@ const setLayerSourceEventHandlers = (layer) => {
     layerSource.on('tileloaderror', function () {
         errorLoadingTile();
     });
-    layer.setSource(layerSource);
-    return layer;
 }
 
-defaultLayer = setLayerSourceEventHandlers(defaultLayer);
+setLayerSourceEventHandlers(defaultLayer);
 
 /*---------------------------------------------*/
 // 4. Popup Setup
@@ -197,7 +194,10 @@ const getTimeZone = (lonLatCoord) => {
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
     },
 
     // The "active" property defines a function to call when the font has

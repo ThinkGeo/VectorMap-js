@@ -29,7 +29,7 @@ const baseLayerStyle = {
         "style": [{
             "filter": "zoom>=0;zoom<=19;",
             "line-width": 2,
-            "line-color": "a59f80",
+            "line-color": "#a59f80",
         }]
     }, {
         "id": "block_name",
@@ -125,6 +125,7 @@ let initializeMap = function () {
         // Add our previously-defined two layers to the map.
         layers: [baseMapLayer, hotelPoiLayer],
         // Create a default view for the map when it starts up.
+        renderer: 'webgl',
         view: new ol.View({
             // Center the map on Frisco, TX and start at zoom level 16.
             center: ol.proj.fromLonLat([-96.820787, 33.098294]),
@@ -152,7 +153,10 @@ let initializeMap = function () {
 WebFont.load({
     custom: {
         families: ["vectormap-icons"],
-        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
     },
     // The "active" property defines a function to call when the font has
     // finished downloading.  Here, we'll call our initializeMap method.

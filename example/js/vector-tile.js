@@ -7,6 +7,7 @@
  //   3. Updating Style Setup
  //   4. Event Listeners
  //   5. ThinkGeo Map Icon Fonts
+ //   6. Tile Loading Event Handlers
  /*===========================================================================*/
 
 
@@ -174,9 +175,40 @@
  WebFont.load({
      custom: {
          families: ["vectormap-icons"],
-         urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"]
+         urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+         testStrings: {
+             'vectormap-icons': '\ue001'
+         }
      },
      // The "active" property defines a function to call when the font has
      // finished downloading.  Here, we'll call our initializeMap method.
      active: initializeMap
  });
+
+
+ /*---------------------------------------------*/
+ // 6. Tile Loading Event Handlers
+ /*---------------------------------------------*/
+
+ // These events allow you to perform custom actions when 
+ // a map tile encounters an error while loading.
+ const errorLoadingTile = () => {
+     const errorModal = document.querySelector('#error-modal');
+     if (errorModal.classList.contains('hide')) {
+         // Show the error tips when Tile loaded error.
+         errorModal.classList.remove('hide');
+     }
+ }
+
+ const setLayerSourceEventHandlers = (layer) => {
+     let layerSource = layer.getSource();
+     layerSource.on('tileloaderror', function () {
+         errorLoadingTile();
+     });
+ }
+
+ setLayerSourceEventHandlers(layer);
+
+ document.querySelector('#error-modal button').addEventListener('click', () => {
+     document.querySelector('#error-modal').classList.add('hide');
+ })

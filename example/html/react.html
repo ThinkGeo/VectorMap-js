@@ -140,6 +140,84 @@
                 margin: 9px 0;
             }
         }
+
+        #error-message {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            width: auto;
+            min-width: 300px;
+            margin-left: auto;
+            text-align: center;
+            transform: translate(-50%, 0);
+            transition: top 0.6s;
+        }
+
+        #error-message.show {
+            top: 15px;
+            transition: top 0.6s;
+        }
+
+        #error-message p {
+            line-height: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 3px;
+            border-color: #f5c6cb;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #error-modal {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 99;
+            background-color: #0000006e;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: auto;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            background-color: #f0f0f0;
+            border: 1px solid #b8b8b8;
+        }
+
+        .modal-content p {
+            text-align: left;
+        }
+
+        .modal-content button {
+            color: #fff;
+            background-color: #3d3d3e;
+            border-color: #3d3d3e;
+            border-radius: 4px;
+            padding: 0 7px;
+            height: 30px;
+            width: 60px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .modal-content {
+                width: 80vw;
+            }
+        }
     </style>
 </head>
 

@@ -8,6 +8,7 @@
 //   4. Elevation Setup
 //   5. Chart Setup
 //   6. Event Listeners
+//   7. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -319,7 +320,7 @@ const getGrades = (res, wkt) => {
 	// Send request to get back the elevation of points along the line.
 	elevationClient.getElevationOfLine(opts, (status, res) => {
 		if (status !== 200) {
-			alert(res.error.message);
+			errorLoadingTile();
 		} else {
 			getElevation(res, wkt, grades);
 		}
@@ -371,7 +372,7 @@ const drawElevationByLine = (feature) => {
 		opts['wkt'] = wkt;
 		elevationClient.getGradeOfLine(opts, (status, res) => {
 			if (status !== 200) {
-				alert(res.error.message);
+				errorLoadingTile();
 			} else {
 				getGrades(res, wkt);
 			}
@@ -626,3 +627,35 @@ window.addEventListener("load", () => {
 	drawPreDefinedLine(wkts.place1, [-122.405729, 37.802898], 16);
 	drawChart();
 });
+
+
+/*---------------------------------------------*/
+// 7. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+	const errorModal = document.querySelector('#error-modal');
+	if (errorModal.classList.contains('hide')) {
+		// Show the error tips when Tile loaded error.
+		errorModal.classList.remove('hide');
+	}
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+	let layerSource = layer.getSource();
+	layerSource.on('tileloaderror', function () {
+		errorLoadingTile();
+	});
+}
+
+setLayerSourceEventHandlers(darkLayer);
+setLayerSourceEventHandlers(lightLayer);
+setLayerSourceEventHandlers(aerialLayer);
+setLayerSourceEventHandlers(transparentBackgroundLayer);
+setLayerSourceEventHandlers(lineLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+	document.querySelector('#error-modal').classList.add('hide');
+})

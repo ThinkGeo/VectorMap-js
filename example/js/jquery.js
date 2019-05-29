@@ -7,6 +7,7 @@
 //   3. Popup Overlay Setup
 //   4. Reverse Geocoding Setup
 //   5. Event Listeners
+//   6. Tile Loading Event Handlers
 /*===========================================================================*/
 
 /*---------------------------------------------*/
@@ -155,3 +156,31 @@ map.addEventListener('click', (evt) => {
     let coordinate = evt.coordinate;
     getReverseGeocoding(coordinate);
 });
+
+
+/*---------------------------------------------*/
+// 6. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = $('#error-modal');
+    if (errorModal.hasClass('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.removeClass('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(baseLayer);
+
+$('#error-modal button').on('click', () => {
+    $('#error-modal').addClass('hide');
+})

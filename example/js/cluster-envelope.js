@@ -7,6 +7,7 @@
 //   3. Styling
 //   4. Loading the Chicago Crime Data Layer
 //   5. Displaying Cluster Polygons
+//   6. Tile Loading Event Handlers
 /*===========================================================================*/
 
 
@@ -260,3 +261,31 @@ hover.on("enter", function (e) {
 hover.on("leave", function (e) {
     vector.getSource().clear();
 });
+
+
+/*---------------------------------------------*/
+// 6. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+    const errorModal = document.querySelector('#error-modal');
+    if (errorModal.classList.contains('hide')) {
+        // Show the error tips when Tile loaded error.
+        errorModal.classList.remove('hide');
+    }
+}
+
+const setLayerSourceEventHandlers = (layer) => {
+    let layerSource = layer.getSource();
+    layerSource.on('tileloaderror', function () {
+        errorLoadingTile();
+    });
+}
+
+setLayerSourceEventHandlers(defaultLayer);
+
+document.querySelector('#error-modal button').addEventListener('click', () => {
+    document.querySelector('#error-modal').classList.add('hide');
+})
