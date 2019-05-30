@@ -38,7 +38,6 @@
     "webpack-stream": "^4.0.0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "cryptiles": "^4.1.2",
     "hawk": "^7.0.7",
     "hoek": "^6.1.3",
