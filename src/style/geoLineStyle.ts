@@ -395,7 +395,7 @@ export class GeoLineStyle extends GeoStyle {
         }
 
         if (this.onewaySymbol) {
-            let flatCoordinates = feature.getFlatCoordinates();
+            let flatCoordinates = feature.getGeometry().getFlatCoordinates();
             let longest = 0;
             let longestIndex;
             for (let i = 0; i <= flatCoordinates.length - 4; i += 2) {
@@ -426,7 +426,7 @@ export class GeoLineStyle extends GeoStyle {
     }
 
     getGeometry(feature: any) {
-        let tmpFlatCoordinates = feature.getFlatCoordinates();
+        let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
         let tmpCoordinates: ol.Coordinate[] = [];
         for (let i = 0; i < tmpFlatCoordinates.length; i += 2) {
             tmpCoordinates.push([tmpFlatCoordinates[i], tmpFlatCoordinates[i + 1]]);

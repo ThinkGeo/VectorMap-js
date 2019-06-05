@@ -21,13 +21,13 @@ export class ReplayGroupCustom extends ((<any>ol).render.webgl.ReplayGroup as { 
         callback) {
 
         // FIXME: change the feature(ol.render.Feature) to ol.Feature
-        if(this.replaysByZIndex_[0]){
-            var featureFlag = this.replaysByZIndex_[0].Polygon || this.replaysByZIndex_[0].LineString;
-            var startIndicesFeature = featureFlag && featureFlag.startIndicesFeature[0];
-            if(!(startIndicesFeature instanceof ol.Feature)){
-                return;
-            }
-        }
+        // if(this.replaysByZIndex_[0]){
+        //     var featureFlag = this.replaysByZIndex_[0].Polygon || this.replaysByZIndex_[0].LineString;
+        //     var startIndicesFeature = featureFlag && featureFlag.startIndicesFeature[0];
+        //     if(!(startIndicesFeature instanceof ol.Feature)){
+        //         return;
+        //     }
+        // }
 
         var gl = context.getGL();
         gl.bindFramebuffer(

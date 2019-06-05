@@ -159,28 +159,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         if(!style){
             continue;
         }
-
-        // switch (type) {
-        //     case (<any>ol.geom).GeometryType.POLYGON:
-        //         flatCoordinates = geometry.getFlatInteriorPoint();
-        //         break;
-        //     case (<any>ol.geom).GeometryType.MULTI_POLYGON:
-        //         var flatInteriorCoordinates = geometry.getFlatInteriorPoints();
-        //         // remove labels that exceeds the polygon
-        //         for (var j = 0, jj = flatInteriorCoordinates.length; j < jj; j += 3) {
-        //             if (flatInteriorCoordinates[j + 2] / resolution >= style.label.width) {
-        //                 flatCoordinates.push(flatInteriorCoordinates[j], flatInteriorCoordinates[j + 1]);
-        //             }
-        //         }
-        //         end = flatCoordinates.length;
-        //         if (end == 0) {
-        //             return;
-        //         }
-        //         break;
-        //     default: 
-        //         flatCoordinates = geometry.getFlatCoordinates();
-        //         break;
-        // }
         
         if(type == 'MultiLineString'){
             var ends = geometry.getEnds();
@@ -569,8 +547,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var offset = 0;
         var end = options.end || 2;
         var stride = 2;    
-        
-        // this.startIndices.push(this.indices.length);
+        this.startIndices.push(this.indices.length);
         var flatCoordinates = options.flatCoordinates;
         if(label){  
             var image = label;

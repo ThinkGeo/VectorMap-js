@@ -118,7 +118,7 @@ export class GeoAreaStyle extends GeoStyle {
     }
 
     GetTransformedCoordinates(feature, resolution) {
-        let tmpFlatCoordinates = feature.getFlatCoordinates();
+        let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
         let tmpCoordinates: ol.Coordinate[][] = [[]];
         let index = 0;
         for (let i = 0; i < tmpFlatCoordinates.length; i += 2) {
@@ -165,7 +165,7 @@ export class GeoAreaStyle extends GeoStyle {
                     this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
                 }
 
-                let tmpFlatCoordinates = feature.getFlatCoordinates();
+                let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
                 let newFlatCoordinates = (<any>ol.geom).flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim(), undefined);
 
                 let tmpCoordinates: ol.Coordinate[][] = [[]];

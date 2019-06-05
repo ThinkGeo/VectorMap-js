@@ -100873,8 +100873,8 @@ function olInit() {
 
         var ReplayGroupCustom = /** @class */ (function (_super) {
             __extends(ReplayGroupCustom, _super);
-            function ReplayGroupCustom(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer, minimalist) {
-                var _this = _super.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) || this;
+            function ReplayGroupCustom(tolerance, maxExtent, opt_renderBuffer) {
+                var _this = _super.call(this, tolerance, maxExtent, opt_renderBuffer) || this;
                 _this.BATCH_CONSTRUCTORS_CUSTOM = {
                     "Circle": ol.render.webgl.PolygonReplay,
                     "Default": ol.render.webgl.Replay,
@@ -100882,7 +100882,7 @@ function olInit() {
                     "LineString": LineStringReplayCustom,
                     "Polygon": GeoPolygonReplay
                 };
-                _this.minimalist = minimalist;
+                // _this.minimalist = minimalist;
                 _this.getReplay = _this.getReplayCustom;
                 _this.BATCH_CONSTRUCTORS_ = _this.BATCH_CONSTRUCTORS_CUSTOM;
 
@@ -100899,7 +100899,7 @@ function olInit() {
                 var replay = replays[replayType];
                 if (replay === undefined) {
                     var Constructor = this.BATCH_CONSTRUCTORS_[replayType];
-                    replay = new Constructor(this.tolerance_, this.maxExtent_, this.declutterTree);
+                    replay = new Constructor(this.tolerance_, this.maxExtent_);
         
                     replays[replayType] = replay;
                 }
@@ -101783,7 +101783,7 @@ function olInit() {
             var pixelToCoordinateTransform=messageData[13];
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
-            var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[7]);
+            var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[3]);
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;

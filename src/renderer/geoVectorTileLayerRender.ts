@@ -330,7 +330,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 var replay = replayData[i++];                
                 var screenXY = replayData[i++];
                 var tmpOptions = replay.tmpOptions;   
-                                     
+                          
+                replay.startIndices.length = 0;
                 replay.indices.length = 0;
                 replay.vertices.length = 0;
                 replay.groupIndices.length = 0;
@@ -510,8 +511,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                         }
                     }
+                    
                     let messageData = [
-                        [0, tileExtent, resolution, pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer(), source.getGeoFormat().minimalist],
+                        [0, tileExtent, resolution, layer.getRenderBuffer()],
                         sourceTile.requestTileCoord,
                         sourceTile.tileCoord,
                         tileProjectionInfo,
@@ -526,7 +528,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         y,
                         frameState["pixelToCoordinateTransform"],
                     ];
-                    var rendera = this;
+                    var that_ = this;
                     let callabck = function (messageData) {
                         var replaysByZIndex_ = messageData["replays"];
                         var features = messageData["features"];
@@ -539,27 +541,55 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                                 let featureInfo = features[instructs[i][0]];
                               
-                                let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                // let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                
+                                let feature = new ol.Feature({
+                                    geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
+                                })
+                                feature.setProperties(featureInfo.properties_);
+
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
-                                renderFeature.call(rendera, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
+                            
+                                renderFeature.call(that_, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
 
-                        // replayGroup.getReplaysMerged(replaysByZIndex_);
                         for (let zindex in replaysByZIndex_) {
                             for (let replayType in replaysByZIndex_[zindex]) {                                
                                 // merge worker to main with replaysByZIndex_
                                 let replay = replayGroup.getReplay(zindex, replayType);    
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
-                                for(let key in workerReplay){                                   
-                                    if(key !== 'lineStringReplay'){
+                                for(let key in workerReplay){   
+                                    if(key === 'startIndicesFeature'){
+                                        replay[key] = workerReplay[key].map(item => {
+                                            let olFeature = new ol.Feature({
+                                                geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
+                                            });
+                                            olFeature.setProperties(item.properties_);
+                                            olFeature['zCoordinate'] = item.zCoordinate;
+                                            
+                                            return olFeature;
+                                        })
+                                    }else if(key !== 'lineStringReplay'){
                                         replay[key] = workerReplay[key];
                                     }
                                 }
                                 if(workerReplay['lineStringReplay']){
                                     for(let lineStringKey in workerReplay['lineStringReplay']){
-                                        replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey];
+                                        if(lineStringKey === 'startIndicesFeature'){
+                                            replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey].map(item => {
+                                                let olFeature = new ol.Feature({
+                                                    geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
+                                                });
+                                                olFeature.setProperties(item.properties_);
+                                                olFeature['zCoordinate'] = item.zCoordinate;
+                                                
+                                                return olFeature;
+                                            })
+                                        }else{
+                                            replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey];
+                                        }
                                     }
                                 }
                             }
@@ -627,6 +657,26 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 }
             }
         }
+    }
+
+    public getGeometryByType = function(type, flatCoordinates, layout){
+        var geometry;
+        layout = layout || 'XY';
+        
+        var transformedCoordinates = [];
+        for(let i = 0; i < flatCoordinates.length; i += 2){
+            transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
+        }
+
+        switch(type){
+            case 'Point': geometry = new ol.geom.Point(flatCoordinates, layout); break;
+            case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
+            case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
+            case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
+            default: console.log(type);                
+        }
+
+        return geometry;
     }
 
     public renderFeature = function (feature, squaredTolerance, styles, replayGroup) {

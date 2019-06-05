@@ -215,7 +215,7 @@ export class GeoShieldStyle extends GeoStyle {
 
         let labelInfo = this.getLabelInfo(featureText);
 
-        let flatCoordinates = this.setLabelPosition(feature, resolution, labelInfo, options.strategyTree, options.frameState);
+        let flatCoordinates = this.setLabelPosition(feature.getGeometry(), resolution, labelInfo, options.strategyTree, options.frameState);
         if (flatCoordinates === undefined || flatCoordinates.length < 2) {
             return;
         }
