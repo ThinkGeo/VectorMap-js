@@ -27,6 +27,7 @@ export var vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ?
   uniform mat4 u_projectionTexCoordMatrix;
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;  
+  uniform float u_zIndex;
   varying vec4 texCoord;
   varying vec2 v_texCoord;
 

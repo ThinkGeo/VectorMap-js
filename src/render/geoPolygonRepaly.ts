@@ -199,7 +199,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
   }
 
   public drawCoordinates_(flatCoordinates, holeFlatCoordinates, stride) {
-    var coords = flatCoordinates.splice(0, flatCoordinates.length - stride);
+    var coords = flatCoordinates.slice(0, flatCoordinates.length - stride);
     var holeIndices = [];
     for (var i = 0; i < holeFlatCoordinates.length; i++) {
         var holeCoords = holeFlatCoordinates[i];
@@ -225,7 +225,8 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
   public drawPolygon(polygonGeometry, feature) {
     var ends = polygonGeometry.getEnds();
     var stride = polygonGeometry.getStride();
-    var extent = feature.getGeometry().getExtent();
+    var extent = polygonGeometry.getExtent();
+    
     if (ends.length > 0) {            
         var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
         var index = 0;

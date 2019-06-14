@@ -1,5 +1,5 @@
 import { GeoStyle } from "./geoStyle";
-import { GeoBrush } from "../style/geoBrush";
+import { GeoBrush } from "./geoBrush";
 import { GeoBrushType } from "./geoBrushType";
 
 export class GeoAreaStyle extends GeoStyle {
@@ -190,26 +190,6 @@ export class GeoAreaStyle extends GeoStyle {
                 GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
             }
 
-            if(this.brushType === 'texture' && this.textureFile){
-                // let xhr = new XMLHttpRequest();
-                // xhr.open("GET", this.textureFile, false);
-
-                // // xhr.responseType = 'text';
-                // xhr.onload = function (event: any) {
-                //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-                //         debugger
-                //         // var test = window.URL.createObjectURL(xhr.response);
-                //     }
-                // }.bind(this);
-                // xhr.onerror = function () {
-                // }.bind(this);
-                // xhr.send();
-                
-                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
-                    src: this.textureFile
-                }));
-            }
-
             // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
             if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
                 let newStroke = new ol.style.Stroke();
@@ -233,6 +213,33 @@ export class GeoAreaStyle extends GeoStyle {
                     evt.context.mozImageSmoothingEnabled = styleGamma;
                     evt.context.msImageSmoothingEnabled = styleGamma;
                 });
+            }
+
+            if(this.brushType === 'texture' && this.textureFile){
+                
+                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
+                    crossOrigin: 'anonymous',
+                    src: this.textureFile
+                }));
+                
+                // function test(resolve, reject): Promise<void> {
+                    // let xhr = new XMLHttpRequest();
+                    // xhr.open("GET", this.textureFile, true);
+                    // xhr.responseType = "blob";
+                    // xhr.onload = function (event: any) {
+                    //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+                    //         debugger
+                    //         var test = window.URL.createObjectURL(xhr.response);
+                    //         console.log(1);
+                            
+                    //         // resolve(this.styles);
+                    //         return this.styles;
+                    //     }
+                    // }.bind(this);
+                    // xhr.onerror = function () {
+                    // }.bind(this);
+                    // xhr.send();
+                // }
             }
         }
 

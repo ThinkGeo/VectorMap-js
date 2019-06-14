@@ -121,6 +121,7 @@ export class GeoBackgroundImageReplay extends ((<any>ol).render.webgl.ImageRepla
     gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
         (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
     gl.uniform1f(locations.u_opacity, opacity);             
+    this.u_zIndex = locations.u_zIndex;
 
     // draw!
     var result;
@@ -192,6 +193,31 @@ export class GeoBackgroundImageReplay extends ((<any>ol).render.webgl.ImageRepla
         }
         textures[i] = texture;
     }
+  }
+
+  public drawReplay(gl, context, skippedFeaturesHash, hitDetection) {
+    var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
+    var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    if (!(<any>ol).obj.isEmpty(skippedFeaturesHash)) {
+        this.drawReplaySkipping(
+            gl, context, skippedFeaturesHash, textures, groupIndices);
+    } else {
+        var i, ii, start;
+        for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
+            gl.bindTexture((<any>ol).webgl.TEXTURE_2D, textures[i]);
+            // gl.uniform1f(this.u_zIndex, 1);
+            var end = groupIndices[i];
+            this.drawElements(gl, context, start, end);
+            start = end;
+        }
+    }
+
+    gl.blendFuncSeparate(
+        (<any>ol).webgl.SRC_ALPHA, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA,
+        (<any>ol).webgl.ONE, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA);
+    gl.disable(gl.BLEND);
   }
 
   public isPowerOfTwo(x) {

@@ -547,6 +547,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                     geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
                                 })
                                 feature.setProperties(featureInfo.properties_);
+                                feature.getGeometry()['ends_'] = featureInfo.ends_
+                                feature.getGeometry()['extent_'] = featureInfo.extent_;
 
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;

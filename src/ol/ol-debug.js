@@ -101554,8 +101554,8 @@ function olInit() {
 
             var method = self[methodInfo.methodName];
             if (method) {
-                var resultMessageData = method(messageData, methodInfo);
-                
+                var resultMessageData = method(messageData, methodInfo);                
+
                 if (resultMessageData) {
                     var postMessageData = {
                         methodInfo: methodInfo,
