@@ -4,6 +4,8 @@ import {lineString as lengthLineString} from '../geom/flat/length.js';
 export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
+    this.startIndicesFeatures_ = [];
+    this.startIndicesStyles_ = [];
   } 
   
   public finish(context){
@@ -140,15 +142,18 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
   }
 
   public declutterRepeat_(context, screenXY){
-    var startIndicesFeature = this.startIndicesFeature;
-    var startIndicesStyle = this.startIndicesStyle;
+    var startIndicesFeatures_ = this.startIndicesFeatures_;
+    var startIndicesStyles_ = this.startIndicesStyles_;
     var frameState = context.frameState;
     var pixelRatio = frameState.pixelRatio;
     this.screenXY = screenXY;
+    this.startIndicesFeature = [];
+    // haven't used currently.
+    this.startIndicesStyle = [];
 
-    for(var i = 0; i < startIndicesFeature.length; i++){
-        var feature = startIndicesFeature[i];
-        var style = startIndicesStyle[i];
+    for(var i = 0; i < startIndicesFeatures_.length; i++){
+        var feature = startIndicesFeatures_[i];
+        var style = startIndicesStyles_[i];
         var declutterGroup = style.declutterGroup_;
         var geometry = feature.getGeometry();
         var type = geometry.getType(); 
@@ -217,6 +222,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 options.currAtlas = this.currAtlas_;
                 this$1.tmpOptions.push(options);
             }
+
+            this.startIndicesFeature.push(feature);
         }
         declutterGroup.length = 5;
         (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
@@ -244,6 +251,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                   var this$1 = declutter[1]; 
                   this$1.tmpOptions.push(options);
               }
+
+            this.startIndicesFeature.push(feature);
           }
           declutterGroup.length = 5;
           (<any>ol.extent).createOrUpdateEmpty(declutterGroup);

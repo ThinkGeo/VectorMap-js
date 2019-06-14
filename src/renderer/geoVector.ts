@@ -61,12 +61,12 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
   if (textStyle) {
       var textReplay = replayGroup.getReplay(
           2, (<any>ol.render).ReplayType.TEXT);
-      textReplay.startIndicesFeature.push(feature);
+      textReplay.startIndicesFeatures_.push(feature);
       var textStyleClone = textStyle.clone();
       textStyleClone.label = textStyle.label;
       textStyleClone.labelPosition = textStyle.labelPosition;
       textStyleClone.declutterGroup_ = replayGroup.addDeclutter(!!imageStyle);
-      textReplay.startIndicesStyle.push(textStyleClone);
+      textReplay.startIndicesStyles_.push(textStyleClone);
   }
 }
 
@@ -82,12 +82,12 @@ function renderLineStringGeometry_ (replayGroup, geometry, style, feature,option
   if (textStyle) {
       var textReplay = replayGroup.getReplay(
           3, (<any>ol.render).ReplayType.TEXT);
-      textReplay.startIndicesFeature.push(feature); 
+      textReplay.startIndicesFeatures_.push(feature); 
       var textStyleClone = textStyle.clone();
       textStyleClone.label = textStyle.label;
       textStyleClone.labelPosition = textStyle.labelPosition;
       textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);            
-      textReplay.startIndicesStyle.push(textStyleClone); 
+      textReplay.startIndicesStyles_.push(textStyleClone); 
   }
 }
 
@@ -103,12 +103,12 @@ function renderMultiLineStringGeometry_ (replayGroup, geometry, style, feature) 
   if (textStyle) {
       var textReplay = replayGroup.getReplay(
           3, (<any>ol.render).ReplayType.TEXT);
-      textReplay.startIndicesFeature.push(feature);
+      textReplay.startIndicesFeatures_.push(feature);
       var textStyleClone = textStyle.clone();
       textStyleClone.label = textStyle.label;
       textStyleClone.labelPosition = textStyle.labelPosition;
       textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-      textReplay.startIndicesStyle.push(textStyleClone);
+      textReplay.startIndicesStyles_.push(textStyleClone);
   }
 }
 
@@ -125,12 +125,12 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
-        textReplay.startIndicesFeature.push(feature);
+        textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-        textReplay.startIndicesStyle.push(textStyleClone);
+        textReplay.startIndicesStyles_.push(textStyleClone);
     }
     var imageStyle = style.getImage();
     if(imageStyle){
@@ -158,12 +158,12 @@ function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
-        textReplay.startIndicesFeature.push(feature);
+        textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-        textReplay.startIndicesStyle.push(textStyleClone);
+        textReplay.startIndicesStyles_.push(textStyleClone);
     }
 }
 
