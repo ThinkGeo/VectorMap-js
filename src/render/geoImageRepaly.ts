@@ -4,6 +4,8 @@ import {lineString as lengthLineString} from '../geom/flat/length.js';
 export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
   constructor(tolerance, maxExtent, declutterTree){
     super(tolerance, maxExtent, declutterTree);
+    this.startIndicesFeatures_ = [];
+    this.startIndicesStyles_ = [];
   } 
   
   public finish(context){
@@ -42,6 +44,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     var size = imageStyle.getSize();
     var scale = imageStyle.getScale();
     
+    this.hitDetectionImage = hitDetectionImage;
     this.image = image;
     this.anchorX = anchor[0];
     this.anchorY = anchor[1];
@@ -63,6 +66,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     var stride = 2;
     var flatCoordinates = options.flatCoordinates;
     var image = options.image;
+    var hitDetectionImage = options.hitDetectionImage;
     this.originX = options.originX;
     this.originY = options.originY;
     this.imageWidth = options.imageWidth;
@@ -76,6 +80,10 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     this.anchorX = options.anchorX;
     this.anchorY = options.anchorY;
     var currentImage;
+    
+    this.startIndices.push(this.indices.length);
+    this.startIndicesFeature.push(options.feature);
+
     if (this.images_.length === 0) {
         this.images_.push(image);
     }
@@ -86,29 +94,30 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             this.images_.push(image);
         }
     }
-    // if (this.hitDetectionImages_.length === 0) {
-    //     this.hitDetectionImages_.push(hitDetectionImage);
-    // } else {
-    //     currentImage =
-    //         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-    //     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
-    //         this.hitDetectionGroupIndices.push(this.indices.length);
-    //         this.hitDetectionImages_.push(hitDetectionImage);
-    //     }
-    // }
+    
+    if (this.hitDetectionImages_.length === 0) {
+        this.hitDetectionImages_.push(hitDetectionImage);
+    } else {
+        currentImage =
+            this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+        if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(hitDetectionImage)) {
+            this.hitDetectionGroupIndices.push(this.indices.length);
+            this.hitDetectionImages_.push(hitDetectionImage);
+        }
+    }
     this.drawCoordinates(flatCoordinates, offset, end, stride);
   }
 
   public declutterRepeat_(context, screenXY){
-    var startIndicesFeature = this.startIndicesFeature;
-    var startIndicesStyle = this.startIndicesStyle;
+    var startIndicesFeatures_ = this.startIndicesFeatures_;
+    var startIndicesStyles_ = this.startIndicesStyles_;
     var frameState = context.frameState;
     var pixelRatio = frameState.pixelRatio;
     this.screenXY = screenXY;
 
-    for(var i = 0; i < startIndicesFeature.length; i++){
-        var feature = startIndicesFeature[i];
-        var style = startIndicesStyle[i];
+    for(var i = 0; i < startIndicesFeatures_.length; i++){
+        var feature = startIndicesFeatures_[i];
+        var style = startIndicesStyles_[i];
         var declutterGroup = style.declutterGroup_;
         var geometry = feature.getGeometry();
         var type = geometry.getType(); 
@@ -131,7 +140,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
                 this.drawLineStringImage(newFeature.getGeometry(), newFeature, frameState, declutterGroup);                    
             }  
         }else{
-            this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_);
+            this.replayImage_(frameState, declutterGroup, geometry.getFlatCoordinates(), style.scale_, feature);
             this.renderDeclutter_(declutterGroup, feature);
         }
     }
@@ -186,7 +195,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     }
 
     var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
-    (<any>ol).transform.scale(offsetScaleMatrix, 2/ size[0], 2/ size[1]);
+    (<any>ol).transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
     var offsetRotateMatrix = (<any>ol).transform.reset(this.offsetRotateMatrix_);
     if (rotation !== 0) {
@@ -295,7 +304,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
                     var part = parts[i];
                     this.anchorX = part[2];
                     this.rotation = part[3];
-                    this.replayImage_(frameState, declutterGroup, [part[0], part[1]], this.scale);
+                    this.replayImage_(frameState, declutterGroup, [part[0], part[1]], this.scale, feature);
                     this.renderDeclutter_(declutterGroup, feature);
                 }   
             }
@@ -313,7 +322,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     }
   }
 
-  public replayImage_(frameState, declutterGroup, flatCoordinates, scale){
+  public replayImage_(frameState, declutterGroup, flatCoordinates, scale, feature){
     var box = [];
     var pixelCoordinate;
     var rotation = this.rotation;            
@@ -357,7 +366,9 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             imageWidth: this.imageWidth,
             opacity: this.opacity,
             originX: this.originX,
-            originY: this.originY
+            originY: this.originY,
+            hitDetectionImage: this.hitDetectionImage,
+            feature
         }, this];
         declutterGroup.push(declutterArgs);
     }

@@ -188,7 +188,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.originY = 0;
                 this.anchorX = Math.floor(this.width * this.textAlign_ - this.offsetX_);
                 this.anchorY = Math.floor(this.height * this.textBaseline_ * pixelRatio - this.offsetY_);
-                this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end);
+                this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end, feature);
                 this.renderDeclutterLabel_(declutterGroup, feature);
             }else{  
                 // draw chars 
@@ -222,8 +222,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 options.currAtlas = this.currAtlas_;
                 this$1.tmpOptions.push(options);
             }
-
-            this.startIndicesFeature.push(feature);
         }
         declutterGroup.length = 5;
         (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
@@ -251,8 +249,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                   var this$1 = declutter[1]; 
                   this$1.tmpOptions.push(options);
               }
-
-            this.startIndicesFeature.push(feature);
           }
           declutterGroup.length = 5;
           (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
@@ -307,7 +303,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var part = parts[i];
                     var lines = part[4];
                     this.width = this.measure(lines);
-                    this.replayCharImage_(frameState, tempDeclutterGroup, part);
+                    this.replayCharImage_(frameState, tempDeclutterGroup, part, feature);
                 }   
                 var size = frameState.size;
                 var intersects = tempDeclutterGroup[0] <= size[0] && tempDeclutterGroup[2] >= 0 && tempDeclutterGroup[1] <= size[1] && tempDeclutterGroup[3] >= 0;
@@ -333,7 +329,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
   }  
        
-  public replayCharImage_(frameState, declutterGroup, part){
+  public replayCharImage_(frameState, declutterGroup, part, feature){
     var scale = this.scale ;
     var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
     var x = part[0];
@@ -397,7 +393,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         anchorY,
         rotation,
         flatCoordinates: [part[0], part[1]],
-        text
+        text,
+        feature
     }, this];
     declutterGroup.push(declutterArgs);
   }
@@ -496,7 +493,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
   }
 
-  public replayImage_(frameState, declutterGroup, flatCoordinates, scale, end){
+  public replayImage_(frameState, declutterGroup, flatCoordinates, scale, end, feature){
     var box = [];
     var screenXY = this.screenXY;
     var rotation = this.rotation;   
@@ -542,7 +539,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             imageWidth: this.imageWidth,
             opacity: this.opacity,
             originX: this.originX,
-            originY: this.originY
+            originY: this.originY,
+            feature
         }, this];
         declutterGroup.push(declutterArgs);
     }
@@ -556,6 +554,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var offset = 0;
         var end = options.end || 2;
         var stride = 2;    
+        this.startIndicesFeature.push(options.feature);
         this.startIndices.push(this.indices.length);
         var flatCoordinates = options.flatCoordinates;
         if(label){  

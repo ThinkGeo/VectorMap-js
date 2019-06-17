@@ -41,17 +41,17 @@ var map = new ol.Map({
     loadTilesWhileInteracting: true
 });
 
-// map.on('pointermove', showInfo);
+map.on('click', showInfo);
 var info = document.getElementById('info');
 function showInfo(event) {
     var features = map.getFeaturesAtPixel(event.pixel);
     if(features)
     {
-        for(var i=0;i<features.length;i++)
-        {
-            console.log(features[i].styleId);
-        }
-        console.log("--")
+        // for(var i=0;i<features.length;i++)
+        // {
+        //     console.log(features[i].styleId);
+        // }
+        // console.log(features);
     }
 }
 

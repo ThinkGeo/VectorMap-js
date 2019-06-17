@@ -52,10 +52,10 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
       var imageReplay = replayGroup.getReplay(
           6, (<any>ol.render).ReplayType.IMAGE);
       feature.pointCoordinates_ = geometry.getFlatCoordinates();
-      imageReplay.startIndicesFeature.push(feature);
+      imageReplay.startIndicesFeatures_.push(feature);
       var imageStyleClone = imageStyle.clone();
       imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
-      imageReplay.startIndicesStyle.push(imageStyleClone);
+      imageReplay.startIndicesStyles_.push(imageStyleClone);
   }
   var textStyle = style.getText();
   if (textStyle) {
