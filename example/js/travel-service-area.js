@@ -168,25 +168,25 @@ const lineStyles = [
     new ol.style.Style({
         stroke: new ol.style.Stroke({
             width: 3,
-            color: 'rgba(230,2,1,1)'
+            color: 'rgba(0, 255, 158, 0.7)'
         })
     }),
     new ol.style.Style({
         stroke: new ol.style.Stroke({
             width: 3,
-            color: 'rgba(240, 81, 45,1)'
+            color: 'rgba(205, 240, 45, 0.7)'
         })
     }),
     new ol.style.Style({
         stroke: new ol.style.Stroke({
             width: 3,
-            color: 'rgba(205, 240, 45,1)'
+            color: 'rgba(240, 81, 45, 0.7)'
         })
     }),
     new ol.style.Style({
         stroke: new ol.style.Stroke({
             width: 3,
-            color: 'rgba(0,109,195,1)'
+            color: 'rgba(230, 2, 1, 0.7)'
         })
     }),
 ]
@@ -194,22 +194,22 @@ const lineStyles = [
 const polygonStyles = [
     new ol.style.Style({
         fill: new ol.style.Fill({
-            color: 'rgba(230,2,1,0.7)'
+            color: 'rgba(0, 255, 158, 0.7)'
         })
     }),
     new ol.style.Style({
         fill: new ol.style.Fill({
-            color: 'rgba(240, 81, 45,0.7)'
+            color: 'rgba(205, 240, 45, 0.7)'
         })
     }),
     new ol.style.Style({
         fill: new ol.style.Fill({
-            color: 'rgba(205, 240, 45,0.7)'
+            color: 'rgba(240, 81, 45, 0.7)'
         })
     }),
     new ol.style.Style({
         fill: new ol.style.Fill({
-            color: 'rgba(0,109,195,0.7)'
+            color: 'rgba(230, 2, 1, 0.7)'
         })
     })
 ];
