@@ -279,10 +279,10 @@ const addRouteFeature = (wkt) => {
 
 const addWalkLinesFeatures = (waypointsCoord) => {
 	let features = [];
+	const points = getAllPoints();
 	points.forEach((point, index) => {
-		const point_ = new ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
 		const feature = new ol.Feature({
-			geometry: new ol.geom.LineString([point_, waypointsCoord[index]]),
+			geometry: new ol.geom.LineString([point, waypointsCoord[index]]),
 			name: 'line'
 		});
 		features.push(feature);
@@ -605,7 +605,7 @@ const gotResponse = (res) => {
 	const routes = data.routes[0];
 	generateBox(routes);
 	const waypointsCoord = data.waypoints.map(item => {
-		return [item.coordinate.x, item.coordinate.y]
+		return [item.coordinate.y, item.coordinate.x]
 	});
 	addWalkLinesFeatures(waypointsCoord);
 	// addPointsFeature();
