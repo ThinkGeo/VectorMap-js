@@ -22,15 +22,15 @@
 
         .sidebar {
             width: 300px;
-            height: calc(100% - 150px);
-
+            /* height: calc(100% - 150px); */
+            height: 0;
             position: fixed;
             left: 1em;
             background-color: rgba(58, 58, 58, 0.85);
             color: #fff;
             top: 130px;
-            border-right: 1px solid #aaa;
-            border-left: 1px solid #aaa;
+            bottom: 30px;
+            border: 1px solid #aaa;
             z-index: 9;
         }
 
@@ -54,8 +54,6 @@
             padding: 10px;
 
         }
-
-
 
         .point input {
             font-size: 12px;
@@ -88,6 +86,26 @@
             left: 0
         }
 
+        .point .via {
+            position: relative;
+        }
+
+        #add-point {
+            display: inline-block;
+            padding: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #add-point i {
+            display: inline-block;
+            height: 1rem;
+            width: 1rem;
+            border: 1px solid #202020;
+            border-radius: 50%;
+            text-align: center;
+        }
+
         .start label {
             background-image: url('../image/starting.png');
         }
@@ -111,6 +129,28 @@
             background-image: url('../image/ending.png');
         }
 
+        .via label {
+            text-align: center;
+            line-height: 30px;
+            font-weight: bolder;
+        }
+
+        #add-point {
+            display: inline-block;
+            padding: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #add-point i {
+            display: inline-block;
+            height: 1rem;
+            width: 1rem;
+            border: 1px solid #202020;
+            border-radius: 50%;
+            text-align: center;
+        }
+
         .switch {
             background-image: url('../image/directions.svg');
             background-position-x: -527px;
@@ -122,6 +162,7 @@
             right: 0.8em;
             top: calc(50% - 15px);
             cursor: pointer;
+            z-index: 9;
         }
 
         .switch.hide {
@@ -513,7 +554,8 @@
             z-index: 7;
         }
 
-        .popup-closer {
+        .popup-closer,
+        .closer {
             display: inline-block;
             text-decoration: none;
             margin-left: -20px;
@@ -522,11 +564,13 @@
             color: #333333;
         }
 
-        .popup-closer:hover {
+        .popup-closer:hover,
+        .closer:hover {
             cursor: pointer;
         }
 
-        .popup-closer::after {
+        .popup-closer::after,
+        .closer::after {
             font-size: 12px;
             content: "✖";
         }
@@ -833,6 +877,9 @@
             <li id="add-endpoint">
                 Directions to here
             </li>
+            <li id="context-add-point">
+                Add to route
+            </li>
             <li id="clear">
                 Clear
             </li>
@@ -843,9 +890,13 @@
         <div class="point">
             <i class="switch"></i>
             <p class="start"><label></label><input id="startPoint" data-origin="" placeholder="Start" /><span
-                    class="hide"></span> <a class="popup-closer hide" id="clear-start"></a></p>
+                    class="hide"></span> <a class="closer start-closer hide" id="clear-start"></a></p>
             <p class="end"><label></label><input id="endPoint" data-origin="" placeholder="Destination" /><span
-                    class="hide"></span> <a class="popup-closer hide" id="clear-end"></a> </p>
+                    class="hide"></span> <a class="closer end-closer hide" id="clear-end"></a> </p>
+
+
+            <div id="add-point"><i>+</i> Add destination</div>
+            <button id="go">Go</button>
             <div class="loading hide">
                 <div></div>
                 <div></div>

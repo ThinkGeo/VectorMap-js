@@ -634,7 +634,7 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
         jsPath: './example/js/routing.js'
       }, {
-        comments: 'Help to visualize anwsers to the questions "Where can I get a burrito within a 15 minute driving?" with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
+        comments: 'Help to visualize reachable areas in time/distance from any starting point.',
         title: "Travel Service Area",
         htmlPath: './example/html/travel-service-area.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
