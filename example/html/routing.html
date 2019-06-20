@@ -106,6 +106,12 @@
             text-align: center;
         }
 
+        #go {
+            width: 70px;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
         .start label {
             background-image: url('../image/starting.png');
         }
@@ -190,6 +196,33 @@
         .format-duration {
             color: rgba(255, 255, 255, 0.5);
             margin: 0 8px;
+        }
+
+        #input-error {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            width: auto;
+            min-width: 300px;
+            margin-left: auto;
+            text-align: center;
+            transform: translate(-50%, 0);
+            transition: top 0.6s;
+        }
+
+        #input-error.show {
+            top: 15px;
+            transition: top 0.6s;
+        }
+
+        #input-error p {
+            line-height: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 3px;
+            border-color: #f5c6cb;
+            background-color: #f8d7da;
+            color: #721c24;
         }
 
         .error-message {
@@ -924,6 +957,11 @@
                     target="_blank" rel="noopener">https://cloud.thinkgeo.com</a>.</p>
             <button>OK</button>
         </div>
+    </div>
+    
+    <!-- Set up error message tip. -->
+    <div id="input-error">
+        <p>Please input correct coordinates!</p>
     </div>
 
     <div id="instruction-tip">

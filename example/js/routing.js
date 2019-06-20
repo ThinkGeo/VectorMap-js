@@ -615,6 +615,7 @@ const performRouting = () => {
 	const points = getAllPoints();
 	const inputsCount = document.querySelectorAll('.point input');
 	if (points && points.length >= 2 && inputsCount.length === points.length) {
+		hideErrorTip();
 		document.querySelector('.loading').classList.remove('hide');
 		document.querySelector('#result').classList.add('hide');
 
@@ -665,6 +666,9 @@ const performRouting = () => {
 
 		routingClient.getRoute(points_, callback, options);
 	} 
+	// else{
+	// 	showErrorTip();
+	// }
 };
 
 const addDestination = () => {
@@ -748,42 +752,21 @@ const clearInputBox = () => {
 
 };
 
-const updateOriginByInputValue = () => {
-	let startInput = document.querySelector('.start input');
-	let endInput = document.querySelector('.end input');
-	if (startInput.value) {
-		let startValue = startInput.value;
-		startValue = startValue.split(',');
-		if (startValue.length === 2) {
-			let startValue_ = [Number(startValue[1]), Number(startValue[0])];
-			startInput.setAttribute('data-origin', new ol.proj.fromLonLat(startValue_));
-			startPoint = (new ol.proj.fromLonLat(startValue_)).slice();
-		} else {
-			// startInput.setAttribute('data-origin', startValue);
-			// startPoint = startValue.slice();
-		}
-	} else {
-		startInput.setAttribute('data-origin', '');
+let timer;
+const showErrorTip = () => {
+	if(timer){
+		clearTimeout(timer);
 	}
-	if (endInput.value) {
-		let endValue = endInput.value;
-		endValue = endValue.split(',');
-		if (endValue.length === 2) {
-			let endValue_ = [];
-			endValue_[1] = Number(endValue[0]);
-			endValue_[0] = Number(endValue[1]);
+	const tip = document.querySelector('#input-error');
+	tip.classList.add('show');
+	timer = setTimeout(function(){
+		tip.classList.remove('show');
+	}, 3000);
+}
 
-			endInput.setAttribute('data-origin', new ol.proj.fromLonLat(endValue_));
-			let endPoint_ = endValue_.slice();
-			endPoint = endPoint_.slice();
-		} else {
-			// endInput.setAttribute('data-origin', endValue);
-			// endPoint = endValue.slice();
-		}
-	} else {
-		endInput.setAttribute('data-origin', '');
-	}
-};
+const hideErrorTip = () =>{
+	document.querySelector('#input-error').classList.remove('show');
+}
 
 const updateDataOriginByInput = (inputNode, inputValue) => {
 	if (inputValue) {
@@ -792,7 +775,7 @@ const updateDataOriginByInput = (inputNode, inputValue) => {
 			let valueArr_ = [Number(valueArr[1]), Number(valueArr[0])]; // '12,13' => [13,12]
 			inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_))
 		} else {
-			// inputNode.setAttribute('data-origin', inputValue);
+			inputNode.setAttribute('data-origin', '');
 		}
 	} else {
 		inputNode.setAttribute('data-origin', '');
@@ -945,6 +928,41 @@ const isContained = (existPoints, point)=>{
 		}
 	})
 	return isContained;
+}
+
+const findRoute = () => {
+	removeFeatureByName('line');
+	removeFeatureByName('arrow');
+
+	const points = getAllPoints();
+	const pointsLength = points.length;
+	// Before this step, we have to remove all the features except start, end and mid point.
+	const existPoints = source.getFeatures().map(feature=>{
+		return feature.getGeometry().getCoordinates();
+	});
+	if(points.length !== existPoints.length){
+		points.forEach((point, index)=>{
+			if(!isContained(existPoints, point)){
+				// This point in input box isn't added to map, so we have to add it to map.
+				let type;
+				if(pointsLength-1 === index){
+					type = 'end';
+				}else if(0 === index){
+					type = 'start';
+				}else{
+					type='mid';
+				}
+				addPointFeature(type, point)
+			}
+		})
+	}
+
+	const inputsCount = document.querySelectorAll('.point input');
+	if (points && points.length >= 2 && inputsCount.length === points.length) {
+		performRouting()
+	}else{
+		showErrorTip();
+	}
 }
 
 /**
@@ -1300,61 +1318,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	const startInputNode = document.querySelector('.start input')
-	const endInputNode = document.querySelector('.end input')
-	const clearEndInput = document.querySelector('#clear-end')
-	const clearStartInput = document.querySelector('#clear-start')
-
-	// startInputNode.addEventListener('keyup', () => {
-	// 	if (event.keyCode === 13) {
-	// 		handleEnterEvent();
-	// 	} else {
-	// 		updateOriginByInputValue();
-	// 	}
-	// });
-
-	// endInputNode.addEventListener('keyup', () => {
-	// 	if (event.keyCode === 13) {
-	// 		handleEnterEvent();
-	// 	} else {
-	// 		updateOriginByInputValue();
-	// 	}
-	// });
-
-	const inputValue = () => {
-		document.querySelector('.sidebar').classList.add('hide');
-		document.querySelector('#total').innerHTML = '';
-		document.querySelector('#boxes').innerHTML = '';
-		removeFeatureByName('resultRadius')
-		removeFeatureByName('line');
-		removeFeatureByName('arrow');
-	}
-
-	startInputNode.addEventListener('input', () => {
-		if (!startInputNode.value) {
-			inputValue()
-			startPoint = [];
-			removeFeatureByName('start');
-			clearStartInput.classList.add('hide');
-
-		} else {
-			clearStartInput.classList.remove('hide');
-		}
-	});
-
-	endInputNode.addEventListener('input', () => {
-		// if (!endInputNode.value) {
-		// 	clearEndInput.classList.add('hide');
-		// 	inputValue()
-		// 	endPoint = [];
-
-		// 	removeEndFeature()
-		// 	endFeature = null;
-		// } else {
-		// 	clearEndInput.classList.remove('hide');
-		// }
-	});
-
 	document.querySelector('#error-modal button').addEventListener('click', () => {
 		document.querySelector('#error-modal').classList.add('hide');
 	})
@@ -1433,39 +1396,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('.point').addEventListener('keyup', function (e) {
 		e = window.e || e;
 		if (e.keyCode === 13) {
-			// handleEnterEvent();
-		} else {
-			// updateOriginByInputValue();
+			findRoute();
 		}
 	})
 
 	document.querySelector('#go').addEventListener('click', function () {
-		removeFeatureByName('line');
-		removeFeatureByName('arrow');
-
-		const points = getAllPoints();
-		const pointsLength = points.length;
-		// Before this step, we have to remove all the features except start, end and mid point.
-		const existPoints = source.getFeatures().map(feature=>{
-			return feature.getGeometry().getCoordinates();
-		});
-		if(points.length !== existPoints.length){
-			points.forEach((point, index)=>{
-				if(!isContained(existPoints, point)){
-					// This point in input box isn't added to map, so we have to add it to map.
-					let type;
-					if(pointsLength-1 === index){
-						type = 'end';
-					}else if(0 === index){
-						type = 'start';
-					}else{
-						type='mid';
-					}
-					addPointFeature(type, point)
-				}
-			})
-		}
-
-		performRouting()
+		findRoute();
 	})
 })
