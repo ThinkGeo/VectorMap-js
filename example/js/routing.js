@@ -862,7 +862,11 @@ const addInputBox = (coord) => {
 
 const getCoordFromDataOrigin = (dataOriginValue) => {
 	let value = dataOriginValue.split(',');
-	return [Number(value[0]), Number(value[1])];
+	if(value.length===2){
+		return [Number(value[0]), Number(value[1])];
+	}else{
+		return [];
+	}
 }
 
 const resetSidebarHeight = () => {
@@ -873,7 +877,7 @@ const resetSidebarHeight = () => {
 }
 
 const toggleCloserAndSwitch = () => {
-	if (document.querySelectorAll('.via').length === 0) {
+	if (document.querySelectorAll('.point input').length === 2) {
 		// There is no via node but only start and end input point. So we have to hide the hide icon of the input and show the switch icon.
 		document.querySelectorAll('.closer').forEach(closer => {
 			closer.classList.add('hide');
@@ -1272,28 +1276,18 @@ document.addEventListener('DOMContentLoaded', function () {
 		// switch input data-origin value
 		let tOrigin = startInput.getAttribute('data-origin');
 		startInput.setAttribute('data-origin', endInput.getAttribute('data-origin'));
-		startInput.setAttribute('data-origin', tOrigin);
+		endInput.setAttribute('data-origin', tOrigin);
 
 		let startOrigin = startInput.getAttribute('data-origin');
 		let endOrigin = endInput.getAttribute('data-origin');
 
 		// string to array
-		let startOrigin_;
-		let endOrigin_;
-		if (startOrigin) {
-			startOrigin_ = stringToArray(startOrigin);
-		}else{
-			startOrigin_ = [];
-		}
-		if (endOrigin) {
-			endOrigin_ = stringToArray(endOrigin);
-		}else{
-			endOrigin_ = [];
-		}
+		let startOrigin_ = getCoordFromDataOrigin(startOrigin);
+		let endOrigin_ = getCoordFromDataOrigin(endOrigin);
 
-		if (startPoint.length > 0 && endPoint.length > 0) {
+		if (startOrigin_.length > 0 && endOrigin_.length > 0) {
 			source.clear();
-			overlay.setPosition(undefined);
+			// overlay.setPosition(undefined);
 			addPointFeature('start', startOrigin_);
 			addPointFeature('end', endOrigin_);
 			performRouting();
@@ -1387,8 +1381,10 @@ document.addEventListener('DOMContentLoaded', function () {
 			second.remove();
 			removeFeatureByName('start');
 			const feature = getFeatureByCoord(secondOrigin);
-			feature.set('name', 'start');
-			feature.setStyle(styles.start);
+			if(feature){			
+				feature.set('name', 'start');
+				feature.setStyle(styles.start);
+			}
 		} else if (classlist.contains('end-closer')) {
 			// Delete the target input box(end point input).
 			// Move the value and data-origin from penult node to last node, and delete the penult node.
@@ -1401,8 +1397,10 @@ document.addEventListener('DOMContentLoaded', function () {
 			penult.remove();
 			removeFeatureByName('end');
 			const feature = getFeatureByCoord(penultOrigin);
-			feature.set('name', 'end');
-			feature.setStyle(styles.end);
+			if(feature){
+				feature.set('name', 'end');
+				feature.setStyle(styles.end);
+			}			
 		} else if (classlist.contains('closer')) {
 			// Delete the target input box(input in the middle).
 			const parentNode = target.parentNode;
@@ -1410,7 +1408,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			removeFeatureByCoord(coord);
 			parentNode.remove();
 		}
-		
 
 		if(classlist.contains('closer') || target.id === 'add-point'){
 			removeFeatureByName('line');
