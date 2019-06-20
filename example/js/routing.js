@@ -360,6 +360,7 @@ const generateBox = (routes) => {
 	totalDom.innerHTML = total;
 	boxesDom.innerHTML = '';
 	removeFeatureByName('line');
+	removeFeatureByName('arrow');
 	removeFeatureByName('resultRadius');
 	let lastLinePenultCoord = [];
 	let lastLineLastCoord = [];
@@ -834,6 +835,7 @@ WebFont.load({
 
 const addInputBox = (coord) => {
 	removeFeatureByName('line');
+	removeFeatureByName('arrow');
 	const lastPoint = document.querySelector('.end');
 	const lastInput = lastPoint.querySelector('input');
 	const parent = document.querySelector('.point');
@@ -1017,6 +1019,7 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 
 	this.timeEvent = setTimeout(function () {
 		removeFeatureByName('line');
+		removeFeatureByName('arrow');
 		overlay.setPosition(undefined);
 		this.flag_ = false
 		// Update the corresponding input node value and data-origin attribute value.
@@ -1121,6 +1124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				addPointFeature('start', curCoord);
 				hideOrShowContextMenu('hide');
 				removeFeatureByName('line');
+				removeFeatureByName('arrow');
 				overlay.setPosition(undefined);
 
 				// Update the start input value and data-origin value.
@@ -1134,6 +1138,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				addPointFeature('end', curCoord);
 				hideOrShowContextMenu('hide');
 				removeFeatureByName('line');
+				removeFeatureByName('arrow');
 				overlay.setPosition(undefined);
 
 				// Update the end input value and data-origin value.
@@ -1145,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			case 'context-add-point':
 				addPointFeature('mid', curCoord);
 				removeFeatureByName('line');
+				removeFeatureByName('arrow');
 				addInputBox(curCoord);
 				toggleCloserAndSwitch();
 				resetSidebarHeight();
