@@ -13,7 +13,7 @@ let coordBeforeMove;
 window.app = {};
 var app = window.app;
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
 const routingClient = new tg.RoutingClient(apiKey);
 
@@ -1261,10 +1261,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		let tOrigin = startInput.getAttribute('data-origin');
 		startInput.setAttribute('data-origin', endInput.getAttribute('data-origin'));
 		endInput.setAttribute('data-origin', tOrigin);
-
-		// Switch the input placeholder value.
-		startInput.setAttribute('placeholder', 'Destination');
-		endInput.setAttribute('placeholder', 'Start');
 
 		// Get coord from input data-origin.
 		let startOrigin = startInput.getAttribute('data-origin');
