@@ -274,11 +274,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                 // reuse replayGroup of source Tile to reduce the memory.
                 // let replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
-                let replayGroup = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
+                let replayGroup_ = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
+                let tmpreplayGroup = sourceTile.tmpReplayGroups_ && sourceTile.tmpReplayGroups_[(<any>ol).getUid(layer) + ','+ sourceTile.tileCoord.toString()];
+                let replayGroup = (Object.keys(replayGroup_.replaysByZIndex_).length > 0 || !tmpreplayGroup) ? replayGroup_ : tmpreplayGroup;
+
                 if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
                     continue;
                 } 
-                
+               
                 // draw polygon
                 replayGroup.replay(context, center, resolution, rotation, size, pixelRatio,
                     opacity, {}, declutterReplays, screenXY, lineStringReplayArray);     
@@ -527,6 +530,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         x,
                         y,
                         frameState["pixelToCoordinateTransform"],
+                        sourceTile.tmpReplayGroups_ && !Object.keys(sourceTile.replayGroups_).length ? 'update' : undefined
                     ];
                     var that_ = this;
                     let callabck = function (messageData) {
@@ -601,9 +605,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         // }     
                                            
                         replayGroup.finish(frameState['context']);
-
+                        sourceTile.tmpReplayGroups_ = undefined;
                         replayState.renderedTileLoaded = true;
-                        sourceTile.state = (<any>ol).TileState.LOADED;
+                        // sourceTile.state = (<any>ol).TileState.LOADED;
                         if (sourceTile["reuseVectorImageTile"]) {
                             for (var i = 0; i < sourceTile["reuseVectorImageTile"].length; i++) {
                                 var reusedVectorImageTile = sourceTile["reuseVectorImageTile"][i];

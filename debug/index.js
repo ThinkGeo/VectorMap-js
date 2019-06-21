@@ -42,7 +42,6 @@ var map = new ol.Map({
 });
 
 map.on('click', showInfo);
-var info = document.getElementById('info');
 function showInfo(event) {
     var features = map.getFeaturesAtPixel(event.pixel);
     if(features)
@@ -53,6 +52,11 @@ function showInfo(event) {
         // }
         // console.log(features);
     }
+}
+
+document.getElementById('test').onclick = function(){
+    console.log('test');
+    worldStreetsLayer.update('test.json');
 }
 
 // disable rotation in mobile devices

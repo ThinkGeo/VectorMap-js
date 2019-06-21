@@ -59,7 +59,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
         this.registerGeoVector();
         if (this.isStyleJsonUrl(styleJson)) {
-            this.loadStyleJsonAsyn(styleJson);
+            this.loadStyleJsonAsyn(styleJson, undefined);
         }
         else {
             this.loadStyleJson(styleJson);
@@ -67,7 +67,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;    
     }
 
-    loadStyleJsonAsyn(styleJsonUrl) {
+    loadStyleJsonAsyn(styleJsonUrl, method) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", styleJsonUrl, false);
 
@@ -76,7 +76,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let source;
                 source = xhr.responseText;
                 this.styleJson = JSON.parse(source);
-                this.loadStyleJson(JSON.parse(source));
+
+                if(method === 'update'){
+                    this.updateStyleJson(JSON.parse(source));
+                }else{
+                    this.loadStyleJson(JSON.parse(source));
+                }
             }
         }.bind(this);
         xhr.onerror = function () {
@@ -94,7 +99,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         this.replaceVariables(styleJson, this.variables);
 
-        this.geoSources = {};
+        this.geoSources = {};        
         if (styleJson["layers"] && styleJson["layers"].length > 0) {
             var layerJson = styleJson["layers"][0];
             var sourceId = layerJson["source"];
@@ -154,6 +159,104 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                 }
             }
+        }
+    }
+
+    updateStyleJson(inputStyleJson: any) {
+        var styleJson = this.styleJson = JSON.parse(JSON.stringify(inputStyleJson));
+        this.version = styleJson["version"];
+        this.owner = styleJson["owner"];
+        this.dateTime = styleJson["dateTime"];
+        this.variables = this.getVariables(styleJson["variables"]);
+        this.background = styleJson["background"];
+
+        this.replaceVariables(styleJson, this.variables);
+
+        if (styleJson["layers"] && styleJson["layers"].length > 0) {
+            var layerJson = styleJson["layers"][0];
+            var sourceId = layerJson["source"];
+
+            var source = this.getGeoSource(sourceId);
+            if (source) {
+                this.setSource(source);
+                if (this.background) {
+                    let backgroundColor = GeoStyle.toRGBAColor(this.background);
+                    if (backgroundColor) {
+                        this["background"] = backgroundColor;
+                    }
+                }
+
+                let styleJsons = styleJson["styles"];
+                let styleIds = layerJson["styles"];
+                let minZoom = 0;
+                let maxZoom = 22;
+                let layerName = source.getGeoFormat().getLayerName();
+
+                let styleJsonCache = new StyleJsonCache();
+                let styleIdIndex = 0;
+                for (let styleId of styleIds) {
+                    let styleJsonTmp;
+                    for (let index = 0; index < styleJsons.length; index++) {
+                        if (styleJsons[index].id === styleId) {
+                            styleJsonTmp = styleJsons[index];
+                        }
+                    }
+                    if (styleJsonTmp) {
+                        styleJsonCache.styleJson[styleId] = styleJsonTmp;
+                        let item = new StyleJsonCacheItem(styleJsonTmp, minZoom, maxZoom, layerName);
+
+                        for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                            let treeNode = new TreeNode<StyleJsonCacheItem>(item);
+                            this.createChildrenNode(treeNode, item, zoom);
+                            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                        }
+
+                        styleIdIndex += 1;
+                    }
+                }
+                let geoFormat = source.getGeoFormat();
+                geoFormat["styleJsonCache"] = styleJsonCache;
+
+                if (this.isMultithread) {
+                    if (this.workerManager) {
+                        var tileCaches = source.tileCache.getValues();
+                        var sourceTiles_ = source.sourceTiles_;
+                        var that_ = this;
+                        var callback = function(messageData){
+                            tileCaches.forEach(function(vectorImageTile){
+                                var replayState = vectorImageTile.getReplayState(that_);
+                                replayState.dirty = true;
+                                var tileKeys = vectorImageTile.tileKeys;
+                                tileKeys.forEach(element => {
+                                    var sourceTile = sourceTiles_[element];
+                                    var replayGroups_ = sourceTile.replayGroups_;
+                                    sourceTile.tmpReplayGroups_ = replayGroups_;
+                                    sourceTile.replayGroups_ = {};
+                                });
+                                vectorImageTile.setState((<any>ol).TileState.LOADED);
+                            })
+                        }
+
+                        let messageData = {
+                            formatId: (<any>ol).getUid(geoFormat),
+                            styleJson: styleJsonCache.styleJson,
+                            geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
+                        };
+
+                        for (let i = 0; i < this.workerManager.workerCount; i++) {
+                            this.workerManager.postMessage((<any>ol).getUid(messageData), "updateStyleJSON", messageData, callback, i);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    update(styleJson: any){
+        if(this.isStyleJsonUrl(styleJson)){
+            this.loadStyleJsonAsyn(styleJson, 'update');
+        }else{
+            this.updateStyleJson(styleJson);
         }
     }
 

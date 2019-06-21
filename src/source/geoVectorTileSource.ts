@@ -161,8 +161,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                     loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
                                 }
                             }
-                        }
-                        // console.log(this.tileCoord)
+                        }                        
+                        
                         format.workerManager.postMessage(this.tileCoord + (<any>ol).getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
                     }
                     else {

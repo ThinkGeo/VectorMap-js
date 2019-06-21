@@ -68768,7 +68768,7 @@ function olInit() {
                 nextStyle = this.styles_[i];
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
                 this.drawElements(gl, context, start, end);
-                // gl.clear(gl.DEPTH_BUFFER_BIT);
+                gl.clear(gl.DEPTH_BUFFER_BIT);
                 // end = start;
             }
 
@@ -101575,6 +101575,12 @@ function olInit() {
             self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
         }
 
+        self.updateStyleJSON = function (styleJsonInfo, methodInfo) {
+            self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
+
+            return true;
+        }
+
         self.request = function (requestInfo, methodInfo) {
             var requestCoord = requestInfo.requestCoord;
             var tileCoord = requestInfo.tileCoord;
@@ -101618,7 +101624,7 @@ function olInit() {
 
                 postMessage(postMessageData);
             }
-            else {
+             else {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", requestInfo.url, true);
                 // TODO others type, such as geojson.
@@ -101719,7 +101725,7 @@ function olInit() {
                 self.postCancelMessageData[requestKey] = postMessageData;
             }
         }
-
+        
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];  
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
@@ -101760,6 +101766,13 @@ function olInit() {
                 vectorTileCache.pop();
             }
 
+            var vectorTileCacheKeys = vectorTileCache.getKeys();
+            vectorTileCacheKeys.forEach(function(key){
+                if(+key.split(',')[3] !== zoom){
+                    vectorTileCache.remove(key);
+                }
+            })
+
             if (!vectorTileCache.containsKey(requestKey)) {
                 vectorTileCache.set(requestKey, oTile);
             }
@@ -101787,6 +101800,8 @@ function olInit() {
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
+            var state_ = messageData[messageData.length - 1];
+
             var renderFeature = function (feature, geoStyles, options, instruct) {
                 var styles = undefined;
                 if (geoStyles) {
@@ -101873,18 +101888,20 @@ function olInit() {
             var vectorTileData = null;
             if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
                 vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
+                
+                if(state_ === 'update'){
+                    vectorTileData.styleJsonCache = self.styleJsonCache[formatId];
+                }
             }
             else {
-                this.console.log("missing", tileCoord, tileCoordKey)
+                this.console.log("missing", tileCoord, tileCoordKey);
+
+                return false;
             }            
 
-            if (tileCoord[0] < maxDataZoom) {
-                self.vectorTilesData[formatId].remove(tileCoordKey);
-            }
-
-            if(!vectorTileData){
-                return false;
-            }
+            // if (tileCoord[0] < maxDataZoom && +tileCoordKey[0] !== vectorTileData.zoom) {
+                // self.vectorTilesData[formatId].remove(tileCoordKey);
+            // }
 
             var features = vectorTileData.features;
             var styleJsonCache = vectorTileData.styleJsonCache;
