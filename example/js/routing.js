@@ -895,39 +895,13 @@ const getFeatureByCoord = (coord) => {
 	return feature;
 };
 
-const isContained = (existPoints, point) => {
-	let isContained = false;
-	existPoints.some((existPoint) => {
-		if (existPoint.toString() === point.toString()) {
-			isContained = true;
-			return true;
-		}
-	});
-	return isContained;
-};
-
 const findRoute = (showError) => {
-	removeFeatureByName('line');
-	removeFeatureByName('arrow');
-
+	source.clear();
 	const points = getAllPoints();
 	const pointsLength = points.length;
-	// Before this step, we have to remove all the features except start, end and mid point.
-	const existPoints = source.getFeatures().map((feature) => {
-		return feature.getGeometry().getCoordinates();
-	});
-
-	// Remove the point on map which did not exist in sidebar input group.
-	existPoints.forEach((existPoint) => {
-		if (!isContained(points, existPoint)) {
-			removeFeatureByCoord(existPoint.toString());
-		}
-	});
 
 	// Add the point which is not added to map.
 	points.forEach((point, index) => {
-		if (!isContained(existPoints, point)) {
-			let type;
 			if (pointsLength - 1 === index) {
 				type = 'end';
 			} else if (0 === index) {
@@ -936,7 +910,6 @@ const findRoute = (showError) => {
 				type = 'mid';
 			}
 			addPointFeature(type, point);
-		}
 	});
 
 	const inputsCount = document.querySelectorAll('.point input');
@@ -1226,7 +1199,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			let attrCoord = boxDom.getAttribute('coord');
 			attrCoord = attrCoord.split(' ');
-			let instruction = boxDom.getAttribute('instruction');
 			let coord = [ Number(attrCoord[0]), Number(attrCoord[1]) ];
 			view.fit(new ol.geom.Point(coord), {
 				padding: [ 20, 20, 20, 20 ],
