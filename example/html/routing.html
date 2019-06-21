@@ -105,6 +105,7 @@
             display: inline-block;
             height: 1rem;
             width: 1rem;
+            line-height: 1rem;
             border: 1px solid #202020;
             border-radius: 50%;
             text-align: center;
@@ -116,14 +117,17 @@
             cursor: pointer;
         }
 
+
         #dragable-list li:first-child,
         #dragable-list li:last-child {
-            margin: 0;
+            margin-top: 0;
+            margin-right: 0;
+            margin-left: 0;
             position: relative;
         }
 
-        #dragable-list li:first-child {
-            margin-bottom: 10px;
+        #dragable-list li {
+            margin-bottom: 5px;
         }
 
         #dragable-list li:last-child {
@@ -222,6 +226,7 @@
             text-align: center;
             transform: translate(-50%, 0);
             transition: top 0.6s;
+            z-index: 10;
         }
 
         #input-error.show {
@@ -558,6 +563,7 @@
             cursor: pointer;
             background-color: #e1e1e1;
         }
+
         .closer {
             display: inline-block;
             text-decoration: none;
@@ -628,7 +634,7 @@
         #instruction-tip {
             width: max-content;
             position: fixed;
-            bottom: 10px;
+            bottom: 20px;
             margin-left: 50%;
             transform: translateX(-50%);
             -ms-transform: translateX(-50%);
@@ -653,31 +659,33 @@
         /* Mobile phone */
         @media (max-width: 767px) {
             .sidebar {
-                height: 0;
+                height: 0!important;
+                border: 0;
             }
 
             .point {
                 left: calc(50% - 150px);
             }
 
-            .point label {
+            #dragable-list label {
                 margin-left: 0px;
                 width: 17px;
                 height: 17px;
+                line-height: 17px;
             }
 
-            .point input {
+            #dragable-list input {
                 height: 20px;
-                margin-left: 25px;
+                margin-left: 28px;
                 width: 180px
             }
 
             .switch {
                 width: 20px;
                 height: 18px;
-                top: calc(50% - 8px);
+                top: calc(50% - 24px);
                 background-position-x: -315px;
-                right: 1em;
+                right: 0.2em;
             }
 
             input::-webkit-input-placeholder {
@@ -698,15 +706,6 @@
             input:-ms-input-placeholder {
                 /* Internet Explorer 10+ */
                 color: #cfcfcf;
-            }
-
-
-            #dragable-list li:first-child label {
-                background-position-x: -406px;
-            }
-
-            #dragable-list li:last-child label {
-                background-position-x: -831px;
             }
 
             .btn-wrap {
@@ -846,6 +845,17 @@
 
             #instruction-tip p {
                 font-size: 12px;
+            }
+
+            #input-error {
+                top: unset;
+                bottom: -150px;
+            }
+
+            #input-error.show {
+                top: unset;
+                bottom: 60px;
+                transition: bottom 0.6s;
             }
         }
 
