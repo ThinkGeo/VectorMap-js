@@ -558,50 +558,6 @@
             cursor: pointer;
             background-color: #e1e1e1;
         }
-
-        #popup {
-            position: relative;
-            color: #fff;
-            background-color: #414141;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-            padding: 10px 20px 10px 10px;
-            border-radius: 10px;
-            border: 1px solid #5c5c5c;
-            max-width: 200px;
-            line-height: 22px;
-        }
-
-        #popup::before {
-            position: absolute;
-            width: 0;
-            height: 0;
-            content: ' ';
-            border: 10px solid #000;
-            border-width: 10px;
-            border-style: solid;
-            border-color: transparent;
-            border-bottom-color: #414141;
-            bottom: 100%;
-            left: 15px;
-            z-index: 8;
-        }
-
-        #popup::after {
-            position: absolute;
-            width: 0;
-            height: 0;
-            content: ' ';
-            border: 10px solid #000;
-            border-width: 12px;
-            border-style: solid;
-            border-color: transparent;
-            border-bottom-color: #5c5c5c;
-            bottom: 100%;
-            left: 13px;
-            z-index: 7;
-        }
-
-        .popup-closer,
         .closer {
             display: inline-block;
             text-decoration: none;
@@ -611,12 +567,10 @@
             color: #333333;
         }
 
-        .popup-closer:hover,
         .closer:hover {
             cursor: pointer;
         }
 
-        .popup-closer::after,
         .closer::after {
             font-size: 12px;
             content: "✖";
@@ -964,11 +918,6 @@
                 <div id="boxes"></div>
             </div>
         </div>
-    </div>
-
-    <div id="popup">
-        <div id="popup-content"></div>
-        <a class="popup-closer ol-popup-closer"></a>
     </div>
 
     <div id="error-modal" class="hide">

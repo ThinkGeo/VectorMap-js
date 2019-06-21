@@ -4,7 +4,6 @@ let curCoord;
 let lastLinePoint;
 let firstLinePoint;
 let wktLineFeature;
-let overlay;
 let listener;
 let modifyInteraction;
 let turnFeature;
@@ -51,15 +50,6 @@ const initializeMap = () => {
 	routingLayer.set('layerName', 'routing');
 	map.addLayer(routingLayer);
 
-	let container = document.querySelector('#popup');
-	container.classList.remove('hide');
-	overlay = new ol.Overlay({
-		element: container,
-		offset: [ -27, 12 ],
-		autoPan: false
-	});
-
-	map.addOverlay(overlay);
 	let u = navigator.userAgent;
 	const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
 	const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
@@ -573,12 +563,6 @@ const removeFeatureByName = (featureName) => {
 	}
 };
 
-const addPopup = (coordinates, instruction) => {
-	let popupContent = document.querySelector('#popup-content');
-	popupContent.innerHTML = instruction;
-	overlay.setPosition(coordinates);
-};
-
 const addPointsFeature = () => {
 	const length = points.length;
 	let features = [];
@@ -1055,7 +1039,6 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 		console.log('settimeout---------------');
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
-		overlay.setPosition(undefined);
 		this.flag_ = false;
 		// Update the corresponding input node value and data-origin attribute value.
 		if (featureType === 'start' || featureType === 'end' || featureType === 'mid') {
@@ -1110,9 +1093,6 @@ app.Drag.prototype.handleUpEvent = function(e) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
 	if (this.flag_) {
-		// removeFeatureByName('line');
-		// removeFeatureByName('resultRadius');
-		overlay.setPosition(undefined);
 		const featureType = this.feature_.get('name');
 		const coord = this.feature_.getGeometry().getCoordinates();
 		const coord_ = new ol.proj.toLonLat(coord);
@@ -1160,7 +1140,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				hideOrShowContextMenu('hide');
 				removeFeatureByName('line');
 				removeFeatureByName('arrow');
-				overlay.setPosition(undefined);
 
 				// Update the start input value and data-origin value.
 				let startInput = document.querySelector('#dragable-list input');
@@ -1174,7 +1153,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				hideOrShowContextMenu('hide');
 				removeFeatureByName('line');
 				removeFeatureByName('arrow');
-				overlay.setPosition(undefined);
 
 				// Update the end input value and data-origin value.
 				let endInput = getLastNodeBySelector('#dragable-list li').querySelector('input');
@@ -1193,6 +1171,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				document.querySelector('.switch').classList.add('hide');
 				break;
 		}
+
 		performRouting();
 	});
 
@@ -1280,11 +1259,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
-	document.querySelector('.ol-popup-closer').onclick = () => {
-		overlay.setPosition(undefined);
-		return false;
-	};
-
 	document.querySelector('#clear').addEventListener('click', () => {
 		document.querySelector('#total').innerHTML = '';
 		document.querySelector('#boxes').innerHTML = '';
@@ -1292,7 +1266,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.querySelector('.sidebar').classList.add('hide');
 		source.clear();
 		clearInputBox();
-		overlay.setPosition(undefined);
 
 		const x = window.matchMedia('(max-width: 767px)');
 		if (x.matches) {
@@ -1307,20 +1280,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		let startInput = document.querySelector('#dragable-list input');
 		let endInput = getLastNodeBySelector('#dragable-list li').querySelector('input');
 
-		// switch input value
+		// Switch input value
 		let t = startInput.value;
 		startInput.value = endInput.value;
 		endInput.value = t;
 
-		// switch input data-origin value
+		// Switch input data-origin value
 		let tOrigin = startInput.getAttribute('data-origin');
 		startInput.setAttribute('data-origin', endInput.getAttribute('data-origin'));
 		endInput.setAttribute('data-origin', tOrigin);
 
+		// Switch the input placeholder value.
+		startInput.setAttribute('placeholder', 'Destination');
+		endInput.setAttribute('placeholder', 'Start');
+
+		// Get coord from input data-origin.
 		let startOrigin = startInput.getAttribute('data-origin');
 		let endOrigin = endInput.getAttribute('data-origin');
-
-		// string to array
 		let startOrigin_ = getCoordFromDataOrigin(startOrigin);
 		let endOrigin_ = getCoordFromDataOrigin(endOrigin);
 
@@ -1422,8 +1398,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		findRoute(showError);
 	});
 
-	let el = document.getElementById('dragable-list');
-	Sortable.create(el, {
+	Sortable.create(document.getElementById('dragable-list'), {
 		handle: '.drag',
 		onEnd: handleDragEnd,
 		animation: 150,
