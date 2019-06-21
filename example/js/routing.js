@@ -1,8 +1,6 @@
 let source;
 let routingLayer;
 let curCoord;
-let startPoint = [];
-let endPoint = [];
 let lastLinePoint;
 let firstLinePoint;
 let wktLineFeature;
@@ -27,7 +25,7 @@ const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/wor
 
 let map;
 const view = new ol.View({
-	center: ol.proj.fromLonLat([-96.7962, 42.79423]),
+	center: ol.proj.fromLonLat([ -96.7962, 42.79423 ]),
 	maxResolution: 40075016.68557849 / 512,
 	progressiveZoom: false,
 	zoom: 3,
@@ -40,10 +38,10 @@ const initializeMap = () => {
 		renderer: 'webgl',
 		loadTilesWhileAnimating: true,
 		loadTilesWhileInteracting: true,
-		layers: [lightLayer],
+		layers: [ lightLayer ],
 		target: 'map',
 		view: view,
-		interactions: ol.interaction.defaults().extend([new app.Drag()])
+		interactions: ol.interaction.defaults().extend([ new app.Drag() ])
 	});
 
 	source = new ol.source.Vector();
@@ -57,7 +55,7 @@ const initializeMap = () => {
 	container.classList.remove('hide');
 	overlay = new ol.Overlay({
 		element: container,
-		offset: [-27, 12],
+		offset: [ -27, 12 ],
 		autoPan: false
 	});
 
@@ -73,30 +71,30 @@ const initializeMap = () => {
 	let timeOutEvent;
 	const contextWidth = 165;
 	if (isiOS) {
-		map.getViewport().addEventListener('gesturestart', function (e) {
+		map.getViewport().addEventListener('gesturestart', function(e) {
 			clearTimeout(timeOutEvent);
 			timeOutEvent = 0;
 			return false;
 		});
 
-		map.getViewport().addEventListener('touchstart', function (e) {
+		map.getViewport().addEventListener('touchstart', function(e) {
 			e.preventDefault();
 			if (e.touches.length != 1) {
 				clearTimeout(timeOutEvent);
 				timeOutEvent = 0;
 				return false;
 			}
-			timeOutEvent = setTimeout(function () {
+			timeOutEvent = setTimeout(function() {
 				if (e.touches.length == 1) {
 					timeOutEvent = 0;
 					left =
-						e.changedTouches[0].clientX + contextWidth > clientWidth ?
-						clientWidth - contextWidth :
-						e.changedTouches[0].clientX;
+						e.changedTouches[0].clientX + contextWidth > clientWidth
+							? clientWidth - contextWidth
+							: e.changedTouches[0].clientX;
 					top =
-						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight ?
-						clientHeight - contextmenu.offsetHeight :
-						e.changedTouches[0].clientY;
+						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight
+							? clientHeight - contextmenu.offsetHeight
+							: e.changedTouches[0].clientY;
 					contextmenu.style.left = left + 'px';
 					contextmenu.style.top = top + 'px';
 					let point = map.getEventCoordinate(e);
@@ -107,7 +105,7 @@ const initializeMap = () => {
 			}, 500);
 		});
 
-		map.getViewport().addEventListener('touchend', function (event) {
+		map.getViewport().addEventListener('touchend', function(event) {
 			clearTimeout(timeOutEvent);
 			if (timeOutEvent != 0) {
 				hideOrShowContextMenu('hide');
@@ -115,7 +113,7 @@ const initializeMap = () => {
 			return false;
 		});
 
-		map.getViewport().addEventListener('touchmove', function (event) {
+		map.getViewport().addEventListener('touchmove', function(event) {
 			clearTimeout(timeOutEvent);
 			timeOutEvent = 0;
 			return false;
@@ -124,12 +122,11 @@ const initializeMap = () => {
 		map.getViewport().addEventListener('contextmenu', (e) => {
 			hideOrShowContextMenu('show');
 			insTip.classList.add('gone');
-			left =
-				e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
+			left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
 			top =
-				e.clientY + contextmenu.offsetHeight > clientHeight ?
-				clientHeight - contextmenu.offsetHeight :
-				e.clientY;
+				e.clientY + contextmenu.offsetHeight > clientHeight
+					? clientHeight - contextmenu.offsetHeight
+					: e.clientY;
 
 			contextmenu.style.left = left + 'px';
 			contextmenu.style.top = top + 'px';
@@ -145,7 +142,7 @@ const initializeMap = () => {
 		document.querySelector('.pc-tip').classList.remove('hide');
 	}
 
-	map.on('pointermove', function (e) {
+	map.on('pointermove', function(e) {
 		if (e.dragging) {
 			return;
 		}
@@ -175,36 +172,36 @@ const errorLoadingTile = () => {
 		// Show the error tips when Tile loaded error.
 		errorModal.classList.remove('hide');
 	}
-}
+};
 
 const setLayerSourceEventHandlers = (layer) => {
 	let layerSource = layer.getSource();
-	layerSource.on('tileloaderror', function () {
+	layerSource.on('tileloaderror', function() {
 		document.querySelector('.sidebar').classList.add('hide');
 		errorLoadingTile();
 	});
-}
+};
 
 setLayerSourceEventHandlers(lightLayer);
 
 const styles = {
 	start: new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [0.5, 0.9],
+			anchor: [ 0.5, 0.9 ],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			opacity: 1,
-			crossOrigin: "Anonymous",
+			crossOrigin: 'Anonymous',
 			src: '../image/starting.png'
 		})
 	}),
 	end: new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [0.5, 0.9],
+			anchor: [ 0.5, 0.9 ],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			opacity: 1,
-			crossOrigin: "Anonymous",
+			crossOrigin: 'Anonymous',
 			src: '../image/ending.png'
 		})
 	}),
@@ -212,10 +209,10 @@ const styles = {
 		image: new ol.style.Circle({
 			radius: 10,
 			fill: new ol.style.Fill({
-				color: [255, 255, 255, 19]
+				color: [ 255, 255, 255, 19 ]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [29, 93, 48, 1],
+				color: [ 29, 93, 48, 1 ],
 				width: 6
 			})
 		})
@@ -223,42 +220,42 @@ const styles = {
 	line: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 6,
-			color: [34, 109, 214, 0.9]
+			color: [ 34, 109, 214, 0.9 ]
 		})
 	}),
 	line_halo: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 10,
 			lineCap: 'round',
-			color: [34, 109, 214, 1]
+			color: [ 34, 109, 214, 1 ]
 		})
 	}),
 	walkLine: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 2,
-			lineDash: [5, 3],
-			color: [34, 109, 214, 1]
+			lineDash: [ 5, 3 ],
+			color: [ 34, 109, 214, 1 ]
 		})
 	}),
 	resultRadius: new ol.style.Style({
 		image: new ol.style.Circle({
 			radius: 15,
 			fill: new ol.style.Fill({
-				color: [255, 102, 0, 0.4]
+				color: [ 255, 102, 0, 0.4 ]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [255, 102, 0, 0.8],
+				color: [ 255, 102, 0, 0.8 ],
 				width: 1
 			})
 		})
 	}),
 	arrowLine: new ol.style.Style({
 		stroke: new ol.style.Stroke({
-			color: [10, 80, 18, 1],
+			color: [ 10, 80, 18, 1 ],
 			width: 6
 		})
 	})
-}
+};
 
 const addPointFeature = (name, coord) => {
 	document.querySelector('#result').classList.add('hide');
@@ -272,29 +269,29 @@ const addPointFeature = (name, coord) => {
 		name: name
 	});
 	feature.setStyle(styles[name]);
-	source.addFeatures([feature]);
-}
+	source.addFeatures([ feature ]);
+};
 
 const addRouteFeature = (wkt) => {
 	const format = new ol.format.WKT();
 	const routeFeature = format.readFeature(wkt);
 	routeFeature.set('name', 'line');
-	routeFeature.setStyle([styles.line, styles.line_halo]);
+	routeFeature.setStyle([ styles.line, styles.line_halo ]);
 	source.addFeature(routeFeature);
-}
+};
 
 const addWalkLinesFeatures = (waypointsCoord) => {
 	let features = [];
 	const points = getAllPoints();
 	points.forEach((point, index) => {
 		const feature = new ol.Feature({
-			geometry: new ol.geom.LineString([point, waypointsCoord[index]]),
+			geometry: new ol.geom.LineString([ point, waypointsCoord[index] ]),
 			name: 'line'
 		});
 		features.push(feature);
 	});
 	source.addFeatures(features);
-}
+};
 
 const addResultRadius = (coord) => {
 	removeFeatureByName('resultRadius');
@@ -305,7 +302,7 @@ const addResultRadius = (coord) => {
 	});
 	resultRadiusFeature.setStyle(styles.resultRadius);
 	routingLayer.getSource().addFeature(resultRadiusFeature);
-}
+};
 
 const formatDistanceAndDuration = (distance, duration) => {
 	let distance_;
@@ -344,15 +341,15 @@ const generateBox = (routes) => {
 	let distance = Math.round(routes.distance * 100) / 100;
 	let duration = Math.round(routes.duration * 100) / 100;
 	let format = formatDistanceAndDuration(distance, duration);
-	let warnings
+	let warnings;
 	if (routes.warnings) {
-		let str = ``
+		let str = ``;
 		Object.keys(routes.warnings).map((key) => {
-			str += `${routes.warnings[key]}  `
-		})
-		warnings = `<p class="warnings">${str} </p> `
+			str += `${routes.warnings[key]}  `;
+		});
+		warnings = `<p class="warnings">${str} </p> `;
 	} else {
-		warnings = ''
+		warnings = '';
 	}
 
 	let boxesDom = document.querySelector('#boxes');
@@ -375,13 +372,15 @@ const generateBox = (routes) => {
 
 	addRouteFeature(lineWkt);
 
-	let segments_ = segments.map(item => {
-		let polyline = item.geometry;
-		let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
-		let secondPointFromStart = findSecondPointFromStart(polylineCoord);
+	let segments_ = segments
+		.map((item) => {
+			let polyline = item.geometry;
+			let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
+			let secondPointFromStart = findSecondPointFromStart(polylineCoord);
 
-		return secondPointFromStart ? item : false;
-	}).filter(item => item);
+			return secondPointFromStart ? item : false;
+		})
+		.filter((item) => item);
 
 	segments_.forEach((item) => {
 		count++;
@@ -399,11 +398,11 @@ const generateBox = (routes) => {
 		distance = format.distance;
 		duration = format.duration;
 		let className;
-		let warnStr
+		let warnStr;
 		if (item.isToll) {
-			warnStr = '<span class="warnings-small ">Toll road</span>'
+			warnStr = '<span class="warnings-small ">Toll road</span>';
 		} else {
-			warnStr = ''
+			warnStr = '';
 		}
 		isTurn = true;
 
@@ -446,23 +445,25 @@ const generateBox = (routes) => {
 				break;
 		}
 
-		boxInnerDom = count !== segments_.length ? `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
-				<span class="distance">${distance}</span><span  class="duration">${duration}</span>${warnStr}` :
-			`<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
+		boxInnerDom =
+			count !== segments_.length
+				? `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
+				<span class="distance">${distance}</span><span  class="duration">${duration}</span>${warnStr}`
+				: `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
 		let boxDom = document.createElement('DIV');
 		boxDom.className = 'box';
 		boxDom.id = count;
 		if (count === 1) {
 			firstLinePoint = startCoord.split(' ');
-			firstLinePoint = [+firstLinePoint[0], +firstLinePoint[1]];
+			firstLinePoint = [ +firstLinePoint[0], +firstLinePoint[1] ];
 
 			let penult = secondPointFromEnd;
 			penultPoint = penult.split(' ');
-			penultPoint = [+penultPoint[0], +penultPoint[1]];
+			penultPoint = [ +penultPoint[0], +penultPoint[1] ];
 
 			let last = polylineCoord[polylineCoord.length - 1];
 			lastPoint = last.split(' ');
-			lastPoint = [+lastPoint[0], +lastPoint[1]];
+			lastPoint = [ +lastPoint[0], +lastPoint[1] ];
 
 			lastLinePenultCoord = penult;
 			lastLineLastCoord = last;
@@ -472,13 +473,13 @@ const generateBox = (routes) => {
 
 			let last_ = polylineCoord[1];
 			let lastPoint_ = last_.split(' ');
-			lastPoint_ = [+lastPoint_[0], +lastPoint_[1]];
+			lastPoint_ = [ +lastPoint_[0], +lastPoint_[1] ];
 		}
 
 		if (count === segments_.length) {
 			let endCoord = polylineCoord[polylineCoord.length - 1];
 			lastLinePoint = endCoord.split(' ');
-			lastLinePoint = [+lastLinePoint[0], +lastLinePoint[1]];
+			lastLinePoint = [ +lastLinePoint[0], +lastLinePoint[1] ];
 			boxDom.setAttribute('coord', endCoord);
 		} else {
 			boxDom.setAttribute('coord', startCoord);
@@ -491,11 +492,11 @@ const generateBox = (routes) => {
 
 			let penult = secondPointFromEnd;
 			penultPoint = penult.split(' ');
-			penultPoint = [+penultPoint[0], +penultPoint[1]];
+			penultPoint = [ +penultPoint[0], +penultPoint[1] ];
 
 			let last = polylineCoord[polylineCoord.length - 1];
 			lastPoint = last.split(' ');
-			lastPoint = [+lastPoint[0], +lastPoint[1]];
+			lastPoint = [ +lastPoint[0], +lastPoint[1] ];
 
 			lastLinePenultCoord = penult;
 			lastLineLastCoord = last;
@@ -537,7 +538,7 @@ const findSecondPointFromStart = (coordinates) => {
 	}
 
 	return false;
-}
+};
 
 const findSecondPointFromEnd = (coordinates) => {
 	for (let i = coordinates.length - 1; i > 0; i--) {
@@ -547,7 +548,7 @@ const findSecondPointFromEnd = (coordinates) => {
 	}
 
 	return false;
-}
+};
 
 const hideOrShowContextMenu = (style) => {
 	let contextmenu = document.querySelector('#ol-contextmenu');
@@ -570,7 +571,7 @@ const removeFeatureByName = (featureName) => {
 			}
 		}
 	}
-}
+};
 
 const addPopup = (coordinates, instruction) => {
 	let popupContent = document.querySelector('#popup-content');
@@ -603,15 +604,15 @@ const addPointsFeature = () => {
 		feature.setStyle(styles[type]);
 		features.push(feature);
 	});
-	source.addFeatures(features)
-}
+	source.addFeatures(features);
+};
 
 const handleResponse = (res) => {
 	const data = res.data;
 	const routes = data.routes[0];
 	generateBox(routes);
-	const waypointsCoord = data.waypoints.map(item => {
-		return [item.coordinate.y, item.coordinate.x]
+	const waypointsCoord = data.waypoints.map((item) => {
+		return [ item.coordinate.y, item.coordinate.x ];
 	});
 	addWalkLinesFeatures(waypointsCoord);
 };
@@ -648,11 +649,12 @@ const performRouting = () => {
 					const data = response.data;
 					let message = '';
 					Object.keys(data).forEach((key) => {
-						message = message + data[key] + '<br />'
-					})
+						message = message + data[key] + '<br />';
+					});
 					result.querySelector('#boxes').innerHTML = `<div class="error-message">${message}</div>`;
 				} else if (status === 401 || status === 410 || status === 404) {
-					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error.message}</div>`;
+					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error
+						.message}</div>`;
 				} else if (status === 'error') {
 					document.querySelector('.sidebar').classList.add('hide');
 					errorLoadingTile();
@@ -660,13 +662,13 @@ const performRouting = () => {
 					result.querySelector('#boxes').innerHTML = `<div class="error-message">Request failed.</div>`;
 				}
 			}
-		}
+		};
 
-		const points_ = points.map(point => {
+		const points_ = points.map((point) => {
 			return {
 				x: point[0],
 				y: point[1]
-			}
+			};
 		});
 
 		routingClient.getRoute(points_, callback, options);
@@ -698,10 +700,10 @@ const addArrow = (penultCoord, lastCoord) => {
 
 	const arrowStyle = new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [0.5, 0.5],
+			anchor: [ 0.5, 0.5 ],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
-			crossOrigin: "Anonymous",
+			crossOrigin: 'Anonymous',
 			src: '../image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
@@ -714,8 +716,8 @@ const addArrow = (penultCoord, lastCoord) => {
 
 const addTurnLine = (penultCoord, lastCoord, lineSecondCoord) => {
 	let feature = new ol.Feature({
-		geometry: new ol.geom.LineString([penultCoord, lastCoord, lineSecondCoord]),
-		name: 'arrowLine'
+		geometry: new ol.geom.LineString([ penultCoord, lastCoord, lineSecondCoord ]),
+		name: 'line'
 	});
 
 	feature.setStyle(styles.arrowLine);
@@ -736,19 +738,18 @@ const lerp = (firstCoord, secondCoord) => {
 		var x = ol.math.lerp(x1, x2, interpolate);
 		var y = ol.math.lerp(y1, y2, interpolate);
 
-		return [x, y];
+		return [ x, y ];
 	}
 
 	return secondCoord;
-}
+};
 
 const clearInputBox = () => {
 	const inputs = document.querySelectorAll('.point input');
-	inputs.forEach(input => {
+	inputs.forEach((input) => {
 		input.setAttribute('data-origin', '');
 		input.value = '';
 	});
-
 };
 
 let timer;
@@ -758,54 +759,38 @@ const showErrorTip = () => {
 	}
 	const tip = document.querySelector('#input-error');
 	tip.classList.add('show');
-	timer = setTimeout(function () {
+	timer = setTimeout(function() {
 		tip.classList.remove('show');
 	}, 3000);
-}
+};
 
 const hideErrorTip = () => {
 	document.querySelector('#input-error').classList.remove('show');
-}
+};
 
 const updateDataOriginByInput = (inputNode, inputValue) => {
 	if (inputValue) {
 		let valueArr = inputValue.split(',');
 		if (valueArr.length === 2) {
-			let valueArr_ = [Number(valueArr[1]), Number(valueArr[0])]; // '12,13' => [13,12]
-			inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_))
+			let valueArr_ = [ Number(valueArr[1]), Number(valueArr[0]) ]; // '12,13' => [13,12]
+			inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_));
 		} else {
 			inputNode.setAttribute('data-origin', '');
 		}
 	} else {
 		inputNode.setAttribute('data-origin', '');
 	}
-}
+};
 
 const stringToArray = (str) => {
 	let arr = str.split(',');
-	return [Number(arr[0]), Number(arr[1])];
-};
-
-const handleEnterEvent = () => {
-	let startOrigin = document.querySelector('.start input').getAttribute('data-origin');
-	let endOrigin = document.querySelector('.end input').getAttribute('data-origin');
-
-	startOrigin = stringToArray(startOrigin);
-	endOrigin = stringToArray(endOrigin);
-
-	if (startOrigin.length > 0 && endOrigin.length > 0) {
-		source.clear();
-		overlay.setPosition(undefined);
-		performRouting();
-		addPointFeature('start', startOrigin);
-		addPointFeature('end', endOrigin);
-	}
+	return [ Number(arr[0]), Number(arr[1]) ];
 };
 
 WebFont.load({
 	custom: {
-		families: ["vectormap-icons"],
-		urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+		families: [ 'vectormap-icons' ],
+		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
 		testStrings: {
 			'vectormap-icons': '\ue001'
 		}
@@ -815,21 +800,26 @@ WebFont.load({
 	active: initializeMap
 });
 
+const getLastNodeBySelector = (selector) => {
+	const inputs = document.querySelectorAll(selector);
+	return inputs[inputs.length - 1];
+};
+
 const addInputBox = (coord) => {
 	removeFeatureByName('line');
 	removeFeatureByName('arrow');
-	const lastPoint = document.querySelector('.end');
+	const lastPoint = getLastNodeBySelector('#dragable-list li');
 	const lastInput = lastPoint.querySelector('input');
-	const parent = document.querySelector('.point');
+	const parent = document.querySelector('#dragable-list');
 
-	const newNode = document.createElement('P');
+	const newNode = document.createElement('li');
 	newNode.classList.add('via');
 	let dataOrigin;
 	let inputValue;
 	if (coord) {
 		dataOrigin = coord;
 		let coord_ = new ol.proj.toLonLat(coord);
-		inputValue = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
+		inputValue = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
 	} else {
 		dataOrigin = lastInput.getAttribute('data-origin');
 		inputValue = lastInput.value;
@@ -837,115 +827,115 @@ const addInputBox = (coord) => {
 		lastInput.setAttribute('data-origin', '');
 	}
 	newNode.innerHTML = `
-	<label>:</label>
+	<i class="drag">=</i><label></label>
 	<input value="${inputValue}" data-origin="${dataOrigin}" placeholder="To" />
 	<span class=""></span>
 	<a class="closer"></a>`;
 	parent.insertBefore(newNode, lastPoint);
-}
+};
 
 const getCoordFromDataOrigin = (dataOriginValue) => {
 	let value = dataOriginValue.split(',');
 	if (value.length === 2) {
-		return [Number(value[0]), Number(value[1])];
+		return [ Number(value[0]), Number(value[1]) ];
 	} else {
 		return [];
 	}
-}
+};
 
 const resetSidebarHeight = () => {
 	const resultSidebar = document.querySelector('.sidebar');
 	const topHeight = document.querySelector('.point').clientHeight + 30;
 	resultSidebar.classList.remove('hide');
 	resultSidebar.style.top = `${topHeight}px`;
-}
+};
 
 const toggleCloserAndSwitch = () => {
 	if (document.querySelectorAll('.point input').length === 2) {
 		// There is no via node but only start and end input point. So we have to hide the hide icon of the input and show the switch icon.
-		document.querySelectorAll('.closer').forEach(closer => {
+		document.querySelectorAll('.closer').forEach((closer) => {
 			closer.classList.add('hide');
-		})
+		});
 		document.querySelector('.switch').classList.remove('hide');
 	} else {
 		// When there are more than or equal to 1 via node, we need to show the closer icon and hide the switch icon.
-		document.querySelectorAll('.closer').forEach(closer => {
+		document.querySelectorAll('.closer').forEach((closer) => {
 			closer.classList.remove('hide');
-		})
+		});
 		document.querySelector('.switch').classList.add('hide');
 	}
-}
+};
 
 const getAllPoints = () => {
 	let points = [];
 	const allInputs = document.querySelectorAll('.point input');
-	allInputs.forEach(input => {
+	allInputs.forEach((input) => {
 		const value = input.getAttribute('data-origin');
-		value ? points.push(getCoordFromDataOrigin(value)) : null
-	})
+		value ? points.push(getCoordFromDataOrigin(value)) : null;
+	});
 	return points;
-}
+};
 
 const removeFeatureByCoord = (coord) => {
-	const features = source.getFeatures()
-	features.some(feature => {
+	const features = source.getFeatures();
+	features.some((feature) => {
 		if (feature.getGeometry().getCoordinates().toString() === coord) {
 			source.removeFeature(feature);
 			return true;
 		}
 	});
-}
+};
 
 const getFeatureByName = (name) => {
 	let feature_;
-	source.getFeatures().some(feature => {
+	source.getFeatures().some((feature) => {
 		if (feature.get('name') === name) {
 			feature_ = feature;
 			return true;
 		}
 	});
 	return feature_;
-}
+};
 
 const getFeatureByCoord = (coord) => {
 	let feature;
 	const features = source.getFeatures();
-	features.some(f => {
+	features.some((f) => {
 		if (f.getGeometry().getCoordinates().toString() === coord) {
 			feature = f;
 		}
 	});
 	return feature;
-}
+};
 
 const isContained = (existPoints, point) => {
 	let isContained = false;
-	existPoints.some(existPoint => {
+	existPoints.some((existPoint) => {
 		if (existPoint.toString() === point.toString()) {
 			isContained = true;
-			return true
+			return true;
 		}
-	})
+	});
 	return isContained;
-}
+};
 
-const findRoute = () => {
+const findRoute = (showError) => {
 	removeFeatureByName('line');
 	removeFeatureByName('arrow');
 
 	const points = getAllPoints();
 	const pointsLength = points.length;
 	// Before this step, we have to remove all the features except start, end and mid point.
-	const existPoints = source.getFeatures().map(feature => {
+	const existPoints = source.getFeatures().map((feature) => {
 		return feature.getGeometry().getCoordinates();
 	});
 
 	// Remove the point on map which did not exist in sidebar input group.
-	existPoints.forEach(existPoint=>{
-		if(!isContained(points, existPoint)){
-			removeFeatureByCoord(existPoint.toString())
+	existPoints.forEach((existPoint) => {
+		if (!isContained(points, existPoint)) {
+			removeFeatureByCoord(existPoint.toString());
 		}
-	})
+	});
 
 	// Add the point which is not added to map.
 	points.forEach((point, index) => {
@@ -958,23 +948,42 @@ const findRoute = () => {
 			} else {
 				type = 'mid';
 			}
-			addPointFeature(type, point)
+			addPointFeature(type, point);
 		}
-	})
+	});
 
 	const inputsCount = document.querySelectorAll('.point input');
 	if (points && points.length >= 2 && inputsCount.length === points.length) {
-		performRouting()
-	} else {
+		performRouting();
+	} else if (showError) {
 		showErrorTip();
 	}
-}
+};
+
+const handleDragEnd = () => {
+	const inputs = document.querySelectorAll('#dragable-list input');
+	const length = inputs.length;
+	inputs.forEach((input,index)=>{
+		if(index === 0){
+			input.setAttribute('placeholder', 'Start');
+		}else if(index === length-1){
+			input.setAttribute('placeholder', 'Destination');
+		}else{
+			input.setAttribute('placeholder', 'To');
+		}
+	})
+
+	const showError = false;
+
+	source.clear();
+	findRoute(showError);
+};
 
 /**
  * @constructor
  * @extends {ol.interaction.Pointer}
  */
-app.Drag = function () {
+app.Drag = function() {
 	ol.interaction.Pointer.call(this, {
 		handleDownEvent: app.Drag.prototype.handleDownEvent,
 		handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -994,9 +1003,9 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
  * @param {ol.MapBrowserEvent} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
-app.Drag.prototype.handleDownEvent = function (evt) {
+app.Drag.prototype.handleDownEvent = function(evt) {
 	var map = evt.map;
-	var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+	var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
 		clearTimeout(this.timeEvent);
 		this.flag_ = true;
 		let featureName = feature.get('name');
@@ -1017,7 +1026,7 @@ app.Drag.prototype.handleDownEvent = function (evt) {
 /**
  * @param {ol.MapBrowserEvent} evt Map browser event.
  */
-app.Drag.prototype.handleDragEvent = function (evt) {
+app.Drag.prototype.handleDragEvent = function(evt) {
 	// var map = evt.map;
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
@@ -1025,7 +1034,7 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 	// 	return feature;
 	// });
 
-	this.flag_ = true
+	this.flag_ = true;
 
 	var deltaX = evt.coordinate[0] - this.coordinate_[0];
 	var deltaY = evt.coordinate[1] - this.coordinate_[1];
@@ -1039,13 +1048,12 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 	this.coordinate_[1] = evt.coordinate[1];
 	const coordBeforeMove_ = coordBeforeMove.slice();
 
-
-	this.timeEvent = setTimeout(function () {
-		console.log('settimeout---------------')
+	this.timeEvent = setTimeout(function() {
+		console.log('settimeout---------------');
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
 		overlay.setPosition(undefined);
-		this.flag_ = false
+		this.flag_ = false;
 		// Update the corresponding input node value and data-origin attribute value.
 		if (featureType === 'start' || featureType === 'end' || featureType === 'mid') {
 			const inputs = document.querySelectorAll('.point input');
@@ -1056,29 +1064,26 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 					inputNode = input;
 					return true;
 				}
-			})
-			if(inputNode){
+			});
+			if (inputNode) {
 				inputNode.setAttribute('data-origin', coord);
-				inputNode.value = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
+				inputNode.value = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
 			}
 		}
 		performRouting();
 		this.coordinate_ = null;
 		this.feature_ = null;
 		return false;
-	}, 1000)
-
-
+	}, 1000);
 };
 
 /**
  * @param {ol.MapBrowserEvent} evt Event.
  */
-app.Drag.prototype.handleMoveEvent = function (evt) {
-
+app.Drag.prototype.handleMoveEvent = function(evt) {
 	if (this.cursor_) {
 		var map = evt.map;
-		var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+		var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
 			return feature;
 		});
 		var element = evt.map.getTargetElement();
@@ -1098,7 +1103,7 @@ app.Drag.prototype.handleMoveEvent = function (evt) {
  * @param {ol.MapBrowserEvent} evt Map browser event.
  * @return {boolean} `false` to stop the drag sequence.
  */
-app.Drag.prototype.handleUpEvent = function (e) {
+app.Drag.prototype.handleUpEvent = function(e) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
 	if (this.flag_) {
@@ -1120,10 +1125,10 @@ app.Drag.prototype.handleUpEvent = function (e) {
 					inputNode = input;
 					return true;
 				}
-			})
-			if(inputNode){
+			});
+			if (inputNode) {
 				inputNode.setAttribute('data-origin', coord);
-				inputNode.value = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
+				inputNode.value = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
 			}
 		}
 		removeFeatureByName('line');
@@ -1135,8 +1140,7 @@ app.Drag.prototype.handleUpEvent = function (e) {
 	}
 };
 
-document.addEventListener('DOMContentLoaded', function () {
-
+document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#map').oncontextmenu = () => {
 		return false;
 	};
@@ -1156,9 +1160,9 @@ document.addEventListener('DOMContentLoaded', function () {
 				overlay.setPosition(undefined);
 
 				// Update the start input value and data-origin value.
-				let startInput = document.querySelector('.start input');
+				let startInput = document.querySelector('#dragable-list input');
 				startInput.setAttribute('data-origin', curCoord);
-				let curCoord_ = ol.proj.transform(curCoord, 'EPSG:3857', 'EPSG:4326')
+				let curCoord_ = ol.proj.transform(curCoord, 'EPSG:3857', 'EPSG:4326');
 				startInput.value = curCoord_[1].toFixed(8) + ', ' + curCoord_[0].toFixed(8);
 
 				break;
@@ -1170,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				overlay.setPosition(undefined);
 
 				// Update the end input value and data-origin value.
-				let endInput = document.querySelector('.end input');
+				let endInput = getLastNodeBySelector('#dragable-list li').querySelector('input');
 				endInput.setAttribute('data-origin', curCoord);
 				let curEndCoord_ = new ol.proj.toLonLat(curCoord);
 				endInput.value = curEndCoord_[1].toFixed(8) + ', ' + curEndCoord_[0].toFixed(8);
@@ -1200,28 +1204,28 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (boxDom !== undefined) {
 			let attrCoord = boxDom.getAttribute('coord');
 			attrCoord = attrCoord.split(' ');
-			let coord = [Number(attrCoord[0]), Number(attrCoord[1])];
-			addResultRadius(coord)
+			let coord = [ Number(attrCoord[0]), Number(attrCoord[1]) ];
+			addResultRadius(coord);
 		} else {
 			removeFeatureByName('resultRadius');
 		}
-	})
+	});
 
 	document.querySelector('#result').addEventListener('click', (e) => {
 		let target = e.target;
 		let boxDom;
-		const nodeList = document.querySelectorAll('.box')
+		const nodeList = document.querySelectorAll('.box');
 		nodeList.forEach((node) => {
 			if (node.classList.contains('selectBox')) {
-				node.classList.remove('selectBox')
+				node.classList.remove('selectBox');
 			}
-		})
+		});
 
 		if (target.nodeName === 'SPAN' && target.parentNode.classList.contains('box')) {
-			target.parentNode.classList.add('selectBox')
+			target.parentNode.classList.add('selectBox');
 			boxDom = target.parentNode;
 		} else if (target.classList.contains('box')) {
-			target.classList.add('selectBox')
+			target.classList.add('selectBox');
 			boxDom = target;
 		}
 
@@ -1230,36 +1234,36 @@ document.addEventListener('DOMContentLoaded', function () {
 			let penult = boxDom.getAttribute('lastlinepenultcoord');
 			if (penult) {
 				penult = penult.split(' ');
-				let penultCoord = [Number(penult[0]), Number(penult[1])];
+				let penultCoord = [ Number(penult[0]), Number(penult[1]) ];
 
 				let last = boxDom.getAttribute('lastLineLastCoord');
 				last = last.split(' ');
-				let lastCoord = [Number(last[0]), Number(last[1])];
+				let lastCoord = [ Number(last[0]), Number(last[1]) ];
 
 				addArrow(penultCoord, lastCoord);
 			}
 			let attrCoord = boxDom.getAttribute('coord');
 			attrCoord = attrCoord.split(' ');
 			let instruction = boxDom.getAttribute('instruction');
-			let coord = [Number(attrCoord[0]), Number(attrCoord[1])];
+			let coord = [ Number(attrCoord[0]), Number(attrCoord[1]) ];
 			view.fit(new ol.geom.Point(coord), {
-				padding: [20, 20, 20, 20],
+				padding: [ 20, 20, 20, 20 ],
 				duration: 1000,
 				maxZoom: 17,
-				callback: function () {
+				callback: function() {
 					let penult = boxDom.getAttribute('lastlinepenultcoord');
 					if (penult) {
 						penult = penult.split(' ');
-						let penultCoord = [Number(penult[0]), Number(penult[1])];
+						let penultCoord = [ Number(penult[0]), Number(penult[1]) ];
 
 						let last = boxDom.getAttribute('lastLineLastCoord');
 						last = last.split(' ');
-						let lastCoord = [Number(last[0]), Number(last[1])];
+						let lastCoord = [ Number(last[0]), Number(last[1]) ];
 
 						var lineSecondCoord = boxDom.getAttribute('lineSecondCoord');
 						if (lineSecondCoord) {
 							var stringCoords = lineSecondCoord.split(' ');
-							lineSecondCoord = [+stringCoords[0], +stringCoords[1]].slice();
+							lineSecondCoord = [ +stringCoords[0], +stringCoords[1] ].slice();
 							var prevCoord = lerp(lastCoord, penultCoord);
 							var secondCoord = lerp(lastCoord, lineSecondCoord);
 							addArrow(lastCoord, secondCoord);
@@ -1286,8 +1290,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		source.clear();
 		clearInputBox();
 		overlay.setPosition(undefined);
-		startPoint = [];
-		endPoint = [];
 
 		const x = window.matchMedia('(max-width: 767px)');
 		if (x.matches) {
@@ -1299,8 +1301,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	document.querySelector('.switch').addEventListener('click', () => {
-		let startInput = document.querySelector('.start input');
-		let endInput = document.querySelector('.end input');
+		let startInput = document.querySelector('#dragable-list input');
+		let endInput = getLastNodeBySelector('#dragable-list li').querySelector('input');
 
 		// switch input value
 		let t = startInput.value;
@@ -1321,7 +1323,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (startOrigin_.length > 0 && endOrigin_.length > 0) {
 			source.clear();
-			// overlay.setPosition(undefined);
 			addPointFeature('start', startOrigin_);
 			addPointFeature('end', endOrigin_);
 			performRouting();
@@ -1330,10 +1331,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	document.querySelector('#error-modal button').addEventListener('click', () => {
 		document.querySelector('#error-modal').classList.add('hide');
-	})
+	});
 
 	// Add an input box once clicked the "Add destination" button
-	document.querySelector('#add-point').addEventListener('click', function () {
+	document.querySelector('#add-point').addEventListener('click', function() {
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
 		const feature = getFeatureByName('end');
@@ -1343,13 +1344,13 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 		addInputBox();
 		resetSidebarHeight();
-	})
+	});
 
-	document.querySelector('.point').addEventListener('click', function (e) {
+	document.querySelector('.point').addEventListener('click', function(e) {
 		e = window.event || e;
 		const target = e.target;
 		const classlist = target.classList;
-		if (classlist.contains('start-closer')) {
+		if (target === document.querySelector('.closer')) {
 			// Delete the target input box(start point input).
 			// Move the value and data-origin from second node to first node, and delete the second node.
 			const first = target.parentNode;
@@ -1364,7 +1365,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				feature.set('name', 'start');
 				feature.setStyle(styles.start);
 			}
-		} else if (classlist.contains('end-closer')) {
+		} else if (target === getLastNodeBySelector('.closer')) {
 			// Delete the target input box(end point input).
 			// Move the value and data-origin from penult node to last node, and delete the penult node.
 			const last = target.parentNode;
@@ -1372,7 +1373,9 @@ document.addEventListener('DOMContentLoaded', function () {
 			const penult = allVias[allVias.length - 1];
 			const penultOrigin = penult.querySelector('input').getAttribute('data-origin');
 			last.querySelector('input').value = penult.querySelector('input').value;
-			last.querySelector('input').setAttribute('data-origin', penult.querySelector('input').getAttribute('data-origin'));
+			last
+				.querySelector('input')
+				.setAttribute('data-origin', penult.querySelector('input').getAttribute('data-origin'));
 			penult.remove();
 			removeFeatureByName('end');
 			const feature = getFeatureByCoord(penultOrigin);
@@ -1395,22 +1398,33 @@ document.addEventListener('DOMContentLoaded', function () {
 			toggleCloserAndSwitch();
 			performRouting();
 		}
-	})
+	});
 
-	document.querySelector('.point').addEventListener('input', function (e) {
+	document.querySelector('.point').addEventListener('input', function(e) {
 		e = window.event || e;
 		const target = e.target;
 		updateDataOriginByInput(target, target.value);
-	})
+	});
 
-	document.querySelector('.point').addEventListener('keyup', function (e) {
+	document.querySelector('.point').addEventListener('keyup', function(e) {
 		e = window.e || e;
 		if (e.keyCode === 13) {
-			findRoute();
+			const showError = true;
+			findRoute(showError);
 		}
-	})
+	});
 
-	document.querySelector('#go').addEventListener('click', function () {
-		findRoute();
-	})
-})
+	document.querySelector('#go').addEventListener('click', function() {
+		const showError = true;
+		findRoute(showError);
+	});
+
+	let el = document.getElementById('dragable-list');
+	Sortable.create(el, {
+		handle: '.drag',
+		onEnd: handleDragEnd,
+		animation: 150,
+		ghostClass: 'dragging'
+	});
+});
+
