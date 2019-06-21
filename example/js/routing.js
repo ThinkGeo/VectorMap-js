@@ -13,7 +13,7 @@ let coordBeforeMove;
 window.app = {};
 var app = window.app;
 
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 const routingClient = new tg.RoutingClient(apiKey);
 
