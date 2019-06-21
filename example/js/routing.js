@@ -214,10 +214,9 @@ app.Drag.prototype.handleUpEvent = function (e) {
 
 };
 
-const routingApikey = 'IpWS7J_W6vxg6FuU1CUAlZdZ34UOmwiBXJqbSZqu9HQ~';
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-const routingClient = new tg.RoutingClient(routingApikey);
+const routingClient = new tg.RoutingClient(apiKey);
 
 const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
 	apiKey: apiKey,
@@ -840,7 +839,7 @@ const performRouting = () => {
 						message = message + data[key] + '<br />'
 					})
 					result.querySelector('#boxes').innerHTML = `<div class="error-message">${message}</div>`;
-				} else if (status === 401 || status === 410) {
+				} else if (status === 401 || status === 410 || status === 404) {
 					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error.message}</div>`;
 				} else if (status === 'error') {
 					document.querySelector('.sidebar').classList.add('hide');
@@ -848,7 +847,14 @@ const performRouting = () => {
 				}
 			}
 		}
-		routingClient.getRoutingByWaypoints(`${startPoint[1]},${startPoint[0]};${endPoint[1]},${endPoint[0]}`, callback, options);
+		routingClient.getRoute([{
+			x: startPoint[0],
+			y: startPoint[1]
+		}, {
+			x: endPoint[0],
+			y: endPoint[1]
+		}], callback, options);
+
 	}
 };
 
