@@ -182,7 +182,7 @@ const styles = {
 			anchorYUnits: 'fraction',
 			opacity: 1,
 			crossOrigin: 'Anonymous',
-			src: '../image/starting.png'
+			src: 'https://samples.thinkgeo.com/cloud/example/image/starting.png'
 		})
 	}),
 	end: new ol.style.Style({
@@ -192,7 +192,7 @@ const styles = {
 			anchorYUnits: 'fraction',
 			opacity: 1,
 			crossOrigin: 'Anonymous',
-			src: '../image/ending.png'
+			src: 'https://samples.thinkgeo.com/cloud/example/image/ending.png'
 		})
 	}),
 	mid: new ol.style.Style({
@@ -355,147 +355,162 @@ const generateBox = (routes) => {
 	removeFeatureByName('line');
 	removeFeatureByName('arrow');
 	removeFeatureByName('resultRadius');
+	addRouteFeature(lineWkt);
 	let lastLinePenultCoord = [];
 	let lastLineLastCoord = [];
-	var isTurn = true;
-	var polylineCoords = [];
+	let isTurn = true;
+	let polylineCoords = [];
 
-	addRouteFeature(lineWkt);
+	if (segments) {
+		let segments_ = segments
+			.map((item) => {
+				let polyline = item.geometry;
+				let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
+				let secondPointFromStart = findSecondPointFromStart(polylineCoord);
+				return secondPointFromStart ? item : false;
+			})
+			.filter((item) => item);
 
-	let segments_ = segments
-		.map((item) => {
+		segments_.forEach((item) => {
+			count++;
 			let polyline = item.geometry;
 			let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
 			let secondPointFromStart = findSecondPointFromStart(polylineCoord);
+			let secondPointFromEnd = findSecondPointFromEnd(polylineCoord);
 
-			return secondPointFromStart ? item : false;
-		})
-		.filter((item) => item);
+			let startCoord = polylineCoord[0];
+			polylineCoords.push(polylineCoord);
+			let instruction = item.instruction;
+			const maneuverType = item.maneuverType;
+			let format = formatDistanceAndDuration(item.distance, item.duration);
+			distance = format.distance;
+			duration = format.duration;
+			let className;
+			let warnStr;
+			if (item.isToll) {
+				warnStr = '<span class="warnings-small ">Toll road</span>';
+			} else {
+				warnStr = '';
+			}
+			isTurn = true;
 
-	segments_.forEach((item) => {
-		count++;
-		let polyline = item.geometry;
-		let polylineCoord = polyline.split('(')[1].split(')')[0].split(',');
-		let secondPointFromStart = findSecondPointFromStart(polylineCoord);
-		let secondPointFromEnd = findSecondPointFromEnd(polylineCoord);
+			switch (maneuverType) {
+				case 'turn-left':
+					className = `left`;
+					break;
+				case 'sharp-left':
+					className = `sharp_left`;
+					break;
+				case 'slightly-left':
+					className = `slight_left`;
+					break;
+				case 'turn-right':
+					className = `right`;
+					break;
+				case 'sharp-right':
+					className = `sharp_right`;
+					break;
+				case 'slightly-right':
+					className = `slight_right`;
+					break;
+				case 'straight-on':
+					className = `straight_on`;
+					isTurn = false;
+					break;
+				case 'u-turn':
+					className = `turn-back`;
+					break;
+				case 'start':
+					className = `start`;
+					isTurn = false;
+					break;
+				case 'stop':
+					className = `end`;
+					isTurn = false;
+					break;
+				case 'roundabout':
+					className = `around_circle_straight`;
+					break;
+			}
 
-		let startCoord = polylineCoord[0];
-		polylineCoords.push(polylineCoord);
-		let instruction = item.instruction;
-		const maneuverType = item.maneuverType;
-		let boxInnerDom;
-		let format = formatDistanceAndDuration(item.distance, item.duration);
-		distance = format.distance;
-		duration = format.duration;
-		let className;
-		let warnStr;
-		if (item.isToll) {
-			warnStr = '<span class="warnings-small ">Toll road</span>';
-		} else {
-			warnStr = '';
-		}
-		isTurn = true;
-
-		switch (maneuverType) {
-			case 'turn-left':
-				className = `left`;
-				break;
-			case 'sharp-left':
-				className = `sharp_left`;
-				break;
-			case 'slightly-left':
-				className = `slight_left`;
-				break;
-			case 'turn-right':
-				className = `right`;
-				break;
-			case 'sharp-right':
-				className = `sharp_right`;
-				break;
-			case 'slightly-right':
-				className = `slight_right`;
-				break;
-			case 'straight-on':
-				className = `straight_on`;
-				isTurn = false;
-				break;
-			case 'u-turn':
-				className = `turn-back`;
-				break;
-			case 'start':
-				className = `start`;
-				isTurn = false;
-				break;
-			case 'stop':
-				className = `end`;
-				isTurn = false;
-				break;
-			case 'roundabout':
-				className = `around_circle_straight`;
-				break;
-		}
-
-		boxInnerDom =
-			count !== segments_.length
-				? `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
+			let boxInnerDom =
+				count !== segments_.length
+					? `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
 				<span class="distance">${distance}</span><span  class="duration">${duration}</span>${warnStr}`
-				: `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
-		let boxDom = document.createElement('DIV');
-		boxDom.className = 'box';
-		boxDom.id = count;
-		if (count === 1) {
-			firstLinePoint = startCoord.split(' ');
-			firstLinePoint = [ +firstLinePoint[0], +firstLinePoint[1] ];
+					: `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
+			let boxDom = document.createElement('DIV');
+			boxDom.className = 'box';
+			boxDom.id = count;
+			if (count === 1) {
+				firstLinePoint = startCoord.split(' ');
+				firstLinePoint = [ +firstLinePoint[0], +firstLinePoint[1] ];
 
-			let penult = secondPointFromEnd;
-			penultPoint = penult.split(' ');
-			penultPoint = [ +penultPoint[0], +penultPoint[1] ];
+				let penult = secondPointFromEnd;
+				penultPoint = penult.split(' ');
+				penultPoint = [ +penultPoint[0], +penultPoint[1] ];
 
-			let last = polylineCoord[polylineCoord.length - 1];
-			lastPoint = last.split(' ');
-			lastPoint = [ +lastPoint[0], +lastPoint[1] ];
+				let last = polylineCoord[polylineCoord.length - 1];
+				lastPoint = last.split(' ');
+				lastPoint = [ +lastPoint[0], +lastPoint[1] ];
 
-			lastLinePenultCoord = penult;
-			lastLineLastCoord = last;
+				lastLinePenultCoord = penult;
+				lastLineLastCoord = last;
 
-			let penult_ = polylineCoord[0];
-			penult_ = penult_.split(' ');
+				let penult_ = polylineCoord[0];
+				penult_ = penult_.split(' ');
 
-			let last_ = polylineCoord[1];
-			let lastPoint_ = last_.split(' ');
-			lastPoint_ = [ +lastPoint_[0], +lastPoint_[1] ];
-		}
+				let last_ = polylineCoord[1];
+				let lastPoint_ = last_.split(' ');
+				lastPoint_ = [ +lastPoint_[0], +lastPoint_[1] ];
+			}
 
-		if (count === segments_.length) {
-			let endCoord = polylineCoord[polylineCoord.length - 1];
-			lastLinePoint = endCoord.split(' ');
-			lastLinePoint = [ +lastLinePoint[0], +lastLinePoint[1] ];
-			boxDom.setAttribute('coord', endCoord);
-		} else {
-			boxDom.setAttribute('coord', startCoord);
-		}
+			if (count === segments_.length) {
+				let endCoord = polylineCoord[polylineCoord.length - 1];
+				lastLinePoint = endCoord.split(' ');
+				lastLinePoint = [ +lastLinePoint[0], +lastLinePoint[1] ];
+				boxDom.setAttribute('coord', endCoord);
+			} else {
+				boxDom.setAttribute('coord', startCoord);
+			}
 
-		if (count >= 2) {
-			boxDom.setAttribute('lastLinePenultCoord', lastLinePenultCoord);
-			boxDom.setAttribute('lastLineLastCoord', lastLineLastCoord);
-			isTurn && boxDom.setAttribute('lineSecondCoord', secondPointFromStart);
+			if (count >= 2) {
+				boxDom.setAttribute('lastLinePenultCoord', lastLinePenultCoord);
+				boxDom.setAttribute('lastLineLastCoord', lastLineLastCoord);
+				isTurn && boxDom.setAttribute('lineSecondCoord', secondPointFromStart);
 
-			let penult = secondPointFromEnd;
-			penultPoint = penult.split(' ');
-			penultPoint = [ +penultPoint[0], +penultPoint[1] ];
+				let penult = secondPointFromEnd;
+				penultPoint = penult.split(' ');
+				penultPoint = [ +penultPoint[0], +penultPoint[1] ];
 
-			let last = polylineCoord[polylineCoord.length - 1];
-			lastPoint = last.split(' ');
-			lastPoint = [ +lastPoint[0], +lastPoint[1] ];
+				let last = polylineCoord[polylineCoord.length - 1];
+				lastPoint = last.split(' ');
+				lastPoint = [ +lastPoint[0], +lastPoint[1] ];
 
-			lastLinePenultCoord = penult;
-			lastLineLastCoord = last;
-		}
+				lastLinePenultCoord = penult;
+				lastLineLastCoord = last;
+			}
 
-		boxDom.setAttribute('instruction', instruction);
-		boxDom.innerHTML = boxInnerDom;
-		boxesDom.appendChild(boxDom);
-	});
+			boxDom.setAttribute('instruction', instruction);
+			boxDom.innerHTML = boxInnerDom;
+			boxesDom.appendChild(boxDom);
+		});
+	}else{
+		// The two points are too close to find the route, so there are no segments. We need to add start point and end point in the result box.
+		let boxInnerDomStart = `<span class="direction-wrap" ><i class="direction start"></i></span><span title="Start" class="instruction">Start</span>
+		<span class="distance">0 km</span><span  class="duration">0 min</span>`;
+		let boxInnerDomEnd = `<span class="direction-wrap" ><i class="direction end"></i></span><span title="End" class="instruction">End</span>
+		<span class="distance">0 km</span><span  class="duration">0 min</span>`;
+		let boxDomStart = document.createElement('DIV');
+		let boxDomEnd = document.createElement('DIV');
+		boxDomStart.className = 'box';
+		boxDomEnd.className = 'box';
+		boxDomStart.innerHTML = boxInnerDomStart;
+		boxDomEnd.innerHTML = boxInnerDomEnd;
+		boxDomStart.setAttribute('coord', getAllPoints()[0].join(' '));
+		boxDomEnd.setAttribute('coord', getAllPoints()[getAllPoints().length-1].join(' '));
+		boxesDom.appendChild(boxDomStart);
+		boxesDom.appendChild(boxDomEnd);
+	}
 
 	if (document.body.clientWidth <= 767) {
 		const result = document.getElementById('result');
@@ -685,7 +700,7 @@ const addArrow = (penultCoord, lastCoord) => {
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			crossOrigin: 'Anonymous',
-			src: '../image/arrow.png',
+			src: 'https://samples.thinkgeo.com/cloud/example/image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
 		})
@@ -789,8 +804,8 @@ const getLastNodeBySelector = (selector) => {
 
 const addInputBox = (coord) => {
 	const inputs = document.querySelectorAll('#dragable-list input');
-	if(inputs.length === 10){
-		showErrorTip('No more than 10 points.')
+	if (inputs.length === 10) {
+		showErrorTip('No more than 10 points.');
 		return;
 	}
 	removeFeatureByName('line');
@@ -902,14 +917,14 @@ const findRoute = (showError) => {
 
 	// Add the point which is not added to map.
 	points.forEach((point, index) => {
-			if (pointsLength - 1 === index) {
-				type = 'end';
-			} else if (0 === index) {
-				type = 'start';
-			} else {
-				type = 'mid';
-			}
-			addPointFeature(type, point);
+		if (pointsLength - 1 === index) {
+			type = 'end';
+		} else if (0 === index) {
+			type = 'start';
+		} else {
+			type = 'mid';
+		}
+		addPointFeature(type, point);
 	});
 
 	const inputsCount = document.querySelectorAll('.point input');
@@ -923,15 +938,15 @@ const findRoute = (showError) => {
 const handleDragEnd = () => {
 	const inputs = document.querySelectorAll('#dragable-list input');
 	const length = inputs.length;
-	inputs.forEach((input,index)=>{
-		if(index === 0){
+	inputs.forEach((input, index) => {
+		if (index === 0) {
 			input.setAttribute('placeholder', 'Start');
-		}else if(index === length-1){
+		} else if (index === length - 1) {
 			input.setAttribute('placeholder', 'Destination');
-		}else{
+		} else {
 			input.setAttribute('placeholder', 'To');
 		}
-	})
+	});
 
 	const showError = false;
 
@@ -1009,7 +1024,6 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 	const coordBeforeMove_ = coordBeforeMove.slice();
 
 	this.timeEvent = setTimeout(function() {
-		console.log('settimeout---------------');
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
 		this.flag_ = false;
@@ -1373,4 +1387,3 @@ document.addEventListener('DOMContentLoaded', function() {
 		ghostClass: 'dragging'
 	});
 });
-
