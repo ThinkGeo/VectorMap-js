@@ -673,9 +673,6 @@ const performRouting = () => {
 
 		routingClient.getRoute(points_, callback, options);
 	}
-	// else{
-	// 	showErrorTip();
-	// }
 };
 
 const addDestination = () => {
@@ -753,11 +750,12 @@ const clearInputBox = () => {
 };
 
 let timer;
-const showErrorTip = () => {
+const showErrorTip = (content) => {
 	if (timer) {
 		clearTimeout(timer);
 	}
 	const tip = document.querySelector('#input-error');
+	tip.querySelector('p').innerHTML = content;
 	tip.classList.add('show');
 	timer = setTimeout(function() {
 		tip.classList.remove('show');
@@ -806,6 +804,11 @@ const getLastNodeBySelector = (selector) => {
 };
 
 const addInputBox = (coord) => {
+	const inputs = document.querySelectorAll('#dragable-list input');
+	if(inputs.length === 10){
+		showErrorTip('No more than 10 points.')
+		return;
+	}
 	removeFeatureByName('line');
 	removeFeatureByName('arrow');
 	const lastPoint = getLastNodeBySelector('#dragable-list li');
@@ -956,7 +959,7 @@ const findRoute = (showError) => {
 	if (points && points.length >= 2 && inputsCount.length === points.length) {
 		performRouting();
 	} else if (showError) {
-		showErrorTip();
+		showErrorTip('Please input correct coordinates!');
 	}
 };
 
