@@ -1,5 +1,16 @@
+/*===========================================================================*/
+// Routing in North America
+// Sample map by ThinkGeo
+// 
+//   1. ThinkGeo Cloud API Key
+//   2. Map Control Setup
+//   3. Tile Loading Event Handlers
+//   4. Routing Setup
+/*===========================================================================*/
+
+
+let map;
 let source;
-let routingLayer;
 let curCoord;
 let lastLinePoint;
 let firstLinePoint;
@@ -9,171 +20,38 @@ let modifyInteraction;
 let turnFeature;
 let points = [];
 let coordBeforeMove;
+let app = {};
 
-window.app = {};
-var app = window.app;
 
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
-const routingClient = new tg.RoutingClient(apiKey);
+/*---------------------------------------------*/
+// 1. ThinkGeo Cloud API Key
+/*---------------------------------------------*/
 
-const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
-	apiKey: apiKey,
-	layerName: 'light'
-});
+// First, let's define our ThinkGeo Cloud API key, which we'll use to
+// authenticate our requests to the ThinkGeo Cloud API.  Each API key can be
+// restricted for use only from a given web domain or IP address.  To create your
+// own API key, you'll need to sign up for a ThinkGeo Cloud account at
+// https://cloud.thinkgeo.com.
+const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 
-let map;
-const view = new ol.View({
-	center: ol.proj.fromLonLat([ -96.7962, 42.79423 ]),
-	maxResolution: 40075016.68557849 / 512,
-	progressiveZoom: false,
-	zoom: 3,
-	minZoom: 2,
-	maxZoom: 19
-});
 
-const initializeMap = () => {
-	map = new ol.Map({
-		renderer: 'webgl',
-		loadTilesWhileAnimating: true,
-		loadTilesWhileInteracting: true,
-		layers: [ lightLayer ],
-		target: 'map',
-		view: view,
-		interactions: ol.interaction.defaults().extend([ new app.Drag() ])
-	});
+/*---------------------------------------------*/
+// 2. Map Control Setup
+/*---------------------------------------------*/
 
-	source = new ol.source.Vector();
-	routingLayer = new ol.layer.Vector({
-		source: source
-	});
-	routingLayer.set('layerName', 'routing');
-	map.addLayer(routingLayer);
+// Here's where we set up our map.  We're going to create layers, styles, 
+// and define our initial view when the page first loads.
 
-	let u = navigator.userAgent;
-	const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
-	const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-	let left, top;
-	let clientWidth = document.documentElement.clientWidth;
-	let clientHeight = document.documentElement.clientHeight;
-	const contextmenu = document.querySelector('#ol-contextmenu');
-	const insTip = document.querySelector('#instruction-tip');
-	let timeOutEvent;
-	const contextWidth = 165;
-	if (isiOS) {
-		map.getViewport().addEventListener('gesturestart', function(e) {
-			clearTimeout(timeOutEvent);
-			timeOutEvent = 0;
-			return false;
-		});
-
-		map.getViewport().addEventListener('touchstart', function(e) {
-			e.preventDefault();
-			if (e.touches.length != 1) {
-				clearTimeout(timeOutEvent);
-				timeOutEvent = 0;
-				return false;
-			}
-			timeOutEvent = setTimeout(function() {
-				if (e.touches.length == 1) {
-					timeOutEvent = 0;
-					left =
-						e.changedTouches[0].clientX + contextWidth > clientWidth
-							? clientWidth - contextWidth
-							: e.changedTouches[0].clientX;
-					top =
-						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight
-							? clientHeight - contextmenu.offsetHeight
-							: e.changedTouches[0].clientY;
-					contextmenu.style.left = left + 'px';
-					contextmenu.style.top = top + 'px';
-					let point = map.getEventCoordinate(e);
-					curCoord = point;
-					hideOrShowContextMenu('show');
-					insTip.classList.add('gone');
-				}
-			}, 500);
-		});
-
-		map.getViewport().addEventListener('touchend', function(event) {
-			clearTimeout(timeOutEvent);
-			if (timeOutEvent != 0) {
-				hideOrShowContextMenu('hide');
-			}
-			return false;
-		});
-
-		map.getViewport().addEventListener('touchmove', function(event) {
-			clearTimeout(timeOutEvent);
-			timeOutEvent = 0;
-			return false;
-		});
-	} else {
-		map.getViewport().addEventListener('contextmenu', (e) => {
-			hideOrShowContextMenu('show');
-			insTip.classList.add('gone');
-			left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
-			top =
-				e.clientY + contextmenu.offsetHeight > clientHeight
-					? clientHeight - contextmenu.offsetHeight
-					: e.clientY;
-
-			contextmenu.style.left = left + 'px';
-			contextmenu.style.top = top + 'px';
-			let point = map.getEventCoordinate(e);
-			curCoord = point;
-		});
-	}
-
-	// Show the mobile instruction tip on Android and IOS, and show pc tip on PC.
-	if (isiOS || isAndroid) {
-		document.querySelector('.mobile-tip').classList.remove('hide');
-	} else {
-		document.querySelector('.pc-tip').classList.remove('hide');
-	}
-
-	map.on('pointermove', function(e) {
-		if (e.dragging) {
-			return;
-		}
-		const pixel = map.getEventPixel(e.originalEvent);
-		const hit = map.hasFeatureAtPixel(pixel);
-		let cursor = false;
-		if (hit) {
-			const features = map.getFeaturesAtPixel(pixel);
-
-			features.some((feature) => {
-				let featureName = feature.get('name');
-				if (featureName === 'start' || featureName === 'end') {
-					cursor = true;
-					return true;
-				}
-			});
-		} else {
-			cursor = false;
-		}
-		map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
-	});
-};
-
-const errorLoadingTile = () => {
-	const errorModal = document.querySelector('#error-modal');
-	if (errorModal.classList.contains('hide')) {
-		// Show the error tips when Tile loaded error.
-		errorModal.classList.remove('hide');
-	}
-};
-
-const setLayerSourceEventHandlers = (layer) => {
-	let layerSource = layer.getSource();
-	layerSource.on('tileloaderror', function() {
-		document.querySelector('.sidebar').classList.add('hide');
-		errorLoadingTile();
-	});
-};
-
-setLayerSourceEventHandlers(lightLayer);
-
+// In this custom object, we're going to define eight styles:
+//   1. The appearance of the start point icon.
+//   2. The appearance of the end point icon.
+//   3. The appearance of the waypoint icon.
+// 	 4. The appearance of the route line.
+//   5. The appearance of the route line halo.
+//   6. The appearance of the line of start point to snap point.
+//   7. The appearance of the radius circle when hovering the segment route.
+//   8. The appearance of arrow when clicking the target segment route.
 const styles = {
 	start: new ol.style.Style({
 		image: new ol.style.Icon({
@@ -247,6 +125,307 @@ const styles = {
 	})
 };
 
+// Now we'll create the base layer for our map.  The base layer uses the ThinkGeo
+// Cloud Maps Vector Tile service to display a detailed street map.  For more
+// info, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_vector_tiles
+const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/light.json', {
+	apiKey: apiKey,
+	layerName: 'light'
+});
+
+// Create a default view for the map when it starts up.
+const view = new ol.View({
+    // Center the map on the United States and start at zoom level 3.
+	center: ol.proj.fromLonLat([ -96.7962, 42.79423 ]),
+	maxResolution: 40075016.68557849 / 512,
+	progressiveZoom: false,
+	zoom: 3,
+	minZoom: 2,
+	maxZoom: 19
+});
+
+// This function will create and initialize our interactive map.
+// We'll call it later when our POI icon font has been fully downloaded,
+// which ensures that the POI icons display as intended.
+const initializeMap = () => {
+	map = new ol.Map({
+		renderer: 'webgl',
+		loadTilesWhileAnimating: true,
+		loadTilesWhileInteracting: true,
+        // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
+		layers: [ lightLayer ],
+        // States that the HTML tag with id="map" should serve as the container for our map.
+		target: 'map',
+		view: view,
+		// Add an interaction to map that allows drag point icons.
+		interactions: ol.interaction.defaults().extend([ new app.Drag() ])
+	});
+
+	addRoutingLayer();
+	mobileCompatibility();
+
+	// Add a "pointermove" listener to map which is when the pointer is moving over the start, end and mid point, the cursor should be "pointer" appearance.
+	map.on('pointermove', function(e) {
+		if (e.dragging) {
+			return;
+		}
+		const pixel = map.getEventPixel(e.originalEvent);
+		const hit = map.hasFeatureAtPixel(pixel);
+		let cursor = false;
+		if (hit) {
+			const features = map.getFeaturesAtPixel(pixel);
+			features.some((feature) => {
+				let featureName = feature.get('name');
+				if (featureName === 'start' || featureName === 'end' || featureName === 'mid') {
+					cursor = true;
+					return true;
+				}
+			});
+		} else {
+			cursor = false;
+		}
+		map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
+	});
+};
+
+// Do some compatibility on mible and IOS client.
+const mobileCompatibility = () => {
+	let u = navigator.userAgent;
+	const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+	const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+	let left, top;
+	let clientWidth = document.documentElement.clientWidth;
+	let clientHeight = document.documentElement.clientHeight;
+	const contextmenu = document.querySelector('#ol-contextmenu');
+	const insTip = document.querySelector('#instruction-tip');
+	let timeOutEvent;
+	const contextWidth = 165;
+
+	// Show the right click context menu on different platform.
+	if (isiOS) {
+		map.getViewport().addEventListener('gesturestart', function(e) {
+			clearTimeout(timeOutEvent);
+			timeOutEvent = 0;
+			return false;
+		});
+
+		map.getViewport().addEventListener('touchstart', function(e) {
+			e.preventDefault();
+			if (e.touches.length != 1) {
+				clearTimeout(timeOutEvent);
+				timeOutEvent = 0;
+				return false;
+			}
+			timeOutEvent = setTimeout(function() {
+				if (e.touches.length == 1) {
+					timeOutEvent = 0;
+					left =
+						e.changedTouches[0].clientX + contextWidth > clientWidth
+							? clientWidth - contextWidth
+							: e.changedTouches[0].clientX;
+					top =
+						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight
+							? clientHeight - contextmenu.offsetHeight
+							: e.changedTouches[0].clientY;
+					contextmenu.style.left = left + 'px';
+					contextmenu.style.top = top + 'px';
+					let point = map.getEventCoordinate(e);
+					curCoord = point;
+					hideOrShowContextMenu('show');
+					insTip.classList.add('gone');
+				}
+			}, 500);
+		});
+
+		map.getViewport().addEventListener('touchend', function(event) {
+			clearTimeout(timeOutEvent);
+			if (timeOutEvent != 0) {
+				hideOrShowContextMenu('hide');
+			}
+			return false;
+		});
+
+		map.getViewport().addEventListener('touchmove', function(event) {
+			clearTimeout(timeOutEvent);
+			timeOutEvent = 0;
+			return false;
+		});
+	} else {
+		map.getViewport().addEventListener('contextmenu', (e) => {
+			hideOrShowContextMenu('show');
+			insTip.classList.add('gone');
+			left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
+			top =
+				e.clientY + contextmenu.offsetHeight > clientHeight
+					? clientHeight - contextmenu.offsetHeight
+					: e.clientY;
+
+			contextmenu.style.left = left + 'px';
+			contextmenu.style.top = top + 'px';
+			let point = map.getEventCoordinate(e);
+			curCoord = point;
+		});
+	}
+
+	// Show the mobile instruction tip on Android and IOS, and show pc tip on PC.
+	if (isiOS || isAndroid) {
+		document.querySelector('.mobile-tip').classList.remove('hide');
+	} else {
+		document.querySelector('.pc-tip').classList.remove('hide');
+	}
+}
+
+// Create the routing layer and add it to map.
+const addRoutingLayer = () => {
+	source = new ol.source.Vector();
+	let routingLayer = new ol.layer.Vector({
+		source: source
+	});
+	map.addLayer(routingLayer);
+}
+
+
+/*---------------------------------------------*/
+// 3. Tile Loading Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+	const errorModal = document.querySelector('#error-modal');
+	if (errorModal.classList.contains('hide')) {
+		// Show the error tips when Tile loaded error.
+		errorModal.classList.remove('hide');
+	}
+};
+
+const setLayerSourceEventHandlers = (layer) => {
+	let layerSource = layer.getSource();
+	layerSource.on('tileloaderror', function() {
+		document.querySelector('.sidebar').classList.add('hide');
+		errorLoadingTile();
+	});
+};
+
+setLayerSourceEventHandlers(lightLayer);
+
+
+/*---------------------------------------------*/
+// 4. Routing Setup
+/*---------------------------------------------*/
+
+// At this point we'll built up the methods and functionality that will  
+// actually perform the routing using the ThinkGeo Cloud and then 
+// display the results on the map.
+
+// We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
+// request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
+
+// We need to create the instance of ReverseGeocoding client and authenticate the API key.
+const routingClient = new tg.RoutingClient(apiKey);
+
+// Get some items which we'll use to judge if we should perform the routing service or show error tips.
+const findRoute = (showError) => {
+	source.clear();
+	const points = getAllPoints();
+	const pointsLength = points.length;
+
+	// Add the point which is not added to map.
+	points.forEach((point, index) => {
+		if (pointsLength - 1 === index) {
+			type = 'end';
+		} else if (0 === index) {
+			type = 'start';
+		} else {
+			type = 'mid';
+		}
+		addPointFeature(type, point);
+	});
+
+	const inputsCount = document.querySelectorAll('.point input');
+	if (points && points.length >= 2 && inputsCount.length === points.length) {
+		performRouting();
+	} else if (showError) {
+		showErrorTip('Please input correct coordinates!');
+	}
+};
+
+// This method performs the actual routing using the ThinkGeo Cloud. 
+// By passing in the coordinates of the map location, we can 
+// get back a the route message as we send the request.  For more details, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_routing
+const performRouting = () => {
+	const points = getAllPoints();
+	const inputsCount = document.querySelectorAll('.point input');
+	if (points && points.length >= 2 && inputsCount.length === points.length) {
+		hideErrorTip();
+		document.querySelector('.loading').classList.remove('hide');
+		document.querySelector('#result').classList.add('hide');
+
+		const options = {
+			turnByTurn: true,
+			srid: 3857
+		};
+
+		const callback = (status, response) => {
+			resetSidebarHeight();
+			document.querySelector('.sidebar').style.height = 'unset';
+			if (status === 200) {
+				result.classList.remove('error-on-mobile');
+				document.querySelector('.loading').classList.add('hide');
+				document.querySelector('#result').classList.remove('hide');
+				handleResponse(response);
+			} else {
+				document.querySelector('.loading').classList.add('hide');
+				result.classList.remove('hide');
+				document.querySelector('#total').innerHTML = '';
+
+				if (document.body.clientWidth <= 767) {
+					result.classList.add('error-on-mobile');
+				}
+				if (status === 400) {
+					const data = response.data;
+					let message = '';
+					Object.keys(data).forEach((key) => {
+						message = message + data[key] + '<br />';
+					});
+					result.querySelector('#boxes').innerHTML = `<div class="error-message">${message}</div>`;
+				} else if (status === 401 || status === 410 || status === 404) {
+					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error
+						.message}</div>`;
+				} else if (status === 'error') {
+					document.querySelector('.sidebar').classList.add('hide');
+					errorLoadingTile();
+				} else {
+					result.querySelector('#boxes').innerHTML = `<div class="error-message">Request failed.</div>`;
+				}
+			}
+		};
+
+		const points_ = points.map((point) => {
+			return {
+				x: point[0],
+				y: point[1]
+			};
+		});
+
+		routingClient.getRoute(points_, callback, options);
+	}
+};
+
+// Handle the response when we get the route result from server.
+const handleResponse = (res) => {
+	const data = res.data;
+	const routes = data.routes[0];
+	generateBox(routes);
+	const waypointsCoord = data.waypoints.map((item) => {
+		return [ item.coordinate.y, item.coordinate.x ];
+	});
+	addWalkLinesFeatures(waypointsCoord);
+};
+
+// Add point feature to map by passing the point name and coordinates.
 const addPointFeature = (name, coord) => {
 	document.querySelector('#result').classList.add('hide');
 	if (name === 'start') {
@@ -262,6 +441,7 @@ const addPointFeature = (name, coord) => {
 	source.addFeatures([ feature ]);
 };
 
+// Add the route line feature by passing the line wkt data from what we get from response.
 const addRouteFeature = (wkt) => {
 	const format = new ol.format.WKT();
 	const routeFeature = format.readFeature(wkt);
@@ -270,6 +450,7 @@ const addRouteFeature = (wkt) => {
 	source.addFeature(routeFeature);
 };
 
+// Add the lines from the point we start from to the nearest route.
 const addWalkLinesFeatures = (waypointsCoord) => {
 	let features = [];
 	const points = getAllPoints();
@@ -283,6 +464,7 @@ const addWalkLinesFeatures = (waypointsCoord) => {
 	source.addFeatures(features);
 };
 
+// Add a radius circle the segment point where we hovering from. 
 const addResultRadius = (coord) => {
 	removeFeatureByName('resultRadius');
 	let center = coord;
@@ -291,9 +473,72 @@ const addResultRadius = (coord) => {
 		name: 'resultRadius'
 	});
 	resultRadiusFeature.setStyle(styles.resultRadius);
-	routingLayer.getSource().addFeature(resultRadiusFeature);
+	source.addFeature(resultRadiusFeature);
 };
 
+// Add the arrow icon when we zoom in to which segment route we click.
+const addArrow = (penultCoord, lastCoord) => {
+	removeFeatureByName('arrow');
+
+	let feature = new ol.Feature({
+		geometry: new ol.geom.Point(lastCoord),
+		name: 'arrow'
+	});
+
+	const dx = lastCoord[0] - penultCoord[0];
+	const dy = lastCoord[1] - penultCoord[1];
+
+	const rotation = Math.atan2(dy, dx);
+
+	const arrowStyle = new ol.style.Style({
+		image: new ol.style.Icon({
+			anchor: [ 0.5, 0.5 ],
+			anchorXUnits: 'fraction',
+			anchorYUnits: 'fraction',
+			crossOrigin: 'Anonymous',
+			src: 'https://samples.thinkgeo.com/cloud/example/image/arrow.png',
+			rotateWithView: true,
+			rotation: -rotation
+		})
+	});
+
+	feature.setStyle(arrowStyle);
+	source.addFeature(feature);
+};
+
+// Add the arrow line when we zoom in to which segment route we click.
+const addTurnLine = (penultCoord, lastCoord, lineSecondCoord) => {
+	let feature = new ol.Feature({
+		geometry: new ol.geom.LineString([ penultCoord, lastCoord, lineSecondCoord ]),
+		name: 'line'
+	});
+
+	feature.setStyle(styles.arrowLine);
+	source.addFeature(feature);
+};
+
+// Calculate the coordinates what we use to draw the arrow lines by passing the two coordinates.
+const lerp = (firstCoord, secondCoord) => {
+	var resolution = view.getResolution();
+	var x1 = firstCoord[0];
+	var y1 = firstCoord[1];
+	var x2 = secondCoord[0];
+	var y2 = secondCoord[1];
+	var length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+	var x, y;
+
+	if (length > 50) {
+		var interpolate = 50 / length;
+		var x = ol.math.lerp(x1, x2, interpolate);
+		var y = ol.math.lerp(y1, y2, interpolate);
+
+		return [ x, y ];
+	}
+
+	return secondCoord;
+};
+
+// Format the distance and duration data from what we get from response.
 const formatDistanceAndDuration = (distance, duration) => {
 	let distance_;
 	let duration_;
@@ -323,6 +568,7 @@ const formatDistanceAndDuration = (distance, duration) => {
 	};
 };
 
+// Create the sidebar result container and inner items once we have got the response from server.
 const generateBox = (routes) => {
 	const lineWkt = routes.geometry;
 	let segments = routes.segments;
@@ -535,6 +781,7 @@ const generateBox = (routes) => {
 	}
 };
 
+// In order to draw the arrow or arrow line on the turn point, we need to find the points what we need.
 const findSecondPointFromStart = (coordinates) => {
 	for (let i = 0; i < coordinates.length - 1; i++) {
 		if (coordinates[i + 1] != coordinates[i]) {
@@ -555,6 +802,7 @@ const findSecondPointFromEnd = (coordinates) => {
 	return false;
 };
 
+// Hide or show the context menu when we click or right click the map.
 const hideOrShowContextMenu = (style) => {
 	let contextmenu = document.querySelector('#ol-contextmenu');
 	switch (style) {
@@ -566,180 +814,7 @@ const hideOrShowContextMenu = (style) => {
 	}
 };
 
-const removeFeatureByName = (featureName) => {
-	if (source) {
-		const features = source.getFeatures();
-		for (let i = 0, l = features.length; i < l; i++) {
-			let feature = features[i];
-			if (feature.get('name') === featureName) {
-				source.removeFeature(feature);
-			}
-		}
-	}
-};
-
-const addPointsFeature = () => {
-	const length = points.length;
-	let features = [];
-	points.forEach((point, index) => {
-		let feature;
-		let coord = point;
-		let type;
-		if (index === 0) {
-			// Add start point style to the start point.
-			type = 'start';
-		} else if (index === length - 1) {
-			// Add end point style to the end point.
-			type = 'end';
-		} else {
-			// Add mid point style to the mid points.
-			type = 'mid';
-		}
-		feature = new ol.Feature({
-			geometry: new ol.geom.Point(coord),
-			name: type,
-			id: index
-		});
-		feature.setStyle(styles[type]);
-		features.push(feature);
-	});
-	source.addFeatures(features);
-};
-
-const handleResponse = (res) => {
-	const data = res.data;
-	const routes = data.routes[0];
-	generateBox(routes);
-	const waypointsCoord = data.waypoints.map((item) => {
-		return [ item.coordinate.y, item.coordinate.x ];
-	});
-	addWalkLinesFeatures(waypointsCoord);
-};
-
-const performRouting = () => {
-	const points = getAllPoints();
-	const inputsCount = document.querySelectorAll('.point input');
-	if (points && points.length >= 2 && inputsCount.length === points.length) {
-		hideErrorTip();
-		document.querySelector('.loading').classList.remove('hide');
-		document.querySelector('#result').classList.add('hide');
-
-		const options = {
-			turnByTurn: true,
-			srid: 3857
-		};
-		const callback = (status, response) => {
-			resetSidebarHeight();
-			document.querySelector('.sidebar').style.height = 'unset';
-			if (status === 200) {
-				result.classList.remove('error-on-mobile');
-				document.querySelector('.loading').classList.add('hide');
-				document.querySelector('#result').classList.remove('hide');
-				handleResponse(response);
-			} else {
-				document.querySelector('.loading').classList.add('hide');
-				result.classList.remove('hide');
-				document.querySelector('#total').innerHTML = '';
-
-				if (document.body.clientWidth <= 767) {
-					result.classList.add('error-on-mobile');
-				}
-				if (status === 400) {
-					const data = response.data;
-					let message = '';
-					Object.keys(data).forEach((key) => {
-						message = message + data[key] + '<br />';
-					});
-					result.querySelector('#boxes').innerHTML = `<div class="error-message">${message}</div>`;
-				} else if (status === 401 || status === 410 || status === 404) {
-					result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error
-						.message}</div>`;
-				} else if (status === 'error') {
-					document.querySelector('.sidebar').classList.add('hide');
-					errorLoadingTile();
-				} else {
-					result.querySelector('#boxes').innerHTML = `<div class="error-message">Request failed.</div>`;
-				}
-			}
-		};
-
-		const points_ = points.map((point) => {
-			return {
-				x: point[0],
-				y: point[1]
-			};
-		});
-
-		routingClient.getRoute(points_, callback, options);
-	}
-};
-
-const addDestination = () => {
-	const add = document.querySelector('.add');
-	add.classList.add('hide');
-	const addDom = `<p class="added"><label></label><input placeholder="Add Destination" /><span class="delete"></span> </p>`;
-	add.insertAdjacentHTML('beforebegin', addDom);
-};
-
-const addArrow = (penultCoord, lastCoord) => {
-	removeFeatureByName('arrow');
-
-	let feature = new ol.Feature({
-		geometry: new ol.geom.Point(lastCoord),
-		name: 'arrow'
-	});
-
-	const dx = lastCoord[0] - penultCoord[0];
-	const dy = lastCoord[1] - penultCoord[1];
-
-	const rotation = Math.atan2(dy, dx);
-
-	const arrowStyle = new ol.style.Style({
-		image: new ol.style.Icon({
-			anchor: [ 0.5, 0.5 ],
-			anchorXUnits: 'fraction',
-			anchorYUnits: 'fraction',
-			crossOrigin: 'Anonymous',
-			src: 'https://samples.thinkgeo.com/cloud/example/image/arrow.png',
-			rotateWithView: true,
-			rotation: -rotation
-		})
-	});
-
-	feature.setStyle(arrowStyle);
-	source.addFeature(feature);
-};
-
-const addTurnLine = (penultCoord, lastCoord, lineSecondCoord) => {
-	let feature = new ol.Feature({
-		geometry: new ol.geom.LineString([ penultCoord, lastCoord, lineSecondCoord ]),
-		name: 'line'
-	});
-
-	feature.setStyle(styles.arrowLine);
-	source.addFeature(feature);
-};
-
-const lerp = (firstCoord, secondCoord) => {
-	var resolution = view.getResolution();
-	var x1 = firstCoord[0];
-	var y1 = firstCoord[1];
-	var x2 = secondCoord[0];
-	var y2 = secondCoord[1];
-	var length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-	var x, y;
-
-	if (length > 50) {
-		var interpolate = 50 / length;
-		var x = ol.math.lerp(x1, x2, interpolate);
-		var y = ol.math.lerp(y1, y2, interpolate);
-
-		return [ x, y ];
-	}
-
-	return secondCoord;
-};
-
+// When we click the clear item in the context menu, we'll mak all the input empty using this method.
 const clearInputBox = () => {
 	const inputs = document.querySelectorAll('.point input');
 	inputs.forEach((input) => {
@@ -748,60 +823,8 @@ const clearInputBox = () => {
 	});
 };
 
-let timer;
-const showErrorTip = (content) => {
-	if (timer) {
-		clearTimeout(timer);
-	}
-	const tip = document.querySelector('#input-error');
-	tip.querySelector('p').innerHTML = content;
-	tip.classList.add('show');
-	timer = setTimeout(function() {
-		tip.classList.remove('show');
-	}, 3000);
-};
-
-const hideErrorTip = () => {
-	document.querySelector('#input-error').classList.remove('show');
-};
-
-const updateDataOriginByInput = (inputNode, inputValue) => {
-	if (inputValue) {
-		let valueArr = inputValue.split(',');
-		if (valueArr.length === 2) {
-			let valueArr_ = [ Number(valueArr[1]), Number(valueArr[0]) ]; // '12,13' => [13,12]
-			inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_));
-		} else {
-			inputNode.setAttribute('data-origin', '');
-		}
-	} else {
-		inputNode.setAttribute('data-origin', '');
-	}
-};
-
-const stringToArray = (str) => {
-	let arr = str.split(',');
-	return [ Number(arr[0]), Number(arr[1]) ];
-};
-
-WebFont.load({
-	custom: {
-		families: [ 'vectormap-icons' ],
-		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
-		testStrings: {
-			'vectormap-icons': '\ue001'
-		}
-	},
-	// The "active" property defines a function to call when the font has
-	// finished downloading.  Here, we'll call our initializeMap method.
-	active: initializeMap
-});
-
-const getLastNodeBySelector = (selector) => {
-	const inputs = document.querySelectorAll(selector);
-	return inputs[inputs.length - 1];
-};
-
+// When click the add point button or the item of add route in the context menu, 
+// we'll add an input box in the sidebar input group.
 const addInputBox = (coord) => {
 	const inputs = document.querySelectorAll('#dragable-list input');
 	if (inputs.length === 10) {
@@ -834,6 +857,55 @@ const addInputBox = (coord) => {
 	<span class=""></span>
 	<a class="closer"></a>`;
 	parent.insertBefore(newNode, lastPoint);
+};
+
+// When you are ready to perform a routing request, but some input boxes are empty. Then we'll show the 
+// input error tip, after 3000ms, we'l hide the error tip automatically.
+let timer;
+const showErrorTip = (content) => {
+	if (timer) {
+		clearTimeout(timer);
+	}
+	const tip = document.querySelector('#input-error');
+	tip.querySelector('p').innerHTML = content;
+	tip.classList.add('show');
+	timer = setTimeout(function() {
+		tip.classList.remove('show');
+	}, 3000);
+};
+
+const hideErrorTip = () => {
+	document.querySelector('#input-error').classList.remove('show');
+};
+
+
+/*---------------------------------------------*/
+// 6. ThinkGeo Map Icon Fonts
+/*---------------------------------------------*/
+
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
+
+WebFont.load({
+	custom: {
+		families: [ 'vectormap-icons' ],
+		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
+	},
+	// The "active" property defines a function to call when the font has
+	// finished downloading.  Here, we'll call our initializeMap method.
+	active: initializeMap
+});
+
+
+const getLastNodeBySelector = (selector) => {
+	const inputs = document.querySelectorAll(selector);
+	return inputs[inputs.length - 1];
 };
 
 const getCoordFromDataOrigin = (dataOriginValue) => {
@@ -878,6 +950,10 @@ const getAllPoints = () => {
 	return points;
 };
 
+// Since all the preparation  have been done, we need to do have some method to handle the 
+// features we have added to the map.
+
+// Remove a point feature by passing the coordinates.
 const removeFeatureByCoord = (coord) => {
 	const features = source.getFeatures();
 	features.some((feature) => {
@@ -888,6 +964,20 @@ const removeFeatureByCoord = (coord) => {
 	});
 };
 
+// Remove the point or line features by passing the feature name.
+const removeFeatureByName = (featureName) => {
+	if (source) {
+		const features = source.getFeatures();
+		for (let i = 0, l = features.length; i < l; i++) {
+			let feature = features[i];
+			if (feature.get('name') === featureName) {
+				source.removeFeature(feature);
+			}
+		}
+	}
+};
+
+// Get the feature by feature's name.
 const getFeatureByName = (name) => {
 	let feature_;
 	source.getFeatures().some((feature) => {
@@ -899,6 +989,7 @@ const getFeatureByName = (name) => {
 	return feature_;
 };
 
+// Get the feature by feature's coordinates.
 const getFeatureByCoord = (coord) => {
 	let feature;
 	const features = source.getFeatures();
@@ -910,49 +1001,6 @@ const getFeatureByCoord = (coord) => {
 	return feature;
 };
 
-const findRoute = (showError) => {
-	source.clear();
-	const points = getAllPoints();
-	const pointsLength = points.length;
-
-	// Add the point which is not added to map.
-	points.forEach((point, index) => {
-		if (pointsLength - 1 === index) {
-			type = 'end';
-		} else if (0 === index) {
-			type = 'start';
-		} else {
-			type = 'mid';
-		}
-		addPointFeature(type, point);
-	});
-
-	const inputsCount = document.querySelectorAll('.point input');
-	if (points && points.length >= 2 && inputsCount.length === points.length) {
-		performRouting();
-	} else if (showError) {
-		showErrorTip('Please input correct coordinates!');
-	}
-};
-
-const handleDragEnd = () => {
-	const inputs = document.querySelectorAll('#dragable-list input');
-	const length = inputs.length;
-	inputs.forEach((input, index) => {
-		if (index === 0) {
-			input.setAttribute('placeholder', 'Start');
-		} else if (index === length - 1) {
-			input.setAttribute('placeholder', 'Destination');
-		} else {
-			input.setAttribute('placeholder', 'To');
-		}
-	});
-
-	const showError = false;
-
-	source.clear();
-	findRoute(showError);
-};
 
 /**
  * @constructor
@@ -1361,6 +1409,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+	
+	const updateDataOriginByInput = (inputNode, inputValue) => {
+		if (inputValue) {
+			let valueArr = inputValue.split(',');
+			if (valueArr.length === 2) {
+				let valueArr_ = [ Number(valueArr[1]), Number(valueArr[0]) ]; // '12,13' => [13,12]
+				inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_));
+			} else {
+				inputNode.setAttribute('data-origin', '');
+			}
+		} else {
+			inputNode.setAttribute('data-origin', '');
+		}
+	};
 	document.querySelector('.point').addEventListener('input', function(e) {
 		e = window.event || e;
 		const target = e.target;
@@ -1379,6 +1441,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		const showError = true;
 		findRoute(showError);
 	});
+
+	
+	const handleDragEnd = () => {
+		const inputs = document.querySelectorAll('#dragable-list input');
+		const length = inputs.length;
+		inputs.forEach((input, index) => {
+			if (index === 0) {
+				input.setAttribute('placeholder', 'Start');
+			} else if (index === length - 1) {
+				input.setAttribute('placeholder', 'Destination');
+			} else {
+				input.setAttribute('placeholder', 'To');
+			}
+		});
+
+		const showError = false;
+
+		source.clear();
+		findRoute(showError);
+	};
 
 	Sortable.create(document.getElementById('dragable-list'), {
 		handle: '.drag',
