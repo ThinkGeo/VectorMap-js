@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Routing in North America | ThinkGeo</title>
+    
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
 
     <!-- Define some custom styles for the UI of our sample page. -->
@@ -881,24 +883,10 @@
 </head>
 
 <body>
-    <div id="ol-contextmenu" class="hide">
-        <ul>
-            <li id="add-startpoint">
-                Directions from here
-            </li>
-            <li id="add-endpoint">
-                Directions to here
-            </li>
-            <li id="context-add-point">
-                Add to route
-            </li>
-            <li id="clear">
-                Clear
-            </li>
-        </ul>
-    </div>
 
+    <!-- This <div> is the container into which our map control will be loaded. -->
     <div id="map">
+        <!-- Set up the coordinates inupting group. -->
         <div class="point">
             <i class="switch"></i>
             <ul id="dragable-list">
@@ -922,6 +910,8 @@
                 <div></div>
             </div>
         </div>
+        
+        <!-- Set up the result container. -->
         <div class="sidebar hide">
             <div id="result" class="hide transition-height">
                 <p id="total"></p>
@@ -930,6 +920,25 @@
         </div>
     </div>
 
+    <!-- Set up context menu when right click the map. -->
+    <div id="ol-contextmenu" class="hide">
+        <ul>
+            <li id="add-startpoint">
+                Directions from here
+            </li>
+            <li id="add-endpoint">
+                Directions to here
+            </li>
+            <li id="context-add-point">
+                Add to route
+            </li>
+            <li id="clear">
+                Clear
+            </li>
+        </ul>
+    </div>
+
+    <!-- Set up error message tip for tile loading error. -->
     <div id="error-modal" class="hide">
         <div class="modal-content">
             <p>We're having trouble communicating with the ThinkGeo Cloud. Please check the API key being used in this
@@ -940,15 +949,17 @@
         </div>
     </div>
 
-    <!-- Set up error message tip. -->
+    <!-- Set up error message tip for coordinates inputing error. -->
     <div id="input-error">
         <p></p>
     </div>
 
+    <!-- Set up instruction tip. -->
     <div id="instruction-tip">
         <p class="pc-tip hide">Right-click on the map to set your start and end points.</p>
         <p class="mobile-tip hide">Long-press on the map to set your start and end points.</p>
     </div>
+
     <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0-beta009/vectormap.js"></script>
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
     <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.4/thinkgeocloudclient.js"></script>
