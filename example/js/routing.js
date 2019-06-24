@@ -317,7 +317,7 @@ WebFont.load({
 // We use thinkgeocloudclient.js, which is an open-source Javascript SDK for making 
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
-// We need to create the instance of ReverseGeocoding client and authenticate the API key.
+// We need to create the instance of Routing client and authenticate the API key.
 const routingClient = new tg.RoutingClient(apiKey);
 
 // Get some items which we'll use to judge if we should perform the routing service or show error tips.
@@ -347,7 +347,7 @@ const findRoute = (showError) => {
 };
 
 // This method performs the actual routing using the ThinkGeo Cloud. 
-// By passing in the coordinates of the map location, we can 
+// By passing the coordinates of the map location, we can 
 // get back a the route message as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_routing
 const performRouting = () => {
