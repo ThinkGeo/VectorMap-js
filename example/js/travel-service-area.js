@@ -545,7 +545,13 @@ document.addEventListener('DOMContentLoaded', function () {
         startInputCoord = coord_.slice();
         updateInputValue(true);
         performRouting();
-    })
+    });
+
+    // Hide or show the sidebar panel when the device is a mobile platform.
+    document.querySelector('#toggle').addEventListener('click', function () { 
+        const classList = document.querySelector('.travelPanel').classList;
+       classList.contains('collapsed') ? classList.remove('collapsed') : classList.add('collapsed');
+     })
 
     // Update the Driving Minute Limit input min or max attribute value when changing the input value.
     let timeLimitInputs = document.querySelectorAll('#drive-time-limit input');

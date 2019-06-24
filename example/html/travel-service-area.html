@@ -62,6 +62,10 @@
             outline: none;
         }
 
+        #toggle {
+            display: none;
+        }
+
         .travel-row {
             margin-top: 10px;
             display: inline-block;
@@ -332,13 +336,55 @@
             cursor: pointer;
             background-color: #e1e1e1;
         }
+
+        @media (max-width: 767px) {
+            .travelPanel {
+                left: 1px;
+                transition: left 500ms ease-out;
+            }
+
+            .travelPanel.collapsed{
+                transition: left 500ms ease-out;
+            }
+
+            .travelPanel.collapsed {
+                left: -281px;
+            }
+
+            #toggle {
+                display: inline-block;
+                position: absolute;
+                left: 100%;
+                transform: rotate(180deg);
+                height: 2em;
+                padding: 0;
+                top: -1px;
+                background-color: rgba(0, 0, 0, .75);
+                color: #fff;
+                border: 1px solid #eee;
+                cursor: pointer;
+            }
+
+            #toggle:focus{
+                outline: 0;
+            }
+
+            .travelPanel.collapsed #toggle {
+                transform: rotate(0deg);
+            }
+
+            #instruction-tip{
+                width: 80%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="map">
         <!-- Set up the sidebar control panel. -->
-        <div class="travelPanel">
+        <div class="travelPanel collapsed">
+            <button id="toggle">>></button>
             <h5>Driving Start Location</h5>
             <input type="text" id="startPoint" placeholder="latitude, logitude" data-origin="" />
             <h5>Service Area Options</h5>
@@ -432,7 +478,7 @@
 
     <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
-    
+
     <!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.4/thinkgeocloudclient.js"></script>
 
