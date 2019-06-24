@@ -635,7 +635,7 @@
         jsPath: './example/js/routing.js'
       }, {
         comments: 'Help to visualize reachable areas in time/distance from any starting point.',
-        title: "Travel Service Area",
+        title: "Get Service Area",
         htmlPath: './example/html/travel-service-area.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
         jsPath: './example/js/travel-service-area.js'

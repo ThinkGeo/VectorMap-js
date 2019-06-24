@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Travel Service Area | ThinkGeo</title>
+    <title>Get Service Area | ThinkGeo</title>
+
+    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
 
     <!-- Define some custom styles for the UI of our sample page. -->
@@ -168,7 +170,7 @@
         }
 
         #drive-time-limit input,
-        #drive-distance-limit input{
+        #drive-distance-limit input {
             width: 35px;
             border: 0;
         }
@@ -335,7 +337,7 @@
 
 <body>
     <div id="map">
-
+        <!-- Set up the sidebar control panel. -->
         <div class="travelPanel">
             <h5>Driving Start Location</h5>
             <input type="text" id="startPoint" placeholder="latitude, logitude" data-origin="" />
@@ -378,7 +380,6 @@
                     <li><input type="number" value="30" min="26" max="60" /></li>
                 </ul>
             </div>
-
             <div class="travel-row">
                 <span>Service Area Type</span>
                 <select id="area-type">
@@ -386,26 +387,28 @@
                     <option value="Linestring">Linestring</option>
                 </select>
             </div>
-
             <div class="travel-row" id="contour-granularity">
                 <span>Contour Granularity (0-1)</span><br />
                 <input type="range" min="0" max="1" value="1" step="0.1">
             </div>
-
             <div class="travel-row center">
                 <button id="refresh">Refresh</button>
             </div>
-
         </div>
+
+        <!-- Set up the loading animation. -->
         <div class="loading hide">
             <div></div>
             <div></div>
             <div></div>
         </div>
+
+        <!-- Set up error message tip for tile loading error. -->
         <div id="error-message">
             <p></p>
         </div>
 
+        <!-- Set up context menu when right click the map. -->
         <div id="ol-contextmenu" class="hide">
             <ul>
                 <li id="add-start-point">
@@ -418,12 +421,19 @@
         </div>
     </div>
 
+    <!-- Set up instruction tip. -->
     <div id="instruction-tip">
         <p>Set your start point by dragging the vehicle icon or right-clicking on the map to see what area you drive to
             within a specified minutes.</p>
     </div>
+
+    <!-- Include ThinkGeo's VectorMap.js library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
+
+    <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
+    
+    <!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.4/thinkgeocloudclient.js"></script>
 
     <script src="../js/travel-service-area.js"></script>
