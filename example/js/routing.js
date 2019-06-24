@@ -4,24 +4,15 @@
 // 
 //   1. ThinkGeo Cloud API Key
 //   2. Map Control Setup
-//   3. Tile Loading Event Handlers
+//   3. ThinkGeo Map Icon Fonts
 //   4. Routing Setup
+//   5. Routing Features Handler Setup
+//   6. Result Rendering
+//   7. Error Event Handlers
+//   8. UI control setup
+//   9. Derive the Custom Class Drag
+//   10. Event Listeners
 /*===========================================================================*/
-
-
-let map;
-let source;
-let curCoord;
-let lastLinePoint;
-let firstLinePoint;
-let wktLineFeature;
-let listener;
-let modifyInteraction;
-let turnFeature;
-let points = [];
-let coordBeforeMove;
-let app = {};
-
 
 
 /*---------------------------------------------*/
@@ -51,7 +42,7 @@ const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 //   5. The appearance of the route line halo.
 //   6. The appearance of the line of start point to snap point.
 //   7. The appearance of the radius circle when hovering the segment route.
-//   8. The appearance of arrow when clicking the target segment route.
+//   8. The appearance of the arrow when clicking the target segment route.
 const styles = {
 	start: new ol.style.Style({
 		image: new ol.style.Icon({
@@ -148,6 +139,11 @@ const view = new ol.View({
 // This function will create and initialize our interactive map.
 // We'll call it later when our POI icon font has been fully downloaded,
 // which ensures that the POI icons display as intended.
+let map;
+let vectorSource;
+let curCoord;
+// Define a name space: app.
+let app = {};
 const initializeMap = () => {
 	map = new ol.Map({
 		renderer: 'webgl',
@@ -278,37 +274,36 @@ const mobileCompatibility = () => {
 
 // Create the routing layer and add it to map.
 const addRoutingLayer = () => {
-	source = new ol.source.Vector();
+	vectorSource = new ol.source.Vector();
 	let routingLayer = new ol.layer.Vector({
-		source: source
+		source: vectorSource
 	});
 	map.addLayer(routingLayer);
 }
 
 
 /*---------------------------------------------*/
-// 3. Tile Loading Event Handlers
+// 3. ThinkGeo Map Icon Fonts
 /*---------------------------------------------*/
 
-// These events allow you to perform custom actions when 
-// a map tile encounters an error while loading.
-const errorLoadingTile = () => {
-	const errorModal = document.querySelector('#error-modal');
-	if (errorModal.classList.contains('hide')) {
-		// Show the error tips when Tile loaded error.
-		errorModal.classList.remove('hide');
-	}
-};
+// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
+// The loaded Icon Fonts will be used to render POI icons on top of the map's 
+// background layer.  We'll initalize the map only once the font has been 
+// downloaded.  For more info, see our wiki: 
+// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
 
-const setLayerSourceEventHandlers = (layer) => {
-	let layerSource = layer.getSource();
-	layerSource.on('tileloaderror', function() {
-		document.querySelector('.sidebar').classList.add('hide');
-		errorLoadingTile();
-	});
-};
-
-setLayerSourceEventHandlers(lightLayer);
+WebFont.load({
+	custom: {
+		families: [ 'vectormap-icons' ],
+		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
+		testStrings: {
+			'vectormap-icons': '\ue001'
+		}
+	},
+	// The "active" property defines a function to call when the font has
+	// finished downloading.  Here, we'll call our initializeMap method.
+	active: initializeMap
+});
 
 
 /*---------------------------------------------*/
@@ -327,7 +322,7 @@ const routingClient = new tg.RoutingClient(apiKey);
 
 // Get some items which we'll use to judge if we should perform the routing service or show error tips.
 const findRoute = (showError) => {
-	source.clear();
+	vectorSource.clear();
 	const points = getAllPoints();
 	const pointsLength = points.length;
 
@@ -425,6 +420,36 @@ const handleResponse = (res) => {
 	addWalkLinesFeatures(waypointsCoord);
 };
 
+// Get the coordinates array from the input attribute -- data-origin.
+const getCoordFromDataOrigin = (dataOriginValue) => {
+	let value = dataOriginValue.split(',');
+	if (value.length === 2) {
+		return [ Number(value[0]), Number(value[1]) ];
+	} else {
+		return [];
+	}
+};
+
+// Get all the input points coordinates from the input group.
+const getAllPoints = () => {
+	let points = [];
+	const allInputs = document.querySelectorAll('.point input');
+	allInputs.forEach((input) => {
+		const value = input.getAttribute('data-origin');
+		value ? points.push(getCoordFromDataOrigin(value)) : null;
+	});
+	return points;
+};
+
+
+/*---------------------------------------------*/
+// 5. Routing Features Handler Setup
+/*---------------------------------------------*/
+
+// This step we create several method for you to operate the features on the routing layer.
+// Since all the preparation have been done, we need to do have some method to handle the 
+// features we have added to the map.
+
 // Add point feature to map by passing the point name and coordinates.
 const addPointFeature = (name, coord) => {
 	document.querySelector('#result').classList.add('hide');
@@ -438,7 +463,7 @@ const addPointFeature = (name, coord) => {
 		name: name
 	});
 	feature.setStyle(styles[name]);
-	source.addFeatures([ feature ]);
+	vectorSource.addFeatures([ feature ]);
 };
 
 // Add the route line feature by passing the line wkt data from what we get from response.
@@ -447,7 +472,7 @@ const addRouteFeature = (wkt) => {
 	const routeFeature = format.readFeature(wkt);
 	routeFeature.set('name', 'line');
 	routeFeature.setStyle([ styles.line, styles.line_halo ]);
-	source.addFeature(routeFeature);
+	vectorSource.addFeature(routeFeature);
 };
 
 // Add the lines from the point we start from to the nearest route.
@@ -461,7 +486,7 @@ const addWalkLinesFeatures = (waypointsCoord) => {
 		});
 		features.push(feature);
 	});
-	source.addFeatures(features);
+	vectorSource.addFeatures(features);
 };
 
 // Add a radius circle the segment point where we hovering from. 
@@ -473,7 +498,7 @@ const addResultRadius = (coord) => {
 		name: 'resultRadius'
 	});
 	resultRadiusFeature.setStyle(styles.resultRadius);
-	source.addFeature(resultRadiusFeature);
+	vectorSource.addFeature(resultRadiusFeature);
 };
 
 // Add the arrow icon when we zoom in to which segment route we click.
@@ -503,7 +528,7 @@ const addArrow = (penultCoord, lastCoord) => {
 	});
 
 	feature.setStyle(arrowStyle);
-	source.addFeature(feature);
+	vectorSource.addFeature(feature);
 };
 
 // Add the arrow line when we zoom in to which segment route we click.
@@ -514,8 +539,63 @@ const addTurnLine = (penultCoord, lastCoord, lineSecondCoord) => {
 	});
 
 	feature.setStyle(styles.arrowLine);
-	source.addFeature(feature);
+	vectorSource.addFeature(feature);
 };
+
+// Remove a point feature by passing the coordinates.
+const removeFeatureByCoord = (coord) => {
+	const features = vectorSource.getFeatures();
+	features.some((feature) => {
+		if (feature.getGeometry().getCoordinates().toString() === coord) {
+			vectorSource.removeFeature(feature);
+			return true;
+		}
+	});
+};
+
+// Remove the point or line features by passing the feature name.
+const removeFeatureByName = (featureName) => {
+	if (vectorSource) {
+		const features = vectorSource.getFeatures();
+		for (let i = 0, l = features.length; i < l; i++) {
+			let feature = features[i];
+			if (feature.get('name') === featureName) {
+				vectorSource.removeFeature(feature);
+			}
+		}
+	}
+};
+
+// Get the feature by feature's name.
+const getFeatureByName = (name) => {
+	let feature_;
+	vectorSource.getFeatures().some((feature) => {
+		if (feature.get('name') === name) {
+			feature_ = feature;
+			return true;
+		}
+	});
+	return feature_;
+};
+
+// Get the feature by feature's coordinates.
+const getFeatureByCoord = (coord) => {
+	let feature;
+	const features = vectorSource.getFeatures();
+	features.some((f) => {
+		if (f.getGeometry().getCoordinates().toString() === coord) {
+			feature = f;
+		}
+	});
+	return feature;
+};
+
+
+/*---------------------------------------------*/
+// 6. Result Rendering
+/*---------------------------------------------*/
+
+// Since all we have got the result from server, we need to show the result in the left sidebar box.
 
 // Calculate the coordinates what we use to draw the arrow lines by passing the two coordinates.
 const lerp = (firstCoord, secondCoord) => {
@@ -570,6 +650,8 @@ const formatDistanceAndDuration = (distance, duration) => {
 
 // Create the sidebar result container and inner items once we have got the response from server.
 const generateBox = (routes) => {
+	let lastLinePoint;
+	let firstLinePoint;
 	const lineWkt = routes.geometry;
 	let segments = routes.segments;
 	let count = 0;
@@ -802,16 +884,59 @@ const findSecondPointFromEnd = (coordinates) => {
 	return false;
 };
 
-// Hide or show the context menu when we click or right click the map.
-const hideOrShowContextMenu = (style) => {
-	let contextmenu = document.querySelector('#ol-contextmenu');
-	switch (style) {
-		case 'hide':
-			contextmenu.classList.add('hide');
-			break;
-		case 'show':
-			contextmenu.classList.remove('hide');
+
+/*---------------------------------------------*/
+// 7. Error Event Handlers
+/*---------------------------------------------*/
+
+// These events allow you to perform custom actions when 
+// a map tile encounters an error while loading.
+const errorLoadingTile = () => {
+	const errorModal = document.querySelector('#error-modal');
+	if (errorModal.classList.contains('hide')) {
+		// Show the error tips when Tile loaded error.
+		errorModal.classList.remove('hide');
 	}
+};
+
+const setLayerSourceEventHandlers = (layer) => {
+	let layerSource = layer.getSource();
+	layerSource.on('tileloaderror', function() {
+		document.querySelector('.sidebar').classList.add('hide');
+		errorLoadingTile();
+	});
+};
+
+setLayerSourceEventHandlers(lightLayer);
+
+// When you are ready to perform a routing request, but some input boxes are empty. Then we'll show the 
+// input error tip, after 3000ms, we'l hide the error tip automatically.
+let timer;
+const showErrorTip = (content) => {
+	if (timer) {
+		clearTimeout(timer);
+	}
+	const tip = document.querySelector('#input-error');
+	tip.querySelector('p').innerHTML = content;
+	tip.classList.add('show');
+	timer = setTimeout(function() {
+		tip.classList.remove('show');
+	}, 3000);
+};
+
+const hideErrorTip = () => {
+	document.querySelector('#input-error').classList.remove('show');
+};
+
+
+/*---------------------------------------------*/
+// 8. UI control setup
+/*---------------------------------------------*/
+
+// Get the last node from a collection nodes by passing the DOM selector.
+const getLastNodeBySelector = (selector) => {
+	const inputs = document.querySelectorAll(selector);
+	return inputs[inputs.length - 1];
 };
 
 // When we click the clear item in the context menu, we'll mak all the input empty using this method.
@@ -859,71 +984,22 @@ const addInputBox = (coord) => {
 	parent.insertBefore(newNode, lastPoint);
 };
 
-// When you are ready to perform a routing request, but some input boxes are empty. Then we'll show the 
-// input error tip, after 3000ms, we'l hide the error tip automatically.
-let timer;
-const showErrorTip = (content) => {
-	if (timer) {
-		clearTimeout(timer);
-	}
-	const tip = document.querySelector('#input-error');
-	tip.querySelector('p').innerHTML = content;
-	tip.classList.add('show');
-	timer = setTimeout(function() {
-		tip.classList.remove('show');
-	}, 3000);
-};
-
-const hideErrorTip = () => {
-	document.querySelector('#input-error').classList.remove('show');
-};
-
-
-/*---------------------------------------------*/
-// 6. ThinkGeo Map Icon Fonts
-/*---------------------------------------------*/
-
-// Finally, we'll load the Map Icon Fonts using ThinkGeo's WebFont loader. 
-// The loaded Icon Fonts will be used to render POI icons on top of the map's 
-// background layer.  We'll initalize the map only once the font has been 
-// downloaded.  For more info, see our wiki: 
-// https://wiki.thinkgeo.com/wiki/thinkgeo_iconfonts 
-
-WebFont.load({
-	custom: {
-		families: [ 'vectormap-icons' ],
-		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
-		testStrings: {
-			'vectormap-icons': '\ue001'
-		}
-	},
-	// The "active" property defines a function to call when the font has
-	// finished downloading.  Here, we'll call our initializeMap method.
-	active: initializeMap
-});
-
-
-const getLastNodeBySelector = (selector) => {
-	const inputs = document.querySelectorAll(selector);
-	return inputs[inputs.length - 1];
-};
-
-const getCoordFromDataOrigin = (dataOriginValue) => {
-	let value = dataOriginValue.split(',');
-	if (value.length === 2) {
-		return [ Number(value[0]), Number(value[1]) ];
-	} else {
-		return [];
+// Hide or show the context menu when we click or right click the map.
+const hideOrShowContextMenu = (style) => {
+	let contextmenu = document.querySelector('#ol-contextmenu');
+	switch (style) {
+		case 'hide':
+			contextmenu.classList.add('hide');
+			break;
+		case 'show':
+			contextmenu.classList.remove('hide');
 	}
 };
 
-const resetSidebarHeight = () => {
-	const resultSidebar = document.querySelector('.sidebar');
-	const topHeight = document.querySelector('.point').clientHeight + 30;
-	resultSidebar.classList.remove('hide');
-	resultSidebar.style.top = `${topHeight}px`;
-};
-
+// We use this method to toggle switch icon or delete icon in the input group. 
+// Since we only show the switch icon when there are only start and end point 
+// input boxes, and for other instance, we hide this switch icon and show the 
+// delete icon after each input box.
 const toggleCloserAndSwitch = () => {
 	if (document.querySelectorAll('.point input').length === 2) {
 		// There is no via node but only start and end input point. So we have to hide the hide icon of the input and show the switch icon.
@@ -940,72 +1016,23 @@ const toggleCloserAndSwitch = () => {
 	}
 };
 
-const getAllPoints = () => {
-	let points = [];
-	const allInputs = document.querySelectorAll('.point input');
-	allInputs.forEach((input) => {
-		const value = input.getAttribute('data-origin');
-		value ? points.push(getCoordFromDataOrigin(value)) : null;
-	});
-	return points;
-};
-
-// Since all the preparation  have been done, we need to do have some method to handle the 
-// features we have added to the map.
-
-// Remove a point feature by passing the coordinates.
-const removeFeatureByCoord = (coord) => {
-	const features = source.getFeatures();
-	features.some((feature) => {
-		if (feature.getGeometry().getCoordinates().toString() === coord) {
-			source.removeFeature(feature);
-			return true;
-		}
-	});
-};
-
-// Remove the point or line features by passing the feature name.
-const removeFeatureByName = (featureName) => {
-	if (source) {
-		const features = source.getFeatures();
-		for (let i = 0, l = features.length; i < l; i++) {
-			let feature = features[i];
-			if (feature.get('name') === featureName) {
-				source.removeFeature(feature);
-			}
-		}
-	}
-};
-
-// Get the feature by feature's name.
-const getFeatureByName = (name) => {
-	let feature_;
-	source.getFeatures().some((feature) => {
-		if (feature.get('name') === name) {
-			feature_ = feature;
-			return true;
-		}
-	});
-	return feature_;
-};
-
-// Get the feature by feature's coordinates.
-const getFeatureByCoord = (coord) => {
-	let feature;
-	const features = source.getFeatures();
-	features.some((f) => {
-		if (f.getGeometry().getCoordinates().toString() === coord) {
-			feature = f;
-		}
-	});
-	return feature;
+// Since add or delete the input box, the result box height will automatically 
+// change. Here, we use this method to refresh the result sidebar height.
+const resetSidebarHeight = () => {
+	const resultSidebar = document.querySelector('.sidebar');
+	const topHeight = document.querySelector('.point').clientHeight + 30;
+	resultSidebar.classList.remove('hide');
+	resultSidebar.style.top = `${topHeight}px`;
 };
 
 
-/**
- * @constructor
- * @extends {ol.interaction.Pointer}
- */
+/*---------------------------------------------*/
+// 9. Derive the Custom Class Drag
+/*---------------------------------------------*/
+
+// Since we need to drag the point to change the destination or start location, 
+// we have to make the point draggable. At this step, we derived the custom class Drag.
+let coordBeforeMove;
 app.Drag = function() {
 	ol.interaction.Pointer.call(this, {
 		handleDownEvent: app.Drag.prototype.handleDownEvent,
@@ -1013,19 +1040,21 @@ app.Drag = function() {
 		handleMoveEvent: app.Drag.prototype.handleMoveEvent,
 		handleUpEvent: app.Drag.prototype.handleUpEvent
 	});
+	// Save the coordinates when the cursor click.
 	this.coordinate_ = null;
+	// Save the style of current cursor.
 	this.cursor_ = 'pointer';
+	// Save the feature what cursor click at the beginnig.
 	this.feature_ = null;
+	// Save the last style of cursor.
 	this.previousCursor_ = undefined;
 	this.timeEvent;
 	this.flag_ = true;
 };
 ol.inherits(app.Drag, ol.interaction.Pointer);
 
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `true` to start the drag sequence.
- */
+// Function handling "down" events.
+// If the function returns true then a drag sequence is started.
 app.Drag.prototype.handleDownEvent = function(evt) {
 	var map = evt.map;
 	var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
@@ -1046,9 +1075,8 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 	return !!feature;
 };
 
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- */
+// Function handling "drag" events. 
+// This function is called on "move" events during a drag sequence.
 app.Drag.prototype.handleDragEvent = function(evt) {
 	// var map = evt.map;
 	clearTimeout(this.timeEvent);
@@ -1098,9 +1126,9 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 	}, 1000);
 };
 
-/**
- * @param {ol.MapBrowserEvent} evt Event.
- */
+// Function handling "move" events. 
+// This function is called on "move" events, also during a drag sequence
+// (so during a drag sequence both the handleDragEvent function and this function are called).
 app.Drag.prototype.handleMoveEvent = function(evt) {
 	if (this.cursor_) {
 		var map = evt.map;
@@ -1120,10 +1148,8 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
 	}
 };
 
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `false` to stop the drag sequence.
- */
+// Function handling "up" events.
+// If the function returns false then the current drag sequence is stopped.
 app.Drag.prototype.handleUpEvent = function(e) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
@@ -1158,15 +1184,26 @@ app.Drag.prototype.handleUpEvent = function(e) {
 	}
 };
 
+
+/*---------------------------------------------*/
+// 10. Event Listeners
+/*---------------------------------------------*/
+
+// These event listeners tell the UI when it's time to execute all of the 
+// code we've written.
+
 document.addEventListener('DOMContentLoaded', function() {
+	// Hide the context menu of the browsers when right click on the map.
 	document.querySelector('#map').oncontextmenu = () => {
 		return false;
 	};
 
+	// Hide the coustom context-menu when click on the map.
 	document.querySelector('#map').onclick = () => {
 		hideOrShowContextMenu('hide');
 	};
 
+	// Handle the click event when click the item in the customized context menu.
 	document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
 		const target = e.target.id;
 		switch (target) {
@@ -1205,11 +1242,28 @@ document.addEventListener('DOMContentLoaded', function() {
 				hideOrShowContextMenu('hide');
 				document.querySelector('.switch').classList.add('hide');
 				break;
+			case "clear":
+				document.querySelector('#total').innerHTML = '';
+				document.querySelector('#boxes').innerHTML = '';
+				document.querySelector('#result').classList.remove('hide');
+				document.querySelector('.sidebar').classList.add('hide');
+				vectorSource.clear();
+				clearInputBox();
+
+				const x = window.matchMedia('(max-width: 767px)');
+				if (x.matches) {
+					result.style.overflowY = 'hidden';
+					result.classList.remove('transition-height');
+					result.style.height = 0 + 'px';
+				}
+				hideOrShowContextMenu('hide');
 		}
 
 		performRouting();
 	});
 
+	// When the pointer is moving over the item in result box, then add 
+	// a colored circle to the target location.
 	document.querySelector('#map').addEventListener('mouseover', (e) => {
 		let target = e.target;
 		let boxDom;
@@ -1228,6 +1282,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+	// When click the item in the result box, zoom in to where you click 
+	// and show the turn arrow or turn arrow line.
 	document.querySelector('#result').addEventListener('click', (e) => {
 		let target = e.target;
 		let boxDom;
@@ -1293,23 +1349,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
-	document.querySelector('#clear').addEventListener('click', () => {
-		document.querySelector('#total').innerHTML = '';
-		document.querySelector('#boxes').innerHTML = '';
-		document.querySelector('#result').classList.remove('hide');
-		document.querySelector('.sidebar').classList.add('hide');
-		source.clear();
-		clearInputBox();
-
-		const x = window.matchMedia('(max-width: 767px)');
-		if (x.matches) {
-			result.style.overflowY = 'hidden';
-			result.classList.remove('transition-height');
-			result.style.height = 0 + 'px';
-		}
-		hideOrShowContextMenu('hide');
-	});
-
+	// When there are only two points in the input group, we could switch 
+	// the points by clicking the switch icon, which means we could switch 
+	// the starting point and destination point.
 	document.querySelector('.switch').addEventListener('click', () => {
 		let startInput = document.querySelector('#dragable-list input');
 		let endInput = getLastNodeBySelector('#dragable-list li').querySelector('input');
@@ -1331,13 +1373,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		let endOrigin_ = getCoordFromDataOrigin(endOrigin);
 
 		if (startOrigin_.length > 0 && endOrigin_.length > 0) {
-			source.clear();
+			vectorSource.clear();
 			addPointFeature('start', startOrigin_);
 			addPointFeature('end', endOrigin_);
 			performRouting();
 		}
 	});
 
+	// Hide the error modals when clicking the "OK" button.
 	document.querySelector('#error-modal button').addEventListener('click', () => {
 		document.querySelector('#error-modal').classList.add('hide');
 	});
@@ -1355,6 +1398,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		resetSidebarHeight();
 	});
 
+	// Delete the input box when clicking the deleting icon on the right of the input box.
 	document.querySelector('.point').addEventListener('click', function(e) {
 		e = window.event || e;
 		const target = e.target;
@@ -1405,11 +1449,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			removeFeatureByName('arrow');
 			resetSidebarHeight();
 			toggleCloserAndSwitch();
-			performRouting();
+			findRoute(true);
 		}
 	});
 
-	
+	// Update the input value to input attribute of "data-origin", which stores 
+	// the most accurate coordinates of the point. 
 	const updateDataOriginByInput = (inputNode, inputValue) => {
 		if (inputValue) {
 			let valueArr = inputValue.split(',');
@@ -1429,6 +1474,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		updateDataOriginByInput(target, target.value);
 	});
 
+	// When press enter, perform the routing request.  
 	document.querySelector('.point').addEventListener('keyup', function(e) {
 		e = window.e || e;
 		if (e.keyCode === 13) {
@@ -1437,12 +1483,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+	// When click "go" button in the sidebar, performing the routing request.  
 	document.querySelector('#go').addEventListener('click', function() {
 		const showError = true;
 		findRoute(showError);
 	});
 
-	
+	// In order to reorder the input group, we used a plugin to handle it.
+	// When dragging end, we need to judge if we should perform the routing request.
 	const handleDragEnd = () => {
 		const inputs = document.querySelectorAll('#dragable-list input');
 		const length = inputs.length;
@@ -1458,10 +1506,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		const showError = false;
 
-		source.clear();
+		vectorSource.clear();
 		findRoute(showError);
 	};
 
+	// Create the draggable instance.
 	Sortable.create(document.getElementById('dragable-list'), {
 		handle: '.drag',
 		onEnd: handleDragEnd,
