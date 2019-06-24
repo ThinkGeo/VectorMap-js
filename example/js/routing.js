@@ -60,7 +60,7 @@ const styles = {
 			anchorYUnits: 'fraction',
 			opacity: 1,
 			crossOrigin: 'Anonymous',
-			src: 'https://samples.thinkgeo.com/cloud/example/image/starting.png'
+			src: '../image/starting.png'
 		})
 	}),
 	end: new ol.style.Style({
@@ -70,7 +70,7 @@ const styles = {
 			anchorYUnits: 'fraction',
 			opacity: 1,
 			crossOrigin: 'Anonymous',
-			src: 'https://samples.thinkgeo.com/cloud/example/image/ending.png'
+			src: '../image/ending.png'
 		})
 	}),
 	mid: new ol.style.Style({
@@ -496,7 +496,7 @@ const addArrow = (penultCoord, lastCoord) => {
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			crossOrigin: 'Anonymous',
-			src: 'https://samples.thinkgeo.com/cloud/example/image/arrow.png',
+			src: '../image/arrow.png',
 			rotateWithView: true,
 			rotation: -rotation
 		})
