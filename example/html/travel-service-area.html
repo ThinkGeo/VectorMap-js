@@ -187,7 +187,7 @@
 
         #map {
             width: 100%;
-            height: 97%;
+            height: 100%;
             position: relative;
         }
 
@@ -341,6 +341,9 @@
             .travelPanel {
                 left: 1px;
                 transition: left 500ms ease-out;
+                padding: 5px;
+                border-radius: 0;
+                top: 1px;
             }
 
             .travelPanel.collapsed{
@@ -348,7 +351,24 @@
             }
 
             .travelPanel.collapsed {
-                left: -281px;
+                left: -271px;
+            }
+
+            .travel-row{
+                margin-top: 0;
+                padding-bottom: 0;
+            }
+
+            .travel-row button{
+                padding: 0.1rem 0.2rem;
+            }
+
+            .travel-row li{
+                padding: 0.1rem 0.4rem;
+            }
+
+            .travelPanel input[type='text']{
+                margin-bottom: 0.2rem;
             }
 
             #toggle {
@@ -356,7 +376,8 @@
                 position: absolute;
                 left: 100%;
                 transform: rotate(180deg);
-                height: 2em;
+                height: 3em;
+                width: 2em;
                 padding: 0;
                 top: -1px;
                 background-color: rgba(0, 0, 0, .75);
