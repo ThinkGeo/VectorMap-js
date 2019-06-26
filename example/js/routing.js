@@ -24,7 +24,7 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
+const apiKey = "v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~";
 
 
 /*---------------------------------------------*/
@@ -46,7 +46,7 @@ const apiKey = "WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~";
 const styles = {
 	start: new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [ 0.5, 0.9 ],
+			anchor: [0.5, 0.9],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			opacity: 1,
@@ -56,7 +56,7 @@ const styles = {
 	}),
 	end: new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [ 0.5, 0.9 ],
+			anchor: [0.5, 0.9],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			opacity: 1,
@@ -68,10 +68,10 @@ const styles = {
 		image: new ol.style.Circle({
 			radius: 10,
 			fill: new ol.style.Fill({
-				color: [ 255, 255, 255, 19 ]
+				color: [255, 255, 255, 19]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [ 29, 93, 48, 1 ],
+				color: [29, 93, 48, 1],
 				width: 6
 			})
 		})
@@ -79,38 +79,38 @@ const styles = {
 	line: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 6,
-			color: [ 34, 109, 214, 0.9 ]
+			color: [34, 109, 214, 0.9]
 		})
 	}),
 	line_halo: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 10,
 			lineCap: 'round',
-			color: [ 34, 109, 214, 1 ]
+			color: [34, 109, 214, 1]
 		})
 	}),
 	walkLine: new ol.style.Style({
 		stroke: new ol.style.Stroke({
 			width: 2,
-			lineDash: [ 5, 3 ],
-			color: [ 34, 109, 214, 1 ]
+			lineDash: [5, 3],
+			color: [34, 109, 214, 1]
 		})
 	}),
 	resultRadius: new ol.style.Style({
 		image: new ol.style.Circle({
 			radius: 15,
 			fill: new ol.style.Fill({
-				color: [ 255, 102, 0, 0.4 ]
+				color: [255, 102, 0, 0.4]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [ 255, 102, 0, 0.8 ],
+				color: [255, 102, 0, 0.8],
 				width: 1
 			})
 		})
 	}),
 	arrowLine: new ol.style.Style({
 		stroke: new ol.style.Stroke({
-			color: [ 10, 80, 18, 1 ],
+			color: [10, 80, 18, 1],
 			width: 6
 		})
 	})
@@ -127,8 +127,8 @@ const lightLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/wor
 
 // Create a default view for the map when it starts up.
 const view = new ol.View({
-    // Center the map on the United States and start at zoom level 3.
-	center: ol.proj.fromLonLat([ -96.7962, 42.79423 ]),
+	// Center the map on the United States and start at zoom level 3.
+	center: ol.proj.fromLonLat([-96.7962, 42.79423]),
 	maxResolution: 40075016.68557849 / 512,
 	progressiveZoom: false,
 	zoom: 3,
@@ -149,40 +149,40 @@ const initializeMap = () => {
 		renderer: 'webgl',
 		loadTilesWhileAnimating: true,
 		loadTilesWhileInteracting: true,
-        // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
-		layers: [ lightLayer ],
-        // States that the HTML tag with id="map" should serve as the container for our map.
+		// Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
+		layers: [lightLayer],
+		// States that the HTML tag with id="map" should serve as the container for our map.
 		target: 'map',
 		view: view,
 		// Add an interaction to map that allows drag point icons.
-		interactions: ol.interaction.defaults().extend([ new app.Drag() ])
+		interactions: ol.interaction.defaults().extend([new app.Drag()])
 	});
 
 	addRoutingLayer();
 	mobileCompatibility();
 
 	// Add a "pointermove" listener to map which is when the pointer is moving over the start, end and mid point, the cursor should be "pointer" appearance.
-	map.on('pointermove', function(e) {
-		if (e.dragging) {
-			return;
-		}
-		const pixel = map.getEventPixel(e.originalEvent);
-		const hit = map.hasFeatureAtPixel(pixel);
-		let cursor = false;
-		if (hit) {
-			const features = map.getFeaturesAtPixel(pixel);
-			features.some((feature) => {
-				let featureName = feature.get('name');
-				if (featureName === 'start' || featureName === 'end' || featureName === 'mid') {
-					cursor = true;
-					return true;
-				}
-			});
-		} else {
-			cursor = false;
-		}
-		map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
-	});
+	// map.on('pointermove', function(e) {
+	// 	if (e.dragging) {
+	// 		return;
+	// 	}
+	// 	const pixel = map.getEventPixel(e.originalEvent);
+	// 	const hit = map.hasFeatureAtPixel(pixel);
+	// 	let cursor = false;
+	// 	if (hit) {
+	// 		const features = map.getFeaturesAtPixel(pixel);
+	// 		features.some((feature) => {
+	// 			let featureName = feature.get('name');
+	// 			if (featureName === 'start' || featureName === 'end' || featureName === 'mid') {
+	// 				cursor = true;
+	// 				return true;
+	// 			}
+	// 		});
+	// 	} else {
+	// 		cursor = false;
+	// 	}
+	// 	map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
+	// });
 };
 
 // Do some compatibility on mible and IOS client.
@@ -200,30 +200,30 @@ const mobileCompatibility = () => {
 
 	// Show the right click context menu on different platform.
 	if (isiOS) {
-		map.getViewport().addEventListener('gesturestart', function(e) {
+		map.getViewport().addEventListener('gesturestart', function (e) {
 			clearTimeout(timeOutEvent);
 			timeOutEvent = 0;
 			return false;
 		});
 
-		map.getViewport().addEventListener('touchstart', function(e) {
+		map.getViewport().addEventListener('touchstart', function (e) {
 			e.preventDefault();
 			if (e.touches.length != 1) {
 				clearTimeout(timeOutEvent);
 				timeOutEvent = 0;
 				return false;
 			}
-			timeOutEvent = setTimeout(function() {
+			timeOutEvent = setTimeout(function () {
 				if (e.touches.length == 1) {
 					timeOutEvent = 0;
 					left =
-						e.changedTouches[0].clientX + contextWidth > clientWidth
-							? clientWidth - contextWidth
-							: e.changedTouches[0].clientX;
+						e.changedTouches[0].clientX + contextWidth > clientWidth ?
+						clientWidth - contextWidth :
+						e.changedTouches[0].clientX;
 					top =
-						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight
-							? clientHeight - contextmenu.offsetHeight
-							: e.changedTouches[0].clientY;
+						e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight ?
+						clientHeight - contextmenu.offsetHeight :
+						e.changedTouches[0].clientY;
 					contextmenu.style.left = left + 'px';
 					contextmenu.style.top = top + 'px';
 					let point = map.getEventCoordinate(e);
@@ -234,7 +234,7 @@ const mobileCompatibility = () => {
 			}, 500);
 		});
 
-		map.getViewport().addEventListener('touchend', function(event) {
+		map.getViewport().addEventListener('touchend', function (event) {
 			clearTimeout(timeOutEvent);
 			if (timeOutEvent != 0) {
 				hideOrShowContextMenu('hide');
@@ -242,7 +242,7 @@ const mobileCompatibility = () => {
 			return false;
 		});
 
-		map.getViewport().addEventListener('touchmove', function(event) {
+		map.getViewport().addEventListener('touchmove', function (event) {
 			clearTimeout(timeOutEvent);
 			timeOutEvent = 0;
 			return false;
@@ -253,9 +253,9 @@ const mobileCompatibility = () => {
 			insTip.classList.add('gone');
 			left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
 			top =
-				e.clientY + contextmenu.offsetHeight > clientHeight
-					? clientHeight - contextmenu.offsetHeight
-					: e.clientY;
+				e.clientY + contextmenu.offsetHeight > clientHeight ?
+				clientHeight - contextmenu.offsetHeight :
+				e.clientY;
 
 			contextmenu.style.left = left + 'px';
 			contextmenu.style.top = top + 'px';
@@ -294,8 +294,8 @@ const addRoutingLayer = () => {
 
 WebFont.load({
 	custom: {
-		families: [ 'vectormap-icons' ],
-		urls: [ 'https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css' ],
+		families: ['vectormap-icons'],
+		urls: ['https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css'],
 		testStrings: {
 			'vectormap-icons': '\ue001'
 		}
@@ -415,7 +415,7 @@ const handleResponse = (res) => {
 	const routes = data.routes[0];
 	generateBox(routes);
 	const waypointsCoord = data.waypoints.map((item) => {
-		return [ item.coordinate.y, item.coordinate.x ];
+		return [item.coordinate.y, item.coordinate.x];
 	});
 	addWalkLinesFeatures(waypointsCoord);
 };
@@ -424,7 +424,7 @@ const handleResponse = (res) => {
 const getCoordFromDataOrigin = (dataOriginValue) => {
 	let value = dataOriginValue.split(',');
 	if (value.length === 2) {
-		return [ Number(value[0]), Number(value[1]) ];
+		return [Number(value[0]), Number(value[1])];
 	} else {
 		return [];
 	}
@@ -463,7 +463,7 @@ const addPointFeature = (name, coord) => {
 		name: name
 	});
 	feature.setStyle(styles[name]);
-	vectorSource.addFeatures([ feature ]);
+	vectorSource.addFeatures([feature]);
 };
 
 // Add the route line feature by passing the line wkt data from what we get from response.
@@ -471,7 +471,7 @@ const addRouteFeature = (wkt) => {
 	const format = new ol.format.WKT();
 	const routeFeature = format.readFeature(wkt);
 	routeFeature.set('name', 'line');
-	routeFeature.setStyle([ styles.line, styles.line_halo ]);
+	routeFeature.setStyle([styles.line, styles.line_halo]);
 	vectorSource.addFeature(routeFeature);
 };
 
@@ -481,7 +481,7 @@ const addWalkLinesFeatures = (waypointsCoord) => {
 	const points = getAllPoints();
 	points.forEach((point, index) => {
 		const feature = new ol.Feature({
-			geometry: new ol.geom.LineString([ point, waypointsCoord[index] ]),
+			geometry: new ol.geom.LineString([point, waypointsCoord[index]]),
 			name: 'line'
 		});
 		features.push(feature);
@@ -517,7 +517,7 @@ const addArrow = (penultCoord, lastCoord) => {
 
 	const arrowStyle = new ol.style.Style({
 		image: new ol.style.Icon({
-			anchor: [ 0.5, 0.5 ],
+			anchor: [0.5, 0.5],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
 			crossOrigin: 'Anonymous',
@@ -534,7 +534,7 @@ const addArrow = (penultCoord, lastCoord) => {
 // Add the arrow line when we zoom in to which segment route we click.
 const addTurnLine = (penultCoord, lastCoord, lineSecondCoord) => {
 	let feature = new ol.Feature({
-		geometry: new ol.geom.LineString([ penultCoord, lastCoord, lineSecondCoord ]),
+		geometry: new ol.geom.LineString([penultCoord, lastCoord, lineSecondCoord]),
 		name: 'line'
 	});
 
@@ -612,7 +612,7 @@ const lerp = (firstCoord, secondCoord) => {
 		var x = ol.math.lerp(x1, x2, interpolate);
 		var y = ol.math.lerp(y1, y2, interpolate);
 
-		return [ x, y ];
+		return [x, y];
 	}
 
 	return secondCoord;
@@ -762,24 +762,24 @@ const generateBox = (routes) => {
 			}
 
 			let boxInnerDom =
-				count !== segments_.length
-					? `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
-				<span class="distance">${distance}</span><span  class="duration">${duration}</span>${warnStr}`
-					: `<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
+				count !== segments_.length ?
+				`<span class="direction-wrap" ><i class="direction ${className}"></i></span><span title='${instruction}' class="instruction">${instruction}</span>
+				<span class="distance">${distance}</span><span  class="duration">${duration}</span>${warnStr}` :
+				`<span class="direction-wrap" ><i class="direction ${className}"></i></span><span class="instruction endPoint">${instruction}</span>`;
 			let boxDom = document.createElement('DIV');
 			boxDom.className = 'box';
 			boxDom.id = count;
 			if (count === 1) {
 				firstLinePoint = startCoord.split(' ');
-				firstLinePoint = [ +firstLinePoint[0], +firstLinePoint[1] ];
+				firstLinePoint = [+firstLinePoint[0], +firstLinePoint[1]];
 
 				let penult = secondPointFromEnd;
 				penultPoint = penult.split(' ');
-				penultPoint = [ +penultPoint[0], +penultPoint[1] ];
+				penultPoint = [+penultPoint[0], +penultPoint[1]];
 
 				let last = polylineCoord[polylineCoord.length - 1];
 				lastPoint = last.split(' ');
-				lastPoint = [ +lastPoint[0], +lastPoint[1] ];
+				lastPoint = [+lastPoint[0], +lastPoint[1]];
 
 				lastLinePenultCoord = penult;
 				lastLineLastCoord = last;
@@ -789,13 +789,13 @@ const generateBox = (routes) => {
 
 				let last_ = polylineCoord[1];
 				let lastPoint_ = last_.split(' ');
-				lastPoint_ = [ +lastPoint_[0], +lastPoint_[1] ];
+				lastPoint_ = [+lastPoint_[0], +lastPoint_[1]];
 			}
 
 			if (count === segments_.length) {
 				let endCoord = polylineCoord[polylineCoord.length - 1];
 				lastLinePoint = endCoord.split(' ');
-				lastLinePoint = [ +lastLinePoint[0], +lastLinePoint[1] ];
+				lastLinePoint = [+lastLinePoint[0], +lastLinePoint[1]];
 				boxDom.setAttribute('coord', endCoord);
 			} else {
 				boxDom.setAttribute('coord', startCoord);
@@ -808,11 +808,11 @@ const generateBox = (routes) => {
 
 				let penult = secondPointFromEnd;
 				penultPoint = penult.split(' ');
-				penultPoint = [ +penultPoint[0], +penultPoint[1] ];
+				penultPoint = [+penultPoint[0], +penultPoint[1]];
 
 				let last = polylineCoord[polylineCoord.length - 1];
 				lastPoint = last.split(' ');
-				lastPoint = [ +lastPoint[0], +lastPoint[1] ];
+				lastPoint = [+lastPoint[0], +lastPoint[1]];
 
 				lastLinePenultCoord = penult;
 				lastLineLastCoord = last;
@@ -822,7 +822,7 @@ const generateBox = (routes) => {
 			boxDom.innerHTML = boxInnerDom;
 			boxesDom.appendChild(boxDom);
 		});
-	}else{
+	} else {
 		// The two points are too close to find the route, so there are no segments. We need to add start point and end point in the result box.
 		let boxInnerDomStart = `<span class="direction-wrap" ><i class="direction start"></i></span><span title="Start" class="instruction">Start</span>
 		<span class="distance">0 km</span><span  class="duration">0 min</span>`;
@@ -835,7 +835,7 @@ const generateBox = (routes) => {
 		boxDomStart.innerHTML = boxInnerDomStart;
 		boxDomEnd.innerHTML = boxInnerDomEnd;
 		boxDomStart.setAttribute('coord', getAllPoints()[0].join(' '));
-		boxDomEnd.setAttribute('coord', getAllPoints()[getAllPoints().length-1].join(' '));
+		boxDomEnd.setAttribute('coord', getAllPoints()[getAllPoints().length - 1].join(' '));
 		boxesDom.appendChild(boxDomStart);
 		boxesDom.appendChild(boxDomEnd);
 	}
@@ -901,7 +901,7 @@ const errorLoadingTile = () => {
 
 const setLayerSourceEventHandlers = (layer) => {
 	let layerSource = layer.getSource();
-	layerSource.on('tileloaderror', function() {
+	layerSource.on('tileloaderror', function () {
 		document.querySelector('.sidebar').classList.add('hide');
 		errorLoadingTile();
 	});
@@ -919,7 +919,7 @@ const showErrorTip = (content) => {
 	const tip = document.querySelector('#input-error');
 	tip.querySelector('p').innerHTML = content;
 	tip.classList.add('show');
-	timer = setTimeout(function() {
+	timer = setTimeout(function () {
 		tip.classList.remove('show');
 	}, 3000);
 };
@@ -969,7 +969,7 @@ const addInputBox = (coord) => {
 	if (coord) {
 		dataOrigin = coord;
 		let coord_ = new ol.proj.toLonLat(coord);
-		inputValue = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
+		inputValue = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
 	} else {
 		dataOrigin = lastInput.getAttribute('data-origin');
 		inputValue = lastInput.value;
@@ -994,6 +994,7 @@ const hideOrShowContextMenu = (style) => {
 		case 'show':
 			contextmenu.classList.remove('hide');
 	}
+	console.log('hide end')
 };
 
 // We use this method to toggle switch icon or delete icon in the input group. 
@@ -1033,7 +1034,7 @@ const resetSidebarHeight = () => {
 // Since we need to drag the point to change the destination or start location, 
 // we have to make the point draggable. At this step, we derived the custom class Drag.
 let coordBeforeMove;
-app.Drag = function() {
+app.Drag = function () {
 	ol.interaction.Pointer.call(this, {
 		handleDownEvent: app.Drag.prototype.handleDownEvent,
 		handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -1055,9 +1056,14 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 
 // Function handling "down" events.
 // If the function returns true then a drag sequence is started.
-app.Drag.prototype.handleDownEvent = function(evt) {
+app.Drag.prototype.handleDownEvent = function (evt) {
+	// If it is not "left click", do not excute the after code.
+	if (evt.originalEvent.button === 2 || evt.originalEvent.button === 1) {
+		return;
+	}
+	hideOrShowContextMenu('hide');
 	var map = evt.map;
-	var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+	var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
 		clearTimeout(this.timeEvent);
 		this.flag_ = true;
 		let featureName = feature.get('name');
@@ -1073,17 +1079,14 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 	}
 
 	return !!feature;
+
 };
 
 // Function handling "drag" events. 
 // This function is called on "move" events during a drag sequence.
-app.Drag.prototype.handleDragEvent = function(evt) {
-	// var map = evt.map;
+app.Drag.prototype.handleDragEvent = function (evt) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
-	// var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-	// 	return feature;
-	// });
 
 	this.flag_ = true;
 
@@ -1099,7 +1102,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 	this.coordinate_[1] = evt.coordinate[1];
 	const coordBeforeMove_ = coordBeforeMove.slice();
 
-	this.timeEvent = setTimeout(function() {
+	this.timeEvent = setTimeout(function () {
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
 		this.flag_ = false;
@@ -1115,8 +1118,9 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 				}
 			});
 			if (inputNode) {
+				coordBeforeMove = coord;
 				inputNode.setAttribute('data-origin', coord);
-				inputNode.value = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
+				inputNode.value = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
 			}
 		}
 		performRouting();
@@ -1129,33 +1133,39 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 // Function handling "move" events. 
 // This function is called on "move" events, also during a drag sequence
 // (so during a drag sequence both the handleDragEvent function and this function are called).
-app.Drag.prototype.handleMoveEvent = function(evt) {
-	if (this.cursor_) {
-		var map = evt.map;
-		var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-			return feature;
-		});
-		var element = evt.map.getTargetElement();
-		if (feature) {
-			if (element.style.cursor != this.cursor_) {
-				this.previousCursor_ = element.style.cursor;
-				element.style.cursor = this.cursor_;
-			}
-		} else if (this.previousCursor_ !== undefined) {
-			element.style.cursor = this.previousCursor_;
-			this.previousCursor_ = undefined;
-		}
-	}
+let timerMove;
+app.Drag.prototype.handleMoveEvent = function (evt) {
+	// var element = evt.map.getTargetElement();
+	// element.style.cursor = '';
+	// if (timerMove) {
+	// 	clearTimeout(timerMove);
+	// }
+	// timerMove = setTimeout(function () {
+	// 	console.log('in timerMove')
+	// 	var map = evt.map;
+	// 	var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+	// 		return feature;
+	// 	});
+	// 	let featureName = feature.get('name');
+	// 	if (featureName && (featureName === 'start' || featureName === 'end' || featureName === 'mid')) {
+	// 		element.style.cursor = 'pointer';
+	// 	}
+	// }, 1000)
+
 };
 
 // Function handling "up" events.
 // If the function returns false then the current drag sequence is stopped.
-app.Drag.prototype.handleUpEvent = function(e) {
+app.Drag.prototype.handleUpEvent = function (e) {
 	clearTimeout(this.timeEvent);
 	this.timeEvent = 0;
 	if (this.flag_) {
 		const featureType = this.feature_.get('name');
 		const coord = this.feature_.getGeometry().getCoordinates();
+
+		if (coord.toString() === coordBeforeMove.toString()) {
+			return;
+		}
 		const coord_ = new ol.proj.toLonLat(coord);
 		const coordBeforeMove_ = coordBeforeMove.slice();
 
@@ -1172,7 +1182,7 @@ app.Drag.prototype.handleUpEvent = function(e) {
 			});
 			if (inputNode) {
 				inputNode.setAttribute('data-origin', coord);
-				inputNode.value = [ coord_[1].toFixed(8), coord_[0].toFixed(8) ];
+				inputNode.value = [coord_[1].toFixed(8), coord_[0].toFixed(8)];
 			}
 		}
 		removeFeatureByName('line');
@@ -1192,7 +1202,7 @@ app.Drag.prototype.handleUpEvent = function(e) {
 // These event listeners tell the UI when it's time to execute all of the 
 // code we've written.
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	// Hide the context menu of the browsers when right click on the map.
 	document.querySelector('#map').oncontextmenu = () => {
 		return false;
@@ -1200,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Hide the coustom context-menu when click on the map.
 	document.querySelector('#map').onclick = () => {
-		hideOrShowContextMenu('hide');
+		// hideOrShowContextMenu('hide');
 	};
 
 	// Handle the click event when click the item in the customized context menu.
@@ -1275,7 +1285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (boxDom !== undefined) {
 			let attrCoord = boxDom.getAttribute('coord');
 			attrCoord = attrCoord.split(' ');
-			let coord = [ Number(attrCoord[0]), Number(attrCoord[1]) ];
+			let coord = [Number(attrCoord[0]), Number(attrCoord[1])];
 			addResultRadius(coord);
 		} else {
 			removeFeatureByName('resultRadius');
@@ -1307,35 +1317,35 @@ document.addEventListener('DOMContentLoaded', function() {
 			let penult = boxDom.getAttribute('lastlinepenultcoord');
 			if (penult) {
 				penult = penult.split(' ');
-				let penultCoord = [ Number(penult[0]), Number(penult[1]) ];
+				let penultCoord = [Number(penult[0]), Number(penult[1])];
 
 				let last = boxDom.getAttribute('lastLineLastCoord');
 				last = last.split(' ');
-				let lastCoord = [ Number(last[0]), Number(last[1]) ];
+				let lastCoord = [Number(last[0]), Number(last[1])];
 
 				addArrow(penultCoord, lastCoord);
 			}
 			let attrCoord = boxDom.getAttribute('coord');
 			attrCoord = attrCoord.split(' ');
-			let coord = [ Number(attrCoord[0]), Number(attrCoord[1]) ];
+			let coord = [Number(attrCoord[0]), Number(attrCoord[1])];
 			view.fit(new ol.geom.Point(coord), {
-				padding: [ 20, 20, 20, 20 ],
+				padding: [20, 20, 20, 20],
 				duration: 1000,
 				maxZoom: 17,
-				callback: function() {
+				callback: function () {
 					let penult = boxDom.getAttribute('lastlinepenultcoord');
 					if (penult) {
 						penult = penult.split(' ');
-						let penultCoord = [ Number(penult[0]), Number(penult[1]) ];
+						let penultCoord = [Number(penult[0]), Number(penult[1])];
 
 						let last = boxDom.getAttribute('lastLineLastCoord');
 						last = last.split(' ');
-						let lastCoord = [ Number(last[0]), Number(last[1]) ];
+						let lastCoord = [Number(last[0]), Number(last[1])];
 
 						var lineSecondCoord = boxDom.getAttribute('lineSecondCoord');
 						if (lineSecondCoord) {
 							var stringCoords = lineSecondCoord.split(' ');
-							lineSecondCoord = [ +stringCoords[0], +stringCoords[1] ].slice();
+							lineSecondCoord = [+stringCoords[0], +stringCoords[1]].slice();
 							var prevCoord = lerp(lastCoord, penultCoord);
 							var secondCoord = lerp(lastCoord, lineSecondCoord);
 							addArrow(lastCoord, secondCoord);
@@ -1386,7 +1396,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// Add an input box once clicked the "Add destination" button
-	document.querySelector('#add-point').addEventListener('click', function() {
+	document.querySelector('#add-point').addEventListener('click', function () {
 		removeFeatureByName('line');
 		removeFeatureByName('arrow');
 		const feature = getFeatureByName('end');
@@ -1399,7 +1409,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// Delete the input box when clicking the deleting icon on the right of the input box.
-	document.querySelector('.point').addEventListener('click', function(e) {
+	document.querySelector('.point').addEventListener('click', function (e) {
 		e = window.event || e;
 		const target = e.target;
 		const classlist = target.classList;
@@ -1459,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (inputValue) {
 			let valueArr = inputValue.split(',');
 			if (valueArr.length === 2) {
-				let valueArr_ = [ Number(valueArr[1]), Number(valueArr[0]) ]; // '12,13' => [13,12]
+				let valueArr_ = [Number(valueArr[1]), Number(valueArr[0])]; // '12,13' => [13,12]
 				inputNode.setAttribute('data-origin', new ol.proj.fromLonLat(valueArr_));
 			} else {
 				inputNode.setAttribute('data-origin', '');
@@ -1468,14 +1478,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			inputNode.setAttribute('data-origin', '');
 		}
 	};
-	document.querySelector('.point').addEventListener('input', function(e) {
+	document.querySelector('.point').addEventListener('input', function (e) {
 		e = window.event || e;
 		const target = e.target;
 		updateDataOriginByInput(target, target.value);
 	});
 
 	// When press enter, perform the routing request.  
-	document.querySelector('.point').addEventListener('keyup', function(e) {
+	document.querySelector('.point').addEventListener('keyup', function (e) {
 		e = window.e || e;
 		if (e.keyCode === 13) {
 			const showError = true;
@@ -1484,7 +1494,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// When click "go" button in the sidebar, performing the routing request.  
-	document.querySelector('#go').addEventListener('click', function() {
+	document.querySelector('#go').addEventListener('click', function () {
 		const showError = true;
 		findRoute(showError);
 	});

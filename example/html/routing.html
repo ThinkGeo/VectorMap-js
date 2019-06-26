@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Routing in North America | ThinkGeo</title>
-    
+
     <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
 
@@ -111,6 +111,8 @@
             border: 1px solid #202020;
             border-radius: 50%;
             text-align: center;
+            font-family: none;
+            font-weight: bold;
         }
 
         #go {
@@ -661,12 +663,17 @@
         /* Mobile phone */
         @media (max-width: 767px) {
             .sidebar {
-                height: 0!important;
+                height: 0 !important;
                 border: 0;
             }
 
             .point {
                 left: calc(50% - 150px);
+            }
+
+            #dragable-list {
+                max-height: 105px;
+                overflow: auto;
             }
 
             #dragable-list label {
@@ -912,7 +919,7 @@
                 <div></div>
             </div>
         </div>
-        
+
         <!-- Set up the result container. -->
         <div class="sidebar hide">
             <div id="result" class="hide transition-height">
@@ -963,11 +970,11 @@
     </div>
 
     <!-- Include ThinkGeo's VectorMap.js library from our CDN. -->
-    <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0-beta022/vectormap.js"></script>
+    <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0-beta022/vectormap-dev.js"></script>
 
     <!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
-    
+
     <!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
     <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.4/thinkgeocloudclient.js"></script>
 
