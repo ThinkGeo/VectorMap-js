@@ -75,7 +75,41 @@ const initializeMap = () => {
     addRoutingPoint();
     performRouting();
     mobileCompatibility();
+    addEventListenerToMap(map);
 };
+
+const addEventListenerToMap = (map) => {
+    // Add a "pointermove" listener to map which is when the pointer is moving over the start, end and mid point, the cursor should be "pointer" appearance.
+    map.on('pointermove', function (e) {
+        if (e.dragging) {
+            return;
+        }
+        const pixel = map.getEventPixel(e.originalEvent);
+        const options = {
+            // Only find feature on the routing layer not the base vector tile layer.
+            layerFilter: function (layer) {
+                if (layer instanceof ol.layer.VectorTile) {
+                    return false;
+                }
+                return true;
+            }
+        };
+        const hit = map.hasFeatureAtPixel(pixel, options);
+        let cursor = false;
+        if (hit) {
+            const features = map.getFeaturesAtPixel(pixel, options);
+            features.some((feature) => {
+                if (feature.get('name') === 'start') {
+                    cursor = true;
+                    return true;
+                }
+            });
+        } else {
+            cursor = false;
+        }
+        map.getTargetElement().style.cursor = cursor ? 'pointer' : '';
+    });
+}
 
 // In this custom object, we're going to define eight styles:
 //   1. The appearance of the start point icon.
@@ -398,13 +432,10 @@ app.Drag = function () {
     ol.interaction.Pointer.call(this, {
         handleDownEvent: app.Drag.prototype.handleDownEvent,
         handleDragEvent: app.Drag.prototype.handleDragEvent,
-        handleMoveEvent: app.Drag.prototype.handleMoveEvent,
         handleUpEvent: app.Drag.prototype.handleUpEvent
     });
     this.coordinate_ = null;
-    this.cursor_ = 'pointer';
     this.feature_ = null;
-    this.previousCursor_ = undefined;
 };
 ol.inherits(app.Drag, ol.interaction.Pointer);
 
@@ -437,28 +468,6 @@ app.Drag.prototype.handleDragEvent = function (evt) {
     geometry.translate(deltaX, deltaY);
     this.coordinate_[0] = evt.coordinate[0];
     this.coordinate_[1] = evt.coordinate[1];
-};
-
-// Function handling "move" events. 
-// This function is called on "move" events, also during a drag sequence
-// (so during a drag sequence both the handleDragEvent function and this function are called).
-app.Drag.prototype.handleMoveEvent = function (evt) {
-    if (this.cursor_) {
-        let map = evt.map;
-        let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-            return feature;
-        });
-        let element = evt.map.getTargetElement();
-        if (feature) {
-            if (element.style.cursor != this.cursor_) {
-                this.previousCursor_ = element.style.cursor;
-                element.style.cursor = this.cursor_;
-            }
-        } else if (this.previousCursor_ !== undefined) {
-            element.style.cursor = this.previousCursor_;
-            this.previousCursor_ = undefined;
-        }
-    }
 };
 
 // Function handling "up" events.
@@ -497,12 +506,12 @@ document.addEventListener('DOMContentLoaded', function () {
         hideOrShowContextMenu('hide');
     };
 
-	// Hide the context menu of the browsers when right click on the map.
+    // Hide the context menu of the browsers when right click on the map.
     document.querySelector('#map').oncontextmenu = () => {
         return false;
     };
 
-	// Handle the click event when click the item in the customized context menu.
+    // Handle the click event when click the item in the customized context menu.
     document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
         e = window.event || e;
         const targetId = e.target.id;
@@ -548,10 +557,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Hide or show the sidebar panel when the device is a mobile platform.
-    document.querySelector('#toggle').addEventListener('click', function () { 
+    document.querySelector('#toggle').addEventListener('click', function () {
         const classList = document.querySelector('.travelPanel').classList;
-       classList.contains('collapsed') ? classList.remove('collapsed') : classList.add('collapsed');
-     })
+        classList.contains('collapsed') ? classList.remove('collapsed') : classList.add('collapsed');
+    })
 
     // Update the Driving Minute Limit input min or max attribute value when changing the input value.
     let timeLimitInputs = document.querySelectorAll('#drive-time-limit input');
