@@ -1,5 +1,5 @@
 /*===========================================================================*/
-// Find an Address in the US
+// Geocoding
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
@@ -20,8 +20,8 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
-
+const apiKey = 'HCGSaTIZsLE_4gh8RFuJ85--2m5KPE1lWfHVpYlS0jg~';
+const apiKeyForBaseLayer = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -31,11 +31,9 @@ const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // Cloud Maps Raster Tile service to display a detailed street map.  For more
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
-let baseLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-        url: `https://cloud.thinkgeo.com/api/v1/maps/raster/light/x1/3857/512/{z}/{x}/{y}.png?apiKey=${apiKey}`,
-        tileSize: 512,
-    }),
+let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json', {
+    apiKey: apiKeyForBaseLayer,
+    layerName: 'dark'
 });
 
 // Create a default view for the map when it starts up.
@@ -48,47 +46,73 @@ let view = new ol.View({
     maxZoom: 19
 })
 
-// Create and initialize our interactive map.
-let map = new ol.Map({
-    renderer: 'webgl',
-    // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
-    layers: [baseLayer],
-    // States that the HTML tag with id="map" should serve as the container for our map.
-    target: 'map',
-    loadTilesWhileAnimating: true,
-    loadTilesWhileInteracting: true,
-    // Add a default view for the map when it starts up.
-    view: view
-});
+let map;
+let geocodingLayer;
+let initializeMap = () => {
+
+    // Create and initialize our interactive map.
+    map = new ol.Map({
+        renderer: 'webgl',
+        // Add our previously-defined ThinkGeo Cloud Raster Tile layer to the map.
+        layers: [baseLayer],
+        // States that the HTML tag with id="map" should serve as the container for our map.
+        target: 'map',
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+        // Add a default view for the map when it starts up.
+        view: view
+    });
 
 
-// The next part sets up the style for the geocoder layer.
-let styles = {
-    boundingBox: new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: [0, 0, 255, 0.5],
-            width: 1
+    // The next part sets up the style for the geocoder layer.
+    let styles = {
+        boundingBox: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: [0, 0, 255, 0.5],
+                width: 1
+            }),
+            fill: new ol.style.Fill({
+                color: [0, 0, 255, 0.1]
+            })
         }),
-        fill: new ol.style.Fill({
-            color: [0, 0, 255, 0.1]
-        })
-    }),
+    }
+
+    // Create the geocoder layer and use the pre-defined style for our geocoding layer and add it to map.
+    geocodingLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: []
+        }),
+        style: function () {
+            let style = styles['boundingBox'];
+            return style;
+        }
+    });
+    map.addLayer(geocodingLayer);
+
+    // Add a button to the map that lets us toggle full-screen display mode.
+    map.addControl(new ol.control.FullScreen());
+    
+    map.on("click", function (e) {
+        var resultDiv = document.getElementById('geocoderResult');
+        if (resultDiv) {
+            resultDiv.innerText = ""
+            focusIndex = -1;
+        }
+    })
 }
 
-// Create the geocoder layer and use the pre-defined style for our geocoding layer and add it to map.
-let geocodingLayer = new ol.layer.Vector({
-    source: new ol.source.Vector({
-        features: []
-    }),
-    style: function () {
-        let style = styles['boundingBox'];
-        return style;
-    }
+WebFont.load({
+    custom: {
+        families: ["vectormap-icons"],
+        urls: ["https://cdn.thinkgeo.com/vectormap-icons/2.0.0/vectormap-icons.css"],
+        testStrings: {
+            'vectormap-icons': '\ue001'
+        }
+    },
+    // The "active" property defines a function to call when the font has
+    // finished downloading.  Here, we'll call our initializeMap method.
+    active: initializeMap
 });
-map.addLayer(geocodingLayer);
-
-// Add a button to the map that lets us toggle full-screen display mode.
-map.addControl(new ol.control.FullScreen());
 
 
 
@@ -121,10 +145,15 @@ closer.onclick = () => {
 };
 
 // When calling this method, we'll add the popup panel to map and show the address info in the box.
-const addPopup = (address, coordinates) => {
+const addPopup = (tile, coordinates, address, label) => {
     overlay.setPosition(ol.proj.fromLonLat(coordinates));
     map.addOverlay(overlay);
-    content.innerHTML = `<p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]}</p>`
+    if (label) {
+        content.innerHTML = `<h4>${tile}</h4><p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]} (${label})</p>`
+    }
+    else {
+        content.innerHTML = `<h4>${tile}</h4><p class="address">${address}</p><p class="coodinates">${coordinates[1]},${coordinates[0]}</p>`
+    }
 }
 
 
@@ -141,7 +170,8 @@ const addPopup = (address, coordinates) => {
 
 // We need to create the instance of Geocoder client and authenticate the API key.
 let geocodingClient = new tg.GeocodingClient(apiKey);
-
+geocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
+let results;
 let resultsLength;
 let geocoderResultNode = document.getElementById('geocoderResult');
 
@@ -156,22 +186,23 @@ const renderResult = (locations) => {
         let i = -1
         for (let item of locations) {
             i = i + 1;
-            str += `<li><a data-coordinatesX=${(item.locationPoint.pointX).toFixed(6)} data-coordinatesY=${(item.locationPoint.pointY).toFixed(6)} data-index=${i} data-boundingBox="${item.boundingBox}" data-type=${item.locationType}> ${item.address} </a></li>`
+            str += `<li><a   data-index=${i} > ${item.address} </a></li>`
         }
         geocoderResultNode.innerHTML = str;
     } else {
         geocoderResultNode.innerHTML = ''
     }
+    results = locations;
 }
 
 // This method actually performs the Geocoder request. It uses our ThinkGeo Cloud Services to get back the addresses 
 // related to your input address. It will return a collection of addresses that the number will less than 5, while 
 // the MaxResults parameter is 5.
 const geocoder = (val) => {
-    let opts = {
-        maxResults: 5
-    };
+    document.querySelector('.loading').classList.remove('hidden');
+    let opts = getGeocodingOptions();
     const callback = (status, res) => {
+        focusIndex = -1;
         if (status !== 200) {
             errorLoadingTile();
         } else {
@@ -179,14 +210,48 @@ const geocoder = (val) => {
             renderResult(locations);
         }
     };
+    if (geocodingClient.xhr) {
+        geocodingClient.xhr.abort();
+        delete geocodingClient.xhr;
+    }
+    geocodingClient.on("sendingrequest", function (e) {
+        this.xhr = e.xhr;
+    })
     // Call the searchByPoint API to search the points by the input address.
     geocodingClient.searchByPoint(val, callback, opts);
+    geocodingClient.un("sendingrequest")
+}
+
+const getGeocodingOptions = () => {
+    // Get selected location types.
+    var locationTypes = [];
+    var selectedButtons = document.getElementsByClassName("selected");
+    for (var i = 0; i < selectedButtons.length; i++) {
+        locationTypes.push(selectedButtons[i].value);
+    }
+    // Get country code
+    var countryCode = document.querySelector('#country-filter').value;
+    // Get MaxResults
+    var countLimit = document.querySelector('#count-limit').value;
+    // Get Autocomplete
+    var autocomplete = true;
+
+    let opts = {
+        LocationType: locationTypes.join(","),
+        Countries: countryCode,
+        MaxResults: countLimit,
+        Autocomplete: autocomplete,
+        // Defaults as true for VerboseResults to display geometry of Results
+        VerboseResults: true
+    };
+
+    return opts;
 }
 
 // This method will create the address feature where you select, and add it to geocodingLayer which we create earlier.
 // If the address is a street, slide the map over to the center point what we get back, otherwise, create a bounding box 
 // polygon feature and add it to geocodinglayer. Fit the given geometry or extent based on the given boundingBox.
-const renderMatchedPlacePolygon = (coordinatesX, coordinatesY, boundingBox, type) => {
+const renderMatchedPlacePolygon = (coordinatesX, coordinatesY, boundingBox, type, geometry) => {
     let source = geocodingLayer.getSource();
     source.clear();
     if (type === 'Street') {
@@ -197,7 +262,7 @@ const renderMatchedPlacePolygon = (coordinatesX, coordinatesY, boundingBox, type
         });
     } else {
         let format = new ol.format.WKT();
-        let wktFeature = format.readFeature(boundingBox, {
+        let wktFeature = format.readFeature(geometry, {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
         });
@@ -221,44 +286,70 @@ const renderMatchedPlacePolygon = (coordinatesX, coordinatesY, boundingBox, type
 // value we need from the element property. By passing them to renderMatchedPlacePolygon 
 // and addPopup method to perform Geocoder and show the popup info panel.
 let focusIndex = -1;
+
 const searchPlace = (focusIndex) => {
     let geocoderResult = document.querySelector('#geocoderResult');
-    let node = geocoderResult.querySelectorAll('a[data-index]')[focusIndex];
-    let address = document.getElementById('address');
-    address.value = node.innerText;
-    geocoderResultNode.innerHTML = '';
 
-    let locationTitle = address.value;
-    let boundingBox = node.getAttribute('data-boundingBox');
-    let coordinatesX = node.getAttribute('data-coordinatesX');
-    let coordinatesY = node.getAttribute('data-coordinatesY');
-    let type = node.getAttribute('data-type');
+    let geometry;
+    let displayTitle;
+    let displayAddress;
+    let displayLabel;
+    let coordinates;
+    let boundingBox;
+    let type;
+    if (results) {
+        let targetResult = results[focusIndex];
+        if (targetResult) {
+            // Geometry
+            geometry = targetResult["geometry"];
 
-    let coordinates = [parseFloat(coordinatesX), parseFloat(coordinatesY)];
+            // coordinates
+            var locationPoint = targetResult.locationPoint;
+            coordinates = [parseFloat(locationPoint.x.toFixed(6)), parseFloat(locationPoint.y.toFixed(6))];
 
-    renderMatchedPlacePolygon(coordinatesX, coordinatesY, boundingBox, type);
-    addPopup(locationTitle, coordinates);
+
+            // displayName and displayAddress
+            var locationAddress = targetResult.address;
+            var name = targetResult.name;
+            var houseNumber = targetResult.addressComponents["housenumber"];
+            var roadName = targetResult.addressComponents["street"];
+            var titleArray = [];
+            if (name) {
+                titleArray.push(name);
+            }
+            if (houseNumber) {
+                titleArray.push(houseNumber);
+            }
+            if (roadName) {
+                titleArray.push(roadName);
+            }
+            displayTitle = titleArray.join(", ");
+
+            if (locationAddress.startsWith(displayTitle)) {
+                displayAddress = locationAddress.substring(displayTitle.length + 2);
+            }
+            else {
+                displayAddress = locationAddress;
+            }
+
+            // displayLabel
+            if (targetResult.properties) {
+                displayLabel = targetResult.properties.label;
+            }
+
+            // boundingBox
+            boundingBox = targetResult.boundingBox;
+            // type 
+            type = targetResult.type;
+        }
+    }
+
+    renderMatchedPlacePolygon(coordinates[0], coordinates[1], boundingBox, type, geometry);
+    addPopup(displayTitle, coordinates, displayAddress, displayLabel);
 }
 
 // Control the selected item UI.
 const computedHighlitIndex = (dir) => {
-    if (document.querySelector('.loading').classList.contains('hidden')) {
-        if (dir === -1) {
-            if (focusIndex === 0) {
-                focusIndex = resultsLength - 1;
-            } else {
-                focusIndex -= 1;
-            }
-        } else if (dir === 1) {
-            if (focusIndex === resultsLength - 1) {
-                focusIndex = 0;
-            } else {
-                focusIndex += 1;
-            }
-        } else if (focusIndex === -1) {
-            focusIndex = 0;
-        }
-    }
     let geocoderResult = document.querySelector('#geocoderResult');
     if (geocoderResult.querySelector('.focus')) {
         geocoderResult.querySelector('.focus').classList.remove('focus');
@@ -272,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer = null;
     let address = document.getElementById('address');
     address.addEventListener('input', () => {
+        geocoderResult.se
         clearTimeout(timer);
         timer = setTimeout(() => {
             overlay.setPosition(undefined);
@@ -280,12 +372,22 @@ document.addEventListener('DOMContentLoaded', () => {
             let value = address.value;
             focusIndex = -1;
             if (value) {
+                if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
+                    document.querySelector(".ol-unselectable").style.display = 'none';
+                } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                }
                 document.querySelector('.loading').classList.remove('hidden');
                 geocoder(value);
             } else {
+                if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                }
                 geocoderResultNode.innerHTML = ''
             }
-        }, 200);
+        }, 350);
     })
 
     // When you click the specific address, it'll perform Geocoder.
@@ -294,7 +396,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let target = e.target;
         if (target.nodeName == 'A') {
             focusIndex = Number(target.getAttribute('data-index'));
+            computedHighlitIndex(focusIndex);
             searchPlace(focusIndex);
+        }
+        if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+            document.querySelector(".ol-unselectable").style.display = 'block';
         }
     });
 
@@ -302,24 +408,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // address list and we'll show them below the input box. You can enter the up button 
     // and down button to choose the place. 
     document.body.addEventListener('keydown', (e) => {
+        if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+            document.querySelector(".ol-unselectable").style.display = 'block';
+        }
         e = window.event || e;
         switch (e.keyCode) {
             case 38:
                 // Up
                 e.preventDefault();
-                computedHighlitIndex(-1);
-                break;
+                focusIndex -= 1;
+                if (focusIndex === -1) {
+                    focusIndex = resultsLength - 1;
+                }
+                computedHighlitIndex(focusIndex);
+                searchPlace(focusIndex);
 
+                break;
             case 40:
                 // Down
                 e.preventDefault();
-                computedHighlitIndex(1);
+                focusIndex += 1;
+                if (focusIndex === resultsLength) {
+                    focusIndex = 0;
+                }
+                computedHighlitIndex(focusIndex);
+                searchPlace(focusIndex);
+
                 break;
             case 13:
                 // Enter
                 if (focusIndex !== -1) {
                     searchPlace(focusIndex);
-                    focusIndex = -1;
                 } else {
                     focusIndex = -1;
                     let value = document.getElementById('address').value;
@@ -330,7 +449,43 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 })
 
+var searchProcess = function () {
+    let address = document.getElementById('address');
+    overlay.setPosition(undefined);
+    let source = geocodingLayer.getSource();
+    source.clear();
+    focusIndex = -1;
+    let value = address.value;
+    if (value) {
+        document.querySelector('.loading').classList.remove('hidden');
+        geocoder(value);
+    } else {
+        geocoderResultNode.innerHTML = ''
+    }
+}
 
+// selected locationtype changed
+var locationTypeButtons = document.getElementsByClassName("location-type-button");
+var locationTypeChanged = function (e) {
+    if (this.classList.contains("selected")) {
+        this.classList.remove("selected");
+    }
+    else {
+        this.classList.add("selected");
+    }
+    searchProcess();
+}
+for (var i = 0; i < locationTypeButtons.length; i++) {
+    locationTypeButtons[i].addEventListener("click", locationTypeChanged)
+}
+
+// Country Changed
+var countryCodeSelect = document.getElementById("country-filter");
+countryCodeSelect.addEventListener("change", searchProcess);
+
+// Max Result Changed
+var maxResult = document.getElementById("count-limit");
+maxResult.addEventListener("change", searchProcess);
 
 /*---------------------------------------------*/
 // 6. Tile Loading Event Handlers

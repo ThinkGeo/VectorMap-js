@@ -622,10 +622,10 @@
       },
       {
         comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo  Cloud Service</a>.',
-        title: "Find an Address in the US",
-        htmlPath: './example/html/find-address.html',
+        title: "Geocoding",
+        htmlPath: './example/html/geocoding.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
-        jsPath: './example/js/find-address.js'
+        jsPath: './example/js/geocoding.js'
       },
       {
         comments: 'Plan your route from one place to another in the U.S., Canada or Mexico with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
