@@ -1,3 +1,5 @@
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
 if (!navigator.geolocation) {
     document.getElementsByClassName('your-location')[0].classList.add('hide');
 }
@@ -61,7 +63,7 @@ const getWmsMap = (coord_) => {
     const center = xycoord;
     const resolution = 611.49622628141;
     bbox = getForViewAndSize(center, resolution, 0, size);
-    const url = `https://cloud.thinkgeo.com/api/v1/maps/wms?Request=GetMap&Service=WMS&Layers=WorldStreets&Styles=light&Format=IMAGE%2FPNG&Transparent=true&Version=1.1.1&Width=${width}&Height=${height}&Srs=EPSG%3A3857&BBOX=${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]}`;
+    const url = `https://cloud.thinkgeo.com/api/v1/maps/wms?Request=GetMap&Service=WMS&Layers=WorldStreets&Styles=light&Format=IMAGE%2FPNG&Transparent=true&Version=1.1.1&Width=${width}&Height=${height}&Srs=EPSG%3A3857&BBOX=${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]}&apikey=${apiKey}`;
     image.src = url;
 }
 
