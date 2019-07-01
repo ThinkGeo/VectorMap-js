@@ -160,14 +160,14 @@ const initializeMap = () => {
     mobileCompatibility();
 
     // Add a "pointermove" listener to map which is when the pointer is moving over the start, end and mid point, the cursor should be "pointer" appearance.
-    map.on('pointermove', function(e) {
+    map.on('pointermove', function (e) {
         if (e.dragging) {
             return;
         }
         const pixel = map.getEventPixel(e.originalEvent);
         const options = {
             // Only find feature on the routing layer not the base vector tile layer.
-            layerFilter: function(layer) {
+            layerFilter: function (layer) {
                 if (layer instanceof ol.layer.VectorTile) {
                     return false;
                 }
@@ -207,20 +207,20 @@ const mobileCompatibility = () => {
 
     // Show the right click context menu on different platform.
     if (isiOS) {
-        map.getViewport().addEventListener('gesturestart', function(e) {
+        map.getViewport().addEventListener('gesturestart', function (e) {
             clearTimeout(timeOutEvent);
             timeOutEvent = 0;
             return false;
         });
 
-        map.getViewport().addEventListener('touchstart', function(e) {
+        map.getViewport().addEventListener('touchstart', function (e) {
             e.preventDefault();
             if (e.touches.length != 1) {
                 clearTimeout(timeOutEvent);
                 timeOutEvent = 0;
                 return false;
             }
-            timeOutEvent = setTimeout(function() {
+            timeOutEvent = setTimeout(function () {
                 if (e.touches.length == 1) {
                     timeOutEvent = 0;
                     left =
@@ -241,7 +241,7 @@ const mobileCompatibility = () => {
             }, 500);
         });
 
-        map.getViewport().addEventListener('touchend', function(event) {
+        map.getViewport().addEventListener('touchend', function (event) {
             clearTimeout(timeOutEvent);
             if (timeOutEvent != 0) {
                 hideOrShowContextMenu('hide');
@@ -249,7 +249,7 @@ const mobileCompatibility = () => {
             return false;
         });
 
-        map.getViewport().addEventListener('touchmove', function(event) {
+        map.getViewport().addEventListener('touchmove', function (event) {
             clearTimeout(timeOutEvent);
             timeOutEvent = 0;
             return false;
@@ -327,26 +327,26 @@ WebFont.load({
 const routingClient = new tg.RoutingClient(apiKey);
 
 // Get some items which we'll use to judge if we should perform the routing service or show error tips.
-const findRoute = (showError) => {
-    vectorSource.clear();
+const findRoute = (showError, notClearAll) => {
+    if(!notClearAll){
+        vectorSource.clear();
+    }
     hideOrShowResultBox('hide');
     const points = getAllPoints();
-    const pointsLength = points.length;
-
-    // Add the point which is not added to map.
-    points.forEach((point, index) => {
-        if (pointsLength - 1 === index) {
-            type = 'end';
-        } else if (0 === index) {
-            type = 'start';
-        } else {
-            type = 'mid';
-        }
-        addPointFeature(type, point);
-    });
-
     const inputsCount = document.querySelectorAll('.point input');
     if (points && points.length >= 2 && inputsCount.length === points.length) {
+        // Add the point which is not added to map.
+        const pointsLength = points.length;
+        points.forEach((point, index) => {
+            if (pointsLength - 1 === index) {
+                type = 'end';
+            } else if (0 === index) {
+                type = 'start';
+            } else {
+                type = 'mid';
+            }
+            addPointFeature(type, point);
+        });
         performRouting();
     } else if (showError) {
         showErrorTip('Please input correct coordinates!');
@@ -363,12 +363,10 @@ const performRouting = () => {
     if (points && points.length >= 2 && inputsCount.length === points.length) {
         hideErrorTip();
         document.querySelector('.loading').classList.remove('hide');
-
         const options = {
             turnByTurn: true,
             srid: 3857
         };
-
         const callback = (status, response) => {
             const result = document.querySelector('#result');
             if (status === 200) {
@@ -578,18 +576,6 @@ const getFeatureByName = (name) => {
         }
     });
     return feature_;
-};
-
-// Get the feature by feature's coordinates.
-const getFeatureByCoord = (coord) => {
-    let feature;
-    const features = vectorSource.getFeatures();
-    features.some((f) => {
-        if (f.getGeometry().getCoordinates().toString() === coord) {
-            feature = f;
-        }
-    });
-    return feature;
 };
 
 /*---------------------------------------------*/
@@ -898,7 +884,7 @@ const errorLoadingTile = () => {
 
 const setLayerSourceEventHandlers = (layer) => {
     let layerSource = layer.getSource();
-    layerSource.on('tileloaderror', function() {
+    layerSource.on('tileloaderror', function () {
         errorLoadingTile();
     });
 };
@@ -915,7 +901,7 @@ const showErrorTip = (content) => {
     const tip = document.querySelector('#input-error');
     tip.querySelector('p').innerHTML = content;
     tip.classList.add('show');
-    timer = setTimeout(function() {
+    timer = setTimeout(function () {
         tip.classList.remove('show');
     }, 3000);
 };
@@ -946,10 +932,10 @@ const clearInputBox = () => {
 // When there are results, show the result box, otherwise, hide the result box.
 const hideOrShowResultBox = (visible) => {
     const sidebar = document.querySelector('.sidebar');
-    if(visible === 'show'){
+    if (visible === 'show') {
         sidebar.classList.remove('empty');
         resetSidebarHeight();
-    }else {
+    } else {
         sidebar.classList.add('empty');
     }
 }
@@ -1038,7 +1024,7 @@ const toggleCloserAndSwitch = () => {
 // Since we need to drag the point to change the destination or start location,
 // we have to make the point draggable. At this step, we derived the custom class Drag.
 let coordBeforeMove;
-app.Drag = function() {
+app.Drag = function () {
     ol.interaction.Pointer.call(this, {
         handleDownEvent: app.Drag.prototype.handleDownEvent,
         handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -1055,7 +1041,7 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 
 // Function handling "down" events.
 // If the function returns true then a drag sequence is started.
-app.Drag.prototype.handleDownEvent = function(evt) {
+app.Drag.prototype.handleDownEvent = function (evt) {
     if (evt.dragging) {
         return;
     }
@@ -1063,7 +1049,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 
     const options = {
         // Only find feature on the routing layer not the base vector tile layer.
-        layerFilter: function(layer) {
+        layerFilter: function (layer) {
             if (layer instanceof ol.layer.VectorTile) {
                 return false;
             }
@@ -1074,7 +1060,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
     var map = evt.map;
     var feature = map.forEachFeatureAtPixel(
         evt.pixel,
-        function(feature, layer) {
+        function (feature, layer) {
             clearTimeout(this.timeEvent);
             this.flag_ = true;
             let featureName = feature.get('name');
@@ -1096,7 +1082,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 
 // Function handling "drag" events.
 // This function is called on "move" events during a drag sequence.
-app.Drag.prototype.handleDragEvent = function(evt) {
+app.Drag.prototype.handleDragEvent = function (evt) {
     clearTimeout(this.timeEvent);
     this.timeEvent = 0;
 
@@ -1114,7 +1100,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
     this.coordinate_[1] = evt.coordinate[1];
     const coordBeforeMove_ = coordBeforeMove.slice();
 
-    this.timeEvent = setTimeout(function() {
+    this.timeEvent = setTimeout(function () {
         removeFeatureByName('line');
         hideOrShowResultBox('hide');
         removeFeatureByName('arrow');
@@ -1145,7 +1131,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
 // Function handling "up" events.
 // If the function returns false then the current drag sequence is stopped.
-app.Drag.prototype.handleUpEvent = function(e) {
+app.Drag.prototype.handleUpEvent = function (e) {
     clearTimeout(this.timeEvent);
     this.timeEvent = 0;
     if (this.flag_) {
@@ -1191,7 +1177,7 @@ app.Drag.prototype.handleUpEvent = function(e) {
 // These event listeners tell the UI when it's time to execute all of the
 // code we've written.
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Hide the context menu of the browsers when right click on the map.
     document.querySelector('#map').oncontextmenu = () => {
         return false;
@@ -1237,13 +1223,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'context-add-point':
                 addPointFeature('mid', curCoord);
-                removeFeatureByName('line');
-                removeFeatureByName('arrow');
                 addInputBox(curCoord);
                 toggleCloserAndSwitch();
                 hideOrShowContextMenu('hide');
                 document.querySelector('.switch').classList.add('hide');
-                hideOrShowResultBox('hide');
                 performRouting();
                 break;
             case 'clear':
@@ -1322,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: [20, 20, 20, 20],
                 duration: 1000,
                 maxZoom: 17,
-                callback: function() {
+                callback: function () {
                     let penult = boxDom.getAttribute('lastlinepenultcoord');
                     if (penult) {
                         penult = penult.split(' ');
@@ -1387,20 +1370,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Add an input box once clicked the "Add destination" button
-    document.querySelector('#add-point').addEventListener('click', function() {
-        removeFeatureByName('line');
-        removeFeatureByName('arrow');
-        hideOrShowResultBox('hide');
+    document.querySelector('#add-point').addEventListener('click', function () {
         const feature = getFeatureByName('end');
-        if (feature) {
-            feature.set('name', 'mid');
-            feature.setStyle(styles.mid);
-        }
+        const coord = feature.getGeometry().getCoordinates();
+        vectorSource.removeFeature(feature);
+        addPointFeature('mid', coord);
         addInputBox();
     });
 
     // Delete the input box when clicking the deleting icon on the right of the input box.
-    document.querySelector('.point').addEventListener('click', function(e) {
+    document.querySelector('.point').addEventListener('click', function (e) {
         e = window.event || e;
         const target = e.target;
         const classlist = target.classList;
@@ -1414,29 +1393,17 @@ document.addEventListener('DOMContentLoaded', function() {
             first.querySelector('input').setAttribute('data-origin', secondOrigin);
             second.remove();
             removeFeatureByName('start');
-            const feature = getFeatureByCoord(secondOrigin);
-            if (feature) {
-                feature.set('name', 'start');
-                feature.setStyle(styles.start);
-            }
         } else if (target === getLastNodeBySelector('.closer')) {
             // Delete the target input box(end point input).
             // Move the value and data-origin from penult node to last node, and delete the penult node.
-            const last = target.parentNode;
+            const lastInput = target.parentNode.querySelector('input');
             const allVias = document.querySelectorAll('.via');
             const penult = allVias[allVias.length - 1];
             const penultOrigin = penult.querySelector('input').getAttribute('data-origin');
-            last.querySelector('input').value = penult.querySelector('input').value;
-            last
-                .querySelector('input')
-                .setAttribute('data-origin', penult.querySelector('input').getAttribute('data-origin'));
+            lastInput.value = penult.querySelector('input').value;
+            lastInput.setAttribute('data-origin', penult.querySelector('input').getAttribute('data-origin'));
             penult.remove();
             removeFeatureByName('end');
-            const feature = getFeatureByCoord(penultOrigin);
-            if (feature) {
-                feature.set('name', 'end');
-                feature.setStyle(styles.end);
-            }
         } else if (classlist.contains('closer')) {
             // Delete the target input box(input in the middle).
             const parentNode = target.parentNode;
@@ -1445,9 +1412,12 @@ document.addEventListener('DOMContentLoaded', function() {
             parentNode.remove();
         }
 
-        if (classlist.contains('closer') || target.id === 'add-point') {
+        if (classlist.contains('closer')) {
             toggleCloserAndSwitch();
             findRoute(false);
+        }else if(target.id === 'add-point'){
+            toggleCloserAndSwitch();
+            findRoute(false, notClearAll = true);
         }
     });
 
@@ -1466,14 +1436,14 @@ document.addEventListener('DOMContentLoaded', function() {
             inputNode.setAttribute('data-origin', '');
         }
     };
-    document.querySelector('.point').addEventListener('input', function(e) {
+    document.querySelector('.point').addEventListener('input', function (e) {
         e = window.event || e;
         const target = e.target;
         updateDataOriginByInput(target, target.value);
     });
 
     // When press enter, perform the routing request.
-    document.querySelector('.point').addEventListener('keyup', function(e) {
+    document.querySelector('.point').addEventListener('keyup', function (e) {
         e = window.e || e;
         if (e.keyCode === 13) {
             const showError = true;
@@ -1482,7 +1452,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // When click "go" button in the sidebar, performing the routing request.
-    document.querySelector('#go').addEventListener('click', function() {
+    document.querySelector('#go').addEventListener('click', function () {
         const showError = true;
         findRoute(showError);
     });
@@ -1503,9 +1473,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const showError = false;
-
-        // vectorSource.clear();
-        // hideOrShowResultBox('hide');
         findRoute(showError);
     };
 
