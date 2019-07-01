@@ -22,25 +22,33 @@
             display: none !important;
         }
         
-        .sidebar {
-            width: 300px;
-            /* height: calc(100% - 150px); */
-            height: 0;
-            position: fixed;
-            left: 1em;
-            background-color: rgba(58, 58, 58, 0.85);
-            color: #fff;
-            top: 130px;
-            bottom: 30px;
-            z-index: 9;
-        }
-        
         h3 {
             text-align: center;
         }
         
         hr {
             outline: 1px solid #eee;
+        }
+        
+        .sidebar {
+            width: 300px;
+            /* height: calc(100% - 150px); */
+            /* height: 0; */
+            position: absolute;
+            left: 1em;
+            background-color: rgba(58, 58, 58, 0.85);
+            color: #fff;
+            top: 150px;
+            bottom: 30px;
+            z-index: 9;
+        }
+
+        .sidebar.empty{
+            display: none;
+        }
+
+        .empty#result{
+            display: none;
         }
         
         .point {
@@ -544,7 +552,7 @@
             border: 1px solid #cccccc;
         }
         
-        #result.hide,
+        /* #result.hide, */
         #ol-contextmenu.hide {
             display: none;
         }
@@ -557,11 +565,11 @@
         #ol-contextmenu li {
             list-style: none;
             padding: 5px 0 5px 10px;
+            border-bottom: 1px solid #e1e1e1;
         }
         
-        #ol-contextmenu li:nth-child(1),
-        #ol-contextmenu li:nth-child(2) {
-            border-bottom: 1px solid #e1e1e1;
+        #ol-contextmenu li:last-child{
+            border-bottom: none;
         }
         
         #ol-contextmenu li:hover {
@@ -896,8 +904,8 @@
         </div>
 
         <!-- Set up the result container. -->
-        <div class="sidebar hide">
-            <div id="result" class="hide transition-height">
+        <div class="sidebar empty">
+            <div id="result" class="transition-height">
                 <p id="total"></p>
                 <div id="boxes"></div>
             </div>

@@ -23,7 +23,7 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'njHlS4HkDTw02dwdNoANKvNaEhhaGVB85VsIXmyntGM~';
+const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -329,6 +329,7 @@ const routingClient = new tg.RoutingClient(apiKey);
 // Get some items which we'll use to judge if we should perform the routing service or show error tips.
 const findRoute = (showError) => {
     vectorSource.clear();
+    hideOrShowResultBox('hide');
     const points = getAllPoints();
     const pointsLength = points.length;
 
@@ -362,7 +363,6 @@ const performRouting = () => {
     if (points && points.length >= 2 && inputsCount.length === points.length) {
         hideErrorTip();
         document.querySelector('.loading').classList.remove('hide');
-        document.querySelector('#result').classList.add('hide');
 
         const options = {
             turnByTurn: true,
@@ -370,16 +370,15 @@ const performRouting = () => {
         };
 
         const callback = (status, response) => {
-            resetSidebarHeight();
-            document.querySelector('.sidebar').style.height = 'unset';
+            const result = document.querySelector('#result');
             if (status === 200) {
                 result.classList.remove('error-on-mobile');
                 document.querySelector('.loading').classList.add('hide');
-                document.querySelector('#result').classList.remove('hide');
+                hideOrShowResultBox('show');
                 handleResponse(response);
             } else {
+                hideOrShowResultBox('show');
                 document.querySelector('.loading').classList.add('hide');
-                result.classList.remove('hide');
                 document.querySelector('#total').innerHTML = '';
 
                 if (document.body.clientWidth <= 767) {
@@ -396,7 +395,6 @@ const performRouting = () => {
                     result.querySelector('#boxes').innerHTML = `<div class="error-message">${response.error
 						.message}</div>`;
                 } else if (status === 'error') {
-                    document.querySelector('.sidebar').classList.add('hide');
                     errorLoadingTile();
                 } else {
                     result.querySelector('#boxes').innerHTML = `<div class="error-message">Request failed.</div>`;
@@ -457,7 +455,6 @@ const getAllPoints = () => {
 
 // Add point feature to map by passing the point name and coordinates.
 const addPointFeature = (name, coord) => {
-    document.querySelector('#result').classList.add('hide');
     if (name === 'start') {
         removeFeatureByName(name);
     } else if (name === 'end') {
@@ -684,9 +681,6 @@ const generateBox = (routes) => {
 				`;
     totalDom.innerHTML = total;
     boxesDom.innerHTML = '';
-    removeFeatureByName('line');
-    removeFeatureByName('arrow');
-    removeFeatureByName('resultRadius');
     addRouteFeature(lineWkt);
     let lastLinePenultCoord = [];
     let lastLineLastCoord = [];
@@ -905,7 +899,6 @@ const errorLoadingTile = () => {
 const setLayerSourceEventHandlers = (layer) => {
     let layerSource = layer.getSource();
     layerSource.on('tileloaderror', function() {
-        document.querySelector('.sidebar').classList.add('hide');
         errorLoadingTile();
     });
 };
@@ -950,6 +943,25 @@ const clearInputBox = () => {
     });
 };
 
+// When there are results, show the result box, otherwise, hide the result box.
+const hideOrShowResultBox = (visible) => {
+    const sidebar = document.querySelector('.sidebar');
+    if(visible === 'show'){
+        sidebar.classList.remove('empty');
+        resetSidebarHeight();
+    }else {
+        sidebar.classList.add('empty');
+    }
+}
+
+// Since add or delete the input box, the result box height will automatically
+// change. Here, we use this method to refresh the result sidebar height.
+const resetSidebarHeight = () => {
+    const resultSidebar = document.querySelector('.sidebar');
+    const topHeight = document.querySelector('.point').clientHeight + 30;
+    resultSidebar.style.top = `${topHeight}px`;
+};
+
 // When click the add point button or the item of add route in the context menu,
 // we'll add an input box in the sidebar input group.
 const addInputBox = (coord) => {
@@ -960,6 +972,7 @@ const addInputBox = (coord) => {
     }
     removeFeatureByName('line');
     removeFeatureByName('arrow');
+    hideOrShowResultBox('hide');
     const lastPoint = getLastNodeBySelector('#dragable-list li');
     const lastInput = lastPoint.querySelector('input');
     const parent = document.querySelector('#dragable-list');
@@ -1016,15 +1029,6 @@ const toggleCloserAndSwitch = () => {
         });
         document.querySelector('.switch').classList.add('hide');
     }
-};
-
-// Since add or delete the input box, the result box height will automatically
-// change. Here, we use this method to refresh the result sidebar height.
-const resetSidebarHeight = () => {
-    const resultSidebar = document.querySelector('.sidebar');
-    const topHeight = document.querySelector('.point').clientHeight + 30;
-    resultSidebar.classList.remove('hide');
-    resultSidebar.style.top = `${topHeight}px`;
 };
 
 /*---------------------------------------------*/
@@ -1112,6 +1116,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
     this.timeEvent = setTimeout(function() {
         removeFeatureByName('line');
+        hideOrShowResultBox('hide');
         removeFeatureByName('arrow');
         this.flag_ = false;
         // Update the corresponding input node value and data-origin attribute value.
@@ -1171,6 +1176,7 @@ app.Drag.prototype.handleUpEvent = function(e) {
         }
         removeFeatureByName('line');
         removeFeatureByName('arrow');
+        hideOrShowResultBox('hide');
         performRouting();
         this.coordinate_ = null;
         this.feature_ = null;
@@ -1193,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Hide the coustom context-menu when click on the map.
     document.querySelector('#map').onclick = () => {
-        // hideOrShowContextMenu('hide');
+        hideOrShowContextMenu('hide');
     };
 
     // Handle the click event when click the item in the customized context menu.
@@ -1211,6 +1217,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 startInput.setAttribute('data-origin', curCoord);
                 let curCoord_ = ol.proj.transform(curCoord, 'EPSG:3857', 'EPSG:4326');
                 startInput.value = curCoord_[1].toFixed(8) + ', ' + curCoord_[0].toFixed(8);
+                hideOrShowResultBox('hide');
+                performRouting();
 
                 break;
             case 'add-endpoint':
@@ -1224,6 +1232,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 endInput.setAttribute('data-origin', curCoord);
                 let curEndCoord_ = new ol.proj.toLonLat(curCoord);
                 endInput.value = curEndCoord_[1].toFixed(8) + ', ' + curEndCoord_[0].toFixed(8);
+                hideOrShowResultBox('hide');
+                performRouting();
                 break;
             case 'context-add-point':
                 addPointFeature('mid', curCoord);
@@ -1231,28 +1241,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 removeFeatureByName('arrow');
                 addInputBox(curCoord);
                 toggleCloserAndSwitch();
-                resetSidebarHeight();
                 hideOrShowContextMenu('hide');
                 document.querySelector('.switch').classList.add('hide');
+                hideOrShowResultBox('hide');
+                performRouting();
                 break;
             case 'clear':
-                document.querySelector('#total').innerHTML = '';
-                document.querySelector('#boxes').innerHTML = '';
-                document.querySelector('#result').classList.remove('hide');
-                document.querySelector('.sidebar').classList.add('hide');
                 vectorSource.clear();
                 clearInputBox();
-
                 const x = window.matchMedia('(max-width: 767px)');
+                const result = document.querySelector('#result');
                 if (x.matches) {
                     result.style.overflowY = 'hidden';
                     result.classList.remove('transition-height');
                     result.style.height = 0 + 'px';
                 }
                 hideOrShowContextMenu('hide');
+                hideOrShowResultBox('hide');
+                performRouting();
         }
-
-        performRouting();
     });
 
     // When the pointer is moving over the item in result box, then add
@@ -1367,6 +1374,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (startOrigin_.length > 0 && endOrigin_.length > 0) {
             vectorSource.clear();
+            hideOrShowResultBox('hide');
             addPointFeature('start', startOrigin_);
             addPointFeature('end', endOrigin_);
             performRouting();
@@ -1382,13 +1390,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#add-point').addEventListener('click', function() {
         removeFeatureByName('line');
         removeFeatureByName('arrow');
+        hideOrShowResultBox('hide');
         const feature = getFeatureByName('end');
         if (feature) {
             feature.set('name', 'mid');
             feature.setStyle(styles.mid);
         }
         addInputBox();
-        resetSidebarHeight();
     });
 
     // Delete the input box when clicking the deleting icon on the right of the input box.
@@ -1438,11 +1446,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (classlist.contains('closer') || target.id === 'add-point') {
-            removeFeatureByName('line');
-            removeFeatureByName('arrow');
-            resetSidebarHeight();
             toggleCloserAndSwitch();
-            findRoute(true);
+            findRoute(false);
         }
     });
 
@@ -1499,7 +1504,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const showError = false;
 
-        vectorSource.clear();
+        // vectorSource.clear();
+        // hideOrShowResultBox('hide');
         findRoute(showError);
     };
 
