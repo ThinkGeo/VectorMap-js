@@ -3,15 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Geocoding</title>
-
-    <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
-
-    <!-- Define some custom styles for the UI of our sample page. -->
-    <style rel="stylesheet" type="text/css">
+    <style>
         body {
             margin: 0;
             position: relative;
@@ -375,8 +371,9 @@
             }
 
             #searchBar {
-                width: 90%;
-                left: 5%;
+                width: 100%;
+                left: 0;
+                top: 0%;
             }
 
             button.ol-full-screen-false {
@@ -399,8 +396,9 @@
             }
 
             #searchBar {
-                width: 90%;
-                left: 5%;
+                width: 100%;
+                left: 0;
+                top: 0%;
             }
 
             button.ol-full-screen-false {
@@ -418,9 +416,16 @@
                 <span>Search in Country(ies)</span>
                 <select id="country-filter">
                     <option value="" selected>All</option>
-                    <option value="am">Armenia</option>
+                    <option value="us">United States</option>
                     <option value="cn">China</option>
+                    <option value="jp">Japan</option>
+                    <option value="de">Germany</option>
                     <option value="gb">United Kingdom</option>
+                    <option value="in">India</option>
+                    <option value="fr">France</option>
+                    <option value="br">Brazil</option>
+                    <option value="it">Italy</option>
+                    <option value="ca">Canada</option>
                     <option value="af">Afghanistan</option>
                     <option value="ax">Aland Islands</option>
                     <option value="al">Albania</option>
@@ -432,6 +437,7 @@
                     <option value="aq">Antarctica</option>
                     <option value="ag">Antigua and Barbuda</option>
                     <option value="ar">Argentina</option>
+                    <option value="am">Armenia</option>
                     <option value="aw">Aruba</option>
                     <option value="au">Australia</option>
                     <option value="at">Austria</option>
@@ -451,7 +457,6 @@
                     <option value="ba">Bosnia and Herzegovina</option>
                     <option value="bw">Botswana</option>
                     <option value="bv">Bouvet Island</option>
-                    <option value="br">Brazil</option>
                     <option value="io">British Indian Ocean Territory</option>
                     <option value="vg">British Virgin Islands</option>
                     <option value="bn">Brunei Darussalam</option>
@@ -460,7 +465,6 @@
                     <option value="bi">Burundi</option>
                     <option value="kh">Cambodia</option>
                     <option value="cm">Cameroon</option>
-                    <option value="ca">Canada</option>
                     <option value="cv">Cape Verde</option>
                     <option value="ky">Cayman Islands</option>
                     <option value="cf">Central African Republic</option>
@@ -495,13 +499,11 @@
                     <option value="fo">Faroe Islands</option>
                     <option value="fj">Fiji</option>
                     <option value="fi">Finland</option>
-                    <option value="fr">France</option>
                     <option value="gf">French Guiana</option>
                     <option value="pf">French Polynesia</option>
                     <option value="tf">French Southern Lands</option>
                     <option value="ga">Gabon</option>
                     <option value="ge">Georgia</option>
-                    <option value="de">Germany</option>
                     <option value="gh">Ghana</option>
                     <option value="gi">Gibraltar</option>
                     <option value="gr">Greece</option>
@@ -520,16 +522,13 @@
                     <option value="hk">Hong Kong</option>
                     <option value="hu">Hungary</option>
                     <option value="is">Iceland</option>
-                    <option value="in">India</option>
                     <option value="id">Indonesia</option>
                     <option value="ir">Iran</option>
                     <option value="iq">Iraq</option>
                     <option value="ie">Ireland</option>
                     <option value="im">Isle of Man</option>
                     <option value="il">Israel</option>
-                    <option value="it">Italy</option>
                     <option value="jm">Jamaica</option>
-                    <option value="jp">Japan</option>
                     <option value="je">Jersey</option>
                     <option value="jo">Jordan</option>
                     <option value="kz">Kazakhstan</option>
@@ -656,7 +655,6 @@
                     <option value="ua">Ukraine</option>
                     <option value="ae">United Arab Emirates</option>
                     <option value="um">United States Minor Outlying Islands</option>
-                    <option value="us">United States of America</option>
                     <option value="vi">United States Virgin Islands</option>
                     <option value="uy">Uruguay</option>
                     <option value="uz">Uzbekistan</option>
@@ -680,7 +678,7 @@
         <div id="searchBar">
             <div id="geocoder">
                 <i></i>
-                <input type="text" id="address" autofocus autocomplete="off" placeholder="Search...">
+                <input type="search" id="address" autocomplete="off" placeholder="Search...">
                 <div class="result-wrap">
                     <ul id="geocoderResult">
                     </ul>
@@ -716,16 +714,9 @@
     </div>
 </body>
 
-<!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
 <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
-
-<!-- Include ThinkGeo's Map Icon Font loader for POI icons on the background layer. -->
+<script src="https://samples.thinkgeo.com/cloud/lib/thinkgeocloudclient.js"></script>
 <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
-
-<!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
-<!-- <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.1/thinkgeocloudclient.js"></script> -->
-<script src="../lib/thinkgeocloudclient.js"></script>
-
 <script src="../js/geocoding.js"></script>
 
 </html>

@@ -91,7 +91,7 @@ let initializeMap = () => {
 
     // Add a button to the map that lets us toggle full-screen display mode.
     map.addControl(new ol.control.FullScreen());
-    
+
     map.on("click", function (e) {
         var resultDiv = document.getElementById('geocoderResult');
         if (resultDiv) {
@@ -288,6 +288,8 @@ const renderMatchedPlacePolygon = (coordinatesX, coordinatesY, boundingBox, type
 let focusIndex = -1;
 
 const searchPlace = (focusIndex) => {
+    if (focusIndex < 0) { return; }
+
     let geocoderResult = document.querySelector('#geocoderResult');
 
     let geometry;
@@ -354,7 +356,13 @@ const computedHighlitIndex = (dir) => {
     if (geocoderResult.querySelector('.focus')) {
         geocoderResult.querySelector('.focus').classList.remove('focus');
     }
-    geocoderResult.querySelectorAll('a[data-index]')[focusIndex].classList.add('focus');
+
+    if (focusIndex < 0) { return; }
+
+    var selectedData = geocoderResult.querySelectorAll('a[data-index]')[focusIndex];
+    if (selectedData != undefined) {
+        selectedData.classList.add('focus');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -362,6 +370,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // geocoder method and perform the Geocoder services.
     let timer = null;
     let address = document.getElementById('address');
+
+    address.addEventListener('click', () => {
+        if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
+            document.querySelector(".ol-unselectable").style.display = 'none';
+        } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
+            document.querySelector(".ol-unselectable").style.display = 'block';
+        }
+    });
+
+    address.addEventListener('blur', () => {
+        if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
+            document.querySelector(".ol-unselectable").style.display = 'block';
+        }
+    });
+
     address.addEventListener('input', () => {
         geocoderResult.se
         clearTimeout(timer);
@@ -372,23 +395,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let value = address.value;
             focusIndex = -1;
             if (value) {
-                if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
-                    document.querySelector(".ol-unselectable").style.display = 'none';
-                } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
-                    document.querySelector(".ol-unselectable").style.display = 'block';
-                }
                 document.querySelector('.loading').classList.remove('hidden');
                 geocoder(value);
             } else {
-                if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
-                    document.querySelector(".ol-unselectable").style.display = 'block';
-                } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
-                    document.querySelector(".ol-unselectable").style.display = 'block';
-                }
                 geocoderResultNode.innerHTML = ''
             }
         }, 350);
-    })
+    });
 
     // When you click the specific address, it'll perform Geocoder.
     document.getElementById('geocoderResult').addEventListener('click', (e) => {
@@ -401,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
             document.querySelector(".ol-unselectable").style.display = 'block';
+            document.querySelector("#geocoderResult").style.display = 'none';
         }
     });
 
@@ -408,9 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // address list and we'll show them below the input box. You can enter the up button 
     // and down button to choose the place. 
     document.body.addEventListener('keydown', (e) => {
-        if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
-            document.querySelector(".ol-unselectable").style.display = 'block';
-        }
         e = window.event || e;
         switch (e.keyCode) {
             case 38:
@@ -423,6 +434,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 computedHighlitIndex(focusIndex);
                 searchPlace(focusIndex);
 
+                if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                    document.querySelector("#geocoderResult").style.display = 'none';
+                }
                 break;
             case 40:
                 // Down
@@ -434,6 +449,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 computedHighlitIndex(focusIndex);
                 searchPlace(focusIndex);
 
+                if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                    document.querySelector("#geocoderResult").style.display = 'none';
+                }
                 break;
             case 13:
                 // Enter
@@ -444,7 +463,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     let value = document.getElementById('address').value;
                     geocoder(value);
                 }
+
+                if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+                    document.querySelector(".ol-unselectable").style.display = 'block';
+                    document.querySelector("#geocoderResult").style.display = 'none';
+                }
                 break;
+            default:
+                if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
+                    document.querySelector("#geocoderResult").style.display = 'block';
+                }
         }
     })
 })
