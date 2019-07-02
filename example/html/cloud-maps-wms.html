@@ -145,6 +145,16 @@
         .your-location.hide {
             display: none;
         }
+
+        .travel-row{
+            position: absolute;
+            top: 250px;
+            left: 30px;
+        }
+
+        .travel-row span{
+            display: block;
+        }
     </style>
 </head>
 
@@ -155,13 +165,21 @@
     <div class="btn-group">
         <button data-location="washington">Washington</button>
         <button data-location="newyork">New York</button>
-        <button data-location="london">LonDon</button>
+        <button data-location="london">London</button>
         <button class="your-location" data-location="your-location">Get Your Location</button>
     </div>
     <div class="loading">
         <div></div>
         <div></div>
         <div></div>
+    </div>
+    <div class="travel-row">
+        <span>Style: </span>
+        <select>
+            <option value="Light">Light</option>
+            <option value="Dark">Dark</option>
+            <option value="Transparent-Background">Transparent-Background</option>
+        </select>
     </div>
 
     <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->
