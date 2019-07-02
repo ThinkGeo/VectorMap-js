@@ -204,6 +204,7 @@ const mobileCompatibility = () => {
     const insTip = document.querySelector('#instruction-tip');
     let timeOutEvent;
     const contextWidth = 165;
+    const contextHeight = 127;
 
     // Show the right click context menu on different platform.
     if (isiOS) {
@@ -225,11 +226,11 @@ const mobileCompatibility = () => {
                     timeOutEvent = 0;
                     left =
                         e.changedTouches[0].clientX + contextWidth > clientWidth ?
-                        clientWidth - contextWidth :
+                        clientWidth - contextWidth - 3 :
                         e.changedTouches[0].clientX;
                     top =
-                        e.changedTouches[0].clientY + contextmenu.offsetHeight > clientHeight ?
-                        clientHeight - contextmenu.offsetHeight :
+                        e.changedTouches[0].clientY + contextHeight > clientHeight ?
+                        clientHeight - contextHeight - 13 :
                         e.changedTouches[0].clientY;
                     contextmenu.style.left = left + 'px';
                     contextmenu.style.top = top + 'px';
@@ -258,10 +259,10 @@ const mobileCompatibility = () => {
         map.getViewport().addEventListener('contextmenu', (e) => {
             hideOrShowContextMenu('show');
             insTip.classList.add('gone');
-            left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
+            left = e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth - 3 : e.clientX;
             top =
                 e.clientY + contextmenu.offsetHeight > clientHeight ?
-                clientHeight - contextmenu.offsetHeight :
+                clientHeight - contextmenu.offsetHeight - 1 :
                 e.clientY;
 
             contextmenu.style.left = left + 'px';
@@ -827,7 +828,7 @@ const generateBox = (routes) => {
     if (document.body.clientWidth <= 767) {
         const result = document.getElementById('result');
 
-        result.style.height = 48 + 'px';
+        result.style.height = 36 + 'px';
         const menu = document.getElementById('menu');
         const closeMenu = document.getElementById('closeMenu');
 
@@ -839,7 +840,7 @@ const generateBox = (routes) => {
         });
 
         closeMenu.addEventListener('click', () => {
-            result.style.height = 48 + 'px';
+            result.style.height = 36 + 'px';
             result.style.overflow = 'hidden';
             closeMenu.style.display = 'none';
             menu.style.display = 'inline-block';

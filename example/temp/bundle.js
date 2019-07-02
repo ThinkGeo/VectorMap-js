@@ -588,7 +588,7 @@
       subitems: [
         {
           comments: 'Plan your route from one place to another in the U.S., Canada or Mexico with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
-          title: "Routing",
+          title: "Routing in North America",
           htmlPath: './example/html/routing.html',
           codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
           jsPath: './example/js/routing.js'
