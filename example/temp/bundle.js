@@ -553,31 +553,31 @@
       styleName: 'ThinkGeo Base Maps',
       subitems: [{
         comments: "Consume ThinkGeo Cloud vector tiles using pre-defined Map Styles.",
-        title: 'Vector Maps',
+        title: 'Vector Tiles',
         htmlPath: './example/html/cloud-vector-maps.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/zeywMP',
         jsPath: './example/js/cloud-vector-maps.js'
       }, {
         comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
-        title: 'Vector Maps on Custom Imagery',
+        title: 'Vector Tiles on 3rd Party Imagery',
         htmlPath: './example/html/imagery-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/vbvmQb',
         jsPath: './example/js/imagery-with-labels.js'
       }, {
         comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
-        title: 'Raster Maps',
+        title: 'Raster Tiles',
         htmlPath: './example/html/cloud-raster-maps.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BMvRLb',
         jsPath: './example/js/cloud-raster-maps.js'
       }, {
         comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
-        title: 'Raster Maps (High Resolution)',
+        title: 'Raster Tiles (High Resolution)',
         htmlPath: './example/html/high-dpi-maps.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/YBdVRd',
         jsPath: './example/js/high-dpi-maps.js'
       }, {
         comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
-        title: 'Hybrid Maps',
+        title: 'Vector Tiles on Aerial Imagery',
         htmlPath: './example/html/satellite-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
         jsPath: './example/js/satellite-with-labels.js'
@@ -636,7 +636,7 @@
         jsPath: './example/js/cloud-projection.js'
       }, {
         comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
-        title: "WMS Maps",
+        title: "Raster Map through WMS",
         htmlPath: './example/html/cloud-maps-wms.html',
         codePenUrl: '..',
         jsPath: './example/js/cloud-maps-wms.js'

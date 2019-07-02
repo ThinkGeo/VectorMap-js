@@ -1,6 +1,6 @@
 
 /*===========================================================================*/
-// Raster Maps (High Resolution)
+// Raster Tiles (High Resolution)
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key

@@ -1,5 +1,5 @@
 /*===========================================================================*/
-// Vector Maps on Custom Imagery
+// Vector Tiles on 3rd Party Imagery
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
