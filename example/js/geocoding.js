@@ -374,6 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
     address.addEventListener('click', () => {
         if ((navigator.userAgent.match(/(iOS|Android|iPhone)/i))) {
             document.querySelector(".ol-unselectable").style.display = 'none';
+            document.querySelector("#geocoderResult").style.display = 'block';
+            var popup = document.querySelector("#popup");
+            if (popup != undefined) {
+                popup.style.display = 'none'
+            }
         } else if (document.querySelector(".ol-unselectable").style.display = 'none') {
             document.querySelector(".ol-unselectable").style.display = 'block';
         }
@@ -415,6 +420,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
             document.querySelector(".ol-unselectable").style.display = 'block';
             document.querySelector("#geocoderResult").style.display = 'none';
+            var popup = document.querySelector("#popup");
+            if (popup != undefined) {
+                popup.style.display = 'block'
+            }
         }
     });
 
@@ -437,6 +446,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
                     document.querySelector(".ol-unselectable").style.display = 'block';
                     document.querySelector("#geocoderResult").style.display = 'none';
+                    var popup = document.querySelector("#popup");
+                    if (popup != undefined) {
+                        popup.style.display = 'block'
+                    }
                 }
                 break;
             case 40:
@@ -452,6 +465,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
                     document.querySelector(".ol-unselectable").style.display = 'block';
                     document.querySelector("#geocoderResult").style.display = 'none';
+                    var popup = document.querySelector("#popup");
+                    if (popup != undefined) {
+                        popup.style.display = 'block'
+                    }
                 }
                 break;
             case 13:
@@ -467,6 +484,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {
                     document.querySelector(".ol-unselectable").style.display = 'block';
                     document.querySelector("#geocoderResult").style.display = 'none';
+                    var popup = document.querySelector("#popup");
+                    if (popup != undefined) {
+                        popup.style.display = 'block'
+                    }
                 }
                 break;
             default:
