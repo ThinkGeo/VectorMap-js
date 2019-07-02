@@ -328,7 +328,7 @@ const routingClient = new tg.RoutingClient(apiKey);
 
 // Get some items which we'll use to judge if we should perform the routing service or show error tips.
 const findRoute = (showError, notClearAll) => {
-    if(!notClearAll){
+    if (!notClearAll) {
         vectorSource.clear();
     }
     hideOrShowResultBox('hide');
@@ -827,7 +827,7 @@ const generateBox = (routes) => {
     if (document.body.clientWidth <= 767) {
         const result = document.getElementById('result');
 
-        result.style.height = 60 + 'px';
+        result.style.height = 48 + 'px';
         const menu = document.getElementById('menu');
         const closeMenu = document.getElementById('closeMenu');
 
@@ -839,7 +839,7 @@ const generateBox = (routes) => {
         });
 
         closeMenu.addEventListener('click', () => {
-            result.style.height = 60 + 'px';
+            result.style.height = 48 + 'px';
             result.style.overflow = 'hidden';
             closeMenu.style.display = 'none';
             menu.style.display = 'inline-block';
@@ -950,7 +950,7 @@ const resetSidebarHeight = () => {
 
 // When click the add point button or the item of add route in the context menu,
 // we'll add an input box in the sidebar input group.
-const addInputBox = (coord) => {
+const addInputBox = (coord, readonly) => {
     const inputs = document.querySelectorAll('#dragable-list input');
     if (inputs.length === 10) {
         showErrorTip('No more than 10 points.');
@@ -977,9 +977,15 @@ const addInputBox = (coord) => {
         lastInput.value = '';
         lastInput.setAttribute('data-origin', '');
     }
+    
+    let attr = '';
+    if(readonly){
+        attr = 'readonly';
+    }
+
     newNode.innerHTML = `
 	<i class="drag"></i><label></label>
-	<input value="${inputValue}" data-origin="${dataOrigin}" placeholder="To" />
+	<input value="${inputValue}" data-origin="${dataOrigin}" placeholder="To" ${attr}/>
 	<span class=""></span>
 	<a class="closer"></a>`;
     parent.insertBefore(newNode, lastPoint);
@@ -996,6 +1002,22 @@ const hideOrShowContextMenu = (style) => {
             contextmenu.classList.remove('hide');
     }
 };
+
+// When the view port is less than 767 pixel, make the input box not editable.
+const refreshInputEditable = () => {
+    const allInputs = document.querySelectorAll('input');
+    if (window.matchMedia("(max-width: 767px)").matches) {
+        // The view port is less than 767 pixels wide
+        allInputs.forEach(input => {
+            input.setAttribute('readonly', true)
+        })
+    } else {
+        // The view port is at least 767 pixels wide 
+        allInputs.forEach(input => {
+            input.removeAttribute('readonly');
+        })
+    }
+}
 
 // We use this method to toggle switch icon or delete icon in the input group.
 // Since we only show the switch icon when there are only start and end point
@@ -1223,7 +1245,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'context-add-point':
                 addPointFeature('mid', curCoord);
-                addInputBox(curCoord);
+                let readonly = false;
+                if(window.matchMedia('(max-width: 767px)').matches){
+                    readonly = true;
+                }
+                addInputBox(curCoord, readonly);
                 toggleCloserAndSwitch();
                 hideOrShowContextMenu('hide');
                 document.querySelector('.switch').classList.add('hide');
@@ -1232,9 +1258,8 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'clear':
                 vectorSource.clear();
                 clearInputBox();
-                const x = window.matchMedia('(max-width: 767px)');
                 const result = document.querySelector('#result');
-                if (x.matches) {
+                if (window.matchMedia('(max-width: 767px)').matches) {
                     result.style.overflowY = 'hidden';
                     result.classList.remove('transition-height');
                     result.style.height = 0 + 'px';
@@ -1415,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (classlist.contains('closer')) {
             toggleCloserAndSwitch();
             findRoute(false);
-        }else if(target.id === 'add-point'){
+        } else if (target.id === 'add-point') {
             toggleCloserAndSwitch();
             findRoute(false, notClearAll = true);
         }
@@ -1483,4 +1508,15 @@ document.addEventListener('DOMContentLoaded', function () {
         animation: 150,
         ghostClass: 'dragging'
     });
+
+    refreshInputEditable();
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        if(resizeTimer){
+            this.clearTimeout(resizeTimer);
+        }
+        resizeTimer = setTimeout(() => {
+            refreshInputEditable();
+        }, 500);
+    })
 });
