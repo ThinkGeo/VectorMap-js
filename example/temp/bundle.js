@@ -558,6 +558,12 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/zeywMP',
         jsPath: './example/js/cloud-vector-maps.js'
       }, {
+        comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
+        title: 'Vector Tiles on Aerial Imagery',
+        htmlPath: './example/html/satellite-with-labels.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
+        jsPath: './example/js/satellite-with-labels.js'
+      }, {
         comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
         title: 'Vector Tiles on 3rd Party Imagery',
         htmlPath: './example/html/imagery-with-labels.html',
@@ -576,11 +582,11 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/YBdVRd',
         jsPath: './example/js/high-dpi-maps.js'
       }, {
-        comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
-        title: 'Vector Tiles on Aerial Imagery',
-        htmlPath: './example/html/satellite-with-labels.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
-        jsPath: './example/js/satellite-with-labels.js'
+        comments: "Display raster tile map by using our WMS cloud service.",
+        title: 'Raster Map through WMS',
+        htmlPath: './example/html/cloud-maps-wms.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/oOmbBO',
+        jsPath: './example/js/cloud-maps-wms.js'
       }]
     },{
       dataTarget: 'ThinkGeo-cloud-services',
