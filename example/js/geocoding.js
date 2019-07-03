@@ -114,8 +114,6 @@ WebFont.load({
     active: initializeMap
 });
 
-
-
 /*---------------------------------------------*/
 // 3. Popup Setup
 /*---------------------------------------------*/
@@ -289,9 +287,6 @@ let focusIndex = -1;
 
 const searchPlace = (focusIndex) => {
     if (focusIndex < 0) { return; }
-
-    let geocoderResult = document.querySelector('#geocoderResult');
-
     let geometry;
     let displayTitle;
     let displayAddress;
@@ -327,7 +322,7 @@ const searchPlace = (focusIndex) => {
             }
             displayTitle = titleArray.join(", ");
 
-            if (locationAddress.startsWith(displayTitle)) {
+            if (displayTitle != "" && locationAddress.startsWith(displayTitle)) {
                 displayAddress = locationAddress.substring(displayTitle.length + 2);
             }
             else {
