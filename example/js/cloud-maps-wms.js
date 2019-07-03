@@ -62,8 +62,8 @@ const getWmsMap = (coord) => {
     const type = document.querySelector('.travel-row select').selectedOptions[0].value;
     let layers = 'WorldStreets';
     const xycoord = ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857');
-    const width = locationImage.offsetWidth - 1;
-    const height = locationImage.offsetHeight - 1;
+    const width = locationImage.offsetWidth;
+    const height = locationImage.offsetHeight;
     const size = [width, height];
     const center = xycoord;
     const resolution = 611.49622628141;
