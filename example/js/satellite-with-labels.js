@@ -1,5 +1,5 @@
 /*===========================================================================*/
-// Hybrid Maps
+// Vector Tiles on Aerial Imagery
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key

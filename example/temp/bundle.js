@@ -549,64 +549,67 @@
       value: true
     });
     const menuData = [{
-      dataTarget: 'ThinkGeo-cloud-services',
-      styleName: 'ThinkGeo Cloud Services',
+      dataTarget: 'thinkGeo-base-maps',
+      styleName: 'ThinkGeo Base Maps',
       subitems: [{
         comments: "Consume ThinkGeo Cloud vector tiles using pre-defined Map Styles.",
-        title: 'Vector Maps',
+        title: 'Vector Tiles',
         htmlPath: './example/html/cloud-vector-maps.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/zeywMP',
         jsPath: './example/js/cloud-vector-maps.js'
       }, {
-        comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
-        title: 'Raster Maps',
-        htmlPath: './example/html/cloud-raster-maps.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BMvRLb',
-        jsPath: './example/js/cloud-raster-maps.js'
-      }, {
         comments: 'Draw the labels from Vector Tiles and overlap them on the top of a hybrid map.',
-        title: 'Hybrid Maps',
+        title: 'Vector Tiles on Aerial Imagery',
         htmlPath: './example/html/satellite-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/xMmdQW',
         jsPath: './example/js/satellite-with-labels.js'
-      },
-      {
-        comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
-        title: "WMS Maps",
-        htmlPath: './example/html/cloud-maps-wms.html',
-        codePenUrl: '..',
-        jsPath: './example/js/cloud-maps-wms.js'
-      },
-      {
-        comments: 'Convert a WKT feature from Decimal Degrees to Spherical Mercator.  Our Cloud Projection API also supports a large number of other coordinate systems.',
-        title: "Transform Projection",
-        htmlPath: './example/html/cloud-projection.html',
-        codePenUrl: '..',
-        jsPath: './example/js/cloud-projection.js'
-      },{
-        comments: 'Get information about the time zone for any point in the world (excluding oceans).',
-        title: "Get Time Zone for a Point",
-        htmlPath: './example/html/cloud-time-zone.html',
-        codePenUrl: '..',
-        jsPath: './example/js/cloud-time-zone.js'
-      }, {
-        comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
-        title: 'Raster Maps (High Resolution)',
-        htmlPath: './example/html/high-dpi-maps.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/YBdVRd',
-        jsPath: './example/js/high-dpi-maps.js'
       }, {
         comments: 'Overlap the vector tiles on a global luminosity raster map (provided by NASA in 2012), it can highlight geography, population and more. ',
-        title: 'Vector Maps on Custom Imagery',
+        title: 'Vector Tiles on 3rd Party Imagery',
         htmlPath: './example/html/imagery-with-labels.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/vbvmQb',
         jsPath: './example/js/imagery-with-labels.js'
       }, {
-        comments: 'Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
-        title: 'Get Elevation Along Path',
-        htmlPath: './example/html/elevation.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZWQN',
-        jsPath: './example/js/elevation.js'
+        comments: 'Consume ThinkGeo Cloud raster tiles via XYZ Map Service.',
+        title: 'Raster Tiles',
+        htmlPath: './example/html/cloud-raster-maps.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BMvRLb',
+        jsPath: './example/js/cloud-raster-maps.js'
+      }, {
+        comments: "Display basemap at higher resolutions on high-DPI devices. In this example, the map tiles are requested with '@2x' parameter.",
+        title: 'Raster Tiles (High Resolution)',
+        htmlPath: './example/html/high-dpi-maps.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/YBdVRd',
+        jsPath: './example/js/high-dpi-maps.js'
+      }, {
+        comments: "Display raster tile map by using our WMS cloud service.",
+        title: 'Raster Map through WMS',
+        htmlPath: './example/html/cloud-maps-wms.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/oOmbBO',
+        jsPath: './example/js/cloud-maps-wms.js'
+      }]
+    },{
+      dataTarget: 'ThinkGeo-cloud-services',
+      styleName: 'ThinkGeo Cloud Services',
+      subitems: [
+        {
+          comments: 'Plan your route from one place to another in the U.S., Canada or Mexico with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
+          title: "Routing in North America",
+          htmlPath: './example/html/routing.html',
+          codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
+          jsPath: './example/js/routing.js'
+        }, {
+          comments: 'Help to visualize reachable areas in time/distance from any starting point.',
+          title: "Get Service Area",
+          htmlPath: './example/html/travel-service-area.html',
+          codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
+          jsPath: './example/js/travel-service-area.js'
+      }, {
+        comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo  Cloud Service</a>.',
+        title: "Geocoding",
+        htmlPath: './example/html/geocoding.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
+        jsPath: './example/js/geocoding.js'
       }, {
         comments: 'Convert a coordinate to address via <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
         title: 'Find Nearby Places',
@@ -614,32 +617,37 @@
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/ErGmGo',
         jsPath: './example/js/reverse-geocoding.js'
       }, {
+        comments: 'Get the elevation of points along a line on <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
+        title: 'Get Elevation Along Path',
+        htmlPath: './example/html/elevation.html',
+        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/gqZWQN',
+        jsPath: './example/js/elevation.js'
+      }, {
+        comments: 'Get information about the time zone for any point in the world (excluding oceans).',
+        title: "Get Time Zone for a Point",
+        htmlPath: './example/html/cloud-time-zone.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-time-zone.js'
+      }, {
         comments: 'Get a family of colors based on different options from <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud Service</a>.',
         title: 'Generate Color Themes',
         htmlPath: './example/html/color-creation.html',
         codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/qgLmLK',
         jsPath: './example/js/color-creation.js'
-      },
-      {
-        comments: 'Convert an address to a latitude and longitude via  <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo  Cloud Service</a>.',
-        title: "Find an Address in the US",
-        htmlPath: './example/html/find-address.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/VgqbqV',
-        jsPath: './example/js/find-address.js'
-      },
-      {
-        comments: 'Plan your route from one place to another in the U.S., Canada or Mexico with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
-        title: "Routing",
-        htmlPath: './example/html/routing.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/JqOdax',
-        jsPath: './example/js/routing.js'
       }, {
-        comments: 'Help to visualize anwsers to the questions "Where can I get a burrito within a 15 minute driving?" with <a href="https://cloud.thinkgeo.com" target="_blank" rel="noopener">ThinkGeo Cloud</a>.',
-        title: "Travel Service Area",
-        htmlPath: './example/html/travel-service-area.html',
-        codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
-        jsPath: './example/js/travel-service-area.js'
-    }]
+        comments: 'Convert a WKT feature from Decimal Degrees to Spherical Mercator.  Our Cloud Projection API also supports a large number of other coordinate systems.',
+        title: "Transform Projection",
+        htmlPath: './example/html/cloud-projection.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-projection.js'
+      }, {
+        comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
+        title: "Raster Map through WMS",
+        htmlPath: './example/html/cloud-maps-wms.html',
+        codePenUrl: '..',
+        jsPath: './example/js/cloud-maps-wms.js'
+      }
+    ]
     }, {
       dataTarget: 'display-your-data',
       styleName: 'Display Your Data',
