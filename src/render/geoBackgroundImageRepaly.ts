@@ -198,7 +198,7 @@ export class GeoBackgroundImageReplay extends ((<any>ol).render.webgl.ImageRepla
   public drawReplay(gl, context, skippedFeaturesHash, hitDetection) {
     var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
     var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-    gl.enable(gl.BLEND);
+    // gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     if (!(<any>ol).obj.isEmpty(skippedFeaturesHash)) {
         this.drawReplaySkipping(
@@ -217,7 +217,7 @@ export class GeoBackgroundImageReplay extends ((<any>ol).render.webgl.ImageRepla
     gl.blendFuncSeparate(
         (<any>ol).webgl.SRC_ALPHA, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA,
         (<any>ol).webgl.ONE, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA);
-    gl.disable(gl.BLEND);
+    // gl.disable(gl.BLEND);
   }
 
   public isPowerOfTwo(x) {

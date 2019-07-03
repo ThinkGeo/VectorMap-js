@@ -108,7 +108,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
 
   public drawReplay(gl, context, skippedFeaturesHash, hitDetection) {
     if (!hitDetection) {
-        gl.enable(gl.BLEND);
+        // gl.enable(gl.BLEND);
     }
 
     if (!(<any>ol).obj.isEmpty(skippedFeaturesHash)) {
@@ -126,7 +126,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         }
     }
     if (!hitDetection) {
-        gl.disable(gl.BLEND);
+        // gl.disable(gl.BLEND);
     }
   }
 

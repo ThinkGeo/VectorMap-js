@@ -67624,7 +67624,7 @@ function olInit() {
     ol.render.webgl.TextureReplay.prototype.drawReplay = function (gl, context, skippedFeaturesHash, hitDetection) {
         var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
         var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-        gl.enable(gl.BLEND);
+        // gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         if (!ol.obj.isEmpty(skippedFeaturesHash)) {
             this.drawReplaySkipping(
@@ -67643,7 +67643,7 @@ function olInit() {
         gl.blendFuncSeparate(
             ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
             ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
-        gl.disable(gl.BLEND);
+        // gl.disable(gl.BLEND);
     };
 
 
@@ -70191,7 +70191,7 @@ function olInit() {
         var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
         if (!hitDetection) {
-            gl.enable(gl.BLEND);
+            // gl.enable(gl.BLEND);
             gl.enable(gl.DEPTH_TEST);
             gl.depthMask(true);
             gl.depthFunc(gl.NOTEQUAL);
@@ -70212,7 +70212,7 @@ function olInit() {
             }
         }
         if (!hitDetection) {
-            gl.disable(gl.BLEND);
+            // gl.disable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
             // gl.clear(gl.DEPTH_BUFFER_BIT);
             //Restore GL parameters.
