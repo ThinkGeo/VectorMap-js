@@ -202,6 +202,30 @@ body {
     color: #60B9E2;
 }
 
+.arrow:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+    float: right;
+}
+
+.sub-arrow {
+    font-size: 1.5rem
+}
+
+.sub-arrow:before {
+    font-family: FontAwesome;
+    content: "\f105";
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+    float: left;
+}
+
 /*
  * Main content
  */
