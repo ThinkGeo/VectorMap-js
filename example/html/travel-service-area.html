@@ -17,17 +17,17 @@
             position: relative;
             font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
-
+        
         .hide {
             display: none !important;
         }
-
+        
         h5 {
             margin-top: 0.1rem;
             margin-bottom: 0.1rem;
             color: white;
         }
-
+        
         .travelPanel {
             position: absolute;
             left: 1em;
@@ -41,7 +41,7 @@
             padding: 10px;
             color: white;
         }
-
+        
         .travelPanel input[type='text'] {
             font-size: 12px;
             width: 220px;
@@ -57,15 +57,15 @@
             border-bottom: 1px solid #ccc;
             margin-bottom: 1rem;
         }
-
+        
         .travelPanel input:focus {
             outline: none;
         }
-
+        
         #toggle {
             display: none;
         }
-
+        
         .travel-row {
             margin-top: 10px;
             display: inline-block;
@@ -73,17 +73,17 @@
             padding-bottom: 5px;
             border-bottom: solid 1px rgba(109, 108, 108, 0.314) !important;
         }
-
+        
         .travel-row.center {
             text-align: center;
         }
-
+        
         .travel-row ul {
             list-style: none;
             margin: 0;
             padding: 0.5em 0;
         }
-
+        
         .travel-row li {
             background-color: white;
             border-color: #d8d8d8;
@@ -101,7 +101,7 @@
             -webkit-transition: 0.1s ease-in-out;
             transition: 0.1s ease-in-out;
         }
-
+        
         .travel-row button {
             border-color: #d8d8d8;
             border-left-style: solid;
@@ -114,21 +114,21 @@
             padding: 0.4rem 0.5rem;
             width: 48%;
         }
-
+        
         .travel-row button:focus {
             outline: none;
         }
-
+        
         .travel-row .active {
             position: relative;
             background-color: rgb(213, 213, 213);
             z-index: 1;
         }
-
+        
         .travel-row li {
             width: 18%;
         }
-
+        
         .travel-row span,
         label,
         input[type=select] {
@@ -137,17 +137,17 @@
             display: inline-block;
             margin-bottom: 5px;
         }
-
+        
         .travel-row input[type=range] {
             width: 98%;
         }
-
+        
         .travel-row select {
             float: right;
             margin-right: 10px;
             width: 90px;
         }
-
+        
         input[type=range] {
             line-height: 1.42857;
             color: #555;
@@ -155,13 +155,13 @@
             -webkit-appearance: none;
             border-radius: 10px;
         }
-
+        
         input[type=range]::-webkit-slider-runnable-track {
             height: 12px;
             border-radius: 10px;
             box-shadow: 0 0 1px #def3f8, inset 0 0 .125em #0d1112;
         }
-
+        
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             margin-top: 1px;
@@ -172,37 +172,37 @@
             border: solid 0.125em rgba(53, 53, 53, 0.5);
             box-shadow: 0 .125em .125em #3b4547;
         }
-
+        
         #drive-time-limit input,
         #drive-distance-limit input {
             width: 35px;
             border: 0;
         }
-
+        
         #refresh {
             font-weight: bold;
             margin-bottom: 5px;
             margin-left: 50%;
         }
-
+        
         #map {
             width: 100%;
             height: 100%;
             position: relative;
         }
-
+        
         .ol-zoom {
             bottom: .5em;
             right: 0.5em;
             top: unset;
             left: unset;
         }
-
+        
         .ol-zoom button {
             width: 1.2em !important;
             height: 1.2em !important;
         }
-
+        
         #instruction-tip {
             width: max-content;
             position: fixed;
@@ -215,19 +215,19 @@
             -o-transform: translateX(-50%);
             color: #fff;
         }
-
+        
         #instruction-tip p {
             background-color: rgba(58, 58, 58, 0.85);
             border-radius: 3px;
             padding: 10px 20px;
         }
-
+        
         #instruction-tip.gone {
             bottom: -100px;
             opacity: 0;
             transition: bottom 500ms ease-out, opacity 300ms ease-out;
         }
-
+        
         .loading {
             position: absolute;
             top: 48%;
@@ -235,7 +235,7 @@
             height: 20px;
             z-index: 9;
         }
-
+        
         .loading div {
             display: inline-block;
             border-radius: 50%;
@@ -244,35 +244,33 @@
             background-color: #ccc;
             margin-left: 10px;
         }
-
+        
         .loading div:nth-child(1) {
             animation: loading 1s ease-in-out infinite;
         }
-
+        
         .loading div:nth-child(2) {
             animation: loading 1s ease-in-out infinite;
             animation-delay: -0.8s;
         }
-
+        
         .loading div:nth-child(3) {
             animation: loading 1s ease-in-out infinite;
             animation-delay: -1.6s;
         }
-
+        
         @keyframes loading {
             0% {
                 transform: scale(0);
             }
-
             50% {
                 transform: scale(1);
             }
-
             100% {
                 transform: scale(0);
             }
         }
-
+        
         #error-message {
             position: absolute;
             top: -150px;
@@ -285,12 +283,12 @@
             transition: top 0.6s;
             z-index: 5;
         }
-
+        
         #error-message.show {
             top: 15px;
             transition: top 0.6s;
         }
-
+        
         #error-message p {
             line-height: 40px;
             padding-left: 10px;
@@ -300,7 +298,7 @@
             background-color: #f8d7da;
             color: #721c24;
         }
-
+        
         #ol-contextmenu {
             width: 165px;
             position: absolute;
@@ -313,30 +311,30 @@
             border-radius: 2px;
             border: 1px solid #cccccc;
         }
-
+        
         #ol-contextmenu.hide {
             display: none;
         }
-
+        
         #ol-contextmenu ul {
             margin: 0;
             padding: 0;
         }
-
+        
         #ol-contextmenu li {
             list-style: none;
             padding: 5px 0 5px 10px;
         }
-
+        
         #ol-contextmenu li:nth-child(1) {
             border-bottom: 1px solid #e1e1e1;
         }
-
+        
         #ol-contextmenu li:hover {
             cursor: pointer;
             background-color: #e1e1e1;
         }
-
+        
         @media (max-width: 767px) {
             .travelPanel {
                 left: 1px;
@@ -345,32 +343,25 @@
                 border-radius: 0;
                 top: 1px;
             }
-
-            .travelPanel.collapsed{
+            .travelPanel.collapsed {
                 transition: left 500ms ease-out;
             }
-
             .travelPanel.collapsed {
                 left: -271px;
             }
-
-            .travel-row{
+            .travel-row {
                 margin-top: 0;
                 padding-bottom: 0;
             }
-
-            .travel-row button{
+            .travel-row button {
                 padding: 0.1rem 0.2rem;
             }
-
-            .travel-row li{
+            .travel-row li {
                 padding: 0.1rem 0.4rem;
             }
-
-            .travelPanel input[type='text']{
+            .travelPanel input[type='text'] {
                 margin-bottom: 0.2rem;
             }
-
             #toggle {
                 display: inline-block;
                 position: absolute;
@@ -385,16 +376,13 @@
                 border: 1px solid #eee;
                 cursor: pointer;
             }
-
-            #toggle:focus{
+            #toggle:focus {
                 outline: 0;
             }
-
             .travelPanel.collapsed #toggle {
                 transform: rotate(0deg);
             }
-
-            #instruction-tip{
+            #instruction-tip {
                 width: 80%;
             }
         }
@@ -490,8 +478,7 @@
 
     <!-- Set up instruction tip. -->
     <div id="instruction-tip">
-        <p>Set your start point by dragging the vehicle icon or right-clicking on the map to see what area you drive to
-            within a specified minutes.</p>
+        <p>Set your start point by dragging the vehicle icon or right-clicking on the map to see what area you drive to within a specified minutes.</p>
     </div>
 
     <!-- Include ThinkGeo's VectorMap.js library from our CDN. -->
