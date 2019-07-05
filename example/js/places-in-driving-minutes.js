@@ -305,7 +305,8 @@ const searchPlaces = (drivingPolygon) => {
         srid: 3857,
         locationCategories: 'common',
         locationTypes: placeType.value,
-        maxResults: 500
+        maxResults: 500,
+        searchRadius: 0
     };
 
     let polygonWKT = (new ol.format.WKT()).writeGeometry(drivingPolygon.getGeometry().getPolygon(0));
