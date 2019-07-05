@@ -104,7 +104,7 @@ const initializeMap = () => {
      * @return {boolean} Don't follow the href.
      */
     closer.onclick = function() {
-        popup.setPosition([0, 0]);
+        popup.setPosition(undefined);
         closer.blur();
         return false;
     };
