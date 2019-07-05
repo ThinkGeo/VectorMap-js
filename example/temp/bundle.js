@@ -2806,7 +2806,7 @@
                 codePenUrl: '..',
                 jsPath: './example/js/cloud-maps-wms.js'
             }, {
-                comments: 'Get all the restaurants, hotels, bars or anything you are intrested  in within 15 minutes.',
+                comments: 'Get all the restaurants, hotels, bars or anything you are intrested  in within 10 minutes.',
                 title: "Places within 10 minutes",
                 htmlPath: './example/html/places-in-driving-minutes.html',
                 codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
