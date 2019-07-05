@@ -2935,9 +2935,9 @@
                 jsPath: './example/js/retail-store-closing.js'
             }, {
                 comments: 'Get all the restaurants, hotels, bars or anything you are intrested  in within 10 minutes.',
-                title: "Places within 10 minutes",
+                title: "Place within 10 Driving Minutes",
                 htmlPath: './example/html/places-in-driving-minutes.html',
-                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/XLKEZN',
+                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/orMQMO',
                 jsPath: './example/js/places-in-driving-minutes.js'
             }]
         }, {
