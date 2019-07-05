@@ -513,7 +513,6 @@ app.Drag.prototype.handleUpEvent = function(e) {
         case 'start':
             coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
             startInputCoord = coord_.slice();
-            updateInputValue();
             break;
     }
     performRouting();
