@@ -202,6 +202,13 @@ const routingClient = new tg.RoutingClient(apiKey);
 let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
+    placeSource.clear();
+    vectorSource.getFeatures().some(feature=>{
+        if(feature.get('name') === 'polygon'){
+            vectorSource.removeFeature(feature)
+            return true
+        }
+    })
     // Show the loading animation.
     document.querySelector('.loading').classList.remove('hide');
     errorMessage.classList.remove('show');
@@ -242,6 +249,7 @@ const drawDrivingPolygon = (res) => {
         featureProjection: 'EPSG:3857'
     });
     drivingPolygon.setStyle(styles.polygon);
+    drivingPolygon.set('name', 'polygon');
     vectorSource.addFeature(drivingPolygon);
 
     // zoom to the extent which includes the driving polygon
@@ -314,7 +322,6 @@ const searchPlaces = (drivingPolygon) => {
 }
 
 const showPlaces = (res, placeType) => {
-    placeSource.clear();
     for (let i = 1, l = res.nearbyLocations.length; i < l; i++) {
         let place = res.nearbyLocations[i].data;
         let placeFeature = new ol.Feature({
