@@ -1,4 +1,4 @@
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 let mapsQueryClient = new tg.MapsQueryClient(apiKey);
 
 let initMap = function () {
