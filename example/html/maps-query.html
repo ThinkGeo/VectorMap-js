@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>World Maps Query Sample</title>
+    <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/2.0.2/vectormap.css">
+    <style>
+        .hidden{
+            display: none !important;
+        }
+        head, body{
+            margin: 0;
+            height: 100%;
+            background-color: gray;
+        }
+        .map{
+            height: 100%;
+            width: 100%;
+        }
+
+        .ol-zoom{
+            bottom: .5em;
+            right: 0.5em;
+            top: unset;
+            left: unset;
+        }
+        .query-panel{
+            position: fixed;
+            left: 1rem;
+            top: 1rem;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background-color: #000000BF;
+            color: #fff;
+            border: 1px solid #B4B4B4;
+            border-radius: 3px;
+        }
+
+        .query-panel>*{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin: .5em 0;
+        }
+        .query-panel>*>*{
+            box-sizing: border-box;
+            width: 47%;
+        }
+        .query-panel select{
+            width: 7rem;
+        }
+        .query-panel input[type=number]{
+            width: 5rem;
+        }
+        .query-panel .distanceUnitSelect{
+            width: 5rem;
+        }
+
+        #queryButton{
+            width: 7rem;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.5;
+            background-color: #fff;
+            border:1px solid #d8d8d8;
+        }
+
+        #distanceQueryPanel>div,
+        #nearestQueryPanel>div{
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .measure-tooltip{
+            padding: .3em;
+            border: 1px solid transparent;
+            border-radius: .3em;
+            background-color: #FFFFFFAA;
+        }
+
+        .alert-message{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15px;
+            padding: .5em;
+            border: 1px solid transparent;
+            border-radius: .5em;
+            cursor: default;
+        }
+        .alert-message.warning{
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #fff3cd;
+        }
+        .alert-message.error{
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div id="map" class="map"></div>
+
+    <div class="query-panel">
+        <div id="drawTypePanel">
+            <div>
+                <input type="radio" id="notDrawInput" name="drawTypes">
+                <label for="notDrawInput">not draw</label>
+            </div>
+            <div>
+                <input type="radio" id="pointDrawInput" name="drawTypes">
+                <label for="pointDrawInput">draw point</label>
+            </div>
+            <div>
+                <input type="radio" id="polylineDrawInput" name="drawTypes">
+                <label for="polylineDrawInput">draw polyline</label>
+            </div>
+            <div>
+                <input type="radio" id="polygonDrawInput" name="drawTypes" checked>
+                <label for="polygonDrawInput">draw polygon</label>
+            </div>
+        </div>
+        <div>
+            <label for="layerNameSelect">query layer:</label>
+            <div>
+                <select id="layerNameSelect">
+                    <option>countries</option>
+                    <option>states</option>
+                    <option>roads</option>
+                    <option>rail</option>
+                    <option>addresses</option>
+                    <option>cities</option>
+                    <option>land-use</option>
+                    <option>places</option>
+                    <option>pois</option>
+                    <option>transport</option>
+                    <option>water</option>
+                    <option>waterways</option>
+                    <option>buildings</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="queryTypeSelect">query type:</label>
+            <div>
+                <select id="queryTypeSelect">
+                    <option>within</option>
+                    <option>containing</option>
+                    <option>intersecting</option>
+                    <option>overlapping</option>
+                    <option>touching</option>
+                    <option>nearest</option>
+                    <option>within-distance</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="queryMaxResults">max results:</label>
+            <div>
+                <input type="number" id="queryMaxResults" value="100">
+            </div>
+        </div>
+        <div id="nearestQueryPanel" class="hidden">
+            <label for="searchRadiusInput">search radius:</label>
+            <div>
+                <input type="number" id="searchRadiusInput">
+                <select id="searchRadiusUnitSelect" class="distanceUnitSelect">
+                    <option></option>
+                    <option>meter</option>>
+                    <option>feet</option>>
+                    <option>kilometer</option>>
+                    <option>mile</option>>
+                    <option>ussurveyfeet</option>>
+                    <option>yard</option>>
+                    <option>nauticalmile</option>>
+                    <option>inch</option>>
+                    <option>link</option>>
+                    <option>chain</option>>
+                    <option>pole</option>>
+                    <option>rod</option>>
+                    <option>furlong</option>>
+                    <option>vara</option>>
+                    <option>arpent</option>>
+                </select>
+            </div>
+        </div>
+        <div id="distanceQueryPanel" class="hidden">
+            <label for="distanceInput">distance:</label>
+            <div>
+                <input type="number" id="distanceInput" value="200">
+                <select id="distanceUnitSelect" class="distanceUnitSelect">
+                    <option>meter</option>>
+                    <option>feet</option>>
+                    <option>kilometer</option>>
+                    <option>mile</option>>
+                    <option>ussurveyfeet</option>>
+                    <option>yard</option>>
+                    <option>nauticalmile</option>>
+                    <option>inch</option>>
+                    <option>link</option>>
+                    <option>chain</option>>
+                    <option>pole</option>>
+                    <option>rod</option>>
+                    <option>furlong</option>>
+                    <option>vara</option>>
+                    <option>arpent</option>>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="useCustomQueryCheckBox">use custom query:</label>
+            <div>
+                <input type="checkbox" id="useCustomQueryCheckBox">
+            </div>
+        </div>
+        <div>
+            <div></div>
+            <div>
+                <button id="queryButton">query</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- latest minified version of vectormap.js -->
+    <script src="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.js"></script>
+
+    <!-- option: Map Suite World Streets Styles -->
+    <script src="https://cdn.thinkgeo.com/vectormap-icons/1.0.0/webfontloader.js"></script>
+
+    <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.0-beta025/thinkgeocloudclient.js"></script>
+    <script src="../js/maps-query.js"></script>
+</body>
+</html>

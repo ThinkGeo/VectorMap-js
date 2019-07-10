@@ -2797,14 +2797,20 @@
                 comments: 'Convert a WKT feature from Decimal Degrees to Spherical Mercator.  Our Cloud Projection API also supports a large number of other coordinate systems.',
                 title: "Transform Projection",
                 htmlPath: './example/html/cloud-projection.html',
-                codePenUrl: '..',
+                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BEMoOB',
                 jsPath: './example/js/cloud-projection.js'
             }, {
                 comments: 'Consume ThinkGeo WMTS or tiled map via WMS Map Service.',
                 title: "Raster Map through WMS",
                 htmlPath: './example/html/cloud-maps-wms.html',
-                codePenUrl: '..',
+                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/oOmbBO',
                 jsPath: './example/js/cloud-maps-wms.js'
+            }, {
+                comments: 'Get world maps using ThinkGeo Cloud World Maps Qeury Service.',
+                title: "Maps Query",
+                htmlPath: './example/html/maps-query.html',
+                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/dBwxwa',
+                jsPath: './example/js/maps-query.js'
             }]
         }, {
             dataTarget: 'display-your-data',
