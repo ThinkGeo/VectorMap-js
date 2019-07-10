@@ -12,7 +12,7 @@ let initMap = function () {
         drawn: undefined,
     };
 
-    let baseMap = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/1.0.0-beta009/dark.json', {
+    let baseMap = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json', {
         apiKey: apiKey,
     });
     
