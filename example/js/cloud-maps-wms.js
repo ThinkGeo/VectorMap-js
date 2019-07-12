@@ -1,40 +1,41 @@
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+let currentPoint = [-77.0617786, 38.8947822];
 
 if (!navigator.geolocation) {
     document.getElementsByClassName('your-location')[0].classList.add('hide');
 }
 
 let image = new Image();
-document.querySelector('#locationImage').appendChild(image);
 
 const loading = document.getElementsByClassName('loading')[0];
 const btnGroups = document.getElementsByClassName('btn-group')[0];
 btnGroups.addEventListener('click', (e) => {
     const target = e.target;
     if (target.nodeName === "BUTTON") {
-        image.setAttribute('src', '');
-        loading.classList.remove('hide');
         const location = target.getAttribute('data-location');
         switch (location) {
             case 'your-location':
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
                 break;
             case 'london':
-                getWmsMap([-0.131833, 51.508734], 8);
+                currentPoint = [-0.131833, 51.508734];
+                getWmsMap(currentPoint);
                 break;
             case 'newyork':
-                getWmsMap([-73.975499, 40.725948], 8);
+                currentPoint = [-73.975499, 40.725948];
+                getWmsMap(currentPoint);
                 break;
             case 'washington':
-                getWmsMap([-77.0617786, 38.8947822], 8);
+                currentPoint = [-77.0617786, 38.8947822];
+                getWmsMap(currentPoint);
                 break;
         }
     }
 })
 
 const showPosition = (position) => {
-    let coord = [position.coords.longitude, position.coords.latitude];
-    getWmsMap(coord, 8);
+    currentPoint = [position.coords.longitude, position.coords.latitude];
+    getWmsMap(currentPoint);
 }
 
 const showError = (error) => { //can't use the location information
@@ -55,10 +56,12 @@ const showError = (error) => { //can't use the location information
     }
 }
 
-const getWmsMap = (coord_) => {
+const getWmsMap = (coord) => {
+    image.setAttribute('src', '');
+    loading.classList.remove('hide');
     const type = document.querySelector('.travel-row select').selectedOptions[0].value;
     let layers = 'WorldStreets';
-    const xycoord = ol.proj.transform(coord_, 'EPSG:4326', 'EPSG:3857');
+    const xycoord = ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857');
     const width = locationImage.offsetWidth;
     const height = locationImage.offsetHeight;
     const size = [width, height];
@@ -113,11 +116,18 @@ const createOrUpdate = (minX, minY, maxX, maxY, opt_extent) => {
     }
 }
 
-getWmsMap([-77.0617786, 38.8947822], 8);
+getWmsMap(currentPoint);
 
-image.onload = () => { 
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('#locationImage').appendChild(image);
+    document.querySelector('.travel-row select').addEventListener('change', function () {
+        getWmsMap(currentPoint);
+    })
+});
+
+image.onload = () => {
     loading.classList.add('hide');
 };
-image.onerror = () => { 
+image.onerror = () => {
     loading.classList.add('hide');
 };

@@ -302,7 +302,7 @@ const searchPlace = (focusIndex) => {
 
             // coordinates
             var locationPoint = targetResult.locationPoint;
-            coordinates = [parseFloat(locationPoint.x.toFixed(6)), parseFloat(locationPoint.y.toFixed(6))];
+            coordinates = [parseFloat(locationPoint.pointX.toFixed(6)), parseFloat(locationPoint.pointY.toFixed(6))];
 
 
             // displayName and displayAddress

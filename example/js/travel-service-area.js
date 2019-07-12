@@ -21,7 +21,7 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'njHlS4HkDTw02dwdNoANKvNaEhhaGVB85VsIXmyntGM~';
 
 
 /*---------------------------------------------*/
@@ -80,14 +80,14 @@ const initializeMap = () => {
 
 const addEventListenerToMap = (map) => {
     // Add a "pointermove" listener to map which is when the pointer is moving over the start, end and mid point, the cursor should be "pointer" appearance.
-    map.on('pointermove', function (e) {
+    map.on('pointermove', function(e) {
         if (e.dragging) {
             return;
         }
         const pixel = map.getEventPixel(e.originalEvent);
         const options = {
             // Only find feature on the routing layer not the base vector tile layer.
-            layerFilter: function (layer) {
+            layerFilter: function(layer) {
                 if (layer instanceof ol.layer.VectorTile) {
                     return false;
                 }
@@ -200,7 +200,7 @@ const mobileCompatibility = () => {
     const contextWidth = 165;
 
     // Add an event lister which will shows when we right clic on the map.
-    map.getViewport().addEventListener('contextmenu', function (e) {
+    map.getViewport().addEventListener('contextmenu', function(e) {
         hideOrShowContextMenu('show');
         let point = map.getEventCoordinate(e);
         left =
@@ -428,7 +428,7 @@ const updateInputValue = (noFixed) => {
 
 // Since we need to drag the point to change the destination or start location, 
 // we have to make the point draggable. At this step, we derived the custom class Drag.
-app.Drag = function () {
+app.Drag = function() {
     ol.interaction.Pointer.call(this, {
         handleDownEvent: app.Drag.prototype.handleDownEvent,
         handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -441,9 +441,9 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 
 // Function handling "down" events.
 // If the function returns true then a drag sequence is started.
-app.Drag.prototype.handleDownEvent = function (evt) {
+app.Drag.prototype.handleDownEvent = function(evt) {
     let map = evt.map;
-    let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+    let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
         if (feature.get('name') === 'start') {
             startFeature = feature;
             return feature;
@@ -460,7 +460,7 @@ app.Drag.prototype.handleDownEvent = function (evt) {
 
 // Function handling "drag" events. 
 // This function is called on "move" events during a drag sequence.
-app.Drag.prototype.handleDragEvent = function (evt) {
+app.Drag.prototype.handleDragEvent = function(evt) {
     let deltaX = evt.coordinate[0] - this.coordinate_[0];
     let deltaY = evt.coordinate[1] - this.coordinate_[1];
 
@@ -472,7 +472,7 @@ app.Drag.prototype.handleDragEvent = function (evt) {
 
 // Function handling "up" events.
 // If the function returns false then the current drag sequence is stopped.
-app.Drag.prototype.handleUpEvent = function (e) {
+app.Drag.prototype.handleUpEvent = function(e) {
     const coord = this.feature_.getGeometry().getCoordinates();
     const featureType = this.feature_.get('name');
     let coord_ = [];
@@ -497,7 +497,7 @@ app.Drag.prototype.handleUpEvent = function (e) {
 
 // These event listeners tell the UI when it's time to execute all of the 
 // code we've written.
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // Update the input box value by the default coordinates. 
     startInputEle = document.querySelector('#startPoint');
     updateInputValue();
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Update the service area options in left sidebar control panel.
-    document.querySelector('#serivce-area').addEventListener('click', function (e) {
+    document.querySelector('#serivce-area').addEventListener('click', function(e) {
         e = window.event || e;
         target = e.srcElement || e.target;
         if (target.nodeName === 'BUTTON') {
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Perform the routing service area request when click the "Refresh" button in the left sidebar panel.
-    document.querySelector('#refresh').addEventListener('click', function () {
+    document.querySelector('#refresh').addEventListener('click', function() {
         const coord = startInputEle.value.replace(/\s/g, '');
         let coor_ = coord.split(',');
         let coord_ = [Number(coor_[1]), Number(coor_[0])];
@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Hide or show the sidebar panel when the device is a mobile platform.
-    document.querySelector('#toggle').addEventListener('click', function () {
+    document.querySelector('#toggle').addEventListener('click', function() {
         const classList = document.querySelector('.travelPanel').classList;
         classList.contains('collapsed') ? classList.remove('collapsed') : classList.add('collapsed');
     })
@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update the Driving Minute Limit input min or max attribute value when changing the input value.
     let timeLimitInputs = document.querySelectorAll('#drive-time-limit input');
     for (let i = 0; i < timeLimitInputs.length; i++) {
-        timeLimitInputs[i].addEventListener('input', function (e) {
+        timeLimitInputs[i].addEventListener('input', function(e) {
             let value = Number(e.target.value);
             if (i === 0) {
                 timeLimitInputs[i + 1].setAttribute('min', value + 1)
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update the Driving Distance Limit input min or max attribute value when changing the input value.
     let disLimitInputs = document.querySelectorAll('#drive-distance-limit input');
     for (let i = 0; i < disLimitInputs.length; i++) {
-        disLimitInputs[i].addEventListener('input', function (e) {
+        disLimitInputs[i].addEventListener('input', function(e) {
             let value = Number(e.target.value);
             if (i === 0) {
                 disLimitInputs[i + 1].setAttribute('min', value + 1)

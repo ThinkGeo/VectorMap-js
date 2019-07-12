@@ -178,6 +178,7 @@ ol.inherits(drawLineControl, ol.control.Control);
 
 // Create and initialize our raster map control.
 let map = new ol.Map({
+	renderer: 'webgl',
 	// Add draw contorl to the map that let us draw lines when click the button.
 	controls: ol.control
 		.defaults({

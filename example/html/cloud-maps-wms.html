@@ -18,8 +18,8 @@
         #locationImage {
             display: inline-block;
             width: 100%;
-            height: 97%;
-            background-color: rgb(223, 223, 223);
+            height: calc(100% - 3px);
+            background-color: #fff;
         }
 
         .btn-group {
@@ -27,6 +27,10 @@
             top: 20px;
             left: 20px;
             width: 100px;
+            width: 200px;
+            border: 1px solid #fff;
+            background-color: rgba(0, 0, 0, .75);
+            padding-top: 5px;
         }
 
         .btn-group button {
@@ -34,13 +38,9 @@
             width: 180px;
             height: 30px;
             line-height: 30px;
-            margin: 10px;
-            color: white;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-            font-family: inherit;
-            color: rgba(0, 0, 0, .8);
+            margin: 5px 10px;
+            background-color: #fff;
             border: 1px solid #999;
-            background-color: #E6E6E6;
             text-decoration: none;
             border-radius: 2px;
             vertical-align: middle;
@@ -146,13 +146,16 @@
             display: none;
         }
 
-        .travel-row{
-            position: absolute;
-            top: 250px;
-            left: 30px;
+        .travel-row {
+            margin: 10px;
+            color: #fff;
         }
 
-        .travel-row span{
+        .travel-row select{
+            width: 180px;
+        }
+
+        .travel-row span {
             display: block;
         }
     </style>
@@ -167,19 +170,19 @@
         <button data-location="newyork">New York</button>
         <button data-location="london">London</button>
         <button class="your-location" data-location="your-location">Get Your Location</button>
+        <div class="travel-row">
+            <span>Style: </span>
+            <select>
+                <option value="Light">Light</option>
+                <option value="Dark">Dark</option>
+                <option value="Transparent-Background">Transparent-Background</option>
+            </select>
+        </div>
     </div>
     <div class="loading">
         <div></div>
         <div></div>
         <div></div>
-    </div>
-    <div class="travel-row">
-        <span>Style: </span>
-        <select>
-            <option value="Light">Light</option>
-            <option value="Dark">Dark</option>
-            <option value="Transparent-Background">Transparent-Background</option>
-        </select>
     </div>
 
     <!-- Include the latest version of ThinkGeo's VectorMap.js library from our CDN. -->

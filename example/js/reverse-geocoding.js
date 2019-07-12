@@ -38,6 +38,7 @@ let styles = {
     bestMatchLocation: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
+            crossOrigin: 'Anonymous',
             src: "../image/point.png"
         })
     }),
@@ -69,6 +70,7 @@ const createReverseGeocodingLayer = function () {
                 style = new ol.style.Style({
                     image: new ol.style.Icon({
                         anchor: [0.5, 1],
+                        crossOrigin: 'Anonymous',
                         src: "../image/map-icons/" + key + ".png",
                         scale: 0.25
                     }),
@@ -122,6 +124,7 @@ let view = new ol.View({
 let map;
 let initializeMap = function () {
     map = new ol.Map({
+        renderer: 'webgl',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
         // Add our previously-defined ThinkGeo Cloud Vector Tile layer to the map.
