@@ -54,10 +54,10 @@ function showInfo(event) {
     }
 }
 
-document.getElementById('test').onclick = function(){
-    console.log('test');
-    worldStreetsLayer.update('test.json');
-}
+// document.getElementById('test').onclick = function(){
+//     console.log('test');
+//     worldStreetsLayer.update('test.json');
+// }
 
 // disable rotation in mobile devices
 if ((navigator.userAgent.match(/(pad|iPad|iOS|Android|iPhone)/i))) {

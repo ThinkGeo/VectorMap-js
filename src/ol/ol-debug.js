@@ -100755,7 +100755,7 @@ function olInit() {
                                 z_order = 0;
                             }
 
-                            z_order += 100;
+                            z_order += 120
 
                             if(styleId.includes('#c')){
                                 z_order = 1 / (z_order + 0.5);
@@ -100806,7 +100806,7 @@ function olInit() {
                                 z_order = 0;
                             }
                             
-                            z_order += 100;
+                            z_order += 120;
 
                             if(styleId.includes('#c')){
                                 z_order = 1 / (z_order + 0.5);
