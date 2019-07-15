@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,18 @@
     <title>World Maps Query Sample</title>
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
     <style>
-        .hidden{
+        .hidden {
             display: none !important;
         }
-        head, body{
+
+        head,
+        body {
             margin: 0;
             height: 100%;
             background-color: gray;
         }
 
-        .map{
+        .map {
             height: 100%;
             width: 100%;
         }
@@ -62,18 +65,23 @@
         }
 
         #mapPopup .content table {
+            min-width: 300px;
             border-collapse: collapse;
         }
+
         #mapPopup .content table tr {
             border-top: 1px solid #eee;
         }
-        #mapPopup .content table tr:nth-child(1){
+
+        #mapPopup .content table tr:nth-child(1) {
             border-top: none;
         }
+
         #mapPopup .content table td,
         #mapPopup .content table th {
             padding: 7px 0;
         }
+
         #mapPopup .content table th::after {
             content: ':';
         }
@@ -90,13 +98,14 @@
             content: "✖";
         }
 
-        .ol-zoom{
+        .ol-zoom {
             bottom: .5em;
             right: 0.5em;
             top: unset;
             left: unset;
         }
-        .query-panel{
+
+        .query-panel {
             position: fixed;
             left: 1rem;
             top: 1rem;
@@ -109,7 +118,8 @@
             border: 1px solid #B4B4B4;
             border-radius: 3px;
         }
-        .query-panel>*{
+
+        .query-panel>* {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -118,78 +128,93 @@
             padding: .3em 0;
             border-bottom: 1px solid rgba(108, 108, 108, .314);
         }
-        .query-panel>*>*:nth-child(odd){
+
+        .query-panel>*>*:nth-child(odd) {
             width: 40%;
         }
-        .query-panel>*>*:nth-child(even){
+
+        .query-panel>*>*:nth-child(even) {
             width: 60%;
         }
-        .query-panel label{
+
+        .query-panel label {
             font-size: .83rem;
             font-weight: bold;
             line-height: 1.2;
         }
+
         .query-panel select,
-        .query-panel input[type=number]{
+        .query-panel input[type=number] {
             box-sizing: border-box;
             width: 100%;
         }
-        .query-panel .distanceUnitSelect{
+
+        .query-panel .distanceUnitSelect {
             width: 4rem;
         }
-        .query-panel button{
+
+        .query-panel button {
             line-height: 1.1;
             padding: .4em .5em;
             background-color: #fff;
-            border:1px solid #d8d8d8;
+            border: 1px solid #d8d8d8;
             cursor: pointer;
         }
-        .query-panel button:focus{
+
+        .query-panel button:focus {
             outline: none;
         }
-        #queryButton{
+
+        #queryButton {
             box-sizing: border-box;
             width: 100%;
             font-size: 12px;
             font-weight: bold;
         }
-        #queryCollapseButton{
+
+        #queryCollapseButton {
             display: none;
         }
-        .query-panel #drawTypePanel label{
+
+        .query-panel #drawTypePanel label {
             margin-bottom: .7em;
         }
-        .query-panel .button-group{
+
+        .query-panel .button-group {
             display: flex;
             width: 100%;
         }
-        .query-panel .button-group button.active{
+
+        .query-panel .button-group button.active {
             background-color: #d5d5d5;
         }
+
         #distanceQueryPanel>div,
-        #nearestQueryPanel>div{
+        #nearestQueryPanel>div {
             display: flex;
             flex-wrap: nowrap;
         }
+
         #distanceQueryPanel input[type=number],
-        #nearestQueryPanel input[type=number]{
+        #nearestQueryPanel input[type=number] {
             box-sizing: border-box;
             width: 55%;
         }
+
         #distanceQueryPanel select.distanceUnitSelect,
-        #nearestQueryPanel select.distanceUnitSelect{
+        #nearestQueryPanel select.distanceUnitSelect {
             box-sizing: border-box;
             width: 45%;
         }
 
-        .measure-tooltip{
+        .measure-tooltip {
             padding: .3em;
             border: 1px solid transparent;
             border-radius: .3em;
             background-color: #FFFFFFAA;
         }
 
-        .alert-message{
+        .alert-message {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -200,36 +225,43 @@
             border-radius: .5em;
             cursor: default;
         }
-        .alert-message.warning{
+
+        .alert-message.warning {
             background-color: #fff3cd;
             color: #856404;
             border-color: #fff3cd;
         }
-        .alert-message.error{
+
+        .alert-message.error {
             background-color: #f8d7da;
             color: #721c24;
             border-color: #f8d7da;
         }
 
-        @media (max-width: 767px){
-            .query-panel{
+        @media (max-width: 767px) {
+            .query-panel {
                 left: 0;
                 top: 0;
                 transition: transform .5s ease-out;
             }
-            .query-panel.collapsed{
+
+            .query-panel.collapsed {
                 transform: translateX(-100%);
             }
-            .query-panel button{
+
+            .query-panel button {
                 padding: .1em .2em;
             }
-            .query-panel>*{
+
+            .query-panel>* {
                 margin: .1em 0;
             }
-            .query-panel #drawTypePanel label{
+
+            .query-panel #drawTypePanel label {
                 margin-bottom: .3em;
             }
-            #queryCollapseButton{
+
+            #queryCollapseButton {
                 display: block;
                 position: absolute;
                 top: 0;
@@ -242,15 +274,22 @@
                 border-left: none;
                 cursor: pointer;
             }
-            .query-panel #queryCollapseButton::before{
+
+            .query-panel #queryCollapseButton::before {
                 content: '<<';
             }
-            .query-panel.collapsed #queryCollapseButton::before{
+
+            .query-panel.collapsed #queryCollapseButton::before {
                 content: '>>';
+            }
+
+            #mapPopup .content table {
+                min-width: 250px;
             }
         }
     </style>
 </head>
+
 <body>
     <div id="map" class="map">
         <div id="mapPopup">
@@ -315,21 +354,21 @@
                 <input type="number" id="searchRadiusInput">
                 <select id="searchRadiusUnitSelect" class="distanceUnitSelect">
                     <option></option>
-                    <option>meter</option>>
-                    <option>feet</option>>
-                    <option>kilometer</option>>
-                    <option>mile</option>>
-                    <option>ussurveyfeet</option>>
-                    <option>yard</option>>
-                    <option>nauticalmile</option>>
-                    <option>inch</option>>
-                    <option>link</option>>
-                    <option>chain</option>>
-                    <option>pole</option>>
-                    <option>rod</option>>
-                    <option>furlong</option>>
-                    <option>vara</option>>
-                    <option>arpent</option>>
+                    <option>meter</option>
+                    <option>feet</option>
+                    <option>kilometer</option>
+                    <option>mile</option>
+                    <option>ussurveyfeet</option>
+                    <option>yard</option>
+                    <option>nauticalmile</option>
+                    <option>inch</option>
+                    <option>link</option>
+                    <option>chain</option>
+                    <option>pole</option>
+                    <option>rod</option>
+                    <option>furlong</option>
+                    <option>vara</option>
+                    <option>arpent</option>
                 </select>
             </div>
         </div>
@@ -338,21 +377,21 @@
             <div>
                 <input type="number" id="distanceInput" value="200">
                 <select id="distanceUnitSelect" class="distanceUnitSelect">
-                    <option>meter</option>>
-                    <option>feet</option>>
-                    <option>kilometer</option>>
-                    <option>mile</option>>
-                    <option>ussurveyfeet</option>>
-                    <option>yard</option>>
-                    <option>nauticalmile</option>>
-                    <option>inch</option>>
-                    <option>link</option>>
-                    <option>chain</option>>
-                    <option>pole</option>>
-                    <option>rod</option>>
-                    <option>furlong</option>>
-                    <option>vara</option>>
-                    <option>arpent</option>>
+                    <option>meter</option>
+                    <option>feet</option>
+                    <option>kilometer</option>
+                    <option>mile</option>
+                    <option>ussurveyfeet</option>
+                    <option>yard</option>
+                    <option>nauticalmile</option>
+                    <option>inch</option>
+                    <option>link</option>
+                    <option>chain</option>
+                    <option>pole</option>
+                    <option>rod</option>
+                    <option>furlong</option>
+                    <option>vara</option>
+                    <option>arpent</option>
                 </select>
             </div>
         </div>

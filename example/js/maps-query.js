@@ -76,7 +76,7 @@ let initMap = function () {
 
     let map = new ol.Map({
         renderer: 'webgl',
-        layers: [baseMap, resultsLayer, drawLayer],
+        layers: [baseMap, drawLayer, resultsLayer],
         target: 'map',
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
