@@ -161,7 +161,7 @@ let initMap = function () {
             let feature = e.feature;
             if (feature.getGeometry() instanceof ol.geom.Point) {
                 let coordinate = feature.getGeometry().getCoordinates();
-                measureTooltipDom.innerHTML = coordinate.map(value => value.toFixed(2));
+                measureTooltipDom.innerHTML = ol.proj.toLonLat(coordinate).reverse().map(value => value.toFixed(2) + '°');
                 measureTooltip.setPosition(coordinate);
             } else {
                 feature.getGeometry().on('change', function (e) {
