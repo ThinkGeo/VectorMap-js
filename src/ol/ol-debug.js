@@ -68381,9 +68381,12 @@ function olInit() {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var lineDash = this.state_.lineDash;
 
+        var resultCoords;
         if(lineDash && lineDash.length > 0){
-            var resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
-            
+            resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+        }
+        
+        if(resultCoords && resultCoords.length >= 4){
             for(var m = 0; m < resultCoords.length; m += 4){
                 drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
                     resultCoords[m + 2], resultCoords[m + 3]]);
@@ -100473,9 +100476,14 @@ function olInit() {
                         flatCoordinates=railWayChildCoord;
                         drawLineString_.call(this, flatCoordinates);
                     }
-                }else if(lineDash && lineDash.length > 0){
-                    var resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
-                    
+                }
+                
+                var resultCoords;
+                if(lineDash && lineDash.length > 0){
+                    resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+                }
+                
+                if(resultCoords && resultCoords.length >= 4){
                     for(var m = 0; m < resultCoords.length; m += 4){
                         drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
                             resultCoords[m + 2], resultCoords[m + 3]]);
@@ -100510,28 +100518,41 @@ function olInit() {
                             this.zCoordinates.push(z_order);
                             this.state_.changed = false;
                         }
-                            this.startIndices.push(this.indices.length);
-                            this.startIndicesFeature.push(feature);
-                            this.drawCoordinates_(
-                                clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
+                        this.startIndices.push(this.indices.length);
+                        this.startIndicesFeature.push(feature);
+                        this.drawCoordinates_(
+                            clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
                         }
                     }
                 }
-                LineStringReplayCustom.prototype.drawMultiLineString =function(multiLineStringGeometry, feature){
+                LineStringReplayCustom.prototype.drawMultiLineString =function(multiLineStringGeometry, feature, options){
                     var indexCount = this.indices.length;
                     var ends = multiLineStringGeometry.getEnds();
                     ends.unshift(0);
                     var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
                     var stride = multiLineStringGeometry.getStride();
                     var i, ii;
+                    var lineDash = this.state_.lineDash;
                     // var extent = feature.getExtent();
                     if (ends.length > 1) {
                         for (i = 1, ii = ends.length; i < ii; ++i) {
                             if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
                                 var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
                                     stride, -this.origin[0], -this.origin[1]);
-                                this.drawCoordinates_(
-                                    lineString, 0, lineString.length, stride);
+                                var resultCoords;
+                                if(lineDash && lineDash.length > 0){
+                                    resultCoords = self.getLineDashFlatCoordinates(lineDash, lineString, options.frameState);
+                                }
+                                
+                                if(resultCoords && resultCoords.length >= 4){
+                                    for(var m = 0; m < resultCoords.length; m += 4){
+                                        this.drawCoordinates_([resultCoords[m], resultCoords[m + 1], 
+                                            resultCoords[m + 2], resultCoords[m + 3]], 0, 4, stride);
+                                    }
+                                }else{
+                                    this.drawCoordinates_(
+                                        lineString, 0, lineString.length, stride);
+                                }                                
                             }
                         }
                     }
@@ -101256,13 +101277,13 @@ function olInit() {
             }
         };
 
-        self.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+        self.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature, options) {
             var strokeStyle = style.getStroke();
             if (strokeStyle) {
                 var lineStringReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.LINE_STRING);
                 lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-                lineStringReplay.drawMultiLineString(geometry, feature);
+                lineStringReplay.drawMultiLineString(geometry, feature, options);
             }
             var textStyle = style.getText();
             if (textStyle) {
