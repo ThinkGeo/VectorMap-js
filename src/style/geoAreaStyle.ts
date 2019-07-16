@@ -154,6 +154,10 @@ export class GeoAreaStyle extends GeoStyle {
         if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
                 feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
+                var dx = this.geometryTransformValue[0].trim() * resolution;
+                var dy = this.geometryTransformValue[1].trim() * resolution;
+                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                feature.extent_ = newExtent_;
             }
 
             if (this.shadowDx || this.shadowDy) {
@@ -178,9 +182,10 @@ export class GeoAreaStyle extends GeoStyle {
                     }
                 }
                 let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-
+                geometry['ends_'] = feature.ends_;
+                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
+                geometry['extent_'] = newExtent_;
                 GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
-
                 GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
                 this.styles[length++] = GeoAreaStyle.areaShadowStyle;
             }

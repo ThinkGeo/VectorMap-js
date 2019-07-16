@@ -98259,8 +98259,9 @@ function olInit() {
                     }
                 }
                 var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                geometry.ends_ = feature.ends_;
                 if (this.geometryTransform.startsWith("translate")) {
-                    geometry.translate(-this.geometryTransformValue[0].trim() * resolution, -this.geometryTransformValue[1].trim() * resolution);
+                    geometry.translate(-this.geometryTransformValue[0].trim() * resolution, -this.geometryTransformValue[1].trim() * resolution);                    
                 }
                 else if (this.geometryTransform.startsWith("scale")) {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
@@ -98281,6 +98282,10 @@ function olInit() {
                 if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
                     if (this.geometryTransform) {
                         feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
+                        var dx = this.geometryTransformValue[0].trim() * resolution;
+                        var dy = this.geometryTransformValue[1].trim() * resolution;
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                        feature.extent_ = newExtent_;
                     }
                     if (this.shadowDx || this.shadowDy) {
                         var shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
@@ -98300,8 +98305,11 @@ function olInit() {
                             if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
                                 index++;
                             }
-                        }
+                        }              
                         var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                        geometry.ends_ = feature.ends_;
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
+                        geometry.extent_ = newExtent_;
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
                         GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
@@ -98546,7 +98554,11 @@ function olInit() {
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    geometry.translate(+values[0].trim() * resolution, +values[1].trim() * resolution);
+                                    var dx = values[0].trim() * resolution;
+                                    var dy = values[1].trim() * resolution;
+                                    geometry.translate(+dx, +dy);
+                                    var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                                    geometry.extent_ = newExtent_;
                                 }
                                 else if (_this.geometryTransform.startsWith("scale")) {
                                     geometry.scale(+values[0].trim(), +values[1].trim());
@@ -98592,7 +98604,11 @@ function olInit() {
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    geometry.translate(+values[0].trim(), +values[1].trim());
+                                    var dx = values[0].trim();
+                                    var dy = values[1].trim();
+                                    geometry.translate(+dx, +dy);
+                                    var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                                    geometry.extent_ = newExtent_;
                                 }
                                 else if (_this.geometryTransform.startsWith("scale")) {
                                     geometry.scale(+values[0].trim(), +values[1].trim());
@@ -98626,7 +98642,11 @@ function olInit() {
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    geometry.translate(+values[0].trim(), +values[1].trim());
+                                    var dx = values[0].trim();
+                                    var dy = values[1].trim();
+                                    geometry.translate(+dx, +dy);
+                                    var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                                    geometry.extent_ = newExtent_;
                                 }
                                 else if (_this.geometryTransform.startsWith("scale")) {
                                     geometry.scale(+values[0].trim(), +values[1].trim());
@@ -100285,9 +100305,10 @@ function olInit() {
             GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
                 var ends = polygonGeometry.getEnds();
                 var stride = polygonGeometry.getStride();
-                var extent = feature.getGeometry().getExtent();
+                var extent = polygonGeometry.getExtent();
+
                 if (ends.length > 0) {            
-                    var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
+                    var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
                     var index = 0;
                     var outers = [];
                     var outerRing = [];
@@ -101173,7 +101194,7 @@ function olInit() {
         self.renderFeatureByType = function (
             replayGroup, feature, style, squaredTolerance,options) {
             var geometry = style.getGeometryFunction()(feature);
-    
+        
             if (!geometry) {
                 return;
             }        
@@ -101579,7 +101600,7 @@ function olInit() {
 
             // TEST     
             // console.log(tileCoord.toString());
-            // if(tileCoord.toString() !== "2,1,-2"){
+            // if(tileCoord.toString() !== "3,0,-5"){
             // if(tileCoord.toString() !== "17,30293,-52889"){
             // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
                 // return

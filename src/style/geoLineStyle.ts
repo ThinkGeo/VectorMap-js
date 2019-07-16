@@ -268,7 +268,11 @@ export class GeoLineStyle extends GeoStyle {
                         let values = this.getTransformValues(this.geometryTransform);
 
                         if (this.geometryTransform.indexOf("translate") === 0) {
-                            geometry.translate(+values[0].trim() * resolution, +values[1].trim() * resolution);
+                            var dx = values[0].trim() * resolution;
+                            var dy = values[1].trim() * resolution;
+                            geometry.translate(+dx, +dy);
+                            var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                            geometry['extent_'] = newExtent_;
                         } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
                         } else if (this.geometryTransform.indexOf("rotate") === 0) {
