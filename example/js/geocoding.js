@@ -20,8 +20,7 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'HCGSaTIZsLE_4gh8RFuJ85--2m5KPE1lWfHVpYlS0jg~';
-const apiKeyForBaseLayer = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -32,7 +31,7 @@ const apiKeyForBaseLayer = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
 // info, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_maps_raster_tiles
 let baseLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worldstreets-styles/3.0.0/dark.json', {
-    apiKey: apiKeyForBaseLayer,
+    apiKey: apiKey,
     layerName: 'dark'
 });
 
@@ -168,7 +167,6 @@ const addPopup = (tile, coordinates, address, label) => {
 
 // We need to create the instance of Geocoder client and authenticate the API key.
 let geocodingClient = new tg.GeocodingClient(apiKey);
-geocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
 let results;
 let resultsLength;
 let geocoderResultNode = document.getElementById('geocoderResult');
