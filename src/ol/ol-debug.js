@@ -101340,8 +101340,36 @@ function olInit() {
 
         self.updateStyleJSON = function (styleJsonInfo, methodInfo) {
             self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
+            self.updateDrawingInstructs(styleJsonInfo.formatId);
 
             return true;
+        }
+
+        self.updateDrawingInstructs = function (formatId) {
+            var styleJsonCache = self.styleJsonCache[formatId];  
+            var vectorTileData = self.vectorTilesData[formatId];    
+            var values = vectorTileData.getValues();
+            for(var key in values){
+                var value = values[key];
+                var arguments_ = value.drawingInstructsArguments;
+                var tileCoord = arguments_[3];
+                var requestCoord = arguments_[4];
+                var readData = readFeaturesAndCreateInstructTrees(arguments_[0], arguments_[1], requestCoord[0], styleJsonCache, arguments_[5],
+                    arguments_[7], arguments_[8]);
+                var features = readData[0];
+                var instructsTree = readData[1];
+                var extent = readData[2];
+    
+                var instructsData = getInstructs(instructsTree);
+                var instructs = instructsData[0];
+                var mainGeoStyleIds = instructsData[1];
+    
+                var subTileInstructCaches = createSubTileInstructCaches(features, instructs, extent, tileCoord, requestCoord);
+
+                value.mainGeoStyleIds = mainGeoStyleIds;
+                value.styleJsonCache = styleJsonCache;
+                value.subTileInstructCaches = subTileInstructCaches;
+            }
         }
 
         self.request = function (requestInfo, methodInfo) {
@@ -101511,7 +101539,8 @@ function olInit() {
                 subTileInstructCaches: subTileInstructCaches,
                 sourceProject: sourceProject,
                 lastExtent: extent,
-                mainGeoStyleIds: mainGeoStyleIds
+                mainGeoStyleIds: mainGeoStyleIds,
+                drawingInstructsArguments: arguments
             };
 
             var requestKey = requestCoord.join(",") + "," + zoom;
@@ -101652,9 +101681,9 @@ function olInit() {
             if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
                 vectorTileData = self.vectorTilesData[formatId].get(tileCoordKey);
                 
-                if(state_ === 'update'){
-                    vectorTileData.styleJsonCache = self.styleJsonCache[formatId];
-                }
+                // if(state_ === 'update'){
+                //     vectorTileData.styleJsonCache = self.styleJsonCache[formatId];
+                // }
             }
             else {
                 this.console.log("missing", tileCoord, tileCoordKey);
