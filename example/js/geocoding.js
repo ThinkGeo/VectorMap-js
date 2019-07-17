@@ -312,12 +312,15 @@ const searchPlace = (focusIndex) => {
             if (name) {
                 titleArray.push(name);
             }
+
+            var tmpRoad = ""; houseNumber + " " + roadName;
             if (houseNumber) {
-                titleArray.push(houseNumber);
+                tmpRoad = tmpRoad + houseNumber + " ";
             }
             if (roadName) {
-                titleArray.push(roadName);
+                tmpRoad = tmpRoad + roadName;
             }
+            titleArray.push(tmpRoad);
             displayTitle = titleArray.join(", ");
 
             if (displayTitle != "" && locationAddress.startsWith(displayTitle)) {
