@@ -66,7 +66,7 @@ export class GeoTextStyle extends GeoStyle {
 
         if (styleJson) {
             this.align = styleJson["text-align"];
-            this.baseline = styleJson["text-base-line"];
+            this.baseline = styleJson["text-baseline"];
             this.dx = styleJson["text-dx"];
             this.dy = styleJson["text-dy"];
             this.font = styleJson["text-font"];
