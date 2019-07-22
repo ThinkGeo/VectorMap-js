@@ -20,7 +20,8 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const testServerApiKey = 'erkdD62h7-3dzcFMYwmvGMgfcmuhj72JmmG0Lsx4NOM~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -39,10 +40,11 @@ const darkLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worl
 });
 
 // Create a default view for the map when it starts up.
-let startInputCoord = [-96.809876, 33.128397];
+let startPoint = [-96.84721571523568, 32.839340285006415];
+let endPoint = [-96.7782779608517, 32.75760296844088];
 const view = new ol.View({
     // Center the map on Boston and start at zoom level 8.
-    center: ol.proj.fromLonLat(startInputCoord),
+    center: ol.proj.fromLonLat([-96.809876, 33.128397]),
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true,
     zoom: 13,
@@ -102,19 +104,19 @@ const initializeMap = () => {
      * Add a click handler to hide the popup.
      * @return {boolean} Don't follow the href.
      */
-    closer.onclick = function() {
+    closer.onclick = function () {
         popup.setPosition(undefined);
         closer.blur();
         return false;
     };
 
     // display popup when click on the place icon.
-    map.on('click', function(evt) {
+    map.on('click', function (evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function(feature) {
+            function (feature) {
                 return feature;
             });
-        if (feature && feature.getGeometry().getType() == 'Point') {
+        if (feature && feature.getGeometry().getType() == 'Point' && feature.get('name') !== 'start' && feature.get('name') !== 'end') {
             var coordinates = feature.getGeometry().getCoordinates();
             popup.setPosition(coordinates);
             content.innerHTML = feature.get('content');
@@ -122,7 +124,7 @@ const initializeMap = () => {
     });
 
     // change mouse cursor as pointer when over icon.
-    map.on('pointermove', function(e) {
+    map.on('pointermove', function (e) {
         if (e.dragging) {
             return;
         }
@@ -130,7 +132,7 @@ const initializeMap = () => {
         var pixel = map.getEventPixel(e.originalEvent);
         //var hit = map.hasFeatureAtPixel(pixel);
         var feature = map.forEachFeatureAtPixel(pixel,
-            function(feature) {
+            function (feature) {
                 return feature;
             });
         if (feature && feature.getGeometry().getType() == 'Point') {
@@ -140,23 +142,25 @@ const initializeMap = () => {
         }
     });
 
-    // By default, perform the service-area request and then caluclate the places whthin the driving-area on the map.
+    // By default, perform the service-line request and then caluclate the places whthin the driving-line on the map.
     performRouting();
-
-    // mobileCompatibility();
-    // addEventListenerToMap(map);
 };
 
 // Show the driving start icon on the map.
 const showDrivingStartPoint = () => {
-    let pointFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.fromLonLat(startInputCoord)),
+    let startFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat(startPoint)),
         name: 'start'
     });
-    pointFeature.setStyle(styles.point);
-    vectorSource.addFeature(pointFeature)
+    let endFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat(endPoint)),
+        name: 'end'
+    });
+    startFeature.setStyle(styles.start);
+    endFeature.setStyle(styles.end);
+    vectorSource.addFeature(startFeature);
+    vectorSource.addFeature(endFeature);
 }
-
 
 /*---------------------------------------------*/
 // 3. ThinkGeo Map Icon Fonts
@@ -196,16 +200,16 @@ const routingClient = new tg.RoutingClient(apiKey);
 
 // This method performs the actual routing using the ThinkGeo Cloud. 
 // By passing the coordinates of the map location and some other options, we can 
-// get back the service area as we send the request.  For more details, see our wiki:
+// get back the route line as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_routing
 let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
     placeSource.clear();
-    vectorSource.getFeatures().some(feature=>{
-        if(feature.get('name') === 'polygon'){
-            vectorSource.removeFeature(feature)
-            return true
+    vectorSource.getFeatures().some(feature => {
+        if (feature.get('name') === 'line') {
+            vectorSource.removeFeature(feature);
+            return true;
         }
     })
     // Show the loading animation.
@@ -215,17 +219,17 @@ const performRouting = () => {
     const callback = (status, response) => {
         let message;
         if (status === 200) {
-            // Draw the calculated driving polygon on the map.
-            let drivingPolygon = drawDrivingPolygon(response.data);
+            // Draw the calculated driving line on the map.
+            let drivingLine = drawDrivingLine(response.data);
 
-            // Search the places you are  intrested in within the driving polygon.
-            searchPlaces(drivingPolygon);
+            // Search the places you are intrested in within the driving line.
+            searchPlaces(drivingLine);
         } else if (status === 410 || status === 401 || status === 400) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "The request of calculating driving service area failed.");
+            }) || "The request of calculating driving line failed.");
         } else {
-            message = 'The request of calculating driving service area failed.';
+            message = 'The request of calculating driving line failed.';
         }
 
         if (message) {
@@ -236,25 +240,35 @@ const performRouting = () => {
             }, 5000)
         }
     }
-    routingClient.getServiceArea(startInputCoord[1], startInputCoord[0], 10, callback, {
-        gridSizeInMeters: 2000
-    });
+
+    const waypoints = [{
+        x: startPoint[0],
+        y: startPoint[1]
+    }, {
+        x: endPoint[0],
+        y: endPoint[1]
+    }];
+
+    routingClient.getRoute(waypoints, callback);
 }
 
-const drawDrivingPolygon = (res) => {
+const drawDrivingLine = (res) => {
     // project result from EPSG:4326 to EPSG:3857
-    const drivingPolygon = (new ol.format.WKT()).readFeature(res.serviceAreas[0], {
+    const drivingLine = (new ol.format.WKT()).readFeature(res.routes[0].geometry, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
     });
-    drivingPolygon.setStyle(styles.polygon);
-    drivingPolygon.set('name', 'polygon');
-    vectorSource.addFeature(drivingPolygon);
+    drivingLine.setStyle(styles.line);
+    drivingLine.set('name', 'line');
+    vectorSource.addFeature(drivingLine);
 
-    // zoom to the extent which includes the driving polygon
-    map.getView().fit(drivingPolygon.getGeometry().getExtent(), { constrainResolution: true, nearest: true });
+    // zoom to the extent which includes the driving line
+    map.getView().fit(drivingLine.getGeometry().getExtent(), {
+        constrainResolution: true,
+        nearest: true
+    });
 
-    return drivingPolygon;
+    return drivingLine;
 }
 
 
@@ -270,17 +284,18 @@ const drawDrivingPolygon = (res) => {
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
-let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(testServerApiKey);
+reverseGeocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
-// By passing the polygon wkt,  location types you want to return and some other options, we can 
+// By passing the line wkt,  location types you want to return and some other options, we can 
 // get back the places as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
-const searchPlaces = (drivingPolygon) => {
+const searchPlaces = (drivingLine) => {
 
     // Show the searched places with specific icons on the map.
     const placeType = document.querySelector('#place-type').selectedOptions[0];
-    let callback = (status, response) => {
+    const callback = (status, response) => {
         // Hide the loading animation.
         if (timer !== undefined && timer !== null) {
             clearTimeout(timer);
@@ -291,12 +306,12 @@ const searchPlaces = (drivingPolygon) => {
         let message;
         if (status === 200) {
             showPlaces(response.data, placeType.innerText);
-        } else if (status === 410 || status === 401 || status === 400) {
+        } else if (status === 410 || status === 401 || status === 400 || status === 403) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "The request of searching places in driving polygon failed.");
+            }) || "The request of searching places in driving line failed.");
         } else {
-            message = 'The request of searching places in driving polygon failed.';
+            message = 'The request of searching places in driving line failed.';
         }
 
         if (message) {
@@ -308,16 +323,13 @@ const searchPlaces = (drivingPolygon) => {
         }
     }
 
-    let searchOptions = {
-        srid: 3857,
-        locationCategories: 'common',
-        locationTypes: placeType.value,
-        maxResults: 500,
-        searchRadius: 0
-    };
+    const lineWkt = (new ol.format.WKT()).writeGeometry(drivingLine.getGeometry());
 
-    let polygonWKT = (new ol.format.WKT()).writeGeometry(drivingPolygon.getGeometry().getPolygon(0));
-    reverseGeocodingClient.searchPlaceByArea(polygonWKT, callback, searchOptions);
+    reverseGeocodingClient.searchPlaceInAdvance({
+        wkt: lineWkt,
+        srid: 3857,
+        locationTypes: placeType.value
+    }, callback);
 }
 
 const showPlaces = (res, placeType) => {
@@ -355,26 +367,46 @@ const showPlaces = (res, placeType) => {
     }
 }
 
-// Perform the routing service area request and place search request when click the "Refresh" button.
-document.querySelector('#refresh').addEventListener('click', function() {
+// Perform the routing line request and place search request when click the "Refresh" button.
+document.querySelector('#refresh').addEventListener('click', function () {
     performRouting();
 });
 
 
 // In this custom object, we're going to define the styles of driving vehicle, searched places:
 const styles = {
-    // The icon of driving vehicle.
-    point: new ol.style.Style({
+    start: new ol.style.Style({
         image: new ol.style.Icon({
-            anchor: [0.5, 0.5],
+            anchor: [0.5, 0.9],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/vehicle.png',
-            imgSize: [30, 30]
-        }),
-        zIndex: 2
+            crossOrigin: 'Anonymous',
+            src: '../image/starting.png'
+        })
+    }),
+    end: new ol.style.Style({
+        image: new ol.style.Icon({
+            anchor: [0.5, 0.9],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            opacity: 1,
+            crossOrigin: 'Anonymous',
+            src: '../image/ending.png'
+        })
+    }),
+    line: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            width: 6,
+            color: [34, 109, 214, 0.9]
+        })
+    }),
+    walkLine: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            width: 2,
+            lineDash: [5, 3],
+            color: [34, 109, 214, 1]
+        })
     }),
     // The icon of place - bar, biergarten, pub.
     bar: new ol.style.Style({
@@ -453,14 +485,9 @@ const styles = {
             imgSize: [32, 32]
         }),
         zIndex: 2
-    }),
-    // The polygon style of the driving area in a specific driving minutes.
-    polygon: new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(40, 132, 176, 0.3)'
-        })
     })
-}
+};
+
 
 /*---------------------------------------------*/
 // 6. Derive the Custom Class Drag
@@ -468,7 +495,7 @@ const styles = {
 
 // Since we need to drag the point to change the destination or start location, 
 // we have to make the point draggable. At this step, we derived the custom class Drag.
-app.Drag = function() {
+app.Drag = function () {
     ol.interaction.Pointer.call(this, {
         handleDownEvent: app.Drag.prototype.handleDownEvent,
         handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -481,11 +508,11 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 
 // Function handling "down" events.
 // If the function returns true then a drag sequence is started.
-app.Drag.prototype.handleDownEvent = function(evt) {
+app.Drag.prototype.handleDownEvent = function (evt) {
     let map = evt.map;
-    let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-        if (feature.get('name') === 'start') {
-            startFeature = feature;
+    let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+        let featureName = feature.get('name');
+        if (featureName === 'start' || featureName === 'end') {
             return feature;
         }
     });
@@ -500,7 +527,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 
 // Function handling "drag" events. 
 // This function is called on "move" events during a drag sequence.
-app.Drag.prototype.handleDragEvent = function(evt) {
+app.Drag.prototype.handleDragEvent = function (evt) {
     let deltaX = evt.coordinate[0] - this.coordinate_[0];
     let deltaY = evt.coordinate[1] - this.coordinate_[1];
 
@@ -512,14 +539,18 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
 // Function handling "up" events.
 // If the function returns false then the current drag sequence is stopped.
-app.Drag.prototype.handleUpEvent = function(e) {
+app.Drag.prototype.handleUpEvent = function (e) {
     const coord = this.feature_.getGeometry().getCoordinates();
     const featureType = this.feature_.get('name');
     let coord_ = [];
     switch (featureType) {
         case 'start':
             coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
-            startInputCoord = coord_.slice();
+            startPoint = coord_.slice();
+            break;
+        case 'end':
+            coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
+            endPoint = coord_.slice();
             break;
     }
     performRouting();
