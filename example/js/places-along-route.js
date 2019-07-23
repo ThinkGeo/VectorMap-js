@@ -1,5 +1,5 @@
 /*===========================================================================*/
-// Place in 10 Driving Minutes
+// Places Along Route
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
