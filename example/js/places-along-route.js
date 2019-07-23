@@ -40,14 +40,14 @@ const darkLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worl
 });
 
 // Create a default view for the map when it starts up.
-let startPoint = [-96.84721571523568, 32.839340285006415];
-let endPoint = [-96.7782779608517, 32.75760296844088];
+let startPoint = [-97.76351771095017, 32.72500627442925];
+let endPoint = [-95.82104604890212, 32.77980711394525];
 const view = new ol.View({
     // Center the map on Boston and start at zoom level 8.
-    center: ol.proj.fromLonLat([-96.809876, 33.128397]),
+    center: ol.proj.fromLonLat([-96.82104604890212, 32.74980711394525]),
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true,
-    zoom: 13,
+    zoom: 9,
     minZoom: 2,
     maxZoom: 19
 });
@@ -115,8 +115,12 @@ const initializeMap = () => {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
             function (feature) {
                 return feature;
+            }, {
+                layerFilter: (layer) => {
+                    return !(layer instanceof ol.mapsuite.VectorTileLayer)
+                }
             });
-        if (feature && feature.getGeometry().getType() == 'Point' && feature.get('name') !== 'start' && feature.get('name') !== 'end') {
+        if (feature && feature.get('name') === 'place') {
             var coordinates = feature.getGeometry().getCoordinates();
             popup.setPosition(coordinates);
             content.innerHTML = feature.get('content');
@@ -130,13 +134,22 @@ const initializeMap = () => {
         }
 
         var pixel = map.getEventPixel(e.originalEvent);
-        //var hit = map.hasFeatureAtPixel(pixel);
         var feature = map.forEachFeatureAtPixel(pixel,
             function (feature) {
                 return feature;
+            }, {
+                layerFilter: (layer) => {
+                    return !(layer instanceof ol.mapsuite.VectorTileLayer)
+                }
             });
-        if (feature && feature.getGeometry().getType() == 'Point') {
-            map.getTarget().style.cursor = 'pointer';
+
+        if (feature) {
+            const featureName = feature.get('name');
+            if (featureName == 'place' || featureName === 'start' || featureName === 'end') {
+                map.getTarget().style.cursor = 'pointer';
+            } else {
+                map.getTarget().style.cursor = '';
+            }
         } else {
             map.getTarget().style.cursor = '';
         }
@@ -339,28 +352,23 @@ const showPlaces = (res, placeType) => {
         const content = `<div>${title}<small>(${place.locationType})</small><br/>${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}</div>`
         const placeFeature = new ol.Feature({
             geometry: new ol.geom.Point([place.locationPoint.pointX, place.locationPoint.pointY]),
-            content: content
+            content: content,
+            name: 'place'
         });
 
         let style;
         switch (placeType) {
-            case 'Bar & Pub':
-                style = styles.bar;
+            case 'Hotel':
+                style = styles.hotel;
                 break;
             case 'Restaurant':
                 style = styles.restaurant;
                 break;
-            case 'Health Center':
-                style = styles.health;
+            case 'Gas Station':
+                style = styles.fuel;
                 break;
-            case 'Hotel':
-                style = styles.hotel;
-                break;
-            case 'Education Center':
-                style = styles.school;
-                break;
-            case 'Supermarket':
-                style = styles.grocery;
+            case 'Car Wash':
+                style = styles.car;
                 break;
         }
 
@@ -410,19 +418,6 @@ const styles = {
             color: [34, 109, 214, 1]
         })
     }),
-    // The icon of place - bar, biergarten, pub.
-    bar: new ol.style.Style({
-        image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'fraction',
-            opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/place-icons/bar.png',
-            imgSize: [32, 32]
-        }),
-        zIndex: 2
-    }),
     // The icon of bbq, cafe, fast_food, food_court, restaurant.
     restaurant: new ol.style.Style({
         image: new ol.style.Icon({
@@ -436,15 +431,15 @@ const styles = {
         }),
         zIndex: 2
     }),
-    // The icon of doctors, hospital, pharmacy.
-    health: new ol.style.Style({
+    // The icon of fuel.
+    fuel: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
             crossOrigin: "Anonymous",
-            src: '../image/place-icons/health.png',
+            src: '../image/place-icons/fuel.png',
             imgSize: [32, 32]
         }),
         zIndex: 2
@@ -462,28 +457,15 @@ const styles = {
         }),
         zIndex: 2
     }),
-    // The icon of language_school, driving_school, music_school, school, kindergarten, university, college.
-    school: new ol.style.Style({
+    // The icon of car wash. 
+    car: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
             crossOrigin: "Anonymous",
-            src: '../image/place-icons/school.png',
-            imgSize: [32, 32]
-        }),
-        zIndex: 2
-    }),
-    // The icon of supermarket.
-    grocery: new ol.style.Style({
-        image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'fraction',
-            opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/place-icons/grocery.png',
+            src: '../image/place-icons/car.png',
             imgSize: [32, 32]
         }),
         zIndex: 2
@@ -516,6 +498,10 @@ app.Drag.prototype.handleDownEvent = function (evt) {
         let featureName = feature.get('name');
         if (featureName === 'start' || featureName === 'end') {
             return feature;
+        }
+    }, {
+        layerFilter: (layer) => {
+            return !(layer instanceof ol.mapsuite.VectorTileLayer)
         }
     });
 
