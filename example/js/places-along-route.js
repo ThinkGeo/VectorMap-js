@@ -335,9 +335,11 @@ const searchPlaces = (drivingLine) => {
 const showPlaces = (res, placeType) => {
     for (let i = 1, l = res.nearbyLocations.length; i < l; i++) {
         let place = res.nearbyLocations[i].data;
-        let placeFeature = new ol.Feature({
+        const title = place.locationName ? `<big>${place.locationName}</big>` : '';
+        const content = `<div>${title}<small>(${place.locationType})</small><br/>${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}</div>`
+        const placeFeature = new ol.Feature({
             geometry: new ol.geom.Point([place.locationPoint.pointX, place.locationPoint.pointY]),
-            content: '<div><big>' + place.locationName + '</big><small>(' + place.locationType + ')</small><br/>' + place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(',')) + '</div>'
+            content: content
         });
 
         let style;
