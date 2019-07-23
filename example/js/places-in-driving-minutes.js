@@ -20,7 +20,8 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~';
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+const testServerApiKey = 'erkdD62h7-3dzcFMYwmvGMgfcmuhj72JmmG0Lsx4NOM~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -142,9 +143,6 @@ const initializeMap = () => {
 
     // By default, perform the service-area request and then caluclate the places whthin the driving-area on the map.
     performRouting();
-
-    // mobileCompatibility();
-    // addEventListenerToMap(map);
 };
 
 // Show the driving start icon on the map.
@@ -237,7 +235,7 @@ const performRouting = () => {
         }
     }
     routingClient.getServiceArea(startInputCoord[1], startInputCoord[0], 10, callback, {
-        gridSizeInMeters: 2000
+        gridSizeInMeters: 500
     });
 }
 
@@ -270,7 +268,8 @@ const drawDrivingPolygon = (res) => {
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
-let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(testServerApiKey);
+reverseGeocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
 // By passing the polygon wkt,  location types you want to return and some other options, we can 
@@ -308,16 +307,15 @@ const searchPlaces = (drivingPolygon) => {
         }
     }
 
-    let searchOptions = {
+    let polygonWKT = (new ol.format.WKT()).writeGeometry(drivingPolygon.getGeometry().getPolygon(0));
+    reverseGeocodingClient.searchPlaceInAdvance({
+        wkt: polygonWKT,
         srid: 3857,
         locationCategories: 'common',
         locationTypes: placeType.value,
         maxResults: 500,
         searchRadius: 0
-    };
-
-    let polygonWKT = (new ol.format.WKT()).writeGeometry(drivingPolygon.getGeometry().getPolygon(0));
-    reverseGeocodingClient.searchPlaceByArea(polygonWKT, callback, searchOptions);
+    }, callback);
 }
 
 const showPlaces = (res, placeType) => {
