@@ -219,6 +219,7 @@ let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
     placeSource.clear();
+    popup.setPosition(undefined);
     vectorSource.getFeatures().some(feature => {
         if (feature.get('name') === 'line') {
             vectorSource.removeFeature(feature);
