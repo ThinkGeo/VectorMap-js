@@ -8,6 +8,7 @@
 //   4. Routing Setup
 //   5. Reverse Geocoding Setup
 //   6. Derive the Custom Class Drag
+//   7. Event Listeners
 /*===========================================================================*/
 
 
@@ -21,7 +22,6 @@
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
-const testServerApiKey = 'erkdD62h7-3dzcFMYwmvGMgfcmuhj72JmmG0Lsx4NOM~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -295,8 +295,7 @@ const drawDrivingPolygon = (res) => {
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
-let reverseGeocodingClient = new tg.ReverseGeocodingClient(testServerApiKey);
-reverseGeocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
 // By passing the polygon wkt,  location types you want to return and some other options, we can 

@@ -8,6 +8,7 @@
 //   4. Routing Setup
 //   5. Reverse Geocoding Setup
 //   6. Derive the Custom Class Drag
+//   7. Event Listeners
 /*===========================================================================*/
 
 
@@ -21,7 +22,6 @@
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
-const testServerApiKey = 'erkdD62h7-3dzcFMYwmvGMgfcmuhj72JmmG0Lsx4NOM~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -40,14 +40,15 @@ const darkLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worl
 });
 
 // Create a default view for the map when it starts up.
-let startPoint = [-97.76351771095017, 32.72500627442925];
-let endPoint = [-95.82104604890212, 32.77980711394525];
+let startPoint = [-97.15978246267731, 32.759946696418766];
+let endPoint = [-96.3213122920232, 32.72026579501042];
+let contextmenuCoord = [];
 const view = new ol.View({
     // Center the map on Boston and start at zoom level 8.
-    center: ol.proj.fromLonLat([-96.82104604890212, 32.74980711394525]),
+    center: ol.proj.fromLonLat([-96.75100604890212, 32.74980711394525]),
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true,
-    zoom: 9,
+    zoom: 10,
     minZoom: 2,
     maxZoom: 19
 });
@@ -155,17 +156,41 @@ const initializeMap = () => {
         }
     });
 
+    // Add an event lister which will shows when we right click on the map.
+    map.getViewport().addEventListener('contextmenu', function (e) {
+        let left, top;
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        const contextmenu = document.querySelector('#ol-contextmenu');
+        const contextWidth = 165;
+        // Add an event lister which will shows when we right click on the map.
+        left =
+            e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
+        top =
+            e.clientY + contextmenu.offsetHeight > clientHeight ?
+            clientHeight - contextmenu.offsetHeight :
+            e.clientY;
+
+        contextmenu.style.left = left + 'px';
+        contextmenu.style.top = top + 'px';
+        const point = map.getEventCoordinate(e);
+        contextmenuCoord = new ol.proj.transform(point, 'EPSG:3857', 'EPSG:4326');
+        document.querySelector('#ol-contextmenu').classList.remove('hide');
+    });
+
     // By default, perform the service-line request and then caluclate the places whthin the driving-line on the map.
     performRouting();
 };
 
 // Show the driving start icon on the map.
+let startFeature;
+let endFeature;
 const showDrivingStartPoint = () => {
-    let startFeature = new ol.Feature({
+    startFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat(startPoint)),
         name: 'start'
     });
-    let endFeature = new ol.Feature({
+    endFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat(endPoint)),
         name: 'end'
     });
@@ -218,6 +243,14 @@ const routingClient = new tg.RoutingClient(apiKey);
 let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
+    const lineGeom = new ol.geom.LineString([ol.proj.fromLonLat(startPoint), ol.proj.fromLonLat(endPoint)]);
+    const lineLength = lineGeom.getLength();
+    if (lineLength > 200000) {
+        errorMessage.classList.add('show');
+        errorMessage.querySelector('p').innerHTML = "This sample only search for places within the first 200 km (120 miles)";
+        return
+    }
+
     placeSource.clear();
     popup.setPosition(undefined);
     vectorSource.getFeatures().some(feature => {
@@ -276,12 +309,6 @@ const drawDrivingLine = (res) => {
     drivingLine.set('name', 'line');
     vectorSource.addFeature(drivingLine);
 
-    // zoom to the extent which includes the driving line
-    map.getView().fit(drivingLine.getGeometry().getExtent(), {
-        constrainResolution: true,
-        nearest: true
-    });
-
     return drivingLine;
 }
 
@@ -298,8 +325,7 @@ const drawDrivingLine = (res) => {
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
-let reverseGeocodingClient = new tg.ReverseGeocodingClient(testServerApiKey);
-reverseGeocodingClient.baseUrls_ = ["https://gisservertest.thinkgeo.com"];
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
 // By passing the line wkt,  location types you want to return and some other options, we can 
@@ -338,11 +364,17 @@ const searchPlaces = (drivingLine) => {
     }
 
     const lineWkt = (new ol.format.WKT()).writeGeometry(drivingLine.getGeometry());
-
+    let resultNumber = document.querySelector('#result-number').value;
+    if (resultNumber === 'all') {
+        resultNumber = 10000;
+    } else {
+        resultNumber = Number(resultNumber) + 1;
+    }
     reverseGeocodingClient.searchPlaceInAdvance({
         wkt: lineWkt,
         srid: 3857,
-        locationTypes: placeType.value
+        locationTypes: placeType.value,
+        maxResults: resultNumber
     }, callback);
 }
 
@@ -377,11 +409,6 @@ const showPlaces = (res, placeType) => {
         placeSource.addFeature(placeFeature);
     }
 }
-
-// Perform the routing line request and place search request when click the "Refresh" button.
-document.querySelector('#refresh').addEventListener('click', function () {
-    performRouting();
-});
 
 
 // In this custom object, we're going to define the styles of driving vehicle, searched places:
@@ -548,3 +575,51 @@ app.Drag.prototype.handleUpEvent = function (e) {
     return false; // `false` to stop the drag sequence.
 
 };
+
+/*---------------------------------------------*/
+// 7. Event Listeners
+/*---------------------------------------------*/
+
+// These event listeners tell the UI when it's time to execute all of the 
+// code we've written.
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle the click event when click the item in the customized context menu.
+    document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
+        e = window.event || e;
+        const targetId = e.target.id;
+        switch (targetId) {
+            case 'add-start-point':
+                document.querySelector('#ol-contextmenu').classList.add('hide');
+                startPoint = contextmenuCoord;
+                startFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(startPoint)));
+                performRouting();
+                break;
+            case 'add-end-point':
+                document.querySelector('#ol-contextmenu').classList.add('hide');
+                endPoint = contextmenuCoord;
+                endFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(endPoint)));
+                performRouting();
+                break;
+        }
+    });
+
+    // Hide the context menu of the browsers when right click on the map.
+    document.querySelector('#map').oncontextmenu = () => {
+        return false;
+    };
+
+    // When click on the map, hide the context menut.
+    document.querySelector('#map').onclick = (e) => {
+        document.querySelector('#ol-contextmenu').classList.add('hide');
+    };
+
+    // Perform the routing line request and place search request when changed the place type.
+    document.querySelector('#place-type').addEventListener('change', function () {
+        performRouting();
+    });
+
+    // Perform the routing line request and place search request when changed the result number.
+    document.querySelector('#result-number').addEventListener('change', function () {
+        performRouting();
+    });
+})

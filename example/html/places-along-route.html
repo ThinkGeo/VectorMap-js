@@ -244,6 +244,39 @@
             opacity: 0;
             transition: bottom 500ms ease-out, opacity 300ms ease-out;
         }
+        
+
+        #ol-contextmenu {
+            width: 165px;
+            position: absolute;
+            z-index: 999;
+            top: 30px;
+            left: 300px;
+            background-color: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+            border-radius: 2px;
+            border: 1px solid #cccccc;
+        }
+        
+        #ol-contextmenu.hide {
+            display: none;
+        }
+        
+        #ol-contextmenu ul {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #ol-contextmenu li {
+            list-style: none;
+            padding: 5px 0 5px 10px;
+        }
+        
+        #ol-contextmenu li:hover {
+            cursor: pointer;
+            background-color: #e1e1e1;
+        }
     </style>
 </head>
 
@@ -259,9 +292,13 @@
                     <option value="fuel" tag="gas-station">Gas Station</option>
                     <option value="car_wash" tag="car-wash">Car Wash</option>
                 </select>
-            </div>
-            <div class="setting-row center">
-                <button id="refresh">Refresh</button>
+                <span>Number of Result</span>
+                <select id="result-number">
+                    <option value="10">10</option>
+                    <option value="25" selected>25</option>
+                    <option value="50">50</option>
+                    <option value="all">All</option>
+                </select>
             </div>
         </div>
 
@@ -282,6 +319,17 @@
             <p></p>
         </div>
 
+        <!-- Set up context menu when right click the map. -->
+        <div id="ol-contextmenu" class="hide">
+            <ul>
+                <li id="add-start-point">
+                    Set Start Location
+                </li>
+                <li id="add-end-point">
+                    Set End Location
+                </li>
+            </ul>
+        </div>
 
         <!-- Set up instruction tip. -->
         <div id="instruction-tip">
@@ -296,7 +344,7 @@
     <script src="https://cdn.thinkgeo.com/vectormap-icons/2.0.0/webfontloader.js"></script>
 
     <!-- Include the latest version of ThinkGeo's Cloud Client library from our CDN. -->
-    <script src="../lib/thinkgeocloudclient.js"></script>
+    <script src="https://cdn.thinkgeo.com/cloudclient-js/1.0.7/thinkgeocloudclient.js"></script>
 
     <script src="../js/places-along-route.js"></script>
 </body>
