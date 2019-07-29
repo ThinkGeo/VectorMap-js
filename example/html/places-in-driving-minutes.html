@@ -218,6 +218,51 @@
         .ol-popup-closer:after {
             content: "✖";
         }
+
+        #ol-contextmenu {
+            width: 165px;
+            position: absolute;
+            z-index: 999;
+            top: 30px;
+            left: 300px;
+            background-color: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+            border-radius: 2px;
+            border: 1px solid #cccccc;
+        }
+        
+        #ol-contextmenu.hide {
+            display: none;
+        }
+        
+        #ol-contextmenu ul {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #ol-contextmenu li {
+            list-style: none;
+            padding: 5px 0 5px 10px;
+        }
+        
+        #ol-contextmenu li:hover {
+            cursor: pointer;
+            background-color: #e1e1e1;
+        }
+
+        .get-route{
+            background-color: #e9e9e9;
+            border: 1px solid #909090;
+            cursor: pointer;
+            margin-left: 5px;
+            border-radius: 2px;
+        }
+
+        .get-route:focus,
+        .get-route:active{
+            outline: none;
+        }
         
         #instruction-tip {
             width: max-content;
@@ -262,9 +307,6 @@
                     <option value="language_school,driving_school,music_school,school,kindergarten,university,college" tag='school'>Education Center</option>
                 </select>
             </div>
-            <div class="setting-row center">
-                <button id="refresh">Refresh</button>
-            </div>
         </div>
 
         <div id="popup" class="ol-popup">
@@ -284,6 +326,14 @@
             <p></p>
         </div>
 
+        <!-- Set up context menu when right click the map. -->
+        <div id="ol-contextmenu" class="hide">
+            <ul>
+                <li id="add-start-point">
+                    Set Start Location
+                </li>
+            </ul>
+        </div>
 
         <!-- Set up instruction tip. -->
         <div id="instruction-tip">

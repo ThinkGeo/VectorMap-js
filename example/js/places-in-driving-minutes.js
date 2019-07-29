@@ -103,17 +103,21 @@ const initializeMap = () => {
      * Add a click handler to hide the popup.
      * @return {boolean} Don't follow the href.
      */
-    closer.onclick = function() {
+    closer.onclick = function () {
         popup.setPosition(undefined);
         closer.blur();
         return false;
     };
 
     // display popup when click on the place icon.
-    map.on('click', function(evt) {
+    map.on('click', function (evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function(feature) {
+            function (feature) {
                 return feature;
+            }, {
+                layerFilter: (layer) => {
+                    return !(layer instanceof ol.mapsuite.VectorTileLayer)
+                }
             });
         if (feature && feature.getGeometry().getType() == 'Point') {
             var coordinates = feature.getGeometry().getCoordinates();
@@ -123,7 +127,7 @@ const initializeMap = () => {
     });
 
     // change mouse cursor as pointer when over icon.
-    map.on('pointermove', function(e) {
+    map.on('pointermove', function (e) {
         if (e.dragging) {
             return;
         }
@@ -131,8 +135,12 @@ const initializeMap = () => {
         var pixel = map.getEventPixel(e.originalEvent);
         //var hit = map.hasFeatureAtPixel(pixel);
         var feature = map.forEachFeatureAtPixel(pixel,
-            function(feature) {
+            function (feature) {
                 return feature;
+            }, {
+                layerFilter: (layer) => {
+                    return !(layer instanceof ol.mapsuite.VectorTileLayer)
+                }
             });
         if (feature && feature.getGeometry().getType() == 'Point') {
             map.getTarget().style.cursor = 'pointer';
@@ -141,20 +149,42 @@ const initializeMap = () => {
         }
     });
 
+    // Add an event lister which will shows when we right click on the map.
+    map.getViewport().addEventListener('contextmenu', function (e) {
+        let left, top;
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        const contextmenu = document.querySelector('#ol-contextmenu');
+        const contextWidth = 165;
+        // Add an event lister which will shows when we right click on the map.
+        let point = map.getEventCoordinate(e);
+        left =
+            e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
+        top =
+            e.clientY + contextmenu.offsetHeight > clientHeight ?
+            clientHeight - contextmenu.offsetHeight :
+            e.clientY;
+
+        contextmenu.style.left = left + 'px';
+        contextmenu.style.top = top + 'px';
+        startInputCoord = new ol.proj.transform(point, 'EPSG:3857', 'EPSG:4326');
+        document.querySelector('#ol-contextmenu').classList.remove('hide');
+    });
+
     // By default, perform the service-area request and then caluclate the places whthin the driving-area on the map.
     performRouting();
 };
 
 // Show the driving start icon on the map.
+let pointFeature;
 const showDrivingStartPoint = () => {
-    let pointFeature = new ol.Feature({
+    pointFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat(startInputCoord)),
         name: 'start'
     });
     pointFeature.setStyle(styles.point);
     vectorSource.addFeature(pointFeature)
 }
-
 
 /*---------------------------------------------*/
 // 3. ThinkGeo Map Icon Fonts
@@ -200,8 +230,9 @@ let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
     placeSource.clear();
-    vectorSource.getFeatures().some(feature=>{
-        if(feature.get('name') === 'polygon'){
+    popup.setPosition(undefined);
+    vectorSource.getFeatures().some(feature => {
+        if (feature.get('name') === 'polygon') {
             vectorSource.removeFeature(feature)
             return true
         }
@@ -249,12 +280,8 @@ const drawDrivingPolygon = (res) => {
     drivingPolygon.set('name', 'polygon');
     vectorSource.addFeature(drivingPolygon);
 
-    // zoom to the extent which includes the driving polygon
-    map.getView().fit(drivingPolygon.getGeometry().getExtent(), { constrainResolution: true, nearest: true });
-
     return drivingPolygon;
 }
-
 
 /*---------------------------------------------*/
 // 5. Reverse Geocoding Setup
@@ -321,9 +348,15 @@ const searchPlaces = (drivingPolygon) => {
 const showPlaces = (res, placeType) => {
     for (let i = 1, l = res.nearbyLocations.length; i < l; i++) {
         let place = res.nearbyLocations[i].data;
+        const coord = [place.locationPoint.pointX, place.locationPoint.pointY];
         let placeFeature = new ol.Feature({
-            geometry: new ol.geom.Point([place.locationPoint.pointX, place.locationPoint.pointY]),
-            content: '<div><big>' + place.locationName + '</big><small>(' + place.locationType + ')</small><br/>' + place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(',')) + '</div>'
+            geometry: new ol.geom.Point(coord),
+            content: `<div>
+                        <big>${place.locationName}</big>
+                        <small>(${place.locationType})</small>
+                        <br/>
+                        ${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}
+                    </div>`
         });
 
         let style;
@@ -353,8 +386,8 @@ const showPlaces = (res, placeType) => {
     }
 }
 
-// Perform the routing service area request and place search request when click the "Refresh" button.
-document.querySelector('#refresh').addEventListener('click', function() {
+// Perform the routing service area request and place search request when place type has changed.
+document.querySelector('#place-type').addEventListener('change', function () {
     performRouting();
 });
 
@@ -466,7 +499,7 @@ const styles = {
 
 // Since we need to drag the point to change the destination or start location, 
 // we have to make the point draggable. At this step, we derived the custom class Drag.
-app.Drag = function() {
+app.Drag = function () {
     ol.interaction.Pointer.call(this, {
         handleDownEvent: app.Drag.prototype.handleDownEvent,
         handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -479,12 +512,16 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 
 // Function handling "down" events.
 // If the function returns true then a drag sequence is started.
-app.Drag.prototype.handleDownEvent = function(evt) {
+app.Drag.prototype.handleDownEvent = function (evt) {
     let map = evt.map;
-    let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+    let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
         if (feature.get('name') === 'start') {
             startFeature = feature;
             return feature;
+        }
+    }, {
+        layerFilter: (layer) => {
+            return !(layer instanceof ol.mapsuite.VectorTileLayer)
         }
     });
 
@@ -498,7 +535,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 
 // Function handling "drag" events. 
 // This function is called on "move" events during a drag sequence.
-app.Drag.prototype.handleDragEvent = function(evt) {
+app.Drag.prototype.handleDragEvent = function (evt) {
     let deltaX = evt.coordinate[0] - this.coordinate_[0];
     let deltaY = evt.coordinate[1] - this.coordinate_[1];
 
@@ -510,7 +547,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
 // Function handling "up" events.
 // If the function returns false then the current drag sequence is stopped.
-app.Drag.prototype.handleUpEvent = function(e) {
+app.Drag.prototype.handleUpEvent = function (e) {
     const coord = this.feature_.getGeometry().getCoordinates();
     const featureType = this.feature_.get('name');
     let coord_ = [];
@@ -526,3 +563,35 @@ app.Drag.prototype.handleUpEvent = function(e) {
     return false; // `false` to stop the drag sequence.
 
 };
+
+
+/*---------------------------------------------*/
+// 7. Event Listeners
+/*---------------------------------------------*/
+
+// These event listeners tell the UI when it's time to execute all of the 
+// code we've written.
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle the click event when click the item in the customized context menu.
+    document.querySelector('#ol-contextmenu').addEventListener('click', (e) => {
+        e = window.event || e;
+        const targetId = e.target.id;
+        switch (targetId) {
+            case 'add-start-point':
+                document.querySelector('#ol-contextmenu').classList.add('hide');
+                pointFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(startInputCoord)));
+                performRouting();
+                break;
+        }
+    });
+
+    // Hide the context menu of the browsers when right click on the map.
+    document.querySelector('#map').oncontextmenu = () => {
+        return false;
+    };
+
+    // When click on the map, hide the context menut.
+    document.querySelector('#map').onclick = (e) => {
+        document.querySelector('#ol-contextmenu').classList.add('hide');
+    };
+})

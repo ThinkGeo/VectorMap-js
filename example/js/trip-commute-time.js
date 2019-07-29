@@ -186,6 +186,10 @@ let displayFeatureInfo = (evt) => {
     let pixel = map.getEventPixel(evt.originalEvent);
     let feature = map.forEachFeatureAtPixel(pixel, function (feature) {
         return feature;
+    }, {
+        layerFilter: (layer) => {
+            return !(layer instanceof ol.mapsuite.VectorTileLayer)
+        }
     });
     if (feature && feature.get("featureType") === "minuteFeature") {
         let coord = feature.getGeometry().getCoordinates();
