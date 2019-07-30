@@ -119,7 +119,7 @@ const initializeMap = () => {
                     return !(layer instanceof ol.mapsuite.VectorTileLayer)
                 }
             });
-        if (feature && feature.getGeometry().getType() == 'Point') {
+        if (feature && feature.get('name') == 'place') {
             var coordinates = feature.getGeometry().getCoordinates();
             popup.setPosition(coordinates);
             content.innerHTML = feature.get('content');
@@ -358,6 +358,7 @@ const showPlaces = (res, placeType) => {
         const coord = [place.locationPoint.pointX, place.locationPoint.pointY];
         let placeFeature = new ol.Feature({
             geometry: new ol.geom.Point(coord),
+            name: 'place',
             content: `<div>
                         <big>${place.locationName}</big>
                         <small>(${place.locationType})</small>
