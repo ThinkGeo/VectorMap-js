@@ -370,12 +370,20 @@ const searchPlaces = (drivingLine) => {
     } else {
         resultNumber = Number(resultNumber) + 1;
     }
+    if (reverseGeocodingClient.xhr) {
+        reverseGeocodingClient.xhr.abort();
+        delete reverseGeocodingClient.xhr;
+    }
+    reverseGeocodingClient.on("sendingrequest", function (e) {
+        this.xhr = e.xhr;
+    });
     reverseGeocodingClient.searchPlaceInAdvance({
         wkt: lineWkt,
         srid: 3857,
         locationTypes: placeType.value,
         maxResults: resultNumber
     }, callback);
+    reverseGeocodingClient.un("sendingrequest");
 }
 
 const showPlaces = (res, placeType) => {

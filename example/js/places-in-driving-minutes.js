@@ -46,7 +46,7 @@ const view = new ol.View({
     center: ol.proj.fromLonLat(startInputCoord),
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true,
-    zoom: 13,
+    zoom: 11,
     minZoom: 2,
     maxZoom: 19
 });
@@ -302,10 +302,17 @@ let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
 // get back the places as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
 const searchPlaces = (drivingPolygon) => {
+    if (reverseGeocodingClient.xhr) {
+        reverseGeocodingClient.xhr.abort();
+        delete reverseGeocodingClient.xhr;
+    }
+    reverseGeocodingClient.on("sendingrequest", function (e) {
+        this.xhr = e.xhr;
+    });
 
     // Show the searched places with specific icons on the map.
     const placeType = document.querySelector('#place-type').selectedOptions[0];
-    let callback = (status, response) => {
+    const callback = (status, response) => {
         // Hide the loading animation.
         if (timer !== undefined && timer !== null) {
             clearTimeout(timer);
@@ -342,6 +349,7 @@ const searchPlaces = (drivingPolygon) => {
         maxResults: 500,
         searchRadius: 0
     }, callback);
+    reverseGeocodingClient.un("sendingrequest");
 }
 
 const showPlaces = (res, placeType) => {
