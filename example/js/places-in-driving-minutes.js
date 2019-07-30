@@ -62,6 +62,7 @@ let popup;
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
+const insTip = document.querySelector('#instruction-tip');
 const initializeMap = () => {
     map = new ol.Map({
         renderer: 'webgl',
@@ -156,6 +157,8 @@ const initializeMap = () => {
         let clientHeight = document.documentElement.clientHeight;
         const contextmenu = document.querySelector('#ol-contextmenu');
         const contextWidth = 165;
+        insTip.classList.add('gone');
+        
         // Add an event lister which will shows when we right click on the map.
         let point = map.getEventCoordinate(e);
         left =
@@ -244,25 +247,32 @@ const performRouting = () => {
     const callback = (status, response) => {
         let message;
         if (status === 200) {
-            // Draw the calculated driving polygon on the map.
-            let drivingPolygon = drawDrivingPolygon(response.data);
+            if (!!response.data && !!response.data.serviceAreas && Array.isArray(response.data.serviceAreas) && response.data.serviceAreas.length > 0) {
+                // Draw the calculated driving polygon on the map.
+                let drivingPolygon = drawDrivingPolygon(response.data);
 
-            // Search the places you are  intrested in within the driving polygon.
-            searchPlaces(drivingPolygon);
+                // Search the places you are  intrested in within the driving polygon.
+                searchPlaces(drivingPolygon);
+            }
+            else {
+                message = 'Unable to reach any places within 10 minutes of this location. Please set a new start point.';
+            }
         } else if (status === 410 || status === 401 || status === 400) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "The request of calculating driving service area failed.");
+            }) || "There was a problem calculating the service area for the selected start point. Please try again.");
         } else {
-            message = 'The request of calculating driving service area failed.';
+            message = 'There was a problem calculating the service area for the selected start point. Please try again.';
         }
 
         if (message) {
-            errorMessage.querySelector('p').innerHTML = `${status}: ${message}`;
+            let resultCode = (status === 200 ? '' : status + ':');
+            errorMessage.querySelector('p').innerHTML = `${resultCode} ${message}`;
             errorMessage.classList.add('show');
             timer = setTimeout(() => {
                 errorMessage.classList.remove('show');
             }, 5000)
+            document.querySelector('.loading').classList.add('hide');
         }
     }
     routingClient.getServiceArea(startInputCoord[1], startInputCoord[0], 10, callback, {
@@ -369,22 +379,22 @@ const showPlaces = (res, placeType) => {
 
         let style;
         switch (placeType) {
-            case 'Bar & Pub':
+            case 'Bars & Pubs':
                 style = styles.bar;
                 break;
-            case 'Restaurant':
+            case 'Restaurants':
                 style = styles.restaurant;
                 break;
-            case 'Health Center':
+            case 'Health Centers':
                 style = styles.health;
                 break;
-            case 'Hotel':
+            case 'Hotels':
                 style = styles.hotel;
                 break;
-            case 'Education Center':
+            case 'Education Centers':
                 style = styles.school;
                 break;
-            case 'Supermarket':
+            case 'Supermarkets':
                 style = styles.grocery;
                 break;
         }
@@ -559,6 +569,7 @@ app.Drag.prototype.handleUpEvent = function (e) {
     const coord = this.feature_.getGeometry().getCoordinates();
     const featureType = this.feature_.get('name');
     let coord_ = [];
+    insTip.classList.add('gone');
     switch (featureType) {
         case 'start':
             coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');

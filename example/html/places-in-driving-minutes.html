@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Place in 10 Driving Minutes | ThinkGeo</title>
+    <title>Places Within 10 Driving Minutes | ThinkGeo</title>
 
     <!-- Include the style sheet for the ThinkGeo VectorMap.js library from our CDN. -->
     <link rel="stylesheet" href="https://cdn.thinkgeo.com/vectormap-js/3.0.0/vectormap.css">
@@ -14,6 +14,7 @@
     <style rel="stylesheet" type="text/css">
         body {
             margin: 0;
+            background-color: #3a3a3a;
             position: relative;
             font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -143,9 +144,8 @@
         }
         
         #error-message p {
-            line-height: 40px;
-            padding-left: 10px;
-            padding-right: 10px;
+            line-height: 150%;
+            padding: 10px 15px;
             border-radius: 3px;
             border-color: #f5c6cb;
             background-color: #f8d7da;
@@ -289,22 +289,35 @@
             opacity: 0;
             transition: bottom 500ms ease-out, opacity 300ms ease-out;
         }
+        
+        @media (max-width: 767px) {
+        
+            #instruction-tip {
+                max-width: 75%;
+                bottom: 20px;
+            }
+            
+            #instruction-tip p {
+                font-size: 12px;
+            }
+        
+        }
     </style>
 </head>
 
 <body>
     <div id="map">
         <div class="float_panel">
-            <h5>Choose what places you want to search within 10 driving minutes around you, and then click on searched icons to see their details.</h5>
+            <h5>Choose what places you want to find within 10 driving minutes around you, and then click on the resulting map icons to see their details.</h5>
             <div class="setting-row">
-                <span>Place for Search</span>
+                <span>Places for Search</span>
                 <select id='place-type'>
-                    <option value="hotel,motel " tag='hotel'>Hotel</option>
-                    <option value="bbq,cafe,fast_food,food_court,restaurant" tag='restaurant' selected>Restaurant</option>
-                    <option value="bar,biergarten,pub" tag='bar'>Bar & Pub</option>
-                    <option value="supermarket" tag='grocery'>Supermarket</option>
-                    <option value="doctors,hospital,pharmacy" tag='health'>Health Center</option>
-                    <option value="language_school,driving_school,music_school,school,kindergarten,university,college" tag='school'>Education Center</option>
+                    <option value="hotel,motel " tag='hotel'>Hotels</option>
+                    <option value="bbq,cafe,fast_food,food_court,restaurant" tag='restaurant' selected>Restaurants</option>
+                    <option value="bar,biergarten,pub" tag='bar'>Bars & Pubs</option>
+                    <option value="supermarket" tag='grocery'>Supermarkets</option>
+                    <option value="doctors,hospital,pharmacy" tag='health'>Health Centers</option>
+                    <option value="language_school,driving_school,music_school,school,kindergarten,university,college" tag='school'>Education Centers</option>
                 </select>
             </div>
         </div>
@@ -337,7 +350,7 @@
 
         <!-- Set up instruction tip. -->
         <div id="instruction-tip">
-            <p>Set start point by dragging the vehicle icon to see what places specified within 10 driving minutes.</p>
+            <p>Set the start point by dragging the vehicle icon or right-clicking and choosing &quot;Set Start Location&quot;.</p>
         </div>
     </div>
 
