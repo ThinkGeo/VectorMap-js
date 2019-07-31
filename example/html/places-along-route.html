@@ -14,6 +14,7 @@
     <style rel="stylesheet" type="text/css">
         body {
             margin: 0;
+            background-color: #3a3a3a;
             position: relative;
             font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -143,9 +144,8 @@
         }
         
         #error-message p {
-            line-height: 40px;
-            padding-left: 10px;
-            padding-right: 10px;
+            line-height: 150%;
+            padding: 10px 15px;
             border-radius: 3px;
             border-color: #f5c6cb;
             background-color: #f8d7da;
@@ -277,26 +277,39 @@
             cursor: pointer;
             background-color: #e1e1e1;
         }
+
+        @media (max-width: 767px) {
+        
+            #instruction-tip {
+                max-width: 75%;
+                bottom: 20px;
+            }
+            
+            #instruction-tip p {
+                font-size: 12px;
+            }
+        
+        }
     </style>
 </head>
 
 <body>
     <div id="map">
         <div class="float_panel">
-            <h5>Choose what places you want to search within 200 meters along your route, and then click on searched icons to see their details.</h5>
+            <h5>Choose what places you want to find within 200 meters of the road along your route, and then click on the resulting map icons to see their details.</h5>
             <div class="setting-row">
-                <span>Place for Search</span>
+                <span>Places for Search</span>
                 <select id="place-type">
-                    <option value="hotel,motel" tag="hotel">Hotel</option>
-                    <option value="bbq,cafe,fast_food,food_court,restaurant" tag="restaurant" selected>Restaurant</option>
-                    <option value="fuel" tag="gas-station">Gas Station</option>
-                    <option value="car_wash" tag="car-wash">Car Wash</option>
+                    <option value="hotel,motel" tag="hotel">Hotels</option>
+                    <option value="bbq,cafe,fast_food,food_court,restaurant" tag="restaurant" selected>Restaurants</option>
+                    <option value="fuel" tag="gas-station">Gas Stations</option>
+                    <option value="car_wash" tag="car-wash">Car Washes</option>
                 </select>
                 <span>Number of Result</span>
                 <select id="result-number">
                     <option value="10">10</option>
-                    <option value="25" selected>25</option>
-                    <option value="50">50</option>
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
                     <option value="all">All</option>
                 </select>
             </div>
@@ -333,7 +346,7 @@
 
         <!-- Set up instruction tip. -->
         <div id="instruction-tip">
-            <p>Set start point and end point by dragging the vehicle icon to see what places specified within 200 meters along the route.</p>
+            <p>Set the route's start and end points by dragging their icons or right-clicking and choosing "Set Start" or "Set End".</p>
         </div>
     </div>
 

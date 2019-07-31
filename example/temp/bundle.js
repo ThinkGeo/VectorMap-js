@@ -2946,7 +2946,7 @@
                 codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/orMQMO',
                 jsPath: './example/js/places-in-driving-minutes.js'
             }, {
-                comments: 'Get all the restaurants, hotels, bars or anything you are intrested on the route.',
+                comments: 'Plot a route and then find all the restaurants, gas stations, or anything else within 200 meters along the way.',
                 title: "Places Along Route",
                 htmlPath: './example/html/places-along-route.html',
                 codePenUrl: 'https://codepen.io/thinkgeocodepen/pen',

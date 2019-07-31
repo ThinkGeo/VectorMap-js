@@ -64,6 +64,7 @@ let popup;
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
+const insTip = document.querySelector('#instruction-tip');
 const initializeMap = () => {
     map = new ol.Map({
         renderer: 'webgl',
@@ -163,6 +164,7 @@ const initializeMap = () => {
         let clientHeight = document.documentElement.clientHeight;
         const contextmenu = document.querySelector('#ol-contextmenu');
         const contextWidth = 165;
+        insTip.classList.add('gone');
         // Add an event lister which will shows when we right click on the map.
         left =
             e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
@@ -274,17 +276,19 @@ const performRouting = () => {
         } else if (status === 410 || status === 401 || status === 400) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "The request of calculating driving line failed.");
+            }) || 'The was a problem calculating the route. Please try again.');
         } else {
-            message = 'The request of calculating driving line failed.';
+            message = 'The was a problem calculating the route. Please try again.';
         }
 
         if (message) {
-            errorMessage.querySelector('p').innerHTML = `${status}: ${message}`;
+            let resultCode = (status === 200 ? '' : status + ':');
+            errorMessage.querySelector('p').innerHTML = `${resultCode} ${message}`;
             errorMessage.classList.add('show');
             timer = setTimeout(() => {
                 errorMessage.classList.remove('show');
             }, 5000)
+            document.querySelector('.loading').classList.add('hide');
         }
     }
 
@@ -400,16 +404,16 @@ const showPlaces = (res, placeType) => {
 
         let style;
         switch (placeType) {
-            case 'Hotel':
+            case 'Hotels':
                 style = styles.hotel;
                 break;
-            case 'Restaurant':
+            case 'Restaurants':
                 style = styles.restaurant;
                 break;
-            case 'Gas Station':
+            case 'Gas Stations':
                 style = styles.fuel;
                 break;
-            case 'Car Wash':
+            case 'Car Washes':
                 style = styles.car;
                 break;
         }
@@ -568,6 +572,7 @@ app.Drag.prototype.handleUpEvent = function (e) {
     const coord = this.feature_.getGeometry().getCoordinates();
     const featureType = this.feature_.get('name');
     let coord_ = [];
+    insTip.classList.add('gone');
     switch (featureType) {
         case 'start':
             coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
