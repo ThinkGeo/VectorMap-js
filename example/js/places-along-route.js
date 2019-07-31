@@ -22,7 +22,6 @@
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
 const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
-const testApikey = 'erkdD62h7-3dzcFMYwmvGMgfcmuhj72JmmG0Lsx4NOM~';
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -326,8 +325,8 @@ const drawDrivingLine = (res) => {
 // request to ThinkGeo Cloud Service. It simplifies the process of the code of request.
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
-let reverseGeocodingClient = new tg.ReverseGeocodingClient(testApikey);
-reverseGeocodingClient.baseUrls_ = ["https://cloudtest.thinkgeo.com"];
+let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
+reverseGeocodingClient.baseUrls_ = ["https://cloud.thinkgeo.com"];
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
 // By passing the line wkt,  location types you want to return and some other options, we can 
@@ -370,7 +369,7 @@ const searchPlaces = (drivingLine) => {
     if (resultNumber === 'all') {
         resultNumber = 10000;
     } else {
-        resultNumber = Number(resultNumber) + 1;
+        resultNumber = Number(resultNumber);
     }
     if (reverseGeocodingClient.xhr) {
         reverseGeocodingClient.xhr.abort();
@@ -389,7 +388,7 @@ const searchPlaces = (drivingLine) => {
 }
 
 const showPlaces = (res, placeType) => {
-    for (let i = 1, l = res.nearbyLocations.length; i < l; i++) {
+    for (let i = 0, l = res.nearbyLocations.length; i < l; i++) {
         let place = res.nearbyLocations[i].data;
         const title = place.locationName ? `<big>${place.locationName}</big>` : '';
         const content = `<div>${title}<small>(${place.locationType})</small><br/>${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}</div>`
