@@ -175,8 +175,16 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         if (styleJson["layers"] && styleJson["layers"].length > 0) {
             var layerJson = styleJson["layers"][0];
             var sourceId = layerJson["source"];
+            var source;
 
-            var source = this.getGeoSource(sourceId);
+            if (this.geoSources) {
+                if(!this.geoSources[sourceId]){
+                    source = this.getGeoSource(Object.keys(this.geoSources)[0]);
+                }else{
+                    source = this.geoSources[sourceId];
+                }
+            }
+
             if (source) {
                 this.setSource(source);
                 if (this.background) {
@@ -264,7 +272,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         if (this.geoSources && this.geoSources[sourceId]) {
             return this.geoSources[sourceId];
         }
-
         if (this.styleJson["sources"]) {
             this.styleJson['sources'].forEach(sourceJson => {
                 if (sourceId === sourceJson['id']) {

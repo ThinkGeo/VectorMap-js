@@ -22,6 +22,15 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
+/**
+ * blend test
+ */
+// var source = new ol.source.Vector();
+// var vectorLayer = new ol.layer.Vector({
+//     source: source
+// })
+
+
 // var tileGrid1 = new ol.layer.Tile({
 //     source: new ol.source.TileDebug({
 //         projection: "EPSG:3857",
@@ -34,13 +43,34 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
 // });
 
 var map = new ol.Map({
-    layers: [worldStreetsLayer],
+    layers: [ worldStreetsLayer ],
     target: 'map',
     view: view,
     renderer: 'webgl',
     loadTilesWhileInteracting: true
 });
 
+// var draw; // global so we can remove it later
+// function addInteraction() {
+//     var value = typeSelect.value;
+//     if (value !== 'None') {
+//         draw = new ol.interaction.Draw({
+//             source: source,
+//             type: typeSelect.value
+//         });
+//         map.addInteraction(draw);
+//     }
+// }
+// var typeSelect = document.getElementById('type');
+// typeSelect.onchange = function() {
+//     map.removeInteraction(draw);
+//     addInteraction();
+// };
+// addInteraction();
+
+/**
+ * update style json test
+ */
 map.on('click', showInfo);
 function showInfo(event) {
     var features = map.getFeaturesAtPixel(event.pixel);

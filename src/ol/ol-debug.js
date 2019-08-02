@@ -68374,6 +68374,172 @@ function olInit() {
     };
 
 
+    ol.render.webgl.LineStringReplay.prototype.getLineDashFlatCoordinates = function(lineDash, flatCoordinates, frameState){
+        var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
+        var dashLength = lineDash.reduce(function(accumulator, currentVal){
+            return accumulator + currentVal;
+        });
+        var myCreateSegDirection = this.myCreateSegDirection;
+        var pixelCoordinates = myCreateSegDirection(flatCoordinates, dashLength, coordinateToPixelTransform);
+        var resultCoords = [];
+
+        for(var i = 0; i < pixelCoordinates.length - 2; i += 2){
+            var tmpFlatCoords1 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i], pixelCoordinates[i + 1]]);
+            var tmpFlatCoords2 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i + 2], pixelCoordinates[i + 3]]);
+            var segFlatCoordinates = [tmpFlatCoords1[0], tmpFlatCoords1[1], tmpFlatCoords2[0], tmpFlatCoords2[1]];
+            
+            resultCoords.push(tmpFlatCoords1[0], tmpFlatCoords1[1]);    
+
+            lineDash.reduce(function(accumulator, currentVal){
+                if(accumulator < dashLength){
+                    var subPixelCoordinates = myCreateSegDirection(segFlatCoordinates, accumulator, coordinateToPixelTransform);
+                    var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
+                    resultCoords.push(subFlatCoordinates[0], subFlatCoordinates[1]);
+                }
+
+                return accumulator + currentVal
+            })
+        }
+
+        return resultCoords;
+    }
+
+    ol.render.webgl.LineStringReplay.prototype.myCreateSegDirection = function(coordPxs, chaLength, coordinateToPixelTransform) {
+        function bearing(seg){
+            var firstPoint = [seg.x1,seg.y1];
+            var secondPoint = [seg.x2,seg.y2];
+            var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
+            angle = angle?angle:angle+0.0001;
+            return angle;
+        }
+        function getSegmentFromPixel(coordPixel){
+            var segments = [];
+            var seg = null;
+            var ps = null;
+            var pt = null;
+            for( var i = 0; i < coordPixel.length-1; i ++ ){
+                ps = coordPixel[i];
+                pt = coordPixel[ i+1];
+                seg = {
+                    x1:ps[0],
+                    y1:ps[1],
+                    x2:pt[0],
+                    y2:pt[1]
+                }
+                var length = Math.sqrt(Math.pow((seg.x2 - seg.x1), 2) + Math.pow((seg.y2 - seg.y1), 2));
+                var angle = bearing( seg );
+                seg.pixelLength = length;
+                seg.pixelAngle = angle;
+                // seg.startToEndLength = length;
+                segments.push( seg );
+            }
+            return segments;
+        }
+        function getPixelFromCoord ( coordLLs ){
+            var coordPxs = [];
+            var pts = [];
+            var pxs = null;
+            for( var i = 0; i < coordLLs.length; i++ ) {
+                pts = coordLLs[i];
+                pxs = ol.transform.apply(coordinateToPixelTransform, pts.slice(0, 2));
+                coordPxs.push( pxs );
+            }
+            return coordPxs;
+        }
+        function getNeedPixelFromLine( seg,chaLength,lastSeg ) {
+            var segLen = seg.pixelLength;
+            if (lastSeg) {
+                var numTemp = Math.floor(lastSeg.pixelLength / chaLength);
+                if(lastSeg.residueLength){
+                    var startLength=chaLength-lastSeg.residueLength;
+                    
+                }else{
+                    var startLength =chaLength-(lastSeg.pixelLength - numTemp * chaLength);
+                    
+                }
+                var num =(segLen - startLength) / chaLength ;
+                var x = seg.x1 + (seg.x2 - seg.x1) * startLength / segLen;
+                var y = seg.y1 + (seg.y2 - seg.y1) * startLength / segLen;
+                seg.pixelLength = segLen - startLength
+                
+            } else {
+                startLength = 0;
+                var x = seg.x1;
+                var y = seg.y1;
+                var num =segLen / chaLength;
+            }
+        
+            var xOper = true;
+            var yOper = false;
+            var xCha = seg.x2 - x;
+            var yCha = seg.y2 - y;
+            var xAver = xCha / num;
+            var yAver = yCha / num;
+            var pixelArr = [];
+        
+            var xOrig = x;
+            var yOrin = y;
+            var xEnd = seg.x2;
+            var yEnd = seg.y2;
+        
+            for (var i = 0; i < num; i++) {
+                x = xAver * i + xOrig;
+                y = yAver * i + yOrin;
+                pixelArr.push(x);
+                pixelArr.push(y);
+            }
+            return pixelArr;
+        
+        }
+
+        var coordArr=[];
+        for(var i=0;i<coordPxs.length;i+=2){
+            var coord=[coordPxs[i],coordPxs[i+1]];
+            coordArr.push(coord);
+        }
+        coordArr = getPixelFromCoord(coordArr);
+        var segments =getSegmentFromPixel( coordArr );
+        var tempLength = {
+            pixelLength:0,
+            x1:0,
+            y1:0,
+            x2:0,
+            y2:0
+        };
+        var nowSeg = null;
+        var nowLengthFlag = true;
+        var findPixelArr = [];
+        for( var i = 0; i < segments.length; i++ ) {
+            nowSeg = segments[i];
+            if( nowSeg.pixelLength < chaLength ) {
+                if(nowLengthFlag){
+                    
+                }
+                nowLengthFlag=false;
+                tempLength.pixelLength += nowSeg.pixelLength;
+            }
+            else {
+            //   nowLengthFlag = true;
+                var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
+                findPixelArr = findPixelArr.concat( splitPixelArr );
+            }
+            if(tempLength.pixelLength > chaLength) {
+                tempLength.x2=segments[i].x2;
+                tempLength.y2=segments[i].y2;
+                tempLength.x1=segments[i].x1;
+                tempLength.y1=segments[i].y1;
+                var residueLength=tempLength.pixelLength-chaLength
+                var lastSeg={
+                    residueLength:residueLength
+                }
+                var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
+                findPixelArr = findPixelArr.concat( splitPixelArr );
+                tempLength.pixelLength=0;
+            }
+        }
+        return findPixelArr;
+    }
+
     /**
      * @inheritDoc
      */
@@ -68383,7 +68549,7 @@ function olInit() {
 
         var resultCoords;
         if(lineDash && lineDash.length > 0){
-            resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+            resultCoords = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
         }
         
         if(resultCoords && resultCoords.length >= 4){
@@ -68630,7 +68796,7 @@ function olInit() {
          }
          if (!hitDetection) {
              gl.disable(gl.DEPTH_TEST);
-            //  gl.clear(gl.DEPTH_BUFFER_BIT);
+             gl.clear(gl.DEPTH_BUFFER_BIT);
              //Restore GL parameters.
              gl.depthMask(tmpDepthMask);
              gl.depthFunc(tmpDepthFunc);
@@ -70061,7 +70227,7 @@ function olInit() {
         if (!hitDetection) {
             // gl.disable(gl.BLEND);
             gl.disable(gl.DEPTH_TEST);
-            // gl.clear(gl.DEPTH_BUFFER_BIT);
+            gl.clear(gl.DEPTH_BUFFER_BIT);
             //Restore GL parameters.
             gl.depthMask(tmpDepthMask);
             gl.depthFunc(tmpDepthFunc);
@@ -100456,7 +100622,7 @@ function olInit() {
                     var strokeStyleWidth=strokeStyle.getWidth();
                     var widthHalf =strokeStyleWidth / 2;
                     var strokeStyleLineDash = strokeStyle.getLineDash();
-                    flatCoordinates=self.myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1], coordinateToPixelTransform);
+                    flatCoordinates=ol.render.webgl.LineStringReplay.myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1], coordinateToPixelTransform);
                     var arr=[];
                     for(var i=0;i<flatCoordinates.length-2;i+=2){
                         var start=[flatCoordinates[i],flatCoordinates[i+1]];
@@ -100480,7 +100646,7 @@ function olInit() {
                 
                 var resultCoords;
                 if(lineDash && lineDash.length > 0){
-                    resultCoords = self.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+                    resultCoords = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
                 }
                 
                 if(resultCoords && resultCoords.length >= 4){
@@ -100541,7 +100707,7 @@ function olInit() {
                                     stride, -this.origin[0], -this.origin[1]);
                                 var resultCoords;
                                 if(lineDash && lineDash.length > 0){
-                                    resultCoords = self.getLineDashFlatCoordinates(lineDash, lineString, options.frameState);
+                                    resultCoords = this.getLineDashFlatCoordinates(lineDash, lineString, options.frameState);
                                 }
                                 
                                 if(resultCoords && resultCoords.length >= 4){
@@ -101230,12 +101396,34 @@ function olInit() {
                     case 'Polygon': geometryRenderer = self.renderPolygonGeometry_; break;
                     case 'LineString': geometryRenderer = self.renderLineStringGeometry_; break;
                     case 'MultiLineString': geometryRenderer = self.renderMultiLineStringGeometry_; break;
+                    case 'MultiPolygon': geometryRenderer = self.renderMultiPolygonGeometry_; break;
+                    case 'Point': geometryRenderer = self.renderPointGeometry_; break;
                 }
                     
                 geometryRenderer(replayGroup, simplifiedGeometry, style, feature,options);
             }
         };
     
+        self.renderPointGeometry_ = function (replayGroup, geometry, style, feature) {
+            var imageStyle = style.getImage();
+            if (imageStyle) {
+                if (imageStyle.getImageState() != ol.ImageState.LOADED) {
+                    return;
+                }
+                var imageReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.IMAGE);
+                imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
+                imageReplay.drawPoint(geometry, feature);
+            }
+            var textStyle = style.getText();
+            if (textStyle) {
+                var textReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.TEXT);
+                textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
+                textReplay.drawText(geometry, feature);
+            }
+        };
+
         self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
             var fillStyle = style.getFill();
             var strokeStyle = style.getStroke();
@@ -101255,6 +101443,24 @@ function olInit() {
             }
         };
 
+        self.renderMultiPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
+            var fillStyle = style.getFill();
+            var strokeStyle = style.getStroke();
+            if (strokeStyle || fillStyle) {
+                var polygonReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.POLYGON);
+                polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+                polygonReplay.drawMultiPolygon(geometry, feature);
+            }
+            var textStyle = style.getText();
+            if (textStyle) {
+                var textReplay = replayGroup.getReplay(
+                    style.getZIndex(), ol.render.ReplayType.TEXT);
+                textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
+                textReplay.drawText(geometry, feature);
+            }
+        };
+        
         self.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature,options){
             var strokeStyle = style.getStroke();
             if (strokeStyle) {
@@ -101938,172 +102144,7 @@ function olInit() {
                 }
             }
         }
-
-        self.getLineDashFlatCoordinates = function(lineDash, flatCoordinates, frameState){
-            var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
-            var dashLength = lineDash.reduce(function(accumulator, currentVal){
-                return accumulator + currentVal;
-            });
-            var pixelCoordinates = self.myCreateSegDirection(flatCoordinates, dashLength, coordinateToPixelTransform);
-            var resultCoords = [];
-
-            for(var i = 0; i < pixelCoordinates.length - 2; i += 2){
-                var tmpFlatCoords1 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i], pixelCoordinates[i + 1]]);
-                var tmpFlatCoords2 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i + 2], pixelCoordinates[i + 3]]);
-                var segFlatCoordinates = [tmpFlatCoords1[0], tmpFlatCoords1[1], tmpFlatCoords2[0], tmpFlatCoords2[1]];
-                
-                resultCoords.push(tmpFlatCoords1[0], tmpFlatCoords1[1]);    
-
-                lineDash.reduce(function(accumulator, currentVal){
-                    if(accumulator < dashLength){
-                        var subPixelCoordinates = self.myCreateSegDirection(segFlatCoordinates, accumulator, coordinateToPixelTransform);
-                        var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
-                        resultCoords.push(subFlatCoordinates[0], subFlatCoordinates[1]);
-                    }
-
-                    return accumulator + currentVal
-                })
-            }
-
-            return resultCoords;
-        }
-
-        self.myCreateSegDirection = function(coordPxs, chaLength, coordinateToPixelTransform) {
-            function bearing(seg){
-                var firstPoint = [seg.x1,seg.y1];
-                var secondPoint = [seg.x2,seg.y2];
-                var angle = Math.atan2((secondPoint[1] - firstPoint[1]),(secondPoint[0] - firstPoint[0]));
-                angle = angle?angle:angle+0.0001;
-                return angle;
-            }
-            function getSegmentFromPixel(coordPixel){
-                var segments = [];
-                var seg = null;
-                var ps = null;
-                var pt = null;
-                for( var i = 0; i < coordPixel.length-1; i ++ ){
-                    ps = coordPixel[i];
-                    pt = coordPixel[ i+1];
-                    seg = {
-                        x1:ps[0],
-                        y1:ps[1],
-                        x2:pt[0],
-                        y2:pt[1]
-                    }
-                    var length = Math.sqrt(Math.pow((seg.x2 - seg.x1), 2) + Math.pow((seg.y2 - seg.y1), 2));
-                    var angle = bearing( seg );
-                    seg.pixelLength = length;
-                    seg.pixelAngle = angle;
-                    // seg.startToEndLength = length;
-                    segments.push( seg );
-                }
-                return segments;
-            }
-            function getPixelFromCoord ( coordLLs ){
-                var coordPxs = [];
-                var pts = [];
-                var pxs = null;
-                for( var i = 0; i < coordLLs.length; i++ ) {
-                    pts = coordLLs[i];
-                    pxs = ol.transform.apply(coordinateToPixelTransform, pts.slice(0, 2));
-                    coordPxs.push( pxs );
-                }
-                return coordPxs;
-            }
-            function getNeedPixelFromLine( seg,chaLength,lastSeg ) {
-                var segLen = seg.pixelLength;
-                if (lastSeg) {
-                    var numTemp = Math.floor(lastSeg.pixelLength / chaLength);
-                    if(lastSeg.residueLength){
-                        var startLength=chaLength-lastSeg.residueLength;
-                        
-                    }else{
-                        var startLength =chaLength-(lastSeg.pixelLength - numTemp * chaLength);
-                        
-                    }
-                    var num =(segLen - startLength) / chaLength ;
-                    var x = seg.x1 + (seg.x2 - seg.x1) * startLength / segLen;
-                    var y = seg.y1 + (seg.y2 - seg.y1) * startLength / segLen;
-                    seg.pixelLength = segLen - startLength
-                    
-                } else {
-                    startLength = 0;
-                    var x = seg.x1;
-                    var y = seg.y1;
-                    var num =segLen / chaLength;
-                }
-            
-                var xOper = true;
-                var yOper = false;
-                var xCha = seg.x2 - x;
-                var yCha = seg.y2 - y;
-                var xAver = xCha / num;
-                var yAver = yCha / num;
-                var pixelArr = [];
-            
-                var xOrig = x;
-                var yOrin = y;
-                var xEnd = seg.x2;
-                var yEnd = seg.y2;
-            
-                for (var i = 0; i < num; i++) {
-                    x = xAver * i + xOrig;
-                    y = yAver * i + yOrin;
-                    pixelArr.push(x);
-                    pixelArr.push(y);
-                }
-                return pixelArr;
-            
-            }
-
-            var coordArr=[];
-            for(var i=0;i<coordPxs.length;i+=2){
-                var coord=[coordPxs[i],coordPxs[i+1]];
-                coordArr.push(coord);
-            }
-            coordArr = getPixelFromCoord(coordArr);
-            var segments =getSegmentFromPixel( coordArr );
-            var tempLength = {
-                pixelLength:0,
-                x1:0,
-                y1:0,
-                x2:0,
-                y2:0
-            };
-            var nowSeg = null;
-            var nowLengthFlag = true;
-            var findPixelArr = [];
-            for( var i = 0; i < segments.length; i++ ) {
-                nowSeg = segments[i];
-                if( nowSeg.pixelLength < chaLength ) {
-                    if(nowLengthFlag){
-                        
-                    }
-                    nowLengthFlag=false;
-                    tempLength.pixelLength += nowSeg.pixelLength;
-                }
-                else {
-                //   nowLengthFlag = true;
-                    var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
-                    findPixelArr = findPixelArr.concat( splitPixelArr );
-                }
-                if(tempLength.pixelLength > chaLength) {
-                    tempLength.x2=segments[i].x2;
-                    tempLength.y2=segments[i].y2;
-                    tempLength.x1=segments[i].x1;
-                    tempLength.y1=segments[i].y1;
-                    var residueLength=tempLength.pixelLength-chaLength
-                    var lastSeg={
-                        residueLength:residueLength
-                    }
-                    var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
-                    findPixelArr = findPixelArr.concat( splitPixelArr );
-                    tempLength.pixelLength=0;
-                }
-            }
-            return findPixelArr;
-        }
-
+        
         /**
          * earcut
          */
