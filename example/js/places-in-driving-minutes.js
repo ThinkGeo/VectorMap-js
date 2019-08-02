@@ -21,7 +21,9 @@
 // restricted for use only from a given web domain or IP address.  To create your
 // own API key, you'll need to sign up for a ThinkGeo Cloud account at
 // https://cloud.thinkgeo.com.
-const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~';
+
+// const apiKey = 'v8pUXjjVgVSaUOhJCZENyNpdtN7_QnOooGkG0JxEdcI~'; // local
+const apiKey = 'WPLmkj3P39OPectosnM1jRgDixwlti71l8KYxyfP2P0~'; // online
 
 /*---------------------------------------------*/
 // 2. Map Control Setup
@@ -225,6 +227,69 @@ WebFont.load({
 // We need to create the instance of Routing client and authenticate the API key.
 const routingClient = new tg.RoutingClient(apiKey);
 
+// This method performs the actual routing using the ThinkGeo Cloud.
+// By passing the coordinates of the map location, we can
+// get back a the route message as we send the request.  For more details, see our wiki:
+// https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_routing
+const lineStyle = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        width: 6,
+        color: [34, 109, 214, 0.9]
+    })
+});
+
+let routeFeature;
+const getRouteByPoint = (start, end) => {
+    vectorSource.getFeatures().some(feature => {
+        if (feature.get('name') === 'line') {
+            vectorSource.removeFeature(feature);
+            return true;
+        }
+    })
+    document.querySelector('.loading').classList.remove('hide');
+    const callback = (status, response) => {
+        document.querySelector('.loading').classList.add('hide');
+        let message = '';
+        if (status === 200) {
+            const format = new ol.format.WKT();
+            routeFeature = format.readFeature(response.data.routes[0].geometry);
+            routeFeature.setStyle(lineStyle);
+            routeFeature.set('name', 'line');
+            vectorSource.addFeature(routeFeature);
+        } else {
+            if (status === 400) {
+                const data = response.data;
+                Object.keys(data).forEach((key) => {
+                    message = message + data[key] + '<br />';
+                });
+            } else if (status === 401 || status === 410 || status === 404) {
+                message = `${response.error.message}`;
+            } else if (status === 'error') {
+                errorLoadingTile();
+            } else {
+                message = `Request failed.`;
+            }
+            if (message) {
+                errorMessage.querySelector('p').innerHTML = `${status}: ${message}`;
+                errorMessage.classList.add('show');
+                timer = setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000)
+            }
+        }
+    };
+    const point = [{
+        x: start[0],
+        y: start[1]
+    }, {
+        x: end[0],
+        y: end[1]
+    }];
+    routingClient.getRoute(point, callback, {
+        srid: 3857
+    });
+};
+
 // This method performs the actual routing using the ThinkGeo Cloud. 
 // By passing the coordinates of the map location and some other options, we can 
 // get back the service area as we send the request.  For more details, see our wiki:
@@ -235,9 +300,8 @@ const performRouting = () => {
     placeSource.clear();
     popup.setPosition(undefined);
     vectorSource.getFeatures().some(feature => {
-        if (feature.get('name') === 'polygon') {
-            vectorSource.removeFeature(feature)
-            return true
+        if (feature.get('name') === 'polygon' || feature.get('name') === 'line') {
+            vectorSource.removeFeature(feature);
         }
     })
     // Show the loading animation.
@@ -374,6 +438,7 @@ const showPlaces = (res, placeType) => {
                         <small>(${place.locationType})</small>
                         <br/>
                         ${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}
+                        <button class="get-route" coord=${coord}>Get Route</button>
                     </div>`
         });
 
@@ -612,5 +677,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // When click on the map, hide the context menut.
     document.querySelector('#map').onclick = (e) => {
         document.querySelector('#ol-contextmenu').classList.add('hide');
+    };
+    
+    // When click on the popup button, get the route from start and end point.
+    document.querySelector('#popup-content').onclick = (e) => {
+        if (e.target.className === 'get-route') {
+            let endPoint = e.target.getAttribute('coord').split(',');
+            endPoint = [Number(endPoint[0]), Number(endPoint[1])];
+            getRouteByPoint(ol.proj.fromLonLat(startInputCoord), endPoint);
+        }
     };
 })
