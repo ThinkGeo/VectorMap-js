@@ -167,6 +167,10 @@ let highlight;
 const highlightLayerControl = function (pixel) {
     let feature = map.forEachFeatureAtPixel(pixel, function (feature) {
         return feature;
+    }, {
+        layerFilter: (layer) => {
+            return !(layer instanceof ol.mapsuite.VectorTileLayer)
+        }
     });
 
     if (feature !== highlight) {

@@ -2940,11 +2940,17 @@
                 codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/BbOgZE',
                 jsPath: './example/js/retail-store-closing.js'
             }, {
-                comments: 'Get all the restaurants, hotels, bars or anything you are intrested  in within 10 minutes.',
-                title: "Place within 10 Driving Minutes",
+                comments: 'Find all the restaurants, hotels, bars or anything else you are interested in within a 10-minute drive.',
+                title: "Places Within 10 Driving Minutes",
                 htmlPath: './example/html/places-in-driving-minutes.html',
                 codePenUrl: 'https://codepen.io/thinkgeocodepen/pen/orMQMO',
                 jsPath: './example/js/places-in-driving-minutes.js'
+            }, {
+                comments: 'Plot a route and then find all the restaurants, gas stations, or anything else within 200 meters along the way.',
+                title: "Places Along Route",
+                htmlPath: './example/html/places-along-route.html',
+                codePenUrl: 'https://codepen.io/thinkgeocodepen/pen',
+                jsPath: './example/js/places-along-route.js'
             }]
         }, {
             dataTarget: 'JavaScript-frameworks',

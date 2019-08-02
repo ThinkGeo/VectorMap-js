@@ -199,7 +199,7 @@ const mobileCompatibility = () => {
     const contextmenu = document.querySelector('#ol-contextmenu');
     const contextWidth = 165;
 
-    // Add an event lister which will shows when we right clic on the map.
+    // Add an event lister which will shows when we right click on the map.
     map.getViewport().addEventListener('contextmenu', function(e) {
         hideOrShowContextMenu('show');
         let point = map.getEventCoordinate(e);
@@ -447,6 +447,10 @@ app.Drag.prototype.handleDownEvent = function(evt) {
         if (feature.get('name') === 'start') {
             startFeature = feature;
             return feature;
+        }
+    }, {
+        layerFilter: (layer) => {
+            return !(layer instanceof ol.mapsuite.VectorTileLayer)
         }
     });
 

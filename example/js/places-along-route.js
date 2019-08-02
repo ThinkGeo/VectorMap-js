@@ -1,5 +1,5 @@
 /*===========================================================================*/
-// Place in 10 Driving Minutes
+// Places Along Route
 // Sample map by ThinkGeo
 // 
 //   1. ThinkGeo Cloud API Key
@@ -40,13 +40,15 @@ const darkLayer = new ol.mapsuite.VectorTileLayer('https://cdn.thinkgeo.com/worl
 });
 
 // Create a default view for the map when it starts up.
-let startInputCoord = [-96.809876, 33.128397];
+let startPoint = [-97.15978246267731, 32.759946696418766];
+let endPoint = [-96.3213122920232, 32.72026579501042];
+let contextmenuCoord = [];
 const view = new ol.View({
     // Center the map on Boston and start at zoom level 8.
-    center: ol.proj.fromLonLat(startInputCoord),
+    center: ol.proj.fromLonLat([-96.75100604890212, 32.74980711394525]),
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true,
-    zoom: 11,
+    zoom: 10,
     minZoom: 2,
     maxZoom: 19
 });
@@ -120,7 +122,7 @@ const initializeMap = () => {
                     return !(layer instanceof ol.mapsuite.VectorTileLayer)
                 }
             });
-        if (feature && feature.get('name') == 'place') {
+        if (feature && feature.get('name') === 'place') {
             var coordinates = feature.getGeometry().getCoordinates();
             popup.setPosition(coordinates);
             content.innerHTML = feature.get('content');
@@ -134,7 +136,6 @@ const initializeMap = () => {
         }
 
         var pixel = map.getEventPixel(e.originalEvent);
-        //var hit = map.hasFeatureAtPixel(pixel);
         var feature = map.forEachFeatureAtPixel(pixel,
             function (feature) {
                 return feature;
@@ -143,8 +144,14 @@ const initializeMap = () => {
                     return !(layer instanceof ol.mapsuite.VectorTileLayer)
                 }
             });
-        if (feature && feature.getGeometry().getType() == 'Point') {
-            map.getTarget().style.cursor = 'pointer';
+
+        if (feature) {
+            const featureName = feature.get('name');
+            if (featureName == 'place' || featureName === 'start' || featureName === 'end') {
+                map.getTarget().style.cursor = 'pointer';
+            } else {
+                map.getTarget().style.cursor = '';
+            }
         } else {
             map.getTarget().style.cursor = '';
         }
@@ -158,9 +165,7 @@ const initializeMap = () => {
         const contextmenu = document.querySelector('#ol-contextmenu');
         const contextWidth = 165;
         insTip.classList.add('gone');
-        
         // Add an event lister which will shows when we right click on the map.
-        let point = map.getEventCoordinate(e);
         left =
             e.clientX + contextWidth > clientWidth ? clientWidth - contextWidth : e.clientX;
         top =
@@ -170,23 +175,31 @@ const initializeMap = () => {
 
         contextmenu.style.left = left + 'px';
         contextmenu.style.top = top + 'px';
-        startInputCoord = new ol.proj.transform(point, 'EPSG:3857', 'EPSG:4326');
+        const point = map.getEventCoordinate(e);
+        contextmenuCoord = new ol.proj.transform(point, 'EPSG:3857', 'EPSG:4326');
         document.querySelector('#ol-contextmenu').classList.remove('hide');
     });
 
-    // By default, perform the service-area request and then caluclate the places whthin the driving-area on the map.
+    // By default, perform the service-line request and then caluclate the places whthin the driving-line on the map.
     performRouting();
 };
 
 // Show the driving start icon on the map.
-let pointFeature;
+let startFeature;
+let endFeature;
 const showDrivingStartPoint = () => {
-    pointFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.fromLonLat(startInputCoord)),
+    startFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat(startPoint)),
         name: 'start'
     });
-    pointFeature.setStyle(styles.point);
-    vectorSource.addFeature(pointFeature)
+    endFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat(endPoint)),
+        name: 'end'
+    });
+    startFeature.setStyle(styles.start);
+    endFeature.setStyle(styles.end);
+    vectorSource.addFeature(startFeature);
+    vectorSource.addFeature(endFeature);
 }
 
 /*---------------------------------------------*/
@@ -227,17 +240,25 @@ const routingClient = new tg.RoutingClient(apiKey);
 
 // This method performs the actual routing using the ThinkGeo Cloud. 
 // By passing the coordinates of the map location and some other options, we can 
-// get back the service area as we send the request.  For more details, see our wiki:
+// get back the route line as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_routing
 let timer;
 const errorMessage = document.querySelector('#error-message');
 const performRouting = () => {
+    const lineGeom = new ol.geom.LineString([ol.proj.fromLonLat(startPoint), ol.proj.fromLonLat(endPoint)]);
+    const lineLength = lineGeom.getLength();
+    if (lineLength > 200000) {
+        errorMessage.classList.add('show');
+        errorMessage.querySelector('p').innerHTML = "This sample only search for places within the first 200 km (120 miles)";
+        return
+    }
+
     placeSource.clear();
     popup.setPosition(undefined);
     vectorSource.getFeatures().some(feature => {
-        if (feature.get('name') === 'polygon') {
-            vectorSource.removeFeature(feature)
-            return true
+        if (feature.get('name') === 'line') {
+            vectorSource.removeFeature(feature);
+            return true;
         }
     })
     // Show the loading animation.
@@ -247,22 +268,17 @@ const performRouting = () => {
     const callback = (status, response) => {
         let message;
         if (status === 200) {
-            if (!!response.data && !!response.data.serviceAreas && Array.isArray(response.data.serviceAreas) && response.data.serviceAreas.length > 0) {
-                // Draw the calculated driving polygon on the map.
-                let drivingPolygon = drawDrivingPolygon(response.data);
+            // Draw the calculated driving line on the map.
+            let drivingLine = drawDrivingLine(response.data);
 
-                // Search the places you are  intrested in within the driving polygon.
-                searchPlaces(drivingPolygon);
-            }
-            else {
-                message = 'Unable to reach any places within 10 minutes of this location. Please set a new start point.';
-            }
+            // Search the places you are intrested in within the driving line.
+            searchPlaces(drivingLine);
         } else if (status === 410 || status === 401 || status === 400) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "There was a problem calculating the service area for the selected start point. Please try again.");
+            }) || 'The was a problem calculating the route. Please try again.');
         } else {
-            message = 'There was a problem calculating the service area for the selected start point. Please try again.';
+            message = 'The was a problem calculating the route. Please try again.';
         }
 
         if (message) {
@@ -275,23 +291,31 @@ const performRouting = () => {
             document.querySelector('.loading').classList.add('hide');
         }
     }
-    routingClient.getServiceArea(startInputCoord[1], startInputCoord[0], 10, callback, {
-        gridSizeInMeters: 500
-    });
+
+    const waypoints = [{
+        x: startPoint[0],
+        y: startPoint[1]
+    }, {
+        x: endPoint[0],
+        y: endPoint[1]
+    }];
+
+    routingClient.getRoute(waypoints, callback);
 }
 
-const drawDrivingPolygon = (res) => {
+const drawDrivingLine = (res) => {
     // project result from EPSG:4326 to EPSG:3857
-    const drivingPolygon = (new ol.format.WKT()).readFeature(res.serviceAreas[0], {
+    const drivingLine = (new ol.format.WKT()).readFeature(res.routes[0].geometry, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
     });
-    drivingPolygon.setStyle(styles.polygon);
-    drivingPolygon.set('name', 'polygon');
-    vectorSource.addFeature(drivingPolygon);
+    drivingLine.setStyle(styles.line);
+    drivingLine.set('name', 'line');
+    vectorSource.addFeature(drivingLine);
 
-    return drivingPolygon;
+    return drivingLine;
 }
+
 
 /*---------------------------------------------*/
 // 5. Reverse Geocoding Setup
@@ -306,19 +330,13 @@ const drawDrivingPolygon = (res) => {
 
 // We need to create the instance of Reverse Geocoding client and authenticate the API key.
 let reverseGeocodingClient = new tg.ReverseGeocodingClient(apiKey);
+reverseGeocodingClient.baseUrls_ = ["https://cloud.thinkgeo.com"];
 
 // This method performs the actual reverse geocoding using the ThinkGeo Cloud. 
-// By passing the polygon wkt,  location types you want to return and some other options, we can 
+// By passing the line wkt,  location types you want to return and some other options, we can 
 // get back the places as we send the request.  For more details, see our wiki:
 // https://wiki.thinkgeo.com/wiki/thinkgeo_cloud_reverse_geocoding
-const searchPlaces = (drivingPolygon) => {
-    if (reverseGeocodingClient.xhr) {
-        reverseGeocodingClient.xhr.abort();
-        delete reverseGeocodingClient.xhr;
-    }
-    reverseGeocodingClient.on("sendingrequest", function (e) {
-        this.xhr = e.xhr;
-    });
+const searchPlaces = (drivingLine) => {
 
     // Show the searched places with specific icons on the map.
     const placeType = document.querySelector('#place-type').selectedOptions[0];
@@ -333,12 +351,12 @@ const searchPlaces = (drivingPolygon) => {
         let message;
         if (status === 200) {
             showPlaces(response.data, placeType.innerText);
-        } else if (status === 410 || status === 401 || status === 400) {
+        } else if (status === 410 || status === 401 || status === 400 || status === 403) {
             message = response.error ? response.error.message : (Object.keys(response.data).map(key => {
                 return response.data[key];
-            }) || "The request of searching places in driving polygon failed.");
+            }) || "The request of searching places in driving line failed.");
         } else {
-            message = 'The request of searching places in driving polygon failed.';
+            message = 'The request of searching places in driving line failed.';
         }
 
         if (message) {
@@ -350,52 +368,53 @@ const searchPlaces = (drivingPolygon) => {
         }
     }
 
-    let polygonWKT = (new ol.format.WKT()).writeGeometry(drivingPolygon.getGeometry().getPolygon(0));
+    const lineWkt = (new ol.format.WKT()).writeGeometry(drivingLine.getGeometry());
+    let resultNumber = document.querySelector('#result-number').value;
+    if (resultNumber === 'all') {
+        resultNumber = 10000;
+    } else {
+        resultNumber = Number(resultNumber);
+    }
+    if (reverseGeocodingClient.xhr) {
+        reverseGeocodingClient.xhr.abort();
+        delete reverseGeocodingClient.xhr;
+    }
+    reverseGeocodingClient.on("sendingrequest", function (e) {
+        this.xhr = e.xhr;
+    });
     reverseGeocodingClient.searchPlaceInAdvance({
-        wkt: polygonWKT,
+        wkt: lineWkt,
         srid: 3857,
-        locationCategories: 'common',
         locationTypes: placeType.value,
-        maxResults: 500,
-        searchRadius: 0
+        maxResults: resultNumber
     }, callback);
     reverseGeocodingClient.un("sendingrequest");
 }
 
 const showPlaces = (res, placeType) => {
-    for (let i = 1, l = res.nearbyLocations.length; i < l; i++) {
+    for (let i = 0, l = res.nearbyLocations.length; i < l; i++) {
         let place = res.nearbyLocations[i].data;
-        const coord = [place.locationPoint.pointX, place.locationPoint.pointY];
-        let placeFeature = new ol.Feature({
-            geometry: new ol.geom.Point(coord),
-            name: 'place',
-            content: `<div>
-                        <big>${place.locationName}</big>
-                        <small>(${place.locationType})</small>
-                        <br/>
-                        ${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}
-                    </div>`
+        const title = place.locationName ? `<big>${place.locationName}</big>` : '';
+        const content = `<div>${title}<small>(${place.locationType})</small><br/>${place.address.substring(place.address.indexOf(',') + 1, place.address.lastIndexOf(','))}</div>`
+        const placeFeature = new ol.Feature({
+            geometry: new ol.geom.Point([place.locationPoint.pointX, place.locationPoint.pointY]),
+            content: content,
+            name: 'place'
         });
 
         let style;
         switch (placeType) {
-            case 'Bars & Pubs':
-                style = styles.bar;
+            case 'Hotels':
+                style = styles.hotel;
                 break;
             case 'Restaurants':
                 style = styles.restaurant;
                 break;
-            case 'Health Centers':
-                style = styles.health;
+            case 'Gas Stations':
+                style = styles.fuel;
                 break;
-            case 'Hotels':
-                style = styles.hotel;
-                break;
-            case 'Education Centers':
-                style = styles.school;
-                break;
-            case 'Supermarkets':
-                style = styles.grocery;
+            case 'Car Washes':
+                style = styles.car;
                 break;
         }
 
@@ -404,39 +423,41 @@ const showPlaces = (res, placeType) => {
     }
 }
 
-// Perform the routing service area request and place search request when place type has changed.
-document.querySelector('#place-type').addEventListener('change', function () {
-    performRouting();
-});
-
 
 // In this custom object, we're going to define the styles of driving vehicle, searched places:
 const styles = {
-    // The icon of driving vehicle.
-    point: new ol.style.Style({
+    start: new ol.style.Style({
         image: new ol.style.Icon({
-            anchor: [0.5, 0.5],
+            anchor: [0.5, 0.9],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/vehicle.png',
-            imgSize: [30, 30]
-        }),
-        zIndex: 2
+            crossOrigin: 'Anonymous',
+            src: '../image/starting.png'
+        })
     }),
-    // The icon of place - bar, biergarten, pub.
-    bar: new ol.style.Style({
+    end: new ol.style.Style({
         image: new ol.style.Icon({
-            anchor: [0.5, 1],
+            anchor: [0.5, 0.9],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/place-icons/bar.png',
-            imgSize: [32, 32]
-        }),
-        zIndex: 2
+            crossOrigin: 'Anonymous',
+            src: '../image/ending.png'
+        })
+    }),
+    line: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            width: 6,
+            color: [34, 109, 214, 0.9]
+        })
+    }),
+    walkLine: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            width: 2,
+            lineDash: [5, 3],
+            color: [34, 109, 214, 1]
+        })
     }),
     // The icon of bbq, cafe, fast_food, food_court, restaurant.
     restaurant: new ol.style.Style({
@@ -451,15 +472,15 @@ const styles = {
         }),
         zIndex: 2
     }),
-    // The icon of doctors, hospital, pharmacy.
-    health: new ol.style.Style({
+    // The icon of fuel.
+    fuel: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
             crossOrigin: "Anonymous",
-            src: '../image/place-icons/health.png',
+            src: '../image/place-icons/fuel.png',
             imgSize: [32, 32]
         }),
         zIndex: 2
@@ -477,39 +498,21 @@ const styles = {
         }),
         zIndex: 2
     }),
-    // The icon of language_school, driving_school, music_school, school, kindergarten, university, college.
-    school: new ol.style.Style({
+    // The icon of car wash. 
+    car: new ol.style.Style({
         image: new ol.style.Icon({
             anchor: [0.5, 1],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             opacity: 1,
             crossOrigin: "Anonymous",
-            src: '../image/place-icons/school.png',
+            src: '../image/place-icons/car.png',
             imgSize: [32, 32]
         }),
         zIndex: 2
-    }),
-    // The icon of supermarket.
-    grocery: new ol.style.Style({
-        image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'fraction',
-            opacity: 1,
-            crossOrigin: "Anonymous",
-            src: '../image/place-icons/grocery.png',
-            imgSize: [32, 32]
-        }),
-        zIndex: 2
-    }),
-    // The polygon style of the driving area in a specific driving minutes.
-    polygon: new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(40, 132, 176, 0.3)'
-        })
     })
-}
+};
+
 
 /*---------------------------------------------*/
 // 6. Derive the Custom Class Drag
@@ -533,8 +536,8 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 app.Drag.prototype.handleDownEvent = function (evt) {
     let map = evt.map;
     let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-        if (feature.get('name') === 'start') {
-            startFeature = feature;
+        let featureName = feature.get('name');
+        if (featureName === 'start' || featureName === 'end') {
             return feature;
         }
     }, {
@@ -573,7 +576,11 @@ app.Drag.prototype.handleUpEvent = function (e) {
     switch (featureType) {
         case 'start':
             coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
-            startInputCoord = coord_.slice();
+            startPoint = coord_.slice();
+            break;
+        case 'end':
+            coord_ = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
+            endPoint = coord_.slice();
             break;
     }
     performRouting();
@@ -582,7 +589,6 @@ app.Drag.prototype.handleUpEvent = function (e) {
     return false; // `false` to stop the drag sequence.
 
 };
-
 
 /*---------------------------------------------*/
 // 7. Event Listeners
@@ -598,7 +604,14 @@ document.addEventListener('DOMContentLoaded', function () {
         switch (targetId) {
             case 'add-start-point':
                 document.querySelector('#ol-contextmenu').classList.add('hide');
-                pointFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(startInputCoord)));
+                startPoint = contextmenuCoord;
+                startFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(startPoint)));
+                performRouting();
+                break;
+            case 'add-end-point':
+                document.querySelector('#ol-contextmenu').classList.add('hide');
+                endPoint = contextmenuCoord;
+                endFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat(endPoint)));
                 performRouting();
                 break;
         }
@@ -613,4 +626,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#map').onclick = (e) => {
         document.querySelector('#ol-contextmenu').classList.add('hide');
     };
+
+    // Perform the routing line request and place search request when changed the place type.
+    document.querySelector('#place-type').addEventListener('change', function () {
+        performRouting();
+    });
+
+    // Perform the routing line request and place search request when changed the result number.
+    document.querySelector('#result-number').addEventListener('change', function () {
+        performRouting();
+    });
 })
