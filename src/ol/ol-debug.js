@@ -100622,7 +100622,7 @@ function olInit() {
                     var strokeStyleWidth=strokeStyle.getWidth();
                     var widthHalf =strokeStyleWidth / 2;
                     var strokeStyleLineDash = strokeStyle.getLineDash();
-                    flatCoordinates=ol.render.webgl.LineStringReplay.myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1], coordinateToPixelTransform);
+                    flatCoordinates=this.myCreateSegDirection(flatCoordinates,strokeStyleLineDash[1], coordinateToPixelTransform);
                     var arr=[];
                     for(var i=0;i<flatCoordinates.length-2;i+=2){
                         var start=[flatCoordinates[i],flatCoordinates[i+1]];
