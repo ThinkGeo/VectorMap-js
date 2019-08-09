@@ -101569,9 +101569,9 @@ function olInit() {
                 var instructsData = getInstructs(instructsTree);
                 var instructs = instructsData[0];
                 var mainGeoStyleIds = instructsData[1];
-    
                 var subTileInstructCaches = createSubTileInstructCaches(features, instructs, extent, tileCoord, requestCoord);
-
+                // replace with new data
+                value.features = features;
                 value.mainGeoStyleIds = mainGeoStyleIds;
                 value.styleJsonCache = styleJsonCache;
                 value.subTileInstructCaches = subTileInstructCaches;
