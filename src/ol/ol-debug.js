@@ -97613,16 +97613,19 @@ function olInit() {
             styleJsonCache["geoTextStyleInfos"] = geoTextStyleInfos;
             for (var id in stylejson) {
                 var json = stylejson[id];
+                var tmpZoomArr = [];
+                for(var i = 0; i <= 24; i++){
+                    tmpZoomArr.push(i);
+                }
                 
-                var item = new StyleJsonCacheItem(json, 0, 24, "layerName", styleIdIndex);
-
-                for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex);
+                // for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                item.zoomArr.forEach(function(zoom){
                     var treeNode = new TreeNode(item);
                     createChildrenNode(treeNode, item, zoom);
-                  
+                        
                     styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                }
-
+                })
                 styleIdIndex += 1;
             }
             return styleJsonCache;
@@ -97632,7 +97635,8 @@ function olInit() {
             if (item.subStyleCacheItems && item.subStyleCacheItems.length > 0) {
                 for (var i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
                     var subStyleItem = item.subStyleCacheItems[i];
-                    if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                    // if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                    if(subStyleItem.zoomArr.includes(zoom)){
                         var node = new TreeNode(subStyleItem);
                         currentNode.children.push(node);
                         createChildrenNode(node, subStyleItem, zoom);
@@ -97694,11 +97698,11 @@ function olInit() {
         }());
 
         var StyleJsonCacheItem = /** @class */ (function () {
-            function StyleJsonCacheItem(styleJson, minZoom, maxZoom, dataLayerColumnName, styleIdIndex) {
+            function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex) {
                 this.childrenGeoStyles = [];
                 this.subStyleCacheItems = [];
-                this.minZoom = minZoom;
-                this.maxZoom = maxZoom;
+                this.zoomArr = zoomArr;
+                // this.maxZoom = maxZoom;
                 this.zIndex = styleJson["z-index"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
@@ -97710,8 +97714,8 @@ function olInit() {
             }
             StyleJsonCacheItem.prototype.createFilters = function (filterString, dataLayerColumnName) {
                 var filterGroup = [];
-                var tempMinZoom = this.maxZoom;
-                var tempMaxZoom = this.minZoom;
+                var tempZoomArr = this.zoomArr;
+                // var tempMaxZoom = this.minZoom;
                 if (filterString) {
                     var filterStrings = filterString.split("|");
                     for (var i = 0; i < filterStrings.length; i++) {
@@ -97758,21 +97762,37 @@ function olInit() {
                             if (geoZoomFilter.ranges.length > 0) {
                                 var minZ = +geoZoomFilter.ranges[0][0];
                                 var maxZ = +geoZoomFilter.ranges[0][1];
-                                if (minZ <= tempMinZoom) {
-                                    tempMinZoom = minZ;
+                                if(minZ < 0){
+                                    minZ = 0;
                                 }
-                                if (maxZ >= tempMaxZoom) {
-                                    tempMaxZoom = maxZ;
+                                if(maxZ > 24){
+                                    maxZ = 24;
                                 }
+                                for(var j = minZ; j <= maxZ; j++){
+                                    if(!this.zoomArr.includes(j)){
+                                        this.zoomArr.push(j);
+                                    }
+                                }
+                                // if (minZ <= tempMinZoom) {
+                                //     tempMinZoom = minZ;
+                                // }
+                                // if (maxZ >= tempMaxZoom) {
+                                //     tempMaxZoom = maxZ;
+                                // }
                             }
                             else {
-                                var z = +geoZoomFilter.allowedValues[0];
-                                if (z <= tempMinZoom) {
-                                    tempMinZoom = z;
-                                }
-                                if (z >= tempMaxZoom) {
-                                    tempMaxZoom = z;
-                                }
+                                geoZoomFilter.allowedValues.forEach(function(item){
+                                    if(!this.zoomArr.includes(item)){
+                                        this.zoomArr.push(item);
+                                    }
+                                }.bind(this));
+                                // var z = +geoZoomFilter.allowedValues[0];
+                                // if (z <= tempMinZoom) {
+                                //     tempMinZoom = z;
+                                // }
+                                // if (z >= tempMaxZoom) {
+                                //     tempMaxZoom = z;
+                                // }
                             }
                         }
                         // update the dataLayerName
@@ -97786,10 +97806,10 @@ function olInit() {
                         filterGroup.push(filters);
                     }
                 }
-                if (tempMaxZoom !== this.minZoom || tempMinZoom !== this.maxZoom) {
-                    this.maxZoom = tempMaxZoom;
-                    this.minZoom = tempMinZoom;
-                }
+                // if (tempMaxZoom !== this.minZoom || tempMinZoom !== this.maxZoom) {
+                //     this.maxZoom = tempMaxZoom;
+                //     this.minZoom = tempMinZoom;
+                // }
                 return filterGroup;
             };
             StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex) {
@@ -97810,25 +97830,32 @@ function olInit() {
                             }
                         }
                     }
-                    var subItemMinZoom = void 0;
-                    var subItemMaxZoom = void 0;
+                    // var subItemMinZoom = void 0;
+                    // var subItemMaxZoom = void 0;
+                    var subItemZoomArr = [];
                     for (var _i = 0, _a = styleJson.style; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
-                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName, styleIdIndex);
-                        if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
-                            subItemMaxZoom = styleJsonCacheSubItem.maxZoom;
-                        }
-                        if (subItemMinZoom === undefined || styleJsonCacheSubItem.minZoom < subItemMinZoom) {
-                            subItemMinZoom = styleJsonCacheSubItem.minZoom;
-                        }
+                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
+                        this.zoomArr.forEach(function(item){
+                            if(!subItemZoomArr.includes(item)){
+                                subItemZoomArr.push(item);
+                            }
+                        })
+                        // if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
+                        //     subItemMaxZoom = styleJsonCacheSubItem.maxZoom;
+                        // }
+                        // if (subItemMinZoom === undefined || styleJsonCacheSubItem.minZoom < subItemMinZoom) {
+                        //     subItemMinZoom = styleJsonCacheSubItem.minZoom;
+                        // }
                         this.subStyleCacheItems.push(styleJsonCacheSubItem);
                     }
-                    if (subItemMinZoom && subItemMinZoom > this.minZoom) {
-                        this.minZoom = subItemMinZoom;
-                    }
-                    if (subItemMaxZoom && subItemMaxZoom < this.maxZoom) {
-                        this.maxZoom = subItemMaxZoom;
-                    }
+                    // if (subItemMinZoom && subItemMinZoom > this.minZoom) {
+                    //     this.minZoom = subItemMinZoom;
+                    // }
+                    // if (subItemMaxZoom && subItemMaxZoom < this.maxZoom) {
+                    //     this.maxZoom = subItemMaxZoom;
+                    // }
+                    this.zoomArr = subItemZoomArr;
                 }
             };
             StyleJsonCacheItem.prototype.createGeoStyle = function (styleJson) {
@@ -97982,8 +98009,13 @@ function olInit() {
                 this.filterItems.sort(function (a, b) { return +a.value - +b.value; });
                 for (var i = 0; i < this.filterItems.length; i++) {
                     var filterItem = this.filterItems[i];
+                    var value;
                     this.key = filterItem.key;
-                    var value = +filterItem.value;
+                    if(filterItem.value.indexOf(',') !== -1){
+                        value = filterItem.value.split(',');                       
+                    }else{
+                        value = +filterItem.value;
+                    }
                     switch (filterItem.operator) {
                         case ">":
                             this.ranges.push([value + 0.00001, Number.POSITIVE_INFINITY]);
@@ -97992,10 +98024,22 @@ function olInit() {
                             this.ranges.push([value, Number.POSITIVE_INFINITY]);
                             break;
                         case "!=":
-                            this.disallowedValues.push(value);
+                            if(Array.isArray(value)){
+                                value.forEach(function(item){
+                                    this.disallowedValues.push(+item);
+                                }.bind(this));
+                            }else{
+                                this.disallowedValues.push(value);
+                            }                                
                             break;
                         case "=":
-                            this.allowedValues.push(value);
+                            if(Array.isArray(value)){
+                                value.forEach(function(item){
+                                    this.allowedValues.push(+item);
+                                }.bind(this))
+                            }else{
+                                this.allowedValues.push(value);
+                            }
                             break;
                     }
                 }

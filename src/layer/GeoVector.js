@@ -99,6 +99,10 @@ export class GeoVector extends ol.layer.Vector {
                     let styleJsonCache = new StyleJsonCache();
     
                     let styleIdIndex = 0;
+                    let tmpZoomArr = [];
+                    for(let i = minZoom; i <= maxZoom; i++){
+                        tmpZoomArr.push(i);
+                    }
                     for (let styleId of styleIds) {
     
                         // Select style json object by style id.
@@ -111,13 +115,16 @@ export class GeoVector extends ol.layer.Vector {
     
                         if (styleJson) {
                             styleJsonCache.styleJson[styleId] = styleJson;
-                            let item = new StyleJsonCacheItem(styleJson, minZoom, maxZoom, layerName);
+
+                            let item = new StyleJsonCacheItem(styleJson, tmpZoomArr, layerName);
     
-                            for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                            item.zoomArr.forEach(function(zoom){
                                 let treeNode = new TreeNode(item);
                                 this.createChildrenNode(treeNode, item, zoom);
                                 styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                            }
+                            });
+                            // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                            // }
     
                             styleIdIndex += 1;
                         }
@@ -279,7 +286,8 @@ export class GeoVector extends ol.layer.Vector {
         if (item.subStyleCacheItems && item.subStyleCacheItems.length > 0) {
             for (let i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
                 let subStyleItem = item.subStyleCacheItems[i];
-                if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                // if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                if(subStyleItem.zoomArr.includes(zoom)){
                     let node = new TreeNode(subStyleItem);
                     currentNode.children.push(node);
                     this.createChildrenNode(node, subStyleItem, zoom);

@@ -13,8 +13,9 @@ import { GeoShieldStyle } from "../style/geoShieldStyle";
 
 export class StyleJsonCacheItem {
     public dataLayerName: string;
-    public minZoom: number;
-    public maxZoom: number;
+    // public minZoom: number;
+    // public maxZoom: number;
+    public zoomArr: Array<number>;
     public zIndex: any; // string||number
     public styleFirst: boolean;
     public filterGroup: any; // Array of filters,
@@ -23,11 +24,12 @@ export class StyleJsonCacheItem {
     public childrenGeoStyles: GeoStyle[];
     public subStyleCacheItems: StyleJsonCacheItem[];
 
-    constructor(styleJson: any, minZoom, maxZoom, dataLayerColumnName) {
+    constructor(styleJson: any, zoomArr, dataLayerColumnName) {
         this.childrenGeoStyles = [];
         this.subStyleCacheItems = [];
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
+        // this.minZoom = minZoom;
+        // this.maxZoom = maxZoom;
+        this.zoomArr = zoomArr
         this.zIndex = styleJson["z-index"];
         this.styleFirst = styleJson["style-first"];
         this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
@@ -38,8 +40,9 @@ export class StyleJsonCacheItem {
 
     createFilters(filterString, dataLayerColumnName) {
         let filterGroup = [];
-        let tempMinZoom = this.maxZoom;
-        let tempMaxZoom = this.minZoom;
+        // let tempMinZoom = this.maxZoom;
+        // let tempMaxZoom = this.minZoom;
+        let tempZoomArr = this.zoomArr;
         if (filterString) {
             let filterStrings = filterString.split("|");
             for (let i = 0; i < filterStrings.length; i++) {
@@ -88,21 +91,37 @@ export class StyleJsonCacheItem {
                     if (geoZoomFilter.ranges.length > 0) {
                         let minZ = +geoZoomFilter.ranges[0][0];
                         let maxZ = +geoZoomFilter.ranges[0][1];
-                        if (minZ <= tempMinZoom) {
-                            tempMinZoom = minZ;
+                        if(minZ < 0){
+                            minZ = 0;
                         }
-                        if (maxZ >= tempMaxZoom) {
-                            tempMaxZoom = maxZ;
+                        if(maxZ > 24){
+                            maxZ = 24;
                         }
+                        for(var j = minZ; j <= maxZ; j++){
+                            if(!this.zoomArr.includes(j)){
+                                this.zoomArr.push(j);
+                            }
+                        }
+                        // if (minZ <= tempMinZoom) {
+                        //     tempMinZoom = minZ;
+                        // }
+                        // if (maxZ >= tempMaxZoom) {
+                        //     tempMaxZoom = maxZ;
+                        // }
                     }
                     else {
-                        let z = +geoZoomFilter.allowedValues[0];
-                        if (z <= tempMinZoom) {
-                            tempMinZoom = z;
-                        }
-                        if (z >= tempMaxZoom) {
-                            tempMaxZoom = z;
-                        }
+                        geoZoomFilter.allowedValues.forEach(function(item){
+                            if(!this.zoomArr.includes(item)){
+                                this.zoomArr.push(item);
+                            }
+                        }.bind(this));
+                        // let z = +geoZoomFilter.allowedValues[0];
+                        // if (z <= tempMinZoom) {
+                        //     tempMinZoom = z;
+                        // }
+                        // if (z >= tempMaxZoom) {
+                        //     tempMaxZoom = z;
+                        // }
                     }
                 }
                 // update the dataLayerName
@@ -116,10 +135,10 @@ export class StyleJsonCacheItem {
                 filterGroup.push(filters);
             }
         }
-        if (tempMaxZoom !== this.minZoom || tempMinZoom !== this.maxZoom) {
-            this.maxZoom = tempMaxZoom;
-            this.minZoom = tempMinZoom;
-        }
+        // if (tempMaxZoom !== this.minZoom || tempMinZoom !== this.maxZoom) {
+        //     this.maxZoom = tempMaxZoom;
+        //     this.minZoom = tempMinZoom;
+        // }
         return filterGroup;
     }
 
@@ -140,26 +159,33 @@ export class StyleJsonCacheItem {
                     }
                 }
             }
-            let subItemMinZoom;
-            let subItemMaxZoom;
+            // let subItemMinZoom;
+            // let subItemMaxZoom;
+            var subItemZoomArr = [];
             for (let subStyle of styleJson.style) {
-                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.minZoom, this.maxZoom, dataLayerColumnName);
-
-                if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
-                    subItemMaxZoom = styleJsonCacheSubItem.maxZoom;
-                }
-                if (subItemMinZoom === undefined || styleJsonCacheSubItem.minZoom < subItemMinZoom) {
-                    subItemMinZoom = styleJsonCacheSubItem.minZoom;
-                }
+                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName);
+                this.zoomArr.forEach(function(item){
+                    if(!subItemZoomArr.includes(item)){
+                        subItemZoomArr.push(item);
+                    }
+                })
+                // if (subItemMaxZoom === undefined || styleJsonCacheSubItem.maxZoom > subItemMaxZoom) {
+                //     subItemMaxZoom = styleJsonCacheSubItem.maxZoom;
+                // }
+                // if (subItemMinZoom === undefined || styleJsonCacheSubItem.minZoom < subItemMinZoom) {
+                //     subItemMinZoom = styleJsonCacheSubItem.minZoom;
+                // }
 
                 this.subStyleCacheItems.push(styleJsonCacheSubItem);
             }
-            if (subItemMinZoom && subItemMinZoom > this.minZoom) {
-                this.minZoom = subItemMinZoom;
-            }
-            if (subItemMaxZoom && subItemMaxZoom < this.maxZoom) {
-                this.maxZoom = subItemMaxZoom;
-            }
+            this.zoomArr = subItemZoomArr;
+
+            // if (subItemMinZoom && subItemMinZoom > this.minZoom) {
+            //     this.minZoom = subItemMinZoom;
+            // }
+            // if (subItemMaxZoom && subItemMaxZoom < this.maxZoom) {
+            //     this.maxZoom = subItemMaxZoom;
+            // }
         }
     }
 

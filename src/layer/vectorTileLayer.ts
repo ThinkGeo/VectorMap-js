@@ -122,6 +122,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 let styleJsonCache = new StyleJsonCache();
                 let styleIdIndex = 0;
+                let tmpZoomArr = [];
+                for(let i = minZoom; i <= maxZoom; i++){
+                    tmpZoomArr.push(i);
+                }
                 for (let styleId of styleIds) {
                     let styleJsonTmp;
                     for (let index = 0; index < styleJsons.length; index++) {
@@ -131,13 +135,14 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                     if (styleJsonTmp) {
                         styleJsonCache.styleJson[styleId] = styleJsonTmp;
-                        let item = new StyleJsonCacheItem(styleJsonTmp, minZoom, maxZoom, layerName);
-
-                        for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                        let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName);
+                        item.zoomArr.forEach(function(zoom){
                             let treeNode = new TreeNode<StyleJsonCacheItem>(item);
                             this.createChildrenNode(treeNode, item, zoom);
                             styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                        }
+                        }.bind(this));
+                        // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                        // }
 
                         styleIdIndex += 1;
                     }
@@ -202,6 +207,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
                 let styleJsonCache = new StyleJsonCache();
                 let styleIdIndex = 0;
+                let tmpZoomArr = [];
+                for(let i = minZoom; i <= maxZoom; i++){
+                    tmpZoomArr.push(i);
+                }
                 for (let styleId of styleIds) {
                     let styleJsonTmp;
                     for (let index = 0; index < styleJsons.length; index++) {
@@ -211,13 +220,14 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     }
                     if (styleJsonTmp) {
                         styleJsonCache.styleJson[styleId] = styleJsonTmp;
-                        let item = new StyleJsonCacheItem(styleJsonTmp, minZoom, maxZoom, layerName);
-
-                        for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                        let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName);
+                        item.zoomArr.forEach(function(zoom){
                             let treeNode = new TreeNode<StyleJsonCacheItem>(item);
                             this.createChildrenNode(treeNode, item, zoom);
                             styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                        }
+                        }.bind(this));
+                        // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                        // }
 
                         styleIdIndex += 1;
                     }
@@ -401,7 +411,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         if (item.subStyleCacheItems && item.subStyleCacheItems.length > 0) {
             for (let i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
                 let subStyleItem = item.subStyleCacheItems[i];
-                if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                // if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
+                if(subStyleItem.zoomArr.includes(zoom)){
                     let node = new TreeNode<StyleJsonCacheItem>(subStyleItem);
                     currentNode.children.push(node);
                     this.createChildrenNode(node, subStyleItem, zoom);
