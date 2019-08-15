@@ -235,6 +235,7 @@ export class GeoShieldStyle extends GeoStyle {
             featureZindex = 0;
         }
         this.style.setZIndex(featureZindex);
+        this.style.zCoordinate = this.zIndex;
 
         return [this.style];
     }

@@ -97617,7 +97617,6 @@ function olInit() {
                 for(var i = 0; i <= 24; i++){
                     tmpZoomArr.push(i);
                 }
-                
                 var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex);
                 // for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                 item.zoomArr.forEach(function(zoom){
@@ -97710,7 +97709,7 @@ function olInit() {
                 this.geoStyle = this.createGeoStyle(styleJson);
                 // used for webgl depth test
                 this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
-                this.createChildrenGeoStyle(styleJson);
+                this.createChildrenGeoStyle(styleJson, styleIdIndex + 0.5);
             }
             StyleJsonCacheItem.prototype.createFilters = function (filterString, dataLayerColumnName) {
                 var filterGroup = [];
@@ -97889,14 +97888,16 @@ function olInit() {
                 }
                 return geoStyle;
             };
-            StyleJsonCacheItem.prototype.createChildrenGeoStyle = function (styleJson) {
+            StyleJsonCacheItem.prototype.createChildrenGeoStyle = function (styleJson, zIndex) {
                 if (styleJson["children"]) {
                     for (var i = 0; i < styleJson["children"].length; i++) {
                         var childrenGeoStyleJson = styleJson["children"][i];
                         if (childrenGeoStyleJson["id"] === undefined) {
                             childrenGeoStyleJson["id"] = styleJson["id"] + "#c" + i;
                         }
-                        this.childrenGeoStyles.push(this.createGeoStyle(childrenGeoStyleJson));
+                        var childGeoStyle = this.createGeoStyle(childrenGeoStyleJson);
+                        childGeoStyle['zIndex'] = zIndex;
+                        this.childrenGeoStyles.push(childGeoStyle);
                     }
                 }
             };
@@ -98792,6 +98793,7 @@ function olInit() {
                         return feature.getGeometry();
                     };
                     this.lineStyle.setGeometry(geometryFunction);
+                    this.lineStyle.zCoordinate = this.zIndex;
                     this.styles[length++] = this.lineStyle;
                     if (this.gamma !== undefined && options.layer) {
                         var styleGamma_1 = this.gamma;
@@ -98808,6 +98810,7 @@ function olInit() {
                             return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCap, _this.width, resolution);
                         };
                         this.lineCapStyle.setGeometry(geometryFunction_1);
+                        this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                         this.styles[length++] = this.lineCapStyle;
                     }
                     // Drawing inner
@@ -98838,6 +98841,7 @@ function olInit() {
                             return feature.getGeometry();
                         };
                         this.lineInnerStyle.setGeometry(geometryFunction_2);
+                        this.lineCapStyle.zCoordinate = this.zIndex;                        
                         this.styles[length++] = this.lineInnerStyle;
                         if (this.geometryLineCaps.includes(this.lineCapInner)) {
                             var geometryFunction_3 = function (feature) {
@@ -98845,6 +98849,7 @@ function olInit() {
                                 return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCapInner, _this.widthInner, resolution);
                             };
                             this.lineCapInnerStyle.setGeometry(geometryFunction_3);
+                            this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                             this.styles[length++] = this.lineCapInnerStyle;
                         }
                     }
@@ -98876,6 +98881,7 @@ function olInit() {
                             return feature.getGeometry();
                         };
                         this.lineCenterStyle.setGeometry(geometryFunction_4);
+                        this.lineCapStyle.zCoordinate = this.zIndex;
                         this.styles[length++] = this.lineCenterStyle;
                         if (this.geometryLineCaps.includes(this.lineCapCenter)) {
                             var geometryFunction_5 = function (feature) {
@@ -98883,6 +98889,7 @@ function olInit() {
                                 return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCapCenter, _this.widthCenter, resolution);
                             };
                             this.lineCapCenterStyle.setGeometry(geometryFunction_5);
+                            this.lineCapStyle.zCoordinate = this.zIndex + 0.1;                        
                             this.styles[length++] = this.lineCapCenterStyle;
                         }
                     }
@@ -98909,6 +98916,7 @@ function olInit() {
                     var geometry = new ol.geom.Point(centerPoint, "XY");
                     this.onewayIcon.rotation_ = -rotation;
                     this.onewayStyle.setGeometry(geometry);
+                    this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
                     this.styles[length++] = this.onewayStyle;
                 }
                 return this.styles;
@@ -99385,6 +99393,7 @@ function olInit() {
                 }
                 featureText = this.formatText(featureText);
                 this.textStyle.setText(featureText);
+                this.textStyle.zCoordinate = this.zIndex;
                 var labelInfo = this.labelInfos[featureText];
                 if (!labelInfo) {
                     labelInfo = this.getLabelInfo(featureText);
@@ -99980,6 +99989,7 @@ function olInit() {
                 if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
                     return true;
                 }
+                this.style.zCoordinate = this.zIndex;
                 return false;
             };
             GeoTextStyle.prototype.setLabelPosition = function (text, geometry, resolution, textState, strategyTree, frameState) {
@@ -100682,7 +100692,7 @@ function olInit() {
                     var tempCoordinates = result;
                     for(var m=0;m<tempCoordinates.length;m+=4){
                         var railWayChildCoord=tempCoordinates.slice(m,m+4);
-                        this.zCoordinates.push(0.01);
+                        this.zCoordinates.push(feature.zCoordinate);
                         flatCoordinates=railWayChildCoord;
                         drawLineString_.call(this, flatCoordinates);
                     }
@@ -100707,25 +100717,9 @@ function olInit() {
                     if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
                         var clippedFlatCoordinates =ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                             stride, -this.origin[0], -this.origin[1]);
-                            
                         if (this.state_.changed) {
-                            var z_order = lineStringGeometry.properties_.layer;
-                            var styleId = lineStringGeometry.styleId;
-                                                
-                            if(z_order == undefined){
-                                z_order = 0;
-                            }
-
-                            z_order += 120
-
-                            if(styleId.includes('#c')){
-                                z_order = 1 / (z_order + 0.5);
-                            }else{
-                                z_order = 1 / z_order;   
-                            }
-
                             this.styleIndices_.push(this.indices.length);
-                            this.zCoordinates.push(z_order);
+                            this.zCoordinates.push(feature.zCoordinate);
                             this.state_.changed = false;
                         }
                         this.startIndices.push(this.indices.length);
@@ -100770,24 +100764,8 @@ function olInit() {
                     if (this.indices.length > indexCount) {
                         this.startIndices.push(indexCount);
                         this.startIndicesFeature.push(feature);
-                        if (this.state_.changed) {
-                            var z_order = multiLineStringGeometry.properties_.layer;
-                            var styleId = multiLineStringGeometry.styleId;
-
-                            // for railway
-                            if(z_order == undefined){
-                                z_order = 0;
-                            }
-                            
-                            z_order += 120;
-
-                            if(styleId.includes('#c')){
-                                z_order = 1 / (z_order + 0.5);
-                            }else{
-                                z_order = 1 / (z_order);   
-                            }
-
-                            this.zCoordinates.push(z_order);
+                        if (this.state_.changed) {                           
+                            this.zCoordinates.push(feature.zCoordinate);
                             this.styleIndices_.push(indexCount);
                             this.state_.changed = false;
                         }
@@ -101450,6 +101428,7 @@ function olInit() {
     
         self.renderPointGeometry_ = function (replayGroup, geometry, style, feature) {
             var imageStyle = style.getImage();
+            feature.zCoordinate = style.zCoordinate;
             if (imageStyle) {
                 if (imageStyle.getImageState() != ol.ImageState.LOADED) {
                     return;
@@ -101471,11 +101450,11 @@ function olInit() {
         self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
             var fillStyle = style.getFill();
             var strokeStyle = style.getStroke();
+            feature.zCoordinate = style.zCoordinate;
             if (fillStyle || strokeStyle) {
                 var polygonReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.POLYGON); 
                 polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);            
-                feature.zCoordinate = style.zCoordinate;
                 polygonReplay.drawPolygon(geometry, feature);
             }
             var textStyle = style.getText();
@@ -101507,11 +101486,11 @@ function olInit() {
         
         self.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature,options){
             var strokeStyle = style.getStroke();
+            feature.zCoordinate = style.zCoordinate;                
             if (strokeStyle) {
                 var lineStringReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.LINE_STRING);
                 lineStringReplay.setFillStrokeStyle(null, strokeStyle,geometry);
-                
                 lineStringReplay.drawLineString(geometry, feature,strokeStyle,options);
             }
             var textStyle = style.getText();
@@ -101529,6 +101508,7 @@ function olInit() {
 
         self.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature, options) {
             var strokeStyle = style.getStroke();
+            feature.zCoordinate = style.zCoordinate;
             if (strokeStyle) {
                 var lineStringReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.LINE_STRING);

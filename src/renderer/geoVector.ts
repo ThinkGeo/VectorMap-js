@@ -44,6 +44,7 @@ function renderFeature_ (
 
 function renderPointGeometry_ (replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
+  feature.zCoordinate = style.zCoordinate;
   if (imageStyle) {
       if (imageStyle.getImageState() != (<any>ol).ImageState.LOADED) {
           return;
@@ -72,6 +73,7 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
 
 function renderLineStringGeometry_ (replayGroup, geometry, style, feature,options){
   var strokeStyle = style.getStroke();
+  feature.zCoordinate = style.zCoordinate;
   if (strokeStyle) {
       var lineStringReplay = replayGroup.getReplay(
           style.getZIndex(), (<any>ol.render).ReplayType.LINE_STRING);
@@ -93,6 +95,7 @@ function renderLineStringGeometry_ (replayGroup, geometry, style, feature,option
 
 function renderMultiLineStringGeometry_ (replayGroup, geometry, style, feature) {
   var strokeStyle = style.getStroke();
+  feature.zCoordinate = style.zCoordinate;
   if (strokeStyle) {
       var lineStringReplay = replayGroup.getReplay(
           style.getZIndex(), (<any>ol.render).ReplayType.LINE_STRING);
@@ -115,6 +118,7 @@ function renderMultiLineStringGeometry_ (replayGroup, geometry, style, feature) 
 function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
     var fillStyle = style.getFill();
     var strokeStyle = style.getStroke();
+    feature.zCoordinate = style.zCoordinate;
     if (fillStyle || strokeStyle) {
         var polygonReplay = replayGroup.getReplay(
             style.getZIndex(), (<any>ol.render).ReplayType.POLYGON);
@@ -148,6 +152,7 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
 function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
     var fillStyle = style.getFill();
     var strokeStyle = style.getStroke();
+    feature.zCoordinate = style.zCoordinate;
     if (strokeStyle || fillStyle) {
         var polygonReplay = replayGroup.getReplay(
             style.getZIndex(), (<any>ol.render).ReplayType.POLYGON);

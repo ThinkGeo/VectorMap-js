@@ -187,6 +187,7 @@ export class GeoAreaStyle extends GeoStyle {
                 geometry['extent_'] = newExtent_;
                 GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                 GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
+                GeoAreaStyle.areaShadowStyle['zCoordinate'] = this.zIndex - 0.5;                
                 this.styles[length++] = GeoAreaStyle.areaShadowStyle;
             }
 
@@ -208,6 +209,7 @@ export class GeoAreaStyle extends GeoStyle {
             }
 
             GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
+            GeoAreaStyle.areaStyle['zCoordinate'] = this.zIndex;
             this.styles[length++] = GeoAreaStyle.areaStyle;
 
             if (this.gamma !== undefined && options.layer) {

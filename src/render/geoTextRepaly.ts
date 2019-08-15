@@ -1,3 +1,5 @@
+import { fragment, vertex } from './geoTextureReplay/defaultshader';
+import { Locations } from './geoTextureReplay/defaultshader/Locations';
 import {lineString as textpathLineString} from '../geom/flat/textpath.js';
 import {lineString as lengthLineString} from '../geom/flat/length.js';
 
@@ -112,6 +114,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
         (<any>ol).vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
     gl.uniform1f(locations.u_opacity, opacity);             
+    this.u_zIndex = locations.u_zIndex;
 
     // draw!
     var result;
@@ -164,7 +167,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         if(!style){
             continue;
         }
-        
         if(type == 'MultiLineString'){
             var ends = geometry.getEnds();
             for(var k = 0; k < ends.length; k++){
@@ -227,6 +229,71 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
       }
     }
+  }
+
+  public drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
+    var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
+    var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    if (!(<any>ol).obj.isEmpty(skippedFeaturesHash)) {
+        this.drawReplaySkipping(
+            gl, context, skippedFeaturesHash, textures, groupIndices);
+    } else {
+        var i, ii, start;
+        for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
+            gl.bindTexture((<any>ol).webgl.TEXTURE_2D, textures[i]);
+            gl.uniform1f(this.u_zIndex, this.zCoordinates[i] ? (0.1 / this.zCoordinates[i]) : 0);
+            var end = groupIndices[i];
+            this.drawElements(gl, context, start, end);
+            start = end;
+        }
+    }
+
+    gl.blendFuncSeparate(
+        (<any>ol).webgl.SRC_ALPHA, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA,
+        (<any>ol).webgl.ONE, (<any>ol).webgl.ONE_MINUS_SRC_ALPHA);
+  }
+
+  public setUpProgram(gl, context, size, pixelRatio) {
+    // get the program
+    var fragmentShader, vertexShader;
+    fragmentShader = fragment;
+    vertexShader = vertex;
+    var program = context.getProgram(fragmentShader, vertexShader);
+
+    // get the locations
+    var locations;
+    if (!this.defaultLocations_) {
+        locations = new Locations(gl, program);
+        this.defaultLocations_ = locations;
+    } else {
+        locations = this.defaultLocations_;
+    }
+
+    context.useProgram(program);
+
+    // enable the vertex attrib arrays
+    gl.enableVertexAttribArray(locations.a_position);
+    gl.vertexAttribPointer(locations.a_position, 2, (<any>ol).webgl.FLOAT,
+        false, 32, 0);
+
+    gl.enableVertexAttribArray(locations.a_offsets);
+    gl.vertexAttribPointer(locations.a_offsets, 2, (<any>ol).webgl.FLOAT,
+        false, 32, 8);
+
+    gl.enableVertexAttribArray(locations.a_texCoord);
+    gl.vertexAttribPointer(locations.a_texCoord, 2, (<any>ol).webgl.FLOAT,
+        false, 32, 16);
+
+    gl.enableVertexAttribArray(locations.a_opacity);
+    gl.vertexAttribPointer(locations.a_opacity, 1, (<any>ol).webgl.FLOAT,
+        false, 32, 24);
+
+    gl.enableVertexAttribArray(locations.a_rotateWithView);
+    gl.vertexAttribPointer(locations.a_rotateWithView, 1, (<any>ol).webgl.FLOAT,
+        false, 32, 28);
+
+    return locations;
   }
 
   public renderDeclutterLabel_(declutterGroup, feature){
@@ -556,6 +623,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var stride = 2;    
         this.startIndicesFeature.push(options.feature);
         this.startIndices.push(this.indices.length);
+        this.zCoordinates.push(options.feature.zCoordinate);
         var flatCoordinates = options.flatCoordinates;
         if(label){  
             var image = label;

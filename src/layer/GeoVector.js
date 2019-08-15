@@ -98,7 +98,7 @@ export class GeoVector extends ol.layer.Vector {
                     // Create a StyleJsonCache
                     let styleJsonCache = new StyleJsonCache();
     
-                    let styleIdIndex = 0;
+                    let styleIdIndex = 1;
                     let tmpZoomArr = [];
                     for(let i = minZoom; i <= maxZoom; i++){
                         tmpZoomArr.push(i);
@@ -116,7 +116,7 @@ export class GeoVector extends ol.layer.Vector {
                         if (styleJson) {
                             styleJsonCache.styleJson[styleId] = styleJson;
 
-                            let item = new StyleJsonCacheItem(styleJson, tmpZoomArr, layerName);
+                            let item = new StyleJsonCacheItem(styleJson, tmpZoomArr, layerName, styleIdIndex);
     
                             item.zoomArr.forEach(function(zoom){
                                 let treeNode = new TreeNode(item);

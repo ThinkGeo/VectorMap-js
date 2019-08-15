@@ -24,7 +24,7 @@ export class StyleJsonCacheItem {
     public childrenGeoStyles: GeoStyle[];
     public subStyleCacheItems: StyleJsonCacheItem[];
 
-    constructor(styleJson: any, zoomArr, dataLayerColumnName) {
+    constructor(styleJson: any, zoomArr, dataLayerColumnName, styleIdIndex) {
         this.childrenGeoStyles = [];
         this.subStyleCacheItems = [];
         // this.minZoom = minZoom;
@@ -33,9 +33,10 @@ export class StyleJsonCacheItem {
         this.zIndex = styleJson["z-index"];
         this.styleFirst = styleJson["style-first"];
         this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-        this.createSubItems(styleJson, dataLayerColumnName);
+        this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
         this.geoStyle = this.createGeoStyle(styleJson);
-        this.createChildrenGeoStyle(styleJson);
+        this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);        
+        this.createChildrenGeoStyle(styleJson, styleIdIndex + 0.5);
     }
 
     createFilters(filterString, dataLayerColumnName) {
@@ -142,7 +143,7 @@ export class StyleJsonCacheItem {
         return filterGroup;
     }
 
-    createSubItems(styleJson, dataLayerColumnName) {
+    createSubItems(styleJson, dataLayerColumnName, styleIdIndex) {
         if (styleJson.style) {
             // apply the property to sub style.
             for (let key in styleJson) {
@@ -163,7 +164,7 @@ export class StyleJsonCacheItem {
             // let subItemMaxZoom;
             var subItemZoomArr = [];
             for (let subStyle of styleJson.style) {
-                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName);
+                let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
                 this.zoomArr.forEach(function(item){
                     if(!subItemZoomArr.includes(item)){
                         subItemZoomArr.push(item);
@@ -221,14 +222,16 @@ export class StyleJsonCacheItem {
         return geoStyle;
     }
 
-    createChildrenGeoStyle(styleJson) {
+    createChildrenGeoStyle(styleJson, zIndex) {
         if (styleJson["children"]) {
             for (let i = 0; i < styleJson["children"].length; i++) {
                 let childrenGeoStyleJson = styleJson["children"][i];
                 if (childrenGeoStyleJson["id"] === undefined) {
                     childrenGeoStyleJson["id"] = styleJson["id"] + "#c" + i;
                 }
-                this.childrenGeoStyles.push(this.createGeoStyle(childrenGeoStyleJson));
+                var childGeoStyle = this.createGeoStyle(childrenGeoStyleJson);
+                childGeoStyle['zIndex'] = zIndex;
+                this.childrenGeoStyles.push(childGeoStyle);
             }
         }
     }

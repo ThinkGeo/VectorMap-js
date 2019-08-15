@@ -209,6 +209,7 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         featureText = this.getTextTransform(featureText);
+        this.style['zCoordinate'] = this.zIndex;
 
         // this.placements = this.propertyPlacements.getValue(featureProperties);
 

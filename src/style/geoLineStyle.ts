@@ -290,7 +290,7 @@ export class GeoLineStyle extends GeoStyle {
             };
 
             this.lineStyle.setGeometry(geometryFunction);
-
+            this.lineCapStyle.zCoordinate = this.zIndex;
             this.styles[length++] = this.lineStyle;
 
             if (this.gamma !== undefined && options.layer) {
@@ -315,6 +315,7 @@ export class GeoLineStyle extends GeoStyle {
                 };
 
                 this.lineCapStyle.setGeometry(geometryFunction);
+                this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                 this.styles[length++] = this.lineCapStyle;
             }
 
@@ -340,6 +341,7 @@ export class GeoLineStyle extends GeoStyle {
                     return feature.getGeometry();
                 };
                 this.lineInnerStyle.setGeometry(geometryFunction);
+                this.lineCapStyle.zCoordinate = this.zIndex;                
                 this.styles[length++] = this.lineInnerStyle;
 
                 if (this.geometryLineCaps.includes(this.lineCapInner)) {
@@ -353,6 +355,7 @@ export class GeoLineStyle extends GeoStyle {
                         );
                     };
                     this.lineCapInnerStyle.setGeometry(geometryFunction);
+                    this.lineCapStyle.zCoordinate = this.zIndex + 0.1;                    
                     this.styles[length++] = this.lineCapInnerStyle;
                 }
             }
@@ -380,6 +383,7 @@ export class GeoLineStyle extends GeoStyle {
                 };
 
                 this.lineCenterStyle.setGeometry(geometryFunction);
+                this.lineCapStyle.zCoordinate = this.zIndex;                
                 this.styles[length++] = this.lineCenterStyle;
 
                 if (this.geometryLineCaps.includes(this.lineCapCenter)) {
@@ -393,6 +397,7 @@ export class GeoLineStyle extends GeoStyle {
                         );
                     };
                     this.lineCapCenterStyle.setGeometry(geometryFunction);
+                    this.lineCapStyle.zCoordinate = this.zIndex + 0.1;                    
                     this.styles[length++] = this.lineCapCenterStyle;
                 }
             }
@@ -423,6 +428,7 @@ export class GeoLineStyle extends GeoStyle {
             this.onewayIcon.rotation_ = -rotation;
 
             this.onewayStyle.setGeometry(geometry);
+            this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
             this.styles[length++] = this.onewayStyle;
         }
 
