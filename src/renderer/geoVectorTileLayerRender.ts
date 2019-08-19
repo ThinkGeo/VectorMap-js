@@ -612,12 +612,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             for (var i = 0; i < sourceTile["reuseVectorImageTile"].length; i++) {
                                 var reusedVectorImageTile = sourceTile["reuseVectorImageTile"][i];
                                 delete sourceTile["reuseVectorImageTile"][i];
-                                let vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
-                                vectorImageTileReplayState.renderedRevision = revision;
-                                vectorImageTileReplayState.renderedRenderOrder = renderOrder;
-                                vectorImageTileReplayState.renderedTileLoaded = true;
-                                reusedVectorImageTile.setState((<any>ol).TileState.LOADED);
+                                if(reusedVectorImageTile){
+                                    let vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
+                                    vectorImageTileReplayState.renderedRevision = revision;
+                                    vectorImageTileReplayState.renderedRenderOrder = renderOrder;
+                                    vectorImageTileReplayState.renderedTileLoaded = true;
+                                    reusedVectorImageTile.setState((<any>ol).TileState.LOADED);
+                                }
                             }
+                            sourceTile["reuseVectorImageTile"] = sourceTile["reuseVectorImageTile"].filter(item => item);
                         }
                         
                         (<any>tile).setState((<any>ol).TileState.LOADED);

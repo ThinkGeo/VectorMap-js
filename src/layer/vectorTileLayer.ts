@@ -248,10 +248,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                                 tileKeys.forEach(element => {
                                     var sourceTile = sourceTiles_[element];
                                     var replayGroups_ = sourceTile.replayGroups_;
-                                    sourceTile.tmpReplayGroups_ = replayGroups_;
-                                    sourceTile.replayGroups_ = {};
+                                    if(Object.keys(replayGroups_).length > 0){
+                                        sourceTile.tmpReplayGroups_ = replayGroups_;
+                                        sourceTile.replayGroups_ = {};
+                                        vectorImageTile.setState((<any>ol).TileState.LOADED);
+                                    }
                                 });
-                                vectorImageTile.setState((<any>ol).TileState.LOADED);
                             })
                         }
 
