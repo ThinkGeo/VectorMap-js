@@ -164,7 +164,7 @@ export class GeoTextStyle extends GeoStyle {
         if (this.haloRadius) {
             stroke.setWidth(this.haloRadius);
         }
-        if (this.haloFillColor === undefined && this.haloRadius === undefined) {
+        if (!this.haloRadius || this.haloFillColor === undefined) {
             textStyle.setStroke(undefined);
         }
         if (this.rotateAngle) {

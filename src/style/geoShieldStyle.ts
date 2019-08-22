@@ -159,12 +159,13 @@ export class GeoShieldStyle extends GeoStyle {
         if (this.fill) {
             this.textStyle.getFill().setColor(GeoStyle.toRGBAColor(this.fill, this.opacity));
         }
-        if (this.haloFill) {
+        if (this.haloRadius && this.haloFill) {
             this.textStyle.getStroke().setColor(GeoStyle.toRGBAColor(this.haloFill, this.opacity));
-        }
-        if (this.haloRadius) {
             this.textStyle.getStroke().setWidth(this.haloRadius);
         }
+        // if (this.haloRadius && this.haloFill) {
+        // }
+
         if (this.orientation) {
             this.textStyle.setRotation(this.orientation);
         }
