@@ -69,7 +69,7 @@ class GeoTextStyle extends GeoStyle {
 
             this.opacity = styleJson["text-opacity"];
             this.rotateAngle = styleJson["text-rotate-angle"];
-            this.placements = styleJson["text-placements"] | ["U,B,L,R"];
+            this.placements = styleJson["text-placements"] || ["U,B,L,R"];
             this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
             this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
             this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
