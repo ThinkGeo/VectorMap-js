@@ -678,6 +678,7 @@ class GeoShieldStyle extends GeoStyle {
 
         let width = labelInfo.width;
         let height = labelInfo.height;
+        let tmpLabelWidth = width / frameState.pixelRatio;
         switch (geometryType) {
             case GeometryType.POINT:
             case GeometryType.MULTI_POINT:
