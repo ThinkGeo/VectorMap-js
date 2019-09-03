@@ -320,7 +320,7 @@ export class GeoTextStyle extends GeoStyle {
             text = this.wrapText(text, font);
 
             let strokeState = textState.getStroke();
-            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
+            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() * 2 : 0;
             let lines = text.split("\n");
             let numLines = lines.length;
             let textScale = textState.getScale();
@@ -450,7 +450,7 @@ export class GeoTextStyle extends GeoStyle {
                     context.lineDashOffset = (<any>strokeState).getLineDashOffset();
                 }
             }
-
+            
             this.drawMask(context, 0, 0, renderWidth, height);
 
             if (this.maskType) {
@@ -477,6 +477,7 @@ export class GeoTextStyle extends GeoStyle {
             context.textAlign = "center";
             let leftRight = 0.5 - align;
             let x = align * label.width / scale + leftRight * strokeWidth;
+            let y = align * label.height / scale;
             let i;
             let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
             let tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
@@ -486,7 +487,8 @@ export class GeoTextStyle extends GeoStyle {
                     context.lineWidth = this.haloRadius ? this.haloRadius : 0;
                     for (i = 0; i < numLines; ++i) {
                         if (this.drawnMask) {
-                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                            // context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                            context.strokeText(lines[i], x, y);
                         }
                         else {
                             context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
@@ -499,7 +501,8 @@ export class GeoTextStyle extends GeoStyle {
                     context.fillStyle = fillState.getColor();
                     for (i = 0; i < numLines; ++i) {
                         if (this.drawnMask) {
-                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                            // context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
+                            context.fillText(lines[i], x, y);
                         }
                         else {
                             context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
@@ -640,15 +643,18 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     drawRectangle(context: any, x: number, y: number, width: number, height: number, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        const deltaWidth = (context.canvas.width - width) / 2 - stroke.getWidth();
+        const deltaHeight = (context.canvas.height - height) / 2 - stroke.getWidth();
+        
         if (fill) {
             context.fillStyle = fill.getColor();
-            context.fillRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
+            context.fillRect(x + deltaWidth, y + deltaHeight, width + stroke.getWidth() * 2, height + stroke.getWidth() * 2);
         }
 
         if (stroke) {
             context.lineWidth = stroke.getWidth();
             context.strokeStyle = stroke.getColor();
-            context.strokeRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
+            context.strokeRect(x + deltaWidth, y + deltaHeight, width + stroke.getWidth() * 2, height + stroke.getWidth() * 2);
         }
     }
 

@@ -68375,30 +68375,47 @@ function olInit() {
 
 
     ol.render.webgl.LineStringReplay.prototype.getLineDashFlatCoordinates = function(lineDash, flatCoordinates, frameState){
-        var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
-        var dashLength = lineDash.reduce(function(accumulator, currentVal){
-            return accumulator + currentVal;
-        });
+        var coordinateToPixelTransform = frameState.coordinateToPixelTransform;        
         var myCreateSegDirection = this.myCreateSegDirection;
-        var pixelCoordinates = myCreateSegDirection(flatCoordinates, dashLength, coordinateToPixelTransform);
         var resultCoords = [];
+        var subResultCoords = [];
+        var startLengthOfSeg = 0;
 
-        for(var i = 0; i < pixelCoordinates.length - 2; i += 2){
-            var tmpFlatCoords1 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i], pixelCoordinates[i + 1]]);
-            var tmpFlatCoords2 = ol.transform.apply(frameState.pixelToCoordinateTransform, [pixelCoordinates[i + 2], pixelCoordinates[i + 3]]);
-            var segFlatCoordinates = [tmpFlatCoords1[0], tmpFlatCoords1[1], tmpFlatCoords2[0], tmpFlatCoords2[1]];
-            
-            resultCoords.push(tmpFlatCoords1[0], tmpFlatCoords1[1]);    
+        for(var i = 0; i < flatCoordinates.length - 2; i += 2){
+            var x1 = flatCoordinates[i];
+            var y1 = flatCoordinates[i + 1];
+            var x2 = flatCoordinates[i + 2];
+            var y2 = flatCoordinates[i + 3];
+            var tmpPixelCoords1 = ol.transform.apply(frameState.coordinateToPixelTransform, [x1, y1]);
+            var tmpPixelCoords2 = ol.transform.apply(frameState.coordinateToPixelTransform, [x2, y2]);
+            var segLength = Math.sqrt(Math.pow((tmpPixelCoords1[1] - tmpPixelCoords2[1]), 2) + 
+                Math.pow((tmpPixelCoords1[0] - tmpPixelCoords2[0]), 2));
 
-            lineDash.reduce(function(accumulator, currentVal){
-                if(accumulator < dashLength){
-                    var subPixelCoordinates = myCreateSegDirection(segFlatCoordinates, accumulator, coordinateToPixelTransform);
-                    var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
-                    resultCoords.push(subFlatCoordinates[0], subFlatCoordinates[1]);
+            var segFlatCoordinates = [x1, y1, x2, y2];
+            subResultCoords.push(x1, y1);    
+            var accumulator = -startLengthOfSeg;
+            while(accumulator < segLength){
+                for(var j = 0; j < lineDash.length; j++){
+                    accumulator += lineDash[j];
+                    if(accumulator < segLength){
+                        var subPixelCoordinates = myCreateSegDirection(segFlatCoordinates, accumulator, coordinateToPixelTransform);
+                        var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
+                        subResultCoords = subResultCoords.concat(subFlatCoordinates);
+                    }else{
+                        var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
+                        startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
+                        accumulator = Infinity;
+                        // solid line
+                        if(j % 2 === 0){
+                            subResultCoords.push(x2, y2);
+                        }
+                        
+                        resultCoords.push(subResultCoords);
+                        subResultCoords = [];
+                        break;
+                    }
                 }
-
-                return accumulator + currentVal
-            })
+            }
         }
 
         return resultCoords;
@@ -68469,8 +68486,8 @@ function olInit() {
                 var num =segLen / chaLength;
             }
         
-            var xOper = true;
-            var yOper = false;
+            // var xOper = true;
+            // var yOper = false;
             var xCha = seg.x2 - x;
             var yCha = seg.y2 - y;
             var xAver = xCha / num;
@@ -68488,8 +68505,7 @@ function olInit() {
                 pixelArr.push(x);
                 pixelArr.push(y);
             }
-            return pixelArr;
-        
+            return pixelArr;        
         }
 
         var coordArr=[];
@@ -68507,35 +68523,38 @@ function olInit() {
             y2:0
         };
         var nowSeg = null;
-        var nowLengthFlag = true;
+        // var nowLengthFlag = true;
         var findPixelArr = [];
+
         for( var i = 0; i < segments.length; i++ ) {
             nowSeg = segments[i];
             if( nowSeg.pixelLength < chaLength ) {
-                if(nowLengthFlag){
+                // if(nowLengthFlag){
                     
-                }
-                nowLengthFlag=false;
-                tempLength.pixelLength += nowSeg.pixelLength;
-            }
-            else {
+                // }
+                // nowLengthFlag=false;
+                // tempLength.pixelLength += nowSeg.pixelLength;
+                findPixelArr.push(nowSeg.x1, nowSeg.y1, nowSeg.x2, nowSeg.y2);
+            } else {
             //   nowLengthFlag = true;
-                var splitPixelArr = getNeedPixelFromLine( segments[i],chaLength ,segments[i - 1]);
+                var splitPixelArr = getNeedPixelFromLine(segments[i], chaLength);
                 findPixelArr = findPixelArr.concat( splitPixelArr );
+                // findPixelArr.push(splitPixelArr);
             }
-            if(tempLength.pixelLength > chaLength) {
-                tempLength.x2=segments[i].x2;
-                tempLength.y2=segments[i].y2;
-                tempLength.x1=segments[i].x1;
-                tempLength.y1=segments[i].y1;
-                var residueLength=tempLength.pixelLength-chaLength
-                var lastSeg={
-                    residueLength:residueLength
-                }
-                var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
-                findPixelArr = findPixelArr.concat( splitPixelArr );
-                tempLength.pixelLength=0;
-            }
+
+            // if(tempLength.pixelLength > chaLength) {
+            //     tempLength.x2=segments[i].x2;
+            //     tempLength.y2=segments[i].y2;
+            //     tempLength.x1=segments[i].x1;
+            //     tempLength.y1=segments[i].y1;
+            //     var residueLength=tempLength.pixelLength-chaLength
+            //     var lastSeg={
+            //         residueLength:residueLength
+            //     }
+            //     var splitPixelArr = getNeedPixelFromLine( tempLength,chaLength,lastSeg);
+            //     findPixelArr = findPixelArr.concat( splitPixelArr );
+            //     tempLength.pixelLength=0;
+            // }
         }
         return findPixelArr;
     }
@@ -68546,16 +68565,15 @@ function olInit() {
     ol.render.webgl.LineStringReplay.prototype.drawLineString = function (lineStringGeometry, feature, frameState) {
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var lineDash = this.state_.lineDash;
-
-        var resultCoords;
-        if(lineDash && lineDash.length > 0){
-            resultCoords = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
-        }
         
-        if(resultCoords && resultCoords.length >= 4){
-            for(var m = 0; m < resultCoords.length; m += 4){
-                drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
-                    resultCoords[m + 2], resultCoords[m + 3]]);
+        if(lineDash && lineDash.length > 0){
+            var resultCoordsArr = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+            for(var i = 0; i < resultCoordsArr.length; i++){
+                var resultCoords = resultCoordsArr[i];
+                for(var m = 0; m < resultCoords.length; m += 4){
+                    drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
+                        resultCoords[m + 2], resultCoords[m + 3]]);
+                }
             }
         }else{
             drawLineString_.call(this, flatCoordinates);
@@ -100698,15 +100716,14 @@ function olInit() {
                     }
                 }
                 
-                var resultCoords;
                 if(lineDash && lineDash.length > 0){
-                    resultCoords = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
-                }
-                
-                if(resultCoords && resultCoords.length >= 4){
-                    for(var m = 0; m < resultCoords.length; m += 4){
-                        drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
-                            resultCoords[m + 2], resultCoords[m + 3]]);
+                    var resultCoordsArr = this.getLineDashFlatCoordinates(lineDash, flatCoordinates, frameState);
+                    for(var i = 0; i < resultCoordsArr.length; i++){
+                        var resultCoords = resultCoordsArr[i];
+                        for(var m = 0; m < resultCoords.length; m += 4){
+                            drawLineString_.call(this, [resultCoords[m], resultCoords[m + 1], 
+                                resultCoords[m + 2], resultCoords[m + 3]]);
+                        }
                     }
                 }else{
                     drawLineString_.call(this, flatCoordinates);
@@ -100742,16 +100759,16 @@ function olInit() {
                         for (i = 1, ii = ends.length; i < ii; ++i) {
                             if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
                                 var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
-                                    stride, -this.origin[0], -this.origin[1]);
-                                var resultCoords;
-                                if(lineDash && lineDash.length > 0){
-                                    resultCoords = this.getLineDashFlatCoordinates(lineDash, lineString, options.frameState);
-                                }
+                                    stride, -this.origin[0], -this.origin[1]);                                
                                 
-                                if(resultCoords && resultCoords.length >= 4){
-                                    for(var m = 0; m < resultCoords.length; m += 4){
-                                        this.drawCoordinates_([resultCoords[m], resultCoords[m + 1], 
-                                            resultCoords[m + 2], resultCoords[m + 3]], 0, 4, stride);
+                                if(lineDash && lineDash.length > 0){
+                                    var resultCoordsArr = this.getLineDashFlatCoordinates(lineDash, lineString, options.frameState);
+                                    for(var j = 0; j < resultCoordsArr.length; j++){
+                                        var resultCoords = resultCoordsArr[j];
+                                        for(var m = 0; m < resultCoords.length; m += 4){
+                                            this.drawCoordinates_([resultCoords[m], resultCoords[m + 1], resultCoords[m + 2], resultCoords[m + 3]],
+                                                0, 4, stride);
+                                        }
                                     }
                                 }else{
                                     this.drawCoordinates_(
@@ -101880,10 +101897,9 @@ function olInit() {
 
             // TEST     
             // console.log(tileCoord.toString());
-            // if(tileCoord.toString() !== "3,0,-5"){
-            // if(tileCoord.toString() !== "17,30293,-52889"){
-            // if(!(tileCoord.toString() == "16,13813,-24873" || tileCoord.toString() == "17,27627,-49745")){
-                // return
+            // if(tileCoord.toString() !== "14,3786,-6613"){
+            // if(tileCoord.toString() !== "2,1,-2"){
+            //     return
             // }
             // TEST END
 

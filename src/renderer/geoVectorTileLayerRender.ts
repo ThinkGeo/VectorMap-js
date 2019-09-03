@@ -250,6 +250,14 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let pixelRatio = frameState.pixelRatio;
         let opacity = layerState.opacity;
 
+        // Set background color to map
+        const background = this.rgb2hex(layer.background);
+        const canvasBackground = gl.canvas.style.backgroundColor;
+        const tmpCanvasBackground = canvasBackground.includes('rgb') ? this.rgb2hex(canvasBackground) : canvasBackground;
+        if(background && background !== tmpCanvasBackground){
+            gl.canvas.style.backgroundColor = background;
+        }
+
         if (declutterReplays) {
             this.declutterTree_.clear();
         }
@@ -311,6 +319,15 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);      
         
         gl.disable(gl.DEPTH_TEST);
+    }
+
+    public rgb2hex(rgb){
+        rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+        
+        return (rgb && rgb.length === 4) ? "#" +
+            ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
     }
 
     public replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio, 
