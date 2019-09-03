@@ -282,7 +282,7 @@ self.createReplayGroup = function (createReplayGroupInfo, methodInfo) {
                 mainDrawingInstructs.push([getUid(feature), geostyle.id]);
             }
             else {
-                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState, strategyTree });
                 if (geostyle instanceof GeoTextStyle || geostyle instanceof GeoShieldStyle || geostyle instanceof GeoPointStyle) {
                     drawingFeatures[getUid(feature)] = feature;
                     mainDrawingInstructs.push([getUid(feature), geostyle.id]);

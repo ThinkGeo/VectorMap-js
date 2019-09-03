@@ -84,7 +84,7 @@ class GeoCanvasVectorLayerRenderer extends CanvasVectorLayerRenderer {
         const render = function (feature, geostyle) {
             let styles;
             if (geostyle) {
-                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState: frameState, strategyTree, strategyTree });
+                let ol4Styles = geostyle.getStyles(feature, resolution, { frameState, strategyTree });
                 if (styles === undefined) {
                     styles = [];
                 }
