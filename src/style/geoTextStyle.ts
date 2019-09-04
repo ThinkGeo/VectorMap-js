@@ -190,7 +190,7 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         // A workaround for the language, remove the data update
-        if ((featureText === undefined || featureText === "") && this.name.indexOf("name_") === 0) {
+        if ((featureText === undefined || featureText === "") && (this.name&&this.name.indexOf("name_") === 0)) {
             featureText = feature.get("name");
         }
 
