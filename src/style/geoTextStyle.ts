@@ -65,33 +65,27 @@ export class GeoTextStyle extends GeoStyle {
         this.charWidths = {};
 
         if (styleJson) {
+
+            // Orign 
             this.align = styleJson["text-align"];
             this.baseline = styleJson["text-baseline"];
             this.dx = styleJson["text-dx"];
             this.dy = styleJson["text-dy"];
             this.font = styleJson["text-font"];
             this.fill = styleJson["text-fill"];
-            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
             this.haloFill = styleJson["text-halo-fill"];
             this.haloRadius = styleJson["text-halo-radius"];
-            this.margin = styleJson["text-margin"];
+            this.maxCharAngle = styleJson["text-max-char-angle"];
+            this.name = styleJson["text-name"];
+            this.rotateAngle = styleJson["text-rotate-angle"];
+
+            // custom
             this.maskColor = styleJson["text-mask-color"];
             this.maskMargin = styleJson["text-mask-margin"];
             this.maskOutlineColor = styleJson["text-mask-outline-color"];
             this.maskOutlineWidth = styleJson["text-mask-outline-width"];
             this.maskType = styleJson["text-mask-type"];
-            this.maxCharAngle = styleJson["text-max-char-angle"];
-
-            this.minDistance = styleJson["text-min-distance"];
-            this.minPadding = styleJson["text-min-padding"];
-            this.name = styleJson["text-name"];
-
             this.opacity = styleJson["text-opacity"];
-            this.rotateAngle = styleJson["text-rotate-angle"];
-            // this.propertyPlacements = new GeoStyleProperty(styleJson[GeoTextStyle.placementsName], "U,B,L,R");
-            this.placements = styleJson[GeoTextStyle.placementsName];
-            this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
-            this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
             this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
             this.wrapWidth = styleJson["text-wrap-width"];
             this.textFormat = styleJson["text-text-format"];
@@ -99,12 +93,18 @@ export class GeoTextStyle extends GeoStyle {
             this.numericFormat = styleJson["text-numeric-format"];
             this.textTransform = styleJson["text-letter-case"];
             this.letterSpacing = styleJson["text-letter-spacing"];
+            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
 
             // TODO
+            // this.propertyPlacements = new GeoStyleProperty(styleJson[GeoTextStyle.placementsName], "U,B,L,R");
+            this.placements = styleJson[GeoTextStyle.placementsName];
+            this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
+            this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
+            this.minDistance = styleJson["text-min-distance"];
+            this.margin = styleJson["text-margin"];
+            this.minPadding = styleJson["text-min-padding"];
             this.avoidEdge = styleJson["text-avoid-edge"];
-            // TODO
             this.splineType = styleJson["text-spline-type"];
-            // TODO
             this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
 
 
@@ -190,7 +190,7 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         // A workaround for the language, remove the data update
-        if ((featureText === undefined || featureText === "") && this.name.indexOf("name_") === 0) {
+        if ((featureText === undefined || featureText === "") && (this.name && this.name.indexOf("name_") === 0)) {
             featureText = feature.get("name");
         }
 
@@ -290,7 +290,7 @@ export class GeoTextStyle extends GeoStyle {
                             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
                         }
                     }
-                    if(!flatCoordinates.length){
+                    if (!flatCoordinates.length) {
                         return;
                     }
                     break;
@@ -440,8 +440,8 @@ export class GeoTextStyle extends GeoStyle {
             if (strokeState) {
                 context.strokeStyle = strokeState.getColor();
                 context.lineWidth = strokeWidth * ((<any>ol.has).SAFARI ? scale : 1);
-                context.lineCap = strokeState.getLineCap();
-                context.lineJoin = strokeState.getLineJoin();
+                context.lineCap = strokeState.getLineCap() || "round";
+                context.lineJoin = strokeState.getLineJoin() || "round";
                 context.miterLimit = strokeState.getMiterLimit();
                 let lineDash = strokeState.getLineDash();
                 lineDash = lineDash ? lineDash.slice() : (<any>ol.render.canvas).defaultLineDash;
@@ -450,7 +450,7 @@ export class GeoTextStyle extends GeoStyle {
                     context.lineDashOffset = (<any>strokeState).getLineDashOffset();
                 }
             }
-            
+
             this.drawMask(context, 0, 0, renderWidth, height);
 
             if (this.maskType) {
@@ -645,7 +645,7 @@ export class GeoTextStyle extends GeoStyle {
     drawRectangle(context: any, x: number, y: number, width: number, height: number, fill: ol.style.Fill, stroke: ol.style.Stroke) {
         const deltaWidth = (context.canvas.width - width) / 2 - stroke.getWidth();
         const deltaHeight = (context.canvas.height - height) / 2 - stroke.getWidth();
-        
+
         if (fill) {
             context.fillStyle = fill.getColor();
             context.fillRect(x + deltaWidth, y + deltaHeight, width + stroke.getWidth() * 2, height + stroke.getWidth() * 2);

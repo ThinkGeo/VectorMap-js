@@ -224,6 +224,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
     var ends = polygonGeometry.getEnds();
     var stride = polygonGeometry.getStride();
     var extent = polygonGeometry.getExtent();
+    var drawingBbox= polygonGeometry["drawingBbox"];
     
     if (ends.length > 0) {            
         var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);     
@@ -237,7 +238,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
 
         if(ends[0] > 6) {
             outerRing = (<any>ol.geom).flat.transform.translate(flatCoordinates, 0, ends[0],
-                stride, -this.origin[0], -this.origin[1], undefined, extent, true);         
+                stride, -this.origin[0], -this.origin[1], undefined, drawingBbox||extent, true);         
             // FIXME it is also a anticlockwise, we don't judge for efficiency
             outers[index].push(outerRing);
         }else{
@@ -249,7 +250,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         for (i = 1, ii = ends.length; i < ii; ++i) {
             if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
                 holeFlatCoords = (<any>ol.geom).flat.transform.translate(flatCoordinates, ends[i - 1],
-                    ends[i], stride, -this.origin[0], -this.origin[1], undefined, extent, true);
+                    ends[i], stride, -this.origin[0], -this.origin[1], undefined, drawingBbox||extent, true);
                 if(holeFlatCoords.length > 6){
                     isClockwise = (<any>ol.geom).flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
                     if(isClockwise){
