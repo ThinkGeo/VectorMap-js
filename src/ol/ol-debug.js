@@ -97727,7 +97727,7 @@ function olInit() {
                 this.geoStyle = this.createGeoStyle(styleJson);
                 // used for webgl depth test
                 this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
-                this.createChildrenGeoStyle(styleJson, styleIdIndex + 0.5);
+                this.createChildrenGeoStyle(styleJson, styleIdIndex);
             }
             StyleJsonCacheItem.prototype.createFilters = function (filterString, dataLayerColumnName) {
                 var filterGroup = [];
@@ -100735,8 +100735,19 @@ function olInit() {
                         var clippedFlatCoordinates =ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                             stride, -this.origin[0], -this.origin[1]);
                         if (this.state_.changed) {
+                            var z_order = lineStringGeometry.properties_.layer;
+                            var styleId = lineStringGeometry.styleId;
+                            if(z_order == undefined){
+                                z_order = 0;
+                            }
+
+                            if(styleId.includes('#c')){
+                                z_order += 0.5;
+                            }
+                            z_order = feature.zCoordinate + z_order / 100;                            
+
                             this.styleIndices_.push(this.indices.length);
-                            this.zCoordinates.push(feature.zCoordinate);
+                            this.zCoordinates.push(z_order);
                             this.state_.changed = false;
                         }
                         this.startIndices.push(this.indices.length);
@@ -100781,8 +100792,20 @@ function olInit() {
                     if (this.indices.length > indexCount) {
                         this.startIndices.push(indexCount);
                         this.startIndicesFeature.push(feature);
-                        if (this.state_.changed) {                           
-                            this.zCoordinates.push(feature.zCoordinate);
+                        if (this.state_.changed) {      
+                            var z_order = multiLineStringGeometry.properties_.layer;
+                            var styleId = multiLineStringGeometry.styleId;
+                            
+                            if(z_order == undefined){
+                                z_order = 0;
+                            }
+
+                            if(styleId.includes('#c')){
+                                z_order += 0.5;
+                            }
+                            z_order = feature.zCoordinate + z_order / 100;
+                            
+                            this.zCoordinates.push(z_order);
                             this.styleIndices_.push(indexCount);
                             this.state_.changed = false;
                         }

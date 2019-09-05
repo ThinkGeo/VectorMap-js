@@ -36,7 +36,7 @@ export class StyleJsonCacheItem {
         this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
         this.geoStyle = this.createGeoStyle(styleJson);
         this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);        
-        this.createChildrenGeoStyle(styleJson, styleIdIndex + 0.5);
+        this.createChildrenGeoStyle(styleJson, styleIdIndex);
     }
 
     createFilters(filterString, dataLayerColumnName) {
