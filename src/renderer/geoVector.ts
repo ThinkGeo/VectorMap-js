@@ -65,6 +65,7 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
       textReplay.startIndicesFeatures_.push(feature);
       var textStyleClone = textStyle.clone();
       textStyleClone.label = textStyle.label;
+      textStyleClone["placements"]= textStyle["placements"];
       textStyleClone.labelPosition = textStyle.labelPosition;
       textStyleClone.declutterGroup_ = replayGroup.addDeclutter(!!imageStyle);
       textReplay.startIndicesStyles_.push(textStyleClone);

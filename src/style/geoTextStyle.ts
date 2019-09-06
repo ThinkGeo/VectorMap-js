@@ -1,18 +1,13 @@
 
 import { GeoStyle } from "./geoStyle";
-import { GeoStyleProperty } from "./geoStyleProperty";
 import { GeoBrush } from "../style/geoBrush";
 import { TextLabelingStrategy } from "./textLabelingStrategy";
 import { DetectTextLabelingStrategy } from "./detectTextLabelingStrategy";
 
 export class GeoTextStyle extends GeoStyle {
-    static placementsName = "text-placements";
-
     textAligns = ["left", "right", "center", "end", "start"];
     textBaseline = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
     textTransforms = ["default", "uppercase", "lowercase"];
-
-    propertyPlacements: GeoStyleProperty;
 
     align: string;
     baseline: string;
@@ -94,11 +89,14 @@ export class GeoTextStyle extends GeoStyle {
             this.textTransform = styleJson["text-letter-case"];
             this.letterSpacing = styleJson["text-letter-spacing"];
             this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
+            this.placements = styleJson["text-placements"] || "C";
 
             // TODO
-            // this.propertyPlacements = new GeoStyleProperty(styleJson[GeoTextStyle.placementsName], "U,B,L,R");
-            this.placements = styleJson[GeoTextStyle.placementsName];
-            this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
+
+            // //Description: If text-placement-type is set to 'detect', you can use this property to set the avoidance algorithm for text lables. 
+            // this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
+            this.placementType = "default";
+
             this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
             this.minDistance = styleJson["text-min-distance"];
             this.margin = styleJson["text-margin"];
@@ -120,9 +118,6 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     initializeCore() {
-        // this.propertyPlacements.initialize();
-        // this.placements = this.propertyPlacements.getValue();
-
         if (this.fill) {
             this.fillColor = GeoStyle.toRGBAColor(this.fill, this.opacity);
         }
@@ -210,8 +205,7 @@ export class GeoTextStyle extends GeoStyle {
 
         featureText = this.getTextTransform(featureText);
         this.style['zCoordinate'] = this.zIndex;
-
-        // this.placements = this.propertyPlacements.getValue(featureProperties);
+        this.style.getText()["placements"]= this.placements;
 
         this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
@@ -460,8 +454,8 @@ export class GeoTextStyle extends GeoStyle {
                     if (strokeState) {
                         context.strokeStyle = strokeState.getColor();
                         context.lineWidth = strokeWidth * ((<any>ol.has).SAFARI ? scale : 1);
-                        context.lineCap = strokeState.getLineCap();
-                        context.lineJoin = strokeState.getLineJoin();
+                        context.lineCap = strokeState.getLineCap() || "round";
+                        context.lineJoin = strokeState.getLineJoin() || "round";
                         context.miterLimit = strokeState.getMiterLimit();
                         let lineDash = strokeState.getLineDash();
                         lineDash = lineDash ? lineDash.slice() : (<any>ol.render.canvas).defaultLineDash;
