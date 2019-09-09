@@ -68402,8 +68402,12 @@ function olInit() {
                         var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
                         subResultCoords = subResultCoords.concat(subFlatCoordinates);
                     } else {
-                        var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
-                        startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
+                        if(accumulator === segLength){
+                            startLengthOfSeg = 0;
+                        }else{
+                            var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
+                            startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
+                        }
                         accumulator = Infinity;
                         // solid line
                         if (j % 2 === 0) {
@@ -68499,7 +68503,7 @@ function olInit() {
             var xEnd = seg.x2;
             var yEnd = seg.y2;
 
-            for (var i = 0; i < num; i++) {
+            for (var i = 0; i < Math.ceil(num); i++) {
                 x = xAver * i + xOrig;
                 y = yAver * i + yOrin;
                 pixelArr.push(x);
@@ -68541,7 +68545,7 @@ function olInit() {
                 findPixelArr = findPixelArr.concat(splitPixelArr);
                 // findPixelArr.push(splitPixelArr);
             }
-
+            
             // if(tempLength.pixelLength > chaLength) {
             //     tempLength.x2=segments[i].x2;
             //     tempLength.y2=segments[i].y2;
@@ -101925,8 +101929,8 @@ function olInit() {
             // TEST     
             // console.log(tileCoord.toString());
             // if(tileCoord.toString() !== "14,3786,-6613"){
-            // if(tileCoord.toString() !== "2,1,-2"){
-            //     return
+            // if(tileCoord.toString() !== "3,2,-4"){
+                // return
             // }
             // TEST END
 
