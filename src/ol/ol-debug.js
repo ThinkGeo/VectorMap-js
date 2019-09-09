@@ -73523,10 +73523,10 @@ function olInit() {
      * @inheritDoc
      */
     ol.renderer.webgl.TileLayer.prototype.prepareFrame = function (frameState, layerState, context) {
-
+        
         var mapRenderer = this.mapRenderer;
         var gl = context.getGL();
-
+        
         var viewState = frameState.viewState;
         var projection = viewState.projection;
 
@@ -73658,6 +73658,7 @@ function olInit() {
             zs.sort(ol.array.numberSafeCompareFunction);
             var u_tileOffset = new Float32Array(4);
             var i, ii, tileKey, tilesToDraw;
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
             for (i = 0, ii = zs.length; i < ii; ++i) {
                 tilesToDraw = tilesToDrawByZ[zs[i]];
                 for (tileKey in tilesToDraw) {
