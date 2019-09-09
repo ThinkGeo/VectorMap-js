@@ -39,8 +39,10 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
 // });
 
 // var tileGrid2 = new ol.layer.Tile({
-//     source: new ol.source.OSM()
-// });
+//         source: new ol.source.XYZ({
+//             url:'./test.png'
+//         })
+//     });
 
 var map = new ol.Map({
     layers: [ worldStreetsLayer ],

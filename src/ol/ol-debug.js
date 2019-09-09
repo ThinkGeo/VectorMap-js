@@ -72267,8 +72267,13 @@ function olInit() {
         gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
             ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
         gl.uniform1f(locations.u_opacity, layerState.opacity);
+
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.bindTexture(ol.webgl.TEXTURE_2D, this.getTexture());
         gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
+        gl.blendFuncSeparate(
+            ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+            ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
 
         this.dispatchComposeEvent_(
             ol.render.EventType.POSTCOMPOSE, context, frameState);
@@ -73678,7 +73683,9 @@ function olInit() {
                     gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
                 }
             }
-
+            gl.blendFuncSeparate(
+                ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+                ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
             if (allTilesLoaded) {
                 this.renderedTileRange_ = tileRange;
                 this.renderedFramebufferExtent_ = framebufferExtent;
@@ -73730,7 +73737,7 @@ function olInit() {
             frameState.size[1] * viewState.resolution /
             (framebufferExtent[3] - framebufferExtent[1]));
         ol.transform.translate(texCoordMatrix, -0.5, -0.5);
-
+        
         return true;
     };
 
