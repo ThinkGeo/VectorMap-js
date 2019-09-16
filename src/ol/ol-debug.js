@@ -15906,6 +15906,7 @@ function olInit() {
         ol.Object.call(this);
         var options = ol.obj.assign({}, opt_options);
 
+        this.progressiveZoom= opt_options["progressiveZoom"];
         /**
          * @private
          * @type {Array.<number>}
@@ -22535,16 +22536,13 @@ function olInit() {
         }
 
         var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
-        var delta = this.delta_ / 100;
-        // if (delta > 0) {
-        //     delta = delta * 2 ;
-        // }
-        // else {
-        // delta = delta * 2;
-        // }
-        delta *= 0.2;
-
-        var delta = ol.math.clamp(delta, -maxDelta, maxDelta);
+        var tempdelta = this.delta_ / 100;
+        if(view.progressiveZoom !== undefined&&view.progressiveZoom)
+        {
+            tempdelta *= 0.2;
+        }
+       
+        var delta = ol.math.clamp(tempdelta, -maxDelta, maxDelta);
         ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
             this.duration_);
         this.mode_ = undefined;
