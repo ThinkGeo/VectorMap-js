@@ -79,7 +79,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let tmpExtent = this.tmpExtent;
         let tmpTileRange = this.tmpTileRange_;
         let newTiles = false;
-        let tile, x, y;  
+        let tile, x, y;
         let allLoaded = true;
         for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
             for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -95,10 +95,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         newTiles = true;
                     }
                 }
-                
+
                 if (!this.isDrawableTile_(tile)) {
                     tile = tile.getInterimTile();
-                }               
+                }
 
                 if (this.isDrawableTile_(tile)) {
                     let uid = (<any>ol).getUid(this);
@@ -109,7 +109,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             newTiles = true;
                         }
                         // continue;
-                    }else if(tile.getState() === (<any>ol).TileState.EMPTY){
+                    } else if (tile.getState() === (<any>ol).TileState.EMPTY) {
                         continue;
                     }
                     // judge the data of replayGroup for drawing
@@ -121,7 +121,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     }
                 }
 
-                if(y <= tileRange.maxY){
+                if (y <= tileRange.maxY) {
                     allLoaded = false;
                 }
 
@@ -129,10 +129,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     tile.tileCoord, tmpTileRange, tmpExtent);
                 let covered = false;
                 var cacheZoom = tileSource.tileCache.zoom || 0;
-                if (childTileRange) { 
+                if (childTileRange) {
                     covered = tileGrid.forEachTileCoordChildTileRange(
                         tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent, cacheZoom, tileRange
-                        );                    
+                    );
                 }
 
                 if (!covered) {
@@ -143,21 +143,21 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         }
 
         // current tile range has been all loaded
-        if(allLoaded){                        
+        if (allLoaded) {
             var tileCache = tileSource.tileCache;
             var highWaterMark = 0;
-            tileCache.forEach(function(tile){
+            tileCache.forEach(function (tile) {
                 var keyZ = tile.tileCoord[0];
-                if(keyZ == z){
+                if (keyZ == z) {
                     highWaterMark += 1;
-                }         
+                }
             });
             tileSource.tileCache.highWaterMark = tileSource.tileCache.highWaterMark > highWaterMark ?
                 highWaterMark : tileSource.tileCache.highWaterMark;
-            
+
             tileSource.tileCache.zoom = tile.tileCoord[0];
-        }  
-    
+        }
+
         let renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
         let hints = frameState.viewHints;
         let animatingOrInteracting = hints[(<any>ol).ViewHint.ANIMATING] || hints[(<any>ol).ViewHint.INTERACTING];
@@ -179,8 +179,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 } else {
                     return a > b ? 1 : a < b ? -1 : 0;
                 }
-            }); 
-            
+            });
+
             // let currentResolution, currentScale, currentTilePixelSize;
             let currentZ, i, ii;
             let tileExtent, tilesToDraw;
@@ -190,17 +190,17 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 // currentResolution = tileGrid.getResolution(currentZ);
                 // currentScale = currentResolution / tileResolution;
                 tilesToDraw = tilesToDrawByZ[currentZ];
-                for (let tileCoordKey in tilesToDraw) {                    
+                for (let tileCoordKey in tilesToDraw) {
                     tile = tilesToDraw[tileCoordKey];
                     tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
                     x = (tileExtent[0] - imageExtent[0]) / tileResolution * tilePixelRatio / oversampling;
-                    y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;                   
+                    y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
                     tile.transition = (z === currentZ);
-                    tile.screenXY = [(tileExtent[0] + tileExtent[2]) / 2,(tileExtent[1] + tileExtent[3]) / 2];
+                    tile.screenXY = [(tileExtent[0] + tileExtent[2]) / 2, (tileExtent[1] + tileExtent[3]) / 2];
                     // this.drawTileImage(tile, frameState, layerState, x, y);
                     this.createReplayGroup_(tile, frameState, x, y);
                     this.renderedTiles.push(tile);
-                }                
+                }
             }
 
             this.renderedRevision = sourceRevision;
@@ -224,7 +224,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let layer = this.getLayer();
         let layerRevision = layer.getRevision();
         if (this.renderedLayerRevision_ !== layerRevision) {
-            this.renderedTiles.length = 0;     
+            this.renderedTiles.length = 0;
         }
         this.renderedLayerRevision_ = layerRevision;
         return this.tileLayerPrepareFrameCustom.apply(this, arguments);
@@ -254,7 +254,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         const background = this.rgb2hex(layer.background);
         const canvasBackground = gl.canvas.style.backgroundColor;
         const tmpCanvasBackground = canvasBackground.includes('rgb') ? this.rgb2hex(canvasBackground) : canvasBackground;
-        if(background && background !== tmpCanvasBackground){
+        if (background && background !== tmpCanvasBackground) {
             gl.canvas.style.backgroundColor = background;
         }
 
@@ -262,7 +262,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             this.declutterTree_.clear();
         }
         let tiles = this.renderedTiles;
-        context.globalAlpha = layerState.opacity;        
+        context.globalAlpha = layerState.opacity;
         context.frameState = frameState;
         // context.layerState = layerState;
 
@@ -283,18 +283,19 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 // reuse replayGroup of source Tile to reduce the memory.
                 // let replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
                 let replayGroup_ = sourceTile.getReplayGroup(layer, sourceTile.tileCoord.toString());
-                let tmpreplayGroup = sourceTile.tmpReplayGroups_ && sourceTile.tmpReplayGroups_[(<any>ol).getUid(layer) + ','+ sourceTile.tileCoord.toString()];
-                let replayGroup = (Object.keys(replayGroup_.replaysByZIndex_).length > 0 || !tmpreplayGroup) ? replayGroup_ : tmpreplayGroup;
+                let tmpreplayGroup = sourceTile.tmpReplayGroups_ && sourceTile.tmpReplayGroups_[(<any>ol).getUid(layer) + ',' + sourceTile.tileCoord.toString()];
+
+                let replayGroup = ((replayGroup_ && Object.keys(replayGroup_.replaysByZIndex_).length > 0) || !tmpreplayGroup) ? replayGroup_ : tmpreplayGroup;
 
                 if (renderMode !== (<any>ol.layer).VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
                     continue;
-                } 
-               
+                }
+
                 // draw polygon
                 replayGroup.replay(context, center, resolution, rotation, size, pixelRatio,
-                    opacity, {}, declutterReplays, screenXY, lineStringReplayArray);     
-                
-                if(Object.keys(replayGroup.replaysByZIndex_).length){                    
+                    opacity, {}, declutterReplays, screenXY, lineStringReplayArray);
+
+                if (Object.keys(replayGroup.replaysByZIndex_).length) {
                     var uid = this.ol_uid;
                     var alpha = tile.transition ? tile.getAlpha(uid, frameState.time) : 1;
                     if (alpha !== 1) {
@@ -304,10 +305,10 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     }
                 }
             }
-        }     
+        }
 
         // draw lineString
-        for(let i = 0; i < lineStringReplayArray.length; i += 2){            
+        for (let i = 0; i < lineStringReplayArray.length; i += 2) {
             lineStringReplayArray[i].replay(context, center, resolution, rotation, size, pixelRatio,
                 opacity, {}, undefined, false, {}, lineStringReplayArray[i + 1]);
         }
@@ -317,54 +318,54 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 opacity, {}, undefined, false, {});
         }
         // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);      
-        
+
         gl.disable(gl.DEPTH_TEST);
     }
 
-    public rgb2hex(rgb){
+    public rgb2hex(rgb) {
         rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-        
+
         return (rgb && rgb.length === 4) ? "#" +
-            ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+            ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
     }
 
-    public replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio, 
+    public replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio,
         opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
-        
+
         var zs = Object.keys(declutterReplays).map(Number).sort((<any>ol).array.numberSafeCompareFunction);
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
-                var replay = replayData[i++];                
+                var replay = replayData[i++];
                 var screenXY = replayData[i++];
                 replay.declutterRepeat_(context, screenXY);
             }
-        }        
+        }
 
         // draw
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
-                var replay = replayData[i++];                
+                var replay = replayData[i++];
                 var screenXY = replayData[i++];
-                var tmpOptions = replay.tmpOptions;   
-                          
+                var tmpOptions = replay.tmpOptions;
+
                 replay.startIndices.length = 0;
                 replay.indices.length = 0;
                 replay.vertices.length = 0;
                 replay.groupIndices.length = 0;
-                
-                for(var k = 0; k < tmpOptions.length; k++){
-                    if(replay instanceof (<any>ol).render.webgl.TextReplay){
+
+                for (var k = 0; k < tmpOptions.length; k++) {
+                    if (replay instanceof (<any>ol).render.webgl.TextReplay) {
                         replay.drawText(tmpOptions[k]);
-                    }else if(replay instanceof (<any>ol).render.webgl.ImageReplay){
+                    } else if (replay instanceof (<any>ol).render.webgl.ImageReplay) {
                         replay.drawPoint(tmpOptions[k]);
                     }
                 }
                 replay.finish(context);
-               
+
                 replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
                     skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, screenXY);
             }
@@ -419,7 +420,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                 if (source.isMultithread && replaysZindexCount === 0) {
                     // the replays did not created, it will create after web worker call back
-                    if (sourceTile){
+                    if (sourceTile) {
                         if (sourceTile["reuseVectorImageTile"] === undefined) {
                             sourceTile["reuseVectorImageTile"] = [];
                         }
@@ -444,7 +445,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                  */
                 let renderFeature = function (feature, geoStyles, options) {
                     let styles;
-                    
+
                     if (geoStyles) {
                         if (geoStyles && geoStyles.length > 0) {
                             for (let i = 0, ii = geoStyles.length; i < ii; i++) {
@@ -531,7 +532,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                         }
                     }
-                    
+
                     let messageData = [
                         [0, tileExtent, resolution, layer.getRenderBuffer()],
                         sourceTile.requestTileCoord,
@@ -561,9 +562,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 let geoStyle = geoStyles[geoStyleId];
 
                                 let featureInfo = features[instructs[i][0]];
-                              
+
                                 // let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-                                
+
                                 let feature = new ol.Feature({
                                     geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
                                 })
@@ -573,44 +574,44 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
-                            
+
                                 renderFeature.call(that_, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
                             }
                         }
 
                         for (let zindex in replaysByZIndex_) {
-                            for (let replayType in replaysByZIndex_[zindex]) {                                
+                            for (let replayType in replaysByZIndex_[zindex]) {
                                 // merge worker to main with replaysByZIndex_
-                                let replay = replayGroup.getReplay(zindex, replayType);    
+                                let replay = replayGroup.getReplay(zindex, replayType);
                                 let workerReplay = replaysByZIndex_[zindex][replayType];
-                                for(let key in workerReplay){   
-                                    if(key === 'startIndicesFeature'){
+                                for (let key in workerReplay) {
+                                    if (key === 'startIndicesFeature') {
                                         replay[key] = workerReplay[key].map(item => {
                                             let olFeature = new ol.Feature({
                                                 geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
                                             });
                                             olFeature.setProperties(item.properties_);
                                             olFeature['zCoordinate'] = item.zCoordinate;
-                                            
+
                                             return olFeature;
                                         })
-                                    }else if(key !== 'lineStringReplay'){
+                                    } else if (key !== 'lineStringReplay') {
                                         replay[key] = workerReplay[key];
                                     }
                                 }
-                                if(workerReplay['lineStringReplay']){
-                                    for(let lineStringKey in workerReplay['lineStringReplay']){
-                                        if(lineStringKey === 'startIndicesFeature'){
+                                if (workerReplay['lineStringReplay']) {
+                                    for (let lineStringKey in workerReplay['lineStringReplay']) {
+                                        if (lineStringKey === 'startIndicesFeature') {
                                             replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey].map(item => {
                                                 let olFeature = new ol.Feature({
                                                     geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
                                                 });
                                                 olFeature.setProperties(item.properties_);
                                                 olFeature['zCoordinate'] = item.zCoordinate;
-                                                
+
                                                 return olFeature;
                                             })
-                                        }else{
+                                        } else {
                                             replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey];
                                         }
                                     }
@@ -620,7 +621,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         // for (let r in replayGroup.getReplays()) {
                         //     zIndexKeys[r] = true;
                         // }     
-                                           
+
                         replayGroup.finish(frameState['context']);
                         sourceTile.tmpReplayGroups_ = undefined;
                         replayState.renderedTileLoaded = true;
@@ -629,7 +630,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             for (var i = 0; i < sourceTile["reuseVectorImageTile"].length; i++) {
                                 var reusedVectorImageTile = sourceTile["reuseVectorImageTile"][i];
                                 delete sourceTile["reuseVectorImageTile"][i];
-                                if(reusedVectorImageTile){
+                                if (reusedVectorImageTile) {
                                     let vectorImageTileReplayState = reusedVectorImageTile.getReplayState(layer);
                                     vectorImageTileReplayState.renderedRevision = revision;
                                     vectorImageTileReplayState.renderedRenderOrder = renderOrder;
@@ -639,12 +640,12 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             }
                             sourceTile["reuseVectorImageTile"] = sourceTile["reuseVectorImageTile"].filter(item => item);
                         }
-                        
+
                         (<any>tile).setState((<any>ol).TileState.LOADED);
                     };
 
                     // reuse replayGroup of source Tile to reduce the memory.
-                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);                             
+                    sourceTile.setReplayGroup(layer, sourceTile.tileCoord.toString(), replayGroup);
                     source.getGeoFormat().workerManager.postMessage(sourceTile.tileCoord + (<any>ol).getUid(callabck), "createReplay", messageData, callabck, sourceTile.workerId);
                     replayState.renderedRevision = revision;
                     replayState.renderedTileLoaded = false;
@@ -685,21 +686,21 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         }
     }
 
-    public getGeometryByType = function(type, flatCoordinates, layout){
+    public getGeometryByType = function (type, flatCoordinates, layout) {
         var geometry;
         layout = layout || 'XY';
-        
+
         var transformedCoordinates = [];
-        for(let i = 0; i < flatCoordinates.length; i += 2){
+        for (let i = 0; i < flatCoordinates.length; i += 2) {
             transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
         }
 
-        switch(type){
+        switch (type) {
             case 'Point': geometry = new ol.geom.Point(flatCoordinates, layout); break;
             case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
             case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
             case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
-            default: console.log(type);                
+            default: console.log(type);
         }
 
         return geometry;
@@ -724,7 +725,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         return loading;
     }
 
-    public isDrawableTile_ = function(tile) {
+    public isDrawableTile_ = function (tile) {
         const tileState = tile.getState();
         const useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
         return tileState == (<any>ol).TileState.LOADED ||
@@ -743,7 +744,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     public static create(mapRenderer: any, layer: ol.layer.Tile) {
         return new GeoVectorTileLayerRender(<any>mapRenderer, <any>layer);
     }
-    
+
     public disposeInternal() {
         // (<any>ol).events.unlisten((<any>ol.render).canvas.labelCache, (<any>ol).events.EventType.CLEAR, this.handleFontsChanged_, this);
         var workerManager = this.getLayer().getSource().getGeoFormat().workerManager;
@@ -770,7 +771,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
     }
 
     public forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-        var viewState = frameState.viewState;       
+        var viewState = frameState.viewState;
         var context = this.mapRenderer.getContext();
         var resolution = viewState.resolution;
         var rotation = viewState.rotation;
@@ -797,28 +798,28 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 continue;
             }
             for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
-            var sourceTile = tile.getTile(tile.tileKeys[t]);
-            if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
-                continue;
-            }
-            replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-            if(!replayGroup || !layerState){
-                continue;
-            }
+                var sourceTile = tile.getTile(tile.tileKeys[t]);
+                if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
+                    continue;
+                }
+                replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+                if (!replayGroup || !layerState) {
+                    continue;
+                }
 
-            found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, context, viewState.center, 
+                found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, context, viewState.center,
                     resolution, rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {},
-                /**
-                 * @param {ol.Feature|ol.render.Feature} feature Feature.
-                 * @return {?} Callback result.
-                 */
-                function(feature) {
-                    var key = (<any>ol).getUid(feature).toString();
-                    if (!(key in features)) {
-                    features[key] = true;
-                    return callback.call(thisArg, feature, layer);
-                    }
-                }, null);
+                    /**
+                     * @param {ol.Feature|ol.render.Feature} feature Feature.
+                     * @return {?} Callback result.
+                     */
+                    function (feature) {
+                        var key = (<any>ol).getUid(feature).toString();
+                        if (!(key in features)) {
+                            features[key] = true;
+                            return callback.call(thisArg, feature, layer);
+                        }
+                    }, null);
             }
         }
         return found;
