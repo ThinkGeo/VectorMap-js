@@ -778,8 +778,13 @@ export class GeoTextStyle extends GeoStyle {
             }
         }
         let numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
-
-        return numeric.format(Number(featureText));
+        let num = Number(featureText);
+        if (num) {
+            return numeric.format(num);
+        }
+        else {
+            return "";
+        }
     }
     public getTextWithDateFormat(featureText: string): string {
         if (Date.parse(featureText)) {

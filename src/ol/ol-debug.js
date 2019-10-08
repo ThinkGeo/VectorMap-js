@@ -99761,8 +99761,14 @@ function olInit() {
                             break;
                     }
                 }
-                var numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
-                return numeric.format(Number(featureText));
+                let numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
+                let num = Number(featureText);
+                if (num) {
+                    return numeric.format(num);
+                }
+                else {
+                    return "";
+                }
             };
             GeoShieldStyle.prototype.getTextWithDateFormat = function (featureText) {
                 if (Date.parse(featureText)) {
@@ -100543,8 +100549,14 @@ function olInit() {
                             break;
                     }
                 }
-                var numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
-                return numeric.format(Number(featureText));
+                let numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
+                let num = Number(featureText);
+                if (num) {
+                    return numeric.format(num);
+                }
+                else {
+                    return "";
+                }
             };
             GeoTextStyle.prototype.getTextWithDateFormat = function (featureText) {
                 if (Date.parse(featureText)) {
