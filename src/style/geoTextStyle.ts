@@ -205,7 +205,7 @@ export class GeoTextStyle extends GeoStyle {
 
         featureText = this.getTextTransform(featureText);
         this.style['zCoordinate'] = this.zIndex;
-        this.style.getText()["placements"]= this.placements;
+        this.style.getText()["placements"] = this.placements;
 
         this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
@@ -782,7 +782,29 @@ export class GeoTextStyle extends GeoStyle {
         return numeric.format(Number(featureText));
     }
     public getTextWithDateFormat(featureText: string): string {
-        return (<any>(new Date(featureText))).format(this.dateFormat);
+        if (Date.parse(featureText)) {
+            let date = new Date(featureText);
+            let fmt = this.dateFormat;
+            let o = {
+                "M+": date.getMonth() + 1,
+                "d+": date.getDate(),
+                "h+": date.getHours(),
+                "m+": date.getMinutes(),
+                "s+": date.getSeconds(),
+                "q+": Math.floor((date.getMonth() + 3) / 3),
+                "S": date.getMilliseconds()
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (let k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+
+            return fmt;
+        }
+        else {
+            return "";
+        }
     }
     public getTextWithFormat(featureText: string): string {
         return (<any>String).format(this.textFormat, featureText);
@@ -831,22 +853,4 @@ export class GeoTextStyle extends GeoStyle {
         s = s.replace(reg, arguments[i + 1]);
     }
     return s;
-};
-
-(<any>Date.prototype).format = function (fmt) {
-    let o = {
-        "M+": this.getMonth() + 1,
-        "d+": this.getDate(),
-        "h+": this.getHours(),
-        "m+": this.getMinutes(),
-        "s+": this.getSeconds(),
-        "q+": Math.floor((this.getMonth() + 3) / 3),
-        "S": this.getMilliseconds()
-    };
-    if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (let k in o)
-        if (new RegExp("(" + k + ")").test(fmt))
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
 };

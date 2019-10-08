@@ -99765,7 +99765,29 @@ function olInit() {
                 return numeric.format(Number(featureText));
             };
             GeoShieldStyle.prototype.getTextWithDateFormat = function (featureText) {
-                return (new Date(featureText)).format(this.dateFormat);
+                if (Date.parse(featureText)) {
+                    let date = new Date(featureText);
+                    let fmt = this.dateFormat;
+                    let o = {
+                        "M+": date.getMonth() + 1,
+                        "d+": date.getDate(),
+                        "h+": date.getHours(),
+                        "m+": date.getMinutes(),
+                        "s+": date.getSeconds(),
+                        "q+": Math.floor((date.getMonth() + 3) / 3),
+                        "S": date.getMilliseconds()
+                    };
+                    if (/(y+)/.test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (let k in o)
+                        if (new RegExp("(" + k + ")").test(fmt))
+                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        
+                    return fmt;
+                }
+                else {
+                    return "";
+                }
             };
             GeoShieldStyle.prototype.getTextWithFormat = function (featureText) {
                 return String.format(featureText, this.textFormat);
@@ -100525,7 +100547,29 @@ function olInit() {
                 return numeric.format(Number(featureText));
             };
             GeoTextStyle.prototype.getTextWithDateFormat = function (featureText) {
-                return (new Date(featureText)).format(this.dateFormat);
+                if (Date.parse(featureText)) {
+                    let date = new Date(featureText);
+                    let fmt = this.dateFormat;
+                    let o = {
+                        "M+": date.getMonth() + 1,
+                        "d+": date.getDate(),
+                        "h+": date.getHours(),
+                        "m+": date.getMinutes(),
+                        "s+": date.getSeconds(),
+                        "q+": Math.floor((date.getMonth() + 3) / 3),
+                        "S": date.getMilliseconds()
+                    };
+                    if (/(y+)/.test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (let k in o)
+                        if (new RegExp("(" + k + ")").test(fmt))
+                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        
+                    return fmt;
+                }
+                else {
+                    return "";
+                }
             };
             GeoTextStyle.prototype.getTextWithFormat = function (featureText) {
                 return String.format(this.textFormat, featureText);
