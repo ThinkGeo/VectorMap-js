@@ -5,20 +5,23 @@ import { TextLabelingStrategy } from "./textLabelingStrategy";
 import { DetectTextLabelingStrategy } from "./detectTextLabelingStrategy";
 
 export class GeoTextStyle extends GeoStyle {
-    textAligns = ["left", "right", "center", "end", "start"];
-    textBaseline = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
-    textTransforms = ["default", "uppercase", "lowercase"];
+    static measureCanvas = undefined;
+    static measureContext = undefined;
+
+    aligns = ["default", "left", "right", "center"];
+    baselines = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
+    letterCases = ["default", "uppercase", "lowercase"];
 
     align: string;
     baseline: string;
     avoidEdge: boolean;
     dateFormat: string;
-    dx: number;
-    dy: number;
+    offsetX: number;
+    offsetY: number;
     font: string;
-    fill: string;
+    fillColor: string;
     forceHorizontalForLine: boolean;
-    haloFill: string;
+    haloColor: string;
     haloRadius: number;
     margin: number;
     maskColor: string;
@@ -26,23 +29,24 @@ export class GeoTextStyle extends GeoStyle {
     maskOutlineColor: string;
     maskOutlineWidth: number;
     maskType: string;
-    maxCharAngle: number;
-    minDistance: number;
+    maxCharAngleDelta: number;
+    intervalDistance: number;
     minPadding: number;
     name: string;
     numericFormat: string;
     opacity: number;
-    rotateAngle: number;
-    placements: string;
+    rotationAngle: number;
+    placement: string;
     placementType: string;
     polygonLabelingLocation: string;
     spacing: number;
     splineType: string;
-    textFormat: string;
+    content: string;
     wrapBefore: string;
     wrapWidth: number;
-    textTransform: string;
+    letterCase: string;
     letterSpacing: number;
+    basePointStyle: any;
 
     labelInfos: any;
     drawnMask: boolean = false;
@@ -60,36 +64,40 @@ export class GeoTextStyle extends GeoStyle {
         this.charWidths = {};
 
         if (styleJson) {
-
-            // Orign 
-            this.align = styleJson["text-align"];
-            this.baseline = styleJson["text-baseline"];
-            this.dx = styleJson["text-dx"];
-            this.dy = styleJson["text-dy"];
+            // renamed
+            this.dateFormat = styleJson["text-date-format"];
             this.font = styleJson["text-font"];
-            this.fill = styleJson["text-fill"];
-            this.haloFill = styleJson["text-halo-fill"];
+            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
             this.haloRadius = styleJson["text-halo-radius"];
-            this.maxCharAngle = styleJson["text-max-char-angle"];
-            this.name = styleJson["text-name"];
-            this.rotateAngle = styleJson["text-rotate-angle"];
-
-            // custom
-            this.maskColor = styleJson["text-mask-color"];
+            this.numericFormat = styleJson["text-numeric-format"];
+            this.align = styleJson["text-align"];
+            this.intervalDistance = styleJson["text-interval-distance"];
+            this.spacing = styleJson["text-spacing"] || 10;
+            this.letterSpacing = styleJson["text-letter-spacing"];
+            this.letterCase = styleJson["text-letter-case"];
+            this.maskType = styleJson["text-mask-type"];
             this.maskMargin = styleJson["text-mask-margin"];
+            this.wrapWidth = styleJson["text-wrap-width"];
+            this.placement = styleJson["text-placement"] || "default";
+            this.offsetX = styleJson["text-offset-x"];
+            this.offsetY = styleJson["text-offset-y"];
+            this.fillColor = styleJson["text-fill-color"];
+            this.haloColor = styleJson["text-halo-color"];
+            this.rotationAngle = styleJson["text-rotation-angle"];
+            this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
+            this.content = styleJson["text-content"];
+            this.maskColor = styleJson["text-mask-color"];
             this.maskOutlineColor = styleJson["text-mask-outline-color"];
             this.maskOutlineWidth = styleJson["text-mask-outline-width"];
-            this.maskType = styleJson["text-mask-type"];
             this.opacity = styleJson["text-opacity"];
+            this.baseline = styleJson["text-baseline"] || "top";
+            this.basePointStyle = styleJson["text-base-point-style"];
+
+            // Orign 
+            this.name = styleJson["text-name"];
+
+            // custom
             this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
-            this.wrapWidth = styleJson["text-wrap-width"];
-            this.textFormat = styleJson["text-text-format"];
-            this.dateFormat = styleJson["text-date-format"];
-            this.numericFormat = styleJson["text-numeric-format"];
-            this.textTransform = styleJson["text-letter-case"];
-            this.letterSpacing = styleJson["text-letter-spacing"];
-            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
-            this.placements = styleJson["text-placements"] || "C";
 
             // TODO
 
@@ -97,8 +105,6 @@ export class GeoTextStyle extends GeoStyle {
             // this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
             this.placementType = "default";
 
-            this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
-            this.minDistance = styleJson["text-min-distance"];
             this.margin = styleJson["text-margin"];
             this.minPadding = styleJson["text-min-padding"];
             this.avoidEdge = styleJson["text-avoid-edge"];
@@ -118,11 +124,11 @@ export class GeoTextStyle extends GeoStyle {
     }
 
     initializeCore() {
-        if (this.fill) {
-            this.fillColor = GeoStyle.toRGBAColor(this.fill, this.opacity);
+        if (this.fillColor) {
+            this.fillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
         }
-        if (this.haloFill) {
-            this.haloFillColor = GeoStyle.toRGBAColor(this.haloFill, this.opacity);
+        if (this.haloColor) {
+            this.haloFillColor = GeoStyle.toRGBAColor(this.haloColor, this.opacity);
         }
         let fill = new ol.style.Fill();
         let stroke = new ol.style.Stroke();
@@ -135,17 +141,17 @@ export class GeoTextStyle extends GeoStyle {
             text: textStyle
         });
 
-        if (this.textAligns.indexOf(this.align) >= 0) {
+        if (this.aligns.indexOf(this.align) >= 0) {
             textStyle.setTextAlign(this.align);
         }
-        if (this.textBaseline.indexOf(this.baseline) >= 0) {
+        if (this.baselines.indexOf(this.baseline) >= 0) {
             textStyle.setTextBaseline(this.baseline);
         }
-        if (this.dx) {
-            textStyle.setOffsetX(this.dx);
+        if (this.offsetX) {
+            textStyle.setOffsetX(this.offsetX);
         }
-        if (this.dy) {
-            textStyle.setOffsetY(this.dy);
+        if (this.offsetY) {
+            textStyle.setOffsetY(this.offsetY);
         }
         if (this.font) {
             textStyle.setFont(this.font);
@@ -162,16 +168,16 @@ export class GeoTextStyle extends GeoStyle {
         if (!this.haloRadius || this.haloFillColor === undefined) {
             textStyle.setStroke(undefined);
         }
-        if (this.rotateAngle) {
-            textStyle.setRotation(this.rotateAngle);
+        if (this.rotationAngle) {
+            textStyle.setRotation(this.rotationAngle);
         }
-        if (this.maxCharAngle >= 0) {
-            (<any>textStyle).setMaxAngle(this.maxCharAngle);
+        if (this.maxCharAngleDelta >= 0) {
+            (<any>textStyle).setMaxAngle(this.maxCharAngleDelta);
         }
-        if (this.textTransforms.includes(this.textTransform)) {
+        if (this.letterCases.includes(this.letterCase)) {
         } else {
             // TODO: invalid inputs.
-            this.textTransform = this.textTransforms[0];
+            this.letterCase = this.letterCases[0];
         }
     }
 
@@ -195,7 +201,7 @@ export class GeoTextStyle extends GeoStyle {
         if (this.dateFormat) {
             featureText = this.getTextWithDateFormat(featureText);
         }
-        if (this.textFormat) {
+        if (this.content) {
             featureText = this.getTextWithFormat(featureText);
         }
 
@@ -205,7 +211,7 @@ export class GeoTextStyle extends GeoStyle {
 
         featureText = this.getTextTransform(featureText);
         this.style['zCoordinate'] = this.zIndex;
-        this.style.getText()["placements"] = this.placements;
+        this.style.getText()["placements"] = this.placement;
 
         this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
@@ -812,11 +818,11 @@ export class GeoTextStyle extends GeoStyle {
         }
     }
     public getTextWithFormat(featureText: string): string {
-        return (<any>String).format(this.textFormat, featureText);
+        return (<any>String).format(this.content, featureText);
     }
     public getTextTransform(featureText: string) {
         if (featureText !== undefined) {
-            switch (this.textTransform) {
+            switch (this.letterCase) {
                 case "uppercase":
                     featureText = featureText.toLocaleUpperCase();
                     break;

@@ -20,7 +20,7 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
             case (<any>ol.geom).GeometryType.MULTI_LINE_STRING:
             case (<any>ol.geom).GeometryType.POLYGON:
             case (<any>ol.geom).GeometryType.MULTI_POLYGON:
-                if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
+                if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.intervalDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
                     return undefined;
                 }
         }
@@ -30,11 +30,11 @@ export class DetectTextLabelingStrategy extends TextLabelingStrategy {
         let gridSize = 50;
         let distance = gridSize * resolution;
 
-        if (textStyle.placements) {
-            let placements = textStyle.placements.split(",");
+        if (textStyle.placement) {
+            let placements = textStyle.placement.split(",");
             for (let placement of placements) {
                 let newFlatCoordinates = this.getMovedPosition(flatCoordinates, placement, distance);
-                if (!this.isOverlapping(newFlatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
+                if (!this.isOverlapping(newFlatCoordinates, width, height, textStyle.margin, textStyle.intervalDistance, textStyle.minPadding, textStyle.spacing, grid, frameState)) {
                     return newFlatCoordinates;
                 }
             }

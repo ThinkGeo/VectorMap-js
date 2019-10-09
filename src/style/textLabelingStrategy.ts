@@ -9,7 +9,7 @@ export class TextLabelingStrategy {
     }
 
     protected markLocationCore(flatCoordinates: any, width: number, height: number, resolution: any, geometryType: any, textStyle: GeoTextStyle, strategyTree: any, frameState: olx.FrameState) {
-        if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.minDistance, textStyle.minPadding, textStyle.spacing, strategyTree, frameState)) {
+        if (this.isOverlapping(flatCoordinates, width, height, textStyle.margin, textStyle.intervalDistance, textStyle.minPadding, textStyle.spacing, strategyTree, frameState)) {
             return undefined;
         } else {
             return flatCoordinates;
