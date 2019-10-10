@@ -70,7 +70,7 @@ export class GeoTextStyle extends GeoStyle {
             this.letterSpacing = styleJson["text-letter-spacing"] || 0;
             this.wrapWidth = styleJson["text-wrap-width"] || 0;
             this.wrapBefore = styleJson["text-wrap-before"] || false; // internal property
-            this.align = styleJson["text-align"] || "default";
+            this.align = styleJson["text-align"] || "center";
 
             this.maskType = styleJson["text-mask-type"];
             this.maskMargin = styleJson["text-mask-margin"];
@@ -501,13 +501,8 @@ export class GeoTextStyle extends GeoStyle {
             context.lineWidth = strokeWidth;
             context.lineJoin = "round";
 
-
-
-
             var x = 0;
             var y = -lineHeight - lineSpacing;
-            context.fillStyle = "#F0F";
-            context.fillRect(x, y, canvasWidth, canvasHeight);
 
             var letterSpacingOffset = letterSpacing;
             var alignOffsetX = 0;
@@ -536,9 +531,11 @@ export class GeoTextStyle extends GeoStyle {
                 context.textBaseline = 'middle';
                 var anchorX = x + alignOffsetX;
                 var anchorY = y + lineHeight / 2;
+                if (strokeStyle) {
+                    context.strokeStyle = strokeStyle.getColor();
+                    context.strokeText(line, anchorX, anchorY);
+                }
 
-                context.strokeStyle = strokeStyle.getColor();
-                context.strokeText(line, anchorX, anchorY);
                 context.fillStyle = fillStyle.getColor();
                 context.fillText(line, anchorX, anchorY);
             }

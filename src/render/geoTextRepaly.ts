@@ -184,9 +184,9 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.label = style.label;
                     this.maxAngle_ = style.maxAngle_;
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-                    this.width = this.label.width + lineWidth;
+                    this.width = this.label.width 
                     this.height = this.label.height;
-                    this.originX = lineWidth;
+                    this.originX = 0;
                     this.originY = 0;
                     this.anchorX = Math.floor(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
                     this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) * pixelRatio - this.offsetY_);
@@ -423,8 +423,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
                 [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
         }
-        x = pixelCoordinate[0];
-        y = pixelCoordinate[1];
+        x = Math.ceil(pixelCoordinate[0]);
+        y =  Math.ceil(pixelCoordinate[1]);
 
         // bottom-left corner
         offsetX = -scale * anchorX;
@@ -586,16 +586,19 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         } else {
             pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
         }
+       var  x = Math.ceil(pixelCoordinate[0]);
+       var  y =  Math.ceil(pixelCoordinate[1]);
+        
 
         var offsetX = -scale * (this.anchorX);
         var offsetY = -scale * (this.height - this.anchorY);
-        box[0] = pixelCoordinate[0] + offsetX;
-        box[3] = pixelCoordinate[1] - offsetY;
+        box[0] = x + offsetX;
+        box[3] = y - offsetY;
 
         offsetX = scale * (this.width - this.anchorX);
         offsetY = scale * this.anchorY;
-        box[2] = pixelCoordinate[0] + offsetX;
-        box[1] = pixelCoordinate[1] - offsetY;
+        box[2] = x + offsetX;
+        box[1] = y - offsetY;
 
         var size = frameState.size;
         var intersects = box[0] <= size[0] && box[2] >= 0 && box[1] <= size[1] && box[3] >= 0;

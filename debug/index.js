@@ -1,6 +1,6 @@
 var view = new ol.View({
     center: [-10784739.476061746, 4989285.901397186],
-    zoom: 2,
+    zoom: 5,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
