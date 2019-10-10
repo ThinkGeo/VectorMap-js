@@ -29,13 +29,12 @@ export class GeoTextStyle extends GeoStyle {
     maskType: string;
     maxCharAngleDelta: number;
     intervalDistance: number;
-    name: string;
+    contentFormat: string;
     numericFormat: string;
     opacity: number;
     rotationAngle: number;
     placement: string;
     spacing: number;
-    content: string;
     wrapBefore: string;
     wrapWidth: number;
     letterCase: string;
@@ -61,10 +60,9 @@ export class GeoTextStyle extends GeoStyle {
             this.haloRadius = styleJson["text-halo-radius"];
 
             // // keep in self.
-            this.name = styleJson["text-name"];
+            this.contentFormat = styleJson["text-content"];
             this.dateFormat = styleJson["text-date-format"];
             this.numericFormat = styleJson["text-numeric-format"];
-            this.content = styleJson["text-content"];
             this.letterCase = styleJson["text-letter-case"];
 
             this.letterSpacing = styleJson["text-letter-spacing"] || 0;
@@ -180,30 +178,15 @@ export class GeoTextStyle extends GeoStyle {
         let textStyles = [];
         let featureText = "";
 
-        if (this.name) {
-            featureText = feature.get(this.name);
-        }
-
-        // A workaround for the language, remove it after data update
-        if ((featureText === undefined || featureText === "") && (this.name && this.name.indexOf("name_") === 0)) {
-            featureText = feature.get("name");
-        }
-
-        if (this.numericFormat) {
-            featureText = this.getTextWithNumericFormat(featureText);
-        }
-        if (this.dateFormat) {
-            featureText = this.getTextWithDateFormat(featureText);
-        }
-        if (this.content) {
-            featureText = this.getTextWithContent(featureText);
+        if (this.contentFormat) {
+            featureText = this.getTextWithContent(this.contentFormat, feature, this.dateFormat, this.numericFormat);
         }
 
         if (featureText === undefined || featureText === "") {
             return textStyles;
         }
 
-        featureText = this.getTextWithLetterCase(featureText);
+        featureText = this.getTextWithLetterCase(this.letterCase, featureText);
 
         this.style.getText().setText(featureText);
 
@@ -774,8 +757,15 @@ export class GeoTextStyle extends GeoStyle {
         }
     }
 
-    public getTextWithNumericFormat(featureText: string): string {
-        let tmpArguments = this.numericFormat.split(",");
+
+
+
+
+    ///////////////////////
+    ////private method
+
+    getTextWithNumericFormat(numericFormat, featureText: string): string {
+        let tmpArguments = numericFormat.split(",");
         let numericFormatOptions = {};
         for (let tmpArgument of tmpArguments) {
             let keyValuePair = tmpArgument.split(":");
@@ -821,10 +811,10 @@ export class GeoTextStyle extends GeoStyle {
             return featureText;
         }
     }
-    public getTextWithDateFormat(featureText: string): string {
+    getTextWithDateFormat(dateFormat, featureText: string): string {
         if (Date.parse(featureText)) {
             let date = new Date(featureText);
-            let fmt = this.dateFormat;
+            let fmt = dateFormat;
             let o = {
                 "M+": date.getMonth() + 1,
                 "d+": date.getDate(),
@@ -846,13 +836,50 @@ export class GeoTextStyle extends GeoStyle {
             return featureText;
         }
     }
-    public getTextWithContent(featureText: string): string {
-        // TODO format.
-        return featureText;
+    getTextWithContent(contentFormat: string, feature: any, dateFormat, numericFormat): string {
+        var str = contentFormat || "";
+
+        if (str.indexOf("{") >= 0) {
+            var args = feature.getProperties();
+            var key;
+            for (key in args) {
+                var value = args[key];
+
+                // A workaround for the language, remove it after data update
+                if ((value === undefined || value === "") && (key.indexOf("name_") === 0)) {
+                    value = args["name"]
+                }
+
+                if (numericFormat) {
+                    value = this.getTextWithNumericFormat(numericFormat, value);
+                }
+                if (dateFormat) {
+                    value = this.getTextWithDateFormat(dateFormat, value);
+                }
+                str = str.replace(new RegExp("\\{" + key + "\\}", "gi") ，value);
+            }
+        }
+        // else {
+        //     str = feature.get(contentFormat);
+        //     if (str) {
+        //         if (this.numericFormat) {
+        //             str = this.getTextWithNumericFormat(str);
+        //         }
+        //         if (this.dateFormat) {
+        //             str = this.getTextWithDateFormat(str);
+        //         }
+        //     }
+        //     else {
+        //         str = contentFormat;
+        //     }
+        // }
+
+        return str;
     }
-    public getTextWithLetterCase(featureText: string) {
+
+    getTextWithLetterCase(letterCase, featureText: string) {
         if (featureText !== undefined) {
-            switch (this.letterCase) {
+            switch (letterCase) {
                 case "uppercase":
                     featureText = featureText.toLocaleUpperCase();
                     break;
@@ -865,6 +892,8 @@ export class GeoTextStyle extends GeoStyle {
         }
         return featureText;
     }
+
+
 
     static getMeasureContext(letterSpacing) {
         let tempCanvasForMeasure = GeoTextStyle.getMeasureCanvas();

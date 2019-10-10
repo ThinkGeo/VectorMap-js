@@ -15906,7 +15906,7 @@ function olInit() {
         ol.Object.call(this);
         var options = ol.obj.assign({}, opt_options);
 
-        this.progressiveZoom= opt_options["progressiveZoom"];
+        this.progressiveZoom = opt_options["progressiveZoom"];
         /**
          * @private
          * @type {Array.<number>}
@@ -22537,11 +22537,10 @@ function olInit() {
 
         var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
         var tempdelta = this.delta_ / 100;
-        if(view.progressiveZoom !== undefined&&view.progressiveZoom)
-        {
+        if (view.progressiveZoom !== undefined && view.progressiveZoom) {
             tempdelta *= 0.2;
         }
-       
+
         var delta = ol.math.clamp(tempdelta, -maxDelta, maxDelta);
         ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
             this.duration_);
@@ -68400,9 +68399,9 @@ function olInit() {
                         var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
                         subResultCoords = subResultCoords.concat(subFlatCoordinates);
                     } else {
-                        if(accumulator === segLength){
+                        if (accumulator === segLength) {
                             startLengthOfSeg = 0;
-                        }else{
+                        } else {
                             var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
                             startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
                         }
@@ -68543,7 +68542,7 @@ function olInit() {
                 findPixelArr = findPixelArr.concat(splitPixelArr);
                 // findPixelArr.push(splitPixelArr);
             }
-            
+
             // if(tempLength.pixelLength > chaLength) {
             //     tempLength.x2=segments[i].x2;
             //     tempLength.y2=segments[i].y2;
@@ -73526,10 +73525,10 @@ function olInit() {
      * @inheritDoc
      */
     ol.renderer.webgl.TileLayer.prototype.prepareFrame = function (frameState, layerState, context) {
-        
+
         var mapRenderer = this.mapRenderer;
         var gl = context.getGL();
-        
+
         var viewState = frameState.viewState;
         var projection = viewState.projection;
 
@@ -73735,7 +73734,7 @@ function olInit() {
             frameState.size[1] * viewState.resolution /
             (framebufferExtent[3] - framebufferExtent[1]));
         ol.transform.translate(texCoordMatrix, -0.5, -0.5);
-        
+
         return true;
     };
 
@@ -98552,7 +98551,7 @@ function olInit() {
                         geometry.ends_ = feature.ends_;
                         var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
                         geometry.extent_ = newExtent_;
-                        geometry["drawingBbox"]= feature["drawingBbox"];
+                        geometry["drawingBbox"] = feature["drawingBbox"];
                         GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
                         GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
                         GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
@@ -99788,7 +99787,7 @@ function olInit() {
                     for (let k in o)
                         if (new RegExp("(" + k + ")").test(fmt))
                             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        
+
                     return fmt;
                 }
                 else {
@@ -99940,7 +99939,7 @@ function olInit() {
                     _this.maxCharAngle = styleJson["text-max-char-angle"];
                     _this.minDistance = styleJson["text-min-distance"];
                     _this.minPadding = styleJson["text-min-padding"];
-                    _this.name = styleJson["text-name"];
+                    _this.name = styleJson["text-content"];
                     _this.opacity = styleJson["text-opacity"];
                     _this.rotateAngle = styleJson["text-rotate-angle"];
                     _this.placements = styleJson["text-placements"] ? styleJson["text-placements"] : "U,B,L,R";
@@ -100019,35 +100018,19 @@ function olInit() {
                 }
             };
             GeoTextStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
-                var textStyles = [];
-                var featureText = "";
-                var featureProperties = feature.getProperties();
-                if (this.name) {
-                    featureText = feature.get(this.name);
+              return true;
+            };
+            GeoTextStyle.prototype.getTextWithContent = function (contentFormat, feature) {
+                var str = contentFormat || "";
+                if(str.indexOf("{")>0)
+                {
+                    var args = feature.getProperties();
+                    var key;
+                    for (key in args) {
+                        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+                    }
                 }
-                // A workaround for the language, remove the data update
-                if ((featureText === undefined || featureText === "") &&  (this.name&&this.name.indexOf("name_") === 0)) {
-                    featureText = feature.get("name");
-                }
-                if (this.numericFormat) {
-                    featureText = this.getTextWithNumericFormat(featureText);
-                }
-                if (this.dateFormat) {
-                    featureText = this.getTextWithDateFormat(featureText);
-                }
-                if (this.textFormat) {
-                    featureText = this.getTextWithFormat(featureText);
-                }
-                featureText = this.getTextTransform(featureText);
-                if (featureText === undefined || featureText === "") {
-                    return false;
-                }
-                this.style.getText().setText(featureText);
-                if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
-                    return true;
-                }
-                this.style.zCoordinate = this.zIndex;
-                return false;
+                return str;
             };
             GeoTextStyle.prototype.setLabelPosition = function (text, geometry, resolution, textState, strategyTree, frameState) {
                 var flatCoordinates;
@@ -100576,7 +100559,7 @@ function olInit() {
                     for (let k in o)
                         if (new RegExp("(" + k + ")").test(fmt))
                             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        
+
                     return fmt;
                 }
                 else {
@@ -100584,6 +100567,7 @@ function olInit() {
                 }
             };
             GeoTextStyle.prototype.getTextWithFormat = function (featureText) {
+                debugger;
                 return String.format(this.textFormat, featureText);
             };
             GeoTextStyle.prototype.getTextTransform = function (featureText) {
@@ -100614,7 +100598,7 @@ function olInit() {
                 var ends = polygonGeometry.getEnds();
                 var stride = polygonGeometry.getStride();
                 var extent = polygonGeometry.getExtent();
-                var drawingBbox= polygonGeometry["drawingBbox"];
+                var drawingBbox = polygonGeometry["drawingBbox"];
 
                 if (ends.length > 0) {
                     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
@@ -100628,7 +100612,7 @@ function olInit() {
 
                     if (ends[0] > 6) {
                         outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
-                            stride, -this.origin[0], -this.origin[1], undefined, drawingBbox||extent, true);
+                            stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
                         // FIXME it is also a anticlockwise, we don't judge for efficiency
                         outers[index].push(outerRing);
                     } else {
@@ -100640,7 +100624,7 @@ function olInit() {
                     for (i = 1, ii = ends.length; i < ii; ++i) {
                         if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
                             holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                                ends[i], stride, -this.origin[0], -this.origin[1], undefined, drawingBbox||extent, true);
+                                ends[i], stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
                             if (holeFlatCoords.length > 6) {
                                 isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
                                 if (isClockwise) {
@@ -100805,14 +100789,14 @@ function olInit() {
                         if (this.state_.changed) {
                             var z_order = lineStringGeometry.properties_.layer;
                             var styleId = lineStringGeometry.styleId;
-                            if(z_order == undefined){
+                            if (z_order == undefined) {
                                 z_order = 0;
                             }
 
-                            if(styleId.includes('#c')){
+                            if (styleId.includes('#c')) {
                                 z_order += 0.5;
                             }
-                            z_order = feature.zCoordinate + z_order / 100;                            
+                            z_order = feature.zCoordinate + z_order / 100;
 
                             this.styleIndices_.push(this.indices.length);
                             this.zCoordinates.push(z_order);
@@ -100855,28 +100839,28 @@ function olInit() {
                             }
                         }
                     }
-                    
+
                     if (this.indices.length > indexCount) {
                         this.startIndices.push(indexCount);
                         this.startIndicesFeature.push(feature);
-                        if (this.state_.changed) {      
+                        if (this.state_.changed) {
                             var z_order = multiLineStringGeometry.properties_.layer;
                             var styleId = multiLineStringGeometry.styleId;
-                            
-                            if(z_order == undefined){
+
+                            if (z_order == undefined) {
                                 z_order = 0;
                             }
 
-                            if(styleId.includes('#c')){
+                            if (styleId.includes('#c')) {
                                 z_order += 0.5;
                             }
                             z_order = feature.zCoordinate + z_order / 100;
-                            
+
                             this.zCoordinates.push(z_order);
                             this.styleIndices_.push(indexCount);
                             this.state_.changed = false;
                         }
-                    }else if(this.state_.changed){
+                    } else if (this.state_.changed) {
                         this.state_.changed = false;
                     }
                 } else if (this.state_.changed) {
@@ -101992,7 +101976,7 @@ function olInit() {
             // console.log(tileCoord.toString());
             // if(tileCoord.toString() !== "14,3786,-6613"){
             // if(tileCoord.toString() !== "3,2,-4"){
-                // return
+            // return
             // }
             // TEST END
 
@@ -102071,7 +102055,7 @@ function olInit() {
                         feature.getGeometry().transform(tileProjection, projection);
                         feature.extent_ = bbox;
                         // added a new property for drawing limit, the 'extent_' is orign property from OL.
-                        feature["drawingBbox"]= bbox;
+                        feature["drawingBbox"] = bbox;
                         feature["styleId"] = geoStyleId;
 
                         // clip line segment
