@@ -14,7 +14,6 @@ export class GeoTextStyle extends GeoStyle {
 
     align: string;
     baseline: string;
-    avoidEdge: boolean;
     dateFormat: string;
     offsetX: number;
     offsetY: number;
@@ -23,7 +22,6 @@ export class GeoTextStyle extends GeoStyle {
     forceHorizontalForLine: boolean;
     haloColor: string;
     haloRadius: number;
-    margin: number;
     maskColor: string;
     maskMargin: string;
     maskOutlineColor: string;
@@ -31,32 +29,23 @@ export class GeoTextStyle extends GeoStyle {
     maskType: string;
     maxCharAngleDelta: number;
     intervalDistance: number;
-    minPadding: number;
     name: string;
     numericFormat: string;
     opacity: number;
     rotationAngle: number;
     placement: string;
-    placementType: string;
-    polygonLabelingLocation: string;
     spacing: number;
-    splineType: string;
     content: string;
     wrapBefore: string;
     wrapWidth: number;
     letterCase: string;
     letterSpacing: number;
     basePointStyle: any;
-
     labelInfos: any;
     drawnMask: boolean = false;
-
     charWidths: any;
-
-    fillColor: any;
-    haloFillColor: any;
-
     style: ol.style.Style;
+    state_: any;
 
     constructor(styleJson?: any) {
         super(styleJson);
@@ -64,53 +53,50 @@ export class GeoTextStyle extends GeoStyle {
         this.charWidths = {};
 
         if (styleJson) {
-            // renamed
-            this.dateFormat = styleJson["text-date-format"];
+            // drawing label canvas property
+            // // add into textStyle
             this.font = styleJson["text-font"];
-            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
-            this.haloRadius = styleJson["text-halo-radius"];
-            this.numericFormat = styleJson["text-numeric-format"];
-            this.align = styleJson["text-align"];
-            this.intervalDistance = styleJson["text-interval-distance"];
-            this.spacing = styleJson["text-spacing"] || 10;
-            this.letterSpacing = styleJson["text-letter-spacing"];
-            this.letterCase = styleJson["text-letter-case"];
-            this.maskType = styleJson["text-mask-type"];
-            this.maskMargin = styleJson["text-mask-margin"];
-            this.wrapWidth = styleJson["text-wrap-width"];
-            this.placement = styleJson["text-placement"] || "default";
-            this.offsetX = styleJson["text-offset-x"];
-            this.offsetY = styleJson["text-offset-y"];
             this.fillColor = styleJson["text-fill-color"];
             this.haloColor = styleJson["text-halo-color"];
-            this.rotationAngle = styleJson["text-rotation-angle"];
-            this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
+            this.haloRadius = styleJson["text-halo-radius"];
+
+            // // keep in self.
+            this.name = styleJson["text-name"];
+            this.dateFormat = styleJson["text-date-format"];
+            this.numericFormat = styleJson["text-numeric-format"];
             this.content = styleJson["text-content"];
+            this.letterCase = styleJson["text-letter-case"];
+
+            this.letterSpacing = styleJson["text-letter-spacing"] || 0;
+            this.wrapWidth = styleJson["text-wrap-width"] || 0;
+            this.wrapBefore = styleJson["text-wrap-before"] || false; // internal property
+            this.align = styleJson["text-align"] || "default";
+
+            this.maskType = styleJson["text-mask-type"];
+            this.maskMargin = styleJson["text-mask-margin"];
             this.maskColor = styleJson["text-mask-color"];
             this.maskOutlineColor = styleJson["text-mask-outline-color"];
             this.maskOutlineWidth = styleJson["text-mask-outline-width"];
-            this.opacity = styleJson["text-opacity"];
+
+
+
+            // renamed
+            // // add into textStyle
+            this.offsetX = styleJson["text-offset-x"];
+            this.offsetY = styleJson["text-offset-y"];
             this.baseline = styleJson["text-baseline"] || "top";
+
+            this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
+            this.intervalDistance = styleJson["text-interval-distance"];
+            this.spacing = styleJson["text-spacing"] || 10;
+            this.rotationAngle = styleJson["text-rotation-angle"];
+            this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
+            this.opacity = styleJson["text-opacity"];
             this.basePointStyle = styleJson["text-base-point-style"];
-
-            // Orign 
-            this.name = styleJson["text-name"];
-
-            // custom
-            this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
+            this.placement = styleJson["text-placement"] || "B";
 
             // TODO
-
-            // //Description: If text-placement-type is set to 'detect', you can use this property to set the avoidance algorithm for text lables. 
-            // this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
-            this.placementType = "default";
-
-            this.margin = styleJson["text-margin"];
-            this.minPadding = styleJson["text-min-padding"];
-            this.avoidEdge = styleJson["text-avoid-edge"];
-            this.splineType = styleJson["text-spline-type"];
-            this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
-
+            this.lineSpacing = 0;
 
             let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             for (let i = 0; i < chars.length; i++) {
@@ -128,8 +114,9 @@ export class GeoTextStyle extends GeoStyle {
             this.fillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
         }
         if (this.haloColor) {
-            this.haloFillColor = GeoStyle.toRGBAColor(this.haloColor, this.opacity);
+            this.haloColor = GeoStyle.toRGBAColor(this.haloColor, this.opacity);
         }
+
         let fill = new ol.style.Fill();
         let stroke = new ol.style.Stroke();
         let textStyle = new ol.style.Text({
@@ -141,6 +128,20 @@ export class GeoTextStyle extends GeoStyle {
             text: textStyle
         });
 
+        if (this.font) {
+            textStyle.setFont(this.font);
+        }
+        if (this.fillColor) {
+            fill.setColor(this.fillColor);
+        }
+
+        if (!this.haloRadius || this.haloColor === undefined) {
+            textStyle.setStroke(undefined);
+        }
+        else {
+            stroke.setColor(this.haloColor);
+            stroke.setWidth(this.haloRadius);
+        }
         if (this.aligns.indexOf(this.align) >= 0) {
             textStyle.setTextAlign(this.align);
         }
@@ -153,20 +154,19 @@ export class GeoTextStyle extends GeoStyle {
         if (this.offsetY) {
             textStyle.setOffsetY(this.offsetY);
         }
-        if (this.font) {
-            textStyle.setFont(this.font);
+
+        if (this.letterCases.includes(this.letterCase)) {
+        } else {
+            // invalid input, default
+            this.letterCase = this.letterCases[0];
         }
-        if (this.fillColor) {
-            fill.setColor(this.fillColor);
+
+
+        if (this.offsetX) {
+            textStyle.setOffsetX(this.offsetX);
         }
-        if (this.haloFillColor) {
-            stroke.setColor(this.haloFillColor);
-        }
-        if (this.haloRadius) {
-            stroke.setWidth(this.haloRadius);
-        }
-        if (!this.haloRadius || this.haloFillColor === undefined) {
-            textStyle.setStroke(undefined);
+        if (this.offsetY) {
+            textStyle.setOffsetY(this.offsetY);
         }
         if (this.rotationAngle) {
             textStyle.setRotation(this.rotationAngle);
@@ -174,23 +174,17 @@ export class GeoTextStyle extends GeoStyle {
         if (this.maxCharAngleDelta >= 0) {
             (<any>textStyle).setMaxAngle(this.maxCharAngleDelta);
         }
-        if (this.letterCases.includes(this.letterCase)) {
-        } else {
-            // TODO: invalid inputs.
-            this.letterCase = this.letterCases[0];
-        }
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
         let textStyles = [];
         let featureText = "";
-        let featureProperties = feature.getProperties();
 
         if (this.name) {
             featureText = feature.get(this.name);
         }
 
-        // A workaround for the language, remove the data update
+        // A workaround for the language, remove it after data update
         if ((featureText === undefined || featureText === "") && (this.name && this.name.indexOf("name_") === 0)) {
             featureText = feature.get("name");
         }
@@ -202,18 +196,20 @@ export class GeoTextStyle extends GeoStyle {
             featureText = this.getTextWithDateFormat(featureText);
         }
         if (this.content) {
-            featureText = this.getTextWithFormat(featureText);
+            featureText = this.getTextWithContent(featureText);
         }
 
         if (featureText === undefined || featureText === "") {
             return textStyles;
         }
 
-        featureText = this.getTextTransform(featureText);
+        featureText = this.getTextWithLetterCase(featureText);
+
+        this.style.getText().setText(featureText);
+
         this.style['zCoordinate'] = this.zIndex;
         this.style.getText()["placements"] = this.placement;
 
-        this.style.getText().setText(featureText);
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             let featureZindex = feature["tempTreeZindex"];
             if (featureZindex === undefined) {
@@ -237,27 +233,11 @@ export class GeoTextStyle extends GeoStyle {
             if (flatCoordinates === undefined) { return false; }
         } else {
             let labelInfo = this.getLabelInfo(text, textState);
-            let labelWidth = labelInfo.labelWidth;
-            let labelHeight = labelInfo.labelHeight;
-            let scale = labelInfo.scale;
-            let font = labelInfo.font;
-            let strokeWidth = labelInfo.strokeWidth;
-            let numLines = labelInfo.numLines;
-            let lines = labelInfo.lines;
-            let lineHeight = labelInfo.lineHeight;
-            let renderWidth = labelInfo.renderWidth;
-            let height = labelInfo.height;
-            let widths = labelInfo.widths;
 
-            let Constructor: any;
-            if (this.placementType === "default") {
-                Constructor = this.BATCH_CONSTRUCTORS_DEFAULT[geometryType];
-            } else if (this.placementType === "detect") {
-                Constructor = this.BATCH_CONSTRUCTORS_DETECT[geometryType];
-            }
-            let textLabelingStrategy = new Constructor();
-            let tmpLabelWidth = labelWidth / window.devicePixelRatio;
-            let tmpLabelHeight = labelHeight / window.devicePixelRatio;
+            let canvasWidth = labelInfo.labelWidth;
+            let canvasHeight = labelInfo.labelHeight;
+            let tmpLabelWidth = canvasWidth;
+            let tmpLabelHeight = canvasHeight;
 
             switch (geometryType) {
                 case (<any>ol.geom).GeometryType.POINT:
@@ -296,11 +276,13 @@ export class GeoTextStyle extends GeoStyle {
                     break;
                 default:
             }
-            flatCoordinates = textLabelingStrategy.markLocation(flatCoordinates, tmpLabelWidth, tmpLabelHeight, resolution, geometryType, this, strategyTree, frameState);
+
+            // let textLabelingStrategy = new TextLabelingStrategy();
+            // flatCoordinates = textLabelingStrategy.markLocation(flatCoordinates, tmpLabelWidth, tmpLabelHeight, resolution, geometryType, this, strategyTree, frameState);
 
             if (flatCoordinates === undefined) { return false; }
 
-            var labelImage = this.getImage(textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths);
+            var labelImage = this.getImage(text, textState, labelInfo);
 
             if (labelImage === undefined) {
                 return;
@@ -313,202 +295,252 @@ export class GeoTextStyle extends GeoStyle {
         return true;
     }
 
-    getLabelInfo(text: string, textState: ol.style.Text) {
+    getLabelInfo(text: string, textStyle: ol.style.Text) {
         var key = text + this.uid;
         if (!this.labelInfos.containsKey(key)) {
-            let font = textState.getFont();
-            text = this.wrapText(text, font);
+            // gets drawing font.
+            let font = textStyle.getFont();
 
-            let strokeState = textState.getStroke();
-            let strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() * 2 : 0;
-            let lines = text.split("\n");
-            let numLines = lines.length;
-            let textScale = textState.getScale();
-            textScale = textScale === undefined ? 1 : textScale;
-            let scale = textScale * window.devicePixelRatio;
-            let widths = [];
-            let width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-            let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
-            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-            let tmpMaskHeightMargin = 0;
-            let tmpMaskWidthMargin = 0;
-            switch (tmpMaskMargin.length) {
-                case 1:
-                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[0]) * 2;
-                    break;
-                case 2:
-                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                    break;
-                case 3:
-                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                    break;
-                case 4:
-                    tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                    tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) + parseInt(tmpMaskMargin[3]);
-                    break;
-                default:
-                    break;
+            // gets storke width.
+            let strokeStyle = textStyle.getStroke();
+            let strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
+
+            // gets letterSpacing.
+            let letterSpacing = this.letterSpacing;
+
+            // gets line spacing.
+            let lineSpacing = this.lineSpacing;
+
+            // gets the wrap width, warp the line which has wrap character and the width is bigger than wrap width.
+            let wrapWidth = this.wrapWidth;
+
+            // TODO whether to keep it or not, currently is keep it but with out implement.
+            let wrapBefore = this.wrapBefore;
+
+            // default wrap character.
+            let wrapCharacter = " ";
+
+            // warps text and measure width.
+            let linesInfo = this.getWrapedTextAndWidths(text, font, strokeWidth, letterSpacing, lineSpacing, wrapWidth, wrapCharacter, wrapBefore);
+            // gets height of one line
+            let lineHeight = this.getTextHeight(font, strokeWidth);
+
+            let linesWidths = linesInfo.widths;
+            let textWidth = linesInfo.maxWidth;
+
+
+            let textHeight = lineHeight;
+            if (linesInfo.lines.length >= 2) {
+                textHeight += (linesInfo.lines.length - 1) * (lineHeight + lineSpacing);
             }
 
-            if (this.maskType) {
-                if (this.maskType.toLowerCase() === "circle") {
-                    tmpMaskHeightMargin = tmpMaskHeightMargin > tmpMaskWidthMargin ? tmpMaskHeightMargin : tmpMaskWidthMargin;
-                    tmpMaskWidthMargin = tmpMaskHeightMargin;
-                }
-            }
-            let height = lineHeight * numLines + strokeWidth + tmpMaskHeightMargin;
-            let renderWidth = width + strokeWidth + tmpMaskWidthMargin;
-            let tmpMaskOutlineWidth = (this.maskOutlineWidth ? this.maskOutlineWidth : 0);
-            let labelWidth = Math.ceil((renderWidth + tmpMaskOutlineWidth * 3) * 1.1 * scale);
-            let labelHeight = Math.ceil((height + tmpMaskOutlineWidth * 3) * 1.1 * scale);
+            let labelWidth = Math.ceil((textWidth));
+            let labelHeight = Math.ceil((textHeight);
 
             let labelInfo = {
                 labelWidth: labelWidth,
                 labelHeight: labelHeight,
-                scale: scale,
-                font: font,
-                strokeWidth: strokeWidth,
-                numLines: numLines,
-                lines: lines,
+                linesInfo: linesInfo,
                 lineHeight: lineHeight,
-                renderWidth: renderWidth,
-                height: height,
-                widths: widths
+                strokeWidth: strokeWidth,
+                lineSpacing: lineSpacing
             };
             this.labelInfos.set(key, labelInfo);
         }
 
         return this.labelInfos.get(key);
     }
+    getWrapedTextAndWidths(text, font, strokeWidth, letterSpacing, lineSpacing, wrapWidth, wrapCharacter, wrapBefore): string {
+        let resultLines = [];
+        let resultLineWidths = [];
+        let maxWidth = 0;
 
-    getEstimatedWidth(font, lines, widths, letterSpacing) {
-        let numLines = lines.length;
-        let width = 0;
-        let currentWidth, i;
-        for (i = 0; i < numLines; ++i) {
-            currentWidth = 0;
-            for (let j = 0; j < lines[i].length; j++) {
-                let charWidth = this.charWidths[lines[i][j]];
-                if (charWidth) {
-                    currentWidth += charWidth;
+        if (text !== "") {
+            let lines = text.split('\n');
+            let widths = [];
+            let width = this.measureLinesWidths(lines, font, strokeWidth, letterSpacing, widths);
+
+            if (wrapWidth > 0 && text.includes(wrapCharacter)) {
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    let lineWidth = widths[i];
+                    if (lineWidth > wrapWidth && line.includes(wrapCharacter)) {
+                        let tempLineWidths = [];
+                        let tempLines = this.warpLine(line, wrapWidth, font, strokeWidth, letterSpacing, wrapCharacter, tempLineWidths);
+
+                        for (let j = 0; j < tempLines.length; j++) {
+                            resultLines.push(tempLines[j]);
+                            resultLineWidths.push(tempLineWidths[j]);
+                            if (tempLineWidths[j] > maxWidth) {
+                                maxWidth = tempLineWidths[j];
+                            }
+                        }
+                    }
+                    else {
+                        resultLines.push(line);
+                        resultLineWidths.push(lineWidth);
+                        if (lineWidth > maxWidth) {
+                            maxWidth = lineWidth;
+                        }
+                    }
+                }
+            }
+            else {
+                resultLines = lines;
+                resultLineWidths = widths;
+                maxWidth = width;
+            }
+
+        }
+
+        return {
+            lines: resultLines,
+            widths: resultLineWidths,
+            maxWidth: maxWidth
+        };
+    }
+    measureLinesWidths(lines, font, strokeWidth, letterSpacing, widths) {
+        let tempContext = GeoTextStyle.getMeasureContext(letterSpacing);
+        tempContext.font = font;
+        tempContext.lineWidth = strokeWidth;
+        tempContext.lineJoin = "round";
+
+        let maxWidth = 0;
+        for (var i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            let lineWidth = Math.ceil(tempContext.measureText(line).width - letterSpacing + strokeWidth);
+            widths.push(lineWidth);
+            if (lineWidth > maxWidth) {
+                maxWidth = lineWidth;
+            }
+        }
+        return maxWidth;
+    }
+    warpLine(line, wrapWidth, font, strokeWidth, letterSpacing, wrapCharacter, lineWidths) {
+        let lines = [];
+
+        let words = line.split(wrapCharacter);
+        let tempContext = GeoTextStyle.getMeasureContext(letterSpacing);
+        tempContext.font = font;
+        tempContext.lineWidth = strokeWidth;
+        tempContext.lineJoin = "round";
+        if (words.length === 1) {
+            let testLine = words[0];
+            let testWidth = Math.ceil(tempContext.measureText(testLine).width - letterSpacing + strokeWidth);
+            lines.push(words[0]);
+            lineWidths.push(testWidth);
+        }
+        else {
+            let measureLine = words[0];
+            let measureWidth = Math.ceil(tempContext.measureText(measureLine).width - letterSpacing + strokeWidth);
+
+            let testLine;
+            let testWidth;
+            for (let n = 1; n < words.length; n++) {
+                testLine = measureLine + " " + words[n];
+                testWidth = Math.ceil(tempContext.measureText(testLine).width - letterSpacing + strokeWidth);
+                if (testWidth > wrapWidth) {
+                    lines.push(measureLine);
+                    lineWidths.push(measureWidth);
+
+                    measureLine = words[n];
+                    measureWidth = Math.ceil(tempContext.measureText(measureLine).width - letterSpacing + strokeWidth);
                 }
                 else {
-                    currentWidth += this.charWidths["W"];
+                    measureLine = testLine;
+                    measureWidth = testWidth;
+                }
+                if (n == words.length - 1) {
+                    lines.push(measureLine);
+                    lineWidths.push(measureWidth);
                 }
             }
-            if (letterSpacing) {
-                currentWidth = currentWidth + (lines[i].length - 1) * letterSpacing;
-            }
-            width = Math.max(width, currentWidth);
-            widths.push(currentWidth);
         }
-        return width;
+        return lines;
     }
 
-    getImage(textState: ol.style.Text, labelWidth: number, labelHeight: number, scale: number, font: string, strokeWidth: number, numLines: any, lines: any, lineHeight: number, renderWidth: number, height: number, widths: any) {
+    getTextHeight(font, strokeWidth) {
+        let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
+        return lineHeight + strokeWidth;
+    }
+
+    getImage(text: any, textStyle: ol.style.Text, labelInfo: any) {
         var labelCache = (<any>ol).render.canvas.labelCache;
-        var key = this.uid !== undefined ? this.uid : (<any>ol).getUid(this);
-        key += lines.toString();
+        var key = (<any>ol).getUid(this);
+        key += text;
         if (!labelCache.containsKey(key)) {
-            let fillState = textState.getFill();
-            let strokeState = textState.getStroke();
-            let label;
+            let strokeStyle = textStyle.getStroke();
+            let fillStyle = textStyle.getFill();
 
-            let align = (<any>ol.render).replay.TEXT_ALIGN[textState.getTextAlign() || (<any>ol.render.canvas).defaultTextAlign];
+            let canvasHeight = labelInfo.labelHeight;
+            let canvasWidth = labelInfo.labelWidth;
+            let lineHeight = labelInfo.lineHeight;
+            let letterSpacing = this.letterSpacing;
+            var lineSpacing = this.lineSpacing;
+            let align = this.align;
 
-            let context = (<any>ol).dom.createCanvasContext2D(labelWidth, labelHeight);
-            label = context.canvas;
-            labelCache.set(key, label);
-            label.style.display = "none";
+            let strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
+
+            let canvas = GeoTextStyle.createCanvas(canvasWidth, canvasHeight);
+            labelCache.set(key, canvas);
+
             // For letterSpacing we need app
             let body;
-            if (this.letterSpacing) {
+            if (letterSpacing) {
                 body = document.getElementsByTagName("body")[0];
                 if (body) {
-                    label.style.display = "none";
-                    body.appendChild(label);
+                    canvas.style.display = "none";
+                    body.appendChild(canvas);
                 }
-                label.style.letterSpacing = this.letterSpacing + "px";
-                context = label.getContext("2d");
+                canvas.style.letterSpacing = letterSpacing + "px";
+            }
+            let context = canvas.getContext("2d");
+
+            // set the property of canvas.
+            context.font = textStyle.getFont();
+            context.lineWidth = strokeWidth;
+            context.lineJoin = "round";
+
+
+
+
+            var x = 0;
+            var y = -lineHeight - lineSpacing;
+            context.fillStyle = "#F0F";
+            context.fillRect(x, y, canvasWidth, canvasHeight);
+
+            var letterSpacingOffset = letterSpacing;
+            var alignOffsetX = 0;
+            var canvasTextAlign = "center";
+            if (align == "left") {
+                alignOffsetX = Math.ceil(strokeWidth / 2);
+                canvasTextAlign = "left";
+            }
+            else if (align == "right") {
+                alignOffsetX = Math.floor(canvasWidth - strokeWidth / 2 + letterSpacing);
+                canvasTextAlign = "right";
+            }
+            else {
+                alignOffsetX = Math.floor((canvasWidth) / 2 + letterSpacingOffset / 2);
             }
 
-            if (scale !== 1) { context.scale(scale, scale); }
-            context.font = font;
-            if (strokeState) {
-                context.strokeStyle = strokeState.getColor();
-                context.lineWidth = strokeWidth * ((<any>ol.has).SAFARI ? scale : 1);
-                context.lineCap = strokeState.getLineCap() || "round";
-                context.lineJoin = strokeState.getLineJoin() || "round";
-                context.miterLimit = strokeState.getMiterLimit();
-                let lineDash = strokeState.getLineDash();
-                lineDash = lineDash ? lineDash.slice() : (<any>ol.render.canvas).defaultLineDash;
-                if ((<any>ol.has).CANVAS_LINE_DASH && lineDash.length) {
-                    context.setLineDash(strokeState.getLineDash());
-                    context.lineDashOffset = (<any>strokeState).getLineDashOffset();
-                }
-            }
+            var linesInfo = labelInfo.linesInfo;
+            var lines = linesInfo.lines;
+            for (var i = 0; i < lines.length; i++) {
+                y += lineHeight + lineSpacing;
+                let line = lines[i];
 
-            this.drawMask(context, 0, 0, renderWidth, height);
 
-            if (this.maskType) {
-                if (this.maskType.toLowerCase() === "circle") {
-                    if (scale !== 1) { context.scale(scale, scale); }
-                    context.font = font;
-                    if (strokeState) {
-                        context.strokeStyle = strokeState.getColor();
-                        context.lineWidth = strokeWidth * ((<any>ol.has).SAFARI ? scale : 1);
-                        context.lineCap = strokeState.getLineCap() || "round";
-                        context.lineJoin = strokeState.getLineJoin() || "round";
-                        context.miterLimit = strokeState.getMiterLimit();
-                        let lineDash = strokeState.getLineDash();
-                        lineDash = lineDash ? lineDash.slice() : (<any>ol.render.canvas).defaultLineDash;
-                        if ((<any>ol.has).CANVAS_LINE_DASH && lineDash.length) {
-                            context.setLineDash(strokeState.getLineDash());
-                            context.lineDashOffset = (<any>strokeState).getLineDashOffset();
-                        }
-                    }
-                }
-            }
 
-            context.textBaseline = "middle";
-            context.textAlign = "center";
-            let leftRight = 0.5 - align;
-            let x = align * label.width / scale + leftRight * strokeWidth;
-            let y = align * label.height / scale;
-            let i;
-            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-            let tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
-            if (strokeState) {
-                if (strokeState.getColor() !== null) {
-                    context.strokeStyle = strokeState.getColor();
-                    context.lineWidth = this.haloRadius ? this.haloRadius : 0;
-                    for (i = 0; i < numLines; ++i) {
-                        if (this.drawnMask) {
-                            // context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
-                            context.strokeText(lines[i], x, y);
-                        }
-                        else {
-                            context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
-                        }
-                    }
-                }
-            }
-            if (fillState) {
-                if (fillState.getColor() !== null) {
-                    context.fillStyle = fillState.getColor();
-                    for (i = 0; i < numLines; ++i) {
-                        if (this.drawnMask) {
-                            // context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
-                            context.fillText(lines[i], x, y);
-                        }
-                        else {
-                            context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
-                        }
-                    }
-                }
+                context.textAlign = canvasTextAlign;
+                context.textBaseline = 'middle';
+                var anchorX = x + alignOffsetX;
+                var anchorY = y + lineHeight / 2;
+
+                context.strokeStyle = strokeStyle.getColor();
+                context.strokeText(line, anchorX, anchorY);
+                context.fillStyle = fillStyle.getColor();
+                context.fillText(line, anchorX, anchorY);
             }
             if (this.letterSpacing && body) {
                 body.removeChild(label);
@@ -789,7 +821,7 @@ export class GeoTextStyle extends GeoStyle {
             return numeric.format(num);
         }
         else {
-            return "";
+            return featureText;
         }
     }
     public getTextWithDateFormat(featureText: string): string {
@@ -814,13 +846,14 @@ export class GeoTextStyle extends GeoStyle {
             return fmt;
         }
         else {
-            return "";
+            return featureText;
         }
     }
-    public getTextWithFormat(featureText: string): string {
-        return (<any>String).format(this.content, featureText);
+    public getTextWithContent(featureText: string): string {
+        // TODO format.
+        return featureText;
     }
-    public getTextTransform(featureText: string) {
+    public getTextWithLetterCase(featureText: string) {
         if (featureText !== undefined) {
             switch (this.letterCase) {
                 case "uppercase":
@@ -835,6 +868,43 @@ export class GeoTextStyle extends GeoStyle {
         }
         return featureText;
     }
+
+    static getMeasureContext(letterSpacing) {
+        let tempCanvasForMeasure = GeoTextStyle.getMeasureCanvas();
+        let letterSpacingStyle = letterSpacing + "px";
+        if (tempCanvasForMeasure.style.letterSpacing != letterSpacingStyle) {
+            tempCanvasForMeasure.style.letterSpacing = letterSpacingStyle;
+
+            GeoTextStyle.measureContext = tempCanvasForMeasure.getContext('2d');
+        }
+
+        return GeoTextStyle.measureContext;
+    }
+
+    static getMeasureCanvas() {
+        if (!GeoTextStyle.measureCanvas) {
+            GeoTextStyle.measureCanvas = GeoTextStyle.createCanvas(1, 1);
+            GeoTextStyle.measureCanvas.style.display = "none";
+            let body = document.getElementsByTagName("body")[0];
+            if (body) {
+                body.appendChild(GeoTextStyle.measureCanvas);
+            }
+        }
+        return GeoTextStyle.measureCanvas;
+    }
+
+    static createCanvas(opt_width, opt_height) {
+        const canvas = (document.createElement('canvas'));
+        if (opt_width) {
+            canvas.width = opt_width;
+        }
+        if (opt_height) {
+            canvas.height = opt_height;
+        }
+
+        return canvas;
+    }
+
 
     BATCH_CONSTRUCTORS_DEFAULT = {
         Point: TextLabelingStrategy,
@@ -856,12 +926,3 @@ export class GeoTextStyle extends GeoStyle {
         MultiPolygon: DetectTextLabelingStrategy
     };
 }
-
-(<any>String).format = function () {
-    let s = arguments[0];
-    for (let i = 0; i < arguments.length - 1; i++) {
-        let reg = new RegExp("\\{" + i + "\\}", "gm");
-        s = s.replace(reg, arguments[i + 1]);
-    }
-    return s;
-};
