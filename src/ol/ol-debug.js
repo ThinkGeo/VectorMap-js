@@ -99767,7 +99767,7 @@ function olInit() {
                     return numeric.format(num);
                 }
                 else {
-                    return "";
+                    return featureText;
                 }
             };
             GeoShieldStyle.prototype.getTextWithDateFormat = function (featureText) {
@@ -99792,7 +99792,7 @@ function olInit() {
                     return fmt;
                 }
                 else {
-                    return "";
+                    return featureText;
                 }
             };
             GeoShieldStyle.prototype.getTextWithFormat = function (featureText) {
@@ -100555,7 +100555,7 @@ function olInit() {
                     return numeric.format(num);
                 }
                 else {
-                    return "";
+                    return featureText;
                 }
             };
             GeoTextStyle.prototype.getTextWithDateFormat = function (featureText) {
@@ -100580,7 +100580,7 @@ function olInit() {
                     return fmt;
                 }
                 else {
-                    return "";
+                    return featureText;
                 }
             };
             GeoTextStyle.prototype.getTextWithFormat = function (featureText) {
