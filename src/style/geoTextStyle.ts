@@ -181,7 +181,6 @@ export class GeoTextStyle extends GeoStyle {
         if (this.contentFormat) {
             featureText = this.getTextWithContent(this.contentFormat, feature, this.dateFormat, this.numericFormat);
         }
-
         if (featureText === undefined || featureText === "") {
             return textStyles;
         }
@@ -486,6 +485,8 @@ export class GeoTextStyle extends GeoStyle {
 
             var x = 0;
             var y = -lineHeight - lineSpacing;
+            context.fillStyle = "#F0F";
+            context.fillRect(x, y, canvasWidth, canvasHeight);
 
             var letterSpacingOffset = letterSpacing;
             var alignOffsetX = 0;
@@ -523,7 +524,7 @@ export class GeoTextStyle extends GeoStyle {
                 context.fillText(line, anchorX, anchorY);
             }
             if (this.letterSpacing && body) {
-                body.removeChild(label);
+                body.removeChild(canvas);
             }
         }
 
