@@ -710,9 +710,13 @@ export class GeoTextStyle extends GeoStyle {
         // context.fillRect(0, 0 + height / 2, width, 2);
         // context.fillRect(0 + (width / 2), 0, 1, height);
     }
+    drawRoundedEnds(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
 
-    drawRoundedEnds(context: any, x: number, y: number, width: number, height: number, fill: ol.style.Fill, stroke: ol.style.Stroke) {
-        let radius = (width < height ? width : height) * 0.2;
+        var radius = height / 2;
 
         var strokeWidth = 0;
         var halfStrokeWidth = 0;
@@ -724,25 +728,39 @@ export class GeoTextStyle extends GeoStyle {
             doubleStrokeWidth = strokeWidth * 2;
         }
 
+        let upperLeft = [0, 0];
+        let upperRight = [width, 0];
+        let bottomLeft = [0, height];
+        let bottomRight = [width, height];
 
-        context.beginPath();
-        context.moveTo(radius + strokeWidth, strokeWidth);
-        context.lineTo(width - radius - strokeWidth, y);
-
-        context.quadraticCurveTo(width - strokeWidth, height * 0.5, x + width - radius + strokeWidth * 2, y + height);
-        context.lineTo(x + radius, y + height);
-        context.quadraticCurveTo(x, y + height * 0.5, x + radius, y);
-        context.closePath();
 
         if (fill) {
+            var innerRadius = radius - strokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + strokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + strokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - strokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - strokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
             context.fillStyle = fill.getColor();
             context.fill();
         }
-        // if (stroke) {
-        //     context.lineWidth = stroke.getWidth();
-        //     context.strokeStyle = stroke.getColor();
-        //     context.stroke();
-        // }
+        if (stroke) {
+            var innerRadius = radius - halfStrokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + halfStrokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + halfStrokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - halfStrokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - halfStrokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
 
         context.lineWidth = 1;
         context.strokeStyle = "#000";
