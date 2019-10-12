@@ -298,21 +298,25 @@
     {
       "id": "country_name",
       "filter": "layerName='admin_name'",
-      "text-wrap-width": 30,
-      "text-halo-color": "@haloTransp50",
+      "text-wrap-width": 0,
+      "text-halo-color": "#ff0",
+      "text-halo-radius": 10,
       "text-date-format":"aaa",
-      "text-halo-radius": 2,
       "text-fill-color": "@adminLabelLevel1",
       "text-spacing": 1,
+      "text-mask-type":"circle",
+      "text-mask-margin":"0,0,0,0",
+      "text-mask-color":"#000",
+      "text-align":"right",
+      "text-mask-outline-color":"#fff",
+      "text-mask-outline-width":20,
       "style": [
         {
           "filter": "class='country'",
           "text-content": "@name",
-          "text-wrap-width": 50,
           "style": [
             {
               "filter": "labelrank=0",
-              "text-wrap-width": 80,
               "style": [
                 {
                   "filter": "zoom=1",

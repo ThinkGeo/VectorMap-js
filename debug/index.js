@@ -1,5 +1,6 @@
 var view = new ol.View({
-    center: [-10784739.476061746, 4989285.901397186],
+    // center: [-10784739.476061746, 4989285.901397186],
+    center: [2583066.0947164265, -210895.4425131777],
     zoom: 5,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
@@ -22,7 +23,7 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
 
 
 var map = new ol.Map({
-    layers: [ worldStreetsLayer ],
+    layers: [worldStreetsLayer],
     target: 'map',
     view: view,
     renderer: 'webgl',

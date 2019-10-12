@@ -76,8 +76,6 @@ export class GeoTextStyle extends GeoStyle {
             this.maskOutlineColor = styleJson["text-mask-outline-color"];
             this.maskOutlineWidth = styleJson["text-mask-outline-width"] || 0;
 
-
-
             // renamed
             // // add into textStyle
             this.offsetX = styleJson["text-offset-x"];
@@ -158,7 +156,6 @@ export class GeoTextStyle extends GeoStyle {
             // invalid input, default
             this.letterCase = this.letterCases[0];
         }
-
 
         if (this.offsetX) {
             textStyle.setOffsetX(this.offsetX);
@@ -372,7 +369,6 @@ export class GeoTextStyle extends GeoStyle {
                 resultLineWidths = widths;
                 maxWidth = width;
             }
-
         }
 
         return {
@@ -454,27 +450,27 @@ export class GeoTextStyle extends GeoStyle {
             let strokeStyle = textStyle.getStroke();
             let fillStyle = textStyle.getFill();
 
-            let canvasHeight = labelInfo.labelHeight;
-            let canvasWidth = labelInfo.labelWidth;
+            let labelHeight = labelInfo.labelHeight;
+            let labelWidth = labelInfo.labelWidth;
             let lineHeight = labelInfo.lineHeight;
             let letterSpacing = this.letterSpacing;
             var lineSpacing = this.lineSpacing;
             let align = this.align;
             let strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
 
+            let canvasWidth = labelWidth;
+            let canvasHeight = labelHeight;
+            let textAnchorX = 0;
+            let textAnchorY = 0;
             let maskMarginList = [0, 0, 0, 0];
-            let maskStrokeWidth = 0;
-            if (this.maskType) {
-                maskMarginList = this.getMargin(this.maskMargin);
-                maskStrokeWidth = this.maskOutlineWidth;
-                canvasHeight += maskMarginList[0];
-                canvasHeight += maskMarginList[2];
-                canvasWidth += maskMarginList[1];
-                canvasWidth += maskMarginList[3];
+            maskMarginList = this.getMargin(this.maskMargin);
+            let maskStrokeWidth = this.maskOutlineWidth || 0;
 
-                canvasWidth += maskStrokeWidth * 2;
-                canvasHeight += maskStrokeWidth * 2;
-            }
+            var canvasSizeInfoWithMask = this.getCanvasSizeByMaskType(labelWidth, labelHeight, this.maskType, maskMarginList, maskStrokeWidth);
+            canvasWidth = canvasSizeInfoWithMask[0];
+            canvasHeight = canvasSizeInfoWithMask[1];
+            textAnchorX = canvasSizeInfoWithMask[2];
+            textAnchorY = canvasSizeInfoWithMask[3];
 
             let canvas = GeoTextStyle.createCanvas(canvasWidth, canvasHeight);
             labelCache.set(key, canvas);
@@ -493,56 +489,53 @@ export class GeoTextStyle extends GeoStyle {
 
             this.drawMask(context);
 
+            // set the property of canvas.
+            context.font = textStyle.getFont();
+            context.lineWidth = strokeWidth;
+            context.lineJoin = "round";
 
+            var x = textAnchorX;
+            var y = -lineHeight - lineSpacing + textAnchorY;
 
+            var letterSpacingOffset = letterSpacing;
+            var alignOffsetX = 0;
+            var canvasTextAlign = "center";
+            if (align == "left") {
+                alignOffsetX = Math.ceil(strokeWidth / 2);
+                canvasTextAlign = "left";
+            }
+            else if (align == "right") {
+                alignOffsetX = Math.floor(labelWidth - strokeWidth / 2 + letterSpacing);
+                canvasTextAlign = "right";
+            }
+            else {
+                alignOffsetX = Math.floor((labelWidth) / 2 + letterSpacingOffset / 2);
+            }
 
-            //     // set the property of canvas.
-            //     context.font = textStyle.getFont();
-            //     context.lineWidth = strokeWidth;
-            //     context.lineJoin = "round";
+            var linesInfo = labelInfo.linesInfo;
+            var lines = linesInfo.lines;
+            for (var i = 0; i < lines.length; i++) {
+                y += lineHeight + lineSpacing;
+                let line = lines[i];
 
-            //     var x = 0;
-            //     var y = -lineHeight - lineSpacing;
-            //     context.fillStyle = "#F0F";
-            //     context.fillRect(x, y, canvasWidth, canvasHeight);
+                context.fillStyle = "#FF00FFdd";
+                context.fillRect(x, y, labelWidth, lineHeight);
 
-            //     var letterSpacingOffset = letterSpacing;
-            //     var alignOffsetX = 0;
-            //     var canvasTextAlign = "center";
-            //     if (align == "left") {
-            //         alignOffsetX = Math.ceil(strokeWidth / 2);
-            //         canvasTextAlign = "left";
-            //     }
-            //     else if (align == "right") {
-            //         alignOffsetX = Math.floor(canvasWidth - strokeWidth / 2 + letterSpacing);
-            //         canvasTextAlign = "right";
-            //     }
-            //     else {
-            //         alignOffsetX = Math.floor((canvasWidth) / 2 + letterSpacingOffset / 2);
-            //     }
+                context.textAlign = canvasTextAlign;
+                context.textBaseline = 'middle';
+                var anchorX = x + alignOffsetX;
+                var anchorY = y + lineHeight / 2;
+                if (strokeStyle) {
+                    context.strokeStyle = strokeStyle.getColor();
+                    context.strokeText(line, anchorX, anchorY);
+                }
 
-            //     var linesInfo = labelInfo.linesInfo;
-            //     var lines = linesInfo.lines;
-            //     for (var i = 0; i < lines.length; i++) {
-            //         y += lineHeight + lineSpacing;
-            //         let line = lines[i];
-
-            //         context.textAlign = canvasTextAlign;
-            //         context.textBaseline = 'middle';
-            //         var anchorX = x + alignOffsetX;
-            //         var anchorY = y + lineHeight / 2;
-            //         if (strokeStyle) {
-            //             context.strokeStyle = strokeStyle.getColor();
-            //             context.strokeText(line, anchorX, anchorY);
-            //         }
-
-            //         context.fillStyle = fillStyle.getColor();
-            //         context.fillText(line, anchorX, anchorY);
-            //     }
-            //     if (this.letterSpacing && body) {
-            //         body.removeChild(canvas);
-            //     }
-            // }
+                context.fillStyle = fillStyle.getColor();
+                context.fillText(line, anchorX, anchorY);
+            }
+            if (this.letterSpacing && body) {
+                body.removeChild(canvas);
+            }
 
             return labelCache.get(key);
         }
@@ -595,210 +588,6 @@ export class GeoTextStyle extends GeoStyle {
                 break;
         }
     }
-
-    drawRectangle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
-        var x = 0;
-        var y = 0;
-        var width = context.canvas.width;
-        var height = context.canvas.height;
-
-        var strokeWidth = 0;
-        var halfStrokeWidth = 0;
-        var doubleStrokeWidth = 0;
-
-        if (stroke) {
-            strokeWidth = stroke.getWidth();
-            halfStrokeWidth = strokeWidth / 2;
-            doubleStrokeWidth = strokeWidth * 2;
-        }
-
-        if (fill) {
-            context.fillStyle = fill.getColor();
-            context.fillRect(x + strokeWidth, y + strokeWidth, width - doubleStrokeWidth, height - doubleStrokeWidth);
-        }
-
-        if (stroke) {
-            context.lineWidth = strokeWidth;
-            context.strokeStyle = stroke.getColor();
-            context.strokeRect(x + halfStrokeWidth, y + halfStrokeWidth, width - strokeWidth, height - strokeWidth);
-        }
-
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(x, y, width, height);
-
-        context.fillStyle = "#00ff00";
-        context.fillRect(x, y + height / 2, width, 2);
-        context.fillRect(x + (width / 2), y, 1, height);
-    }
-
-    drawRoundedCorners(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
-        var x = 0;
-        var y = 0;
-        var width = context.canvas.width;
-        var height = context.canvas.height;
-
-        let radius = (width < height ? width : height) * 0.25;
-        radius = radius >= 5 ? 5 : radius;
-
-        var strokeWidth = 0;
-        var halfStrokeWidth = 0;
-        var doubleStrokeWidth = 0;
-
-        if (stroke) {
-            strokeWidth = stroke.getWidth();
-            halfStrokeWidth = strokeWidth / 2;
-            doubleStrokeWidth = strokeWidth * 2;
-        }
-
-        let upperLeft = [strokeWidth, strokeWidth];
-        let upperRight = [width - strokeWidth, strokeWidth];
-        let bottomLeft = [strokeWidth, height - strokeWidth];
-        let bottomRight = [width - strokeWidth, height - strokeWidth];
-
-        context.beginPath();
-        context.moveTo(upperLeft[0] + radius, upperLeft[1]);
-        context.lineTo(upperRight[0] - radius, upperRight[1]);
-        context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
-        context.lineTo(upperRight[0], upperRight[1] + radius);
-        context.lineTo(bottomRight[0], bottomRight[1] - radius);
-        context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
-        context.lineTo(bottomRight[0] - radius, bottomRight[1]);
-        context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
-        context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
-        context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
-        context.lineTo(upperLeft[0], upperLeft[1] + radius);
-        context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
-        context.closePath();
-
-        if (fill) {
-            context.fillStyle = fill.getColor();
-            context.fill();
-        }
-
-        if (stroke) {
-            radius += halfStrokeWidth;
-            upperLeft = [halfStrokeWidth, halfStrokeWidth];
-            upperRight = [width - halfStrokeWidth, halfStrokeWidth];
-            bottomLeft = [halfStrokeWidth, height - halfStrokeWidth];
-            bottomRight = [width - halfStrokeWidth, height - halfStrokeWidth];
-
-            context.beginPath();
-            context.moveTo(upperLeft[0] + radius, upperLeft[1]);
-            context.lineTo(upperRight[0] - radius, upperRight[1]);
-            context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
-            context.lineTo(upperRight[0], upperRight[1] + radius);
-            context.lineTo(bottomRight[0], bottomRight[1] - radius);
-            context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
-            context.lineTo(bottomRight[0] - radius, bottomRight[1]);
-            context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
-            context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
-            context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
-            context.lineTo(upperLeft[0], upperLeft[1] + radius);
-            context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
-            context.closePath();
-            context.lineWidth = stroke.getWidth();
-            context.strokeStyle = stroke.getColor();
-            context.stroke();
-        }
-
-        // context.lineWidth = 1;
-        // context.strokeStyle = "#000";
-        // context.strokeRect(0, 0, width, height);
-
-        // context.fillStyle = "#00ff00";
-        // context.fillRect(0, 0 + height / 2, width, 2);
-        // context.fillRect(0 + (width / 2), 0, 1, height);
-    }
-    drawRoundedEnds(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
-        var x = 0;
-        var y = 0;
-        var width = context.canvas.width;
-        var height = context.canvas.height;
-
-        var radius = height / 2;
-
-        var strokeWidth = 0;
-        var halfStrokeWidth = 0;
-        var doubleStrokeWidth = 0;
-
-        if (stroke) {
-            strokeWidth = stroke.getWidth();
-            halfStrokeWidth = strokeWidth / 2;
-            doubleStrokeWidth = strokeWidth * 2;
-        }
-
-        let upperLeft = [0, 0];
-        let upperRight = [width, 0];
-        let bottomLeft = [0, height];
-        let bottomRight = [width, height];
-
-
-        if (fill) {
-            var innerRadius = radius - strokeWidth;
-            context.beginPath();
-            context.moveTo(upperLeft[0] + radius, upperLeft[1] + strokeWidth);
-            context.lineTo(upperRight[0] - radius, upperRight[1] + strokeWidth);
-            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
-            context.lineTo(bottomRight[0] - radius, bottomRight[1] - strokeWidth);
-            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - strokeWidth);
-            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
-            context.closePath();
-            context.fillStyle = fill.getColor();
-            context.fill();
-        }
-        if (stroke) {
-            var innerRadius = radius - halfStrokeWidth;
-            context.beginPath();
-            context.moveTo(upperLeft[0] + radius, upperLeft[1] + halfStrokeWidth);
-            context.lineTo(upperRight[0] - radius, upperRight[1] + halfStrokeWidth);
-            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
-            context.lineTo(bottomRight[0] - radius, bottomRight[1] - halfStrokeWidth);
-            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - halfStrokeWidth);
-            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
-            context.closePath();
-            context.lineWidth = stroke.getWidth();
-            context.strokeStyle = stroke.getColor();
-            context.stroke();
-        }
-
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(0, 0, width, height);
-
-        context.fillStyle = "#00ff00";
-        context.fillRect(0, 0 + height / 2, width, 2);
-        context.fillRect(0 + (width / 2), 0, 1, height);
-    }
-
-    drawCircle(context: any, x: number, y: number, width: number, height: number, fill: ol.style.Fill, stroke: ol.style.Stroke) {
-        context.canvas.width = context.canvas.width > context.canvas.height ? context.canvas.width : context.canvas.height;
-        context.canvas.height = context.canvas.width;
-        let radius = 0;
-        if (stroke) {
-            radius -= stroke.getWidth();
-        }
-        radius += context.canvas.width * 0.5;
-
-        context.beginPath();
-        context.arc(x + context.canvas.width * 0.5, y + context.canvas.width * 0.5, radius, 0, 2 * Math.PI, false);
-        context.closePath();
-
-        if (fill) {
-            context.fillStyle = fill.getColor();
-            context.fill();
-        }
-
-        if (stroke) {
-            context.lineWidth = stroke.getWidth() * window.devicePixelRatio;
-            context.strokeStyle = stroke.getColor();
-            context.stroke();
-        }
-    }
-
-
-
-
 
     ///////////////////////
     ////private method
@@ -967,6 +756,288 @@ export class GeoTextStyle extends GeoStyle {
 
         return result;
     }
+
+    drawRectangle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fillRect(x + strokeWidth, y + strokeWidth, width - doubleStrokeWidth, height - doubleStrokeWidth);
+        }
+
+        if (stroke) {
+            context.lineWidth = strokeWidth;
+            context.strokeStyle = stroke.getColor();
+            context.strokeRect(x + halfStrokeWidth, y + halfStrokeWidth, width - strokeWidth, height - strokeWidth);
+        }
+
+        context.lineWidth = 1;
+        context.strokeStyle = "#000";
+        context.strokeRect(x, y, width, height);
+
+        context.fillStyle = "#00ff00";
+        context.fillRect(x, y + height / 2, width, 2);
+        context.fillRect(x + (width / 2), y, 1, height);
+    }
+
+    drawRoundedCorners(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        let radius = (width < height ? width : height) * 0.25;
+        radius = radius >= 5 ? 5 : radius;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        let upperLeft = [strokeWidth, strokeWidth];
+        let upperRight = [width - strokeWidth, strokeWidth];
+        let bottomLeft = [strokeWidth, height - strokeWidth];
+        let bottomRight = [width - strokeWidth, height - strokeWidth];
+
+        context.beginPath();
+        context.moveTo(upperLeft[0] + radius, upperLeft[1]);
+        context.lineTo(upperRight[0] - radius, upperRight[1]);
+        context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
+        context.lineTo(upperRight[0], upperRight[1] + radius);
+        context.lineTo(bottomRight[0], bottomRight[1] - radius);
+        context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
+        context.lineTo(bottomRight[0] - radius, bottomRight[1]);
+        context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
+        context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
+        context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
+        context.lineTo(upperLeft[0], upperLeft[1] + radius);
+        context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
+        context.closePath();
+
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+
+        if (stroke) {
+            radius += halfStrokeWidth;
+            upperLeft = [halfStrokeWidth, halfStrokeWidth];
+            upperRight = [width - halfStrokeWidth, halfStrokeWidth];
+            bottomLeft = [halfStrokeWidth, height - halfStrokeWidth];
+            bottomRight = [width - halfStrokeWidth, height - halfStrokeWidth];
+
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1]);
+            context.lineTo(upperRight[0] - radius, upperRight[1]);
+            context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
+            context.lineTo(upperRight[0], upperRight[1] + radius);
+            context.lineTo(bottomRight[0], bottomRight[1] - radius);
+            context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1]);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
+            context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
+            context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
+            context.lineTo(upperLeft[0], upperLeft[1] + radius);
+            context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+
+        context.lineWidth = 1;
+        context.strokeStyle = "#000";
+        context.strokeRect(0, 0, width, height);
+
+        context.fillStyle = "#00ff00";
+        context.fillRect(0, 0 + height / 2, width, 2);
+        context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+    drawRoundedEnds(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        var radius = height / 2;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        let upperLeft = [0, 0];
+        let upperRight = [width, 0];
+        let bottomLeft = [0, height];
+        let bottomRight = [width, height];
+
+
+        if (fill) {
+            var innerRadius = radius - strokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + strokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + strokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - strokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - strokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+        if (stroke) {
+            var innerRadius = radius - halfStrokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + halfStrokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + halfStrokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - halfStrokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - halfStrokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+
+        context.lineWidth = 1;
+        context.strokeStyle = "#000";
+        context.strokeRect(0, 0, width, height);
+
+        context.fillStyle = "#00ff00";
+        context.fillRect(0, 0 + height / 2, width, 2);
+        context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+    drawCircle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        if (fill) {
+            let radius = width / 2 - strokeWidth;
+            context.beginPath();
+            context.arc(width / 2, width / 2, radius, 0, 2 * Math.PI);
+            context.closePath();
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+
+        if (stroke) {
+            let radius = width / 2 - halfStrokeWidth;
+            context.beginPath();
+            context.arc(width / 2, width / 2, radius, 0, 2 * Math.PI);
+            context.closePath();
+            context.lineWidth = strokeWidth;
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+        context.lineWidth = 1;
+        context.strokeStyle = "#000";
+        context.strokeRect(0, 0, width, height);
+
+        context.fillStyle = "#00ff00";
+        context.fillRect(0, 0 + height / 2, width, 2);
+        context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+
+
+    getCanvasSizeByMaskType(canvasWidth, canvasHeight, maskType, maskMarginList, maskStrokeWidth) {
+        var textAnchorX = 0;
+        var textAnchorY = 0;
+        if (maskType) {
+            canvasHeight += maskMarginList[0];
+            textAnchorY += maskMarginList[0];
+
+            canvasWidth += maskMarginList[1];
+
+            canvasHeight += maskMarginList[2];
+
+            canvasWidth += maskMarginList[3];
+            textAnchorX += maskMarginList[3];
+
+            switch (this.maskType) {
+                case "default":
+                case "Default":
+                case "rectangle":
+                case "Rectangle":
+                    canvasWidth += maskStrokeWidth * 2;
+                    canvasHeight += maskStrokeWidth * 2;
+                    textAnchorX += maskStrokeWidth;
+                    textAnchorY += maskStrokeWidth;
+                    break;
+                case "roundedCorners":
+                case "RoundedCorners":
+                    let radius = Math.min(canvasWidth, canvasHeight) * 0.25;
+                    radius = radius >= 5 ? 5 : radius;
+
+                    let addedValue = (radius + maskStrokeWidth);
+                    let doubAddedValue = addedValue * 2;
+                    canvasWidth += doubAddedValue;
+                    canvasHeight += doubAddedValue;
+                    textAnchorX += addedValue;
+                    textAnchorY += addedValue;
+                    break;
+                case "roundedEnds":
+                case "RoundedEnds":
+                    canvasHeight += maskStrokeWidth * 2;
+                    let radius = canvasHeight / 2;
+                    canvasWidth += radius * 2;
+                    textAnchorX += radius;
+                    textAnchorY += maskStrokeWidth;
+                    break;
+                case "circle":
+                case "Circle":
+                    var halfCanvasWidth = canvasWidth / 2;
+                    var halfCanvasHeight = canvasHeight / 2;
+                    let radius = Math.sqrt(Math.pow(halfCanvasWidth, 2) + Math.pow(halfCanvasHeight, 2));
+                    radius = Math.ceil(radius);
+                    canvasWidth = radius * 2 + maskStrokeWidth * 2;
+                    canvasHeight = canvasWidth;
+
+                    textAnchorX += radius - halfCanvasWidth + maskStrokeWidth;
+                    textAnchorY += radius - halfCanvasHeight + maskStrokeWidth;
+
+                    break;
+            }
+        }
+
+        return [canvasWidth, canvasHeight, textAnchorX, textAnchorY];
+    }
+
+
 
 
 
