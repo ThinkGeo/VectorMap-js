@@ -8,9 +8,18 @@ export class GeoTextStyle extends GeoStyle {
     static measureCanvas = undefined;
     static measureContext = undefined;
 
-    aligns = ["default", "left", "right", "center"];
-    baselines = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
+    // TODO: TO enum
+    aligns = ["left", "right", "center"];
+    defaultAlign = "center";
+
+    baselines = ["bottom", "top", "middle"];
+    defaultBaseline = "middle";
+
     letterCases = ["default", "uppercase", "lowercase"];
+    defaultLetterCase = "default";
+
+    placements = ["upperleft", "upper", "upperright", "right", "center", "left", "lowerleft", "lowerleft", "lower", "lowerright", "autoPlacement"]
+    defaultPlacement = "upper";
 
     align: string;
     baseline: string;
@@ -80,7 +89,8 @@ export class GeoTextStyle extends GeoStyle {
             // // add into textStyle
             this.offsetX = styleJson["text-offset-x"];
             this.offsetY = styleJson["text-offset-y"];
-            this.baseline = styleJson["text-baseline"] || "top";
+            this.baseline = styleJson["text-baseline"] || this.defaultBaseline;
+            this.placement = styleJson["text-placement"] || this.defaultPlacement;
 
             this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
             this.intervalDistance = styleJson["text-interval-distance"];
@@ -89,30 +99,13 @@ export class GeoTextStyle extends GeoStyle {
             this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
             this.opacity = styleJson["text-opacity"];
             this.basePointStyle = styleJson["text-base-point-style"];
-            this.placement = styleJson["text-placement"] || "B";
 
             // TODO
-            this.lineSpacing = 0;
-
-            let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            for (let i = 0; i < chars.length; i++) {
-                this.charWidths[chars[i]] = (<any>ol.render.canvas).measureTextWidth(this.font, chars[i]);
-            }
-            this.charWidths[" "] = (<any>ol.render.canvas).measureTextWidth(this.font, " ");
-            for (let i = 0; i <= 9; i++) {
-                this.charWidths[i] = (<any>ol.render.canvas).measureTextWidth(this.font, i);
-            }
+            this.lineSpacing = styleJson["text-line-spacing"] || 0;
         }
     }
 
     initializeCore() {
-        if (this.fillColor) {
-            this.fillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
-        }
-        if (this.haloColor) {
-            this.haloColor = GeoStyle.toRGBAColor(this.haloColor, this.opacity);
-        }
-
         let fill = new ol.style.Fill();
         let stroke = new ol.style.Stroke();
         let textStyle = new ol.style.Text({
@@ -120,14 +113,30 @@ export class GeoTextStyle extends GeoStyle {
             stroke: stroke
         });
 
+        let debugImageStyle = new ol.style.RegularShape({
+            fill: new ol.style.Fill({
+                color: "red"
+            }),
+            stroke: new ol.style.Stroke({
+                color: "black",
+                width: 2
+            }),
+            points: 4,
+            radius: 10,
+            radius2: 0,
+            angle: 0
+        });
+
         this.style = new ol.style.Style({
-            text: textStyle
+            text: textStyle,
+            image: debugImageStyle
         });
 
         if (this.font) {
             textStyle.setFont(this.font);
         }
         if (this.fillColor) {
+            this.fillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
             fill.setColor(this.fillColor);
         }
 
@@ -135,27 +144,22 @@ export class GeoTextStyle extends GeoStyle {
             textStyle.setStroke(undefined);
         }
         else {
+            this.haloColor = GeoStyle.toRGBAColor(this.haloColor, this.opacity);
             stroke.setColor(this.haloColor);
             stroke.setWidth(this.haloRadius);
         }
-        if (this.aligns.indexOf(this.align) >= 0) {
-            textStyle.setTextAlign(this.align);
-        }
-        if (this.baselines.indexOf(this.baseline) >= 0) {
-            textStyle.setTextBaseline(this.baseline);
-        }
-        if (this.offsetX) {
-            textStyle.setOffsetX(this.offsetX);
-        }
-        if (this.offsetY) {
-            textStyle.setOffsetY(this.offsetY);
+
+        if (!this.letterCases.includes(this.letterCase)) {
+            this.letterCase = this.defaultLetterCase;
         }
 
-        if (this.letterCases.includes(this.letterCase)) {
-        } else {
-            // invalid input, default
-            this.letterCase = this.letterCases[0];
+        if (!this.aligns.includes(this.align)) {
+            this.align = this.defaultAlign;
         }
+        textStyle.setTextAlign(this.align);
+
+        this.maskMarginList = this.getMargin(this.maskMargin);
+        this.maskStrokeWidth = this.maskOutlineWidth || 0;
 
         if (this.offsetX) {
             textStyle.setOffsetX(this.offsetX);
@@ -163,6 +167,17 @@ export class GeoTextStyle extends GeoStyle {
         if (this.offsetY) {
             textStyle.setOffsetY(this.offsetY);
         }
+
+        if (!this.baselines.includes(this.baseline)) {
+            this.baseline = this.defaultBaseline;
+        }
+        textStyle.setTextBaseline(this.baseline);
+
+        if (!this.placement.includes(this.placement)) {
+            this.placement = this.defaultPlacement;
+        }
+        this.style.getText()["placements"] = this.placement;
+
         if (this.rotationAngle) {
             textStyle.setRotation(this.rotationAngle);
         }
@@ -188,7 +203,6 @@ export class GeoTextStyle extends GeoStyle {
 
         this.style['zCoordinate'] = this.zIndex;
         this.style.getText()["placements"] = this.placement;
-
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             let featureZindex = feature["tempTreeZindex"];
             if (featureZindex === undefined) {
@@ -306,7 +320,6 @@ export class GeoTextStyle extends GeoStyle {
 
             let linesWidths = linesInfo.widths;
             let textWidth = linesInfo.maxWidth;
-
 
             let textHeight = lineHeight;
             if (linesInfo.lines.length >= 2) {
@@ -436,7 +449,6 @@ export class GeoTextStyle extends GeoStyle {
         }
         return lines;
     }
-
     getTextHeight(font, strokeWidth) {
         let lineHeight = (<any>ol.render.canvas).measureTextHeight(font);
         return lineHeight + strokeWidth;
@@ -462,11 +474,8 @@ export class GeoTextStyle extends GeoStyle {
             let canvasHeight = labelHeight;
             let textAnchorX = 0;
             let textAnchorY = 0;
-            let maskMarginList = [0, 0, 0, 0];
-            maskMarginList = this.getMargin(this.maskMargin);
-            let maskStrokeWidth = this.maskOutlineWidth || 0;
 
-            var canvasSizeInfoWithMask = this.getCanvasSizeByMaskType(labelWidth, labelHeight, this.maskType, maskMarginList, maskStrokeWidth);
+            var canvasSizeInfoWithMask = this.getCanvasSizeByMaskType(labelWidth, labelHeight, this.maskType, this.maskMarginList, this.maskStrokeWidth);
             canvasWidth = canvasSizeInfoWithMask[0];
             canvasHeight = canvasSizeInfoWithMask[1];
             textAnchorX = canvasSizeInfoWithMask[2];
@@ -475,7 +484,7 @@ export class GeoTextStyle extends GeoStyle {
             let canvas = GeoTextStyle.createCanvas(canvasWidth, canvasHeight);
             labelCache.set(key, canvas);
 
-            // For letterSpacing we need app
+            // For letterSpacing we need appendChild
             let body;
             if (letterSpacing) {
                 body = document.getElementsByTagName("body")[0];
@@ -518,8 +527,8 @@ export class GeoTextStyle extends GeoStyle {
                 y += lineHeight + lineSpacing;
                 let line = lines[i];
 
-                context.fillStyle = "#FF00FFdd";
-                context.fillRect(x, y, labelWidth, lineHeight);
+                // context.fillStyle = "#FF00FF99";
+                // context.fillRect(x, y, labelWidth, lineHeight);
 
                 context.textAlign = canvasTextAlign;
                 context.textBaseline = 'middle';
@@ -539,7 +548,6 @@ export class GeoTextStyle extends GeoStyle {
 
             return labelCache.get(key);
         }
-
     }
 
     drawMask(context: any) {
@@ -687,6 +695,7 @@ export class GeoTextStyle extends GeoStyle {
                 str = str.replace(new RegExp("\\{" + key + "\\}", "gi") ，value);
             }
         }
+        // // just keep "{columnName}" if columName is missing in feature properties.
         // else {
         //     str = feature.get(contentFormat);
         //     if (str) {
@@ -721,12 +730,10 @@ export class GeoTextStyle extends GeoStyle {
         return featureText;
     }
 
-
-
     getMargin(marginString) {
         let result = [0, 0, 0, 0];
         if (marginString) {
-            let tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
+            let tmpMaskMargin = marginString.split(',');
             switch (tmpMaskMargin.length) {
                 case 1:
                     var value = parseInt(tmpMaskMargin[0]);
@@ -784,13 +791,13 @@ export class GeoTextStyle extends GeoStyle {
             context.strokeRect(x + halfStrokeWidth, y + halfStrokeWidth, width - strokeWidth, height - strokeWidth);
         }
 
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(x, y, width, height);
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(x, y, width, height);
 
-        context.fillStyle = "#00ff00";
-        context.fillRect(x, y + height / 2, width, 2);
-        context.fillRect(x + (width / 2), y, 1, height);
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(x, y + height / 2, width, 2);
+        // context.fillRect(x + (width / 2), y, 1, height);
     }
 
     drawRoundedCorners(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
@@ -817,22 +824,21 @@ export class GeoTextStyle extends GeoStyle {
         let bottomLeft = [strokeWidth, height - strokeWidth];
         let bottomRight = [width - strokeWidth, height - strokeWidth];
 
-        context.beginPath();
-        context.moveTo(upperLeft[0] + radius, upperLeft[1]);
-        context.lineTo(upperRight[0] - radius, upperRight[1]);
-        context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
-        context.lineTo(upperRight[0], upperRight[1] + radius);
-        context.lineTo(bottomRight[0], bottomRight[1] - radius);
-        context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
-        context.lineTo(bottomRight[0] - radius, bottomRight[1]);
-        context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
-        context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
-        context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
-        context.lineTo(upperLeft[0], upperLeft[1] + radius);
-        context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
-        context.closePath();
-
         if (fill) {
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1]);
+            context.lineTo(upperRight[0] - radius, upperRight[1]);
+            context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
+            context.lineTo(upperRight[0], upperRight[1] + radius);
+            context.lineTo(bottomRight[0], bottomRight[1] - radius);
+            context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1]);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
+            context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
+            context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
+            context.lineTo(upperLeft[0], upperLeft[1] + radius);
+            context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
             context.fillStyle = fill.getColor();
             context.fill();
         }
@@ -863,13 +869,13 @@ export class GeoTextStyle extends GeoStyle {
             context.stroke();
         }
 
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(0, 0, width, height);
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
 
-        context.fillStyle = "#00ff00";
-        context.fillRect(0, 0 + height / 2, width, 2);
-        context.fillRect(0 + (width / 2), 0, 1, height);
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
     }
     drawRoundedEnds(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
         var x = 0;
@@ -923,13 +929,13 @@ export class GeoTextStyle extends GeoStyle {
             context.stroke();
         }
 
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(0, 0, width, height);
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
 
-        context.fillStyle = "#00ff00";
-        context.fillRect(0, 0 + height / 2, width, 2);
-        context.fillRect(0 + (width / 2), 0, 1, height);
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
     }
     drawCircle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
         var x = 0;
@@ -964,15 +970,15 @@ export class GeoTextStyle extends GeoStyle {
             context.strokeStyle = stroke.getColor();
             context.stroke();
         }
-        context.lineWidth = 1;
-        context.strokeStyle = "#000";
-        context.strokeRect(0, 0, width, height);
 
-        context.fillStyle = "#00ff00";
-        context.fillRect(0, 0 + height / 2, width, 2);
-        context.fillRect(0 + (width / 2), 0, 1, height);
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
+
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
     }
-
 
     getCanvasSizeByMaskType(canvasWidth, canvasHeight, maskType, maskMarginList, maskStrokeWidth) {
         var textAnchorX = 0;
@@ -1036,10 +1042,6 @@ export class GeoTextStyle extends GeoStyle {
 
         return [canvasWidth, canvasHeight, textAnchorX, textAnchorY];
     }
-
-
-
-
 
     static getMeasureContext(letterSpacing) {
         let tempCanvasForMeasure = GeoTextStyle.getMeasureCanvas();

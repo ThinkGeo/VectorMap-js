@@ -184,7 +184,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.label = style.label;
                     this.maxAngle_ = style.maxAngle_;
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-                    this.width = this.label.width 
+                    this.width = this.label.width
                     this.height = this.label.height;
                     this.originX = 0;
                     this.originY = 0;
@@ -424,7 +424,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
         }
         x = Math.ceil(pixelCoordinate[0]);
-        y =  Math.ceil(pixelCoordinate[1]);
+        y = Math.ceil(pixelCoordinate[1]);
 
         // bottom-left corner
         offsetX = -scale * anchorX;
@@ -511,19 +511,18 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.maxAngle_ = textStyle.getMaxAngle();
 
             this.textPlacements = [0, 0]
-            if (textStyle["placements"] == "U" || textStyle["placements"] == "u") {
+            if (textStyle["placements"] == "upper") {
                 this.textPlacements = [0, 0.5];
             }
-            if (textStyle["placements"] == "B" || textStyle["placements"] == "b") {
+            if (textStyle["placements"] == "lower") {
                 this.textPlacements = [0, -0.5];
             }
-            if (textStyle["placements"] == "L" || textStyle["placements"] == "b") {
+            if (textStyle["placements"] == "left") {
                 this.textPlacements = [0.5, 0];
             }
-            if (textStyle["placements"] == "R" || textStyle["placements"] == "r") {
+            if (textStyle["placements"] == "right") {
                 this.textPlacements = [-0.5, 0];
             }
-
         }
 
     public getText_(lines) {
@@ -586,9 +585,9 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         } else {
             pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
         }
-       var  x = Math.ceil(pixelCoordinate[0]);
-       var  y =  Math.ceil(pixelCoordinate[1]);
-        
+        var x = Math.ceil(pixelCoordinate[0]);
+        var y = Math.ceil(pixelCoordinate[1]);
+
 
         var offsetX = -scale * (this.anchorX);
         var offsetY = -scale * (this.height - this.anchorY);
