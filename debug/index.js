@@ -1,7 +1,9 @@
 var view = new ol.View({
     // center: [-10784739.476061746, 4989285.901397186],
-    center: [2583066.0947164265, -210895.4425131777],
-    zoom: 5,
+    // center: [-8232679.211417493, 4963666.086553334],// NY
+    center: [-10775123.758358786, 3866399.100664072],// dallas
+    //center: [2583066.0947164265, -210895.4425131777],
+    zoom: 15,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512
 });
@@ -20,7 +22,6 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     multithread: true,
     minimalist: true,
 });
-
 
 var map = new ol.Map({
     layers: [worldStreetsLayer],

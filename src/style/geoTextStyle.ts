@@ -129,7 +129,6 @@ export class GeoTextStyle extends GeoStyle {
 
         this.style = new ol.style.Style({
             text: textStyle,
-            image: debugImageStyle
         });
 
         if (this.font) {
