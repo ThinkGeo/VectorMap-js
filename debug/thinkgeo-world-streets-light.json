@@ -4140,6 +4140,41 @@
           "text-font": "13px Arial, Helvetica, sans-serif"
         }
       ]
+    },
+    {
+      "id":"pointstyle-glyph",
+      "filter": "layerName='poi'",
+      "point-type": "glyph",
+      "point-glyph-font-name": "vectormap-icons",
+      "point-glyph-content":"",
+      "point-fill-color": "@naturalAndSports",
+      "point-size": 18,
+      "point-outline-color": "#ffffff",
+      "point-outline-width": 3,
+      "point-mask-type":"roundedCorners",
+      "point-mask-margin":"5",
+      "point-mask-color":"#0FF",
+      "point-mask-outline-color":"#F0F",
+      "point-mask-outline-width": 10
+    },
+    {
+      "id":"pointstyle-symbol",
+      "filter": "layerName='poi'",
+      "point-type": "symbol",
+      "point-image-uri":"test.png",
+      "point-symbol-type":"circle",
+      "point-fill-color": "@naturalAndSports",
+      "point-size": 18,
+      "point-outline-color": "#ffffff",
+      "point-outline-width": 3,
+      "point-glyph-font-name": "vectormap-icons",
+      "point-glyph-content":""
+    },
+    {
+      "id":"pointstyle-image",
+      "filter": "layerName='poi'",
+      "point-type": "image",
+      "point-image-uri":"test.png"
     }
   ],
   "sources": [
@@ -4161,7 +4196,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "poi_icon"
+        "pointstyle-glyph"
       ]
     }
   ]
