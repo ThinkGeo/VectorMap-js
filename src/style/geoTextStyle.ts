@@ -113,19 +113,19 @@ export class GeoTextStyle extends GeoStyle {
             stroke: stroke
         });
 
-        let debugImageStyle = new ol.style.RegularShape({
-            fill: new ol.style.Fill({
-                color: "red"
-            }),
-            stroke: new ol.style.Stroke({
-                color: "black",
-                width: 2
-            }),
-            points: 4,
-            radius: 10,
-            radius2: 0,
-            angle: 0
-        });
+        // let debugImageStyle = new ol.style.RegularShape({
+        //     fill: new ol.style.Fill({
+        //         color: "red"
+        //     }),
+        //     stroke: new ol.style.Stroke({
+        //         color: "black",
+        //         width: 10
+        //     }),
+        //     points: 4,
+        //     radius: 10,
+        //     radius2: 0,
+        //     angle: 0
+        // });
 
         this.style = new ol.style.Style({
             text: textStyle,
