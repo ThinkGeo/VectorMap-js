@@ -7,11 +7,11 @@ export class GeoPointStyle extends GeoStyle {
     brushOptions: any;
 
     brushType: string;
-    glyph: string;
-    fill: string;
+    glyphFontName: string;
+    fillColor: string;
     linearGradient: string;
     radialGradient: string;
-    glyphName: string;
+    glyphContent: string;
     glyphMaskColor: string;
     glyphMaskMargin: string;
     glyphMaskOutlineColor: string
@@ -21,9 +21,9 @@ export class GeoPointStyle extends GeoStyle {
     outlineWidth: number;
     size: number;
     angle: number;
-    dx: number;
-    dy: number;
-    pointFile: string;
+    offsetX: number;
+    offsetY: number;
+    imageURL: string;
     opacity: number;
     symbolType: string;
     transform: string;
@@ -41,34 +41,42 @@ export class GeoPointStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
-            this.glyph = styleJson["point-glyph"];
-            this.linearGradient = styleJson["point-linear-gradient"];
-            this.radialGradient = styleJson["point-radial-gradient"];
-            this.fill = styleJson["point-fill"];
-            this.glyphName = styleJson["point-glyph-name"];
-            this.glyphMaskColor = styleJson["point-glyph-mask-color"];
-            this.glyphMaskMargin = styleJson["point-glyph-mask-margin"];
-            this.glyphMaskOutlineColor = styleJson["point-glyph-mask-outline-color"];
-            this.glyphMaskOutlineWidth = styleJson["point-glyph-mask-outline-width"];
-            this.glyphMaskType = styleJson["point-glyph-mask-type"];
             this.outlineColor = styleJson["point-outline-color"];
             this.outlineWidth = styleJson["point-outline-width"];
-            this.size = styleJson["point-size"];
-            this.angle = styleJson["point-rotate-angle"] ? styleJson["point-rotate-angle"] : 0;
-            this.dx = styleJson["point-dx"];
-            this.dy = styleJson["point-dy"];
-            this.pointFile = styleJson["point-file"];
-            this.opacity = styleJson["point-opacity"];
             this.symbolType = styleJson["point-symbol-type"];
-            this.transform = styleJson["point-transform"];
             this.pointType = styleJson["point-type"];
+            this.size = styleJson["point-size"];
+
+            this.glyphMaskType = styleJson["point-mask-type"];
+            this.glyphMaskMargin = styleJson["point-mask-margin"];
+
+            this.offsetX = styleJson["point-offset-x"];
+            this.offsetY = styleJson["point-offset-y"];
+
+            this.imageURL = styleJson["point-image-uri"];
+            this.fillColor = styleJson["point-fill-color"];
+
+            this.glyphFontName = styleJson["point-glyph-font-name"];
+            this.glyphContent = styleJson["point-glyph-content"];
+
+            this.angle = styleJson["point-rotation-angle"] || 0;
+
+            this.glyphMaskColor = styleJson["point-mask-color"];
+            this.glyphMaskOutlineColor = styleJson["point-mask-outline-color"];
+            this.glyphMaskOutlineWidth = styleJson["point-mask-outline-width"] || 0;
+
+            this.opacity = styleJson["point-opacity"];
+
+            this.linearGradient = styleJson["point-linear-gradient"];
+            this.radialGradient = styleJson["point-radial-gradient"];
+            this.transform = styleJson["point-transform"];
 
             if (this.outlineColor) {
                 this.convertedGlyphOutLineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
             }
 
-            if (this.fill) {
-                this.convertedGlyphFill = GeoStyle.toRGBAColor(this.fill, this.opacity);
+            if (this.fillColor) {
+                this.convertedGlyphFill = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
             }
 
             if (this.linearGradient) {
@@ -109,7 +117,7 @@ export class GeoPointStyle extends GeoStyle {
         }
 
         if (this.pointType === "glyph") {
-            if (this.glyph && this.glyphName) {
+            if (this.glyphFontName && this.glyphContent) {
                 (<any>this.textStyle).label = this.getGlyphImage(this.textStyle);
                 this.style.setImage(null);
                 this.style.setText(this.textStyle);
@@ -124,7 +132,7 @@ export class GeoPointStyle extends GeoStyle {
 
         let geometryFeature = feature.getGeometry();
         if (this.pointType === "glyph") {
-            if (this.glyph && this.glyphName) {
+            if (this.glyphFontName && this.glyphContent) {
                 (<any>this.textStyle).labelPosition = geometryFeature.getFlatCoordinates();
             }
         }
@@ -439,23 +447,23 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     private initBitmapStyle() {
-        if (this.pointFile) {
+        if (this.imageURL) {
             this.imageStyle = new ol.style.Icon(({
                 opacity: this.opacity || 1,
-                src: this.pointFile,
+                src: this.imageURL,
                 rotation: this.angle * Math.PI / 180,
-                offset: [this.dx, -this.dy]
+                offset: [this.offsetX, -this.offsetY]
             }));
         }
     }
 
     private initGlyphStyle() {
-        if (this.glyph) {
+        if (this.glyphFontName) {
             this.textStyle = new ol.style.Text(({
-                font: `${this.size}px ${this.glyph}`,
-                offsetX: this.dx,
-                offsetY: this.dy,
-                text: this.glyphName,
+                font: `${this.size}px ${this.glyphFontName}`,
+                offsetX: this.offsetX,
+                offsetY: this.offsetY,
+                text: this.glyphContent,
                 fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
                     color: this.convertedGlyphFill
                 })) : undefined,

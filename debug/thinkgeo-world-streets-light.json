@@ -2404,8 +2404,8 @@
       "id": "poi_icon",
       "filter": "layerName='poi'",
       "point-type": "glyph",
-      "point-glyph": "vectormap-icons",
-      "point-fill": "@naturalAndSports",
+      "point-glyph-font-name": "vectormap-icons",
+      "point-fill-color": "@naturalAndSports",
       "point-size": 18,
       "point-outline-color": "#ffffff",
       "point-outline-width": 3,
@@ -2416,7 +2416,7 @@
             {
               "filter": "zoom>=10;zoom<=13",
               "point-fill": "@transportation",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -2426,7 +2426,7 @@
             {
               "filter": "labelrank=0;zoom=10|labelrank<=1;zoom=11|labelrank<=2;zoom=12|labelrank<=3;zoom=13|labelrank<=4;zoom=14|labelrank<=5;zoom=15|labelrank<=6;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@naturalAndSports",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -2436,7 +2436,7 @@
             {
               "filter": "labelrank=0;zoom>=10|labelrank<=1;zoom>=11;zoom<=13|labelrank<=2;zoom=14|labelrank<=2;zoom=15|labelrank<=2;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@naturalAndSports",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -2446,7 +2446,7 @@
             {
               "filter": "labelrank<=1;zoom=12|labelrank<=2;zoom=13|labelrank<=4;zoom=14|labelrank<=5;zoom=15|labelrank<=6;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@cultural",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -2456,7 +2456,7 @@
             {
               "filter": "labelrank<=2;zoom=12|labelrank<=3;zoom=13|labelrank<=4;zoom=14|labelrank<=5;zoom=15|labelrank<=6;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@transportation",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -2469,32 +2469,32 @@
                 {
                   "filter": "class='college'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='arts_centre'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='theatre'",
                   "point-fill": "@entertainment",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='golf_course'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='golf'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='sports_centre'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -2509,7 +2509,7 @@
                 {
                   "filter": "class='library'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -2524,57 +2524,57 @@
                 {
                   "filter": "class='bar'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='biergarden'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='cafe'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='fast_food'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='food_court'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='restaurant'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bank'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='cinema'",
                   "point-fill": "@entertainment",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='fuel'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hospital'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='supermarket'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -2589,632 +2589,632 @@
                 {
                   "filter": "class='kindergarden'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='school'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='taxi'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='clinic'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='dentist'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='pharmacy'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='social_facility'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='veterinary'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='community_centre'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='courthouse'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='fire_station'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='embassy'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='grave_yard'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='marketplace'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='place_of_worship'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='police'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='prison'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='townhall'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='toilets'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='garden'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='miniature_golf'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='playground'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='water_park'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='swimming_pool'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='fitness_centre'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='attraction'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='camp_site'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hostel'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='motel'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='theme_park'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='viewpoint'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='zoo'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='shelter'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='pub'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='fountain'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='casino'",
                   "point-fill": "@entertainment",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bicycle_rental'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='car_rental'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bicycle_parking'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='ruins'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='memorial'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='monument'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='castle'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='battlefield'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='marina'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='water_tower'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='cave_entrance'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='motorcycle'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='garden_centre'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='cricket'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='climbing'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='canoe'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='baseball'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='picnic_site'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='artwork'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='coniferous'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='mixed'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='deciduous'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='plant'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='recycling'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='post_office'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='nursing_home'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='ice_cream'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='toll_booth'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='wreck'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='windmill'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='crane'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='estate_agent'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='video'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='toys'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='tobacco'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='pet'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='optician'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='newsagent'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='musical_instrument'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='mobile_phone'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='laundry'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='kiosk'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='jewelry'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hifi'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hearing_aids'",
                   "point-fill": "@medical",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hairdresser'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='gift'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='greengrocer'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='florist'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='doityourself'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='department_store'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='copyshop'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='convenience'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='confectionery'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='computer'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='clothes'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='car_repair'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='car'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='car_parts'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='butcher'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='books'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bicycle'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bakery'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='alcohol'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='tennis'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='soccer'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='shooting'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='motor'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='ice_stock'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='horse_racing'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='gymnastics'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='archery'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='chalet'",
                   "point-fill": "@tourism",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='caravan_site'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='sikh'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='shinto'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='jain'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='muslim'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hindu'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='christian'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='buddhist'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='jewish'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='pizza'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='mineshaft'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='hydro'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='solar'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='gas'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='wind'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='swimming'",
                   "point-fill": "@naturalAndSports",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='information'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -3226,7 +3226,7 @@
             {
               "filter": "labelrank<=2;zoom>=14;zoom<=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@transportation",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -3235,7 +3235,7 @@
           "style": [
             {
               "filter": "labelrank<=3;zoom>=14;zoom<=15|labelrank<=6;zoom=16|labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
-              "point-glyph-name": "",
+              "point-glyph-content": "",
               "point-fill": "@tourism"
             }
           ]
@@ -3249,12 +3249,12 @@
                 {
                   "filter": "class='museum'",
                   "point-fill": "@cultural",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bus_station'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -3266,7 +3266,7 @@
             {
               "filter": "labelrank<=7;zoom=17|labelrank<=9;zoom=18|labelrank<=9;zoom=19",
               "point-fill": "@commonService",
-              "point-glyph-name": ""
+              "point-glyph-content": ""
             }
           ]
         },
@@ -3279,12 +3279,12 @@
                 {
                   "filter": "class='lighthouse'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='traffic_signals'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -3299,137 +3299,137 @@
                 {
                   "filter": "class='atm'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bench'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bbq'",
                   "point-fill": "@eat",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='clock'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='drinking_water'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='post_box'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='telephone'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='vending_machine'",
                   "point-fill": "@shop",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='waste_disposal'",
                   "point-fill": "@commonService",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='block'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bollard'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='cattle_grid'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='gate'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='lift_gate'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='kissing_gate'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='stile'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='anticlockwise'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='clockwise'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='guidepost'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='map'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='bus_stop'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='slipway'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='peak'",
-                  "point-glyph-name": "",
+                  "point-glyph-content": "",
                   "point-fill": "@naturalAndSports"
                 },
                 {
                   "filter": "class='subway_entrance'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='tram_stop'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='sub_station'",
                   "point-fill": "@industrial",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 },
                 {
                   "filter": "class='weir'",
                   "point-fill": "@transportation",
-                  "point-glyph-name": ""
+                  "point-glyph-content": ""
                 }
               ]
             }
@@ -4161,39 +4161,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "ocean",
-        "country",
-        "urban",
-        "landcover",
-        "water",
-        "waterway",
-        "building",
-        "country_boundary",
-        "province_boundary",
-        "aeroway",
-        "road",
-        "railway",
-        "place_popular",
-        "place_others",
-        "poi_icon",
-        "country_name",
-        "state_name",
-        "marine_name",
-        "poi_text",
-        "road_number",
-        "motorway_name",
-        "trunk_name",
-        "primary_name",
-        "secondary_name",
-        "tertiary_name",
-        "residential_name",
-        "pedestrian_name",
-        "otherroad_name",
-        "road_oneway",
-        "water_name",
-        "waterway_name",
-        "building_name",
-        "housenumber"
+        "poi_icon"
       ]
     }
   ]
