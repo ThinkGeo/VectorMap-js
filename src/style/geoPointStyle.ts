@@ -4,9 +4,9 @@ export class GeoPointStyle extends GeoStyle {
     static linearGradientDictionary: { [index: string]: any } = {};
     static radialGradientDictionary: { [index: string]: any } = {};
 
-    brushOptions: any;
+    pointTypes = ["symbol", "image", "glyph"];
+    symbolTypes = ["circle", "square", "triangle", "cross", "star"];
 
-    brushType: string;
     glyphFontName: string;
     fillColor: string;
     linearGradient: string;
@@ -42,7 +42,8 @@ export class GeoPointStyle extends GeoStyle {
         super(styleJson);
         if (styleJson) {
             this.outlineColor = styleJson["point-outline-color"];
-            this.outlineWidth = styleJson["point-outline-width"];
+            this.outlineWidth = styleJson["point-outline-width"] || 0;
+
             this.symbolType = styleJson["point-symbol-type"];
             this.pointType = styleJson["point-type"];
             this.size = styleJson["point-size"];
