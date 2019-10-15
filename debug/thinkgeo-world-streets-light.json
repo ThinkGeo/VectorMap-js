@@ -4146,12 +4146,18 @@
       "filter": "layerName='poi'",
       "point-type": "glyph",
       "point-glyph-font-name": "vectormap-icons",
-      "point-glyph-content": "",
+      "point-glyph-content": "A",
 
       "point-size": 40,
       "point-outline-color": "#00dd00",
       "point-outline-width": 5,
-      "point-fill-color": "@naturalAndSports"
+      "point-fill-color": "@naturalAndSports",
+
+      "point-mask-type":"circle",
+      "point-mask-color": "#FFFFFF",
+      "point-mask-outline-color":"#000000",
+      "point-mask-outline-width":10
+
     },
     {
       "id": "pointstyle-symbol",
@@ -4161,8 +4167,14 @@
 
       "point-size": 40,
       "point-outline-color": "#00dd00",
-      "point-outline-width": 5,
-      "point-fill-color": "@naturalAndSports"
+      "point-outline-width": 1,
+      "point-fill-color": "@naturalAndSports",
+      "point-rotation-angle":1,
+
+      "point-mask-type":"circle",
+      "point-mask-color": "#FFFFFF",
+      "point-mask-outline-color":"#000000",
+      "point-mask-outline-width":10
     },
     {
       "id": "pointstyle-image",
@@ -4190,7 +4202,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "pointstyle-image"
+        "pointstyle-symbol"
       ]
     }
   ]
