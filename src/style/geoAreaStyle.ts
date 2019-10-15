@@ -14,22 +14,17 @@ export class GeoAreaStyle extends GeoStyle {
     });
 
     brushType: string;
-    rotateAngle: number;
-    dx: number;
-    dy: number;
-    fill: string;
-    foregroundFill: string;
-    gamma: string;
+    offsetX: number;
+    offsetY: number;
+    fillColor: string;
     geometryTransform: string;
-    hatchStyle: string;
     opacity: number;
     outlineColor: string;
     outlineDashArray: any;
-    outlineOpacity: number;
     outlineWidth: number;
     linearGradient: string;
     radialGradient: string;
-    textureFile: string;
+    fillImageURI: string;
     shadowColor: string;
     shadowDx: number;
     shadowDy: number;
@@ -46,59 +41,136 @@ export class GeoAreaStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
-            this.brushType = styleJson["polygon-brush-type"];
-            this.rotateAngle = styleJson["polygon-rotate-angle"];
-            this.dx = styleJson["polygon-dx"];
-            this.dy = styleJson["polygon-dy"];
-            this.fill = styleJson["polygon-fill"];
-            this.foregroundFill = styleJson["polygon-foreground-fill"];
-            this.gamma = styleJson["polygon-gamma"] ? styleJson["polygon-gamma"] : true;
-            this.geometryTransform = styleJson["polygon-geometry-transform"];
-            this.hatchStyle = styleJson["polygon-hatch-style"];
-            this.opacity = styleJson["polygon-opacity"];
             this.outlineColor = styleJson["polygon-outline-color"];
-            this.outlineDashArray = styleJson["polygon-outline-dasharray"];
-            this.outlineOpacity = styleJson["polygon-outline-opacity"];
             this.outlineWidth = styleJson["polygon-outline-width"];
+            this.outlineDashArray = styleJson["polygon-outline-dasharray"];
+            this.fillColor = styleJson["polygon-fill-color"];
+            this.offsetX = styleJson["polygon-offset-x"];
+            this.offsetY = styleJson["polygon-offset-y"];
+            this.opacity = styleJson["polygon-opacity"];
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
-            this.textureFile = styleJson["polygon-texture-file"];
-            this.shadowColor = styleJson["polygon-shadow-color"];
-            this.shadowDx = styleJson["polygon-shadow-dx"];
-            this.shadowDy = styleJson["polygon-shadow-dy"];
+            this.shadow = styleJson["polygon-shadow"];
+            this.geometryTransform = styleJson["polygon-geometry-transform"];
+            this.fillImageURI = styleJson["polygon-fill-image-uri"];
+            this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
+            this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
         }
     }
 
     initializeCore() {
-        this.brushType = this.brushType || "solid";
-        this.brushOptions = {
-            fillColor: this.fill,
-            fillOpacity: this.opacity,
-            linearGradient: this.linearGradient,
-            radialGradient: this.radialGradient,
-            textureFile: this.textureFile,
-            foregroundFill: this.foregroundFill,
-            hatchStyle: this.hatchStyle
-        };
+        if (this.fillColor) {
+            this.convertedFillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
+        }
+
+
 
         if (this.geometryTransform) {
             this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
         }
 
-        if (this.brushType === "solid" || this.brushType === "hatch") {
-            this.geoBrush = GeoBrush.createBrushByType(this.brushType, null, null, this.brushOptions);
-        }
-
         if (this.outlineColor) {
-            this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.outlineOpacity);
+            this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
         }
         if (this.outlineDashArray) {
             this.convertedOutlineDashArray = this.outlineDashArray.split(",");
         }
-        if (this.shadowColor) {
-            this.convertedShadowColor = GeoStyle.toRGBAColor(this.shadowColor);
-        }
+
         this.shadowTranslateValueByResolution = {};
+    }
+    getConvertedStyleCore(feature: any, resolution: number, options): ol.style.Style[] {
+        let length = 0;
+        this.styles = [];
+        if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
+            if (this.geometryTransform) {
+                feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
+                var dx = this.geometryTransformValue[0].trim() * resolution;
+                var dy = this.geometryTransformValue[1].trim() * resolution;
+                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                feature.extent_ = newExtent_;
+            }
+
+            if (this.shadowDx || this.shadowDy) {
+                let shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
+                if (shadowTranslateValue === undefined) {
+                    let tmpResolution = Math.round(resolution * 100000000) / 100000000;
+                    this.shadowTranslate = (`translate(${(this.shadowDx ? this.shadowDx : 0) * tmpResolution},${(this.shadowDy ? this.shadowDy : 0) * tmpResolution})`);
+                    shadowTranslateValue = this.getTransformValues(this.shadowTranslate);
+                    this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
+                }
+
+                let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
+                let newFlatCoordinates = (<any>ol.geom).flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim(), undefined);
+
+                let tmpCoordinates: ol.Coordinate[][] = [[]];
+                let index = 0;
+                for (let i = 0; i < newFlatCoordinates.length; i += 2) {
+                    tmpCoordinates[index] || (tmpCoordinates[index] = []);
+                    tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
+                    if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
+                        index++;
+                    }
+                }
+                let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                geometry['ends_'] = feature.ends_;
+                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
+                geometry['extent_'] = newExtent_;
+                GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
+                GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
+                GeoAreaStyle.areaShadowStyle['zCoordinate'] = this.zIndex - 0.5;
+                this.styles[length++] = GeoAreaStyle.areaShadowStyle;
+            }
+
+            if (this.convertedFillColor) {
+                GeoAreaStyle.areaStyle.getFill().setColor(this.convertedFillColor);
+            }
+
+            // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
+            if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
+                let newStroke = new ol.style.Stroke();
+                newStroke.setColor(this.convertedOutlineColor);
+                newStroke.setLineDash(this.convertedOutlineDashArray);
+                newStroke.setWidth(this.outlineWidth);
+                GeoAreaStyle.areaStyle.setStroke(newStroke);
+            }
+            else {
+                GeoAreaStyle.areaStyle.setStroke(undefined);
+            }
+ 
+            GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
+            GeoAreaStyle.areaStyle['zCoordinate'] = this.zIndex;
+            this.styles[length++] = GeoAreaStyle.areaStyle;
+
+
+            if (this.brushType === 'texture' && this.fillImageURI) {
+
+                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
+                    crossOrigin: 'anonymous',
+                    src: this.fillImageURI
+                }));
+
+                // function test(resolve, reject): Promise<void> {
+                // let xhr = new XMLHttpRequest();
+                // xhr.open("GET", this.textureFile, true);
+                // xhr.responseType = "blob";
+                // xhr.onload = function (event: any) {
+                //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+                //         debugger
+                //         var test = window.URL.createObjectURL(xhr.response);
+                //         console.log(1);
+
+                //         // resolve(this.styles);
+                //         return this.styles;
+                //     }
+                // }.bind(this);
+                // xhr.onerror = function () {
+                // }.bind(this);
+                // xhr.send();
+                // }
+            }
+        }
+
+        return this.styles;
     }
 
     getTransformValues(transform: string): any {
@@ -148,108 +220,5 @@ export class GeoAreaStyle extends GeoStyle {
         return (<any>geometry).flatCoordinates;
     }
 
-    getConvertedStyleCore(feature: any, resolution: number, options): ol.style.Style[] {
-        let length = 0;
-        this.styles = [];
-        if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
-            if (this.geometryTransform) {
-                feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
-                var dx = this.geometryTransformValue[0].trim() * resolution;
-                var dy = this.geometryTransformValue[1].trim() * resolution;
-                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
-                feature.extent_ = newExtent_;
-            }
 
-            if (this.shadowDx || this.shadowDy) {
-                let shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
-                if (shadowTranslateValue === undefined) {
-                    let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                    this.shadowTranslate = (`translate(${(this.shadowDx ? this.shadowDx : 0) * tmpResolution},${(this.shadowDy ? this.shadowDy : 0) * tmpResolution})`);
-                    shadowTranslateValue = this.getTransformValues(this.shadowTranslate);
-                    this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
-                }
-
-                let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
-                let newFlatCoordinates = (<any>ol.geom).flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim(), undefined);
-
-                let tmpCoordinates: ol.Coordinate[][] = [[]];
-                let index = 0;
-                for (let i = 0; i < newFlatCoordinates.length; i += 2) {
-                    tmpCoordinates[index] || (tmpCoordinates[index] = []);
-                    tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
-                    if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
-                        index++;
-                    }
-                }
-                let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-                geometry['ends_'] = feature.ends_;
-                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                geometry['extent_'] = newExtent_;
-                GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
-                GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                GeoAreaStyle.areaShadowStyle['zCoordinate'] = this.zIndex - 0.5;                
-                this.styles[length++] = GeoAreaStyle.areaShadowStyle;
-            }
-
-            if (this.fill && this.geoBrush) {
-                // this.geoBrush = GeoBrush.createBrushByType(this.brushType, feature, resolution, this.brushOptions);
-                GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
-            }
-
-            // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
-            if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
-                let newStroke = new ol.style.Stroke();
-                newStroke.setColor(this.convertedOutlineColor);
-                newStroke.setLineDash(this.convertedOutlineDashArray);
-                newStroke.setWidth(this.outlineWidth);
-                GeoAreaStyle.areaStyle.setStroke(newStroke);
-            }
-            else {
-                GeoAreaStyle.areaStyle.setStroke(undefined);
-            }
-
-            GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
-            GeoAreaStyle.areaStyle['zCoordinate'] = this.zIndex;
-            this.styles[length++] = GeoAreaStyle.areaStyle;
-
-            if (this.gamma !== undefined && options.layer) {
-                let styleGamma = this.gamma;
-                options.layer.on("precompose", function (evt) {
-                    evt.context.imageSmoothingEnabled = styleGamma;
-                    evt.context.webkitImageSmoothingEnabled = styleGamma;
-                    evt.context.mozImageSmoothingEnabled = styleGamma;
-                    evt.context.msImageSmoothingEnabled = styleGamma;
-                });
-            }
-
-            if(this.brushType === 'texture' && this.textureFile){
-                
-                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
-                    crossOrigin: 'anonymous',
-                    src: this.textureFile
-                }));
-                
-                // function test(resolve, reject): Promise<void> {
-                    // let xhr = new XMLHttpRequest();
-                    // xhr.open("GET", this.textureFile, true);
-                    // xhr.responseType = "blob";
-                    // xhr.onload = function (event: any) {
-                    //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-                    //         debugger
-                    //         var test = window.URL.createObjectURL(xhr.response);
-                    //         console.log(1);
-                            
-                    //         // resolve(this.styles);
-                    //         return this.styles;
-                    //     }
-                    // }.bind(this);
-                    // xhr.onerror = function () {
-                    // }.bind(this);
-                    // xhr.send();
-                // }
-            }
-        }
-
-        return this.styles;
-    }
 }
