@@ -4163,6 +4163,12 @@
       "point-outline-color": "#00dd00",
       "point-outline-width": 5,
       "point-fill-color": "@naturalAndSports"
+    },
+    {
+      "id": "pointstyle-image",
+      "filter": "layerName='poi'",
+      "point-type": "image",
+      "point-image-uri":"ball_green.png"
     }
   ],
   "sources": [
@@ -4184,7 +4190,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "pointstyle-symbol"
+        "pointstyle-image"
       ]
     }
   ]

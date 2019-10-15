@@ -51,8 +51,8 @@ export class GeoPointStyle extends GeoStyle {
             this.glyphMaskType = styleJson["point-mask-type"];
             this.glyphMaskMargin = styleJson["point-mask-margin"];
 
-            this.offsetX = styleJson["point-offset-x"];
-            this.offsetY = styleJson["point-offset-y"];
+            this.offsetX = styleJson["point-offset-x"] || 0;
+            this.offsetY = styleJson["point-offset-y"] || 0;
 
             this.imageURL = styleJson["point-image-uri"];
             this.fillColor = styleJson["point-fill-color"];
@@ -66,7 +66,7 @@ export class GeoPointStyle extends GeoStyle {
             this.glyphMaskOutlineColor = styleJson["point-mask-outline-color"];
             this.glyphMaskOutlineWidth = styleJson["point-mask-outline-width"] || 0;
 
-            this.opacity = styleJson["point-opacity"];
+            this.opacity = styleJson["point-opacity"] || 1;
 
             this.linearGradient = styleJson["point-linear-gradient"];
             this.radialGradient = styleJson["point-radial-gradient"];
