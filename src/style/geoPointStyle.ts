@@ -117,6 +117,11 @@ export class GeoPointStyle extends GeoStyle {
                 break;
         }
 
+        // "point-mask-type":"circle",
+        // "point-mask-color": "#FFFFFF",
+        // "point-mask-outline-color":"#000000",
+        // "point-mask-outline-width":10,
+
         this.maskMarginList = this.getMargin(this.maskMargin);
         this.maskStrokeWidth = this.maskOutlineWidth || 0;
 

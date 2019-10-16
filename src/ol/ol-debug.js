@@ -101924,8 +101924,8 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                // if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) ||
-                                if (true) {
+                                if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) ||
+                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')){
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
