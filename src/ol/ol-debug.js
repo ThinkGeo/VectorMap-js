@@ -98617,50 +98617,20 @@ function olInit() {
                     custom: "square"
                 };
                 _this.convertedDashArray = new Array();
-                _this.convertedInnerDashArray = new Array();
-                _this.convertedCenterDashArray = new Array();
                 _this.lineStroke = new ol.style.Stroke();
                 _this.lineStyle = new ol.style.Style({ stroke: _this.lineStroke });
                 _this.lineCapFill = new ol.style.Fill();
                 _this.lineCapStyle = new ol.style.Style({ fill: _this.lineCapFill });
-                _this.lineInnerStroke = new ol.style.Stroke();
-                _this.lineInnerStyle = new ol.style.Style({ stroke: _this.lineInnerStroke });
-                _this.lineCapInnerFill = new ol.style.Fill();
-                _this.lineCapInnerStyle = new ol.style.Style({
-                    fill: _this.lineCapInnerFill
-                });
-                _this.lineCenterStroke = new ol.style.Stroke();
-                _this.lineCenterStyle = new ol.style.Style({
-                    stroke: _this.lineCenterStroke
-                });
-                _this.lineCapCenterFill = new ol.style.Fill();
-                _this.lineCapCenterStyle = new ol.style.Style({
-                    fill: _this.lineCapCenterFill
-                });
                 if (styleJson) {
-                    _this.lineCap = styleJson["line-cap"];
                     _this.color = styleJson["line-color"];
                     _this.dashArray = styleJson["line-dasharray"];
-                    _this.gamma = styleJson["line-gamma"];
-                    _this.geometryTransform = styleJson["line-geometry-transform"];
-                    _this.lineJoin = styleJson["line-join"];
-                    _this.miterLimit = styleJson["line-miterlimit"];
-                    _this.offset = styleJson["line-offset"];
-                    _this.opacity = styleJson["line-opacity"];
                     _this.width = styleJson["line-width"];
-                    _this.lineCapInner = styleJson["line-cap-inner"];
-                    _this.colorInner = styleJson["line-color-inner"];
-                    _this.dashArrayInner = styleJson["line-dasharray-inner"];
-                    _this.lineJoinInner = styleJson["line-join-inner"];
-                    _this.miterLimitInner = styleJson["line-miterlimit-inner"];
-                    _this.widthInner = styleJson["line-width-inner"];
-                    _this.lineCapCenter = styleJson["line-cap-center"];
-                    _this.colorCenter = styleJson["line-color-center"];
-                    _this.dashArrayCenter = styleJson["line-dasharray-center"];
-                    _this.lineJoinCenter = styleJson["line-join-center"];
-                    _this.miterLimitCenter = styleJson["line-miterlimit-center"];
-                    _this.widthCenter = styleJson["line-width-center"];
-                    _this.onewaySymbol = styleJson["line-oneway-symbol"];
+                    _this.miterLimit = styleJson["line-miterlimit"];
+                    _this.lineJoin = styleJson["line-join"];
+                    _this.lineCap = styleJson["line-cap"];
+                    _this.opacity = styleJson["line-opacity"];
+                    _this.geometryTransform = styleJson["line-geometry-transform"];
+                    _this.onewaySymbol = styleJson["line-direction-image-uri"];
                 }
                 return _this;
             }
@@ -98677,32 +98647,7 @@ function olInit() {
                         this.convertedDashArray.push(parseFloat(a));
                     }
                 }
-                // Drawing inner
-                if (this.colorInner) {
-                    this.olInnerColor = GeoStyle.toRGBAColor(this.colorInner, this.opacity);
-                    this.lineInnerStroke.setColor(this.olInnerColor);
-                    this.lineCapInnerFill.setColor(this.olInnerColor);
-                }
-                if (this.dashArrayInner) {
-                    var tmpArray = this.dashArrayInner.split(",");
-                    for (var _a = 0, tmpArray_2 = tmpArray; _a < tmpArray_2.length; _a++) {
-                        var a = tmpArray_2[_a];
-                        this.convertedInnerDashArray.push(parseFloat(a));
-                    }
-                }
-                // Drawing center
-                if (this.colorCenter) {
-                    this.olCenterColor = GeoStyle.toRGBAColor(this.colorCenter, this.opacity);
-                    this.lineCenterStroke.setColor(this.olCenterColor);
-                    this.lineCapCenterFill.setColor(this.olCenterColor);
-                }
-                if (this.dashArrayCenter) {
-                    var tmpArray = this.dashArrayCenter.split(",");
-                    for (var _b = 0, tmpArray_3 = tmpArray; _b < tmpArray_3.length; _b++) {
-                        var a = tmpArray_3[_b];
-                        this.convertedCenterDashArray.push(parseFloat(a));
-                    }
-                }
+                
                 if (this.onewaySymbol) {
                     this.onewayIcon = new ol.style.Icon({
                         src: this.onewaySymbol,
@@ -98754,42 +98699,8 @@ function olInit() {
                     if (this.width) {
                         this.lineStroke.setWidth(this.width);
                     }
-                    // Set inner
-                    if (this.colorInner) {
-                        this.lineInnerStroke.setColor(this.olInnerColor);
-                        this.lineCapInnerFill.setColor(this.olInnerColor);
-                    }
-
-                    if (this.dashArrayInner) {
-                        this.lineInnerStroke.setLineDash(this.convertedInnerDashArray);
-                    }
-                    if (this.lineJoinInner) {
-                        this.lineInnerStroke.setLineJoin(this.lineJoinInner);
-                    }
-                    if (this.miterLimitInner !== 4) {
-                        this.lineInnerStroke.setMiterLimit(this.miterLimitInner);
-                    }
-                    if (this.widthInner) {
-                        this.lineInnerStroke.setWidth(this.widthInner);
-                    }
-                    // Set center
-                    if (this.colorCenter) {
-                        this.lineCenterStroke.setColor(this.olCenterColor);
-                        this.lineCapCenterFill.setColor(this.olCenterColor);
-                        this.lineCenterStroke.setLineCap("butt");
-                    }
-                    if (this.dashArrayCenter) {
-                        this.lineCenterStroke.setLineDash(this.convertedCenterDashArray);
-                    }
-                    if (this.lineJoinCenter) {
-                        this.lineCenterStroke.setLineJoin(this.lineJoinCenter);
-                    }
-                    if (this.miterLimitCenter !== 4) {
-                        this.lineCenterStroke.setMiterLimit(this.miterLimitCenter);
-                    }
-                    if (this.widthCenter) {
-                        this.lineCenterStroke.setWidth(this.widthCenter);
-                    }
+                  
+                  
                     var geometryFunction = function (feature) {
                         if (_this.geometryTransform) {
                             var geometry = _this.getGeometry(feature);
@@ -98823,15 +98734,7 @@ function olInit() {
                     this.lineStyle.setGeometry(geometryFunction);
                     this.lineStyle.zCoordinate = this.zIndex;
                     this.styles[length++] = this.lineStyle;
-                    if (this.gamma !== undefined && options.layer) {
-                        var styleGamma_1 = this.gamma;
-                        options.layer.on("precompose", function (evt) {
-                            evt.context.imageSmoothingEnabled = styleGamma_1;
-                            evt.context.webkitImageSmoothingEnabled = styleGamma_1;
-                            evt.context.mozImageSmoothingEnabled = styleGamma_1;
-                            evt.context.msImageSmoothingEnabled = styleGamma_1;
-                        });
-                    }
+            
                     if (this.geometryLineCaps.includes(this.lineCap)) {
                         var geometryFunction_1 = function (feature) {
                             var geometry = _this.getGeometry(feature);
@@ -98840,86 +98743,6 @@ function olInit() {
                         this.lineCapStyle.setGeometry(geometryFunction_1);
                         this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                         this.styles[length++] = this.lineCapStyle;
-                    }
-                    // Drawing inner
-                    if (this.colorInner && this.widthInner) {
-                        var geometryFunction_2 = function (feature) {
-                            var geometry = _this.getGeometry(feature);
-                            if (_this.geometryTransform) {
-                                var values = _this.getTransformValues(_this.geometryTransform);
-                                if (_this.geometryTransform.startsWith("translate")) {
-                                    var dx = values[0].trim();
-                                    var dy = values[1].trim();
-                                    geometry.translate(+dx, +dy);
-                                    var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
-                                    geometry.extent_ = newExtent_;
-                                }
-                                else if (_this.geometryTransform.startsWith("scale")) {
-                                    geometry.scale(+values[0].trim(), +values[1].trim());
-                                }
-                                else if (_this.geometryTransform.startsWith("rotate")) {
-                                    var center = ol.extent.getCenter(geometry.getExtent());
-                                    var angle = +values[0].trim() * Math.PI / 180;
-                                    geometry.rotate(angle, center);
-                                }
-                                else if (_this.geometryTransform.startsWith("skew")) {
-                                    _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
-                                }
-                            }
-                            return feature.getGeometry();
-                        };
-                        this.lineInnerStyle.setGeometry(geometryFunction_2);
-                        this.lineCapStyle.zCoordinate = this.zIndex;
-                        this.styles[length++] = this.lineInnerStyle;
-                        if (this.geometryLineCaps.includes(this.lineCapInner)) {
-                            var geometryFunction_3 = function (feature) {
-                                var geometry = _this.getGeometry(feature);
-                                return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCapInner, _this.widthInner, resolution);
-                            };
-                            this.lineCapInnerStyle.setGeometry(geometryFunction_3);
-                            this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                            this.styles[length++] = this.lineCapInnerStyle;
-                        }
-                    }
-                    // Drawing center
-                    if (this.colorCenter && this.widthCenter) {
-                        var geometryFunction_4 = function (feature) {
-                            var geometry = _this.getGeometry(feature);
-                            if (_this.geometryTransform) {
-                                var values = _this.getTransformValues(_this.geometryTransform);
-                                if (_this.geometryTransform.startsWith("translate")) {
-                                    var dx = values[0].trim();
-                                    var dy = values[1].trim();
-                                    geometry.translate(+dx, +dy);
-                                    var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
-                                    geometry.extent_ = newExtent_;
-                                }
-                                else if (_this.geometryTransform.startsWith("scale")) {
-                                    geometry.scale(+values[0].trim(), +values[1].trim());
-                                }
-                                else if (_this.geometryTransform.startsWith("rotate")) {
-                                    var center = ol.extent.getCenter(geometry.getExtent());
-                                    var angle = +values[0].trim() * Math.PI / 180;
-                                    geometry.rotate(angle, center);
-                                }
-                                else if (_this.geometryTransform.startsWith("skew")) {
-                                    _this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
-                                }
-                            }
-                            return feature.getGeometry();
-                        };
-                        this.lineCenterStyle.setGeometry(geometryFunction_4);
-                        this.lineCapStyle.zCoordinate = this.zIndex;
-                        this.styles[length++] = this.lineCenterStyle;
-                        if (this.geometryLineCaps.includes(this.lineCapCenter)) {
-                            var geometryFunction_5 = function (feature) {
-                                var geometry = _this.getGeometry(feature);
-                                return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCapCenter, _this.widthCenter, resolution);
-                            };
-                            this.lineCapCenterStyle.setGeometry(geometryFunction_5);
-                            this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                            this.styles[length++] = this.lineCapCenterStyle;
-                        }
                     }
                 }
                 if (this.onewaySymbol) {
@@ -100018,12 +99841,11 @@ function olInit() {
                 }
             };
             GeoTextStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
-              return true;
+                return true;
             };
             GeoTextStyle.prototype.getTextWithContent = function (contentFormat, feature) {
                 var str = contentFormat || "";
-                if(str.indexOf("{")>0)
-                {
+                if (str.indexOf("{") > 0) {
                     var args = feature.getProperties();
                     var key;
                     for (key in args) {
@@ -101925,7 +101747,7 @@ function olInit() {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) ||
-                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')){
+                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;

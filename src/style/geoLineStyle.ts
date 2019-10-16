@@ -21,55 +21,22 @@ export class GeoLineStyle extends GeoStyle {
     lineCap: string;
     color: string;
     dashArray: any;
-    gamma: string;
     geometryTransform: string;
     lineJoin: string;
     miterLimit: number;
-    offset: string;
     opacity: number;
     width: number;
     onewaySymbol: any;
 
-    lineCapInner: string;
-    colorInner: string;
-    dashArrayInner: any;
-    lineJoinInner: string;
-    miterLimitInner: number;
-    widthInner: number;
-
-    lineCapCenter: string;
-    colorCenter: string;
-    dashArrayCenter: any;
-    lineJoinCenter: string;
-    miterLimitCenter: number;
-    widthCenter: number;
-
     olColor: string;
     convertedDashArray: number[] = new Array<number>();
 
-    olInnerColor: string;
-    convertedInnerDashArray: number[] = new Array<number>();
-
-    olCenterColor: string;
-    convertedCenterDashArray: number[] = new Array<number>();
 
     lineStroke: any;
     lineStyle: any;
 
     lineCapFill: any;
     lineCapStyle: any;
-
-    lineInnerStroke: any;
-    lineInnerStyle: any;
-
-    lineCapInnerFill: any;
-    lineCapInnerStyle: any;
-
-    lineCenterStroke: any;
-    lineCenterStyle: any;
-
-    lineCapCenterFill: any;
-    lineCapCenterStyle: any;
 
     onewayIcon: any;
     onewayStyle: any;
@@ -84,46 +51,17 @@ export class GeoLineStyle extends GeoStyle {
         this.lineCapFill = new ol.style.Fill();
         this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
 
-        this.lineInnerStroke = new ol.style.Stroke();
-        this.lineInnerStyle = new ol.style.Style({ stroke: this.lineInnerStroke });
-        this.lineCapInnerFill = new ol.style.Fill();
-        this.lineCapInnerStyle = new ol.style.Style({
-            fill: this.lineCapInnerFill
-        });
-
-        this.lineCenterStroke = new ol.style.Stroke();
-        this.lineCenterStyle = new ol.style.Style({
-            stroke: this.lineCenterStroke
-        });
-        this.lineCapCenterFill = new ol.style.Fill();
-        this.lineCapCenterStyle = new ol.style.Style({
-            fill: this.lineCapCenterFill
-        });
-
         if (styleJson) {
-            this.lineCap = styleJson["line-cap"];
             this.color = styleJson["line-color"];
             this.dashArray = styleJson["line-dasharray"];
-            this.gamma = styleJson["line-gamma"];
-            this.geometryTransform = styleJson["line-geometry-transform"];
-            this.lineJoin = styleJson["line-join"];
-            this.miterLimit = styleJson["line-miterlimit"];
-            this.offset = styleJson["line-offset"];
-            this.opacity = styleJson["line-opacity"];
             this.width = styleJson["line-width"];
-            this.lineCapInner = styleJson["line-cap-inner"];
-            this.colorInner = styleJson["line-color-inner"];
-            this.dashArrayInner = styleJson["line-dasharray-inner"];
-            this.lineJoinInner = styleJson["line-join-inner"];
-            this.miterLimitInner = styleJson["line-miterlimit-inner"];
-            this.widthInner = styleJson["line-width-inner"];
-            this.lineCapCenter = styleJson["line-cap-center"];
-            this.colorCenter = styleJson["line-color-center"];
-            this.dashArrayCenter = styleJson["line-dasharray-center"];
-            this.lineJoinCenter = styleJson["line-join-center"];
-            this.miterLimitCenter = styleJson["line-miterlimit-center"];
-            this.widthCenter = styleJson["line-width-center"];
-            this.onewaySymbol = styleJson["line-oneway-symbol"];
+            this.miterLimit = styleJson["line-miterlimit"];
+            this.lineJoin = styleJson["line-join"];
+            this.lineCap = styleJson["line-cap"];
+            this.opacity = styleJson["line-opacity"];
+            this.geometryTransform = styleJson["line-geometry-transform"];
+
+            this.onewaySymbol = styleJson["line-direction-image-uri"];
         }
     }
 
@@ -139,33 +77,6 @@ export class GeoLineStyle extends GeoStyle {
             let tmpArray = this.dashArray.split(",");
             for (let a of tmpArray) {
                 this.convertedDashArray.push(parseFloat(a));
-            }
-        }
-
-        // Drawing inner
-        if (this.colorInner) {
-            this.olInnerColor = GeoStyle.toRGBAColor(this.colorInner, this.opacity);
-
-            this.lineInnerStroke.setColor(this.olInnerColor);
-            this.lineCapInnerFill.setColor(this.olInnerColor);
-        }
-        if (this.dashArrayInner) {
-            let tmpArray = this.dashArrayInner.split(",");
-            for (let a of tmpArray) {
-                this.convertedInnerDashArray.push(parseFloat(a));
-            }
-        }
-
-        // Drawing center
-        if (this.colorCenter) {
-            this.olCenterColor = GeoStyle.toRGBAColor(this.colorCenter, this.opacity);
-            this.lineCenterStroke.setColor(this.olCenterColor);
-            this.lineCapCenterFill.setColor(this.olCenterColor);
-        }
-        if (this.dashArrayCenter) {
-            let tmpArray = this.dashArrayCenter.split(",");
-            for (let a of tmpArray) {
-                this.convertedCenterDashArray.push(parseFloat(a));
             }
         }
 
@@ -224,43 +135,6 @@ export class GeoLineStyle extends GeoStyle {
                 this.lineStroke.setWidth(this.width);
             }
 
-            // Set inner
-            if (this.colorInner) {
-                this.lineInnerStroke.setColor(this.olInnerColor);
-                this.lineCapInnerFill.setColor(this.olInnerColor);
-            }
-            if (this.dashArrayInner) {
-                this.lineInnerStroke.setLineDash(this.convertedInnerDashArray);
-            }
-            if (this.lineJoinInner) {
-                this.lineInnerStroke.setLineJoin(this.lineJoinInner);
-            }
-            if (this.miterLimitInner !== 4) {
-                this.lineInnerStroke.setMiterLimit(this.miterLimitInner);
-            }
-            if (this.widthInner) {
-                this.lineInnerStroke.setWidth(this.widthInner);
-            }
-
-            // Set center
-            if (this.colorCenter) {
-                this.lineCenterStroke.setColor(this.olCenterColor);
-                this.lineCapCenterFill.setColor(this.olCenterColor);
-                this.lineCenterStroke.setLineCap("butt");
-            }
-            if (this.dashArrayCenter) {
-                this.lineCenterStroke.setLineDash(this.convertedCenterDashArray);
-            }
-            if (this.lineJoinCenter) {
-                this.lineCenterStroke.setLineJoin(this.lineJoinCenter);
-            }
-            if (this.miterLimitCenter !== 4) {
-                this.lineCenterStroke.setMiterLimit(this.miterLimitCenter);
-            }
-            if (this.widthCenter) {
-                this.lineCenterStroke.setWidth(this.widthCenter);
-            }
-
             let geometryFunction = (feature) => {
                 if (this.geometryTransform) {
                     let geometry = this.getGeometry(feature);
@@ -293,16 +167,6 @@ export class GeoLineStyle extends GeoStyle {
             this.lineCapStyle.zCoordinate = this.zIndex;
             this.styles[length++] = this.lineStyle;
 
-            if (this.gamma !== undefined && options.layer) {
-                let styleGamma = this.gamma;
-                options.layer.on("precompose", function (evt) {
-                    evt.context.imageSmoothingEnabled = styleGamma;
-                    evt.context.webkitImageSmoothingEnabled = styleGamma;
-                    evt.context.mozImageSmoothingEnabled = styleGamma;
-                    evt.context.msImageSmoothingEnabled = styleGamma;
-                });
-            }
-
             if (this.geometryLineCaps.includes(this.lineCap)) {
                 let geometryFunction = (feature) => {
                     let geometry = this.getGeometry(feature);
@@ -318,89 +182,7 @@ export class GeoLineStyle extends GeoStyle {
                 this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                 this.styles[length++] = this.lineCapStyle;
             }
-
-            // Drawing inner
-            if (this.colorInner && this.widthInner) {
-                let geometryFunction = (feature) => {
-                    let geometry = this.getGeometry(feature);
-                    if (this.geometryTransform) {
-                        let values = this.getTransformValues(this.geometryTransform);
-
-                        if (this.geometryTransform.indexOf("translate") === 0) {
-                            geometry.translate(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.indexOf("scale") === 0) {
-                            geometry.scale(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.indexOf("rotate") === 0) {
-                            let center = ol.extent.getCenter(geometry.getExtent());
-                            let angle = +values[0].trim() * Math.PI / 180;
-                            geometry.rotate(angle, center);
-                        } else if (this.geometryTransform.indexOf("skew") === 0) {
-                            this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
-                        }
-                    }
-                    return feature.getGeometry();
-                };
-                this.lineInnerStyle.setGeometry(geometryFunction);
-                this.lineCapStyle.zCoordinate = this.zIndex;                
-                this.styles[length++] = this.lineInnerStyle;
-
-                if (this.geometryLineCaps.includes(this.lineCapInner)) {
-                    let geometryFunction = (feature) => {
-                        let geometry = this.getGeometry(feature);
-                        return GeoLineStyle.createAnchoredGeometry(
-                            geometry,
-                            this.lineCapInner,
-                            this.widthInner,
-                            resolution
-                        );
-                    };
-                    this.lineCapInnerStyle.setGeometry(geometryFunction);
-                    this.lineCapStyle.zCoordinate = this.zIndex + 0.1;                    
-                    this.styles[length++] = this.lineCapInnerStyle;
-                }
-            }
-
-            // Drawing center
-            if (this.colorCenter && this.widthCenter) {
-                let geometryFunction = (feature) => {
-                    let geometry = this.getGeometry(feature);
-                    if (this.geometryTransform) {
-                        let values = this.getTransformValues(this.geometryTransform);
-
-                        if (this.geometryTransform.indexOf("translate") === 0) {
-                            geometry.translate(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.indexOf("scale") === 0) {
-                            geometry.scale(+values[0].trim(), +values[1].trim());
-                        } else if (this.geometryTransform.indexOf("rotate") === 0) {
-                            let center = ol.extent.getCenter(geometry.getExtent());
-                            let angle = +values[0].trim() * Math.PI / 180;
-                            geometry.rotate(angle, center);
-                        } else if (this.geometryTransform.indexOf("skew") === 0) {
-                            this.skewGeometry(geometry, +values[0].trim(), +values[1].trim());
-                        }
-                    }
-                    return feature.getGeometry();
-                };
-
-                this.lineCenterStyle.setGeometry(geometryFunction);
-                this.lineCapStyle.zCoordinate = this.zIndex;                
-                this.styles[length++] = this.lineCenterStyle;
-
-                if (this.geometryLineCaps.includes(this.lineCapCenter)) {
-                    let geometryFunction = (feature) => {
-                        let geometry = this.getGeometry(feature);
-                        return GeoLineStyle.createAnchoredGeometry(
-                            geometry,
-                            this.lineCapCenter,
-                            this.widthCenter,
-                            resolution
-                        );
-                    };
-                    this.lineCapCenterStyle.setGeometry(geometryFunction);
-                    this.lineCapStyle.zCoordinate = this.zIndex + 0.1;                    
-                    this.styles[length++] = this.lineCapCenterStyle;
-                }
-            }
+         
         }
 
         if (this.onewaySymbol) {
