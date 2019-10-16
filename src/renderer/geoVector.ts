@@ -51,7 +51,7 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
       }
       // FIXME replace it with style.getZIndex()
       var imageReplay = replayGroup.getReplay(
-          6, (<any>ol.render).ReplayType.IMAGE);
+          2, (<any>ol.render).ReplayType.IMAGE);
       feature.pointCoordinates_ = geometry.getFlatCoordinates();
       imageReplay.startIndicesFeatures_.push(feature);
       var imageStyleClone = imageStyle.clone();
@@ -61,7 +61,7 @@ function renderPointGeometry_ (replayGroup, geometry, style, feature) {
   var textStyle = style.getText();
   if (textStyle) {
       var textReplay = replayGroup.getReplay(
-          2, (<any>ol.render).ReplayType.TEXT);
+          6, (<any>ol.render).ReplayType.TEXT);
       textReplay.startIndicesFeatures_.push(feature);
       var textStyleClone = textStyle.clone();
       textStyleClone.label = textStyle.label;

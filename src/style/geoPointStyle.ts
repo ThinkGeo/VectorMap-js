@@ -117,11 +117,6 @@ export class GeoPointStyle extends GeoStyle {
                 break;
         }
 
-        // "point-mask-type":"circle",
-        // "point-mask-color": "#FFFFFF",
-        // "point-mask-outline-color":"#000000",
-        // "point-mask-outline-width":10,
-
         this.maskMarginList = this.getMargin(this.maskMargin);
         this.maskStrokeWidth = this.maskOutlineWidth || 0;
 
@@ -152,6 +147,7 @@ export class GeoPointStyle extends GeoStyle {
             featureZindex = 0;
         }
         this.style.setZIndex(featureZindex);
+        this.style['zCoordinate'] = this.zIndex;
 
         this.styles = [];
         this.styles[0] = this.style;
@@ -231,7 +227,7 @@ export class GeoPointStyle extends GeoStyle {
             let context = (<any>ol).dom.createCanvasContext2D(canvasWidth, canvasHeight);
 
             this.drawMask(context);
-            
+
             this.textStyle = new ol.style.Text();
             this.textStyle.setText("a");
             this.textStyle.label = context.canvas;
