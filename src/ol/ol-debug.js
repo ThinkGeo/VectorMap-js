@@ -97394,7 +97394,7 @@ function olInit() {
                                     var geoStyle = instruct[1].geoStyle;
                                     if (geoStyle) {
                                         instructs.push([instruct[0], geoStyle.id, i]);
-                                        // if (geoStyle.constructor.name === "GeoPointStyle" || geoStyle.constructor.name === "GeoTextStyle" || geoStyle.constructor.name === "GeoShieldStyle" || (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined)) {
+                                        // if (geoStyle.constructor.name === "GeoPointStyle" || geoStyle.constructor.name === "GeoTextStyle" || geoStyle.constructor.name === "GeoShieldStyle" || (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined)) {
                                         //     mainGeoStyleIds[geoStyle.id] = "";
                                         // }
                                     }
@@ -97402,7 +97402,7 @@ function olInit() {
                                     if (childrenGeoStyles) {
                                         for (var k = 0; k < childrenGeoStyles.length; k++) {
                                             childrenInstructs.push([instruct[0], childrenGeoStyles[k].id, i]);
-                                            // if (childrenGeoStyles[k].constructor.name === "GeoPointStyle" || childrenGeoStyles[k].constructor.name === "GeoTextStyle" || childrenGeoStyles[k].constructor.name === "GeoShieldStyle" || (childrenGeoStyles[k].constructor.name === "GeoLineStyle" && childrenGeoStyles[k].onewaySymbol === true)) {
+                                            // if (childrenGeoStyles[k].constructor.name === "GeoPointStyle" || childrenGeoStyles[k].constructor.name === "GeoTextStyle" || childrenGeoStyles[k].constructor.name === "GeoShieldStyle" || (childrenGeoStyles[k].constructor.name === "GeoLineStyle" && childrenGeoStyles[k].lineDirectionImageUri === true)) {
                                             //     mainGeoStyleIds[childrenGeoStyles[k].id] = "";
                                             // }
                                         }
@@ -98630,7 +98630,7 @@ function olInit() {
                     _this.lineCap = styleJson["line-cap"];
                     _this.opacity = styleJson["line-opacity"];
                     _this.geometryTransform = styleJson["line-geometry-transform"];
-                    _this.onewaySymbol = styleJson["line-direction-image-uri"];
+                    _this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
                 }
                 return _this;
             }
@@ -98648,9 +98648,9 @@ function olInit() {
                     }
                 }
                 
-                if (this.onewaySymbol) {
+                if (this.lineDirectionImageUri) {
                     this.onewayIcon = new ol.style.Icon({
-                        src: this.onewaySymbol,
+                        src: this.lineDirectionImageUri,
                         imgSize: [18, 5],
                         anchor: [0.5, 0.5],
                         rotateWithView: true
@@ -98745,7 +98745,7 @@ function olInit() {
                         this.styles[length++] = this.lineCapStyle;
                     }
                 }
-                if (this.onewaySymbol) {
+                if (this.lineDirectionImageUri) {
                     var flatCoordinates = feature.getFlatCoordinates();
                     var longest = 0;
                     var longestIndex = void 0;
@@ -101746,7 +101746,7 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.onewaySymbol !== undefined) ||
+                                if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
                                     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);

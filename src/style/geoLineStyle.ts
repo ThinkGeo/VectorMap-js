@@ -26,7 +26,7 @@ export class GeoLineStyle extends GeoStyle {
     miterLimit: number;
     opacity: number;
     width: number;
-    onewaySymbol: any;
+    lineDirectionImageUri: any;
 
     olColor: string;
     convertedDashArray: number[] = new Array<number>();
@@ -61,7 +61,7 @@ export class GeoLineStyle extends GeoStyle {
             this.opacity = styleJson["line-opacity"];
             this.geometryTransform = styleJson["line-geometry-transform"];
 
-            this.onewaySymbol = styleJson["line-direction-image-uri"];
+            this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
         }
     }
 
@@ -80,9 +80,9 @@ export class GeoLineStyle extends GeoStyle {
             }
         }
 
-        if (this.onewaySymbol) {
+        if (this.lineDirectionImageUri) {
             this.onewayIcon = new ol.style.Icon({
-                src: this.onewaySymbol,
+                src: this.lineDirectionImageUri,
                 imgSize: [18, 5],
                 anchor: [0.5, 0.5],
                 rotateWithView: true
@@ -185,7 +185,7 @@ export class GeoLineStyle extends GeoStyle {
          
         }
 
-        if (this.onewaySymbol) {
+        if (this.lineDirectionImageUri) {
             let flatCoordinates = feature.getGeometry().getFlatCoordinates();
             let longest = 0;
             let longestIndex;
