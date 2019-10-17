@@ -3,6 +3,7 @@ import { GeoStyle } from "./geoStyle";
 import { GeoBrush } from "../style/geoBrush";
 import { TextLabelingStrategy } from "./textLabelingStrategy";
 import { DetectTextLabelingStrategy } from "./detectTextLabelingStrategy";
+import { GeoPointStyle } from "./geoPointStyle";
 
 export class GeoTextStyle extends GeoStyle {
     static measureCanvas = undefined;
@@ -85,7 +86,6 @@ export class GeoTextStyle extends GeoStyle {
             this.maskOutlineColor = styleJson["text-mask-outline-color"];
             this.maskOutlineWidth = styleJson["text-mask-outline-width"] || 0;
 
-            // renamed
             // // add into textStyle
             this.offsetX = styleJson["text-offset-x"];
             this.offsetY = styleJson["text-offset-y"];
@@ -98,10 +98,10 @@ export class GeoTextStyle extends GeoStyle {
             this.rotationAngle = styleJson["text-rotation-angle"];
             this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
             this.opacity = styleJson["text-opacity"];
-            this.basePointStyle = styleJson["text-base-point-style"];
 
-            // TODO
             this.lineSpacing = styleJson["text-line-spacing"] || 0;
+
+            this.basePointStyleJson = styleJson["text-base-point-style"];
         }
     }
 
@@ -113,23 +113,14 @@ export class GeoTextStyle extends GeoStyle {
             stroke: stroke
         });
 
-        // let debugImageStyle = new ol.style.RegularShape({
-        //     fill: new ol.style.Fill({
-        //         color: "red"
-        //     }),
-        //     stroke: new ol.style.Stroke({
-        //         color: "black",
-        //         width: 10
-        //     }),
-        //     points: 4,
-        //     radius: 10,
-        //     radius2: 0,
-        //     angle: 0
-        // });
+        if (this.basePointStyleJson) {
+            this.basePointStyle = new GeoPointStyle(this.basePointStyleJson);
+        }
 
         this.style = new ol.style.Style({
             text: textStyle,
         });
+        // this.style.setImage(debugImageStyle);
 
         if (this.font) {
             textStyle.setFont(this.font);
@@ -208,8 +199,12 @@ export class GeoTextStyle extends GeoStyle {
                 featureZindex = 0;
             }
             this.style.setZIndex(featureZindex);
+             textStyles.push(this.style);
+        }
 
-            textStyles.push(this.style);
+        if (this.basePointStyle) {
+            let basePointOLStyle = this.basePointStyle.getStyles(feature, resolution, options);
+            Array.prototype.push.apply(textStyles, basePointOLStyle);
         }
 
         return textStyles;

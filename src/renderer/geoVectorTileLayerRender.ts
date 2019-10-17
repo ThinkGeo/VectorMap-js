@@ -711,6 +711,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             return false;
         }
         var loading = false;
+        replayGroup.hasDeclutterGroup = false;
         if (Array.isArray(styles)) {
             for (var i = 0, ii = styles.length; i < ii; ++i) {
                 loading = VecorRenderFeature(

@@ -303,10 +303,28 @@
       "text-halo-radius": 2,
       "text-fill-color-color": "@adminLabelLevel1",
       "text-spacing": 1,
+      "text-placement": "top",
+      "text-offset-y": 50,
+      "text-font":"vectormap-icons",
+      "text-content": "@name",
+      "text-base-point-style": {
+        "id": "pointstyle-glyph",
+        "filter": "layerName='poi'",
+        "point-type": "glyph",
+        "point-glyph-font-name": "vectormap-icons",
+        "point-glyph-content": "A",
+        "point-size": 40,
+        "point-outline-color": "#00dd00",
+        "point-outline-width": 5,
+        "point-fill-color": "@naturalAndSports",
+        "point-mask-type": "circle",
+        "point-mask-color": "#FFFFFF",
+        "point-mask-outline-color": "#000000",
+        "point-mask-outline-width": 10
+      },
       "style": [
         {
           "filter": "class='country'",
-          "text-content": "@name",
           "text-wrap-width": 50,
           "style": [
             {
@@ -4203,39 +4221,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "ocean",
-        "country",
-        "urban",
-        "landcover",
-        "water",
-        "waterway",
-        "building",
-        "country_boundary",
-        "province_boundary",
-        "aeroway",
-        "road",
-        "railway",
-        "place_popular",
-        "place_others",
-        "poi_icon",
-        "country_name",
-        "state_name",
-        "marine_name",
-        "poi_text",
-        "road_number",
-        "motorway_name",
-        "trunk_name",
-        "primary_name",
-        "secondary_name",
-        "tertiary_name",
-        "residential_name",
-        "pedestrian_name",
-        "otherroad_name",
-        "road_oneway",
-        "water_name",
-        "waterway_name",
-        "building_name",
-        "housenumber"
+        "country_name"
       ]
     }
   ]
