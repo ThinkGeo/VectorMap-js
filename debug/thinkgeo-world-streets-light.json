@@ -156,7 +156,12 @@
       "style": [
         {
           "filter": "zoom>=0;zoom<=19;",
-          "polygon-fill-color": "@countryFill"
+          "polygon-fill-color": "@countryFill",
+          "polygon-shadow": {
+            "polygon-fill-color": "#FF00FF",
+            "polygon-offset-x": 2,
+            "polygon-offset-y": -2
+          }
         }
       ]
     },

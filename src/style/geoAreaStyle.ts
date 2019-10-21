@@ -33,7 +33,9 @@ export class GeoAreaStyle extends GeoStyle {
     convertedShadowColor: string;
     geometryTransformValue: any;
     shadowTranslate: string;
-    shadowTranslateValueByResolution: any;
+    offsetTranslateValueByResolution: any;
+
+    style: ol.style.Style;
 
     constructor(styleJson?: any) {
         super(styleJson);
@@ -47,7 +49,7 @@ export class GeoAreaStyle extends GeoStyle {
             this.opacity = styleJson["polygon-opacity"];
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
-            this.shadow = styleJson["polygon-shadow"];
+            this.shadowStyleJson = styleJson["polygon-shadow"];
             this.geometryTransform = styleJson["polygon-geometry-transform"];
             this.fillImageURI = styleJson["polygon-fill-image-uri"];
             this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
@@ -56,92 +58,89 @@ export class GeoAreaStyle extends GeoStyle {
     }
 
     initializeCore() {
+
+        this.style = new ol.style.Style();
+
         if (this.fillColor) {
             this.convertedFillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
+            var fillStyle = new ol.style.Fill({
+                color: this.convertedFillColor
+            })
+            this.style.setFill(fillStyle);
         }
 
         if (this.geometryTransform) {
             this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
         }
 
-        if (this.outlineColor) {
-            this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
-        }
-        if (this.outlineDashArray) {
-            this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+        // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
+        if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
+            if (this.outlineColor) {
+                this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
+            }
+            if (this.outlineDashArray) {
+                this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+            }
+
+            let newStroke = new ol.style.Stroke();
+
+            newStroke.setColor(this.convertedOutlineColor);
+            newStroke.setLineDash(this.convertedOutlineDashArray);
+            newStroke.setWidth(this.outlineWidth);
+            this.style.setStroke(newStroke);
         }
 
-        this.shadowTranslateValueByResolution = {};
+        if (this.shadowStyleJson) {
+            this.shadowStyle = new GeoAreaStyle(this.shadowStyleJson);
+        }
+
+        this.offsetTranslateValueByResolution = {};
     }
     getConvertedStyleCore(feature: any, resolution: number, options): ol.style.Style[] {
         let length = 0;
-        this.styles = [];
+        let styles = [];
         let cloneGeometry = feature.getGeometry().clone();
+        if (this.shadowStyle) {
+            if (this.shadowStyle) {
+                let shadowOLStyle = this.shadowStyle.getStyles(feature, resolution, options);
+                if(shadowOLStyle)
+                {
+                    for (let index = 0; index < shadowOLStyle.length; index++) {
+                        const element = shadowOLStyle[index];
+                        element['zCoordinate'] = this.zIndex - 0.5;
+                    }
+                }
+                Array.prototype.push.apply(styles, shadowOLStyle);
+            }
+        }
         if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
                 this.transformGeometry(cloneGeometry, resolution);
             }
-
-            if (this.shadow) {
-                let shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
-                if (shadowTranslateValue === undefined) {
+            if (this.offsetX || this.offsetY) {
+                let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                if (offsetTranslateValue === undefined) {
                     let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                    this.shadowTranslate = (`translate(${(this.shadowDx ? this.shadowDx : 0) * tmpResolution},${(this.shadowDy ? this.shadowDy : 0) * tmpResolution})`);
-                    shadowTranslateValue = this.getTransformValues(this.shadowTranslate);
-                    this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
+                    this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                    offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
+                    this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
                 }
-
-                let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
-                let newFlatCoordinates = (<any>ol.geom).flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim(), undefined);
-
-                let tmpCoordinates: ol.Coordinate[][] = [[]];
-                let index = 0;
-                for (let i = 0; i < newFlatCoordinates.length; i += 2) {
-                    tmpCoordinates[index] || (tmpCoordinates[index] = []);
-                    tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
-                    if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
-                        index++;
-                    }
-                }
-                let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-                geometry['ends_'] = feature.ends_;
-                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                geometry['extent_'] = newExtent_;
-                GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
-                GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                GeoAreaStyle.areaShadowStyle['zCoordinate'] = this.zIndex - 0.5;
-                this.styles[length++] = GeoAreaStyle.areaShadowStyle;
+                cloneGeometry.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
             }
+            this.style.setGeometry(cloneGeometry);
+            this.style['zCoordinate'] = this.zIndex;
+            styles.push(this.style);
 
-            if (this.convertedFillColor) {
-                GeoAreaStyle.areaStyle.getFill().setColor(this.convertedFillColor);
-            }
-
-            // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
-            if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
-                let newStroke = new ol.style.Stroke();
-                newStroke.setColor(this.convertedOutlineColor);
-                newStroke.setLineDash(this.convertedOutlineDashArray);
-                newStroke.setWidth(this.outlineWidth);
-                GeoAreaStyle.areaStyle.setStroke(newStroke);
-            }
-            else {
-                GeoAreaStyle.areaStyle.setStroke(undefined);
-            }
-
-            GeoAreaStyle.areaStyle.setGeometry(cloneGeometry);
-            GeoAreaStyle.areaStyle['zCoordinate'] = this.zIndex;
-            this.styles[length++] = GeoAreaStyle.areaStyle;
-
-            if (this.fillImageURI) {
-                GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
-                    crossOrigin: 'anonymous',
-                    src: this.fillImageURI
-                }));
-            }
+            // if (this.fillImageURI) {
+            //     GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
+            //         crossOrigin: 'anonymous',
+            //         src: this.fillImageURI
+            //     }));
+            // }
         }
 
-        return this.styles;
+   
+        return styles;
     }
 
     getTransformValues(transform: string): any {
