@@ -3,7 +3,7 @@ var view = new ol.View({
     //center: [-8232679.211417493, 4963666.086553334],// NY
     center: [-10775517.886785883, 3866095.7412080616],// dallas
     //center: [2583066.0947164265, -210895.4425131777],// country_name
-    zoom: 15,
+    zoom: 1,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -24,10 +24,21 @@ var worldStreetsLayer = new ol.mapsuite.VectorTileLayer("thinkgeo-world-streets-
     minimalist: true,
 });
 
+
+var vectorLayer = new ol.layer.Vector({
+    source:new ol.source.Vector(),
+})
+
 var map = new ol.Map({
-    layers: [worldStreetsLayer],
+    layers: [worldStreetsLayer,vectorLayer],
     target: 'map',
     view: view,
     renderer: 'webgl',
     loadTilesWhileInteracting: true
 });
+
+map.on("click", function showInfo(event) {
+    var features = map.getFeaturesAtPixel(event.pixel);
+    vectorLayer.getSource().clear();
+    vectorLayer.getSource().addFeatures(features);
+  })

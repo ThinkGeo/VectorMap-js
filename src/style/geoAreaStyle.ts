@@ -13,7 +13,6 @@ export class GeoAreaStyle extends GeoStyle {
         fill: new ol.style.Fill({}),
     });
 
-    brushType: string;
     offsetX: number;
     offsetY: number;
     fillColor: string;
@@ -26,8 +25,6 @@ export class GeoAreaStyle extends GeoStyle {
     radialGradient: string;
     fillImageURI: string;
     shadowColor: string;
-    shadowDx: number;
-    shadowDy: number;
 
     brushOptions: any;
     geoBrush: string;
@@ -63,8 +60,6 @@ export class GeoAreaStyle extends GeoStyle {
             this.convertedFillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
         }
 
-
-
         if (this.geometryTransform) {
             this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
         }
@@ -81,16 +76,13 @@ export class GeoAreaStyle extends GeoStyle {
     getConvertedStyleCore(feature: any, resolution: number, options): ol.style.Style[] {
         let length = 0;
         this.styles = [];
+        let cloneGeometry = feature.getGeometry().clone();
         if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
-                feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
-                var dx = this.geometryTransformValue[0].trim() * resolution;
-                var dy = this.geometryTransformValue[1].trim() * resolution;
-                var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
-                feature.extent_ = newExtent_;
+                this.transformGeometry(cloneGeometry, resolution);
             }
 
-            if (this.shadowDx || this.shadowDy) {
+            if (this.shadow) {
                 let shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
                 if (shadowTranslateValue === undefined) {
                     let tmpResolution = Math.round(resolution * 100000000) / 100000000;
@@ -136,37 +128,16 @@ export class GeoAreaStyle extends GeoStyle {
             else {
                 GeoAreaStyle.areaStyle.setStroke(undefined);
             }
- 
-            GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
+
+            GeoAreaStyle.areaStyle.setGeometry(cloneGeometry);
             GeoAreaStyle.areaStyle['zCoordinate'] = this.zIndex;
             this.styles[length++] = GeoAreaStyle.areaStyle;
 
-
-            if (this.brushType === 'texture' && this.fillImageURI) {
-
+            if (this.fillImageURI) {
                 GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
                     crossOrigin: 'anonymous',
                     src: this.fillImageURI
                 }));
-
-                // function test(resolve, reject): Promise<void> {
-                // let xhr = new XMLHttpRequest();
-                // xhr.open("GET", this.textureFile, true);
-                // xhr.responseType = "blob";
-                // xhr.onload = function (event: any) {
-                //     if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-                //         debugger
-                //         var test = window.URL.createObjectURL(xhr.response);
-                //         console.log(1);
-
-                //         // resolve(this.styles);
-                //         return this.styles;
-                //     }
-                // }.bind(this);
-                // xhr.onerror = function () {
-                // }.bind(this);
-                // xhr.send();
-                // }
             }
         }
 
@@ -189,35 +160,24 @@ export class GeoAreaStyle extends GeoStyle {
         return values;
     }
 
-    GetTransformedCoordinates(feature, resolution) {
-        let tmpFlatCoordinates = feature.getGeometry().getFlatCoordinates();
-        let tmpCoordinates: ol.Coordinate[][] = [[]];
-        let index = 0;
-        for (let i = 0; i < tmpFlatCoordinates.length; i += 2) {
-            tmpCoordinates[index] || (tmpCoordinates[index] = []);
-            tmpCoordinates[index].push([tmpFlatCoordinates[i], tmpFlatCoordinates[i + 1]]);
-            if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === tmpFlatCoordinates[i] && tmpCoordinates[index][0][1] === tmpFlatCoordinates[i + 1]) {
-                index++;
-            }
-        }
-        let geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+    transformGeometry(geometry, resolution) {
 
         if (this.geometryTransform.indexOf("translate") === 0) {
-            geometry.translate(+this.geometryTransformValue[0].trim() * resolution, +this.geometryTransformValue[1].trim() * resolution);
+            geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
         else if (this.geometryTransform.indexOf("scale") === 0) {
             geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         }
         else if (this.geometryTransform.indexOf("rotate") === 0) {
-            let center = ol.extent.getCenter(geometry.getExtent());
+            let center = ol.extent.getCenter(cloneGeometry.getExtent());
             let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
             geometry.rotate(angle, center);
         }
-        else if (this.geometryTransform.indexOf("skew") === 0) {
-            this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
-        }
+        // else if (this.geometryTransform.indexOf("skew") === 0) {
+        //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
+        // }
 
-        return (<any>geometry).flatCoordinates;
+        return geometry;
     }
 
 

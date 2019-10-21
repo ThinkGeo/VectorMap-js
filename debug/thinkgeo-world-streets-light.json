@@ -156,7 +156,7 @@
       "style": [
         {
           "filter": "zoom>=0;zoom<=19;",
-          "polygon-fill": "@countryFill"
+          "polygon-fill-color": "@countryFill"
         }
       ]
     },
@@ -166,7 +166,7 @@
       "style": [
         {
           "filter": "zoom>=0;zoom<=19;",
-          "polygon-fill": "#aac6ee"
+          "polygon-fill-color": "#aac6ee"
         }
       ]
     },
@@ -176,7 +176,7 @@
       "style": [
         {
           "filter": "zoom>=6;zoom<=9;",
-          "polygon-fill": "@urbanArea"
+          "polygon-fill-color": "@urbanArea"
         }
       ]
     },
@@ -186,7 +186,7 @@
       "style": [
         {
           "filter": "zoom>=0;zoom<=19;",
-          "polygon-fill": "@water"
+          "polygon-fill-color": "@water"
         }
       ]
     },
@@ -525,7 +525,7 @@
           "style": [
             {
               "filter": "zoom>=10;zoom<=19;",
-              "polygon-fill": "@aerowayLevel5"
+              "polygon-fill-color": "@aerowayLevel5"
             }
           ]
         },
@@ -567,7 +567,7 @@
           "style": [
             {
               "filter": "zoom>=11;zoom<=19;",
-              "polygon-fill": "@aerowayLevel3"
+              "polygon-fill-color": "@aerowayLevel3"
             }
           ]
         },
@@ -576,7 +576,7 @@
           "style": [
             {
               "filter": "zoom>=10;zoom<=19;",
-              "polygon-fill": "@aerowayLevel3"
+              "polygon-fill-color": "@aerowayLevel3"
             }
           ]
         }
@@ -591,7 +591,7 @@
           "style": [
             {
               "filter": "zoom>=13;zoom<=19;",
-              "polygon-fill": "@agriculture"
+              "polygon-fill-color": "@agriculture"
             }
           ]
         },
@@ -600,7 +600,7 @@
           "style": [
             {
               "filter": "zoom>=2;zoom<=19;",
-              "polygon-fill": "@ice"
+              "polygon-fill-color": "@ice"
             }
           ]
         },
@@ -609,7 +609,7 @@
           "style": [
             {
               "filter": "zoom>=2;zoom<=19;",
-              "polygon-fill": "@wood"
+              "polygon-fill-color": "@wood"
             }
           ]
         },
@@ -618,7 +618,7 @@
           "style": [
             {
               "filter": "zoom>=2;zoom<=19;",
-              "polygon-fill": "@grassland"
+              "polygon-fill-color": "@grassland"
             }
           ]
         },
@@ -627,7 +627,7 @@
           "style": [
             {
               "filter": "zoom>=6;zoom<=19;",
-              "polygon-fill": "@scrub"
+              "polygon-fill-color": "@scrub"
             }
           ]
         },
@@ -636,7 +636,7 @@
           "style": [
             {
               "filter": "zoom>=6;zoom<=19;",
-              "polygon-fill": "@rock"
+              "polygon-fill-color": "@rock"
             }
           ]
         },
@@ -645,13 +645,13 @@
           "style": [
             {
               "filter": "zoom>=6;zoom<=19;",
-              "polygon-fill": "@wetland"
+              "polygon-fill-color": "@wetland"
             }
           ]
         },
         {
           "filter": "class='park';subclass!='nature_reserve'",
-          "polygon-fill": "@park",
+          "polygon-fill-color": "@park",
           "style": [
             {
               "filter": "zoom>=4;zoom<=13;area>4500"
@@ -669,11 +669,11 @@
           "style": [
             {
               "filter": "zoom>=16;zoom<=19;subclass='swimming_pool'",
-              "polygon-fill": "@swimmingPool"
+              "polygon-fill-color": "@swimmingPool"
             },
             {
               "filter": "zoom>=16;zoom<=19;",
-              "polygon-fill": "@pitch"
+              "polygon-fill-color": "@pitch"
             }
           ]
         },
@@ -682,23 +682,23 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@sand"
+              "polygon-fill-color": "@sand"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@sand_opacity07"
+              "polygon-fill-color": "@sand_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@sand_opacity05"
+              "polygon-fill-color": "@sand_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@sand_opacity02"
+              "polygon-fill-color": "@sand_opacity02"
             },
             {
               "filter": "zoom>=6;zoom<=19",
-              "polygon-fill": "@sand"
+              "polygon-fill-color": "@sand"
             }
           ]
         },
@@ -707,7 +707,7 @@
           "style": [
             {
               "filter": "zoom>=13;zoom<=19",
-              "polygon-fill": "@cemetery"
+              "polygon-fill-color": "@cemetery"
             }
           ]
         },
@@ -716,19 +716,19 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@crops"
+              "polygon-fill-color": "@crops"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@crops_opacity07"
+              "polygon-fill-color": "@crops_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@crops_opacity05"
+              "polygon-fill-color": "@crops_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@crops_opacity02"
+              "polygon-fill-color": "@crops_opacity02"
             }
           ]
         },
@@ -737,19 +737,19 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@grassland"
+              "polygon-fill-color": "@grassland"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@grass_opacity07"
+              "polygon-fill-color": "@grass_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@grass_opacity05"
+              "polygon-fill-color": "@grass_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@grass_opacity02"
+              "polygon-fill-color": "@grass_opacity02"
             }
           ]
         },
@@ -758,19 +758,19 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@swamps"
+              "polygon-fill-color": "@swamps"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@swamps_opacity07"
+              "polygon-fill-color": "@swamps_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@swamps_opacity05"
+              "polygon-fill-color": "@swamps_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@swamps_opacity02"
+              "polygon-fill-color": "@swamps_opacity02"
             }
           ]
         },
@@ -779,19 +779,19 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@trees"
+              "polygon-fill-color": "@trees"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@trees_opacity07"
+              "polygon-fill-color": "@trees_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@trees_opacity05"
+              "polygon-fill-color": "@trees_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@trees_opacity02"
+              "polygon-fill-color": "@trees_opacity02"
             }
           ]
         },
@@ -800,19 +800,19 @@
           "style": [
             {
               "filter": "zoom>=1;zoom<=2",
-              "polygon-fill": "@tundra"
+              "polygon-fill-color": "@tundra"
             },
             {
               "filter": "zoom=3",
-              "polygon-fill": "@tundra_opacity07"
+              "polygon-fill-color": "@tundra_opacity07"
             },
             {
               "filter": "zoom=4",
-              "polygon-fill": "@tundra_opacity05"
+              "polygon-fill-color": "@tundra_opacity05"
             },
             {
               "filter": "zoom=5",
-              "polygon-fill": "@tundra_opacity02"
+              "polygon-fill-color": "@tundra_opacity02"
             }
           ]
         }
@@ -824,15 +824,15 @@
       "style": [
         {
           "filter": "zoom=14;class='hospital,hotel,castle,university,civic,stadium'",
-          "polygon-fill": "@buildingFill"
+          "polygon-fill-color": "@buildingFill"
         },
         {
           "filter": "zoom=15",
-          "polygon-fill": "@buildingFill"
+          "polygon-fill-color": "@buildingFill"
         },
         {
           "filter": "zoom>=16;zoom<=17",
-          "polygon-fill": "@buildingFill",
+          "polygon-fill-color": "@buildingFill",
           "polygon-outline-color": "@buildingOutline",
           "polygon-outline-width": 1,
           "polygon-shadow-color": "@buildingShadow",
@@ -841,7 +841,7 @@
         },
         {
           "filter": "zoom=18;",
-          "polygon-fill": "@buildingFill",
+          "polygon-fill-color": "@buildingFill",
           "polygon-outline-color": "@buildingOutline",
           "polygon-outline-width": 1,
           "polygon-shadow-color": "@buildingShadow",
@@ -850,7 +850,7 @@
         },
         {
           "filter": "zoom=19;",
-          "polygon-fill": "@buildingFill",
+          "polygon-fill-color": "@buildingFill",
           "polygon-outline-color": "@buildingOutline",
           "polygon-outline-width": 1,
           "polygon-shadow-color": "@buildingShadow",
@@ -4204,38 +4204,7 @@
       "source": "worldstreets_source",
       "styles": [
         "ocean",
-        "country",
-        "urban",
-        "landcover",
-        "water",
-        "waterway",
-        "building",
-        "country_boundary",
-        "province_boundary",
-        "aeroway",
-        "road",
-        "railway",
-        "place_popular",
-        "place_others",
-        "poi_icon",
-        "country_name",
-        "state_name",
-        "marine_name",
-        "poi_text",
-        "road_number",
-        "motorway_name",
-        "trunk_name",
-        "primary_name",
-        "secondary_name",
-        "tertiary_name",
-        "residential_name",
-        "pedestrian_name",
-        "otherroad_name",
-        "road_oneway",
-        "water_name",
-        "waterway_name",
-        "building_name",
-        "housenumber"
+        "country"
       ]
     }
   ]
