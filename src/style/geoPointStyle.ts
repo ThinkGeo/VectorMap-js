@@ -121,6 +121,8 @@ export class GeoPointStyle extends GeoStyle {
         this.maskStrokeWidth = this.maskOutlineWidth || 0;
 
         if (this.pointType === "symbol") {
+            this.imageStyle["offsetX"]= this.offsetX;
+            this.imageStyle["offsetY"]= this.offsetY;
             this.style.setImage(this.imageStyle);
             this.drawMaskForSymbol(this.imageStyle);
         }
@@ -228,7 +230,10 @@ export class GeoPointStyle extends GeoStyle {
 
             this.drawMask(context);
 
-            this.textStyle = new ol.style.Text();
+            this.textStyle = new ol.style.Text({
+                offsetX:this.offsetX,
+                offsetY:this.offsetY
+            });
             this.textStyle.setText("a");
             this.textStyle.label = context.canvas;
             this.style.setText(this.textStyle);

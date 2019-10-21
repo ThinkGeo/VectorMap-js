@@ -4156,10 +4156,13 @@
       "point-outline-color": "#00dd00",
       "point-outline-width": 5,
       "point-fill-color": "@naturalAndSports",
+      "point-offset-x": 10,
+      "point-offset-y": 100,
       "point-mask-type": "circle",
       "point-mask-color": "#FFFFFF",
       "point-mask-outline-color": "#000000",
       "point-mask-outline-width": 10
+  
     },
     {
       "id": "pointstyle-symbol",
@@ -4167,7 +4170,6 @@
       "point-type": "symbol",
       "style": [
         {
-          "filter": "class='place_of_worship'",
           "point-symbol-type": "star",
           "point-size": 40,
           "point-outline-color": "#00dd00",
@@ -4175,10 +4177,12 @@
           "point-fill-color": "@naturalAndSports",
           "point-rotation-angle": 1,
           "point-opacity": 0.5,
-          "point-mask-type": "circle",
+          "point-mask-type": "rectangle",
           "point-mask-color": "#FFFFFF",
           "point-mask-outline-color": "#000000",
-          "point-mask-outline-width": 10
+          "point-mask-outline-width": 10,
+          "point-offset-x": 10,
+          "point-offset-y": 100
         }
       ]
     },
@@ -4209,7 +4213,7 @@
       "source": "worldstreets_source",
       "styles": [
         "ocean",
-        "country"
+        "pointstyle-symbol"
       ]
     }
   ]

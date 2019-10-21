@@ -55,6 +55,8 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         feature.pointCoordinates_ = geometry.getFlatCoordinates();
         imageReplay.startIndicesFeatures_.push(feature);
         var imageStyleClone = imageStyle.clone();
+        imageStyleClone["offsetX"] = imageStyle["offsetX"];
+        imageStyleClone["offsetY"] = imageStyle["offsetY"];
         imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;
         imageReplay.startIndicesStyles_.push(imageStyleClone);
