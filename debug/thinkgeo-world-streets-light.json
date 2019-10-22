@@ -3,7 +3,7 @@
   "version": 1.3,
   "owner": "ThinkGeo LLC",
   "time": "2018/06/09",
-  "background": "#aac6ee",
+  "background": "#aac6ee00",
   "variables": {
     "@naturalAndSports": "#439c3c",
     "@tourism": "#7d5e48",
@@ -4153,16 +4153,17 @@
       "point-glyph-font-name": "vectormap-icons",
       "point-glyph-content": "A",
       "point-size": 40,
-      "point-outline-color": "#00dd00",
       "point-outline-width": 5,
-      "point-fill-color": "@naturalAndSports",
       "point-offset-x": 10,
       "point-offset-y": 100,
       "point-mask-type": "circle",
-      "point-mask-color": "#FFFFFF",
-      "point-mask-outline-color": "#000000",
-      "point-mask-outline-width": 10
-  
+      "point-mask-outline-width": 10,
+
+      "point-fill-color": "#ff00ff55",
+      "point-outline-color": "#00dd0055",
+      "point-mask-color": "#FFFFFF55",
+      "point-mask-outline-color": "#00000055",
+      "point-opacity": 1
     },
     {
       "id": "pointstyle-symbol",
@@ -4172,15 +4173,14 @@
         {
           "point-symbol-type": "star",
           "point-size": 40,
-          "point-outline-color": "#00dd00",
+          "point-outline-color": "#00dd0055",
           "point-outline-width": 1,
-          "point-fill-color": "@naturalAndSports",
-          "point-rotation-angle": 1,
-          "point-opacity": 0.5,
+          "point-fill-color": "#ff00ffFF",
           "point-mask-type": "rectangle",
-          "point-mask-color": "#FFFFFF",
-          "point-mask-outline-color": "#000000",
+          "point-mask-color": "#FFFFFFff",
+          "point-mask-outline-color": "#000000ff",
           "point-mask-outline-width": 10,
+          "point-opacity": 0.1,
           "point-offset-x": 10,
           "point-offset-y": 100
         }
@@ -4212,8 +4212,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "ocean",
-        "pointstyle-symbol"
+       "pointstyle-symbol"
       ]
     }
   ]
