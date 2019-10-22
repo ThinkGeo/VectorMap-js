@@ -1,10 +1,10 @@
 var view = new ol.View({
     //center: [0, 0],
-    center: [-10784844.42768457, 4989250.967286606],
+    //center: [-10784844.42768457, 4989250.967286606],// poi
     //center: [-8232679.211417493, 4963666.086553334],// NY
     //center: [-10775413.17372718, 3866116.842477651],// dallas
-    //center: [2583066.0947164265, -210895.4425131777],// country_name
-    zoom: 19,
+    center: [-10796026.396196617, 5003517.396574807],// country_name
+    zoom: 4,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -42,7 +42,7 @@ var vectorLayer = new ol.layer.Vector({
 vectorLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point([-10784844.42768457, 4989250.967286606])))
 
 var map = new ol.Map({
-    layers: [worldStreetsLayer,vectorLayer],
+    layers: [vectorLayer,worldStreetsLayer],
     target: 'map',
     view: view,
     renderer: 'webgl',

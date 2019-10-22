@@ -304,10 +304,15 @@
       "id": "country_name",
       "filter": "layerName='admin_name'",
       "text-wrap-width": 30,
-      "text-halo-color": "@haloTransp50",
-      "text-halo-radius": 2,
-      "text-fill-color-color": "@adminLabelLevel1",
       "text-spacing": 1,
+      "text-fill-color": "#00000055",
+      "text-halo-color": "#ffffff55",
+      "text-halo-radius": 40,
+      "text-mask-type":"rectangle",
+      "text-mask-color":"#00000055",
+      "text-mask-outline-color":"#ffffff55",
+      "text-mask-outline-width":4,
+      "text-opacity":0.9,
       "style": [
         {
           "filter": "class='country'",
@@ -332,7 +337,6 @@
                 },
                 {
                   "filter": "zoom=4",
-                  "text-fill-color": "@adminLabelLevel5",
                   "text-font": "600 30px Arial, Helvetica, sans-serif"
                 },
                 {
@@ -4175,7 +4179,7 @@
           "point-size": 40,
           "point-outline-color": "#00dd0055",
           "point-outline-width": 1,
-          "point-fill-color": "#ff00ffFF",
+          "point-fill-color": "rgb(255,0,255,0.1)",
           "point-mask-type": "rectangle",
           "point-mask-color": "#FFFFFFff",
           "point-mask-outline-color": "#000000ff",
@@ -4212,7 +4216,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-       "pointstyle-symbol"
+       "country_name"
       ]
     }
   ]
