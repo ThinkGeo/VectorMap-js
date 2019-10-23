@@ -77,7 +77,7 @@ export class GeoVector extends ol.layer.Vector {
 
                 // Set the layer background
                 if (this.background) {
-                    let backgroundColor = GeoStyle.toRGBAColor(this.background);
+                    let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
                     if (backgroundColor) {
                         this["background"] = backgroundColor;
                     }

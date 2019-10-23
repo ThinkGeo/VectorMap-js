@@ -68,7 +68,7 @@ export class GeoLineStyle extends GeoStyle {
 
     initializeCore() {
         if (this.color) {
-            this.olColor = GeoStyle.toRGBAColor(this.color, this.opacity);
+            this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
 
             this.lineStroke.setColor(this.olColor);
             this.lineCapFill.setColor(this.olColor);

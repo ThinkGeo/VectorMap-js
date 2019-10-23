@@ -46,7 +46,7 @@ export class GeoAreaStyle extends GeoStyle {
             this.fillColor = styleJson["polygon-fill-color"];
             this.offsetX = styleJson["polygon-offset-x"];
             this.offsetY = styleJson["polygon-offset-y"];
-            this.opacity = styleJson["polygon-opacity"];
+            this.opacity = styleJson["polygon-opacity"] || 1;
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
             this.shadowStyleJson = styleJson["polygon-shadow"];
@@ -58,11 +58,10 @@ export class GeoAreaStyle extends GeoStyle {
     }
 
     initializeCore() {
-
         this.style = new ol.style.Style();
 
         if (this.fillColor) {
-            this.convertedFillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
+            this.convertedFillColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
             var fillStyle = new ol.style.Fill({
                 color: this.convertedFillColor
             })
@@ -76,7 +75,7 @@ export class GeoAreaStyle extends GeoStyle {
         // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
         if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
             if (this.outlineColor) {
-                this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
+                this.convertedOutlineColor = GeoStyle.blendColorAndOpacity(this.outlineColor, this.opacity);
             }
             if (this.outlineDashArray) {
                 this.convertedOutlineDashArray = this.outlineDashArray.split(",");
@@ -130,13 +129,6 @@ export class GeoAreaStyle extends GeoStyle {
             this.style.setGeometry(cloneGeometry);
             this.style['zCoordinate'] = this.zIndex;
             styles.push(this.style);
-
-            // if (this.fillImageURI) {
-            //     GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
-            //         crossOrigin: 'anonymous',
-            //         src: this.fillImageURI
-            //     }));
-            // }
         }
 
    

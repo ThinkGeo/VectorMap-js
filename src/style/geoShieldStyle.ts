@@ -157,10 +157,10 @@ export class GeoShieldStyle extends GeoStyle {
         }
 
         if (this.fill) {
-            this.textStyle.getFill().setColor(GeoStyle.toRGBAColor(this.fill, this.opacity));
+            this.textStyle.getFill().setColor(GeoStyle.blendColorAndOpacity(this.fill, this.opacity));
         }
         if (this.haloRadius && this.haloFill) {
-            this.textStyle.getStroke().setColor(GeoStyle.toRGBAColor(this.haloFill, this.opacity));
+            this.textStyle.getStroke().setColor(GeoStyle.blendColorAndOpacity(this.haloFill, this.opacity));
             this.textStyle.getStroke().setWidth(this.haloRadius);
         }
         // if (this.haloRadius && this.haloFill) {
@@ -171,10 +171,10 @@ export class GeoShieldStyle extends GeoStyle {
         }
 
         if (this.iconColor) {
-            this.convertSymbolColor = GeoStyle.toRGBAColor(this.iconColor);
+            this.convertSymbolColor = GeoStyle.blendColorAndOpacity(this.iconColor);
         }
         if (this.iconOutlineColor) {
-            this.convertSymbolOutlineColor = GeoStyle.toRGBAColor(this.iconOutlineColor);
+            this.convertSymbolOutlineColor = GeoStyle.blendColorAndOpacity(this.iconOutlineColor);
         }
 
         this.style = new ol.style.Style({

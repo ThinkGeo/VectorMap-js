@@ -47,7 +47,7 @@ export class GeoBrush {
 
     static createGeoSolidBrush(feature: any, resolution: number, geoBrushOptions: BrushTypeOptions) {
         if (geoBrushOptions.fillColor) {
-            return GeoStyle.toRGBAColor(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
+            return GeoStyle.blendColorAndOpacity(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
         }
     }
 
@@ -72,7 +72,7 @@ export class GeoBrush {
             gradientColor = gradientColor.trim();
             let colorStop = gradientColor.substr(1, gradientColor.length - 2);
             let cs = colorStop.split(":");
-            grd.addColorStop(Number(cs[0].trim()), GeoStyle.toRGBAColor(cs[1].trim(), geoBrushOptions.fillOpacity));
+            grd.addColorStop(Number(cs[0].trim()), GeoStyle.blendColorAndOpacity(cs[1].trim(), geoBrushOptions.fillOpacity));
         }
 
         return grd;
@@ -90,7 +90,7 @@ export class GeoBrush {
             gradientColor = gradientColor.trim();
             let colorStop = gradientColor.substr(1, gradientColor.length - 2);
             let cs = colorStop.split(":");
-            grd.addColorStop(Number(cs[0].trim()), GeoStyle.toRGBAColor(cs[1].trim(), geoBrushOptions.fillOpacity));
+            grd.addColorStop(Number(cs[0].trim()), GeoStyle.blendColorAndOpacity(cs[1].trim(), geoBrushOptions.fillOpacity));
         }
 
         return grd;
@@ -110,7 +110,7 @@ export class GeoBrush {
             return createPatternFunction(geoBrushOptions.fillColor, geoBrushOptions.foregroundFill);
         }
         else {
-            return GeoStyle.toRGBAColor(
+            return GeoStyle.blendColorAndOpacity(
                 geoBrushOptions.fillColor,
                 geoBrushOptions.fillOpacity
             );
