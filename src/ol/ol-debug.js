@@ -101746,7 +101746,7 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                if(true)
+                                 if(true)
                                 // if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
                                 //     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) 
                                 {
@@ -101856,16 +101856,6 @@ function olInit() {
             var tileGrid = new ol.source.XYZ().getTileGrid();
             var bbox = tileGrid.getTileCoordExtent(tileCoord);
 
-
-            var bottomLeft = ol.extent.getBottomLeft(bbox);
-            var bottomRight = ol.extent.getBottomRight(bbox);
-            var topRight = ol.extent.getTopRight(bbox);
-            var topLeft = ol.extent.getTopLeft(bbox);
-
-            var coords = bottomLeft.concat(bottomRight, topRight, topLeft);
-            var feature = new ol.render.Feature('Polygon', coords, [8], { layerName: "ocean" }, 0);
-            var geoStyle = geoStyles["ocean#0"];
-            renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform } }, [0, 'ocean#0', 0]);
 
             if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
