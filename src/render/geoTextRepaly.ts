@@ -184,6 +184,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.label = style.label;
                     this.maxAngle_ = style.maxAngle_;
                     this.intervalDistance_ = style["intervalDistance"];
+                    this.spacing_ = style["spacing"];
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                     this.width = this.label.width
                     this.height = this.label.height;
@@ -331,6 +332,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var text = this.text_;
         var maxAngle = this.maxAngle_;
         var intervalDistance = this.intervalDistance_;
+        var spacing = this.spacing_;
+
         var lineStringCoordinates = geometry.getFlatCoordinates();
         var end = lineStringCoordinates.length;
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
@@ -512,6 +515,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.rotation = textStyle.getRotation() || 0;
             this.maxAngle_ = textStyle.getMaxAngle();
             this.intervalDistance_ = textStyle["intervalDistance"];
+            this.spacing_ = textStyle["spacing"];
 
             this.textPlacements = [0, 0]
             if (textStyle["placements"] == "upper") {
@@ -608,6 +612,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             if (!intersects && declutterGroup[4] == 1) {
                 return;
             }
+
+            box[0] -= this.spacing_;
+            box[1] -= this.spacing_;
+            box[2] += this.spacing_;
+            box[3] += this.spacing_;
             (<any>ol).extent.extend(declutterGroup, box);
 
             var declutterArgs = [{

@@ -70,6 +70,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         textStyleClone.label = textStyle.label;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;

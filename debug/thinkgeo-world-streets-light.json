@@ -290,7 +290,7 @@
       "id": "country_name",
       "filter": "layerName='admin_name'",
       "text-wrap-width": 30,
-      "text-spacing": 1,
+      "text-spacing": 10,
       "text-fill-color": "#00000055",
       "text-halo-color": "#ffffff55",
       "text-halo-radius": 40,
@@ -4203,7 +4203,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-       "primary_name"
+       "country_name"
       ]
     }
   ]
