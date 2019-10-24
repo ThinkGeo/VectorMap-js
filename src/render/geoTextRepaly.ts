@@ -183,7 +183,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var end = flatCoordinates.length;
                     this.label = style.label;
                     this.maxAngle_ = style.maxAngle_;
-                    this.intervalDistance_= style["intervalDistance"];
+                    this.intervalDistance_ = style["intervalDistance"];
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                     this.width = this.label.width
                     this.height = this.label.height;
@@ -340,18 +340,18 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             pathLength = textLength
         }
 
-        if (textLength * 1.2 <= pathLength) {
+        if (textLength + intervalDistance <= pathLength) {
             let declutterGroups = [];
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
-      
+
             var centerPoint = pathLength / 2;
             var pointArray = [];
 
             pointArray.push(centerPoint);
 
             if (resolution < 1) {
-                this.findCenterPoints(0, centerPoint, intervalDistance, pointArray);
-                this.findCenterPoints(centerPoint, pathLength, intervalDistance, pointArray);
+                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
             }
 
             this.height = this.measureTextHeight();
@@ -566,13 +566,13 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         return height;
     }
 
-    public findCenterPoints(start, end, pixelDistance, pointArray) {
+    public findCenterPoints(start, end, textLength, pixelDistance, pointArray) {
         var distance = (end - start) / 2;
-        if (distance > pixelDistance) {
+        if (distance > pixelDistance + textLength) {
             var center = (end + start) / 2;
             pointArray.push(center);
-            this.findCenterPoints(start, center, pixelDistance, pointArray);
-            this.findCenterPoints(center, end, pixelDistance, pointArray);
+            this.findCenterPoints(start, center, textLength, pixelDistance, pointArray);
+            this.findCenterPoints(center, end, textLength, pixelDistance, pointArray);
         }
     }
 
