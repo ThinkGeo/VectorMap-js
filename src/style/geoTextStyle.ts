@@ -90,7 +90,7 @@ export class GeoTextStyle extends GeoStyle {
             this.placement = styleJson["text-placement"] || this.defaultPlacement;
 
             this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
-            this.intervalDistance = styleJson["text-interval-distance"];
+            this.intervalDistance = styleJson["text-interval-distance"] || 200;
             this.spacing = styleJson["text-spacing"] || 10;
             this.rotationAngle = styleJson["text-rotation-angle"];
             this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
@@ -162,6 +162,7 @@ export class GeoTextStyle extends GeoStyle {
             this.placement = this.defaultPlacement;
         }
         this.style.getText()["placements"] = this.placement;
+        this.style.getText()["intervalDistance"] = this.intervalDistance;
 
         if (this.rotationAngle) {
             textStyle.setRotation(this.rotationAngle);

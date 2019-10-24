@@ -69,6 +69,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;
@@ -93,6 +94,8 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }

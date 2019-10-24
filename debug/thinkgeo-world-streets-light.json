@@ -3877,6 +3877,7 @@
       "id": "primary_name",
       "filter": "layerName='road_name';class='primary'",
       "text-content": "@roadName",
+      "text-interval-distance": 20,
       "text-fill-color": "@grayLevel1",
       "text-max-char-angle-delta": 0.8,
       "style": [

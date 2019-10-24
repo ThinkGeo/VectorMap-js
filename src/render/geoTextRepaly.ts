@@ -183,6 +183,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var end = flatCoordinates.length;
                     this.label = style.label;
                     this.maxAngle_ = style.maxAngle_;
+                    this.intervalDistance_= style["intervalDistance"];
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                     this.width = this.label.width
                     this.height = this.label.height;
@@ -329,6 +330,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var resolution = frameState.viewState.resolution;
         var text = this.text_;
         var maxAngle = this.maxAngle_;
+        var intervalDistance = this.intervalDistance_;
         var lineStringCoordinates = geometry.getFlatCoordinates();
         var end = lineStringCoordinates.length;
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
@@ -341,15 +343,15 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         if (textLength * 1.2 <= pathLength) {
             let declutterGroups = [];
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
-            var pixelDistance = 200;
+      
             var centerPoint = pathLength / 2;
             var pointArray = [];
 
             pointArray.push(centerPoint);
 
             if (resolution < 1) {
-                this.findCenterPoints(0, centerPoint, pixelDistance, pointArray);
-                this.findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
+                this.findCenterPoints(0, centerPoint, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, intervalDistance, pointArray);
             }
 
             this.height = this.measureTextHeight();
@@ -509,6 +511,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
             this.maxAngle_ = textStyle.getMaxAngle();
+            this.intervalDistance_ = textStyle["intervalDistance"];
 
             this.textPlacements = [0, 0]
             if (textStyle["placements"] == "upper") {

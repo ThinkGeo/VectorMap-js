@@ -5,7 +5,7 @@ var view = new ol.View({
     //center: [-10775413.17372718, 3866116.842477651],// dallas
     //center: [-10796026.396196617, 5003517.396574807],// country_name
     center: [-10783010.162497278, 3862161.525031017],// road text 16
-    zoom: 14,
+    zoom: 17,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
