@@ -112,6 +112,7 @@ export class GeoTextStyle extends GeoStyle {
 
         if (this.basePointStyleJson) {
             this.basePointStyle = new GeoPointStyle(this.basePointStyleJson);
+            this.isBasePointStyleJson = true;
         }
 
         this.style = new ol.style.Style({
@@ -200,8 +201,11 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         if (this.basePointStyle) {
-            let basePointOLStyle = this.basePointStyle.getStyles(feature, resolution, options);
-            Array.prototype.push.apply(textStyles, basePointOLStyle);
+            let geometryType = feature.getGeometry().getType();
+            if (!(geometryType === (<any>ol.geom).GeometryType.LINE_STRING || geometryType === (<any>ol.geom).GeometryType.MULTI_LINE_STRING) || this.forceHorizontalForLine) {
+                let basePointOLStyle = this.basePointStyle.getStyles(feature, resolution, options);
+                Array.prototype.push.apply(textStyles, basePointOLStyle);
+            }
         }
 
         return textStyles;

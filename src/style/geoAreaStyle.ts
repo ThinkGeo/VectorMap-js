@@ -54,6 +54,7 @@ export class GeoAreaStyle extends GeoStyle {
             this.fillImageURI = styleJson["polygon-fill-image-uri"];
             this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
             this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
+            this.isShadow = false;
         }
     }
 
@@ -91,6 +92,7 @@ export class GeoAreaStyle extends GeoStyle {
 
         if (this.shadowStyleJson) {
             this.shadowStyle = new GeoAreaStyle(this.shadowStyleJson);
+            this.shadowStyle["isShadow"] = true;
         }
 
         this.offsetTranslateValueByResolution = {};
@@ -99,11 +101,10 @@ export class GeoAreaStyle extends GeoStyle {
         let length = 0;
         let styles = [];
         let cloneGeometry = feature.getGeometry().clone();
-        if (this.shadowStyle) {
+        if (this.shadowStyle && !this.isShadow) {
             if (this.shadowStyle) {
                 let shadowOLStyle = this.shadowStyle.getStyles(feature, resolution, options);
-                if(shadowOLStyle)
-                {
+                if (shadowOLStyle) {
                     for (let index = 0; index < shadowOLStyle.length; index++) {
                         const element = shadowOLStyle[index];
                         element['zCoordinate'] = this.zIndex - 0.5;
@@ -131,7 +132,7 @@ export class GeoAreaStyle extends GeoStyle {
             styles.push(this.style);
         }
 
-   
+
         return styles;
     }
 

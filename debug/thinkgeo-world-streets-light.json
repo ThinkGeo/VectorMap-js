@@ -3889,7 +3889,13 @@
         },
         {
           "filter": "zoom>=14;zoom<=16",
-          "text-font": "500 13px Arial, Helvetica, sans-serif"
+          "text-font": "500 13px Arial, Helvetica, sans-serif",
+          "text-base-point-style":{
+            "point-type":"symbol",
+            "point-symbol-type":"star",
+            "point-size":18,
+            "point-fill-color":"#ff00ff55"
+          }
         },
         {
           "filter": "zoom=17",
@@ -4203,7 +4209,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-       "country_name"
+       "road"
       ]
     }
   ]

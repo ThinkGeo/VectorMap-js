@@ -18,6 +18,16 @@ export class GeoLineStyle extends GeoStyle {
         custom: "square"
     };
 
+    olLineJoinsMap = {
+        bevel: "bevel",
+        round: "round",
+        miter: "miter",
+        round: "round",
+        default: "round",
+        miterclipped: "miter",
+        custom: "square"
+    };
+
     lineCap: string;
     color: string;
     dashArray: any;
@@ -87,7 +97,7 @@ export class GeoLineStyle extends GeoStyle {
                 anchor: [0.5, 0.5],
                 rotateWithView: true
             });
-    
+
             this.onewayStyle = new ol.style.Style({
                 image: this.onewayIcon
             });
@@ -126,7 +136,7 @@ export class GeoLineStyle extends GeoStyle {
                 this.lineStroke.setLineDash(this.convertedDashArray);
             }
             if (this.lineJoin) {
-                this.lineStroke.setLineJoin(this.lineJoin);
+                this.lineStroke.setLineJoin(this.olLineJoinsMap[this.lineJoin.toLowerCase()]);
             }
             if (this.miterLimit !== 4) {
                 this.lineStroke.setMiterLimit(this.miterLimit);
@@ -145,7 +155,7 @@ export class GeoLineStyle extends GeoStyle {
                             var dx = values[0].trim() * resolution;
                             var dy = values[1].trim() * resolution;
                             geometry.translate(+dx, +dy);
-                            var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                            var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                             geometry['extent_'] = newExtent_;
                         } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
@@ -182,7 +192,7 @@ export class GeoLineStyle extends GeoStyle {
                 this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
                 this.styles[length++] = this.lineCapStyle;
             }
-         
+
         }
 
         if (this.lineDirectionImageUri) {
