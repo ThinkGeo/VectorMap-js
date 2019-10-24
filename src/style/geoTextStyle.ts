@@ -19,7 +19,7 @@ export class GeoTextStyle extends GeoStyle {
     defaultLetterCase = "default";
 
     placements = ["upperleft", "upper", "upperright", "right", "center", "left", "lowerleft", "lowerleft", "lower", "lowerright", "autoPlacement"]
-    defaultPlacement = "upper";
+    defaultPlacement = "center";
 
     align: string;
     baseline: string;
