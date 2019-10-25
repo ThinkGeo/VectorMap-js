@@ -3889,7 +3889,7 @@
         },
         {
           "filter": "zoom>=14;zoom<=16",
-          "text-font": "500 13px Arial, Helvetica, sans-serif",
+          "text-font": "500 20px Arial, Helvetica, sans-serif",
           "text-base-point-style":{
             "point-type":"symbol",
             "point-symbol-type":"star",
@@ -3954,17 +3954,17 @@
           "filter": "zoom=14",
           "text-halo-radius": 1,
           "text-halo-color": "@haloSolid",
-          "text-font": "500 11px Arial, Helvetica, sans-serif"
+          "text-font": "500 55px Arial, Helvetica, sans-serif"
         },
         {
           "filter": "zoom>=15;zoom<=17",
           "text-halo-radius": 1,
           "text-halo-color": "@haloSolid",
-          "text-font": "12px Arial, Helvetica, sans-serif"
+          "text-font": "20px Arial, Helvetica, sans-serif"
         },
         {
           "filter": "zoom>=18;zoom<=19",
-          "text-font": "14px Arial, Helvetica, sans-serif"
+          "text-font": "20px Arial, Helvetica, sans-serif"
         }
       ],
       "visible": true
@@ -4209,7 +4209,8 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-       "road"
+       "road",
+       "tertiary_name"
       ]
     }
   ]

@@ -343,7 +343,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             pathLength = textLength
         }
 
-        if (textLength + intervalDistance <= pathLength) {
+        if (textLength <= pathLength * 1.2) {
             let declutterGroups = [];
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
 
