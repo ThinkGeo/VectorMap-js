@@ -540,9 +540,8 @@ export class GeoTextStyle extends GeoStyle {
             if (this.letterSpacing && body) {
                 body.removeChild(canvas);
             }
-
-            return labelCache.get(key);
         }
+        return labelCache.get(key);
     }
 
     drawMask(context: any) {
