@@ -582,7 +582,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                             });
                                             olFeature.setProperties(item.properties_);
                                             olFeature['zCoordinate'] = item.zCoordinate;
-
+                                            olFeature['styleId'] = item.styleId;
                                             return olFeature;
                                         })
                                     } else if (key !== 'lineStringReplay') {
@@ -598,7 +598,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                                 });
                                                 olFeature.setProperties(item.properties_);
                                                 olFeature['zCoordinate'] = item.zCoordinate;
-
+                                                olFeature['styleId'] = item.styleId;
                                                 return olFeature;
                                             })
                                         } else {
