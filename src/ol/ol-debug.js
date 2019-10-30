@@ -98588,7 +98588,7 @@ function olInit() {
                 this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
                 this.lineCapFill = new ol.style.Fill();
                 this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
-                
+
                 if (this.color) {
                     this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
                     this.lineStroke.setColor(this.olColor);
@@ -98872,23 +98872,30 @@ function olInit() {
             __extends(GeoPointStyle, _super);
             function GeoPointStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
+                _this.pointTypes = ["symbol", "image", "glyph"];
+                _this.symbolTypes = ["circle", "square", "triangle", "cross", "star"];
                 if (styleJson) {
-                    _this.glyph = styleJson["point-glyph"];
+                    _this.outlineColor = styleJson["point-outline-color"];
+                    _this.outlineWidth = styleJson["point-outline-width"] || 0;
+                    _this.symbolType = styleJson["point-symbol-type"];
+                    _this.pointType = styleJson["point-type"];
+                    _this.size = styleJson["point-size"];
+                    _this.maskType = styleJson["point-mask-type"];
+                    _this.maskMargin = styleJson["point-mask-margin"];
+                    _this.offsetX = styleJson["point-offset-x"] || 0;
+                    _this.offsetY = styleJson["point-offset-y"] || 0;
+                    _this.imageURL = styleJson["point-image-uri"];
+                    _this.fillColor = styleJson["point-fill-color"];
+                    _this.glyphFontName = styleJson["point-glyph-font-name"];
+                    _this.glyphContent = styleJson["point-glyph-content"];
+                    _this.angle = styleJson["point-rotation-angle"] || 0;
+                    _this.maskColor = styleJson["point-mask-color"];
+                    _this.maskOutlineColor = styleJson["point-mask-outline-color"];
+                    _this.maskOutlineWidth = styleJson["point-mask-outline-width"] || 0;
+                    _this.opacity = styleJson["point-opacity"] || 1;
                     _this.linearGradient = styleJson["point-linear-gradient"];
                     _this.radialGradient = styleJson["point-radial-gradient"];
-                    _this.fill = styleJson["point-fill"];
-                    _this.glyphName = styleJson["point-glyph-name"];
-                    _this.outlineColor = styleJson["point-outline-color"];
-                    _this.outlineWidth = styleJson["point-outline-width"];
-                    _this.size = styleJson["point-size"];
-                    _this.angle = styleJson["point-rotate-angle"] ? styleJson["point-rotate-angle"] : 0;
-                    _this.dx = styleJson["point-dx"];
-                    _this.dy = styleJson["point-dy"];
-                    _this.pointFile = styleJson["point-file"];
-                    _this.opacity = styleJson["point-opacity"];
-                    _this.symbolType = styleJson["point-symbol-type"];
                     _this.transform = styleJson["point-transform"];
-                    _this.pointType = styleJson["point-type"];
                 }
                 return _this;
             }
