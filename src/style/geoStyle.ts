@@ -112,7 +112,7 @@ export class GeoStyle {
 
 
     static blendColorAndOpacity(color, opacity = 1): string {
-        var olColorArray = ol.color.asArray(color);
+        var olColorArray = ol.color.asArray(color).slice(0);
         if (opacity != undefined) {
             var validOpacityColorArray = ol.color.asArray([1, 1, 1, opacity]);
             olColorArray[3] = olColorArray[3] * validOpacityColorArray[3];
