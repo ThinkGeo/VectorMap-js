@@ -167,15 +167,58 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             if (!style) {
                 continue;
             }
-            if (type == 'MultiLineString') {
-                var ends = geometry.getEnds();
-                for (var k = 0; k < ends.length; k++) {
-                    var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                    var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
 
-                    this.setTextStyle(style);
-                    this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+            // TODO as the new logic for MultiLineString, we need to refine the loginc for MULTI_POLYGON
+
+            if (type == 'MultiLineString') {
+                //// Existing logic
+                // var ends = geometry.getEnds();
+                // for (var k = 0; k < ends.length; k++) {
+                //     var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                //     var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+
+                //     this.setTextStyle(style);
+                //     this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                // }
+
+                // new logic
+                this.setTextStyle(style);
+                if (style.label) {
+                    var stride = 2;
+                    var flatCoordinates = style.labelPosition;
+
+                    for (let index = 0; index < flatCoordinates.length; index += stride) {
+                        const pointX = flatCoordinates[index];
+                        const pointY = flatCoordinates.length - 1 >= index + 1 ? flatCoordinates[index + 1] : null;
+                        if (pointY === null) {
+                            continue;
+                        }
+                        var end = flatCoordinates.length;
+                        this.label = style.label;
+                        this.maxAngle_ = style.maxAngle_;
+                        this.intervalDistance_ = style["intervalDistance"];
+                        this.spacing_ = style["spacing"];
+                        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+                        this.width = this.label.width
+                        this.height = this.label.height;
+                        this.originX = 0;
+                        this.originY = 0;
+                        this.anchorX = Math.floor(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
+                        this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) * pixelRatio - this.offsetY_);
+                        this.replayImage_(frameState, declutterGroup, [pointX, pointY], this.state_.scale / pixelRatio, end, feature);
+                        this.renderDeclutterLabel_(declutterGroup, feature);
+                    }
+                } else {
+                    var ends = geometry.getEnds();
+                    for (var k = 0; k < ends.length; k++) {
+                        var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+
+                        this.setTextStyle(style);
+                        this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                    }
                 }
+
             } else {
                 this.setTextStyle(style);
                 if (style.label) {
