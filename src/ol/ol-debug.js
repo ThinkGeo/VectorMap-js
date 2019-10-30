@@ -98485,19 +98485,19 @@ function olInit() {
                 }
 
                 if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
-                    if (this.geometryTransform) {
-                        this.transformGeometry(cloneFeature, resolution);
-                    }
-                    if (this.offsetX || this.offsetY) {
-                        let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
-                        if (offsetTranslateValue === undefined) {
-                            let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                            this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
-                            offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
-                            this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
-                        }
-                        cloneFeature.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
-                    }
+                    // if (this.geometryTransform) {
+                    //     this.transformGeometry(cloneFeature, resolution);
+                    // }
+                    // if (this.offsetX || this.offsetY) {
+                    //     let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                    //     if (offsetTranslateValue === undefined) {
+                    //         let tmpResolution = Math.round(resolution * 100000000) / 100000000;
+                    //         this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                    //         offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
+                    //         this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
+                    //     }
+                    //     cloneFeature.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                    // }
 
                     this.style.setGeometry(cloneFeature.getGeometry());
                     this.style['zCoordinate'] = this.zIndex;
