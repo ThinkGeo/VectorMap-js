@@ -49,9 +49,6 @@ export class GeoTextStyle extends GeoStyle {
     letterCase: string;
     letterSpacing: number;
     basePointStyle: any;
-    labelInfos: any;
-    drawnMask: boolean = false;
-    charWidths: any;
     style: ol.style.Style;
     state_: any;
 
