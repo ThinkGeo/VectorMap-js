@@ -98340,7 +98340,7 @@ function olInit() {
             };
             GeoStyle.blendColorAndOpacity = function (color, opacity) {
                 if (opacity === void 0) { opacity = 1; }
-                var olColorArray = ol.color.asArray(color);
+                var olColorArray = ol.color.asArray(color).slice(0);
                 if (opacity != undefined) {
                     var validOpacityColorArray = ol.color.asArray([1, 1, 1, opacity]);
                     olColorArray[3] = olColorArray[3] * validOpacityColorArray[3];
