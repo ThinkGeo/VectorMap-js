@@ -48,8 +48,8 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
     
     this.hitDetectionImage = hitDetectionImage;
     this.image = image;
-    this.anchorX = anchor[0] - imageStyle["offsetX"];
-    this.anchorY = anchor[1] - imageStyle["offsetY"];;
+    this.anchorX = anchor[0] - imageStyle["offsetX"]||0;
+    this.anchorY = anchor[1] - imageStyle["offsetY"]||0;
     this.height = size[1];
     this.imageHeight = imageSize[1];
     this.imageWidth = imageSize[0];
