@@ -98338,47 +98338,34 @@ function olInit() {
                 }
                 return ry;
             };
-            GeoStyle.toRGBAColor = function (color, opacity) {
+            GeoStyle.blendColorAndOpacity = function (color, opacity) {
                 if (opacity === void 0) { opacity = 1; }
-                if (color.startsWith("#")) {
-                    var array = void 0;
-                    var r = void 0;
-                    var g = void 0;
-                    var b = void 0;
-                    var a = void 0;
-                    if (color.length === 4) {
-                        r = +("0x" + color.substr(1, 1) + color.substr(1, 1));
-                        g = +("0x" + color.substr(2, 1) + color.substr(2, 1));
-                        b = +("0x" + color.substr(3, 1) + color.substr(3, 1));
-                        a = opacity;
-                    }
-                    else {
-                        r = +("0x" + color.substr(1, 2));
-                        g = +("0x" + color.substr(3, 2));
-                        b = +("0x" + color.substr(5, 2));
-                        a = opacity;
-                    }
-                    array = [r, g, b, a];
-                    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-                        return "rgba(" + array.join(",") + ")";
-                    }
-                    else {
-                        return "rgba(0,0,0,0)";
-                    }
+                var olColorArray = ol.color.asArray(color);
+                if (opacity != undefined) {
+                    var validOpacityColorArray = ol.color.asArray([1, 1, 1, opacity]);
+                    olColorArray[3] = olColorArray[3] * validOpacityColorArray[3];
                 }
-                if (color.startsWith("rgb(")) {
-                    color = color.replace("rgb(", "rgba(");
-                    color = color.substring(0, color.length - 1) + "," + opacity + ")";
-                }
-                if (color.startsWith("argb(")) {
-                    color = color.replace("argb(", "").replace(")", "");
-                    var array = color.split(",");
-                    var a = array.shift();
-                    array.push(a);
-                    color = "rgba(" + array.join(",") + ")";
-                }
-                return color;
+                return ol.color.toString(olColorArray);
             };
+            GeoStyle.getGeometryByType = function (type, flatCoordinates, layout) {
+                var geometry;
+                layout = layout || 'XY';
+
+                var transformedCoordinates = [];
+                for (let i = 0; i < flatCoordinates.length; i += 2) {
+                    transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
+                }
+
+                switch (type) {
+                    case 'Point': geometry = new ol.geom.Point(flatCoordinates, layout); break;
+                    case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
+                    case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
+                    case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
+                    default: console.log(type);
+                }
+
+                return geometry;
+            }
             GeoStyle.toOLLinearGradient = function (color, opacity, size) {
                 if (opacity === void 0) { opacity = 1; }
                 var canvas = document.createElement("canvas");
@@ -98391,7 +98378,7 @@ function olInit() {
                     colorStop = colorStop.trim();
                     var tmpColorStop = colorStop.substr(1, colorStop.length - 2);
                     var cs = tmpColorStop.split(",");
-                    grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+                    grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
                 }
                 return grd;
             };
@@ -98407,7 +98394,7 @@ function olInit() {
                     colorStop = colorStop.trim();
                     var tmpColorStop = colorStop.substr(1, colorStop.length - 2);
                     var cs = tmpColorStop.split(",");
-                    grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+                    grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
                 }
                 return grd;
             };
@@ -98420,59 +98407,104 @@ function olInit() {
             function GeoAreaStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
                 if (styleJson) {
-                    _this.brushType = styleJson["polygon-brush-type"];
-                    _this.rotateAngle = styleJson["polygon-rotate-angle"];
-                    _this.dx = styleJson["polygon-dx"];
-                    _this.dy = styleJson["polygon-dy"];
-                    _this.fill = styleJson["polygon-fill"];
-                    _this.foregroundFill = styleJson["polygon-foreground-fill"];
-                    _this.gamma = styleJson["polygon-gamma"] ? styleJson["polygon-gamma"] : true;
-                    _this.geometryTransform = styleJson["polygon-geometry-transform"];
-                    _this.hatchStyle = styleJson["polygon-hatch-style"];
-                    _this.opacity = styleJson["polygon-opacity"];
                     _this.outlineColor = styleJson["polygon-outline-color"];
-                    _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
-                    _this.outlineOpacity = styleJson["polygon-outline-opacity"];
                     _this.outlineWidth = styleJson["polygon-outline-width"];
+                    _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
+                    _this.fillColor = styleJson["polygon-fill-color"];
+                    _this.offsetX = styleJson["polygon-offset-x"];
+                    _this.offsetY = styleJson["polygon-offset-y"];
+                    _this.opacity = styleJson["polygon-opacity"] || 1;
                     _this.linearGradient = styleJson["polygon-linear-gradient"];
                     _this.radialGradient = styleJson["polygon-radial-gradient"];
-                    _this.textureFile = styleJson["polygon-texture-file"];
-                    _this.shadowColor = styleJson["polygon-shadow-color"];
-                    _this.shadowDx = styleJson["polygon-shadow-dx"];
-                    _this.shadowDy = styleJson["polygon-shadow-dy"];
+                    _this.shadowStyleJson = styleJson["polygon-shadow"];
+                    _this.geometryTransform = styleJson["polygon-geometry-transform"];
+                    _this.fillImageURI = styleJson["polygon-fill-image-uri"];
+                    _this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
+                    _this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
+                    _this.isShadow = false;
                 }
                 return _this;
             }
             GeoAreaStyle.prototype.initializeCore = function () {
-                this.brushType = this.brushType || "solid";
-                this.brushOptions = {
-                    fillColor: this.fill,
-                    fillOpacity: this.opacity,
-                    linearGradient: this.linearGradient,
-                    radialGradient: this.radialGradient,
-                    textureFile: this.textureFile,
-                    foregroundFill: this.foregroundFill,
-                    hatchStyle: this.hatchStyle
-                };
+                this.style = new ol.style.Style();
+                if (this.fillColor) {
+                    this.convertedFillColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
+                    var fillStyle = new ol.style.Fill({
+                        color: this.convertedFillColor
+                    });
+                    this.style.setFill(fillStyle);
+                }
                 if (this.geometryTransform) {
                     this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
                 }
-                if (this.brushType === "solid" || this.brushType === "hatch") {
-                    this.geoBrush = GeoBrush.createBrushByType(this.brushType, null, null, this.brushOptions);
+                // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
+                if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
+                    if (this.outlineColor) {
+                        this.convertedOutlineColor = GeoStyle.blendColorAndOpacity(this.outlineColor, this.opacity);
+                    }
+                    if (this.outlineDashArray) {
+                        this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+                    }
+                    var newStroke = new ol.style.Stroke();
+                    newStroke.setColor(this.convertedOutlineColor);
+                    newStroke.setLineDash(this.convertedOutlineDashArray);
+                    newStroke.setWidth(this.outlineWidth);
+                    this.style.setStroke(newStroke);
                 }
-                // if (this.brushType === "hatch") {
-                //     this.geoBrush = "hatch|" + this.id;
-                // }
-                if (this.outlineColor) {
-                    this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.outlineOpacity);
+                if (this.shadowStyleJson) {
+                    this.shadowStyle = new GeoAreaStyle(this.shadowStyleJson);
+                    this.shadowStyle["isShadow"] = true;
                 }
-                if (this.outlineDashArray) {
-                    this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+                this.offsetTranslateValueByResolution = {};
+            };
+            GeoAreaStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
+                var length = 0;
+                var styles = [];
+
+                var clonedFlatCoordinates = feature.getFlatCoordinates().slice(0);
+                var cloneEnds = feature.getEnds().slice(0);
+                var type = feature.getType();
+                var properties = feature.getProperties();
+                var id = feature.getId();
+                var cloneFeature = new ol.render.Feature(type, clonedFlatCoordinates, cloneEnds, properties, id);
+                cloneFeature.extent_ = feature.getExtent();
+                cloneFeature["drawingBbox"] = feature.getExtent();
+                cloneFeature["styleId"] = feature["styleId"];
+
+                if (this.shadowStyle && !this.isShadow) {
+                    if (this.shadowStyle) {
+                        var shadowOLStyle = this.shadowStyle.getStyles(cloneFeature, resolution, options);
+                        if (shadowOLStyle) {
+                            for (var index = 0; index < shadowOLStyle.length; index++) {
+                                var element = shadowOLStyle[index];
+                                element['zCoordinate'] = this.zIndex - 0.5;
+                            }
+                        }
+                        Array.prototype.push.apply(styles, shadowOLStyle);
+                    }
                 }
-                if (this.shadowColor) {
-                    this.convertedShadowColor = GeoStyle.toRGBAColor(this.shadowColor);
+
+                if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
+                    if (this.geometryTransform) {
+                        this.transformGeometry(cloneFeature, resolution);
+                    }
+                    if (this.offsetX || this.offsetY) {
+                        let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                        if (offsetTranslateValue === undefined) {
+                            let tmpResolution = Math.round(resolution * 100000000) / 100000000;
+                            this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                            offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
+                            this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
+                        }
+                        cloneFeature.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                    }
+
+                    this.style.setGeometry(cloneFeature.getGeometry());
+                    this.style['zCoordinate'] = this.zIndex;
+                    styles.push(this.style);
                 }
-                this.shadowTranslateValueByResolution = {};
+
+                return styles;
             };
             GeoAreaStyle.prototype.getTransformValues = function (transform) {
                 // get transform values which look like transform(value1, value2)
@@ -98488,111 +98520,23 @@ function olInit() {
                 }
                 return values;
             };
-            GeoAreaStyle.prototype.GetTransformedCoordinates = function (feature, resolution) {
-                var tmpFlatCoordinates = feature.getFlatCoordinates();
-                var tmpCoordinates = [[]];
-                var index = 0;
-                for (var i = 0; i < tmpFlatCoordinates.length; i += 2) {
-                    tmpCoordinates[index] || (tmpCoordinates[index] = []);
-                    tmpCoordinates[index].push([tmpFlatCoordinates[i], tmpFlatCoordinates[i + 1]]);
-                    if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === tmpFlatCoordinates[i] && tmpCoordinates[index][0][1] === tmpFlatCoordinates[i + 1]) {
-                        index++;
-                    }
+            GeoAreaStyle.prototype.transformGeometry = function (geometry, resolution) {
+                if (this.geometryTransform.indexOf("translate") === 0) {
+                    geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
-                var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-                geometry.ends_ = feature.ends_;
-                if (this.geometryTransform.startsWith("translate")) {
-                    geometry.translate(-this.geometryTransformValue[0].trim() * resolution, -this.geometryTransformValue[1].trim() * resolution);
-                }
-                else if (this.geometryTransform.startsWith("scale")) {
+                else if (this.geometryTransform.indexOf("scale") === 0) {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
-                else if (this.geometryTransform.startsWith("rotate")) {
-                    var center = ol.extent.getCenter(geometry.getExtent());
+                else if (this.geometryTransform.indexOf("rotate") === 0) {
+                    var center = ol.extent.getCenter(cloneGeometry.getExtent());
                     var angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
                     geometry.rotate(angle, center);
                 }
-                else if (this.geometryTransform.startsWith("skew")) {
-                    this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
-                }
-                return geometry.flatCoordinates;
+                // else if (this.geometryTransform.indexOf("skew") === 0) {
+                //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
+                // }
+                return geometry;
             };
-            GeoAreaStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
-                var length = 0;
-                this.styles = [];
-                if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
-                    if (this.geometryTransform) {
-                        feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
-                        var dx = this.geometryTransformValue[0].trim() * resolution;
-                        var dy = this.geometryTransformValue[1].trim() * resolution;
-                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
-                        feature.extent_ = newExtent_;
-                    }
-                    if (this.shadowDx || this.shadowDy) {
-                        var shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
-                        if (shadowTranslateValue === undefined) {
-                            var tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                            this.shadowTranslate = ("translate(" + (this.shadowDx ? this.shadowDx : 0) * tmpResolution + "," + (this.shadowDy ? this.shadowDy : 0) * tmpResolution + ")");
-                            shadowTranslateValue = this.getTransformValues(this.shadowTranslate);
-                            this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
-                        }
-                        var tmpFlatCoordinates = feature.getFlatCoordinates();
-                        var newFlatCoordinates = ol.geom.flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                        var tmpCoordinates = [[]];
-                        var index = 0;
-                        for (var i = 0; i < newFlatCoordinates.length; i += 2) {
-                            tmpCoordinates[index] || (tmpCoordinates[index] = []);
-                            tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
-                            if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
-                                index++;
-                            }
-                        }
-                        var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-                        geometry.ends_ = feature.ends_;
-                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                        geometry.extent_ = newExtent_;
-                        geometry["drawingBbox"] = feature["drawingBbox"];
-                        GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
-                        GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
-                        this.styles[length++] = GeoAreaStyle.areaShadowStyle;
-                    }
-                    if (this.fill) {
-                        GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
-                    }
-                    // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
-                    if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
-                        var newStroke = new ol.style.Stroke();
-                        newStroke.setColor(this.convertedOutlineColor);
-                        newStroke.setLineDash(this.convertedOutlineDashArray);
-                        newStroke.setWidth(this.outlineWidth);
-                        GeoAreaStyle.areaStyle.setStroke(newStroke);
-                    }
-                    else {
-                        GeoAreaStyle.areaStyle.setStroke(undefined);
-                    }
-                    GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
-                    GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
-                    this.styles[length++] = GeoAreaStyle.areaStyle;
-                    if (this.gamma !== undefined && options.layer) {
-                        var styleGamma_1 = this.gamma;
-                        options.layer.on("precompose", function (evt) {
-                            evt.context.imageSmoothingEnabled = styleGamma_1;
-                            evt.context.webkitImageSmoothingEnabled = styleGamma_1;
-                            evt.context.mozImageSmoothingEnabled = styleGamma_1;
-                            evt.context.msImageSmoothingEnabled = styleGamma_1;
-                        });
-                    }
-                }
-                return this.styles;
-            };
-            GeoAreaStyle.areaStyle = new ol.style.Style({
-                fill: new ol.style.Fill({}),
-                stroke: new ol.style.Stroke({})
-            });
-            GeoAreaStyle.areaShadowStyle = new ol.style.Style({
-                fill: new ol.style.Fill({}),
-            });
             return GeoAreaStyle;
         }(GeoStyle));
 
@@ -98636,7 +98580,7 @@ function olInit() {
             }
             GeoLineStyle.prototype.initializeCore = function () {
                 if (this.color) {
-                    this.olColor = GeoStyle.toRGBAColor(this.color, this.opacity);
+                    this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
                     this.lineStroke.setColor(this.olColor);
                     this.lineCapFill.setColor(this.olColor);
                 }
@@ -98647,7 +98591,7 @@ function olInit() {
                         this.convertedDashArray.push(parseFloat(a));
                     }
                 }
-                
+
                 if (this.lineDirectionImageUri) {
                     this.onewayIcon = new ol.style.Icon({
                         src: this.lineDirectionImageUri,
@@ -98699,8 +98643,8 @@ function olInit() {
                     if (this.width) {
                         this.lineStroke.setWidth(this.width);
                     }
-                  
-                  
+
+
                     var geometryFunction = function (feature) {
                         if (_this.geometryTransform) {
                             var geometry = _this.getGeometry(feature);
@@ -98734,7 +98678,7 @@ function olInit() {
                     this.lineStyle.setGeometry(geometryFunction);
                     this.lineStyle.zCoordinate = this.zIndex;
                     this.styles[length++] = this.lineStyle;
-            
+
                     if (this.geometryLineCaps.includes(this.lineCap)) {
                         var geometryFunction_1 = function (feature) {
                             var geometry = _this.getGeometry(feature);
@@ -99213,10 +99157,10 @@ function olInit() {
                     this.textStyle.setFont(this.font);
                 }
                 if (this.fill) {
-                    this.textStyle.getFill().setColor(GeoStyle.toRGBAColor(this.fill, this.opacity));
+                    this.textStyle.getFill().setColor(GeoStyle.blendColorAndOpacity(this.fill, this.opacity));
                 }
                 if (this.haloRadius && this.haloFill) {
-                    this.textStyle.getStroke().setColor(GeoStyle.toRGBAColor(this.haloFill, this.opacity));
+                    this.textStyle.getStroke().setColor(GeoStyle.blendColorAndOpacity(this.haloFill, this.opacity));
                     this.textStyle.getStroke().setWidth(this.haloRadius);
                 }
                 // if (this.haloRadius) {
@@ -99225,10 +99169,10 @@ function olInit() {
                     this.textStyle.setRotation(this.orientation);
                 }
                 if (this.iconColor) {
-                    this.convertSymbolColor = GeoStyle.toRGBAColor(this.iconColor);
+                    this.convertSymbolColor = GeoStyle.blendColorAndOpacity(this.iconColor);
                 }
                 if (this.iconOutlineColor) {
-                    this.convertSymbolOutlineColor = GeoStyle.toRGBAColor(this.iconOutlineColor);
+                    this.convertSymbolOutlineColor = GeoStyle.blendColorAndOpacity(this.iconOutlineColor);
                 }
                 this.style = new ol.style.Style({
                     text: this.textStyle
@@ -99786,10 +99730,10 @@ function olInit() {
             }
             GeoTextStyle.prototype.initializeCore = function () {
                 if (this.fill) {
-                    this.fillColor = GeoStyle.toRGBAColor(this.fill, this.opacity);
+                    this.fillColor = GeoStyle.blendColorAndOpacity(this.fill, this.opacity);
                 }
                 if (this.haloFill) {
-                    this.haloFillColor = GeoStyle.toRGBAColor(this.haloFill, this.opacity);
+                    this.haloFillColor = GeoStyle.blendColorAndOpacity(this.haloFill, this.opacity);
                 }
                 var fill = new ol.style.Fill();
                 var stroke = new ol.style.Stroke();
@@ -100190,12 +100134,12 @@ function olInit() {
                 var stroke = undefined;
                 if (this.maskColor) {
                     fill = new ol.style.Fill();
-                    fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ? this.opacity : 1));
+                    fill.setColor(GeoStyle.blendColorAndOpacity(this.maskColor, this.opacity ? this.opacity : 1));
                 }
                 if (this.maskOutlineColor && this.maskOutlineWidth) {
                     stroke = new ol.style.Stroke();
                     if (this.maskOutlineColor) {
-                        stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ? this.opacity : 1));
+                        stroke.setColor(GeoStyle.blendColorAndOpacity(this.maskOutlineColor, this.opacity ? this.opacity : 1));
                     }
                     if (this.maskOutlineWidth) {
                         stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);
@@ -100807,7 +100751,7 @@ function olInit() {
             };
             GeoBrush.createGeoSolidBrush = function (feature, resolution, geoBrushOptions) {
                 if (geoBrushOptions.fillColor) {
-                    return GeoStyle.toRGBAColor(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
+                    return GeoStyle.blendColorAndOpacity(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
                 }
             };
             GeoBrush.createRadialGradientColor = function (feature, resolution, geoBrushOptions) {
@@ -101746,15 +101690,16 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                 if(true)
-                                //  if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
-                                //      (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) 
-                                {
+                                if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
+                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
                                 }
                                 else {
+
+
+
                                     var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
                                     if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
                                         if (ol4Styles) {

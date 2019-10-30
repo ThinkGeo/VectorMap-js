@@ -3,16 +3,6 @@ import { GeoBrush } from "./geoBrush";
 import { GeoBrushType } from "./geoBrushType";
 
 export class GeoAreaStyle extends GeoStyle {
-
-    static areaStyle = new ol.style.Style({
-        fill: new ol.style.Fill({}),
-        stroke: new ol.style.Stroke({})
-    });
-
-    static areaShadowStyle = new ol.style.Style({
-        fill: new ol.style.Fill({}),
-    });
-
     offsetX: number;
     offsetY: number;
     fillColor: string;
