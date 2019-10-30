@@ -6,7 +6,7 @@ var view = new ol.View({
     center: [-10796026.396196617, 5003517.396574807],// country_name
     //center: [-10783010.162497278, 3862161.525031017],// road text 16
     //center:[-10787223.389888179, 3863490.4854171653], // road label 14
-    zoom: 2,
+    zoom: 1,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -51,6 +51,11 @@ var map = new ol.Map({
 map.on("click", function showInfo(event) {
     var features = map.getFeaturesAtPixel(event.pixel);
     if (features) {
+        for (let index = 0; index < features.length; index++) {
+            const element = features[index];
+            console.log(element["styleId"]);
+            
+        }
         vectorLayer.getSource().clear();
         vectorLayer.getSource().addFeatures(features);
     }
