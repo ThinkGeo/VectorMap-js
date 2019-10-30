@@ -98560,11 +98560,16 @@ function olInit() {
                     anchormask: "square",
                     custom: "square"
                 };
+                _this.olLineJoinsMap = {
+                    bevel: "bevel",
+                    round: "round",
+                    miter: "miter",
+                    round: "round",
+                    default: "round",
+                    miterclipped: "miter",
+                    custom: "square"
+                };
                 _this.convertedDashArray = new Array();
-                _this.lineStroke = new ol.style.Stroke();
-                _this.lineStyle = new ol.style.Style({ stroke: _this.lineStroke });
-                _this.lineCapFill = new ol.style.Fill();
-                _this.lineCapStyle = new ol.style.Style({ fill: _this.lineCapFill });
                 if (styleJson) {
                     _this.color = styleJson["line-color"];
                     _this.dashArray = styleJson["line-dasharray"];
@@ -98579,6 +98584,11 @@ function olInit() {
                 return _this;
             }
             GeoLineStyle.prototype.initializeCore = function () {
+                this.lineStroke = new ol.style.Stroke();
+                this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
+                this.lineCapFill = new ol.style.Fill();
+                this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
+                
                 if (this.color) {
                     this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
                     this.lineStroke.setColor(this.olColor);
@@ -98621,8 +98631,7 @@ function olInit() {
             };
             GeoLineStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
                 var _this = this;
-                var length = 0;
-                this.styles = [];
+                var styles = [];
                 if (this.color && this.width) {
                     if (this.olLineCapsMap[this.lineCap]) {
                         this.lineStroke.setLineCap(this.olLineCapsMap[this.lineCap]);
@@ -98677,7 +98686,7 @@ function olInit() {
                     };
                     this.lineStyle.setGeometry(geometryFunction);
                     this.lineStyle.zCoordinate = this.zIndex;
-                    this.styles[length++] = this.lineStyle;
+                    styles.push(this.lineStyle);
 
                     if (this.geometryLineCaps.includes(this.lineCap)) {
                         var geometryFunction_1 = function (feature) {
@@ -98686,7 +98695,7 @@ function olInit() {
                         };
                         this.lineCapStyle.setGeometry(geometryFunction_1);
                         this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                        this.styles[length++] = this.lineCapStyle;
+                        styles.push(this.lineCapStyle);
                     }
                 }
                 if (this.lineDirectionImageUri) {
@@ -98712,9 +98721,9 @@ function olInit() {
                     this.onewayIcon.rotation_ = -rotation;
                     this.onewayStyle.setGeometry(geometry);
                     this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
-                    this.styles[length++] = this.onewayStyle;
+                    styles.push(this.onewayStyle);
                 }
-                return this.styles;
+                return styles;
             };
             GeoLineStyle.prototype.getGeometry = function (feature) {
                 var tmpFlatCoordinates = feature.getFlatCoordinates();
@@ -101697,9 +101706,6 @@ function olInit() {
                                     mainFeatureIndex++;
                                 }
                                 else {
-
-
-
                                     var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
                                     if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
                                         if (ol4Styles) {

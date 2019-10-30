@@ -55,12 +55,6 @@ export class GeoLineStyle extends GeoStyle {
 
     constructor(styleJson?: any) {
         super(styleJson);
-
-        this.lineStroke = new ol.style.Stroke();
-        this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
-        this.lineCapFill = new ol.style.Fill();
-        this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
-
         if (styleJson) {
             this.color = styleJson["line-color"];
             this.dashArray = styleJson["line-dasharray"];
@@ -77,6 +71,11 @@ export class GeoLineStyle extends GeoStyle {
 
 
     initializeCore() {
+        this.lineStroke = new ol.style.Stroke();
+        this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
+        this.lineCapFill = new ol.style.Fill();
+        this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
+
         if (this.color) {
             this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
 
@@ -121,9 +120,7 @@ export class GeoLineStyle extends GeoStyle {
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
-        let length = 0;
-        this.styles = [];
-
+        var styles = [];
         if (this.color && this.width) {
             if (this.olLineCapsMap[this.lineCap]) {
                 this.lineStroke.setLineCap(this.olLineCapsMap[this.lineCap]);
@@ -175,7 +172,7 @@ export class GeoLineStyle extends GeoStyle {
 
             this.lineStyle.setGeometry(geometryFunction);
             this.lineCapStyle.zCoordinate = this.zIndex;
-            this.styles[length++] = this.lineStyle;
+            styles.push(this.lineStyle);
 
             if (this.geometryLineCaps.includes(this.lineCap)) {
                 let geometryFunction = (feature) => {
@@ -190,7 +187,7 @@ export class GeoLineStyle extends GeoStyle {
 
                 this.lineCapStyle.setGeometry(geometryFunction);
                 this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                this.styles[length++] = this.lineCapStyle;
+                styles.push(this.lineCapStyle);
             }
 
         }
@@ -221,10 +218,10 @@ export class GeoLineStyle extends GeoStyle {
 
             this.onewayStyle.setGeometry(geometry);
             this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
-            this.styles[length++] = this.onewayStyle;
+            styles.push(this.onewayStyle);
         }
 
-        return this.styles;
+        return styles;
     }
 
     getGeometry(feature: any) {
