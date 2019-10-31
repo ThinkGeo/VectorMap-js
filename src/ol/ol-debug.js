@@ -98499,7 +98499,7 @@ function olInit() {
                         }
                         var tmpFlatCoordinates = cloneFeature.getFlatCoordinates();
                         var newFlatCoordinates = ol.geom.flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
-                        cloneFeature.flatCoordinates_= newFlatCoordinates;
+                        cloneFeature.flatCoordinates_ = newFlatCoordinates;
 
                         var tmpCoordinates = [[]];
                         var index = 0;
@@ -98562,12 +98562,12 @@ function olInit() {
                     let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
                     geometry.rotate(angle, center);
                 }
-                 // TODO:
+                // TODO:
                 // else if (this.geometryTransform.indexOf("skew") === 0) {
                 //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 // }
 
-                feature.flatCoordinates_= geometry.getFlatCoordinates();
+                feature.flatCoordinates_ = geometry.getFlatCoordinates();
             };
             return GeoAreaStyle;
         }(GeoStyle));
@@ -98626,6 +98626,12 @@ function olInit() {
                     this.lineStroke.setColor(this.olColor);
                     this.lineCapFill.setColor(this.olColor);
                 }
+                if (this.lineCap) {
+                    this.lineCap = this.lineCap.toLowerCase();
+                }
+                if (this.lineJoin) {
+                    this.lineJoin = this.lineJoin.toLowerCase();
+                }
                 if (this.dashArray) {
                     var tmpArray = this.dashArray.split(",");
                     for (var _i = 0, tmpArray_1 = tmpArray; _i < tmpArray_1.length; _i++) {
@@ -98676,7 +98682,7 @@ function olInit() {
                         this.lineStroke.setLineDash(this.convertedDashArray);
                     }
                     if (this.lineJoin) {
-                        this.lineStroke.setLineJoin(this.lineJoin);
+                        this.lineStroke.setLineJoin(this.olLineJoinsMap[this.lineJoin.toLowerCase()]);
                     }
                     if (this.miterLimit !== 4) {
                         this.lineStroke.setMiterLimit(this.miterLimit);
@@ -98684,16 +98690,14 @@ function olInit() {
                     if (this.width) {
                         this.lineStroke.setWidth(this.width);
                     }
-
-
                     var geometryFunction = function (feature) {
                         if (_this.geometryTransform) {
                             var geometry = _this.getGeometry(feature);
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    var dx = values[0].trim() * resolution;
-                                    var dy = values[1].trim() * resolution;
+                                    var dx = values[0].trim();
+                                    var dy = values[1].trim();
                                     geometry.translate(+dx, +dy);
                                     var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                                     geometry.extent_ = newExtent_;
@@ -99719,7 +99723,7 @@ function olInit() {
                 _this.placements = ["upperleft", "upper", "upperright", "right", "center", "left", "lowerleft", "lowerleft", "lower", "lowerright", "autoPlacement"];
                 _this.defaultPlacement = "center";
                 _this.drawnMask = false;
-             
+
                 if (styleJson) {
                     _this.font = styleJson["text-font"];
                     _this.fillColor = styleJson["text-fill-color"];

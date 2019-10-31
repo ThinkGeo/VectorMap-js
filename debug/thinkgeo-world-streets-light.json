@@ -4205,7 +4205,7 @@
       "id": "worldstreets_layers",
       "source": "worldstreets_source",
       "styles": [
-        "building"
+        "country_boundary"
       ]
     }
   ]

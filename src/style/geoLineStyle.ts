@@ -88,6 +88,12 @@ export class GeoLineStyle extends GeoStyle {
                 this.convertedDashArray.push(parseFloat(a));
             }
         }
+        if (this.lineCap) {
+            this.lineCap = this.lineCap.toLowerCase();
+        }
+        if (this.lineJoin) {
+            this.lineJoin = this.lineJoin.toLowerCase();
+        }
 
         if (this.lineDirectionImageUri) {
             this.onewayIcon = new ol.style.Icon({
@@ -149,8 +155,8 @@ export class GeoLineStyle extends GeoStyle {
                         let values = this.getTransformValues(this.geometryTransform);
 
                         if (this.geometryTransform.indexOf("translate") === 0) {
-                            var dx = values[0].trim() * resolution;
-                            var dy = values[1].trim() * resolution;
+                            var dx = values[0].trim();
+                            var dy = values[1].trim();
                             geometry.translate(+dx, +dy);
                             var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                             geometry['extent_'] = newExtent_;
