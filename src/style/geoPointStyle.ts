@@ -73,6 +73,9 @@ export class GeoPointStyle extends GeoStyle {
 
     initializeCore() {
         this.style = new ol.style.Style();
+        if (this.pointType) {
+            this.pointType = this.pointType.toLowerCase();
+        }
         switch (this.pointType) {
             case "symbol":
                 this.initSymbolStyle();
@@ -133,6 +136,9 @@ export class GeoPointStyle extends GeoStyle {
 
     private initSymbolStyle() {
         let radius = this.size / 2;
+        if (this.symbolType) {
+            this.symbolType = this.symbolType.toLowerCase();
+        }
         switch (this.symbolType) {
             case "circle":
                 this.imageStyle = new ol.style.Circle({

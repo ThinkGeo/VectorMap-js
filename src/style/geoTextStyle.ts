@@ -58,8 +58,6 @@ export class GeoTextStyle extends GeoStyle {
         this.charWidths = {};
 
         if (styleJson) {
-            // drawing label canvas property
-            // // add into textStyle
             this.font = styleJson["text-font"];
             this.fillColor = styleJson["text-fill-color"];
             this.haloColor = styleJson["text-halo-color"];
@@ -132,10 +130,12 @@ export class GeoTextStyle extends GeoStyle {
             stroke.setWidth(this.haloRadius);
         }
 
+        this.letterCase = this.letterCase.toLowerCase()
         if (!this.letterCases.includes(this.letterCase)) {
             this.letterCase = this.defaultLetterCase;
         }
 
+        this.align = this.align.toLowerCase();
         if (!this.aligns.includes(this.align)) {
             this.align = this.defaultAlign;
         }
@@ -151,11 +151,13 @@ export class GeoTextStyle extends GeoStyle {
             textStyle.setOffsetY(this.offsetY);
         }
 
+        this.baseline = this.baseline.toLowerCase()
         if (!this.baselines.includes(this.baseline)) {
             this.baseline = this.defaultBaseline;
         }
         textStyle.setTextBaseline(this.baseline);
 
+        this.placement = this.placement.toLowerCase();
         if (!this.placement.includes(this.placement)) {
             this.placement = this.defaultPlacement;
         }
