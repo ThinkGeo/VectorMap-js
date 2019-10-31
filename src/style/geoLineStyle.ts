@@ -63,8 +63,9 @@ export class GeoLineStyle extends GeoStyle {
             this.lineJoin = styleJson["line-join"];
             this.lineCap = styleJson["line-cap"];
             this.opacity = styleJson["line-opacity"];
+            this.offsetX = styleJson["line-offset-x"] || 0;
+            this.offsetY = styleJson["line-offset-y"] || 0;
             this.geometryTransform = styleJson["line-geometry-transform"];
-
             this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
         }
     }
@@ -171,6 +172,15 @@ export class GeoLineStyle extends GeoStyle {
                         }
 
                         feature.flatCoordinates_ = (<any>geometry).getFlatCoordinates();
+                    }
+                    if (this.offsetX || this.offsetY) {
+                        var geometry = this.getGeometry(feature);
+                        var dx = this.offsetX * resolution;
+                        var dy = this.offsetY * resolution;
+                        geometry.translate(+dx, +dy);
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                        geometry.extent_ = newExtent_;
+                        feature.flatCoordinates_ = geometry.getFlatCoordinates();
                     }
                 }
                 return feature.getGeometry();

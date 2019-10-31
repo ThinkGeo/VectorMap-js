@@ -98610,6 +98610,8 @@ function olInit() {
                     _this.lineJoin = styleJson["line-join"];
                     _this.lineCap = styleJson["line-cap"];
                     _this.opacity = styleJson["line-opacity"];
+                    _this.offsetX = styleJson["line-offset-x"] || 0;
+                    _this.offsetY = styleJson["line-offset-y"] || 0;
                     _this.geometryTransform = styleJson["line-geometry-transform"];
                     _this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
                 }
@@ -98716,6 +98718,15 @@ function olInit() {
 
                                 feature.flatCoordinates_ = geometry.getFlatCoordinates();
                             }
+                        }
+                        if (_this.offsetX || _this.offsetY) {
+                            var geometry = _this.getGeometry(feature);
+                            var dx = _this.offsetX * resolution;
+                            var dy = _this.offsetY * resolution;
+                            geometry.translate(+dx, +dy);
+                            var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                            geometry.extent_ = newExtent_;
+                            feature.flatCoordinates_ = geometry.getFlatCoordinates();
                         }
 
                         return feature.getGeometry();
