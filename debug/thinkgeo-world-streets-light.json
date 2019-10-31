@@ -157,7 +157,9 @@
         {
           "filter": "zoom>=0;zoom<=19;",
           "polygon-fill-color": "#FFFFFF80",
-          "polygon-opacity":0.5
+          "polygon-opacity": 0.5,
+          "polygon-geometry-transform": "translate(10,0)",
+          "polygon-offset-x": 10
         }
       ]
     },
@@ -290,24 +292,38 @@
       "id": "country_name",
       "filter": "layerName='admin_name'",
       "text-wrap-width": 30,
-      "text-spacing": 10,
-      "text-fill-color": "#00000055",
-      "text-halo-color": "#ffffff55",
-      "text-halo-radius": 40,
-      "text-mask-type":"rectangle",
-      "text-mask-color":"#00000055",
-      "text-mask-outline-color":"#ffffff55",
-      "text-mask-outline-width":4,
-      "text-opacity":0.9,
+      "text-spacing": 0,
+      "text-fill-color": "#00FF00FF",
+      "text-halo-color": "#ffff00FF",
+      "text-halo-radius": 10,
+      "text-align": "right",
+      "text-mask-type": "roundedEnds",
+      "text-mask-color": "#ff0000ff",
+      "text-mask-outline-color": "#ffff00FF",
+      "text-mask-outline-width": 10,
+      "text-letter-spacing": 5,
+      "text-letter-case": "uppercase",
+      "text-opacity": 0.5,
+      "text-mask-margin": "11,100",
+      "text-placement": "Center",
+      "text-offset-x": 20,
+      "text-offset-y": 20,
+      "text-rotation-angle": 10,
+      "text-baseline": "top",
+      "text-base-point-style": {
+        "point-type": "symbol",
+        "point-symbol-type": "star",
+        "point-size": 18,
+        "point-fill-color": "#ff00ff55"
+      },
       "style": [
         {
           "filter": "class='country'",
           "text-content": "@name",
-          "text-wrap-width": 50,
+          "text-wrap-width": 400,
           "style": [
             {
               "filter": "labelrank=0",
-              "text-wrap-width": 80,
               "style": [
                 {
                   "filter": "zoom=1",
@@ -327,7 +343,6 @@
                 },
                 {
                   "filter": "zoom=5",
-                  "text-fill-color": "@adminLabelLevel5",
                   "text-font": "600 36px Arial, Helvetica, sans-serif"
                 }
               ]
@@ -818,39 +833,12 @@
       "filter": "layerName='building'",
       "style": [
         {
-          "filter": "zoom=14;class='hospital,hotel,castle,university,civic,stadium'",
-          "polygon-fill-color": "@buildingFill"
-        },
-        {
-          "filter": "zoom=15",
-          "polygon-fill-color": "@buildingFill"
-        },
-        {
-          "filter": "zoom>=16;zoom<=17",
+          "filter": "zoom>=15",
           "polygon-fill-color": "@buildingFill",
-          "polygon-outline-color": "@buildingOutline",
-          "polygon-outline-width": 1,
-          "polygon-shadow-color": "@buildingShadow",
-          "polygon-shadow-dx": 1,
-          "polygon-shadow-dy": -1
-        },
-        {
-          "filter": "zoom=18;",
-          "polygon-fill-color": "@buildingFill",
-          "polygon-outline-color": "@buildingOutline",
-          "polygon-outline-width": 1,
-          "polygon-shadow-color": "@buildingShadow",
-          "polygon-shadow-dx": 2,
-          "polygon-shadow-dy": -2
-        },
-        {
-          "filter": "zoom=19;",
-          "polygon-fill-color": "@buildingFill",
-          "polygon-outline-color": "@buildingOutline",
-          "polygon-outline-width": 1,
-          "polygon-shadow-color": "@buildingShadow",
-          "polygon-shadow-dx": 4,
-          "polygon-shadow-dy": -4
+          "polygon-shadow": {
+            "polygon-fill-color": "@buildingShadow",
+            "polygon-offset-x": 10
+          }
         }
       ]
     },
@@ -2398,12 +2386,21 @@
     {
       "id": "poi_icon",
       "filter": "layerName='poi'",
-      "point-type": "glyph",
+      "point-type": "Symbol",
+      "point-symbol-type": "Circle",
       "point-glyph-font-name": "vectormap-icons",
       "point-fill-color": "@naturalAndSports",
       "point-size": 18,
       "point-outline-color": "#ffffff",
-      "point-outline-width": 3,
+      "point-outline-width": 1,
+      "point-mask-type": "Circle",
+      "point-mask-color": "#FF00FF",
+      "point-mask-outline-color": "#ff0000",
+      "point-mask-outline-width": 10,
+      "point-opacity": 0.5,
+      "point-rotation-angle": 10,
+      "point-offset-x": -10,
+      "point-mask-margin": "10,2",
       "style": [
         {
           "filter": "class='airport'",
@@ -3890,11 +3887,11 @@
         {
           "filter": "zoom>=14;zoom<=16",
           "text-font": "500 20px Arial, Helvetica, sans-serif",
-          "text-base-point-style":{
-            "point-type":"symbol",
-            "point-symbol-type":"star",
-            "point-size":18,
-            "point-fill-color":"#ff00ff55"
+          "text-base-point-style": {
+            "point-type": "symbol",
+            "point-symbol-type": "star",
+            "point-size": 18,
+            "point-fill-color": "#ff00ff55"
           }
         },
         {
@@ -4155,7 +4152,6 @@
       "point-offset-y": 100,
       "point-mask-type": "circle",
       "point-mask-outline-width": 10,
-
       "point-fill-color": "#ff00ff55",
       "point-outline-color": "#00dd0055",
       "point-mask-color": "#FFFFFF55",
@@ -4207,41 +4203,9 @@
   "layers": [
     {
       "id": "worldstreets_layers",
-      "source": "worldstreets_source", 
+      "source": "worldstreets_source",
       "styles": [
-        "ocean",
-        "country",
-        "urban",
-        "landcover",
-        "water",
-        "waterway",
-        "building",
-        "country_boundary",
-        "province_boundary",
-        "aeroway",
-        "road",
-        "railway",
-        "place_popular",
-        "place_others",
-        "poi_icon",
-        "country_name",
-        "state_name",
-        "marine_name",
-        "poi_text",
-        "road_number",
-        "motorway_name",
-        "trunk_name",
-        "primary_name",
-        "secondary_name",
-        "tertiary_name",
-        "residential_name",
-        "pedestrian_name",
-        "otherroad_name",
-        "road_oneway",
-        "water_name",
-        "waterway_name",
-        "building_name",
-        "housenumber"
+        "building"
       ]
     }
   ]

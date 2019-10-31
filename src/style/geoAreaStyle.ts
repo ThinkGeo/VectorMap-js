@@ -105,7 +105,7 @@ export class GeoAreaStyle extends GeoStyle {
         }
         if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
-                this.transformGeometry(cloneGeometry, resolution);
+                this.transformGeometry(cloneGeometry);
             }
             if (this.offsetX || this.offsetY) {
                 let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
@@ -142,7 +142,7 @@ export class GeoAreaStyle extends GeoStyle {
         return values;
     }
 
-    transformGeometry(geometry, resolution) {
+    transformGeometry(geometry) {
 
         if (this.geometryTransform.indexOf("translate") === 0) {
             geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
@@ -155,6 +155,7 @@ export class GeoAreaStyle extends GeoStyle {
             let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
             geometry.rotate(angle, center);
         }
+        // TODO:
         // else if (this.geometryTransform.indexOf("skew") === 0) {
         //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         // }

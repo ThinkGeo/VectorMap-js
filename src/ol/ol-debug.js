@@ -98485,19 +98485,36 @@ function olInit() {
                 }
 
                 if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
-                    // if (this.geometryTransform) {
-                    //     this.transformGeometry(cloneFeature, resolution);
-                    // }
-                    // if (this.offsetX || this.offsetY) {
-                    //     let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
-                    //     if (offsetTranslateValue === undefined) {
-                    //         let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                    //         this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
-                    //         offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
-                    //         this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
-                    //     }
-                    //     cloneFeature.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
-                    // }
+                    if (this.geometryTransform) {
+                        this.transformGeometry(cloneFeature);
+                    }
+
+                    if (this.offsetX || this.offsetY) {
+                        let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                        if (offsetTranslateValue === undefined) {
+                            let tmpResolution = Math.round(resolution * 100000000) / 100000000;
+                            this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                            offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
+                            this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
+                        }
+                        var tmpFlatCoordinates = cloneFeature.getFlatCoordinates();
+                        var newFlatCoordinates = ol.geom.flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                        cloneFeature.flatCoordinates_= newFlatCoordinates;
+
+                        var tmpCoordinates = [[]];
+                        var index = 0;
+                        for (var i = 0; i < newFlatCoordinates.length; i += 2) {
+                            tmpCoordinates[index] || (tmpCoordinates[index] = []);
+                            tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
+                            if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
+                                index++;
+                            }
+                        }
+                        var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                        geometry.ends_ = feature.ends_;
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                        cloneFeature.extent_ = newExtent_;
+                    }
 
                     this.style.setGeometry(cloneFeature.getGeometry());
                     this.style['zCoordinate'] = this.zIndex;
@@ -98520,7 +98537,20 @@ function olInit() {
                 }
                 return values;
             };
-            GeoAreaStyle.prototype.transformGeometry = function (geometry, resolution) {
+            GeoAreaStyle.prototype.transformGeometry = function (feature) {
+                var tmpFlatCoordinates = feature.getFlatCoordinates();
+                var tmpCoordinates = [[]];
+                var index = 0;
+                for (var i = 0; i < tmpFlatCoordinates.length; i += 2) {
+                    tmpCoordinates[index] || (tmpCoordinates[index] = []);
+                    tmpCoordinates[index].push([tmpFlatCoordinates[i], tmpFlatCoordinates[i + 1]]);
+                    if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === tmpFlatCoordinates[i] && tmpCoordinates[index][0][1] === tmpFlatCoordinates[i + 1]) {
+                        index++;
+                    }
+                }
+
+                var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                geometry.ends_ = feature.ends_;
                 if (this.geometryTransform.indexOf("translate") === 0) {
                     geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
@@ -98528,14 +98558,16 @@ function olInit() {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
                 else if (this.geometryTransform.indexOf("rotate") === 0) {
-                    var center = ol.extent.getCenter(cloneGeometry.getExtent());
-                    var angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
+                    let center = ol.extent.getCenter(cloneGeometry.getExtent());
+                    let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
                     geometry.rotate(angle, center);
                 }
+                 // TODO:
                 // else if (this.geometryTransform.indexOf("skew") === 0) {
                 //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 // }
-                return geometry;
+
+                feature.flatCoordinates_= geometry.getFlatCoordinates();
             };
             return GeoAreaStyle;
         }(GeoStyle));
