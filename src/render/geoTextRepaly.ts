@@ -238,7 +238,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end, feature);
                     this.renderDeclutterLabel_(declutterGroup, feature);
                 } else {
-                    // draw chars 
+                    this.label = style.label;
                     this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                 }
             }

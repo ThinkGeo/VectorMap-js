@@ -130,12 +130,18 @@ export class GeoTextStyle extends GeoStyle {
             stroke.setWidth(this.haloRadius);
         }
 
-        this.letterCase = this.letterCase.toLowerCase()
+        if(this.letterCase)
+        {
+            this.letterCase = this.letterCase.toLowerCase()
+        }
         if (!this.letterCases.includes(this.letterCase)) {
             this.letterCase = this.defaultLetterCase;
         }
 
-        this.align = this.align.toLowerCase();
+        if(this.align)
+        {
+            this.align = this.align.toLowerCase();
+        }
         if (!this.aligns.includes(this.align)) {
             this.align = this.defaultAlign;
         }
@@ -151,13 +157,19 @@ export class GeoTextStyle extends GeoStyle {
             textStyle.setOffsetY(this.offsetY);
         }
 
-        this.baseline = this.baseline.toLowerCase()
+        if(this.baseline)
+        {
+            this.baseline = this.baseline.toLowerCase()
+        }
         if (!this.baselines.includes(this.baseline)) {
             this.baseline = this.defaultBaseline;
         }
         textStyle.setTextBaseline(this.baseline);
 
-        this.placement = this.placement.toLowerCase();
+        if(this.placement)
+        {
+            this.placement = this.placement.toLowerCase();
+        }
         if (!this.placement.includes(this.placement)) {
             this.placement = this.defaultPlacement;
         }
