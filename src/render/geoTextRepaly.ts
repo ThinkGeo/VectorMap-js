@@ -204,7 +204,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         this.originX = 0;
                         this.originY = 0;
                         this.anchorX = Math.floor(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
-                        this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) * pixelRatio - this.offsetY_);
+                        this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_)  - this.offsetY_);
                         this.replayImage_(frameState, declutterGroup, [pointX, pointY], this.state_.scale / pixelRatio, end, feature);
                         this.renderDeclutterLabel_(declutterGroup, feature);
                     }
@@ -234,7 +234,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.originX = 0;
                     this.originY = 0;
                     this.anchorX = Math.floor(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
-                    this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) * pixelRatio - this.offsetY_);
+                    this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) - this.offsetY_);
                     this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end, feature);
                     this.renderDeclutterLabel_(declutterGroup, feature);
                 } else {
