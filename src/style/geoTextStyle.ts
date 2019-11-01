@@ -130,16 +130,14 @@ export class GeoTextStyle extends GeoStyle {
             stroke.setWidth(this.haloRadius);
         }
 
-        if(this.letterCase)
-        {
+        if (this.letterCase) {
             this.letterCase = this.letterCase.toLowerCase()
         }
         if (!this.letterCases.includes(this.letterCase)) {
             this.letterCase = this.defaultLetterCase;
         }
 
-        if(this.align)
-        {
+        if (this.align) {
             this.align = this.align.toLowerCase();
         }
         if (!this.aligns.includes(this.align)) {
@@ -157,8 +155,7 @@ export class GeoTextStyle extends GeoStyle {
             textStyle.setOffsetY(this.offsetY);
         }
 
-        if(this.baseline)
-        {
+        if (this.baseline) {
             this.baseline = this.baseline.toLowerCase()
         }
         if (!this.baselines.includes(this.baseline)) {
@@ -166,8 +163,7 @@ export class GeoTextStyle extends GeoStyle {
         }
         textStyle.setTextBaseline(this.baseline);
 
-        if(this.placement)
-        {
+        if (this.placement) {
             this.placement = this.placement.toLowerCase();
         }
         if (!this.placement.includes(this.placement)) {
@@ -182,6 +178,11 @@ export class GeoTextStyle extends GeoStyle {
         }
         if (this.maxCharAngleDelta >= 0) {
             (<any>textStyle).setMaxAngle(this.maxCharAngleDelta);
+        }
+
+        if (ol.has.SAFARI) {
+            // TODO the letterSpacing doesn't work on Safari
+            this.letterSpacing = 0;
         }
     }
 
@@ -332,6 +333,10 @@ export class GeoTextStyle extends GeoStyle {
                 textHeight += (linesInfo.lines.length - 1) * (lineHeight + lineSpacing);
             }
 
+            let textScale = textStyle.getScale();
+            textScale = textScale === undefined ? 1 : textScale;
+            let scale = textScale * window.devicePixelRatio;
+
             let labelWidth = Math.ceil((textWidth));
             let labelHeight = Math.ceil((textHeight);
 
@@ -341,7 +346,8 @@ export class GeoTextStyle extends GeoStyle {
                 linesInfo: linesInfo,
                 lineHeight: lineHeight,
                 strokeWidth: strokeWidth,
-                lineSpacing: lineSpacing
+                lineSpacing: lineSpacing,
+                scale: scale
             };
             this.labelInfos.set(key, labelInfo);
         }
@@ -468,6 +474,7 @@ export class GeoTextStyle extends GeoStyle {
             let strokeStyle = textStyle.getStroke();
             let fillStyle = textStyle.getFill();
 
+            let scale = labelInfo.scale;
             let labelHeight = labelInfo.labelHeight;
             let labelWidth = labelInfo.labelWidth;
             let lineHeight = labelInfo.lineHeight;
@@ -487,7 +494,7 @@ export class GeoTextStyle extends GeoStyle {
             textAnchorX = canvasSizeInfoWithMask[2];
             textAnchorY = canvasSizeInfoWithMask[3];
 
-            let canvas = GeoTextStyle.createCanvas(canvasWidth, canvasHeight);
+            let canvas = GeoTextStyle.createCanvas(canvasWidth * scale, canvasHeight * scale);
             labelCache.set(key, canvas);
 
             // For letterSpacing we need appendChild
@@ -500,7 +507,13 @@ export class GeoTextStyle extends GeoStyle {
                 }
                 canvas.style.letterSpacing = letterSpacing + "px";
             }
+
             let context = canvas.getContext("2d");
+            if (scale !== 1) {
+                context.scale(scale, scale);
+            }
+            context["scale"] = scale;
+
             context.globalAlpha = opacity || 1;
             this.drawMask(context);
 
@@ -775,6 +788,12 @@ export class GeoTextStyle extends GeoStyle {
         var width = context.canvas.width;
         var height = context.canvas.height;
 
+        var scale = context["scale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
+
         var strokeWidth = 0;
         var halfStrokeWidth = 0;
         var doubleStrokeWidth = 0;
@@ -810,6 +829,11 @@ export class GeoTextStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
+
+        var scale = context["scale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
 
         let radius = (width < height ? width : height) * 0.25;
         radius = radius >= 5 ? 5 : radius;
@@ -887,6 +911,10 @@ export class GeoTextStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
+        var scale = context["scale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
 
         var radius = height / 2;
 
