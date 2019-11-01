@@ -3,12 +3,12 @@ import { GeoVector as VectorLayer } from "./layer/geoVector";
 import { GeoHeatmap as Heatmap } from "./layer/geoHeatmap";
 import { VectorTileLayerThreadMode } from "./worker/vectorTileLayerThreadMode";
 
-ol.mapsuite = {};
+ol.thinkgeo = {};
 
-ol.mapsuite["Heatmap"] = Heatmap;
-ol.mapsuite["VectorLayer"] = VectorLayer;
-ol.mapsuite["VectorTileLayer"] = VectorTileLayer;
-ol.mapsuite["VectorTileLayerThreadMode"] = VectorTileLayerThreadMode;
+ol.thinkgeo["Heatmap"] = Heatmap;
+ol.thinkgeo["VectorLayer"] = VectorLayer;
+ol.thinkgeo["VectorTileLayer"] = VectorTileLayer;
+ol.thinkgeo["VectorTileLayerThreadMode"] = VectorTileLayerThreadMode;
 
 ol.olInit = olInit;
 // (<any>window)["ol"] = ol;
