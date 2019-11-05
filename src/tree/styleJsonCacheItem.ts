@@ -30,7 +30,7 @@ export class StyleJsonCacheItem {
         // this.minZoom = minZoom;
         // this.maxZoom = maxZoom;
         this.zoomArr = zoomArr
-        this.zIndex = styleJson["z-index"];
+        this.zIndex = styleJson["z-index-atrribute-name"];
         this.styleFirst = styleJson["style-first"];
         this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
         this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);

@@ -97305,7 +97305,7 @@ function olInit() {
                                 treeStyleFirstCache[treeIndex] = cacheTree.root.data.styleFirst;
                             }
 
-                            var matchedNode = undefined;
+                            var matchedNode = [];
                             var checkNodeMatched = function (node) {
                                 var styleJsonCacheItem = node.data;
                                 var matched = false;
@@ -97334,11 +97334,11 @@ function olInit() {
                             };
 
                             var selectNode = function (node) {
-                                matchedNode = node.data;
+                                matchedNode.push(node.data);
                             };
                             cacheTree.traverseNode(checkNodeMatched, selectNode);
 
-                            if (matchedNode) {
+                            if (matchedNode && matchedNode.length > 0) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName, offset);
 
@@ -97363,6 +97363,7 @@ function olInit() {
                                         instructsCache[treeIndex]["max"] = zindex;
                                     }
                                 }
+
                                 instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
 
                                 feature.extent_ = undefined;
@@ -97373,7 +97374,7 @@ function olInit() {
                 cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
-
+            debugger;
             return [allFeatures, instructsCache, extent];
         }
 
@@ -97391,20 +97392,12 @@ function olInit() {
                                 var childrenInstructs = [];
                                 for (var h = 0; h < instructsInOneZIndex.length; h++) {
                                     var instruct = instructsInOneZIndex[h];
-                                    var geoStyle = instruct[1].geoStyle;
-                                    if (geoStyle) {
-                                        instructs.push([instruct[0], geoStyle.id, i]);
-                                        // if (geoStyle.constructor.name === "GeoPointStyle" || geoStyle.constructor.name === "GeoTextStyle" || geoStyle.constructor.name === "GeoShieldStyle" || (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined)) {
-                                        //     mainGeoStyleIds[geoStyle.id] = "";
-                                        // }
-                                    }
-                                    var childrenGeoStyles = instruct[1].childrenGeoStyles;
-                                    if (childrenGeoStyles) {
-                                        for (var k = 0; k < childrenGeoStyles.length; k++) {
-                                            childrenInstructs.push([instruct[0], childrenGeoStyles[k].id, i]);
-                                            // if (childrenGeoStyles[k].constructor.name === "GeoPointStyle" || childrenGeoStyles[k].constructor.name === "GeoTextStyle" || childrenGeoStyles[k].constructor.name === "GeoShieldStyle" || (childrenGeoStyles[k].constructor.name === "GeoLineStyle" && childrenGeoStyles[k].lineDirectionImageUri === true)) {
-                                            //     mainGeoStyleIds[childrenGeoStyles[k].id] = "";
-                                            // }
+                                    var styleCacheItems = instruct[1];
+                                    for (let index = 0; index < styleCacheItems.length; index++) {
+                                        const element = styleCacheItems[index];
+                                        var geoStyle = element.geoStyle;
+                                        if (geoStyle) {
+                                            instructs.push([instruct[0], geoStyle.id, i]);
                                         }
                                     }
                                 }
@@ -97417,6 +97410,7 @@ function olInit() {
                 }
                 instructsTree.length = 0;
             }
+            debugger;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -97729,7 +97723,7 @@ function olInit() {
                 this.subStyleCacheItems = [];
                 this.zoomArr = zoomArr;
                 // this.maxZoom = maxZoom;
-                this.zIndex = styleJson["z-index"];
+                this.zIndex = styleJson["z-index-atrribute-name"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
                 this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
@@ -97942,11 +97936,9 @@ function olInit() {
                 (function recurse(currentNode) {
                     if (callback(currentNode)) {
                         if (currentNode.children.length > 0) {
-                            var hasMatchedChildren = false;
                             for (var i = 0, length_1 = currentNode.children.length; i < length_1; i++) {
                                 if (recurse(currentNode.children[i])) {
-                                    hasMatchedChildren = true;
-                                    break;
+                                    continue;
                                 }
                             }
                         }
@@ -100848,6 +100840,7 @@ function olInit() {
         }
 
         self.initStyleJSON = function (styleJsonInfo, methodInfo) {
+            debugger;
             self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
         }
 
@@ -101032,6 +101025,7 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
+            debugger;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];

@@ -90,7 +90,7 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            3, (<any>ol.render).ReplayType.TEXT);
+            6, (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
@@ -115,7 +115,7 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            3, (<any>ol.render).ReplayType.TEXT);
+            6, (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;

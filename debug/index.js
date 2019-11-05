@@ -1,12 +1,12 @@
 var view = new ol.View({
     //center: [0, 0],
-    center: [-10784844.42768457, 4989250.967286606],// poi
+    //center: [-10784844.42768457, 4989250.967286606],// poi
     //center: [-8232679.211417493, 4963666.086553334],// NY
-    //center: [-10775413.17372718, 3866116.842477651],// dallas
+    center: [-10776351.166102841, 3864500.475986851],// dallas road
     //center: [-10796026.396196617, 5003517.396574807],// country_name
     //center: [-10783010.162497278, 3862161.525031017],// road text 16
     //center:[-10787223.389888179, 3863490.4854171653], // road label 14
-    zoom: 15,
+    zoom: 17,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -21,10 +21,11 @@ view.on("change:resolution", function (e) {
     document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
-var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light.json", {
+var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
     declutter: true,
     multithread: true,
     minimalist: true,
+    apiKey:"GoE6l7_Ji_JfDnUhby9awntg9Pi1MABMYv0J6cNTPzY~"
 });
 
 var circleStyle = new ol.style.Circle({

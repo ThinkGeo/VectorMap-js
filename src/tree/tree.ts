@@ -18,7 +18,7 @@ export class Tree<T> {
                 if (currentNode.children.length > 0) {
                     for (let i = 0, length = currentNode.children.length; i < length; i++) {
                         if (recurse(currentNode.children[i])) {
-                            break;
+                            continue;
                         }
                     }
                 }
