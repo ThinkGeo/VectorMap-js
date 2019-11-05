@@ -97305,7 +97305,8 @@ function olInit() {
                                 treeStyleFirstCache[treeIndex] = cacheTree.root.data.styleFirst;
                             }
 
-                            var matchedNode = [];
+                            var matchedNode = {};
+                            matchedNode["maxStyleIndex"] = 0;
                             var checkNodeMatched = function (node) {
                                 var styleJsonCacheItem = node.data;
                                 var matched = false;
@@ -97334,11 +97335,14 @@ function olInit() {
                             };
 
                             var selectNode = function (node) {
-                                matchedNode.push(node.data);
+                                if (matchedNode["maxStyleIndex"] < node.data.styleIndex) {
+                                    matchedNode["maxStyleIndex"] = node.data.styleIndex;
+                                }
+                                matchedNode[node.data.styleIndex] = node.data;
                             };
                             cacheTree.traverseNode(checkNodeMatched, selectNode);
 
-                            if (matchedNode && matchedNode.length > 0) {
+                            if (matchedNode && matchedNode["maxStyleIndex"] > 0) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName, offset);
 
@@ -97363,7 +97367,6 @@ function olInit() {
                                         instructsCache[treeIndex]["max"] = zindex;
                                     }
                                 }
-
                                 instructsCache[treeIndex][zindex].push([featureIndex, matchedNode]);
 
                                 feature.extent_ = undefined;
@@ -97374,7 +97377,6 @@ function olInit() {
                 cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
-            debugger;
             return [allFeatures, instructsCache, extent];
         }
 
@@ -97389,20 +97391,40 @@ function olInit() {
                         for (var j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
                             var instructsInOneZIndex = instructsInOneTree[j];
                             if (instructsInOneZIndex) {
-                                var childrenInstructs = [];
+                                var styleIndexGroups = {
+                                    maxStyleIndex: 0
+                                };
+
                                 for (var h = 0; h < instructsInOneZIndex.length; h++) {
                                     var instruct = instructsInOneZIndex[h];
-                                    var styleCacheItems = instruct[1];
-                                    for (let index = 0; index < styleCacheItems.length; index++) {
-                                        const element = styleCacheItems[index];
-                                        var geoStyle = element.geoStyle;
-                                        if (geoStyle) {
-                                            instructs.push([instruct[0], geoStyle.id, i]);
+                                    var matchedNode = instruct[1];
+                                    var maxStyleIndex = matchedNode["maxStyleIndex"];
+                                    if (styleIndexGroups.maxStyleIndex < maxStyleIndex) {
+                                        styleIndexGroups.maxStyleIndex=maxStyleIndex;
+                                    }
+
+                                    for (let index = 0; index <= maxStyleIndex; index++) {
+                                        const element = matchedNode[index];
+                                        if (element) {
+                                            var geoStyle = element.geoStyle;
+                                            if (geoStyle) {
+                                                var styleIndexGroup = styleIndexGroups[index];
+                                                if (styleIndexGroup === undefined) {
+                                                    styleIndexGroups[index] = styleIndexGroup = [];
+                                                }
+                                                styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                            }
                                         }
                                     }
                                 }
-                                Array.prototype.push.apply(instructs, childrenInstructs);
-                                childrenInstructs.length = 0;
+
+                                for (let index = 0; index <= styleIndexGroups.maxStyleIndex; index++) {
+                                    var element = styleIndexGroups[index];
+                                    if (element) {
+                                        Array.prototype.push.apply(instructs, element);
+                                    }
+                                }
+
                                 instructsInOneZIndex.length = 0;
                             }
                         }
@@ -97410,7 +97432,6 @@ function olInit() {
                 }
                 instructsTree.length = 0;
             }
-            debugger;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -97638,7 +97659,8 @@ function olInit() {
                 for (var i = 0; i <= 24; i++) {
                     tmpZoomArr.push(i);
                 }
-                var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex);
+                var styleJsonCacheItemMakeIndexObj = { styleIndex: 0 };
+                var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 // for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                 item.zoomArr.forEach(function (zoom) {
                     var treeNode = new TreeNode(item);
@@ -97718,7 +97740,8 @@ function olInit() {
         }());
 
         var StyleJsonCacheItem = /** @class */ (function () {
-            function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex) {
+            function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
+                this.styleIndex = styleJsonCacheItemMakeIndexObj.styleIndex;
                 this.childrenGeoStyles = [];
                 this.subStyleCacheItems = [];
                 this.zoomArr = zoomArr;
@@ -97726,7 +97749,7 @@ function olInit() {
                 this.zIndex = styleJson["z-index-atrribute-name"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
+                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 this.geoStyle = this.createGeoStyle(styleJson);
                 // used for webgl depth test
                 this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
@@ -97832,7 +97855,7 @@ function olInit() {
                 // }
                 return filterGroup;
             };
-            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex) {
+            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
                 if (styleJson.style) {
                     // apply the property to sub style.
                     for (var key in styleJson) {
@@ -97853,9 +97876,11 @@ function olInit() {
                     // var subItemMinZoom = void 0;
                     // var subItemMaxZoom = void 0;
                     var subItemZoomArr = [];
+
                     for (var _i = 0, _a = styleJson.style; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
-                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
+                        styleJsonCacheItemMakeIndexObj.styleIndex++;
+                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                         this.zoomArr.forEach(function (item) {
                             if (!subItemZoomArr.includes(item)) {
                                 subItemZoomArr.push(item);
@@ -97933,6 +97958,7 @@ function olInit() {
                 this.treeIndex = treeIndex;
             }
             Tree.prototype.traverseNode = function (callback, select) {
+                var styleIndex = 0;
                 (function recurse(currentNode) {
                     if (callback(currentNode)) {
                         if (currentNode.children.length > 0) {
@@ -100840,7 +100866,6 @@ function olInit() {
         }
 
         self.initStyleJSON = function (styleJsonInfo, methodInfo) {
-            debugger;
             self.styleJsonCache[styleJsonInfo.formatId] = createStyleJsonCache(styleJsonInfo.styleJson, styleJsonInfo.geoTextStyleInfos);
         }
 
@@ -101025,7 +101050,6 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
-            debugger;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
 
             var features = readData[0];
