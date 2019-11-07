@@ -97283,7 +97283,8 @@ function olInit() {
 
                 var skipOffset = 1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = (tileResolution / scale) * skipOffset;
+                // var offset = (tileResolution / scale) * skipOffset;
+                var offset = -1;
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
