@@ -120,6 +120,9 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
@@ -143,6 +146,9 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
@@ -177,6 +183,9 @@ function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
