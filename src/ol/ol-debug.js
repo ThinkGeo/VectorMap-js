@@ -97401,7 +97401,7 @@ function olInit() {
                                     var matchedNode = instruct[1];
                                     var maxStyleIndex = matchedNode["maxStyleIndex"];
                                     if (styleIndexGroups.maxStyleIndex < maxStyleIndex) {
-                                        styleIndexGroups.maxStyleIndex=maxStyleIndex;
+                                        styleIndexGroups.maxStyleIndex = maxStyleIndex;
                                     }
 
                                     for (let index = 0; index <= maxStyleIndex; index++) {
@@ -98064,12 +98064,6 @@ function olInit() {
                         value = +filterItem.value;
                     }
                     switch (filterItem.operator) {
-                        case ">":
-                            this.ranges.push([value + 0.00001, Number.POSITIVE_INFINITY]);
-                            break;
-                        case ">=":
-                            this.ranges.push([value, Number.POSITIVE_INFINITY]);
-                            break;
                         case "!=":
                             if (Array.isArray(value)) {
                                 value.forEach(function (item) {
@@ -98088,30 +98082,7 @@ function olInit() {
                                 this.allowedValues.push(value);
                             }
                             break;
-                    }
-                }
-                for (var i = 0; i < this.filterItems.length; i++) {
-                    var filterItem = this.filterItems[i];
-                    var value = +filterItem.value;
-                    var range = GeoRangeFilter.getRange(this.ranges, value);
-                    switch (filterItem.operator) {
-                        case "<":
-                            if (range) {
-                                range[1] = value + 0.00001;
-                            }
-                            else {
-                                range = [Number.NEGATIVE_INFINITY, value + 0.00001];
-                                this.ranges.push(range);
-                            }
-                            break;
-                        case "<=":
-                            if (range) {
-                                range[1] = value;
-                            }
-                            else {
-                                range = [Number.NEGATIVE_INFINITY, value];
-                                this.ranges.push(range);
-                            }
+                        default:
                             break;
                     }
                 }
@@ -98136,19 +98107,45 @@ function olInit() {
                 if (this.allowedValues.includes(currentValue)) {
                     return true;
                 }
-                for (var i = 0; i < this.ranges.length; i++) {
-                    var range = this.ranges[i];
-                    if (range.length === 1) {
-                        if (currentValue >= range[0]) {
-                            return true;
-                        }
-                    }
-                    else {
-                        if (currentValue >= range[0] && currentValue <= range[1]) {
-                            return true;
-                        }
+                for (var i = 0; i < this.filterItems.length; i++) {
+                    var filterItem = this.filterItems[i];
+                    var value = +filterItem.value;
+                    switch (filterItem.operator) {
+                        case ">":
+                            if (!(currentValue > value)) {
+                                return false;
+                            }
+                            break;
+                        case ">=":
+                            if (!(currentValue >= value)) {
+                                return false;
+                            }
+                            break;
+                        case "<":
+                            if (!(currentValue < value)) {
+                                return false;
+                            }
+                            break;
+                        case "<=":
+                            if (!(currentValue <= value)) {
+                                return false;
+                            }
+                            break;
+                        case "=":
+                            if (!(currentValue === value)) {
+                                return false;
+                            }
+                            break;
+                        case "!=":
+                            if (!(currentValue !== value)) {
+                                return false;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
+                return true;
             };
             GeoRangeFilter.getRange = function (ranges, value) {
                 for (var i = 0; i < ranges.length; i++) {
@@ -99799,7 +99796,7 @@ function olInit() {
             __extends(GeoPolygonReplay, _super);
             function GeoPolygonReplay(tolerance, maxExtent) {
                 var _this = _super.call(this, tolerance, maxExtent) || this;
-                this.lineStringReplay = null;
+                this.lineStringReplay = new LineStringReplayCustom(tolerance, maxExtent);
                 return _this;
             }
             GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
@@ -99857,12 +99854,15 @@ function olInit() {
                             this.state_.changed = false;
                         }
                         if (this.lineStringReplay) {
-                            // this.lineStringReplay.setPolygonStyle(feature);
-                            // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                            this.lineStringReplay.setPolygonStyle(feature);
                         }
 
                         for (var i = 0; i < outers.length; i++) {
                             var outer = outers[i];
+                            if (this.lineStringReplay) {
+                                this.lineStringReplay.setPolygonStyle(feature);
+                                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                            }
                             this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                         }
                     }
