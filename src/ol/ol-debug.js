@@ -98482,6 +98482,7 @@ function olInit() {
                 var type = feature.getType();
                 var properties = feature.getProperties();
                 var id = feature.getId();
+                feature.getExtent();
                 var cloneFeature = new ol.render.Feature(type, clonedFlatCoordinates, cloneEnds, properties, id);
                 cloneFeature["drawingBbox"] = feature["drawingBbox"];
                 cloneFeature["styleId"] = feature["styleId"];
@@ -99851,6 +99852,7 @@ function olInit() {
                                 if (isClockwise) {
                                     if (!outers[++index]) {
                                         outers[index] = [];
+                                        outlines[index] = [];
                                     }
                                     outers[index].push(holeFlatCoords);
                                 } else {
@@ -101163,7 +101165,7 @@ function olInit() {
                             if (geoStyles[i]) {
                                 //if (true){
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
-                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
+                                  (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
