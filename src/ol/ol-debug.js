@@ -98483,8 +98483,7 @@ function olInit() {
                 var properties = feature.getProperties();
                 var id = feature.getId();
                 var cloneFeature = new ol.render.Feature(type, clonedFlatCoordinates, cloneEnds, properties, id);
-                cloneFeature.extent_ = feature.getExtent();
-                cloneFeature["drawingBbox"] = feature.getExtent();
+                cloneFeature["drawingBbox"] = feature["drawingBbox"];
                 cloneFeature["styleId"] = feature["styleId"];
 
                 if (this.shadowStyle && !this.isShadow) {
@@ -99799,29 +99798,46 @@ function olInit() {
                 this.lineStringReplay = new LineStringReplayCustom(tolerance, maxExtent);
                 return _this;
             }
-            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
+            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature, options) {
                 var ends = polygonGeometry.getEnds();
                 var stride = polygonGeometry.getStride();
                 var extent = polygonGeometry.getExtent();
                 var drawingBbox = polygonGeometry["drawingBbox"];
-
+                //var drawingBbox = undefined;
                 if (ends.length > 0) {
                     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+                    // https://docs.mapbox.com/vector-tiles/specification/#winding-order
                     var index = 0;
-                    var outers = [];
-                    var outerRing = [];
-                    var isClockwise;
-                    if (!outers[index]) {
-                        outers[index] = [];
-                    }
 
+                    var outers = [];
+                    outers[index] = [];
+
+                    var outerRing = [];
+
+                    var outlines = [];
+                    outlines[index] = [];
+
+                    var isClockwise;
                     if (ends[0] > 6) {
                         outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                             stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
-                        // FIXME it is also a anticlockwise, we don't judge for efficiency
                         outers[index].push(outerRing);
+
+                        var points = flatCoordinates.slice(0, ends[0]);
+                        var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
+
+                        var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
+                            stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                        outlines[index].push(lineSring);
+                        for (var i = 0; i <= cilped.ends.length - 1; i++) {
+                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[i], cilped.ends[i + 1],
+                                stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                            outlines[index].push(lineSring);
+                        }
+
                     } else {
                         outers[index].push([]);
+                        outlines[index].push([]);
                     }
 
                     var holes = [];
@@ -99841,39 +99857,44 @@ function olInit() {
                                     outers[index].push(holeFlatCoords);
                                 }
                             }
-                        }
-                    }
 
-                    {
-                        this.startIndices.push(this.indices.length);
-                        this.startIndicesFeature.push(feature);
+                            var points = flatCoordinates.slice(ends[i - 1], ends[i]);
+                            var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
 
-                        if (this.state_.changed) {
-                            this.zCoordinates.push(feature.zCoordinate);
-                            this.styleIndices_.push(this.indices.length);
-                            this.state_.changed = false;
-                        }
-                        if (this.lineStringReplay) {
-                            this.lineStringReplay.setPolygonStyle(feature);
-                        }
-
-                        for (var i = 0; i < outers.length; i++) {
-                            var outer = outers[i];
-                            if (this.lineStringReplay) {
-                                this.lineStringReplay.setPolygonStyle(feature);
-                                this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
+                                stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                            outlines[index].push(lineSring);
+                            for (var j = 0; j <= cilped.ends.length - 1; j++) {
+                                var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[j], cilped.ends[j + 1],
+                                    stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                                outlines[index].push(lineSring);
                             }
-                            this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                         }
                     }
 
-                    {
-                        // if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                        //     this.styles_.push(this.styles_[0]);
-                        //     this.zCoordinates.push(feature.zCoordinate);
-                        //     this.styleIndices_.push(this.indices.length);
-                        //     this.state_.changed = false;
-                        // }              
+                    this.startIndices.push(this.indices.length);
+                    this.startIndicesFeature.push(feature);
+
+                    if (this.state_.changed) {
+                        this.zCoordinates.push(feature.zCoordinate);
+                        this.styleIndices_.push(this.indices.length);
+                        this.state_.changed = false;
+                    }
+                    if (this.lineStringReplay) {
+                        this.lineStringReplay.setPolygonStyle(feature);
+                    }
+                    if (this.lineStringReplay) {
+                        for (let i = 0; i < outlines.length; i++) {
+                            const lineStrings = outlines[i];
+                            for (var j = 0; j < lineStrings.length; j++) {
+                                var lineString = lineStrings[j];
+                                this.lineStringReplay.drawCoordinates_(lineString, 0, lineString.length, stride);
+                            }
+                        }
+                    }
+                    for (var i = 0; i < outers.length; i++) {
+                        var outer = outers[i];
+                        this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                     }
                 }
             };
@@ -99913,7 +99934,14 @@ function olInit() {
             }
 
             LineStringReplayCustom.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
-                var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+                var flatCoordinates = undefined;
+                if (lineStringGeometry.getFlatCoordinates != undefined) {
+                    flatCoordinates = lineStringGeometry.getFlatCoordinates();
+                }
+                else {
+                    flatCoordinates = lineStringGeometry;
+                    lineStringGeometry = feature;
+                }
                 var frameState = options.frameState;
                 var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
 
@@ -100696,6 +100724,7 @@ function olInit() {
                     loading = true;
                 }
             }
+            options.squaredTolerance = squaredTolerance;
             self.renderFeatureByType(replayGroup, feature, style,
                 squaredTolerance, options);
 
@@ -100749,7 +100778,7 @@ function olInit() {
             }
         };
 
-        self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
+        self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature, options) {
             var fillStyle = style.getFill();
             var strokeStyle = style.getStroke();
             feature.zCoordinate = style.zCoordinate;
@@ -100757,7 +100786,7 @@ function olInit() {
                 var polygonReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.POLYGON);
                 polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-                polygonReplay.drawPolygon(geometry, feature);
+                polygonReplay.drawPolygon(geometry, feature, options);
             }
             var textStyle = style.getText();
             if (textStyle) {
@@ -101132,6 +101161,7 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
+                                //if (true){
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
                                     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
@@ -101251,7 +101281,6 @@ function olInit() {
                         var cloneEnds = featureInfo.ends_.slice(0);
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
-                        feature.extent_ = bbox;
                         // added a new property for drawing limit, the 'extent_' is orign property from OL.
                         feature["drawingBbox"] = bbox;
                         feature["styleId"] = geoStyleId;
