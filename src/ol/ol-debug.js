@@ -97524,10 +97524,6 @@ function olInit() {
         };
 
         var readRawGeometry_ = function (pbf, feature, flatCoordinates, ends, offset) {
-            var prevX = 0;
-            var prevY = 0;
-            var isBegin = true;
-
             pbf.pos = feature.geometry;
 
             var end = pbf.readVarint() + pbf.pos;
@@ -97543,7 +97539,6 @@ function olInit() {
                     var cmdLen = pbf.readVarint();
                     cmd = cmdLen & 0x7;
                     length = cmdLen >> 3;
-                    isBegin = true;
                 }
 
                 length--;
@@ -97559,13 +97554,9 @@ function olInit() {
                         }
                     }
 
-                    if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
-                        flatCoordinates.push(x, y);
-                        prevX = x;
-                        prevY = y;
-                        coordsLen += 2;
-                        isBegin = false;
-                    }
+                    flatCoordinates.push(x, y);
+                    coordsLen += 2;
+
                 } else if (cmd === 7) {
 
                     if (coordsLen > currentEnd) {
@@ -97573,7 +97564,6 @@ function olInit() {
                         flatCoordinates.push(
                             flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
                         coordsLen += 2;
-                        isBegin = true;
                     }
 
                 } else {
@@ -97585,6 +97575,69 @@ function olInit() {
                 ends.push(coordsLen);
                 currentEnd = coordsLen;
             }
+
+            //var prevX = 0;
+            //var prevY = 0;
+            //var isBegin = true;
+
+            //pbf.pos = feature.geometry;
+
+            //var end = pbf.readVarint() + pbf.pos;
+            //var cmd = 1;
+            //var length = 0;
+            //var x = 0;
+            //var y = 0;
+            //var coordsLen = 0;
+            //var currentEnd = 0;
+
+            //while (pbf.pos < end) {
+            //    if (!length) {
+            //        var cmdLen = pbf.readVarint();
+            //        cmd = cmdLen & 0x7;
+            //        length = cmdLen >> 3;
+            //        isBegin = true;
+            //    }
+
+            //    length--;
+
+            //    if (cmd === 1 || cmd === 2) {
+            //        x += pbf.readSVarint();
+            //        y += pbf.readSVarint();
+
+            //        if (cmd === 1) { // moveTo
+            //            if (coordsLen > currentEnd) {
+            //                ends.push(coordsLen);
+            //                currentEnd = coordsLen;
+            //            }
+            //        }
+
+            //        if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
+            //            flatCoordinates.push(x, y);
+            //            prevX = x;
+            //            prevY = y;
+            //            coordsLen += 2;
+            //            isBegin = false;
+            //        }
+            //    } else if (cmd === 7) {
+
+            //        if (coordsLen > currentEnd) {
+            //            // close polygon
+            //            flatCoordinates.push(
+            //                flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+            //            coordsLen += 2;
+            //            isBegin = true;
+            //        }
+
+            //    } else {
+            //        ol.asserts.assert(false, 59); // Invalid command found in the PBF
+            //    }
+            //}
+
+            //if (coordsLen > currentEnd) {
+            //    ends.push(coordsLen);
+            //    currentEnd = coordsLen;
+            //}
+
 
         };
 
@@ -99796,7 +99849,8 @@ function olInit() {
             __extends(GeoPolygonReplay, _super);
             function GeoPolygonReplay(tolerance, maxExtent) {
                 var _this = _super.call(this, tolerance, maxExtent) || this;
-                this.lineStringReplay = new LineStringReplayCustom(tolerance, maxExtent);
+                // this.lineStringReplay = new LineStringReplayCustom(tolerance, maxExtent);
+                this.lineStringReplay = null;
                 return _this;
             }
             GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature, options) {
@@ -101165,7 +101219,7 @@ function olInit() {
                             if (geoStyles[i]) {
                                 //if (true){
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
-                                  (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
+                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
@@ -101387,8 +101441,11 @@ function olInit() {
                 }
                 parts[k] = parts[k] || [];
 
-                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
-                if (!shortDistance) {
+
+                // //Cancel the simplified
+                //var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
+                //if (!shortDistance) {
+                {
                     parts[k] = parts[k].concat(segment[0]);
                 }
 
