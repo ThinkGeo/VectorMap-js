@@ -635,8 +635,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         } else {
             pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
         }
-        var x = Math.ceil(pixelCoordinate[0]);
-        var y = Math.ceil(pixelCoordinate[1]);
+        var x = Math.floor(pixelCoordinate[0]);
+        var y = Math.floor(pixelCoordinate[1]);
 
 
         var offsetX = -scale * (this.anchorX);

@@ -35,7 +35,7 @@ export class StyleJsonCacheItem {
         this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
         this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
         this.geoStyle = this.createGeoStyle(styleJson);
-        this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);        
+        this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
         this.createChildrenGeoStyle(styleJson, styleIdIndex);
     }
 
@@ -92,14 +92,14 @@ export class StyleJsonCacheItem {
                     if (geoZoomFilter.ranges.length > 0) {
                         let minZ = +geoZoomFilter.ranges[0][0];
                         let maxZ = +geoZoomFilter.ranges[0][1];
-                        if(minZ < 0){
+                        if (minZ < 0) {
                             minZ = 0;
                         }
-                        if(maxZ > 24){
+                        if (maxZ > 24) {
                             maxZ = 24;
                         }
-                        for(var j = minZ; j <= maxZ; j++){
-                            if(!this.zoomArr.includes(j)){
+                        for (var j = minZ; j <= maxZ; j++) {
+                            if (!this.zoomArr.includes(j)) {
                                 this.zoomArr.push(j);
                             }
                         }
@@ -111,8 +111,8 @@ export class StyleJsonCacheItem {
                         // }
                     }
                     else {
-                        geoZoomFilter.allowedValues.forEach(function(item){
-                            if(!this.zoomArr.includes(item)){
+                        geoZoomFilter.allowedValues.forEach(function (item) {
+                            if (!this.zoomArr.includes(item)) {
                                 this.zoomArr.push(item);
                             }
                         }.bind(this));
@@ -150,10 +150,27 @@ export class StyleJsonCacheItem {
                 if (key !== "style" && key !== "filter") {
                     for (let i = 0; i < styleJson.style.length; i++) {
                         // Apply the property to sub style if the sub style does not included.
-                        if (styleJson.style[i][key] === undefined) {
+                        if (styleJson.style[i][key] === undefined||key === 'text-base-point-style') {
                             if (key === "id") {
                                 styleJson.style[i][key] = styleJson[key] + "#" + i;
-                            } else {
+                            } else if (key === 'text-base-point-style') {
+                                if (styleJson.style[i][key] === undefined) {
+                                    styleJson.style[i][key] = styleJson[key];
+                                }
+                                else
+                                {
+                                    for (let subKey in styleJson[key]){
+                                        if(subKey!=='style'&&subKey!=="filter")
+                                        {
+                                            if (styleJson.style[i][key][subKey] === undefined)
+                                            {
+                                                styleJson.style[i][key][subKey] = styleJson[key][subKey];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
                                 styleJson.style[i][key] = styleJson[key];
                             }
                         }
@@ -165,8 +182,8 @@ export class StyleJsonCacheItem {
             var subItemZoomArr = [];
             for (let subStyle of styleJson.style) {
                 let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
-                this.zoomArr.forEach(function(item){
-                    if(!subItemZoomArr.includes(item)){
+                this.zoomArr.forEach(function (item) {
+                    if (!subItemZoomArr.includes(item)) {
                         subItemZoomArr.push(item);
                     }
                 })
