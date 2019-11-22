@@ -193,7 +193,15 @@ export class GeoTextStyle extends GeoStyle {
         if (this.contentFormat) {
             featureText = this.getTextWithContent(this.contentFormat, feature, this.dateFormat, this.numericFormat);
         }
-        if (featureText === undefined || featureText === "") {
+        if (this.basePointStyle) {
+            let geometryType = feature.getGeometry().getType();
+            if (!(geometryType === (<any>ol.geom).GeometryType.LINE_STRING || geometryType === (<any>ol.geom).GeometryType.MULTI_LINE_STRING) || this.forceHorizontalForLine) {
+                let basePointOLStyle = this.basePointStyle.getStyles(feature, resolution, options);
+                Array.prototype.push.apply(textStyles, basePointOLStyle);
+            }
+        }
+
+        if ((featureText === undefined || featureText === "")) {
             return textStyles;
         }
 
@@ -210,14 +218,6 @@ export class GeoTextStyle extends GeoStyle {
             }
             this.style.setZIndex(featureZindex);
             textStyles.push(this.style);
-        }
-
-        if (this.basePointStyle) {
-            let geometryType = feature.getGeometry().getType();
-            if (!(geometryType === (<any>ol.geom).GeometryType.LINE_STRING || geometryType === (<any>ol.geom).GeometryType.MULTI_LINE_STRING) || this.forceHorizontalForLine) {
-                let basePointOLStyle = this.basePointStyle.getStyles(feature, resolution, options);
-                Array.prototype.push.apply(textStyles, basePointOLStyle);
-            }
         }
 
         return textStyles;

@@ -195,9 +195,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         }
                         var end = flatCoordinates.length;
                         this.label = style.label;
-                        this.maxAngle_ = style.maxAngle_;
-                        this.intervalDistance_ = style["intervalDistance"];
-                        this.spacing_ = style["spacing"];
                         var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                         this.width = this.label.width
                         this.height = this.label.height;
@@ -225,9 +222,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var flatCoordinates = style.labelPosition;
                     var end = flatCoordinates.length;
                     this.label = style.label;
-                    this.maxAngle_ = style.maxAngle_;
-                    this.intervalDistance_ = style["intervalDistance"];
-                    this.spacing_ = style["spacing"];
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                     this.width = this.label.width
                     this.height = this.label.height;
@@ -557,8 +551,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
             this.maxAngle_ = textStyle.getMaxAngle();
-            this.intervalDistance_ = textStyle["intervalDistance"];
-            this.spacing_ = textStyle["spacing"];
+            this.intervalDistance_ = textStyle["intervalDistance"] || 0;
+            this.spacing_ = textStyle["spacing"] || 0;
 
             this.textPlacements = [0, 0]
             if (textStyle["placements"] == "upper") {
