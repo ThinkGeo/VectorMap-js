@@ -119,14 +119,16 @@ export class GeoTextStyle extends GeoStyle {
         }
 
         if (this.fillColor) {
-            fill.setColor(this.fillColor);
+            this.olColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
+            fill.setColor(this.olColor);
         }
 
         if (!this.haloRadius || this.haloColor === undefined) {
             textStyle.setStroke(undefined);
         }
         else {
-            stroke.setColor(this.haloColor);
+            this.olHaloColor = GeoStyle.blendColorAndOpacity(this.haloColor, this.opacity);
+            stroke.setColor(this.olHaloColor);
             stroke.setWidth(this.haloRadius);
         }
 
