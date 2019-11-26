@@ -1,7 +1,10 @@
 import { fragment, vertex } from './geoTextureReplay/defaultshader';
 import { Locations } from './geoTextureReplay/defaultshader/Locations';
 import { lineString as textpathLineString } from '../geom/flat/textpath.js';
+import { lineStringWithLabel as textpathLineStringWithLabel } from '../geom/flat/textpath.js';
 import { lineString as lengthLineString } from '../geom/flat/length.js';
+import { imagelineString as textpathImageLineString } from '../geom/flat/textpath.js';
+
 
 export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
     constructor(tolerance, maxExtent, declutterTree) {
@@ -169,43 +172,31 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
 
             // TODO as the new logic for MultiLineString, we need to refine the loginc for MULTI_POLYGON
-
-            if (type == 'MultiLineString') {
-                //// Existing logic
-                // var ends = geometry.getEnds();
-                // for (var k = 0; k < ends.length; k++) {
-                //     var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                //     var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
-
-                //     this.setTextStyle(style);
-                //     this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
-                // }
-
-                // new logic
+            if (type === 'LineString') {
                 this.setTextStyle(style);
-                if (style.label) {
-                    var stride = 2;
-                    var flatCoordinates = style.labelPosition;
 
-                    for (let index = 0; index < flatCoordinates.length; index += stride) {
-                        const pointX = flatCoordinates[index];
-                        const pointY = flatCoordinates.length - 1 >= index + 1 ? flatCoordinates[index + 1] : null;
-                        if (pointY === null) {
-                            continue;
-                        }
-                        var end = flatCoordinates.length;
-                        this.label = style.label;
-                        var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-                        this.width = this.label.width
-                        this.height = this.label.height;
-                        this.originX = 0;
-                        this.originY = 0;
-                        this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
-                        this.anchorY = Math.ceil(this.height * (this.textPlacements[1] + this.textBaseline_) - this.offsetY_);
-                        this.replayImage_(frameState, declutterGroup, [pointX, pointY], this.state_.scale / pixelRatio, end, feature);
-                        this.renderDeclutterLabel_(declutterGroup, feature);
+                if (style.label) {
+                    this.drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, style.label);
+                }
+                else {
+                    this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                }
+            }
+            else if (type == 'MultiLineString') {
+                this.setTextStyle(style);
+
+                if (style.label) {
+                    var ends = geometry.getEnds();
+                    for (var k = 0; k < ends.length; k++) {
+                        var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+
+                        this.setTextStyle(style);
+                        this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.label);
                     }
-                } else {
+                }
+                else {
+                    // new logic
                     var ends = geometry.getEnds();
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
@@ -215,7 +206,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
                     }
                 }
-
             } else {
                 this.setTextStyle(style);
                 if (style.label) {
@@ -376,10 +366,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
         let textLength = this.measure(text);
 
-        if (this.label) {
-            pathLength = textLength
-        }
-
         if (textLength <= pathLength * 1.2) {
             let declutterGroups = [];
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
@@ -433,6 +419,65 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     // if (targetExtent[0] > tilePixelExtent[0] && targetExtent[1] > tilePixelExtent[3] && targetExtent[2] < tilePixelExtent[2] && targetExtent[3] < tilePixelExtent[1]) {
                     this.renderDeclutter_(targetDeclutterGroup, feature);
                     // }
+                }
+            }
+        }
+    }
+
+    public drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, label) {
+        var offset = 0;
+        var stride = 2;
+        var resolution = frameState.viewState.resolution;
+        var text = this.text_;
+        var maxAngle = this.maxAngle_;
+        var intervalDistance = this.intervalDistance_;
+        var pixelRatio = frameState.pixelRatio;
+        var spacing = this.spacing_;
+
+        var lineStringCoordinates = geometry.getFlatCoordinates();
+        var end = lineStringCoordinates.length;
+        var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
+        let textLength = label.width
+
+        if (textLength <= pathLength * 1.2) {
+            this.extent = (<any>ol.extent).createOrUpdateEmpty();
+
+            var centerPoint = pathLength / 2;
+            var pointArray = [];
+
+            pointArray.push(centerPoint);
+
+            if (resolution < 1) {
+                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
+            }
+
+            this.height = label.height;
+            for (var len = 0; len < pointArray.length; len++) {
+                let tempDeclutterGroup;
+                if (declutterGroup) {
+                    tempDeclutterGroup = declutterGroup.slice(0);
+                }
+                var startM = pointArray[len];
+                let parts = textpathLineString(lineStringCoordinates, offset, end, 2,  '.', this, startM,
+                    maxAngle, resolution);
+
+                if (parts) {
+                    this.label = label;
+                    this.width = this.label.width
+                    this.height = this.label.height;
+                    this.originX = 0;
+                    this.originY = 0;
+                    this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
+                    this.anchorY = Math.ceil(this.height * (this.textPlacements[1] + this.textBaseline_) - this.offsetY_);
+
+                    for (let i = 0; i < parts.length; i++) {
+                        var part = parts[i];
+                        const pointX = part[0];
+                        const pointY = part[1]
+                        this.replayImage_(frameState, declutterGroup, [pointX, pointY], this.state_.scale / pixelRatio, 2, feature);
+                        this.renderDeclutterLabel_(declutterGroup, feature);
+                    }
                 }
             }
         }

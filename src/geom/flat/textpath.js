@@ -93,6 +93,50 @@ export function lineString(
     return result;
 }
 
+export function lineStringWithLabel(
+    inputFlatCoordinates, inputOffset, inputEnd, stride, startM, resolution) {
+    var result = [];
+
+    var flatCoordinates = inputFlatCoordinates.slice(inputOffset, inputEnd);
+    var offset = inputOffset;
+    var end = inputEnd;
+
+    var x1 = flatCoordinates[offset];
+    var y1 = flatCoordinates[offset + 1];
+    offset += stride;
+    var x2 = flatCoordinates[offset];
+    var y2 = flatCoordinates[offset + 1];
+    var segmentM = 0;
+    var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+    
+    var charM = startM;
+
+    while (segmentM + segmentLength < charM) {
+        x1 = x2;
+        y1 = y2;
+        offset += stride;
+        x2 = flatCoordinates[offset];
+        y2 = flatCoordinates[offset + 1];
+        segmentM += segmentLength;
+        segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+    }
+
+    // label exceed the road range
+    if (offset > end - stride) {
+        return false;
+    }
+
+    var segmentPos = charM - segmentM;
+
+    var interpolate = segmentPos / segmentLength;
+    var x = ol.math.lerp(x1, x2, interpolate);
+    var y = ol.math.lerp(y1, y2, interpolate);
+    var data = [x, y, 0, 0, ''];
+    result.push(data);
+
+    return result;
+}
+
 export function imagelineString(
     flatCoordinates, offset, end, stride, width, startM, resolution) {
     var result = [];

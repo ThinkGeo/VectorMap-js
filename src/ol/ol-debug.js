@@ -97253,7 +97253,6 @@ function olInit() {
             var pbfLayers = pbf.readFields((ol).format.MVT.pbfReaders_.layers, {});
             var features = [];
             var pbfLayer = undefined;
-
             var layerIdMatchedGeoStylesGroupByPbfLayerName = styleJsonCache.geoStyleGroupByZoom[zoom];
 
             if (!layerIdMatchedGeoStylesGroupByPbfLayerName) {

@@ -85,7 +85,7 @@ export class GeoTextStyle extends GeoStyle {
             this.placement = styleJson["text-placement"] || this.defaultPlacement;
 
             this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
-            this.intervalDistance = styleJson["text-interval-distance"] || 200;
+            this.intervalDistance = styleJson["text-interval-distance"] || 0;
             this.spacing = styleJson["text-spacing"] || 0;
             this.rotationAngle = styleJson["text-rotation-angle"];
             this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
@@ -247,13 +247,15 @@ export class GeoTextStyle extends GeoStyle {
                     flatCoordinates = geometry.getCenter();
                     break;
                 case (<any>ol.geom).GeometryType.LINE_STRING:
-                    flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+                    // flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+                    flatCoordinates = geometry.getFlatCoordinates();
                     break;
                 case (<any>ol.geom).GeometryType.CIRCLE:
                     flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
                     break;
                 case (<any>ol.geom).GeometryType.MULTI_LINE_STRING:
-                    flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
+                    // flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
+                    flatCoordinates = geometry.getFlatCoordinates();
                     break;
                 case (<any>ol.geom).GeometryType.POLYGON:
                     flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
