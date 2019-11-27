@@ -97304,7 +97304,6 @@ function olInit() {
                                 };
                                 treeStyleFirstCache[treeIndex] = cacheTree.root.data.styleFirst;
                             }
-
                             var matchedNode = {};
                             matchedNode["maxStyleIndex"] = 0;
                             var checkNodeMatched = function (node) {
@@ -97402,18 +97401,41 @@ function olInit() {
                                     if (styleIndexGroups.maxStyleIndex < maxStyleIndex) {
                                         styleIndexGroups.maxStyleIndex = maxStyleIndex;
                                     }
+                                    var tempStyleIndexGroups=[];
 
                                     for (let index = 0; index <= maxStyleIndex; index++) {
                                         const element = matchedNode[index];
                                         if (element) {
                                             var geoStyle = element.geoStyle;
                                             if (geoStyle) {
-                                                var styleIndexGroup = styleIndexGroups[index];
+                                                var styleIndexGroup = tempStyleIndexGroups[index];
                                                 if (styleIndexGroup === undefined) {
-                                                    styleIndexGroups[index] = styleIndexGroup = [];
+                                                    tempStyleIndexGroups[index] = styleIndexGroup = [];
                                                 }
-                                                styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+
+                                                if(geoStyle.compound === "reject")
+                                                {
+                                                    styleIndexGroup.length = 0;
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                }
                                             }
+                                        }
+                                    }
+
+                                    for (let index = 0; index <= maxStyleIndex; index++) 
+                                    {
+                                        if(tempStyleIndexGroups[index])
+                                        {
+                                            var styleIndexGroup = styleIndexGroups[index];
+                                            if (styleIndexGroup === undefined) {
+                                                styleIndexGroups[index] = styleIndexGroup = [];
+                                            }
+                                            Array.prototype.push.apply(styleIndexGroup, tempStyleIndexGroups[index]);
                                         }
                                     }
                                 }
@@ -98293,7 +98315,7 @@ function olInit() {
                 var replacedExpectedVaules = [];
                 for (var j = 0, jj = this.expectedValues.length; j < jj; j++) {
                     var numberValue = +this.expectedValues[j];
-                    if (isNaN(numberValue)) {
+                    if (isNaN(numberValue) || this.expectedValues[j]==='') {
                         replacedExpectedVaules.push(pbfLayer.values.indexOf(this.expectedValues[j]));
                     }
                     else {
@@ -98474,7 +98496,12 @@ function olInit() {
             __extends(GeoAreaStyle, _super);
             function GeoAreaStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
+
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
+
                 if (styleJson) {
+                    _this.compound = styleJson["polygon-compound"];
                     _this.outlineColor = styleJson["polygon-outline-color"];
                     _this.outlineWidth = styleJson["polygon-outline-width"];
                     _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
@@ -98491,10 +98518,14 @@ function olInit() {
                     _this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
                     _this.isShadow = false;
                 }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
+                }
                 return _this;
             }
             GeoAreaStyle.prototype.initializeCore = function () {
                 this.style = new ol.style.Style();
+
                 if (this.fillColor) {
                     this.convertedFillColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
                     var fillStyle = new ol.style.Fill({
@@ -98669,8 +98700,13 @@ function olInit() {
                     miterclipped: "miter",
                     custom: "square"
                 };
+
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
+
                 _this.convertedDashArray = new Array();
                 if (styleJson) {
+                    _this.compound = styleJson["line-compound"];
                     _this.color = styleJson["line-color"];
                     _this.dashArray = styleJson["line-dasharray"];
                     _this.width = styleJson["line-width"];
@@ -98682,6 +98718,9 @@ function olInit() {
                     _this.offsetY = styleJson["line-offset-y"] || 0;
                     _this.geometryTransform = styleJson["line-geometry-transform"];
                     _this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
@@ -98989,7 +99028,11 @@ function olInit() {
                 var _this = _super.call(this, styleJson) || this;
                 _this.pointTypes = ["symbol", "image", "glyph"];
                 _this.symbolTypes = ["circle", "square", "triangle", "cross", "star"];
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
+
                 if (styleJson) {
+                    _this.compound = styleJson["point-compound"];
                     _this.outlineColor = styleJson["point-outline-color"];
                     _this.outlineWidth = styleJson["point-outline-width"] || 0;
                     _this.symbolType = styleJson["point-symbol-type"];
@@ -99011,6 +99054,9 @@ function olInit() {
                     _this.linearGradient = styleJson["point-linear-gradient"];
                     _this.radialGradient = styleJson["point-radial-gradient"];
                     _this.transform = styleJson["point-transform"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
@@ -99793,6 +99839,8 @@ function olInit() {
             __extends(GeoTextStyle, _super);
             function GeoTextStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
                 _this.aligns = ["left", "right", "center"];
                 _this.defaultAlign = "center";
                 _this.baselines = ["bottom", "top", "middle"];
@@ -99804,6 +99852,7 @@ function olInit() {
                 _this.drawnMask = false;
 
                 if (styleJson) {
+                    _this.compound = styleJson["text-compound"];
                     _this.font = styleJson["text-font"];
                     _this.fillColor = styleJson["text-fill-color"];
                     _this.haloColor = styleJson["text-halo-color"];
@@ -99833,6 +99882,9 @@ function olInit() {
                     _this.opacity = styleJson["text-opacity"];
                     _this.lineSpacing = styleJson["text-line-spacing"] || 0;
                     _this.basePointStyleJson = styleJson["text-base-point-style"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
@@ -101140,7 +101192,6 @@ function olInit() {
             var features = readData[0];
             var instructsTree = readData[1];
             var extent = readData[2];
-
             var instructsData = getInstructs(instructsTree);
             var instructs = instructsData[0];
             var mainGeoStyleIds = instructsData[1];

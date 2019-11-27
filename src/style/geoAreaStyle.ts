@@ -3,6 +3,9 @@ import { GeoBrush } from "./geoBrush";
 import { GeoBrushType } from "./geoBrushType";
 
 export class GeoAreaStyle extends GeoStyle {
+    compounds = ['overlay', 'reject'];
+    defaultCompund = 'overlay';
+
     offsetX: number;
     offsetY: number;
     fillColor: string;
@@ -30,6 +33,8 @@ export class GeoAreaStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
+            this.compound = styleJson["polygon-compound"];
+
             this.outlineColor = styleJson["polygon-outline-color"];
             this.outlineWidth = styleJson["polygon-outline-width"];
             this.outlineDashArray = styleJson["polygon-outline-dasharray"];
@@ -45,6 +50,9 @@ export class GeoAreaStyle extends GeoStyle {
             this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
             this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
             this.isShadow = false;
+        }
+        if (!this.compounds.includes(this.compound)) {
+            this.compound = this.defaultCompund;
         }
     }
 

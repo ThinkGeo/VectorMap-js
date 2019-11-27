@@ -28,6 +28,9 @@ export class GeoLineStyle extends GeoStyle {
         custom: "square"
     };
 
+    compounds = ['overlay', 'reject'];
+    defaultCompund = 'overlay';
+
     lineCap: string;
     color: string;
     dashArray: any;
@@ -56,6 +59,7 @@ export class GeoLineStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
+            this.compound = styleJson["line-compound"];
             this.color = styleJson["line-color"];
             this.dashArray = styleJson["line-dasharray"];
             this.width = styleJson["line-width"];
@@ -68,8 +72,10 @@ export class GeoLineStyle extends GeoStyle {
             this.geometryTransform = styleJson["line-geometry-transform"];
             this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
         }
+        if (!this.compounds.includes(this.compound)) {
+            this.compound = this.defaultCompund;
+        }
     }
-
 
     initializeCore() {
         this.lineStroke = new ol.style.Stroke();

@@ -633,24 +633,50 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
 
     public measure(text) {
-        var mCtx = this.measureCanvas_.getContext('2d');
-        var state = this.state_;
-        var sum = 0;
-        var i, ii;
-        for (i = 0, ii = text.length; i < ii; ++i) {
-            var curr = text[i];
-            sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+        var widths = this.widths_[this.state_.font];
+        if (!widths) {
+            this.widths_[this.state_.font] = widths = {};
+        }
+        var width = widths[text];
+        if (!width) {
+            var state = this.state_;
+            var mCtx = this.measureCanvas_.getContext('2d');
+
+            if (state.font != mCtx.font) {
+                mCtx.font = state.font;
+            }
+            var sum = 0;
+            sum = mCtx.measureText(text).width * state.scale;
+
+            // var i, ii;
+            // for (i = 0, ii = text.length; i < ii; ++i) {
+            //     var curr = text[i];
+            //     sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+            // }
+
+            width = widths[text] = sum;
         }
 
-        return sum;
+        return width;
     }
 
     public measureTextHeight() {
-        var mCtx = this.measureCanvas_.getContext('2d');
         var state = this.state_;
-        mCtx.font = state.font;
-        var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-            state.lineWidth / 2) * state.scale);
+
+        var heights = this.heights_[state.font];
+        if (!heights) {
+            this.heights_[state.font] = heights = {};
+        }
+        var height = heights[state.font];
+        if (!height) {
+            var mCtx = this.measureCanvas_.getContext('2d');
+            if (state.font != mCtx.font) {
+                mCtx.font = state.font;
+            }
+            height = Math.ceil((mCtx.measureText('M').width * 1.5 +
+                state.lineWidth / 2) * state.scale);
+            heights[state.font] = height;
+        }
 
         return height;
     }

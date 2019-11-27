@@ -8,10 +8,13 @@ export class GeoStyle {
 
     constructor(styleJson?: object) {
         this.styles = [];
+        this.visible = true;
         if (styleJson) {
             this.id = styleJson["id"];
             this.uid = (<any>ol).getUid(this);
-            this.visible = styleJson["visible"] === undefined ? true : styleJson["visible"];
+            if (styleJson["visible"] !== undefined && styleJson["visible"] === false) {
+                this.visible = false;
+            }
         }
     }
 
