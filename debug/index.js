@@ -23,7 +23,7 @@ view.on("change:resolution", function (e) {
     document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
-var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light.json", {
+var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
     declutter: true,
     multithread: true,
     minimalist: true,
