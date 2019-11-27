@@ -8,7 +8,7 @@ var view = new ol.View({
     //center:[-10787223.389888179, 3863490.4854171653], // road label 14
     //center: [-8051563.931156208, 6108477.916978194], // ol polygon 8
     //center:[-15008563.377850933, 4304933.433021126], // country polygon
-    zoom: 5,
+    zoom: 12,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -99,7 +99,7 @@ var vectorLayer = new ol.layer.Vector({
         return new ol.style.Style({
             stroke:new ol.style.Stroke({
                 color:"red",
-                width:10
+                width:1
             })
         })
     }
@@ -116,6 +116,19 @@ var map = new ol.Map({
 
 map.on("click", function showInfo(event) {
     var features = map.getFeaturesAtPixel(event.pixel);
+
+    if (!features) {
+        info.innerText = '';
+        info.style.opacity = 0;
+    }
+    else {
+        var properties = features[0].getProperties();
+        delete properties["geometry"];
+        info.innerText = JSON.stringify(properties, null, 2);
+        info.style.opacity = 1;
+    }
+
+
     if (features) {
         for (let index = 0; index < features.length; index++) {
             const element = features[index];
