@@ -55,6 +55,8 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         feature.pointCoordinates_ = geometry.getFlatCoordinates();
         imageReplay.startIndicesFeatures_.push(feature);
         var imageStyleClone = imageStyle.clone();
+        imageStyleClone["offsetX"] = imageStyle["offsetX"];
+        imageStyleClone["offsetY"] = imageStyle["offsetY"];
         imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;
         imageReplay.startIndicesStyles_.push(imageStyleClone);
@@ -67,6 +69,8 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;
@@ -86,11 +90,14 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            3, (<any>ol.render).ReplayType.TEXT);
+            6, (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
@@ -108,11 +115,14 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            3, (<any>ol.render).ReplayType.TEXT);
+            6, (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
@@ -136,6 +146,9 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
@@ -170,6 +183,9 @@ function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
+        textStyleClone["placements"] = textStyle["placements"];
+        textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
+        textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
         textReplay.startIndicesStyles_.push(textStyleClone);
     }

@@ -18,6 +18,19 @@ export class GeoLineStyle extends GeoStyle {
         custom: "square"
     };
 
+    olLineJoinsMap = {
+        bevel: "bevel",
+        round: "round",
+        miter: "miter",
+        round: "round",
+        default: "round",
+        miterclipped: "miter",
+        custom: "square"
+    };
+
+    compounds = ['overlay', 'reject'];
+    defaultCompund = 'overlay';
+
     lineCap: string;
     color: string;
     dashArray: any;
@@ -45,13 +58,8 @@ export class GeoLineStyle extends GeoStyle {
 
     constructor(styleJson?: any) {
         super(styleJson);
-
-        this.lineStroke = new ol.style.Stroke();
-        this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
-        this.lineCapFill = new ol.style.Fill();
-        this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
-
         if (styleJson) {
+            this.compound = styleJson["line-compound"];
             this.color = styleJson["line-color"];
             this.dashArray = styleJson["line-dasharray"];
             this.width = styleJson["line-width"];
@@ -59,16 +67,24 @@ export class GeoLineStyle extends GeoStyle {
             this.lineJoin = styleJson["line-join"];
             this.lineCap = styleJson["line-cap"];
             this.opacity = styleJson["line-opacity"];
+            this.offsetX = styleJson["line-offset-x"] || 0;
+            this.offsetY = styleJson["line-offset-y"] || 0;
             this.geometryTransform = styleJson["line-geometry-transform"];
-
             this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
+        }
+        if (!this.compounds.includes(this.compound)) {
+            this.compound = this.defaultCompund;
         }
     }
 
-
     initializeCore() {
+        this.lineStroke = new ol.style.Stroke();
+        this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
+        this.lineCapFill = new ol.style.Fill();
+        this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
+
         if (this.color) {
-            this.olColor = GeoStyle.toRGBAColor(this.color, this.opacity);
+            this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
 
             this.lineStroke.setColor(this.olColor);
             this.lineCapFill.setColor(this.olColor);
@@ -79,6 +95,12 @@ export class GeoLineStyle extends GeoStyle {
                 this.convertedDashArray.push(parseFloat(a));
             }
         }
+        if (this.lineCap) {
+            this.lineCap = this.lineCap.toLowerCase();
+        }
+        if (this.lineJoin) {
+            this.lineJoin = this.lineJoin.toLowerCase();
+        }
 
         if (this.lineDirectionImageUri) {
             this.onewayIcon = new ol.style.Icon({
@@ -87,7 +109,7 @@ export class GeoLineStyle extends GeoStyle {
                 anchor: [0.5, 0.5],
                 rotateWithView: true
             });
-    
+
             this.onewayStyle = new ol.style.Style({
                 image: this.onewayIcon
             });
@@ -111,9 +133,7 @@ export class GeoLineStyle extends GeoStyle {
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
-        let length = 0;
-        this.styles = [];
-
+        var styles = [];
         if (this.color && this.width) {
             if (this.olLineCapsMap[this.lineCap]) {
                 this.lineStroke.setLineCap(this.olLineCapsMap[this.lineCap]);
@@ -126,7 +146,7 @@ export class GeoLineStyle extends GeoStyle {
                 this.lineStroke.setLineDash(this.convertedDashArray);
             }
             if (this.lineJoin) {
-                this.lineStroke.setLineJoin(this.lineJoin);
+                this.lineStroke.setLineJoin(this.olLineJoinsMap[this.lineJoin.toLowerCase()]);
             }
             if (this.miterLimit !== 4) {
                 this.lineStroke.setMiterLimit(this.miterLimit);
@@ -142,10 +162,10 @@ export class GeoLineStyle extends GeoStyle {
                         let values = this.getTransformValues(this.geometryTransform);
 
                         if (this.geometryTransform.indexOf("translate") === 0) {
-                            var dx = values[0].trim() * resolution;
-                            var dy = values[1].trim() * resolution;
+                            var dx = values[0].trim();
+                            var dy = values[1].trim();
                             geometry.translate(+dx, +dy);
-                            var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);   
+                            var newExtent_ = (<any>ol.geom).flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                             geometry['extent_'] = newExtent_;
                         } else if (this.geometryTransform.indexOf("scale") === 0) {
                             geometry.scale(+values[0].trim(), +values[1].trim());
@@ -159,13 +179,22 @@ export class GeoLineStyle extends GeoStyle {
 
                         feature.flatCoordinates_ = (<any>geometry).getFlatCoordinates();
                     }
+                    if (this.offsetX || this.offsetY) {
+                        var geometry = this.getGeometry(feature);
+                        var dx = this.offsetX * resolution;
+                        var dy = this.offsetY * resolution;
+                        geometry.translate(+dx, +dy);
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                        geometry.extent_ = newExtent_;
+                        feature.flatCoordinates_ = geometry.getFlatCoordinates();
+                    }
                 }
                 return feature.getGeometry();
             };
 
             this.lineStyle.setGeometry(geometryFunction);
             this.lineCapStyle.zCoordinate = this.zIndex;
-            this.styles[length++] = this.lineStyle;
+            styles.push(this.lineStyle);
 
             if (this.geometryLineCaps.includes(this.lineCap)) {
                 let geometryFunction = (feature) => {
@@ -180,9 +209,9 @@ export class GeoLineStyle extends GeoStyle {
 
                 this.lineCapStyle.setGeometry(geometryFunction);
                 this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                this.styles[length++] = this.lineCapStyle;
+                styles.push(this.lineCapStyle);
             }
-         
+
         }
 
         if (this.lineDirectionImageUri) {
@@ -211,10 +240,10 @@ export class GeoLineStyle extends GeoStyle {
 
             this.onewayStyle.setGeometry(geometry);
             this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
-            this.styles[length++] = this.onewayStyle;
+            styles.push(this.onewayStyle);
         }
 
-        return this.styles;
+        return styles;
     }
 
     getGeometry(feature: any) {

@@ -1,13 +1,18 @@
 import { fragment, vertex } from './geoTextureReplay/defaultshader';
 import { Locations } from './geoTextureReplay/defaultshader/Locations';
 import { lineString as textpathLineString } from '../geom/flat/textpath.js';
+import { lineStringWithLabel as textpathLineStringWithLabel } from '../geom/flat/textpath.js';
 import { lineString as lengthLineString } from '../geom/flat/length.js';
+import { imagelineString as textpathImageLineString } from '../geom/flat/textpath.js';
+
 
 export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
     constructor(tolerance, maxExtent, declutterTree) {
         super(tolerance, maxExtent, declutterTree);
         this.startIndicesFeatures_ = [];
         this.startIndicesStyles_ = [];
+        this.widths_ = {};
+        this.heights_ = {};
     }
 
     public finish(context) {
@@ -167,14 +172,41 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             if (!style) {
                 continue;
             }
-            if (type == 'MultiLineString') {
-                var ends = geometry.getEnds();
-                for (var k = 0; k < ends.length; k++) {
-                    var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                    var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
 
-                    this.setTextStyle(style);
-                    this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+            // TODO as the new logic for MultiLineString, we need to refine the loginc for MULTI_POLYGON
+            if (type === 'LineString') {
+                this.setTextStyle(style);
+
+                if (style.label) {
+                    this.drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, style.label);
+                }
+                else {
+                    this.drawLineStringText(geometry, feature, frameState, declutterGroup);
+                }
+            }
+            else if (type == 'MultiLineString') {
+                this.setTextStyle(style);
+
+                if (style.label) {
+                    var ends = geometry.getEnds();
+                    for (var k = 0; k < ends.length; k++) {
+                        var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+
+                        this.setTextStyle(style);
+                        this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.label);
+                    }
+                }
+                else {
+                    // new logic
+                    var ends = geometry.getEnds();
+                    for (var k = 0; k < ends.length; k++) {
+                        var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], feature.properties_, feature.id_);
+
+                        this.setTextStyle(style);
+                        this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+                    }
                 }
             } else {
                 this.setTextStyle(style);
@@ -182,18 +214,17 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var flatCoordinates = style.labelPosition;
                     var end = flatCoordinates.length;
                     this.label = style.label;
-                    this.maxAngle_ = style.maxAngle_;
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
                     this.width = this.label.width
                     this.height = this.label.height;
                     this.originX = 0;
                     this.originY = 0;
-                    this.anchorX = Math.floor(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
-                    this.anchorY = Math.floor(this.height * (this.textPlacements[1] + this.textBaseline_) * pixelRatio - this.offsetY_);
+                    this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
+                    this.anchorY = Math.ceil(this.height * (this.textPlacements[1] + this.textBaseline_) - this.offsetY_);
                     this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end, feature);
                     this.renderDeclutterLabel_(declutterGroup, feature);
                 } else {
-                    // draw chars 
+                    this.label = style.label;
                     this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                 }
             }
@@ -329,27 +360,27 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var resolution = frameState.viewState.resolution;
         var text = this.text_;
         var maxAngle = this.maxAngle_;
+        var intervalDistance = this.intervalDistance_;
+        var spacing = this.spacing_;
+
         var lineStringCoordinates = geometry.getFlatCoordinates();
         var end = lineStringCoordinates.length;
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
+
         let textLength = this.measure(text);
 
-        if (this.label) {
-            pathLength = textLength
-        }
-
-        if (textLength * 1.2 <= pathLength) {
+        if (textLength + intervalDistance <= pathLength) {
             let declutterGroups = [];
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
-            var pixelDistance = 200;
+
             var centerPoint = pathLength / 2;
             var pointArray = [];
 
             pointArray.push(centerPoint);
 
             if (resolution < 1) {
-                this.findCenterPoints(0, centerPoint, pixelDistance, pointArray);
-                this.findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
+                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
             }
 
             this.height = this.measureTextHeight();
@@ -396,6 +427,65 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         }
     }
 
+    public drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, label) {
+        var offset = 0;
+        var stride = 2;
+        var resolution = frameState.viewState.resolution;
+        var text = this.text_;
+        var maxAngle = this.maxAngle_;
+        var intervalDistance = this.intervalDistance_;
+        var pixelRatio = frameState.pixelRatio;
+        var spacing = this.spacing_;
+
+        var lineStringCoordinates = geometry.getFlatCoordinates();
+        var end = lineStringCoordinates.length;
+        var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
+        let textLength = label.width
+
+        if (textLength <= pathLength * 1.2) {
+            this.extent = (<any>ol.extent).createOrUpdateEmpty();
+
+            var centerPoint = pathLength / 2;
+            var pointArray = [];
+
+            pointArray.push(centerPoint);
+
+            if (resolution < 1) {
+                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
+            }
+
+            this.height = label.height;
+            for (var len = 0; len < pointArray.length; len++) {
+                let tempDeclutterGroup;
+                if (declutterGroup) {
+                    tempDeclutterGroup = declutterGroup.slice(0);
+                }
+                var startM = pointArray[len];
+                let parts = textpathLineString(lineStringCoordinates, offset, end, 2, '.', this, startM,
+                    maxAngle, resolution);
+
+                if (parts) {
+                    this.label = label;
+                    this.width = this.label.width
+                    this.height = this.label.height;
+                    this.originX = 0;
+                    this.originY = 0;
+                    this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
+                    this.anchorY = Math.ceil(this.height * (this.textPlacements[1] + this.textBaseline_) - this.offsetY_);
+
+                    for (let i = 0; i < parts.length; i++) {
+                        var part = parts[i];
+                        const pointX = part[0];
+                        const pointY = part[1]
+                        this.replayImage_(frameState, declutterGroup, [pointX, pointY], this.state_.scale / pixelRatio, 2, feature);
+                        this.renderDeclutterLabel_(declutterGroup, feature);
+                    }
+                }
+            }
+        }
+    }
+
     public replayCharImage_(frameState, declutterGroup, part, feature) {
         var scale = this.scale;
         var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
@@ -406,7 +496,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var cos = Math.cos(rotation);
         var sin = Math.sin(rotation);
         var anchorX = part[2];
-        var anchorY = Math.floor(this.height * this.textBaseline_ - this.offsetY_);
+        var anchorY = Math.ceil(this.height * this.textBaseline_ - this.offsetY_);
         var width = this.width;
         var height = this.height;
         var bottomLeft = [];
@@ -423,8 +513,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             pixelCoordinate = (<any>ol).transform.apply(coordinateToPixelTransform,
                 [x - this.origin[0] + this.screenXY[0], y - this.origin[1] + this.screenXY[1]]);
         }
-        x = Math.ceil(pixelCoordinate[0]);
-        y = Math.ceil(pixelCoordinate[1]);
+        x = pixelCoordinate[0];
+        y = pixelCoordinate[1];
 
         // bottom-left corner
         offsetX = -scale * anchorX;
@@ -509,6 +599,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
             this.maxAngle_ = textStyle.getMaxAngle();
+            this.intervalDistance_ = textStyle["intervalDistance"] || 0;
+            this.spacing_ = textStyle["spacing"] || 0;
 
             this.textPlacements = [0, 0]
             if (textStyle["placements"] == "upper") {
@@ -541,35 +633,61 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
 
     public measure(text) {
-        var mCtx = this.measureCanvas_.getContext('2d');
-        var state = this.state_;
-        var sum = 0;
-        var i, ii;
-        for (i = 0, ii = text.length; i < ii; ++i) {
-            var curr = text[i];
-            sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+        var widths = this.widths_[this.state_.font];
+        if (!widths) {
+            this.widths_[this.state_.font] = widths = {};
+        }
+        var width = widths[text];
+        if (!width) {
+            var state = this.state_;
+            var mCtx = this.measureCanvas_.getContext('2d');
+
+            if (state.font != mCtx.font) {
+                mCtx.font = state.font;
+            }
+            var sum = 0;
+            sum = mCtx.measureText(text).width * state.scale;
+
+            // var i, ii;
+            // for (i = 0, ii = text.length; i < ii; ++i) {
+            //     var curr = text[i];
+            //     sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+            // }
+
+            width = widths[text] = sum;
         }
 
-        return sum;
+        return width;
     }
 
     public measureTextHeight() {
-        var mCtx = this.measureCanvas_.getContext('2d');
         var state = this.state_;
-        mCtx.font = state.font;
-        var height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-            state.lineWidth / 2) * state.scale);
+
+        var heights = this.heights_[state.font];
+        if (!heights) {
+            this.heights_[state.font] = heights = {};
+        }
+        var height = heights[state.font];
+        if (!height) {
+            var mCtx = this.measureCanvas_.getContext('2d');
+            if (state.font != mCtx.font) {
+                mCtx.font = state.font;
+            }
+            height = Math.ceil((mCtx.measureText('M').width * 1.5 +
+                state.lineWidth / 2) * state.scale);
+            heights[state.font] = height;
+        }
 
         return height;
     }
 
-    public findCenterPoints(start, end, pixelDistance, pointArray) {
+    public findCenterPoints(start, end, textLength, pixelDistance, pointArray) {
         var distance = (end - start) / 2;
-        if (distance > pixelDistance) {
+        if (distance > pixelDistance + textLength) {
             var center = (end + start) / 2;
             pointArray.push(center);
-            this.findCenterPoints(start, center, pixelDistance, pointArray);
-            this.findCenterPoints(center, end, pixelDistance, pointArray);
+            this.findCenterPoints(start, center, textLength, pixelDistance, pointArray);
+            this.findCenterPoints(center, end, textLength, pixelDistance, pointArray);
         }
     }
 
@@ -585,8 +703,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         } else {
             pixelCoordinate = (<any>ol).transform.apply(frameState.coordinateToPixelTransform, [flatCoordinates[0] - this.origin[0] + screenXY[0], flatCoordinates[1] - this.origin[1] + screenXY[1]]);
         }
-        var x = Math.ceil(pixelCoordinate[0]);
-        var y = Math.ceil(pixelCoordinate[1]);
+        var x = pixelCoordinate[0];
+        var y = pixelCoordinate[1];
 
 
         var offsetX = -scale * (this.anchorX);
@@ -605,6 +723,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             if (!intersects && declutterGroup[4] == 1) {
                 return;
             }
+
+            box[0] -= this.spacing_;
+            box[1] -= this.spacing_;
+            box[2] += this.spacing_;
+            box[3] += this.spacing_;
             (<any>ol).extent.extend(declutterGroup, box);
 
             var declutterArgs = [{

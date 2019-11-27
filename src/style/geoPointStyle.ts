@@ -7,6 +7,9 @@ export class GeoPointStyle extends GeoStyle {
     pointTypes = ["symbol", "image", "glyph"];
     symbolTypes = ["circle", "square", "triangle", "cross", "star"];
 
+    compounds = ['overlay', 'reject'];
+    defaultCompund = 'overlay';
+
     glyphFontName: string;
     fillColor: string;
     linearGradient: string;
@@ -32,15 +35,14 @@ export class GeoPointStyle extends GeoStyle {
 
     // static glyphCache: any = {};
 
-    convertedGlyphOutLineColor: string;
-    convertedGlyphFill: any;
-
     style: ol.style.Style;
-    textStyle: ol.style.Text;
+    glyphTextStyle: ol.style.Text;
 
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
+            this.compound = styleJson["point-compound"];
+
             this.outlineColor = styleJson["point-outline-color"];
             this.outlineWidth = styleJson["point-outline-width"] || 0;
 
@@ -71,39 +73,17 @@ export class GeoPointStyle extends GeoStyle {
             this.linearGradient = styleJson["point-linear-gradient"];
             this.radialGradient = styleJson["point-radial-gradient"];
             this.transform = styleJson["point-transform"];
-
-            if (this.outlineColor) {
-                this.convertedGlyphOutLineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
-            }
-
-            if (this.fillColor) {
-                this.convertedGlyphFill = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
-            }
-
-            if (this.linearGradient) {
-                if (GeoPointStyle.linearGradientDictionary.hasOwnProperty(this.linearGradient)) {
-                    this.convertedGlyphFill = GeoPointStyle.linearGradientDictionary[this.linearGradient];
-                } else {
-                    this.convertedGlyphFill = GeoStyle.toOLLinearGradient(this.linearGradient, this.opacity, this.size);
-                    GeoPointStyle.linearGradientDictionary[this.linearGradient] = this.convertedGlyphFill;
-                }
-            }
-
-            if (this.radialGradient) {
-                if (GeoPointStyle.radialGradientDictionary.hasOwnProperty(this.radialGradient)) {
-                    this.convertedGlyphFill = GeoPointStyle.radialGradientDictionary[this.radialGradient];
-                } else {
-                    this.convertedGlyphFill = GeoStyle.toOLRadialGradient(this.radialGradient, this.opacity, this.size);
-                    GeoPointStyle.radialGradientDictionary[this.radialGradient] = this.convertedGlyphFill;
-                }
-            }
-
-
+        }
+        if (!this.compounds.includes(this.compound)) {
+            this.compound = this.defaultCompund;
         }
     }
 
     initializeCore() {
         this.style = new ol.style.Style();
+        if (this.pointType) {
+            this.pointType = this.pointType.toLowerCase();
+        }
         switch (this.pointType) {
             case "symbol":
                 this.initSymbolStyle();
@@ -121,15 +101,20 @@ export class GeoPointStyle extends GeoStyle {
         this.maskStrokeWidth = this.maskOutlineWidth || 0;
 
         if (this.pointType === "symbol") {
+            this.imageStyle["offsetX"] = this.offsetX;
+            this.imageStyle["offsetY"] = this.offsetY;
+            this.imageStyle.setOpacity(this.opacity);
             this.style.setImage(this.imageStyle);
-            this.drawMaskForSymbol(this.imageStyle);
+
+            var maskStyle = this.drawMaskForSymbol(this.imageStyle, this.opacity);
+            this.style.setText(maskStyle);
         }
 
         if (this.pointType === "glyph") {
             if (this.glyphFontName && this.glyphContent) {
-                (<any>this.textStyle).label = this.getGlyphImage(this.textStyle);
+                this.glyphTextStyle["label"] = this.getGlyphImage(this.glyphTextStyle, this.opacity);
                 this.style.setImage(null);
-                this.style.setText(this.textStyle);
+                this.style.setText(this.glyphTextStyle);
             }
         }
     }
@@ -138,8 +123,9 @@ export class GeoPointStyle extends GeoStyle {
 
         let geometryFeature = feature.getGeometry();
 
-        if (this.textStyle) {
-            this.textStyle.labelPosition = geometryFeature.getFlatCoordinates();
+        var textStyle = this.style.getText();
+        if (textStyle) {
+            textStyle.labelPosition = geometryFeature.getFlatCoordinates();
         }
 
         let featureZindex = feature["tempTreeZindex"];
@@ -155,13 +141,132 @@ export class GeoPointStyle extends GeoStyle {
         return this.styles;
     }
 
-    getGlyphImage(textStyle: any) {
-        let font = textStyle.getFont();
-        let text = textStyle.getText();
+
+    private initSymbolStyle() {
+        let radius = this.size / 2;
+        if (this.symbolType) {
+            this.symbolType = this.symbolType.toLowerCase();
+        }
+        switch (this.symbolType) {
+            case "circle":
+                this.imageStyle = new ol.style.Circle({
+                    fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                        color: this.fillColor
+                    })) : undefined,
+                    stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                        color: this.outlineColor,
+                        width: this.outlineWidth
+                    })) : undefined,
+                    radius: radius
+                });
+                break;
+            case "square":
+                this.imageStyle = new ol.style.RegularShape({
+                    fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                        color: this.fillColor
+                    })) : undefined,
+                    stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                        color: this.outlineColor,
+                        width: this.outlineWidth
+                    })) : undefined,
+                    points: 4,
+                    radius: radius,
+                    angle: Math.PI / 4 + this.angle
+                });
+                break;
+            case "triangle":
+                this.imageStyle = new ol.style.RegularShape({
+                    fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                        color: this.fillColor
+                    })) : undefined,
+                    stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                        color: this.outlineColor,
+                        width: this.outlineWidth
+                    })) : undefined,
+                    points: 3,
+                    radius: radius,
+                    angle: this.angle
+                });
+                break;
+            case "cross":
+                this.imageStyle = new ol.style.RegularShape({
+                    fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                        color: this.fillColor
+                    })) : undefined,
+                    stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                        color: this.outlineColor,
+                        width: this.outlineWidth
+                    })) : undefined,
+                    points: 4,
+                    radius: radius,
+                    radius2: 0,
+                    angle: this.angle
+                });
+                break;
+            case "diamond":
+                break;
+            case "diamond2":
+                break;
+            case "star":
+                this.imageStyle = new ol.style.RegularShape({
+                    fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                        color: this.fillColor
+                    })) : undefined,
+                    stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                        color: this.outlineColor,
+                        width: this.outlineWidth
+                    })) : undefined,
+                    points: 5,
+                    radius: radius,
+                    radius2: radius / 2.5,
+                    angle: this.angle
+                });
+                break;
+            case "star2":
+                break;
+        }
+    }
+
+    private initBitmapStyle() {
+        if (this.imageURL) {
+            this.imageStyle = new ol.style.Icon(({
+                opacity: this.opacity || 1,
+                src: this.imageURL,
+                rotation: this.angle * Math.PI / 180,
+                offset: [this.offsetX, -this.offsetY]
+            }));
+        }
+    }
+
+    private initGlyphStyle() {
+        if (this.glyphFontName) {
+            this.glyphTextStyle = new ol.style.Text(({
+                font: `${this.size}px ${this.glyphFontName}`,
+                offsetX: this.offsetX,
+                offsetY: this.offsetY,
+                text: this.glyphContent,
+                fill: this.fillColor !== undefined ? new ol.style.Fill(({
+                    color: this.fillColor
+                })) : undefined,
+                stroke: this.outlineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
+                    color: this.outlineColor,
+                    width: this.outlineWidth
+                })) : undefined,
+                rotation: this.angle * Math.PI / 180
+            }));
+
+            this.applyTransForm(this.glyphTextStyle);
+        }
+    }
+
+
+    getGlyphImage(glyphTextStyle, opacity) {
+        let font = glyphTextStyle.getFont();
+        let text = glyphTextStyle.getText();
 
         let strokeColor;
         let outlineWidth = 0;
-        let textStrok = textStyle.getStroke();
+        let textStrok = glyphTextStyle.getStroke();
         if (textStrok) {
             strokeColor = textStrok.getColor();
             outlineWidth = textStrok.getWidth();
@@ -183,6 +288,7 @@ export class GeoPointStyle extends GeoStyle {
         textAnchorY = canvasSizeInfoWithMask[3];
 
         let context = (<any>ol).dom.createCanvasContext2D(canvasWidth, canvasHeight);
+        context.globalAlpha = opacity || 1;
 
         this.drawMask(context);
 
@@ -193,23 +299,23 @@ export class GeoPointStyle extends GeoStyle {
             if (strokeColor && outlineWidth > 0) {
                 context.strokeStyle = strokeColor;
                 context.lineWidth = outlineWidth * ((<any>ol.has).SAFARI ? scale : 1);
-                context.strokeText(textStyle.text_, canvasWidth / 2, canvasHeight / 2);
+                context.strokeText(glyphTextStyle.text_, canvasWidth / 2, canvasHeight / 2);
             }
         }
 
-        let textFill = textStyle.getFill();
+        let textFill = glyphTextStyle.getFill();
         if (textFill) {
             let color = textFill.getColor();
             if (color) {
                 context.fillStyle = color;
-                context.fillText(textStyle.text_, canvasWidth / 2, canvasHeight / 2);
+                context.fillText(glyphTextStyle.text_, canvasWidth / 2, canvasHeight / 2);
             }
         }
 
         return context.canvas;
     }
 
-    drawMaskForSymbol(imageStyle) {
+    drawMaskForSymbol(imageStyle, opacity) {
         let canvasWidth = 0;
         let canvasHeight = 0;
 
@@ -225,13 +331,16 @@ export class GeoPointStyle extends GeoStyle {
             canvasHeight = canvasSizeInfoWithMask[1];
 
             let context = (<any>ol).dom.createCanvasContext2D(canvasWidth, canvasHeight);
-
+            context.globalAlpha = opacity || 1;
             this.drawMask(context);
 
-            this.textStyle = new ol.style.Text();
-            this.textStyle.setText("a");
-            this.textStyle.label = context.canvas;
-            this.style.setText(this.textStyle);
+            let maskStyle = new ol.style.Text({
+                offsetX: this.offsetX,
+                offsetY: this.offsetY
+            });
+            maskStyle.setText("a");
+            maskStyle["label"] = context.canvas;
+            return maskStyle;
         }
     }
 
@@ -241,13 +350,13 @@ export class GeoPointStyle extends GeoStyle {
 
         if (this.maskColor) {
             fill = new ol.style.Fill();
-            fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity));
+            fill.setColor(this.maskColor);
         }
 
         if (this.maskOutlineColor && this.maskStrokeWidth) {
             stroke = new ol.style.Stroke();
             if (this.maskOutlineColor) {
-                stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ? this.opacity : 1));
+                stroke.setColor(this.maskOutlineColor);
             }
             if (this.maskStrokeWidth) {
                 stroke.setWidth(this.maskStrokeWidth);
@@ -497,120 +606,6 @@ export class GeoPointStyle extends GeoStyle {
         // context.fillRect(0 + (width / 2), 0, 1, height);
     }
 
-
-    private initSymbolStyle() {
-        let radius = this.size / 2;
-        switch (this.symbolType) {
-            case "circle":
-                this.imageStyle = new ol.style.Circle({
-                    fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                        color: this.convertedGlyphFill
-                    })) : undefined,
-                    stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                        color: this.convertedGlyphOutLineColor,
-                        width: this.outlineWidth
-                    })) : undefined,
-                    radius: radius
-                });
-                break;
-            case "square":
-                this.imageStyle = new ol.style.RegularShape({
-                    fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                        color: this.convertedGlyphFill
-                    })) : undefined,
-                    stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                        color: this.convertedGlyphOutLineColor,
-                        width: this.outlineWidth
-                    })) : undefined,
-                    points: 4,
-                    radius: radius,
-                    angle: Math.PI / 4 + this.angle
-                });
-                break;
-            case "triangle":
-                this.imageStyle = new ol.style.RegularShape({
-                    fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                        color: this.convertedGlyphFill
-                    })) : undefined,
-                    stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                        color: this.convertedGlyphOutLineColor,
-                        width: this.outlineWidth
-                    })) : undefined,
-                    points: 3,
-                    radius: radius,
-                    angle: this.angle
-                });
-                break;
-            case "cross":
-                this.imageStyle = new ol.style.RegularShape({
-                    fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                        color: this.convertedGlyphFill
-                    })) : undefined,
-                    stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                        color: this.convertedGlyphOutLineColor,
-                        width: this.outlineWidth
-                    })) : undefined,
-                    points: 4,
-                    radius: radius,
-                    radius2: 0,
-                    angle: this.angle
-                });
-                break;
-            case "diamond":
-                break;
-            case "diamond2":
-                break;
-            case "star":
-                this.imageStyle = new ol.style.RegularShape({
-                    fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                        color: this.convertedGlyphFill
-                    })) : undefined,
-                    stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                        color: this.convertedGlyphOutLineColor,
-                        width: this.outlineWidth
-                    })) : undefined,
-                    points: 5,
-                    radius: radius,
-                    radius2: radius / 2.5,
-                    angle: this.angle
-                });
-                break;
-            case "star2":
-                break;
-        }
-    }
-
-    private initBitmapStyle() {
-        if (this.imageURL) {
-            this.imageStyle = new ol.style.Icon(({
-                opacity: this.opacity || 1,
-                src: this.imageURL,
-                rotation: this.angle * Math.PI / 180,
-                offset: [this.offsetX, -this.offsetY]
-            }));
-        }
-    }
-
-    private initGlyphStyle() {
-        if (this.glyphFontName) {
-            this.textStyle = new ol.style.Text(({
-                font: `${this.size}px ${this.glyphFontName}`,
-                offsetX: this.offsetX,
-                offsetY: this.offsetY,
-                text: this.glyphContent,
-                fill: this.convertedGlyphFill !== undefined ? new ol.style.Fill(({
-                    color: this.convertedGlyphFill
-                })) : undefined,
-                stroke: this.convertedGlyphOutLineColor !== undefined && this.outlineWidth > 0 ? new ol.style.Stroke(({
-                    color: this.convertedGlyphOutLineColor,
-                    width: this.outlineWidth
-                })) : undefined,
-                rotation: this.angle * Math.PI / 180
-            }));
-
-            this.applyTransForm(this.textStyle);
-        }
-    }
 
     private applyTransForm(style) {
         let transformRgx = /([a-z]+)\((.*?)\)/i;

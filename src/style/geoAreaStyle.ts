@@ -3,15 +3,8 @@ import { GeoBrush } from "./geoBrush";
 import { GeoBrushType } from "./geoBrushType";
 
 export class GeoAreaStyle extends GeoStyle {
-
-    static areaStyle = new ol.style.Style({
-        fill: new ol.style.Fill({}),
-        stroke: new ol.style.Stroke({})
-    });
-
-    static areaShadowStyle = new ol.style.Style({
-        fill: new ol.style.Fill({}),
-    });
+    compounds = ['overlay', 'reject'];
+    defaultCompund = 'overlay';
 
     offsetX: number;
     offsetY: number;
@@ -40,13 +33,15 @@ export class GeoAreaStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
+            this.compound = styleJson["polygon-compound"];
+
             this.outlineColor = styleJson["polygon-outline-color"];
             this.outlineWidth = styleJson["polygon-outline-width"];
             this.outlineDashArray = styleJson["polygon-outline-dasharray"];
             this.fillColor = styleJson["polygon-fill-color"];
             this.offsetX = styleJson["polygon-offset-x"];
             this.offsetY = styleJson["polygon-offset-y"];
-            this.opacity = styleJson["polygon-opacity"];
+            this.opacity = styleJson["polygon-opacity"] || 1;
             this.linearGradient = styleJson["polygon-linear-gradient"];
             this.radialGradient = styleJson["polygon-radial-gradient"];
             this.shadowStyleJson = styleJson["polygon-shadow"];
@@ -54,15 +49,18 @@ export class GeoAreaStyle extends GeoStyle {
             this.fillImageURI = styleJson["polygon-fill-image-uri"];
             this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
             this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
+            this.isShadow = false;
+        }
+        if (!this.compounds.includes(this.compound)) {
+            this.compound = this.defaultCompund;
         }
     }
 
     initializeCore() {
-
         this.style = new ol.style.Style();
 
         if (this.fillColor) {
-            this.convertedFillColor = GeoStyle.toRGBAColor(this.fillColor, this.opacity);
+            this.convertedFillColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
             var fillStyle = new ol.style.Fill({
                 color: this.convertedFillColor
             })
@@ -76,7 +74,7 @@ export class GeoAreaStyle extends GeoStyle {
         // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
         if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
             if (this.outlineColor) {
-                this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.opacity);
+                this.convertedOutlineColor = GeoStyle.blendColorAndOpacity(this.outlineColor, this.opacity);
             }
             if (this.outlineDashArray) {
                 this.convertedOutlineDashArray = this.outlineDashArray.split(",");
@@ -92,6 +90,7 @@ export class GeoAreaStyle extends GeoStyle {
 
         if (this.shadowStyleJson) {
             this.shadowStyle = new GeoAreaStyle(this.shadowStyleJson);
+            this.shadowStyle["isShadow"] = true;
         }
 
         this.offsetTranslateValueByResolution = {};
@@ -100,11 +99,10 @@ export class GeoAreaStyle extends GeoStyle {
         let length = 0;
         let styles = [];
         let cloneGeometry = feature.getGeometry().clone();
-        if (this.shadowStyle) {
+        if (this.shadowStyle && !this.isShadow) {
             if (this.shadowStyle) {
                 let shadowOLStyle = this.shadowStyle.getStyles(feature, resolution, options);
-                if(shadowOLStyle)
-                {
+                if (shadowOLStyle) {
                     for (let index = 0; index < shadowOLStyle.length; index++) {
                         const element = shadowOLStyle[index];
                         element['zCoordinate'] = this.zIndex - 0.5;
@@ -115,7 +113,7 @@ export class GeoAreaStyle extends GeoStyle {
         }
         if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
             if (this.geometryTransform) {
-                this.transformGeometry(cloneGeometry, resolution);
+                this.transformGeometry(cloneGeometry);
             }
             if (this.offsetX || this.offsetY) {
                 let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
@@ -130,16 +128,9 @@ export class GeoAreaStyle extends GeoStyle {
             this.style.setGeometry(cloneGeometry);
             this.style['zCoordinate'] = this.zIndex;
             styles.push(this.style);
-
-            // if (this.fillImageURI) {
-            //     GeoAreaStyle.areaStyle.setImage(new ol.style.Icon({
-            //         crossOrigin: 'anonymous',
-            //         src: this.fillImageURI
-            //     }));
-            // }
         }
 
-   
+
         return styles;
     }
 
@@ -159,7 +150,7 @@ export class GeoAreaStyle extends GeoStyle {
         return values;
     }
 
-    transformGeometry(geometry, resolution) {
+    transformGeometry(geometry) {
 
         if (this.geometryTransform.indexOf("translate") === 0) {
             geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
@@ -172,6 +163,7 @@ export class GeoAreaStyle extends GeoStyle {
             let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
             geometry.rotate(angle, center);
         }
+        // TODO:
         // else if (this.geometryTransform.indexOf("skew") === 0) {
         //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
         // }

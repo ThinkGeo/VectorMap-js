@@ -1,6 +1,6 @@
 export class GeoStyle {
     public id: string;
-    public uid:any;
+    public uid: any;
     public visible: true;
     public styles: any[];
 
@@ -8,10 +8,13 @@ export class GeoStyle {
 
     constructor(styleJson?: object) {
         this.styles = [];
+        this.visible = true;
         if (styleJson) {
             this.id = styleJson["id"];
-            this.uid= (<any>ol).getUid(this);
-            this.visible = styleJson["visible"] === undefined ? true : styleJson["visible"];
+            this.uid = (<any>ol).getUid(this);
+            if (styleJson["visible"] !== undefined && styleJson["visible"] === false) {
+                this.visible = false;
+            }
         }
     }
 
@@ -110,44 +113,14 @@ export class GeoStyle {
         return ry;
     }
 
-    static toRGBAColor(color, opacity = 1): string {
-        if (color.indexOf("#") === 0) {
-            let array: number[];
-            let r: number;
-            let g: number;
-            let b: number;
-            let a: number;
-            if (color.length === 4) {
-                r = +("0x" + color.substr(1, 1) + color.substr(1, 1));
-                g = +("0x" + color.substr(2, 1) + color.substr(2, 1));
-                b = +("0x" + color.substr(3, 1) + color.substr(3, 1));
-                a = opacity;
-            } else {
-                r = +("0x" + color.substr(1, 2));
-                g = +("0x" + color.substr(3, 2));
-                b = +("0x" + color.substr(5, 2));
-                a = opacity;
-            }
-            array = [r, g, b, a];
-            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-                return "rgba(" + array.join(",") + ")";
-            } else {
-                return "rgba(0,0,0,0)";
-            }
-        }
-        if (color.indexOf("rgb(") === 0) {
-            color = color.replace("rgb(", "rgba(");
-            color = color.substring(0, color.length - 1) + "," + opacity + ")";
-        }
-        if (color.indexOf("argb(") === 0) {
-            color = color.replace("argb(", "").replace(")", "");
-            let array = color.split(",");
-            let a = array.shift();
-            array.push(a);
-            color = "rgba(" + array.join(",") + ")";
-        }
 
-        return color;
+    static blendColorAndOpacity(color, opacity = 1): string {
+        var olColorArray = ol.color.asArray(color).slice(0);
+        if (opacity != undefined) {
+            var validOpacityColorArray = ol.color.asArray([1, 1, 1, opacity]);
+            olColorArray[3] = olColorArray[3] * validOpacityColorArray[3];
+        }
+        return ol.color.toString(olColorArray);
     }
 
     static toOLLinearGradient(color, opacity = 1, size) {
@@ -161,7 +134,7 @@ export class GeoStyle {
             colorStop = colorStop.trim();
             let tmpColorStop = colorStop.substr(1, colorStop.length - 2);
             let cs = tmpColorStop.split(":");
-            grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+            grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
         }
 
         return grd;
@@ -178,7 +151,7 @@ export class GeoStyle {
             colorStop = colorStop.trim();
             let tmpColorStop = colorStop.substr(1, colorStop.length - 2);
             let cs = tmpColorStop.split(":");
-            grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+            grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
         }
 
         return grd;

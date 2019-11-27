@@ -29261,8 +29261,8 @@ function olInit() {
             state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
             state.miterLimit, state.lineDash, state.lineDashOffset
         ], [
-                ol.render.canvas.Instruction.BEGIN_PATH
-            ]);
+            ol.render.canvas.Instruction.BEGIN_PATH
+        ]);
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var stride = lineStringGeometry.getStride();
         this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
@@ -29288,8 +29288,8 @@ function olInit() {
             state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
             state.miterLimit, state.lineDash, state.lineDashOffset
         ], [
-                ol.render.canvas.Instruction.BEGIN_PATH
-            ]);
+            ol.render.canvas.Instruction.BEGIN_PATH
+        ]);
         var ends = multiLineStringGeometry.getEnds();
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
         var stride = multiLineStringGeometry.getStride();
@@ -45089,10 +45089,10 @@ function olInit() {
      */
     ol.format.GPX.GPX_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
-            'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
-            'wpt': ol.xml.makeArrayPusher(ol.format.GPX.readWpt_)
-        });
+        'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
+        'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
+        'wpt': ol.xml.makeArrayPusher(ol.format.GPX.readWpt_)
+    });
 
 
     /**
@@ -45102,11 +45102,11 @@ function olInit() {
      */
     ol.format.GPX.LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'text':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
-            'type':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkType')
-        });
+        'text':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
+        'type':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkType')
+    });
 
 
     /**
@@ -45116,17 +45116,17 @@ function olInit() {
      */
     ol.format.GPX.RTE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'link': ol.format.GPX.parseLink_,
-            'number':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-            'extensions': ol.format.GPX.parseExtensions_,
-            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'rtept': ol.format.GPX.parseRtePt_
-        });
+        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'link': ol.format.GPX.parseLink_,
+        'number':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+        'extensions': ol.format.GPX.parseExtensions_,
+        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'rtept': ol.format.GPX.parseRtePt_
+    });
 
 
     /**
@@ -45136,9 +45136,9 @@ function olInit() {
      */
     ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
-        });
+        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
+    });
 
 
     /**
@@ -45148,17 +45148,17 @@ function olInit() {
      */
     ol.format.GPX.TRK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'link': ol.format.GPX.parseLink_,
-            'number':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'extensions': ol.format.GPX.parseExtensions_,
-            'trkseg': ol.format.GPX.parseTrkSeg_
-        });
+        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'link': ol.format.GPX.parseLink_,
+        'number':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'extensions': ol.format.GPX.parseExtensions_,
+        'trkseg': ol.format.GPX.parseTrkSeg_
+    });
 
 
     /**
@@ -45168,8 +45168,8 @@ function olInit() {
      */
     ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'trkpt': ol.format.GPX.parseTrkPt_
-        });
+        'trkpt': ol.format.GPX.parseTrkPt_
+    });
 
 
     /**
@@ -45179,9 +45179,9 @@ function olInit() {
      */
     ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
-        });
+        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
+    });
 
 
     /**
@@ -45191,29 +45191,29 @@ function olInit() {
      */
     ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
-            'magvar': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'geoidheight': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'link': ol.format.GPX.parseLink_,
-            'sym': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'fix': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'sat': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'hdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'vdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'pdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'ageofdgpsdata':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'dgpsid':
-                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-            'extensions': ol.format.GPX.parseExtensions_
-        });
+        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
+        'magvar': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'geoidheight': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'link': ol.format.GPX.parseLink_,
+        'sym': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'fix': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'sat': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'hdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'vdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'pdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'ageofdgpsdata':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'dgpsid':
+            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+        'extensions': ol.format.GPX.parseExtensions_
+    });
 
 
     /**
@@ -45485,9 +45485,9 @@ function olInit() {
      */
     ol.format.GPX.LINK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'text': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-        });
+        'text': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+    });
 
 
     /**
@@ -45497,8 +45497,8 @@ function olInit() {
      */
     ol.format.GPX.RTE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-            'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
-        ]);
+        'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
+    ]);
 
 
     /**
@@ -45508,17 +45508,17 @@ function olInit() {
      */
     ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-            'number': ol.xml.makeChildAppender(
-                ol.format.XSD.writeNonNegativeIntegerTextNode),
-            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
-                ol.format.GPX.writeWptType_))
-        });
+        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+        'number': ol.xml.makeChildAppender(
+            ol.format.XSD.writeNonNegativeIntegerTextNode),
+        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+            ol.format.GPX.writeWptType_))
+    });
 
 
     /**
@@ -45528,8 +45528,8 @@ function olInit() {
      */
     ol.format.GPX.RTEPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-            'ele', 'time'
-        ]);
+        'ele', 'time'
+    ]);
 
 
     /**
@@ -45539,8 +45539,8 @@ function olInit() {
      */
     ol.format.GPX.TRK_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-            'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
-        ]);
+        'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
+    ]);
 
 
     /**
@@ -45550,17 +45550,17 @@ function olInit() {
      */
     ol.format.GPX.TRK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-            'number': ol.xml.makeChildAppender(
-                ol.format.XSD.writeNonNegativeIntegerTextNode),
-            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'trkseg': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
-                ol.format.GPX.writeTrkSeg_))
-        });
+        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+        'number': ol.xml.makeChildAppender(
+            ol.format.XSD.writeNonNegativeIntegerTextNode),
+        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'trkseg': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+            ol.format.GPX.writeTrkSeg_))
+    });
 
 
     /**
@@ -45578,8 +45578,8 @@ function olInit() {
      */
     ol.format.GPX.TRKSEG_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'trkpt': ol.xml.makeChildAppender(ol.format.GPX.writeWptType_)
-        });
+        'trkpt': ol.xml.makeChildAppender(ol.format.GPX.writeWptType_)
+    });
 
 
     /**
@@ -45589,10 +45589,10 @@ function olInit() {
      */
     ol.format.GPX.WPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-            'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
-            'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
-            'ageofdgpsdata', 'dgpsid'
-        ]);
+        'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
+        'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
+        'ageofdgpsdata', 'dgpsid'
+    ]);
 
 
     /**
@@ -45601,29 +45601,29 @@ function olInit() {
      */
     ol.format.GPX.WPT_TYPE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'ele': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'time': ol.xml.makeChildAppender(ol.format.XSD.writeDateTimeTextNode),
-            'magvar': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'geoidheight': ol.xml.makeChildAppender(
-                ol.format.XSD.writeDecimalTextNode),
-            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-            'sym': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'fix': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'sat': ol.xml.makeChildAppender(
-                ol.format.XSD.writeNonNegativeIntegerTextNode),
-            'hdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'vdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'pdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'ageofdgpsdata': ol.xml.makeChildAppender(
-                ol.format.XSD.writeDecimalTextNode),
-            'dgpsid': ol.xml.makeChildAppender(
-                ol.format.XSD.writeNonNegativeIntegerTextNode)
-        });
+        'ele': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'time': ol.xml.makeChildAppender(ol.format.XSD.writeDateTimeTextNode),
+        'magvar': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'geoidheight': ol.xml.makeChildAppender(
+            ol.format.XSD.writeDecimalTextNode),
+        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+        'sym': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'fix': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'sat': ol.xml.makeChildAppender(
+            ol.format.XSD.writeNonNegativeIntegerTextNode),
+        'hdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'vdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'pdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'ageofdgpsdata': ol.xml.makeChildAppender(
+            ol.format.XSD.writeDecimalTextNode),
+        'dgpsid': ol.xml.makeChildAppender(
+            ol.format.XSD.writeNonNegativeIntegerTextNode)
+    });
 
 
     /**
@@ -45665,10 +45665,10 @@ function olInit() {
      */
     ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-            'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
-            'trk': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
-            'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
-        });
+        'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
+        'trk': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
+        'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
+    });
 
 
     /**
@@ -48639,9 +48639,9 @@ function olInit() {
      */
     ol.format.KML.DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'displayName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'value': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-        });
+        'displayName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'value': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+    });
 
 
     /**
@@ -48651,9 +48651,9 @@ function olInit() {
      */
     ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Data': ol.format.KML.DataParser_,
-            'SchemaData': ol.format.KML.SchemaDataParser_
-        });
+        'Data': ol.format.KML.DataParser_,
+        'SchemaData': ol.format.KML.SchemaDataParser_
+    });
 
 
     /**
@@ -48663,9 +48663,9 @@ function olInit() {
      */
     ol.format.KML.REGION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LatLonAltBox': ol.format.KML.LatLonAltBoxParser_,
-            'Lod': ol.format.KML.LodParser_
-        });
+        'LatLonAltBox': ol.format.KML.LatLonAltBoxParser_,
+        'Lod': ol.format.KML.LodParser_
+    });
 
 
     /**
@@ -48675,14 +48675,14 @@ function olInit() {
      */
     ol.format.KML.LAT_LON_ALT_BOX_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'minAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'maxAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'north': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'south': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'east': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'west': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-        });
+        'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'minAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'maxAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'north': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'south': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'east': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'west': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+    });
 
 
     /**
@@ -48692,11 +48692,11 @@ function olInit() {
      */
     ol.format.KML.LOD_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'minLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'maxLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'minFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'maxFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-        });
+        'minLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'maxLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'minFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'maxFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+    });
 
 
     /**
@@ -48706,10 +48706,10 @@ function olInit() {
      */
     ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-            'tessellate': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-            'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-        });
+        'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+        'tessellate': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+        'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+    });
 
 
     /**
@@ -48719,8 +48719,8 @@ function olInit() {
      */
     ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
-        });
+        'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
+    });
 
 
     /**
@@ -48730,9 +48730,9 @@ function olInit() {
      */
     ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'innerBoundaryIs': ol.format.KML.innerBoundaryIsParser_,
-            'outerBoundaryIs': ol.format.KML.outerBoundaryIsParser_
-        });
+        'innerBoundaryIs': ol.format.KML.innerBoundaryIsParser_,
+        'outerBoundaryIs': ol.format.KML.outerBoundaryIsParser_
+    });
 
 
     /**
@@ -48742,11 +48742,11 @@ function olInit() {
      */
     ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'when': ol.format.KML.whenParser_
-        }, ol.xml.makeStructureNS(
-            ol.format.KML.GX_NAMESPACE_URIS_, {
-                'coord': ol.format.KML.gxCoordParser_
-            }));
+        'when': ol.format.KML.whenParser_
+    }, ol.xml.makeStructureNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+        'coord': ol.format.KML.gxCoordParser_
+    }));
 
 
     /**
@@ -48756,8 +48756,8 @@ function olInit() {
      */
     ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
-        });
+        'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
+    });
 
 
     /**
@@ -48767,14 +48767,14 @@ function olInit() {
      */
     ol.format.KML.ICON_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-        }, ol.xml.makeStructureNS(
-            ol.format.KML.GX_NAMESPACE_URIS_, {
-                'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-                'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-                'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-                'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-            }));
+        'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+    }, ol.xml.makeStructureNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+        'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+    }));
 
 
     /**
@@ -48784,11 +48784,11 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
-            'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-            'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
-            'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
-        });
+        'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
+        'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+        'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
+        'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
+    });
 
 
     /**
@@ -48798,8 +48798,8 @@ function olInit() {
      */
     ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
-        });
+        'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
+    });
 
 
     /**
@@ -48809,9 +48809,9 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-            'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
-        });
+        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+        'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
+    });
 
 
     /**
@@ -48821,9 +48821,9 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-            'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-        });
+        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+        'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+    });
 
 
     /**
@@ -48833,12 +48833,12 @@ function olInit() {
      */
     ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
-            'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
-            'MultiGeometry': ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_),
-            'Point': ol.xml.makeArrayPusher(ol.format.KML.readPoint_),
-            'Polygon': ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)
-        });
+        'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
+        'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
+        'MultiGeometry': ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_),
+        'Point': ol.xml.makeArrayPusher(ol.format.KML.readPoint_),
+        'Polygon': ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)
+    });
 
 
     /**
@@ -48848,8 +48848,8 @@ function olInit() {
      */
     ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
-            'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
-        });
+        'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
+    });
 
 
     /**
@@ -48859,16 +48859,16 @@ function olInit() {
      */
     ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'ExtendedData': ol.format.KML.ExtendedDataParser_,
-            'Region': ol.format.KML.RegionParser_,
-            'Link': ol.format.KML.LinkParser_,
-            'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-            'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-        });
+        'ExtendedData': ol.format.KML.ExtendedDataParser_,
+        'Region': ol.format.KML.RegionParser_,
+        'Link': ol.format.KML.LinkParser_,
+        'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+        'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+    });
 
 
     /**
@@ -48878,8 +48878,8 @@ function olInit() {
      */
     ol.format.KML.LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-        });
+        'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+    });
 
 
     /**
@@ -48889,8 +48889,8 @@ function olInit() {
      */
     ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
-        });
+        'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
+    });
 
 
     /**
@@ -48900,10 +48900,10 @@ function olInit() {
      */
     ol.format.KML.PAIR_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
-            'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-        });
+        'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+        'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+    });
 
 
     /**
@@ -48913,35 +48913,35 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'ExtendedData': ol.format.KML.ExtendedDataParser_,
-            'Region': ol.format.KML.RegionParser_,
-            'MultiGeometry': ol.xml.makeObjectPropertySetter(
-                ol.format.KML.readMultiGeometry_, 'geometry'),
-            'LineString': ol.xml.makeObjectPropertySetter(
-                ol.format.KML.readLineString_, 'geometry'),
-            'LinearRing': ol.xml.makeObjectPropertySetter(
-                ol.format.KML.readLinearRing_, 'geometry'),
-            'Point': ol.xml.makeObjectPropertySetter(
-                ol.format.KML.readPoint_, 'geometry'),
-            'Polygon': ol.xml.makeObjectPropertySetter(
-                ol.format.KML.readPolygon_, 'geometry'),
-            'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
-            'StyleMap': ol.format.KML.PlacemarkStyleMapParser_,
-            'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-            'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
-            'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-        }, ol.xml.makeStructureNS(
-            ol.format.KML.GX_NAMESPACE_URIS_, {
-                'MultiTrack': ol.xml.makeObjectPropertySetter(
-                    ol.format.KML.readGxMultiTrack_, 'geometry'),
-                'Track': ol.xml.makeObjectPropertySetter(
-                    ol.format.KML.readGxTrack_, 'geometry')
-            }
-        ));
+        'ExtendedData': ol.format.KML.ExtendedDataParser_,
+        'Region': ol.format.KML.RegionParser_,
+        'MultiGeometry': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readMultiGeometry_, 'geometry'),
+        'LineString': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readLineString_, 'geometry'),
+        'LinearRing': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readLinearRing_, 'geometry'),
+        'Point': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readPoint_, 'geometry'),
+        'Polygon': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readPolygon_, 'geometry'),
+        'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+        'StyleMap': ol.format.KML.PlacemarkStyleMapParser_,
+        'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+        'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
+        'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+    }, ol.xml.makeStructureNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+        'MultiTrack': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readGxMultiTrack_, 'geometry'),
+        'Track': ol.xml.makeObjectPropertySetter(
+            ol.format.KML.readGxTrack_, 'geometry')
+    }
+    ));
 
 
     /**
@@ -48951,10 +48951,10 @@ function olInit() {
      */
     ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-            'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-            'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-        });
+        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+        'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+        'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+    });
 
 
     /**
@@ -48964,8 +48964,8 @@ function olInit() {
      */
     ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'SimpleData': ol.format.KML.SimpleDataParser_
-        });
+        'SimpleData': ol.format.KML.SimpleDataParser_
+    });
 
 
     /**
@@ -48975,11 +48975,11 @@ function olInit() {
      */
     ol.format.KML.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'IconStyle': ol.format.KML.IconStyleParser_,
-            'LabelStyle': ol.format.KML.LabelStyleParser_,
-            'LineStyle': ol.format.KML.LineStyleParser_,
-            'PolyStyle': ol.format.KML.PolyStyleParser_
-        });
+        'IconStyle': ol.format.KML.IconStyleParser_,
+        'LabelStyle': ol.format.KML.LabelStyleParser_,
+        'LineStyle': ol.format.KML.LineStyleParser_,
+        'PolyStyle': ol.format.KML.PolyStyleParser_
+    });
 
 
     /**
@@ -48989,8 +48989,8 @@ function olInit() {
      */
     ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Pair': ol.format.KML.PairDataParser_
-        });
+        'Pair': ol.format.KML.PairDataParser_
+    });
 
 
     /**
@@ -49003,12 +49003,12 @@ function olInit() {
         // FIXME use scope somehow
         var parsersNS = ol.xml.makeStructureNS(
             ol.format.KML.NAMESPACE_URIS_, {
-                'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
-                'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
-                'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
-                'Style': this.readSharedStyle_.bind(this),
-                'StyleMap': this.readSharedStyleMap_.bind(this)
-            });
+            'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
+            'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
+            'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
+            'Style': this.readSharedStyle_.bind(this),
+            'StyleMap': this.readSharedStyleMap_.bind(this)
+        });
         /** @type {Array.<ol.Feature>} */
         var features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack, this);
         if (features) {
@@ -49929,8 +49929,8 @@ function olInit() {
      */
     ol.format.KML.KML_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'Document', 'Placemark'
-        ]);
+        'Document', 'Placemark'
+    ]);
 
 
     /**
@@ -49940,9 +49940,9 @@ function olInit() {
      */
     ol.format.KML.KML_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Document': ol.xml.makeChildAppender(ol.format.KML.writeDocument_),
-            'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
-        });
+        'Document': ol.xml.makeChildAppender(ol.format.KML.writeDocument_),
+        'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
+    });
 
 
     /**
@@ -49952,8 +49952,8 @@ function olInit() {
      */
     ol.format.KML.DOCUMENT_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
-        });
+        'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
+    });
 
 
     /**
@@ -49963,10 +49963,10 @@ function olInit() {
      */
     ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Data': ol.xml.makeChildAppender(ol.format.KML.writeDataNode_),
-            'value': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeValue_),
-            'displayName': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeName_)
-        });
+        'Data': ol.xml.makeChildAppender(ol.format.KML.writeDataNode_),
+        'value': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeValue_),
+        'displayName': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeName_)
+    });
 
 
     /**
@@ -49992,8 +49992,8 @@ function olInit() {
      */
     ol.format.KML.ICON_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'href'
-        ],
+        'href'
+    ],
         ol.xml.makeStructureNS(ol.format.KML.GX_NAMESPACE_URIS_, [
             'x', 'y', 'w', 'h'
         ]));
@@ -50006,14 +50006,14 @@ function olInit() {
      */
     ol.format.KML.ICON_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'href': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-        }, ol.xml.makeStructureNS(
-            ol.format.KML.GX_NAMESPACE_URIS_, {
-                'x': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-                'y': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-                'w': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-                'h': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
-            }));
+        'href': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+    }, ol.xml.makeStructureNS(
+        ol.format.KML.GX_NAMESPACE_URIS_, {
+        'x': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'y': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'w': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'h': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
+    }));
 
 
     /**
@@ -50023,8 +50023,8 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'scale', 'heading', 'Icon', 'hotSpot'
-        ]);
+        'scale', 'heading', 'Icon', 'hotSpot'
+    ]);
 
 
     /**
@@ -50034,11 +50034,11 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'Icon': ol.xml.makeChildAppender(ol.format.KML.writeIcon_),
-            'heading': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-            'hotSpot': ol.xml.makeChildAppender(ol.format.KML.writeVec2_),
-            'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
-        });
+        'Icon': ol.xml.makeChildAppender(ol.format.KML.writeIcon_),
+        'heading': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+        'hotSpot': ol.xml.makeChildAppender(ol.format.KML.writeVec2_),
+        'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
+    });
 
 
     /**
@@ -50048,8 +50048,8 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'color', 'scale'
-        ]);
+        'color', 'scale'
+    ]);
 
 
     /**
@@ -50059,9 +50059,9 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
-            'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
-        });
+        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
+        'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
+    });
 
 
     /**
@@ -50071,8 +50071,8 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'color', 'width'
-        ]);
+        'color', 'width'
+    ]);
 
 
     /**
@@ -50082,9 +50082,9 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
-            'width': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
-        });
+        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
+        'width': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
+    });
 
 
     /**
@@ -50094,9 +50094,9 @@ function olInit() {
      */
     ol.format.KML.BOUNDARY_IS_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LinearRing': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_)
-        });
+        'LinearRing': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_)
+    });
 
 
     /**
@@ -50106,14 +50106,14 @@ function olInit() {
      */
     ol.format.KML.MULTI_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'LineString': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_),
-            'Point': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_),
-            'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
-            'GeometryCollection': ol.xml.makeChildAppender(
-                ol.format.KML.writeMultiGeometry_)
-        });
+        'LineString': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_),
+        'Point': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_),
+        'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
+        'GeometryCollection': ol.xml.makeChildAppender(
+            ol.format.KML.writeMultiGeometry_)
+    });
 
 
     /**
@@ -50123,9 +50123,9 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
-            'styleUrl', 'Style'
-        ]);
+        'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
+        'styleUrl', 'Style'
+    ]);
 
 
     /**
@@ -50135,29 +50135,29 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'ExtendedData': ol.xml.makeChildAppender(
-                ol.format.KML.writeExtendedData_),
-            'MultiGeometry': ol.xml.makeChildAppender(
-                ol.format.KML.writeMultiGeometry_),
-            'LineString': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_),
-            'LinearRing': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_),
-            'Point': ol.xml.makeChildAppender(
-                ol.format.KML.writePrimitiveGeometry_),
-            'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
-            'Style': ol.xml.makeChildAppender(ol.format.KML.writeStyle_),
-            'address': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'description': ol.xml.makeChildAppender(
-                ol.format.XSD.writeStringTextNode),
-            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'open': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-            'phoneNumber': ol.xml.makeChildAppender(
-                ol.format.XSD.writeStringTextNode),
-            'styleUrl': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'visibility': ol.xml.makeChildAppender(
-                ol.format.XSD.writeBooleanTextNode)
-        });
+        'ExtendedData': ol.xml.makeChildAppender(
+            ol.format.KML.writeExtendedData_),
+        'MultiGeometry': ol.xml.makeChildAppender(
+            ol.format.KML.writeMultiGeometry_),
+        'LineString': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_),
+        'LinearRing': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_),
+        'Point': ol.xml.makeChildAppender(
+            ol.format.KML.writePrimitiveGeometry_),
+        'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
+        'Style': ol.xml.makeChildAppender(ol.format.KML.writeStyle_),
+        'address': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'description': ol.xml.makeChildAppender(
+            ol.format.XSD.writeStringTextNode),
+        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'open': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+        'phoneNumber': ol.xml.makeChildAppender(
+            ol.format.XSD.writeStringTextNode),
+        'styleUrl': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'visibility': ol.xml.makeChildAppender(
+            ol.format.XSD.writeBooleanTextNode)
+    });
 
 
     /**
@@ -50167,8 +50167,8 @@ function olInit() {
      */
     ol.format.KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'extrude', 'tessellate', 'altitudeMode', 'coordinates'
-        ]);
+        'extrude', 'tessellate', 'altitudeMode', 'coordinates'
+    ]);
 
 
     /**
@@ -50178,12 +50178,12 @@ function olInit() {
      */
     ol.format.KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'extrude': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-            'tessellate': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-            'altitudeMode': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-            'coordinates': ol.xml.makeChildAppender(
-                ol.format.KML.writeCoordinatesTextNode_)
-        });
+        'extrude': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+        'tessellate': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+        'altitudeMode': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+        'coordinates': ol.xml.makeChildAppender(
+            ol.format.KML.writeCoordinatesTextNode_)
+    });
 
 
     /**
@@ -50193,11 +50193,11 @@ function olInit() {
      */
     ol.format.KML.POLYGON_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'outerBoundaryIs': ol.xml.makeChildAppender(
-                ol.format.KML.writeBoundaryIs_),
-            'innerBoundaryIs': ol.xml.makeChildAppender(
-                ol.format.KML.writeBoundaryIs_)
-        });
+        'outerBoundaryIs': ol.xml.makeChildAppender(
+            ol.format.KML.writeBoundaryIs_),
+        'innerBoundaryIs': ol.xml.makeChildAppender(
+            ol.format.KML.writeBoundaryIs_)
+    });
 
 
     /**
@@ -50207,8 +50207,8 @@ function olInit() {
      */
     ol.format.KML.POLY_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_)
-        });
+        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_)
+    });
 
 
     /**
@@ -50218,8 +50218,8 @@ function olInit() {
      */
     ol.format.KML.STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-            'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
-        ]);
+        'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
+    ]);
 
 
     /**
@@ -50229,11 +50229,11 @@ function olInit() {
      */
     ol.format.KML.STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-            'IconStyle': ol.xml.makeChildAppender(ol.format.KML.writeIconStyle_),
-            'LabelStyle': ol.xml.makeChildAppender(ol.format.KML.writeLabelStyle_),
-            'LineStyle': ol.xml.makeChildAppender(ol.format.KML.writeLineStyle_),
-            'PolyStyle': ol.xml.makeChildAppender(ol.format.KML.writePolyStyle_)
-        });
+        'IconStyle': ol.xml.makeChildAppender(ol.format.KML.writeIconStyle_),
+        'LabelStyle': ol.xml.makeChildAppender(ol.format.KML.writeLabelStyle_),
+        'LineStyle': ol.xml.makeChildAppender(ol.format.KML.writeLineStyle_),
+        'PolyStyle': ol.xml.makeChildAppender(ol.format.KML.writePolyStyle_)
+    });
 
 
     /**
@@ -51864,9 +51864,9 @@ function olInit() {
      */
     ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-            'nd': ol.format.OSMXML.readNd_,
-            'tag': ol.format.OSMXML.readTag_
-        });
+        'nd': ol.format.OSMXML.readNd_,
+        'tag': ol.format.OSMXML.readTag_
+    });
 
 
     /**
@@ -51876,9 +51876,9 @@ function olInit() {
      */
     ol.format.OSMXML.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-            'node': ol.format.OSMXML.readNode_,
-            'way': ol.format.OSMXML.readWay_
-        });
+        'node': ol.format.OSMXML.readNode_,
+        'way': ol.format.OSMXML.readWay_
+    });
 
 
     /**
@@ -51888,8 +51888,8 @@ function olInit() {
      */
     ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-            'tag': ol.format.OSMXML.readTag_
-        });
+        'tag': ol.format.OSMXML.readTag_
+    });
 
 
     /**
@@ -52296,13 +52296,13 @@ function olInit() {
      */
     ol.format.OWS.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'ServiceIdentification': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readServiceIdentification_),
-            'ServiceProvider': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readServiceProvider_),
-            'OperationsMetadata': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readOperationsMetadata_)
-        });
+        'ServiceIdentification': ol.xml.makeObjectPropertySetter(
+            ol.format.OWS.readServiceIdentification_),
+        'ServiceProvider': ol.xml.makeObjectPropertySetter(
+            ol.format.OWS.readServiceProvider_),
+        'OperationsMetadata': ol.xml.makeObjectPropertySetter(
+            ol.format.OWS.readOperationsMetadata_)
+    });
 
 
     /**
@@ -52312,16 +52312,16 @@ function olInit() {
      */
     ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'DeliveryPoint': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'AdministrativeArea': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'PostalCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        });
+        'DeliveryPoint': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'AdministrativeArea': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'PostalCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    });
 
 
     /**
@@ -52331,8 +52331,8 @@ function olInit() {
      */
     ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Value': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readValue_)
-        });
+        'Value': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readValue_)
+    });
 
 
     /**
@@ -52342,9 +52342,9 @@ function olInit() {
      */
     ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'AllowedValues': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readAllowedValues_)
-        });
+        'AllowedValues': ol.xml.makeObjectPropertySetter(
+            ol.format.OWS.readAllowedValues_)
+    });
 
 
     /**
@@ -52354,9 +52354,9 @@ function olInit() {
      */
     ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Phone': ol.xml.makeObjectPropertySetter(ol.format.OWS.readPhone_),
-            'Address': ol.xml.makeObjectPropertySetter(ol.format.OWS.readAddress_)
-        });
+        'Phone': ol.xml.makeObjectPropertySetter(ol.format.OWS.readPhone_),
+        'Address': ol.xml.makeObjectPropertySetter(ol.format.OWS.readAddress_)
+    });
 
 
     /**
@@ -52366,8 +52366,8 @@ function olInit() {
      */
     ol.format.OWS.DCP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'HTTP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readHttp_)
-        });
+        'HTTP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readHttp_)
+    });
 
 
     /**
@@ -52377,9 +52377,9 @@ function olInit() {
      */
     ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Get': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readGet_),
-            'Post': undefined // TODO
-        });
+        'Get': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readGet_),
+        'Post': undefined // TODO
+    });
 
 
     /**
@@ -52389,8 +52389,8 @@ function olInit() {
      */
     ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'DCP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readDcp_)
-        });
+        'DCP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readDcp_)
+    });
 
 
     /**
@@ -52400,8 +52400,8 @@ function olInit() {
      */
     ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Operation': ol.format.OWS.readOperation_
-        });
+        'Operation': ol.format.OWS.readOperation_
+    });
 
 
     /**
@@ -52411,9 +52411,9 @@ function olInit() {
      */
     ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-        });
+        'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+    });
 
 
     /**
@@ -52423,9 +52423,9 @@ function olInit() {
      */
     ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-            'Constraint': ol.xml.makeObjectPropertyPusher(
-                ol.format.OWS.readConstraint_)
-        });
+        'Constraint': ol.xml.makeObjectPropertyPusher(
+            ol.format.OWS.readConstraint_)
+    });
 
 
     /**
@@ -52436,12 +52436,12 @@ function olInit() {
     ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-                'IndividualName': ol.xml.makeObjectPropertySetter(
-                    ol.format.XSD.readString),
-                'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'ContactInfo': ol.xml.makeObjectPropertySetter(
-                    ol.format.OWS.readContactInfo_)
-            });
+            'IndividualName': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'ContactInfo': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readContactInfo_)
+        });
 
 
     /**
@@ -52452,14 +52452,14 @@ function olInit() {
     ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-                'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'AccessConstraints': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
-                    ol.format.XSD.readString),
-                'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-            });
+            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'AccessConstraints': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -52470,11 +52470,11 @@ function olInit() {
     ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-                'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-                'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
-                'ServiceContact': ol.xml.makeObjectPropertySetter(
-                    ol.format.OWS.readServiceContact_)
-            });
+            'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+            'ServiceContact': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readServiceContact_)
+        });
 
     goog.provide('ol.geom.flat.flip');
 
@@ -55910,11 +55910,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Service': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readService_),
-            'Capability': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readCapability_)
-        });
+        'Service': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readService_),
+        'Capability': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readCapability_)
+    });
 
 
     /**
@@ -55924,13 +55924,13 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Request': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readRequest_),
-            'Exception': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readException_),
-            'Layer': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readCapabilityLayer_)
-        });
+        'Request': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readRequest_),
+        'Exception': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readException_),
+        'Layer': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readCapabilityLayer_)
+    });
 
 
     /**
@@ -55940,25 +55940,25 @@ function olInit() {
      */
     ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'KeywordList': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readKeywordList_),
-            'OnlineResource': ol.xml.makeObjectPropertySetter(
-                ol.format.XLink.readHref),
-            'ContactInformation': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readContactInformation_),
-            'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'AccessConstraints': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'LayerLimit': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MaxWidth': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MaxHeight': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger)
-        });
+        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'KeywordList': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readKeywordList_),
+        'OnlineResource': ol.xml.makeObjectPropertySetter(
+            ol.format.XLink.readHref),
+        'ContactInformation': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readContactInformation_),
+        'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'AccessConstraints': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'LayerLimit': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MaxWidth': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MaxHeight': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger)
+    });
 
 
     /**
@@ -55968,19 +55968,19 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readContactPersonPrimary_),
-            'ContactPosition': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'ContactAddress': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readContactAddress_),
-            'ContactVoiceTelephone': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'ContactFacsimileTelephone': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'ContactElectronicMailAddress': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        });
+        'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readContactPersonPrimary_),
+        'ContactPosition': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'ContactAddress': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readContactAddress_),
+        'ContactVoiceTelephone': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'ContactFacsimileTelephone': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'ContactElectronicMailAddress': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    });
 
 
     /**
@@ -55990,11 +55990,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'ContactPerson': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'ContactOrganization': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        });
+        'ContactPerson': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'ContactOrganization': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    });
 
 
     /**
@@ -56004,14 +56004,14 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'StateOrProvince': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'PostCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-        });
+        'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'StateOrProvince': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'PostCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+    });
 
 
     /**
@@ -56021,8 +56021,8 @@ function olInit() {
      */
     ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-        });
+        'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
+    });
 
 
     /**
@@ -56032,38 +56032,38 @@ function olInit() {
      */
     ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'KeywordList': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readKeywordList_),
-            'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-            'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
-            'BoundingBox': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readBoundingBox_),
-            'Dimension': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readDimension_),
-            'Attribution': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readAttribution_),
-            'AuthorityURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readAuthorityURL_),
-            'Identifier': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-            'MetadataURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readMetadataURL_),
-            'DataURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readFormatOnlineresource_),
-            'FeatureListURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readFormatOnlineresource_),
-            'Style': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readStyle_),
-            'MinScaleDenominator': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readDecimal),
-            'MaxScaleDenominator': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readDecimal),
-            'Layer': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readLayer_)
-        });
+        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'KeywordList': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readKeywordList_),
+        'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+        'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
+        'BoundingBox': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readBoundingBox_),
+        'Dimension': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readDimension_),
+        'Attribution': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readAttribution_),
+        'AuthorityURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readAuthorityURL_),
+        'Identifier': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+        'MetadataURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readMetadataURL_),
+        'DataURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readFormatOnlineresource_),
+        'FeatureListURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readFormatOnlineresource_),
+        'Style': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readStyle_),
+        'MinScaleDenominator': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readDecimal),
+        'MaxScaleDenominator': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readDecimal),
+        'Layer': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readLayer_)
+    });
 
 
     /**
@@ -56073,12 +56073,12 @@ function olInit() {
      */
     ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'OnlineResource': ol.xml.makeObjectPropertySetter(
-                ol.format.XLink.readHref),
-            'LogoURL': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readSizedFormatOnlineresource_)
-        });
+        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'OnlineResource': ol.xml.makeObjectPropertySetter(
+            ol.format.XLink.readHref),
+        'LogoURL': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readSizedFormatOnlineresource_)
+    });
 
 
     /**
@@ -56106,13 +56106,13 @@ function olInit() {
      */
     ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'GetCapabilities': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readOperationType_),
-            'GetMap': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readOperationType_),
-            'GetFeatureInfo': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readOperationType_)
-        });
+        'GetCapabilities': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readOperationType_),
+        'GetMap': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readOperationType_),
+        'GetFeatureInfo': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readOperationType_)
+    });
 
 
     /**
@@ -56122,10 +56122,10 @@ function olInit() {
      */
     ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-            'DCPType': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readDCPType_)
-        });
+        'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+        'DCPType': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readDCPType_)
+    });
 
 
     /**
@@ -56135,9 +56135,9 @@ function olInit() {
      */
     ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'HTTP': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readHTTP_)
-        });
+        'HTTP': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readHTTP_)
+    });
 
 
     /**
@@ -56147,11 +56147,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Get': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readFormatOnlineresource_),
-            'Post': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readFormatOnlineresource_)
-        });
+        'Get': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readFormatOnlineresource_),
+        'Post': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readFormatOnlineresource_)
+    });
 
 
     /**
@@ -56161,16 +56161,16 @@ function olInit() {
      */
     ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'LegendURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMSCapabilities.readSizedFormatOnlineresource_),
-            'StyleSheetURL': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readFormatOnlineresource_),
-            'StyleURL': ol.xml.makeObjectPropertySetter(
-                ol.format.WMSCapabilities.readFormatOnlineresource_)
-        });
+        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+        'LegendURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMSCapabilities.readSizedFormatOnlineresource_),
+        'StyleSheetURL': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readFormatOnlineresource_),
+        'StyleURL': ol.xml.makeObjectPropertySetter(
+            ol.format.WMSCapabilities.readFormatOnlineresource_)
+    });
 
 
     /**
@@ -56193,8 +56193,8 @@ function olInit() {
      */
     ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-            'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-        });
+        'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
+    });
 
     goog.provide('ol.format.WMSGetFeatureInfo');
 
@@ -56673,9 +56673,9 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'Contents': ol.xml.makeObjectPropertySetter(
-                ol.format.WMTSCapabilities.readContents_)
-        });
+        'Contents': ol.xml.makeObjectPropertySetter(
+            ol.format.WMTSCapabilities.readContents_)
+    });
 
 
     /**
@@ -56685,11 +56685,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'Layer': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readLayer_),
-            'TileMatrixSet': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readTileMatrixSet_)
-        });
+        'Layer': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readLayer_),
+        'TileMatrixSet': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readTileMatrixSet_)
+    });
 
 
     /**
@@ -56699,26 +56699,26 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'Style': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readStyle_),
-            'Format': ol.xml.makeObjectPropertyPusher(
-                ol.format.XSD.readString),
-            'TileMatrixSetLink': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readTileMatrixSetLink_),
-            'Dimension': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readDimensions_),
-            'ResourceURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readResourceUrl_)
-        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'Title': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'Abstract': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'WGS84BoundingBox': ol.xml.makeObjectPropertySetter(
-                ol.format.WMTSCapabilities.readWgs84BoundingBox_),
-            'Identifier': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        }));
+        'Style': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readStyle_),
+        'Format': ol.xml.makeObjectPropertyPusher(
+            ol.format.XSD.readString),
+        'TileMatrixSetLink': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readTileMatrixSetLink_),
+        'Dimension': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readDimensions_),
+        'ResourceURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readResourceUrl_)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+        'Title': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'Abstract': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'WGS84BoundingBox': ol.xml.makeObjectPropertySetter(
+            ol.format.WMTSCapabilities.readWgs84BoundingBox_),
+        'Identifier': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    }));
 
 
     /**
@@ -56728,14 +56728,14 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'LegendURL': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readLegendUrl_)
-        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'Title': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'Identifier': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        }));
+        'LegendURL': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readLegendUrl_)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+        'Title': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'Identifier': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    }));
 
 
     /**
@@ -56745,11 +56745,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'TileMatrixSet': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
-                ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
-        });
+        'TileMatrixSet': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
+            ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
+    });
 
     /**
      * @const
@@ -56758,9 +56758,9 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'TileMatrixLimits': ol.xml.makeArrayPusher(
-                ol.format.WMTSCapabilities.readTileMatrixLimits_)
-        });
+        'TileMatrixLimits': ol.xml.makeArrayPusher(
+            ol.format.WMTSCapabilities.readTileMatrixLimits_)
+    });
 
 
     /**
@@ -56770,17 +56770,17 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'TileMatrix': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'MinTileRow': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MaxTileRow': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MinTileCol': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MaxTileCol': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger)
-        });
+        'TileMatrix': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'MinTileRow': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MaxTileRow': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MinTileCol': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MaxTileCol': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger)
+    });
 
 
     /**
@@ -56790,14 +56790,14 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.DIMENSION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'Default': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'Value': ol.xml.makeObjectPropertyPusher(
-                ol.format.XSD.readString)
-        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'Identifier': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        }));
+        'Default': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'Value': ol.xml.makeObjectPropertyPusher(
+            ol.format.XSD.readString)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+        'Identifier': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    }));
 
 
     /**
@@ -56807,11 +56807,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'LowerCorner': ol.xml.makeArrayPusher(
-                ol.format.WMTSCapabilities.readCoordinates_),
-            'UpperCorner': ol.xml.makeArrayPusher(
-                ol.format.WMTSCapabilities.readCoordinates_)
-        });
+        'LowerCorner': ol.xml.makeArrayPusher(
+            ol.format.WMTSCapabilities.readCoordinates_),
+        'UpperCorner': ol.xml.makeArrayPusher(
+            ol.format.WMTSCapabilities.readCoordinates_)
+    });
 
 
     /**
@@ -56821,16 +56821,16 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'TileMatrix': ol.xml.makeObjectPropertyPusher(
-                ol.format.WMTSCapabilities.readTileMatrix_)
-        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'SupportedCRS': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'Identifier': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        }));
+        'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'TileMatrix': ol.xml.makeObjectPropertyPusher(
+            ol.format.WMTSCapabilities.readTileMatrix_)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+        'SupportedCRS': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString),
+        'Identifier': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    }));
 
 
     /**
@@ -56840,22 +56840,22 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-            'TopLeftCorner': ol.xml.makeObjectPropertySetter(
-                ol.format.WMTSCapabilities.readCoordinates_),
-            'ScaleDenominator': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readDecimal),
-            'TileWidth': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'TileHeight': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MatrixWidth': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger),
-            'MatrixHeight': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readNonNegativeInteger)
-        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-            'Identifier': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString)
-        }));
+        'TopLeftCorner': ol.xml.makeObjectPropertySetter(
+            ol.format.WMTSCapabilities.readCoordinates_),
+        'ScaleDenominator': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readDecimal),
+        'TileWidth': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'TileHeight': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MatrixWidth': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger),
+        'MatrixHeight': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readNonNegativeInteger)
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+        'Identifier': ol.xml.makeObjectPropertySetter(
+            ol.format.XSD.readString)
+    }));
 
     goog.provide('ol.GeolocationProperty');
 
@@ -63881,9 +63881,9 @@ function olInit() {
                             return !this.multi_;
                         }
                     }).bind(this), {
-                    layerFilter: this.layerFilter_,
-                    hitTolerance: this.hitTolerance_
-                });
+                layerFilter: this.layerFilter_,
+                hitTolerance: this.hitTolerance_
+            });
             var i;
             for (i = features.getLength() - 1; i >= 0; --i) {
                 var feature = features.item(i);
@@ -63922,9 +63922,9 @@ function olInit() {
                             return !this.multi_;
                         }
                     }).bind(this), {
-                    layerFilter: this.layerFilter_,
-                    hitTolerance: this.hitTolerance_
-                });
+                layerFilter: this.layerFilter_,
+                hitTolerance: this.hitTolerance_
+            });
             var j;
             for (j = deselected.length - 1; j >= 0; --j) {
                 features.remove(deselected[j]);
@@ -64944,9 +64944,9 @@ function olInit() {
                     return feature;
                 }
             }.bind(this), {
-                layerFilter: this.layerFilter_,
-                hitTolerance: this.hitTolerance_
-            });
+            layerFilter: this.layerFilter_,
+            hitTolerance: this.hitTolerance_
+        });
     };
 
 
@@ -97283,7 +97283,8 @@ function olInit() {
 
                 var skipOffset = 1;
                 var scale = ol.extent.getHeight(tileExtent) / (extent / (zoom - dataZoom + 1));
-                var offset = (tileResolution / scale) * skipOffset;
+                // var offset = (tileResolution / scale) * skipOffset;
+                var offset = -1;
 
                 var cacheTrees = [];
                 Array.prototype.push.apply(cacheTrees, layerIdMatchedGeoStylesGroupByPbfLayerName["undefined"]);
@@ -97299,13 +97300,14 @@ function olInit() {
                             var treeIndex = cacheTree.treeIndex;
                             if (instructsCache[treeIndex] === undefined) {
                                 instructsCache[treeIndex] = {
-                                    min: 10,
-                                    max: -10
+                                    min: 10000,
+                                    max: -10000
                                 };
                                 treeStyleFirstCache[treeIndex] = cacheTree.root.data.styleFirst;
                             }
 
-                            var matchedNode = undefined;
+                            var matchedNode = {};
+                            matchedNode["maxStyleIndex"] = 0;
                             var checkNodeMatched = function (node) {
                                 var styleJsonCacheItem = node.data;
                                 var matched = false;
@@ -97334,18 +97336,20 @@ function olInit() {
                             };
 
                             var selectNode = function (node) {
-                                matchedNode = node.data;
+                                if (matchedNode["maxStyleIndex"] < node.data.styleIndex) {
+                                    matchedNode["maxStyleIndex"] = node.data.styleIndex;
+                                }
+                                matchedNode[node.data.styleIndex] = node.data;
                             };
                             cacheTree.traverseNode(checkNodeMatched, selectNode);
 
-                            if (matchedNode) {
+                            if (matchedNode && matchedNode["maxStyleIndex"] > 0) {
                                 if (feature === undefined) {
                                     feature = createFeature_(pbf, rawFeature, layerName, offset);
 
                                     featureIndex += 1;
                                     allFeatures[featureIndex] = feature;
                                 }
-
                                 var zindex = 0;
                                 if (cacheTree.root.data.zIndex) {
                                     zindex = feature.properties_[cacheTree.root.data.zIndex]
@@ -97353,6 +97357,9 @@ function olInit() {
 
                                 if (isNaN(zindex)) {
                                     zindex = 0;
+                                }
+                                else {
+                                    zindex = +zindex;
                                 }
                                 if (instructsCache[treeIndex][zindex] === undefined) {
                                     instructsCache[treeIndex][zindex] = [];
@@ -97373,7 +97380,6 @@ function olInit() {
                 cacheTrees.length = 0;
                 this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
             }
-
             return [allFeatures, instructsCache, extent];
         }
 
@@ -97388,28 +97394,73 @@ function olInit() {
                         for (var j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
                             var instructsInOneZIndex = instructsInOneTree[j];
                             if (instructsInOneZIndex) {
-                                var childrenInstructs = [];
+                                var styleIndexGroups = {
+                                    maxStyleIndex: 0
+                                };
+
                                 for (var h = 0; h < instructsInOneZIndex.length; h++) {
                                     var instruct = instructsInOneZIndex[h];
-                                    var geoStyle = instruct[1].geoStyle;
-                                    if (geoStyle) {
-                                        instructs.push([instruct[0], geoStyle.id, i]);
-                                        // if (geoStyle.constructor.name === "GeoPointStyle" || geoStyle.constructor.name === "GeoTextStyle" || geoStyle.constructor.name === "GeoShieldStyle" || (geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined)) {
-                                        //     mainGeoStyleIds[geoStyle.id] = "";
-                                        // }
+                                    var matchedNode = instruct[1];
+                                    var maxStyleIndex = matchedNode["maxStyleIndex"];
+                                    if (styleIndexGroups.maxStyleIndex < maxStyleIndex) {
+                                        styleIndexGroups.maxStyleIndex = maxStyleIndex;
                                     }
-                                    var childrenGeoStyles = instruct[1].childrenGeoStyles;
-                                    if (childrenGeoStyles) {
-                                        for (var k = 0; k < childrenGeoStyles.length; k++) {
-                                            childrenInstructs.push([instruct[0], childrenGeoStyles[k].id, i]);
-                                            // if (childrenGeoStyles[k].constructor.name === "GeoPointStyle" || childrenGeoStyles[k].constructor.name === "GeoTextStyle" || childrenGeoStyles[k].constructor.name === "GeoShieldStyle" || (childrenGeoStyles[k].constructor.name === "GeoLineStyle" && childrenGeoStyles[k].lineDirectionImageUri === true)) {
-                                            //     mainGeoStyleIds[childrenGeoStyles[k].id] = "";
-                                            // }
+
+                                    //for (let index = 0; index <= maxStyleIndex; index++) {
+                                    //    const element = matchedNode[index];
+                                    //    if (element) {
+                                    //        var geoStyle = element.geoStyle;
+                                    //        if (geoStyle) {
+                                    //            var styleIndexGroup = styleIndexGroups[index];
+                                    //            if (styleIndexGroup === undefined) {
+                                    //                styleIndexGroups[index] = styleIndexGroup = [];
+                                    //            }
+                                    //            styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                    //        }
+                                    //    }
+                                    //}
+                                    var tempStyleIndexGroups = [];
+
+                                    for (let index = 0; index <= maxStyleIndex; index++) {
+                                        const element = matchedNode[index];
+                                        if (element) {
+                                            var geoStyle = element.geoStyle;
+                                            if (geoStyle) {
+                                                var styleIndexGroup = tempStyleIndexGroups[index];
+                                                if (styleIndexGroup === undefined) {
+                                                    tempStyleIndexGroups[index] = styleIndexGroup = [];
+                                                }
+
+                                                if (geoStyle.compound === "reject") {
+                                                    styleIndexGroup.length = 0;
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                    break;
+                                                }
+                                                else {
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    for (let index = 0; index <= maxStyleIndex; index++) {
+                                        if (tempStyleIndexGroups[index]) {
+                                            var styleIndexGroup = styleIndexGroups[index];
+                                            if (styleIndexGroup === undefined) {
+                                                styleIndexGroups[index] = styleIndexGroup = [];
+                                            }
+                                            Array.prototype.push.apply(styleIndexGroup, tempStyleIndexGroups[index]);
                                         }
                                     }
                                 }
-                                Array.prototype.push.apply(instructs, childrenInstructs);
-                                childrenInstructs.length = 0;
+
+                                for (let index = 0; index <= styleIndexGroups.maxStyleIndex; index++) {
+                                    var element = styleIndexGroups[index];
+                                    if (element) {
+                                        Array.prototype.push.apply(instructs, element);
+                                    }
+                                }
+
                                 instructsInOneZIndex.length = 0;
                             }
                         }
@@ -97508,10 +97559,6 @@ function olInit() {
         };
 
         var readRawGeometry_ = function (pbf, feature, flatCoordinates, ends, offset) {
-            var prevX = 0;
-            var prevY = 0;
-            var isBegin = true;
-
             pbf.pos = feature.geometry;
 
             var end = pbf.readVarint() + pbf.pos;
@@ -97527,7 +97574,6 @@ function olInit() {
                     var cmdLen = pbf.readVarint();
                     cmd = cmdLen & 0x7;
                     length = cmdLen >> 3;
-                    isBegin = true;
                 }
 
                 length--;
@@ -97543,13 +97589,9 @@ function olInit() {
                         }
                     }
 
-                    if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
-                        flatCoordinates.push(x, y);
-                        prevX = x;
-                        prevY = y;
-                        coordsLen += 2;
-                        isBegin = false;
-                    }
+                    flatCoordinates.push(x, y);
+                    coordsLen += 2;
+
                 } else if (cmd === 7) {
 
                     if (coordsLen > currentEnd) {
@@ -97557,7 +97599,6 @@ function olInit() {
                         flatCoordinates.push(
                             flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
                         coordsLen += 2;
-                        isBegin = true;
                     }
 
                 } else {
@@ -97569,6 +97610,70 @@ function olInit() {
                 ends.push(coordsLen);
                 currentEnd = coordsLen;
             }
+
+
+            //var prevX = 0;
+            //var prevY = 0;
+            //var isBegin = true;
+
+            //pbf.pos = feature.geometry;
+
+            //var end = pbf.readVarint() + pbf.pos;
+            //var cmd = 1;
+            //var length = 0;
+            //var x = 0;
+            //var y = 0;
+            //var coordsLen = 0;
+            //var currentEnd = 0;
+
+            //while (pbf.pos < end) {
+            //    if (!length) {
+            //        var cmdLen = pbf.readVarint();
+            //        cmd = cmdLen & 0x7;
+            //        length = cmdLen >> 3;
+            //        isBegin = true;
+            //    }
+
+            //    length--;
+
+            //    if (cmd === 1 || cmd === 2) {
+            //        x += pbf.readSVarint();
+            //        y += pbf.readSVarint();
+
+            //        if (cmd === 1) { // moveTo
+            //            if (coordsLen > currentEnd) {
+            //                ends.push(coordsLen);
+            //                currentEnd = coordsLen;
+            //            }
+            //        }
+
+            //        if (isBegin || Math.abs(prevX - x) + Math.abs(prevY - y) > offset) {
+            //            flatCoordinates.push(x, y);
+            //            prevX = x;
+            //            prevY = y;
+            //            coordsLen += 2;
+            //            isBegin = false;
+            //        }
+            //    } else if (cmd === 7) {
+
+            //        if (coordsLen > currentEnd) {
+            //            // close polygon
+            //            flatCoordinates.push(
+            //                flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+            //            coordsLen += 2;
+            //            isBegin = true;
+            //        }
+
+            //    } else {
+            //        ol.asserts.assert(false, 59); // Invalid command found in the PBF
+            //    }
+            //}
+
+            //if (coordsLen > currentEnd) {
+            //    ends.push(coordsLen);
+            //    currentEnd = coordsLen;
+            //}
+
 
         };
 
@@ -97644,7 +97749,8 @@ function olInit() {
                 for (var i = 0; i <= 24; i++) {
                     tmpZoomArr.push(i);
                 }
-                var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex);
+                var styleJsonCacheItemMakeIndexObj = { styleIndex: 0 };
+                var item = new StyleJsonCacheItem(json, tmpZoomArr, "layerName", styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 // for (var zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
                 item.zoomArr.forEach(function (zoom) {
                     var treeNode = new TreeNode(item);
@@ -97724,15 +97830,16 @@ function olInit() {
         }());
 
         var StyleJsonCacheItem = /** @class */ (function () {
-            function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex) {
+            function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
+                this.styleIndex = styleJsonCacheItemMakeIndexObj.styleIndex;
                 this.childrenGeoStyles = [];
                 this.subStyleCacheItems = [];
                 this.zoomArr = zoomArr;
                 // this.maxZoom = maxZoom;
-                this.zIndex = styleJson["z-index"];
+                this.zIndex = styleJson["z-index-atrribute-name"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex);
+                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 this.geoStyle = this.createGeoStyle(styleJson);
                 // used for webgl depth test
                 this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
@@ -97838,7 +97945,7 @@ function olInit() {
                 // }
                 return filterGroup;
             };
-            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex) {
+            StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
                 if (styleJson.style) {
                     // apply the property to sub style.
                     for (var key in styleJson) {
@@ -97859,9 +97966,11 @@ function olInit() {
                     // var subItemMinZoom = void 0;
                     // var subItemMaxZoom = void 0;
                     var subItemZoomArr = [];
+
                     for (var _i = 0, _a = styleJson.style; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
-                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
+                        styleJsonCacheItemMakeIndexObj.styleIndex++;
+                        var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                         this.zoomArr.forEach(function (item) {
                             if (!subItemZoomArr.includes(item)) {
                                 subItemZoomArr.push(item);
@@ -97939,14 +98048,13 @@ function olInit() {
                 this.treeIndex = treeIndex;
             }
             Tree.prototype.traverseNode = function (callback, select) {
+                var styleIndex = 0;
                 (function recurse(currentNode) {
                     if (callback(currentNode)) {
                         if (currentNode.children.length > 0) {
-                            var hasMatchedChildren = false;
                             for (var i = 0, length_1 = currentNode.children.length; i < length_1; i++) {
                                 if (recurse(currentNode.children[i])) {
-                                    hasMatchedChildren = true;
-                                    break;
+                                    continue;
                                 }
                             }
                         }
@@ -98045,12 +98153,6 @@ function olInit() {
                         value = +filterItem.value;
                     }
                     switch (filterItem.operator) {
-                        case ">":
-                            this.ranges.push([value + 0.00001, Number.POSITIVE_INFINITY]);
-                            break;
-                        case ">=":
-                            this.ranges.push([value, Number.POSITIVE_INFINITY]);
-                            break;
                         case "!=":
                             if (Array.isArray(value)) {
                                 value.forEach(function (item) {
@@ -98069,30 +98171,7 @@ function olInit() {
                                 this.allowedValues.push(value);
                             }
                             break;
-                    }
-                }
-                for (var i = 0; i < this.filterItems.length; i++) {
-                    var filterItem = this.filterItems[i];
-                    var value = +filterItem.value;
-                    var range = GeoRangeFilter.getRange(this.ranges, value);
-                    switch (filterItem.operator) {
-                        case "<":
-                            if (range) {
-                                range[1] = value + 0.00001;
-                            }
-                            else {
-                                range = [Number.NEGATIVE_INFINITY, value + 0.00001];
-                                this.ranges.push(range);
-                            }
-                            break;
-                        case "<=":
-                            if (range) {
-                                range[1] = value;
-                            }
-                            else {
-                                range = [Number.NEGATIVE_INFINITY, value];
-                                this.ranges.push(range);
-                            }
+                        default:
                             break;
                     }
                 }
@@ -98117,19 +98196,45 @@ function olInit() {
                 if (this.allowedValues.includes(currentValue)) {
                     return true;
                 }
-                for (var i = 0; i < this.ranges.length; i++) {
-                    var range = this.ranges[i];
-                    if (range.length === 1) {
-                        if (currentValue >= range[0]) {
-                            return true;
-                        }
-                    }
-                    else {
-                        if (currentValue >= range[0] && currentValue <= range[1]) {
-                            return true;
-                        }
+                for (var i = 0; i < this.filterItems.length; i++) {
+                    var filterItem = this.filterItems[i];
+                    var value = +filterItem.value;
+                    switch (filterItem.operator) {
+                        case ">":
+                            if (!(currentValue > value)) {
+                                return false;
+                            }
+                            break;
+                        case ">=":
+                            if (!(currentValue >= value)) {
+                                return false;
+                            }
+                            break;
+                        case "<":
+                            if (!(currentValue < value)) {
+                                return false;
+                            }
+                            break;
+                        case "<=":
+                            if (!(currentValue <= value)) {
+                                return false;
+                            }
+                            break;
+                        case "=":
+                            if (!(currentValue === value)) {
+                                return false;
+                            }
+                            break;
+                        case "!=":
+                            if (!(currentValue !== value)) {
+                                return false;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
+                return true;
             };
             GeoRangeFilter.getRange = function (ranges, value) {
                 for (var i = 0; i < ranges.length; i++) {
@@ -98225,7 +98330,7 @@ function olInit() {
                 var replacedExpectedVaules = [];
                 for (var j = 0, jj = this.expectedValues.length; j < jj; j++) {
                     var numberValue = +this.expectedValues[j];
-                    if (isNaN(numberValue)) {
+                    if (isNaN(numberValue) || this.expectedValues[j] === '')  {
                         replacedExpectedVaules.push(pbfLayer.values.indexOf(this.expectedValues[j]));
                     }
                     else {
@@ -98338,47 +98443,34 @@ function olInit() {
                 }
                 return ry;
             };
-            GeoStyle.toRGBAColor = function (color, opacity) {
+            GeoStyle.blendColorAndOpacity = function (color, opacity) {
                 if (opacity === void 0) { opacity = 1; }
-                if (color.startsWith("#")) {
-                    var array = void 0;
-                    var r = void 0;
-                    var g = void 0;
-                    var b = void 0;
-                    var a = void 0;
-                    if (color.length === 4) {
-                        r = +("0x" + color.substr(1, 1) + color.substr(1, 1));
-                        g = +("0x" + color.substr(2, 1) + color.substr(2, 1));
-                        b = +("0x" + color.substr(3, 1) + color.substr(3, 1));
-                        a = opacity;
-                    }
-                    else {
-                        r = +("0x" + color.substr(1, 2));
-                        g = +("0x" + color.substr(3, 2));
-                        b = +("0x" + color.substr(5, 2));
-                        a = opacity;
-                    }
-                    array = [r, g, b, a];
-                    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-                        return "rgba(" + array.join(",") + ")";
-                    }
-                    else {
-                        return "rgba(0,0,0,0)";
-                    }
+                var olColorArray = ol.color.asArray(color).slice(0);
+                if (opacity != undefined) {
+                    var validOpacityColorArray = ol.color.asArray([1, 1, 1, opacity]);
+                    olColorArray[3] = olColorArray[3] * validOpacityColorArray[3];
                 }
-                if (color.startsWith("rgb(")) {
-                    color = color.replace("rgb(", "rgba(");
-                    color = color.substring(0, color.length - 1) + "," + opacity + ")";
-                }
-                if (color.startsWith("argb(")) {
-                    color = color.replace("argb(", "").replace(")", "");
-                    var array = color.split(",");
-                    var a = array.shift();
-                    array.push(a);
-                    color = "rgba(" + array.join(",") + ")";
-                }
-                return color;
+                return ol.color.toString(olColorArray);
             };
+            GeoStyle.getGeometryByType = function (type, flatCoordinates, layout) {
+                var geometry;
+                layout = layout || 'XY';
+
+                var transformedCoordinates = [];
+                for (let i = 0; i < flatCoordinates.length; i += 2) {
+                    transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
+                }
+
+                switch (type) {
+                    case 'Point': geometry = new ol.geom.Point(flatCoordinates, layout); break;
+                    case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
+                    case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
+                    case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
+                    default: console.log(type);
+                }
+
+                return geometry;
+            }
             GeoStyle.toOLLinearGradient = function (color, opacity, size) {
                 if (opacity === void 0) { opacity = 1; }
                 var canvas = document.createElement("canvas");
@@ -98391,7 +98483,7 @@ function olInit() {
                     colorStop = colorStop.trim();
                     var tmpColorStop = colorStop.substr(1, colorStop.length - 2);
                     var cs = tmpColorStop.split(",");
-                    grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+                    grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
                 }
                 return grd;
             };
@@ -98407,7 +98499,7 @@ function olInit() {
                     colorStop = colorStop.trim();
                     var tmpColorStop = colorStop.substr(1, colorStop.length - 2);
                     var cs = tmpColorStop.split(",");
-                    grd.addColorStop(Number(cs[0].trim()), this.toRGBAColor(cs[1].trim(), opacity));
+                    grd.addColorStop(Number(cs[0].trim()), this.blendColorAndOpacity(cs[1].trim(), opacity));
                 }
                 return grd;
             };
@@ -98419,60 +98511,128 @@ function olInit() {
             __extends(GeoAreaStyle, _super);
             function GeoAreaStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
                 if (styleJson) {
-                    _this.brushType = styleJson["polygon-brush-type"];
-                    _this.rotateAngle = styleJson["polygon-rotate-angle"];
-                    _this.dx = styleJson["polygon-dx"];
-                    _this.dy = styleJson["polygon-dy"];
-                    _this.fill = styleJson["polygon-fill"];
-                    _this.foregroundFill = styleJson["polygon-foreground-fill"];
-                    _this.gamma = styleJson["polygon-gamma"] ? styleJson["polygon-gamma"] : true;
-                    _this.geometryTransform = styleJson["polygon-geometry-transform"];
-                    _this.hatchStyle = styleJson["polygon-hatch-style"];
-                    _this.opacity = styleJson["polygon-opacity"];
+                    _this.compound = styleJson["polygon-compound"];
                     _this.outlineColor = styleJson["polygon-outline-color"];
-                    _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
-                    _this.outlineOpacity = styleJson["polygon-outline-opacity"];
                     _this.outlineWidth = styleJson["polygon-outline-width"];
+                    _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
+                    _this.fillColor = styleJson["polygon-fill-color"];
+                    _this.offsetX = styleJson["polygon-offset-x"];
+                    _this.offsetY = styleJson["polygon-offset-y"];
+                    _this.opacity = styleJson["polygon-opacity"] || 1;
                     _this.linearGradient = styleJson["polygon-linear-gradient"];
                     _this.radialGradient = styleJson["polygon-radial-gradient"];
-                    _this.textureFile = styleJson["polygon-texture-file"];
-                    _this.shadowColor = styleJson["polygon-shadow-color"];
-                    _this.shadowDx = styleJson["polygon-shadow-dx"];
-                    _this.shadowDy = styleJson["polygon-shadow-dy"];
+                    _this.shadowStyleJson = styleJson["polygon-shadow"];
+                    _this.geometryTransform = styleJson["polygon-geometry-transform"];
+                    _this.fillImageURI = styleJson["polygon-fill-image-uri"];
+                    _this.fillGlyphFontName = styleJson["polygon-fill-glyph-font-name"];
+                    _this.fillGlyphContent = styleJson["polygon-fill-glyph-content"];
+                    _this.isShadow = false;
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
             GeoAreaStyle.prototype.initializeCore = function () {
-                this.brushType = this.brushType || "solid";
-                this.brushOptions = {
-                    fillColor: this.fill,
-                    fillOpacity: this.opacity,
-                    linearGradient: this.linearGradient,
-                    radialGradient: this.radialGradient,
-                    textureFile: this.textureFile,
-                    foregroundFill: this.foregroundFill,
-                    hatchStyle: this.hatchStyle
-                };
+                this.style = new ol.style.Style();
+                if (this.fillColor) {
+                    this.convertedFillColor = GeoStyle.blendColorAndOpacity(this.fillColor, this.opacity);
+                    var fillStyle = new ol.style.Fill({
+                        color: this.convertedFillColor
+                    });
+                    this.style.setFill(fillStyle);
+                }
                 if (this.geometryTransform) {
                     this.geometryTransformValue = this.getTransformValues(this.geometryTransform);
                 }
-                if (this.brushType === "solid" || this.brushType === "hatch") {
-                    this.geoBrush = GeoBrush.createBrushByType(this.brushType, null, null, this.brushOptions);
+                // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
+                if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
+                    if (this.outlineColor) {
+                        this.convertedOutlineColor = GeoStyle.blendColorAndOpacity(this.outlineColor, this.opacity);
+                    }
+                    if (this.outlineDashArray) {
+                        this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+                    }
+                    var newStroke = new ol.style.Stroke();
+                    newStroke.setColor(this.convertedOutlineColor);
+                    newStroke.setLineDash(this.convertedOutlineDashArray);
+                    newStroke.setWidth(this.outlineWidth);
+                    this.style.setStroke(newStroke);
                 }
-                // if (this.brushType === "hatch") {
-                //     this.geoBrush = "hatch|" + this.id;
-                // }
-                if (this.outlineColor) {
-                    this.convertedOutlineColor = GeoStyle.toRGBAColor(this.outlineColor, this.outlineOpacity);
+                if (this.shadowStyleJson) {
+                    this.shadowStyle = new GeoAreaStyle(this.shadowStyleJson);
+                    this.shadowStyle["isShadow"] = true;
                 }
-                if (this.outlineDashArray) {
-                    this.convertedOutlineDashArray = this.outlineDashArray.split(",");
+                this.offsetTranslateValueByResolution = {};
+            };
+            GeoAreaStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
+                var length = 0;
+                var styles = [];
+
+                var clonedFlatCoordinates = feature.getFlatCoordinates().slice(0);
+                var cloneEnds = feature.getEnds().slice(0);
+                var type = feature.getType();
+                var properties = feature.getProperties();
+                var id = feature.getId();
+                feature.getExtent();
+                var cloneFeature = new ol.render.Feature(type, clonedFlatCoordinates, cloneEnds, properties, id);
+                cloneFeature["drawingBbox"] = feature["drawingBbox"];
+                cloneFeature["styleId"] = feature["styleId"];
+
+                if (this.shadowStyle && !this.isShadow) {
+                    if (this.shadowStyle) {
+                        var shadowOLStyle = this.shadowStyle.getStyles(cloneFeature, resolution, options);
+                        if (shadowOLStyle) {
+                            for (var index = 0; index < shadowOLStyle.length; index++) {
+                                var element = shadowOLStyle[index];
+                                element['zCoordinate'] = this.zIndex - 0.5;
+                            }
+                        }
+                        Array.prototype.push.apply(styles, shadowOLStyle);
+                    }
                 }
-                if (this.shadowColor) {
-                    this.convertedShadowColor = GeoStyle.toRGBAColor(this.shadowColor);
+
+                if (this.fillColor || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
+                    if (this.geometryTransform) {
+                        this.transformGeometry(cloneFeature);
+                    }
+
+                    if (this.offsetX || this.offsetY) {
+                        let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                        if (offsetTranslateValue === undefined) {
+                            let tmpResolution = Math.round(resolution * 100000000) / 100000000;
+                            this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                            offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
+                            this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
+                        }
+                        var tmpFlatCoordinates = cloneFeature.getFlatCoordinates();
+                        var newFlatCoordinates = ol.geom.flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                        cloneFeature.flatCoordinates_ = newFlatCoordinates;
+
+                        var tmpCoordinates = [[]];
+                        var index = 0;
+                        for (var i = 0; i < newFlatCoordinates.length; i += 2) {
+                            tmpCoordinates[index] || (tmpCoordinates[index] = []);
+                            tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
+                            if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
+                                index++;
+                            }
+                        }
+                        var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
+                        geometry.ends_ = feature.ends_;
+                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                        cloneFeature.extent_ = newExtent_;
+                    }
+
+                    this.style.setGeometry(cloneFeature.getGeometry());
+                    this.style['zCoordinate'] = this.zIndex;
+                    styles.push(this.style);
                 }
-                this.shadowTranslateValueByResolution = {};
+
+                return styles;
             };
             GeoAreaStyle.prototype.getTransformValues = function (transform) {
                 // get transform values which look like transform(value1, value2)
@@ -98488,7 +98648,7 @@ function olInit() {
                 }
                 return values;
             };
-            GeoAreaStyle.prototype.GetTransformedCoordinates = function (feature, resolution) {
+            GeoAreaStyle.prototype.transformGeometry = function (feature) {
                 var tmpFlatCoordinates = feature.getFlatCoordinates();
                 var tmpCoordinates = [[]];
                 var index = 0;
@@ -98499,100 +98659,27 @@ function olInit() {
                         index++;
                     }
                 }
+
                 var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
                 geometry.ends_ = feature.ends_;
-                if (this.geometryTransform.startsWith("translate")) {
-                    geometry.translate(-this.geometryTransformValue[0].trim() * resolution, -this.geometryTransformValue[1].trim() * resolution);
+                if (this.geometryTransform.indexOf("translate") === 0) {
+                    geometry.translate(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
-                else if (this.geometryTransform.startsWith("scale")) {
+                else if (this.geometryTransform.indexOf("scale") === 0) {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
-                else if (this.geometryTransform.startsWith("rotate")) {
-                    var center = ol.extent.getCenter(geometry.getExtent());
-                    var angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
+                else if (this.geometryTransform.indexOf("rotate") === 0) {
+                    let center = ol.extent.getCenter(cloneGeometry.getExtent());
+                    let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
                     geometry.rotate(angle, center);
                 }
-                else if (this.geometryTransform.startsWith("skew")) {
-                    this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
-                }
-                return geometry.flatCoordinates;
+                // TODO:
+                // else if (this.geometryTransform.indexOf("skew") === 0) {
+                //     this.skewGeometry(geometry, +this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
+                // }
+
+                feature.flatCoordinates_ = geometry.getFlatCoordinates();
             };
-            GeoAreaStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
-                var length = 0;
-                this.styles = [];
-                if (this.fill || (this.outlineColor && this.outlineWidth) || this.linearGradient || this.radialGradient) {
-                    if (this.geometryTransform) {
-                        feature.flatCoordinates_ = this.GetTransformedCoordinates(feature, resolution);
-                        var dx = this.geometryTransformValue[0].trim() * resolution;
-                        var dy = this.geometryTransformValue[1].trim() * resolution;
-                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
-                        feature.extent_ = newExtent_;
-                    }
-                    if (this.shadowDx || this.shadowDy) {
-                        var shadowTranslateValue = this.shadowTranslateValueByResolution[resolution];
-                        if (shadowTranslateValue === undefined) {
-                            var tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                            this.shadowTranslate = ("translate(" + (this.shadowDx ? this.shadowDx : 0) * tmpResolution + "," + (this.shadowDy ? this.shadowDy : 0) * tmpResolution + ")");
-                            shadowTranslateValue = this.getTransformValues(this.shadowTranslate);
-                            this.shadowTranslateValueByResolution[resolution] = shadowTranslateValue;
-                        }
-                        var tmpFlatCoordinates = feature.getFlatCoordinates();
-                        var newFlatCoordinates = ol.geom.flat.transform.translate(tmpFlatCoordinates, 0, tmpFlatCoordinates.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                        var tmpCoordinates = [[]];
-                        var index = 0;
-                        for (var i = 0; i < newFlatCoordinates.length; i += 2) {
-                            tmpCoordinates[index] || (tmpCoordinates[index] = []);
-                            tmpCoordinates[index].push([newFlatCoordinates[i], newFlatCoordinates[i + 1]]);
-                            if (tmpCoordinates[index].length > 3 && tmpCoordinates[index][0][0] === newFlatCoordinates[i] && tmpCoordinates[index][0][1] === newFlatCoordinates[i + 1]) {
-                                index++;
-                            }
-                        }
-                        var geometry = new ol.geom.Polygon(tmpCoordinates, "XY");
-                        geometry.ends_ = feature.ends_;
-                        var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +shadowTranslateValue[0].trim(), +shadowTranslateValue[1].trim());
-                        geometry.extent_ = newExtent_;
-                        geometry["drawingBbox"] = feature["drawingBbox"];
-                        GeoAreaStyle.areaShadowStyle.getFill().setColor(this.convertedShadowColor);
-                        GeoAreaStyle.areaShadowStyle.setGeometry(geometry);
-                        GeoAreaStyle.areaShadowStyle.zCoordinate = this.zIndex - 0.5;
-                        this.styles[length++] = GeoAreaStyle.areaShadowStyle;
-                    }
-                    if (this.fill) {
-                        GeoAreaStyle.areaStyle.getFill().setColor(this.geoBrush);
-                    }
-                    // stroke to handle outlineColor, outlineDashArray, outlineOpacity and outlineWidth
-                    if (this.outlineColor || this.outlineDashArray || this.outlineWidth) {
-                        var newStroke = new ol.style.Stroke();
-                        newStroke.setColor(this.convertedOutlineColor);
-                        newStroke.setLineDash(this.convertedOutlineDashArray);
-                        newStroke.setWidth(this.outlineWidth);
-                        GeoAreaStyle.areaStyle.setStroke(newStroke);
-                    }
-                    else {
-                        GeoAreaStyle.areaStyle.setStroke(undefined);
-                    }
-                    GeoAreaStyle.areaStyle.setGeometry(feature.getGeometry());
-                    GeoAreaStyle.areaStyle.zCoordinate = this.zIndex;
-                    this.styles[length++] = GeoAreaStyle.areaStyle;
-                    if (this.gamma !== undefined && options.layer) {
-                        var styleGamma_1 = this.gamma;
-                        options.layer.on("precompose", function (evt) {
-                            evt.context.imageSmoothingEnabled = styleGamma_1;
-                            evt.context.webkitImageSmoothingEnabled = styleGamma_1;
-                            evt.context.mozImageSmoothingEnabled = styleGamma_1;
-                            evt.context.msImageSmoothingEnabled = styleGamma_1;
-                        });
-                    }
-                }
-                return this.styles;
-            };
-            GeoAreaStyle.areaStyle = new ol.style.Style({
-                fill: new ol.style.Fill({}),
-                stroke: new ol.style.Stroke({})
-            });
-            GeoAreaStyle.areaShadowStyle = new ol.style.Style({
-                fill: new ol.style.Fill({}),
-            });
             return GeoAreaStyle;
         }(GeoStyle));
 
@@ -98616,12 +98703,20 @@ function olInit() {
                     anchormask: "square",
                     custom: "square"
                 };
+                _this.olLineJoinsMap = {
+                    bevel: "bevel",
+                    round: "round",
+                    miter: "miter",
+                    round: "round",
+                    default: "round",
+                    miterclipped: "miter",
+                    custom: "square"
+                };
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
                 _this.convertedDashArray = new Array();
-                _this.lineStroke = new ol.style.Stroke();
-                _this.lineStyle = new ol.style.Style({ stroke: _this.lineStroke });
-                _this.lineCapFill = new ol.style.Fill();
-                _this.lineCapStyle = new ol.style.Style({ fill: _this.lineCapFill });
                 if (styleJson) {
+                    _this.compound = styleJson["line-compound"];
                     _this.color = styleJson["line-color"];
                     _this.dashArray = styleJson["line-dasharray"];
                     _this.width = styleJson["line-width"];
@@ -98629,16 +98724,32 @@ function olInit() {
                     _this.lineJoin = styleJson["line-join"];
                     _this.lineCap = styleJson["line-cap"];
                     _this.opacity = styleJson["line-opacity"];
+                    _this.offsetX = styleJson["line-offset-x"] || 0;
+                    _this.offsetY = styleJson["line-offset-y"] || 0;
                     _this.geometryTransform = styleJson["line-geometry-transform"];
                     _this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
             GeoLineStyle.prototype.initializeCore = function () {
+                this.lineStroke = new ol.style.Stroke();
+                this.lineStyle = new ol.style.Style({ stroke: this.lineStroke });
+                this.lineCapFill = new ol.style.Fill();
+                this.lineCapStyle = new ol.style.Style({ fill: this.lineCapFill });
+
                 if (this.color) {
-                    this.olColor = GeoStyle.toRGBAColor(this.color, this.opacity);
+                    this.olColor = GeoStyle.blendColorAndOpacity(this.color, this.opacity);
                     this.lineStroke.setColor(this.olColor);
                     this.lineCapFill.setColor(this.olColor);
+                }
+                if (this.lineCap) {
+                    this.lineCap = this.lineCap.toLowerCase();
+                }
+                if (this.lineJoin) {
+                    this.lineJoin = this.lineJoin.toLowerCase();
                 }
                 if (this.dashArray) {
                     var tmpArray = this.dashArray.split(",");
@@ -98647,7 +98758,7 @@ function olInit() {
                         this.convertedDashArray.push(parseFloat(a));
                     }
                 }
-                
+
                 if (this.lineDirectionImageUri) {
                     this.onewayIcon = new ol.style.Icon({
                         src: this.lineDirectionImageUri,
@@ -98677,8 +98788,7 @@ function olInit() {
             };
             GeoLineStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
                 var _this = this;
-                var length = 0;
-                this.styles = [];
+                var styles = [];
                 if (this.color && this.width) {
                     if (this.olLineCapsMap[this.lineCap]) {
                         this.lineStroke.setLineCap(this.olLineCapsMap[this.lineCap]);
@@ -98691,7 +98801,7 @@ function olInit() {
                         this.lineStroke.setLineDash(this.convertedDashArray);
                     }
                     if (this.lineJoin) {
-                        this.lineStroke.setLineJoin(this.lineJoin);
+                        this.lineStroke.setLineJoin(this.olLineJoinsMap[this.lineJoin.toLowerCase()]);
                     }
                     if (this.miterLimit !== 4) {
                         this.lineStroke.setMiterLimit(this.miterLimit);
@@ -98699,16 +98809,14 @@ function olInit() {
                     if (this.width) {
                         this.lineStroke.setWidth(this.width);
                     }
-                  
-                  
                     var geometryFunction = function (feature) {
                         if (_this.geometryTransform) {
                             var geometry = _this.getGeometry(feature);
                             if (_this.geometryTransform) {
                                 var values = _this.getTransformValues(_this.geometryTransform);
                                 if (_this.geometryTransform.startsWith("translate")) {
-                                    var dx = values[0].trim() * resolution;
-                                    var dy = values[1].trim() * resolution;
+                                    var dx = values[0].trim();
+                                    var dy = values[1].trim();
                                     geometry.translate(+dx, +dy);
                                     var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                                     geometry.extent_ = newExtent_;
@@ -98728,13 +98836,22 @@ function olInit() {
                                 feature.flatCoordinates_ = geometry.getFlatCoordinates();
                             }
                         }
+                        if (_this.offsetX || _this.offsetY) {
+                            var geometry = _this.getGeometry(feature);
+                            var dx = _this.offsetX * resolution;
+                            var dy = _this.offsetY * resolution;
+                            geometry.translate(+dx, +dy);
+                            var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                            geometry.extent_ = newExtent_;
+                            feature.flatCoordinates_ = geometry.getFlatCoordinates();
+                        }
 
                         return feature.getGeometry();
                     };
                     this.lineStyle.setGeometry(geometryFunction);
                     this.lineStyle.zCoordinate = this.zIndex;
-                    this.styles[length++] = this.lineStyle;
-            
+                    styles.push(this.lineStyle);
+
                     if (this.geometryLineCaps.includes(this.lineCap)) {
                         var geometryFunction_1 = function (feature) {
                             var geometry = _this.getGeometry(feature);
@@ -98742,7 +98859,7 @@ function olInit() {
                         };
                         this.lineCapStyle.setGeometry(geometryFunction_1);
                         this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
-                        this.styles[length++] = this.lineCapStyle;
+                        styles.push(this.lineCapStyle);
                     }
                 }
                 if (this.lineDirectionImageUri) {
@@ -98768,9 +98885,9 @@ function olInit() {
                     this.onewayIcon.rotation_ = -rotation;
                     this.onewayStyle.setGeometry(geometry);
                     this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
-                    this.styles[length++] = this.onewayStyle;
+                    styles.push(this.onewayStyle);
                 }
-                return this.styles;
+                return styles;
             };
             GeoLineStyle.prototype.getGeometry = function (feature) {
                 var tmpFlatCoordinates = feature.getFlatCoordinates();
@@ -98919,23 +99036,36 @@ function olInit() {
             __extends(GeoPointStyle, _super);
             function GeoPointStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
+                _this.pointTypes = ["symbol", "image", "glyph"];
+                _this.symbolTypes = ["circle", "square", "triangle", "cross", "star"];
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
                 if (styleJson) {
-                    _this.glyph = styleJson["point-glyph"];
+                    _this.compound = styleJson["point-compound"];
+                    _this.outlineColor = styleJson["point-outline-color"];
+                    _this.outlineWidth = styleJson["point-outline-width"] || 0;
+                    _this.symbolType = styleJson["point-symbol-type"];
+                    _this.pointType = styleJson["point-type"];
+                    _this.size = styleJson["point-size"];
+                    _this.maskType = styleJson["point-mask-type"];
+                    _this.maskMargin = styleJson["point-mask-margin"];
+                    _this.offsetX = styleJson["point-offset-x"] || 0;
+                    _this.offsetY = styleJson["point-offset-y"] || 0;
+                    _this.imageURL = styleJson["point-image-uri"];
+                    _this.fillColor = styleJson["point-fill-color"];
+                    _this.glyphFontName = styleJson["point-glyph-font-name"];
+                    _this.glyphContent = styleJson["point-glyph-content"];
+                    _this.angle = styleJson["point-rotation-angle"] || 0;
+                    _this.maskColor = styleJson["point-mask-color"];
+                    _this.maskOutlineColor = styleJson["point-mask-outline-color"];
+                    _this.maskOutlineWidth = styleJson["point-mask-outline-width"] || 0;
+                    _this.opacity = styleJson["point-opacity"] || 1;
                     _this.linearGradient = styleJson["point-linear-gradient"];
                     _this.radialGradient = styleJson["point-radial-gradient"];
-                    _this.fill = styleJson["point-fill"];
-                    _this.glyphName = styleJson["point-glyph-name"];
-                    _this.outlineColor = styleJson["point-outline-color"];
-                    _this.outlineWidth = styleJson["point-outline-width"];
-                    _this.size = styleJson["point-size"];
-                    _this.angle = styleJson["point-rotate-angle"] ? styleJson["point-rotate-angle"] : 0;
-                    _this.dx = styleJson["point-dx"];
-                    _this.dy = styleJson["point-dy"];
-                    _this.pointFile = styleJson["point-file"];
-                    _this.opacity = styleJson["point-opacity"];
-                    _this.symbolType = styleJson["point-symbol-type"];
                     _this.transform = styleJson["point-transform"];
-                    _this.pointType = styleJson["point-type"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
@@ -99213,10 +99343,10 @@ function olInit() {
                     this.textStyle.setFont(this.font);
                 }
                 if (this.fill) {
-                    this.textStyle.getFill().setColor(GeoStyle.toRGBAColor(this.fill, this.opacity));
+                    this.textStyle.getFill().setColor(GeoStyle.blendColorAndOpacity(this.fill, this.opacity));
                 }
                 if (this.haloRadius && this.haloFill) {
-                    this.textStyle.getStroke().setColor(GeoStyle.toRGBAColor(this.haloFill, this.opacity));
+                    this.textStyle.getStroke().setColor(GeoStyle.blendColorAndOpacity(this.haloFill, this.opacity));
                     this.textStyle.getStroke().setWidth(this.haloRadius);
                 }
                 // if (this.haloRadius) {
@@ -99225,10 +99355,10 @@ function olInit() {
                     this.textStyle.setRotation(this.orientation);
                 }
                 if (this.iconColor) {
-                    this.convertSymbolColor = GeoStyle.toRGBAColor(this.iconColor);
+                    this.convertSymbolColor = GeoStyle.blendColorAndOpacity(this.iconColor);
                 }
                 if (this.iconOutlineColor) {
-                    this.convertSymbolOutlineColor = GeoStyle.toRGBAColor(this.iconOutlineColor);
+                    this.convertSymbolOutlineColor = GeoStyle.blendColorAndOpacity(this.iconOutlineColor);
                 }
                 this.style = new ol.style.Style({
                     text: this.textStyle
@@ -99718,694 +99848,59 @@ function olInit() {
             __extends(GeoTextStyle, _super);
             function GeoTextStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
-                _this.textAligns = ["left", "right", "center", "end", "start"];
-                _this.textBaseline = ["bottom", "top", "middle", "alphabetic", "hanging", "ideographic"];
-                _this.textTransforms = ["default", "uppercase", "lowercase"];
+                _this.aligns = ["left", "right", "center"];
+                _this.defaultAlign = "center";
+                _this.baselines = ["bottom", "top", "middle"];
+                _this.defaultBaseline = "middle";
+                _this.letterCases = ["default", "uppercase", "lowercase"];
+                _this.defaultLetterCase = "default";
+                _this.placements = ["upperleft", "upper", "upperright", "right", "center", "left", "lowerleft", "lowerleft", "lower", "lowerright", "autoPlacement"];
+                _this.defaultPlacement = "center";
                 _this.drawnMask = false;
-                _this.BATCH_CONSTRUCTORS_DEFAULT = {
-                    Point: TextLabelingStrategy,
-                    MultiPoint: TextLabelingStrategy,
-                    LineString: TextLabelingStrategy,
-                    Circle: TextLabelingStrategy,
-                    MultiLineString: TextLabelingStrategy,
-                    Polygon: TextLabelingStrategy,
-                    MultiPolygon: TextLabelingStrategy
-                };
-                _this.BATCH_CONSTRUCTORS_DETECT = {
-                    Point: DetectTextLabelingStrategy,
-                    MultiPoint: DetectTextLabelingStrategy,
-                    LineString: DetectTextLabelingStrategy,
-                    Circle: DetectTextLabelingStrategy,
-                    MultiLineString: DetectTextLabelingStrategy,
-                    Polygon: DetectTextLabelingStrategy,
-                    MultiPolygon: DetectTextLabelingStrategy
-                };
-                _this.labelInfos = [];
-                _this.imageCache = [];
-                _this.charWidths = {};
+                _this.compounds = ['overlay', 'reject'];
+                _this.defaultCompund = 'overlay';
                 if (styleJson) {
-                    _this.align = styleJson["text-align"];
-                    _this.baseline = styleJson["text-base-line"];
-                    _this.dx = styleJson["text-dx"];
-                    _this.dy = styleJson["text-dy"];
+                    _this.compound = styleJson["text-compound"];
                     _this.font = styleJson["text-font"];
-                    _this.fill = styleJson["text-fill"];
-                    _this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
-                    _this.haloFill = styleJson["text-halo-fill"];
+                    _this.fillColor = styleJson["text-fill-color"];
+                    _this.haloColor = styleJson["text-halo-color"];
                     _this.haloRadius = styleJson["text-halo-radius"];
-                    _this.margin = styleJson["text-margin"];
-                    _this.maskColor = styleJson["text-mask-color"];
-                    _this.maskMargin = styleJson["text-mask-margin"];
-                    _this.maskOutlineColor = styleJson["text-mask-outline-color"];
-                    _this.maskOutlineWidth = styleJson["text-mask-outline-width"];
-                    _this.maskType = styleJson["text-mask-type"];
-                    _this.maxCharAngle = styleJson["text-max-char-angle"];
-                    _this.minDistance = styleJson["text-min-distance"];
-                    _this.minPadding = styleJson["text-min-padding"];
-                    _this.name = styleJson["text-content"];
-                    _this.opacity = styleJson["text-opacity"];
-                    _this.rotateAngle = styleJson["text-rotate-angle"];
-                    _this.placements = styleJson["text-placements"] ? styleJson["text-placements"] : "U,B,L,R";
-                    _this.placementType = styleJson["text-placement-type"] ? styleJson["text-placement-type"] : "default";
-                    _this.spacing = styleJson["text-spacing"] !== undefined ? styleJson["text-spacing"] : 10;
-                    _this.wrapBefore = styleJson["text-wrap-before"] ? true : styleJson["text-wrap-before"];
-                    _this.wrapWidth = styleJson["text-wrap-width"];
-                    _this.textFormat = styleJson["text-text-format"];
+                    _this.contentFormat = styleJson["text-content"];
                     _this.dateFormat = styleJson["text-date-format"];
                     _this.numericFormat = styleJson["text-numeric-format"];
-                    _this.textTransform = styleJson["text-letter-case"];
-                    _this.letterSpacing = styleJson["text-letter-spacing"];
-                    // TODO
-                    _this.avoidEdge = styleJson["text-avoid-edge"];
-                    // TODO
-                    _this.splineType = styleJson["text-spline-type"];
-                    // TODO
-                    _this.polygonLabelingLocation = styleJson["text-polygon-labeling-location"];
+                    _this.letterCase = styleJson["text-letter-case"];
+                    _this.letterSpacing = styleJson["text-letter-spacing"] || 0;
+                    _this.wrapWidth = styleJson["text-wrap-width"] || 0;
+                    _this.wrapBefore = styleJson["text-wrap-before"] || false; // internal property
+                    _this.align = styleJson["text-align"] || "center";
+                    _this.maskType = styleJson["text-mask-type"];
+                    _this.maskMargin = styleJson["text-mask-margin"];
+                    _this.maskColor = styleJson["text-mask-color"];
+                    _this.maskOutlineColor = styleJson["text-mask-outline-color"];
+                    _this.maskOutlineWidth = styleJson["text-mask-outline-width"] || 0;
+                    _this.offsetX = styleJson["text-offset-x"];
+                    _this.offsetY = styleJson["text-offset-y"];
+                    _this.baseline = styleJson["text-baseline"] || _this.defaultBaseline;
+                    _this.placement = styleJson["text-placement"] || _this.defaultPlacement;
+                    _this.forceHorizontalForLine = styleJson["text-force-horizontal-for-line"];
+                    _this.intervalDistance = styleJson["text-interval-distance"] || 200;
+                    _this.spacing = styleJson["text-spacing"] || 0;
+                    _this.rotationAngle = styleJson["text-rotation-angle"];
+                    _this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
+                    _this.opacity = styleJson["text-opacity"];
+                    _this.lineSpacing = styleJson["text-line-spacing"] || 0;
+                    _this.basePointStyleJson = styleJson["text-base-point-style"];
+                }
+                if (!this.compounds.includes(this.compound)) {
+                    this.compound = this.defaultCompund;
                 }
                 return _this;
             }
             GeoTextStyle.prototype.initializeCore = function () {
-                if (this.fill) {
-                    this.fillColor = GeoStyle.toRGBAColor(this.fill, this.opacity);
-                }
-                if (this.haloFill) {
-                    this.haloFillColor = GeoStyle.toRGBAColor(this.haloFill, this.opacity);
-                }
-                var fill = new ol.style.Fill();
-                var stroke = new ol.style.Stroke();
-                var textStyle = new ol.style.Text({
-                    fill: fill,
-                    stroke: stroke
-                });
-                this.style = new ol.style.Style({
-                    text: textStyle
-                });
-                if (this.textAligns.indexOf(this.align) >= 0) {
-                    textStyle.setTextAlign(this.align);
-                }
-                if (this.textBaseline.indexOf(this.baseline) >= 0) {
-                    textStyle.setTextBaseline(this.baseline);
-                }
-                if (this.dx) {
-                    textStyle.setOffsetX(this.dx);
-                }
-                if (this.dy) {
-                    textStyle.setOffsetY(this.dy);
-                }
-                if (this.font) {
-                    textStyle.setFont(this.font);
-                }
-                if (this.fillColor) {
-                    fill.setColor(this.fillColor);
-                }
-                if (this.haloFillColor) {
-                    stroke.setColor(this.haloFillColor);
-                }
-                if (this.haloRadius) {
-                    stroke.setWidth(this.haloRadius);
-                }
-                if (!this.haloRadius || this.haloFillColor === undefined) {
-                    textStyle.setStroke(undefined);
-                }
-                if (this.rotateAngle) {
-                    textStyle.setRotation(this.rotateAngle);
-                }
-                if (this.maxCharAngle >= 0) {
-                    textStyle.setMaxAngle(this.maxCharAngle);
-                }
-                if (this.textTransforms.includes(this.textTransform)) {
-                }
-                else {
-                    // TODO: invalid inputs.
-                    this.textTransform = this.textTransforms[0];
-                }
             };
             GeoTextStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
                 return true;
             };
-            GeoTextStyle.prototype.getTextWithContent = function (contentFormat, feature) {
-                var str = contentFormat || "";
-                if (str.indexOf("{") > 0) {
-                    var args = feature.getProperties();
-                    var key;
-                    for (key in args) {
-                        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
-                    }
-                }
-                return str;
-            };
-            GeoTextStyle.prototype.setLabelPosition = function (text, geometry, resolution, textState, strategyTree, frameState) {
-                var flatCoordinates;
-                var geometryType = geometry.getType();
-                if ((geometryType === ol.geom.GeometryType.LINE_STRING || geometryType === ol.geom.GeometryType.MULTI_LINE_STRING) && !this.forceHorizontalForLine) {
-                    var geometryType_1 = geometry.getType();
-                    flatCoordinates = geometry.getFlatCoordinates();
-                    if (flatCoordinates === undefined) {
-                        return false;
-                    }
-                }
-                else {
-                    var labelInfo = this.labelInfos[text];
-                    if (!labelInfo) {
-                        labelInfo = this.getLabelInfo(text, textState);
-                        this.labelInfos[text] = labelInfo;
-                    }
-                    var labelWidth = labelInfo.labelWidth;
-                    var labelHeight = labelInfo.labelHeight;
-                    var scale = labelInfo.scale;
-                    var font = labelInfo.font;
-                    var strokeWidth = labelInfo.strokeWidth;
-                    var numLines = labelInfo.numLines;
-                    var lines = labelInfo.lines;
-                    var lineHeight = labelInfo.lineHeight;
-                    var renderWidth = labelInfo.renderWidth;
-                    var height = labelInfo.height;
-                    var widths = labelInfo.widths;
-                    var Constructor = void 0;
-                    if (this.placementType === "default") {
-                        Constructor = this.BATCH_CONSTRUCTORS_DEFAULT[geometryType];
-                    }
-                    else if (this.placementType === "detect") {
-                        Constructor = this.BATCH_CONSTRUCTORS_DETECT[geometryType];
-                    }
-                    var textLabelingStrategy = new Constructor();
-                    var tmpLabelWidth = labelWidth / self.devicePixelRatio;
-                    var tmpLabelHeight = labelHeight / self.devicePixelRatio;
-                    switch (geometryType) {
-                        case ol.geom.GeometryType.POINT:
-                            flatCoordinates = geometry.getFlatCoordinates();
-                            break;
-                        case ol.geom.GeometryType.MULTI_POINT:
-                            flatCoordinates = geometry.getCenter();
-                            break;
-                        case ol.geom.GeometryType.LINE_STRING:
-                            flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
-                            break;
-                        case ol.geom.GeometryType.CIRCLE:
-                            flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
-                            break;
-                        case ol.geom.GeometryType.MULTI_LINE_STRING:
-                            flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
-                            break;
-                        case ol.geom.GeometryType.POLYGON:
-                            flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
-                            break;
-                        case ol.geom.GeometryType.MULTI_POLYGON:
-                            var interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
-                            // flatCoordinates = interiorPoints;
-                            flatCoordinates = [];
-                            for (var i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-                                if (interiorPoints[i + 2] / resolution >= tmpLabelWidth) {
-                                    flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
-                                }
-                            }
-                            if (!flatCoordinates.length) {
-                                return;
-                            }
-                            break;
-                        default:
-                    }
-                    flatCoordinates = textLabelingStrategy.markLocation(flatCoordinates, tmpLabelWidth, tmpLabelHeight, resolution, geometryType, this, strategyTree, frameState);
-                    if (flatCoordinates === undefined) {
-                        return false;
-                    }
-                    textState.labelPosition = flatCoordinates;
-                }
-                return true;
-            };
-            GeoTextStyle.prototype.getLabelInfo = function (text, textState) {
-                var font = textState.getFont();
-                text = this.wrapText(text, font);
-                var strokeState = textState.getStroke();
-                var strokeWidth = strokeState && strokeState.getWidth() ? strokeState.getWidth() : 0;
-                var lines = text.split("\n");
-                var numLines = lines.length;
-                var textScale = textState.getScale();
-                textScale = textScale === undefined ? 1 : textScale;
-                var scale = textScale * self.devicePixelRatio;
-                var widths = [];
-                var width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-                var lineHeight = this.charWidths["M"];
-                var tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-                var tmpMaskHeightMargin = 0;
-                var tmpMaskWidthMargin = 0;
-                switch (tmpMaskMargin.length) {
-                    case 1:
-                        tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                        tmpMaskWidthMargin = parseInt(tmpMaskMargin[0]) * 2;
-                        break;
-                    case 2:
-                        tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) * 2;
-                        tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                        break;
-                    case 3:
-                        tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                        tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) * 2;
-                        break;
-                    case 4:
-                        tmpMaskHeightMargin = parseInt(tmpMaskMargin[0]) + parseInt(tmpMaskMargin[2]);
-                        tmpMaskWidthMargin = parseInt(tmpMaskMargin[1]) + parseInt(tmpMaskMargin[3]);
-                        break;
-                    default:
-                        break;
-                }
-                if (this.maskType) {
-                    if (this.maskType.toLowerCase() === "circle") {
-                        tmpMaskHeightMargin = tmpMaskHeightMargin > tmpMaskWidthMargin ? tmpMaskHeightMargin : tmpMaskWidthMargin;
-                        tmpMaskWidthMargin = tmpMaskHeightMargin;
-                    }
-                }
-                var height = lineHeight * numLines + strokeWidth + tmpMaskHeightMargin;
-                var renderWidth = width + strokeWidth + tmpMaskWidthMargin;
-                var tmpMaskOutlineWidth = (this.maskOutlineWidth ? this.maskOutlineWidth : 0);
-                var labelWidth = Math.ceil((renderWidth + tmpMaskOutlineWidth * 3) * 1.1 * scale);
-                var labelHeight = Math.ceil((height + tmpMaskOutlineWidth * 3) * 1.1 * scale);
-                var labelInfo = {
-                    labelWidth: labelWidth,
-                    labelHeight: labelHeight,
-                    scale: scale,
-                    font: font,
-                    strokeWidth: strokeWidth,
-                    numLines: numLines,
-                    lines: lines,
-                    lineHeight: lineHeight,
-                    renderWidth: renderWidth,
-                    height: height,
-                    widths: widths
-                };
-                return labelInfo;
-            };
-            GeoTextStyle.prototype.getEstimatedWidth = function (font, lines, widths, letterSpacing) {
-                var numLines = lines.length;
-                var width = 0;
-                var currentWidth, i;
-                for (i = 0; i < numLines; ++i) {
-                    currentWidth = 0;
-                    for (var j = 0; j < lines[i].length; j++) {
-                        var charWidth = this.charWidths[lines[i][j]];
-                        if (charWidth) {
-                            currentWidth += charWidth;
-                        }
-                        else {
-                            currentWidth += this.charWidths["W"];
-                        }
-                    }
-                    if (letterSpacing) {
-                        currentWidth = currentWidth + (lines[i].length - 1) * letterSpacing;
-                    }
-                    width = Math.max(width, currentWidth);
-                    widths.push(currentWidth);
-                }
-                return width;
-            };
-            GeoTextStyle.prototype.getImage = function (textState, labelWidth, labelHeight, scale, font, strokeWidth, numLines, lines, lineHeight, renderWidth, height, widths) {
-                var fillState = textState.getFill();
-                var strokeState = textState.getStroke();
-                var label;
-                var align = ol.render.replay.TEXT_ALIGN[textState.getTextAlign() || ol.render.canvas.defaultTextAlign];
-                var context = ol.dom.createCanvasContext2D(labelWidth, labelHeight);
-                label = context.canvas;
-                label.style.display = "none";
-                // For letterSpacing we need app
-                var body;
-                if (this.letterSpacing) {
-                    body = document.getElementsByTagName("body")[0];
-                    if (body) {
-                        label.style.display = "none";
-                        body.appendChild(label);
-                    }
-                    label.style.letterSpacing = this.letterSpacing + "px";
-                    context = label.getContext("2d");
-                }
-                if (scale !== 1) {
-                    context.scale(scale, scale);
-                }
-                context.font = font;
-                if (strokeState) {
-                    context.strokeStyle = strokeState.getColor();
-                    context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
-                    context.lineCap = strokeState.getLineCap();
-                    context.lineJoin = strokeState.getLineJoin();
-                    context.miterLimit = strokeState.getMiterLimit();
-                    var lineDash = strokeState.getLineDash();
-                    lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
-                    if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
-                        context.setLineDash(strokeState.getLineDash());
-                        context.lineDashOffset = strokeState.getLineDashOffset();
-                    }
-                }
-                this.drawMask(context, 0, 0, renderWidth, height);
-                if (this.maskType) {
-                    if (this.maskType.toLowerCase() === "circle") {
-                        if (scale !== 1) {
-                            context.scale(scale, scale);
-                        }
-                        context.font = font;
-                        if (strokeState) {
-                            context.strokeStyle = strokeState.getColor();
-                            context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
-                            context.lineCap = strokeState.getLineCap();
-                            context.lineJoin = strokeState.getLineJoin();
-                            context.miterLimit = strokeState.getMiterLimit();
-                            var lineDash = strokeState.getLineDash();
-                            lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
-                            if (ol.has.CANVAS_LINE_DASH && lineDash.length) {
-                                context.setLineDash(strokeState.getLineDash());
-                                context.lineDashOffset = strokeState.getLineDashOffset();
-                            }
-                        }
-                    }
-                }
-                context.textBaseline = "middle";
-                context.textAlign = "center";
-                var leftRight = 0.5 - align;
-                var x = align * label.width / scale + leftRight * strokeWidth;
-                var i;
-                var tmpMaskMargin = (this.maskMargin ? this.maskMargin : "0").split(',');
-                var tmpMaskOutlineWidth = this.maskOutlineWidth ? this.maskOutlineWidth : 0;
-                if (strokeState) {
-                    if (strokeState.getColor() !== null) {
-                        context.strokeStyle = strokeState.getColor();
-                        context.lineWidth = this.haloRadius ? this.haloRadius : 0;
-                        for (i = 0; i < numLines; ++i) {
-                            if (this.drawnMask) {
-                                context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
-                            }
-                            else {
-                                context.strokeText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 - +parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
-                            }
-                        }
-                    }
-                }
-                if (fillState) {
-                    if (fillState.getColor() !== null) {
-                        context.fillStyle = fillState.getColor();
-                        for (i = 0; i < numLines; ++i) {
-                            if (this.drawnMask) {
-                                context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - strokeWidth * 1.2 + tmpMaskOutlineWidth * 0.5 / 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, this.maskType.toLowerCase() === "circle" ? context.canvas.height / scale * 0.5 - (tmpMaskMargin[2] ? parseInt(tmpMaskMargin[2]) - parseInt(tmpMaskMargin[0]) : 0) : strokeWidth + (i + 1) * lineHeight * 0.5 + parseInt(tmpMaskMargin[0]) + tmpMaskOutlineWidth);
-                            }
-                            else {
-                                context.fillText(lines[i], x + leftRight * widths[i] * 1.2 - (tmpMaskMargin[3] ? parseInt(tmpMaskMargin[1]) - parseInt(tmpMaskMargin[3]) : 0) * 0.5, 0.5 * (strokeWidth + lineHeight) + i * lineHeight * 1.2 + parseInt(tmpMaskMargin[0]) + (this.maskOutlineWidth ? this.maskOutlineWidth : 0));
-                            }
-                        }
-                    }
-                }
-                if (this.letterSpacing && body) {
-                    body.removeChild(label);
-                }
-                return label;
-            };
-            GeoTextStyle.prototype.wrapText = function (text, font) {
-                var resultText;
-                if (text !== "") {
-                    var lines = [text];
-                    var widths = [];
-                    var width = this.getEstimatedWidth(font, lines, widths, this.letterSpacing);
-                    var wrapWidth = this.wrapWidth;
-                    var wrapCharacter = " ";
-                    var isWrapBefore = this.wrapBefore;
-                    if (wrapWidth > 0 && width > wrapWidth && text.includes(wrapCharacter)) {
-                        var textLines = [];
-                        lines = text.split(wrapCharacter);
-                        var wrapLines = [];
-                        var wrapWidthSum = 0;
-                        var tmpWrapWidth = void 0;
-                        if (isWrapBefore) {
-                            for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-                                var line = lines_1[_i];
-                                var tmpLine = [line];
-                                tmpWrapWidth = this.getEstimatedWidth(font, tmpLine, widths, this.letterSpacing);
-                                wrapWidthSum += tmpWrapWidth;
-                                if (tmpWrapWidth > wrapWidth) {
-                                    wrapLines = [];
-                                    textLines = [];
-                                    wrapWidthSum = 0;
-                                    break;
-                                }
-                                if (wrapLines.length > 0) {
-                                    if (wrapWidthSum > wrapWidth) {
-                                        wrapLines.push("\n");
-                                        textLines.push(wrapLines.join(""));
-                                        wrapLines = [];
-                                        wrapWidthSum = 0;
-                                    }
-                                }
-                                wrapLines.push(" " + line);
-                            }
-                            if (wrapLines.length > 0) {
-                                textLines.push(wrapLines.join(""));
-                            }
-                        }
-                        else {
-                            for (var _a = 0, lines_2 = lines; _a < lines_2.length; _a++) {
-                                var line = lines_2[_a];
-                                wrapLines.push(" " + line);
-                                var tmpLine = [line];
-                                tmpWrapWidth = this.getEstimatedWidth(font, tmpLine, widths, this.letterSpacing);
-                                wrapWidthSum += tmpWrapWidth;
-                                if (wrapWidthSum > wrapWidth) {
-                                    wrapLines.push("\n");
-                                    textLines.push(wrapLines.join(""));
-                                    wrapLines = [];
-                                    wrapWidthSum = 0;
-                                }
-                            }
-                            if (wrapLines.length > 0) {
-                                textLines.push(wrapLines.join(""));
-                            }
-                        }
-                        resultText = textLines.join("");
-                        if (resultText.lastIndexOf("\n") === resultText.length - 1) {
-                            resultText = resultText.substr(0, resultText.length - 1);
-                        }
-                    }
-                    else {
-                        resultText = text;
-                    }
-                }
-                return resultText;
-            };
-            GeoTextStyle.prototype.drawMask = function (context, x, y, width, height) {
-                var fill = undefined;
-                var stroke = undefined;
-                if (this.maskColor) {
-                    fill = new ol.style.Fill();
-                    fill.setColor(GeoStyle.toRGBAColor(this.maskColor, this.opacity ? this.opacity : 1));
-                }
-                if (this.maskOutlineColor && this.maskOutlineWidth) {
-                    stroke = new ol.style.Stroke();
-                    if (this.maskOutlineColor) {
-                        stroke.setColor(GeoStyle.toRGBAColor(this.maskOutlineColor, this.opacity ? this.opacity : 1));
-                    }
-                    if (this.maskOutlineWidth) {
-                        stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);
-                    }
-                }
-                if (this.maskType) {
-                    this.drawnMask = true;
-                }
-                else {
-                    this.drawnMask = false;
-                }
-                switch (this.maskType) {
-                    case "default":
-                    case "Default":
-                    case "rectangle":
-                    case "Rectangle":
-                        this.drawRectangle(context, x, y, width, height, fill, stroke);
-                        break;
-                    case "roundedCorners":
-                    case "RoundedCorners":
-                        this.drawRoundRectangle(context, x, y, width, height, fill, stroke);
-                        break;
-                    case "roundedEnds":
-                    case "RoundedEnds":
-                        this.drawRoundedEnds(context, x, y, width, height, fill, stroke);
-                        break;
-                    case "circle":
-                    case "Circle":
-                        this.drawCircle(context, x, y, width, height, fill, stroke);
-                        break;
-                }
-            };
-            GeoTextStyle.prototype.drawRectangle = function (context, x, y, width, height, fill, stroke) {
-                if (fill) {
-                    context.fillStyle = fill.getColor();
-                    context.fillRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
-                }
-                if (stroke) {
-                    context.lineWidth = stroke.getWidth();
-                    context.strokeStyle = stroke.getColor();
-                    context.strokeRect(x + stroke.getWidth(), y + stroke.getWidth(), width + stroke.getWidth() * 2, height);
-                }
-            };
-            GeoTextStyle.prototype.drawRoundRectangle = function (context, x, y, width, height, fill, stroke) {
-                var radius = (width < height ? width : height) * 0.3;
-                // width *= 0.9;
-                // height *= 0.8;
-                if (stroke) {
-                    x = x + (stroke.getWidth() ? stroke.getWidth() : 0);
-                    y = y + (stroke.getWidth() ? stroke.getWidth() : 0);
-                }
-                context.beginPath();
-                context.moveTo(x + radius + stroke.getWidth() * 2, y);
-                context.lineTo(x + width - radius + stroke.getWidth() * 2, y);
-                context.quadraticCurveTo(x + width + stroke.getWidth() * 2, y, x + width + stroke.getWidth() * 2, y + radius);
-                context.lineTo(x + width + stroke.getWidth() * 2, y + height - radius);
-                context.quadraticCurveTo(x + width + stroke.getWidth() * 2, y + height, x + width - radius + stroke.getWidth() * 2, y + height);
-                context.lineTo(x + radius, y + height);
-                context.quadraticCurveTo(x, y + height, x, y + height - radius);
-                context.lineTo(x, y + radius);
-                context.quadraticCurveTo(x, y, x + radius, y);
-                context.closePath();
-                if (fill) {
-                    context.fillStyle = fill.getColor();
-                    context.fill();
-                }
-                if (stroke) {
-                    context.lineWidth = stroke.getWidth();
-                    context.strokeStyle = stroke.getColor();
-                    context.stroke();
-                }
-            };
-            GeoTextStyle.prototype.drawRoundedEnds = function (context, x, y, width, height, fill, stroke) {
-                var radius = (width < height ? width : height) * 0.2;
-                // width *= 0.9;
-                // height *= 0.8;
-                var strokeWidth = (stroke.getWidth() ? stroke.getWidth() : 0);
-                if (stroke) {
-                    x = x + strokeWidth;
-                    y = y + strokeWidth;
-                }
-                context.beginPath();
-                context.moveTo(x + radius, y);
-                context.lineTo(x + width - radius + strokeWidth * 2, y);
-                context.quadraticCurveTo(x + width + strokeWidth * 2, y + height * 0.5, x + width - radius + strokeWidth * 2, y + height);
-                context.lineTo(x + radius, y + height);
-                context.quadraticCurveTo(x, y + height * 0.5, x + radius, y);
-                context.closePath();
-                if (fill) {
-                    context.fillStyle = fill.getColor();
-                    context.fill();
-                }
-                if (stroke) {
-                    context.lineWidth = stroke.getWidth();
-                    context.strokeStyle = stroke.getColor();
-                    context.stroke();
-                }
-            };
-            GeoTextStyle.prototype.drawCircle = function (context, x, y, width, height, fill, stroke) {
-                context.canvas.width = context.canvas.width > context.canvas.height ? context.canvas.width : context.canvas.height;
-                context.canvas.height = context.canvas.width;
-                var radius = 0;
-                if (stroke) {
-                    radius -= stroke.getWidth();
-                }
-                radius += context.canvas.width * 0.5;
-                context.beginPath();
-                context.arc(x + context.canvas.width * 0.5, y + context.canvas.width * 0.5, radius, 0, 2 * Math.PI, false);
-                context.closePath();
-                if (fill) {
-                    context.fillStyle = fill.getColor();
-                    context.fill();
-                }
-                if (stroke) {
-                    context.lineWidth = stroke.getWidth() * window.devicePixelRatio;
-                    context.strokeStyle = stroke.getColor();
-                    context.stroke();
-                }
-            };
-            GeoTextStyle.prototype.getTextWithNumericFormat = function (featureText) {
-                var tmpArguments = this.numericFormat.split(",");
-                var numericFormatOptions = {};
-                for (var _i = 0, tmpArguments_1 = tmpArguments; _i < tmpArguments_1.length; _i++) {
-                    var tmpArgument = tmpArguments_1[_i];
-                    var keyValuePair = tmpArgument.split(":");
-                    switch (keyValuePair[0].trim()) {
-                        case "localeMatcher":
-                            numericFormatOptions.localeMatcher = keyValuePair[1].trim();
-                            break;
-                        case "style":
-                            numericFormatOptions.style = keyValuePair[1].trim();
-                            break;
-                        case "currency":
-                            numericFormatOptions.currency = keyValuePair[1].trim();
-                            break;
-                        case "currencyDisplay":
-                            numericFormatOptions.currencyDisplay = keyValuePair[1].trim();
-                            break;
-                        case "useGrouping":
-                            numericFormatOptions.useGrouping = keyValuePair[1].trim();
-                            break;
-                        case "minimumIntegerDigits":
-                            numericFormatOptions.minimumIntegerDigits = keyValuePair[1].trim();
-                            break;
-                        case "minimumFractionDigits":
-                            numericFormatOptions.minimumFractionDigits = keyValuePair[1].trim();
-                            break;
-                        case "maximumFractionDigits":
-                            numericFormatOptions.maximumFractionDigits = keyValuePair[1].trim();
-                            break;
-                        case "minimumSignificantDigits":
-                            numericFormatOptions.minimumSignificantDigits = keyValuePair[1].trim();
-                            break;
-                        case "maximumSignificantDigits":
-                            numericFormatOptions.maximumSignificantDigits = keyValuePair[1].trim();
-                            break;
-                    }
-                }
-                let numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
-                let num = Number(featureText);
-                if (num) {
-                    return numeric.format(num);
-                }
-                else {
-                    return featureText;
-                }
-            };
-            GeoTextStyle.prototype.getTextWithDateFormat = function (featureText) {
-                if (Date.parse(featureText)) {
-                    let date = new Date(featureText);
-                    let fmt = this.dateFormat;
-                    let o = {
-                        "M+": date.getMonth() + 1,
-                        "d+": date.getDate(),
-                        "h+": date.getHours(),
-                        "m+": date.getMinutes(),
-                        "s+": date.getSeconds(),
-                        "q+": Math.floor((date.getMonth() + 3) / 3),
-                        "S": date.getMilliseconds()
-                    };
-                    if (/(y+)/.test(fmt))
-                        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (let k in o)
-                        if (new RegExp("(" + k + ")").test(fmt))
-                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-
-                    return fmt;
-                }
-                else {
-                    return featureText;
-                }
-            };
-            GeoTextStyle.prototype.getTextWithFormat = function (featureText) {
-                debugger;
-                return String.format(this.textFormat, featureText);
-            };
-            GeoTextStyle.prototype.getTextTransform = function (featureText) {
-                switch (this.textTransform) {
-                    case "uppercase":
-                        featureText = featureText.toLocaleUpperCase();
-                        break;
-                    case "lowercase":
-                        featureText = featureText.toLocaleLowerCase();
-                        break;
-                    default:
-                        break;
-                }
-                return featureText;
-            };
-            GeoTextStyle.placementsName = "text-placements";
             return GeoTextStyle;
         }(GeoStyle));
 
@@ -100413,32 +99908,50 @@ function olInit() {
             __extends(GeoPolygonReplay, _super);
             function GeoPolygonReplay(tolerance, maxExtent) {
                 var _this = _super.call(this, tolerance, maxExtent) || this;
+                // this.lineStringReplay = new LineStringReplayCustom(tolerance, maxExtent);
                 this.lineStringReplay = null;
                 return _this;
             }
-            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature) {
+            GeoPolygonReplay.prototype.drawPolygon = function (polygonGeometry, feature, options) {
                 var ends = polygonGeometry.getEnds();
                 var stride = polygonGeometry.getStride();
                 var extent = polygonGeometry.getExtent();
                 var drawingBbox = polygonGeometry["drawingBbox"];
-
+                //var drawingBbox = undefined;
                 if (ends.length > 0) {
                     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+                    // https://docs.mapbox.com/vector-tiles/specification/#winding-order
                     var index = 0;
-                    var outers = [];
-                    var outerRing = [];
-                    var isClockwise;
-                    if (!outers[index]) {
-                        outers[index] = [];
-                    }
 
+                    var outers = [];
+                    outers[index] = [];
+
+                    var outerRing = [];
+
+                    var outlines = [];
+                    outlines[index] = [];
+
+                    var isClockwise;
                     if (ends[0] > 6) {
                         outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                             stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
-                        // FIXME it is also a anticlockwise, we don't judge for efficiency
                         outers[index].push(outerRing);
+
+                        var points = flatCoordinates.slice(0, ends[0]);
+                        var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
+
+                        var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
+                            stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                        outlines[index].push(lineSring);
+                        for (var i = 0; i <= cilped.ends.length - 1; i++) {
+                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[i], cilped.ends[i + 1],
+                                stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                            outlines[index].push(lineSring);
+                        }
+
                     } else {
                         outers[index].push([]);
+                        outlines[index].push([]);
                     }
 
                     var holes = [];
@@ -100452,42 +99965,51 @@ function olInit() {
                                 if (isClockwise) {
                                     if (!outers[++index]) {
                                         outers[index] = [];
+                                        outlines[index] = [];
                                     }
                                     outers[index].push(holeFlatCoords);
                                 } else {
                                     outers[index].push(holeFlatCoords);
                                 }
                             }
+
+                            var points = flatCoordinates.slice(ends[i - 1], ends[i]);
+                            var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
+
+                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
+                                stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                            outlines[index].push(lineSring);
+                            for (var j = 0; j <= cilped.ends.length - 1; j++) {
+                                var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[j], cilped.ends[j + 1],
+                                    stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
+                                outlines[index].push(lineSring);
+                            }
                         }
                     }
 
-                    {
-                        this.startIndices.push(this.indices.length);
-                        this.startIndicesFeature.push(feature);
+                    this.startIndices.push(this.indices.length);
+                    this.startIndicesFeature.push(feature);
 
-                        if (this.state_.changed) {
-                            this.zCoordinates.push(feature.zCoordinate);
-                            this.styleIndices_.push(this.indices.length);
-                            this.state_.changed = false;
-                        }
-                        if (this.lineStringReplay) {
-                            // this.lineStringReplay.setPolygonStyle(feature);
-                            // this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-                        }
-
-                        for (var i = 0; i < outers.length; i++) {
-                            var outer = outers[i];
-                            this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
+                    if (this.state_.changed) {
+                        this.zCoordinates.push(feature.zCoordinate);
+                        this.styleIndices_.push(this.indices.length);
+                        this.state_.changed = false;
+                    }
+                    if (this.lineStringReplay) {
+                        this.lineStringReplay.setPolygonStyle(feature);
+                    }
+                    if (this.lineStringReplay) {
+                        for (let i = 0; i < outlines.length; i++) {
+                            const lineStrings = outlines[i];
+                            for (var j = 0; j < lineStrings.length; j++) {
+                                var lineString = lineStrings[j];
+                                this.lineStringReplay.drawCoordinates_(lineString, 0, lineString.length, stride);
+                            }
                         }
                     }
-
-                    {
-                        // if(holes.length > 0 && feature.properties_.layerName == 'building'){
-                        //     this.styles_.push(this.styles_[0]);
-                        //     this.zCoordinates.push(feature.zCoordinate);
-                        //     this.styleIndices_.push(this.indices.length);
-                        //     this.state_.changed = false;
-                        // }              
+                    for (var i = 0; i < outers.length; i++) {
+                        var outer = outers[i];
+                        this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                     }
                 }
             };
@@ -100527,7 +100049,14 @@ function olInit() {
             }
 
             LineStringReplayCustom.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
-                var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+                var flatCoordinates = undefined;
+                if (lineStringGeometry.getFlatCoordinates != undefined) {
+                    flatCoordinates = lineStringGeometry.getFlatCoordinates();
+                }
+                else {
+                    flatCoordinates = lineStringGeometry;
+                    lineStringGeometry = feature;
+                }
                 var frameState = options.frameState;
                 var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
 
@@ -100807,7 +100336,7 @@ function olInit() {
             };
             GeoBrush.createGeoSolidBrush = function (feature, resolution, geoBrushOptions) {
                 if (geoBrushOptions.fillColor) {
-                    return GeoStyle.toRGBAColor(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
+                    return GeoStyle.blendColorAndOpacity(geoBrushOptions.fillColor, geoBrushOptions.fillOpacity);
                 }
             };
             GeoBrush.createRadialGradientColor = function (feature, resolution, geoBrushOptions) {
@@ -101310,6 +100839,7 @@ function olInit() {
                     loading = true;
                 }
             }
+            options.squaredTolerance = squaredTolerance;
             self.renderFeatureByType(replayGroup, feature, style,
                 squaredTolerance, options);
 
@@ -101363,7 +100893,7 @@ function olInit() {
             }
         };
 
-        self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature) {
+        self.renderPolygonGeometry_ = function (replayGroup, geometry, style, feature, options) {
             var fillStyle = style.getFill();
             var strokeStyle = style.getStroke();
             feature.zCoordinate = style.zCoordinate;
@@ -101371,7 +100901,7 @@ function olInit() {
                 var polygonReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.POLYGON);
                 polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-                polygonReplay.drawPolygon(geometry, feature);
+                polygonReplay.drawPolygon(geometry, feature, options);
             }
             var textStyle = style.getText();
             if (textStyle) {
@@ -101746,10 +101276,9 @@ function olInit() {
                     if (geoStyles && geoStyles.length > 0) {
                         for (var i = 0, ii = geoStyles.length; i < ii; i++) {
                             if (geoStyles[i]) {
-                                if(true)
-                                // if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
-                                //     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) 
-                                {
+                                //if (true){
+                                if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
+                                    (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
                                     mainFeatures.push(feature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
@@ -101822,7 +101351,7 @@ function olInit() {
                 projection[name] = projectInfo[name];
             }
 
-            var squaredTolerance = messageData[5];
+            var squaredTolerance = 0; //messageData[5];
             var tileCoordKey = requestTileCoord.join(",") + "," + tileCoord[0];
             var vectorTileData = null;
             if (self.vectorTilesData[formatId].containsKey(tileCoordKey)) {
@@ -101857,16 +101386,6 @@ function olInit() {
             var bbox = tileGrid.getTileCoordExtent(tileCoord);
 
 
-            var bottomLeft = ol.extent.getBottomLeft(bbox);
-            var bottomRight = ol.extent.getBottomRight(bbox);
-            var topRight = ol.extent.getTopRight(bbox);
-            var topLeft = ol.extent.getTopLeft(bbox);
-
-            var coords = bottomLeft.concat(bottomRight, topRight, topLeft);
-            var feature = new ol.render.Feature('Polygon', coords, [8], { layerName: "ocean" }, 0);
-            var geoStyle = geoStyles["ocean#0"];
-            renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform } }, [0, 'ocean#0', 0]);
-
             if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
@@ -101877,14 +101396,13 @@ function olInit() {
                         var cloneEnds = featureInfo.ends_.slice(0);
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
-                        feature.extent_ = bbox;
                         // added a new property for drawing limit, the 'extent_' is orign property from OL.
+                        var e = feature.getExtent();
                         feature["drawingBbox"] = bbox;
                         feature["styleId"] = geoStyleId;
-
                         // clip line segment
                         var type = feature.type_;
-                        if (type == 'LineString') {
+                        if (type === 'LineString') {
                             var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);
                             var flatCoordinates = clipped.flatCoordinates;
                             var ends = clipped.ends;
@@ -101898,16 +101416,16 @@ function olInit() {
                             }
                             feature.flatCoordinates_ = flatCoordinates;
                             feature.ends_ = ends;
-                        } else if (type == 'MultiLineString') {
-                            var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
-                            var flatCoordinates = clipped.flatCoordinates;
-                            var ends = clipped.ends;
+                        } else if (type === 'MultiLineString') {
+                            //var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
+                            //var flatCoordinates = clipped.flatCoordinates;
+                            //var ends = clipped.ends;
 
-                            if (flatCoordinates.length <= 2) {
-                                continue;
-                            }
-                            feature.flatCoordinates_ = flatCoordinates;
-                            feature.ends_ = ends;
+                            //if (flatCoordinates.length <= 2) {
+                            //    continue;
+                            //}
+                            //feature.flatCoordinates_ = flatCoordinates;
+                            //feature.ends_ = ends;
                         }
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform } }, instructs[i]);
                     }
@@ -101982,8 +101500,10 @@ function olInit() {
                 }
                 parts[k] = parts[k] || [];
 
-                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
-                if (!shortDistance) {
+                // //Cancel the simplified
+                //var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
+                //if (!shortDistance) {
+                {
                     parts[k] = parts[k].concat(segment[0]);
                 }
 

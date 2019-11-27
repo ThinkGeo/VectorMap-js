@@ -108,7 +108,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             if (source) {
                 this.setSource(source);
                 if (this.background) {
-                    let backgroundColor = GeoStyle.toRGBAColor(this.background);
+                    let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
                     if (backgroundColor) {
                         this["background"] = backgroundColor;
                     }
@@ -193,7 +193,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             if (source) {
                 this.setSource(source);
                 if (this.background) {
-                    let backgroundColor = GeoStyle.toRGBAColor(this.background);
+                    let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
                     if (backgroundColor) {
                         this["background"] = backgroundColor;
                     }

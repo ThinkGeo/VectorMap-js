@@ -17,43 +17,11 @@ export abstract class GeoRangeFilter extends GeoFilter {
             this.key = filterItem.key;
             let value = +filterItem.value;
             switch (filterItem.operator) {
-                case ">":
-                    this.ranges.push([value + 0.00001, Number.POSITIVE_INFINITY]);
-                    break;
-                case ">=":
-                    this.ranges.push([value, Number.POSITIVE_INFINITY]);
-                    break;
                 case "!=":
                     this.disallowedValues.push(value);
                     break;
                 case "=":
                     this.allowedValues.push(value);
-                    break;
-            }
-        }
-
-        for (let i = 0; i < this.filterItems.length; i++) {
-            let filterItem = this.filterItems[i];
-            let value = +filterItem.value;
-            let range = GeoRangeFilter.getRange(this.ranges, value);
-            switch (filterItem.operator) {
-                case "<":
-                    if (range) {
-                        range[1] = value + 0.00001;
-                    }
-                    else {
-                        range = [Number.NEGATIVE_INFINITY, value + 0.00001];
-                        this.ranges.push(range);
-                    }
-                    break;
-                case "<=":
-                    if (range) {
-                        range[1] = value;
-                    }
-                    else {
-                        range = [Number.NEGATIVE_INFINITY, value];
-                        this.ranges.push(range);
-                    }
                     break;
             }
         }
@@ -83,19 +51,45 @@ export abstract class GeoRangeFilter extends GeoFilter {
             return true;
         }
 
-        for (let i = 0; i < this.ranges.length; i++) {
-            let range = this.ranges[i];
-            if (range.length === 1) {
-                if (currentValue >= range[0]) {
-                    return true;
-                }
-            }
-            else {
-                if (currentValue >= range[0] && currentValue <= range[1]) {
-                    return true;
-                }
+        for (var i = 0; i < this.filterItems.length; i++) {
+            var filterItem = this.filterItems[i];
+            var value = +filterItem.value;
+            switch (filterItem.operator) {
+                case ">":
+                    if (!(currentValue > value)) {
+                        return false;
+                    }
+                    break;
+                case ">=":
+                    if (!(currentValue >= value)) {
+                        return false;
+                    }
+                    break;
+                case "<":
+                    if (!(currentValue < value)) {
+                        return false;
+                    }
+                    break;
+                case "<=":
+                    if (!(currentValue <= value)) {
+                        return false;
+                    }
+                    break;
+                case "=":
+                    if (!(currentValue === value)) {
+                        return false;
+                    }
+                    break;
+                case "!=":
+                    if (!(currentValue !== value)) {
+                        return false;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
+        return true;
     }
 
     private static getRange(ranges: Number[][], value: number): Number[] {
