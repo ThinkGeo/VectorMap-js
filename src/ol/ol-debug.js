@@ -29261,8 +29261,8 @@ function olInit() {
             state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
             state.miterLimit, state.lineDash, state.lineDashOffset
         ], [
-            ol.render.canvas.Instruction.BEGIN_PATH
-        ]);
+                ol.render.canvas.Instruction.BEGIN_PATH
+            ]);
         var flatCoordinates = lineStringGeometry.getFlatCoordinates();
         var stride = lineStringGeometry.getStride();
         this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
@@ -29288,8 +29288,8 @@ function olInit() {
             state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
             state.miterLimit, state.lineDash, state.lineDashOffset
         ], [
-            ol.render.canvas.Instruction.BEGIN_PATH
-        ]);
+                ol.render.canvas.Instruction.BEGIN_PATH
+            ]);
         var ends = multiLineStringGeometry.getEnds();
         var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
         var stride = multiLineStringGeometry.getStride();
@@ -45089,10 +45089,10 @@ function olInit() {
      */
     ol.format.GPX.GPX_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
-        'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
-        'wpt': ol.xml.makeArrayPusher(ol.format.GPX.readWpt_)
-    });
+            'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
+            'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
+            'wpt': ol.xml.makeArrayPusher(ol.format.GPX.readWpt_)
+        });
 
 
     /**
@@ -45102,11 +45102,11 @@ function olInit() {
      */
     ol.format.GPX.LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'text':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
-        'type':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkType')
-    });
+            'text':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
+            'type':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkType')
+        });
 
 
     /**
@@ -45116,17 +45116,17 @@ function olInit() {
      */
     ol.format.GPX.RTE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'link': ol.format.GPX.parseLink_,
-        'number':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-        'extensions': ol.format.GPX.parseExtensions_,
-        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'rtept': ol.format.GPX.parseRtePt_
-    });
+            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'link': ol.format.GPX.parseLink_,
+            'number':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+            'extensions': ol.format.GPX.parseExtensions_,
+            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'rtept': ol.format.GPX.parseRtePt_
+        });
 
 
     /**
@@ -45136,9 +45136,9 @@ function olInit() {
      */
     ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
-    });
+            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
+        });
 
 
     /**
@@ -45148,17 +45148,17 @@ function olInit() {
      */
     ol.format.GPX.TRK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'link': ol.format.GPX.parseLink_,
-        'number':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'extensions': ol.format.GPX.parseExtensions_,
-        'trkseg': ol.format.GPX.parseTrkSeg_
-    });
+            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'link': ol.format.GPX.parseLink_,
+            'number':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'extensions': ol.format.GPX.parseExtensions_,
+            'trkseg': ol.format.GPX.parseTrkSeg_
+        });
 
 
     /**
@@ -45168,8 +45168,8 @@ function olInit() {
      */
     ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'trkpt': ol.format.GPX.parseTrkPt_
-    });
+            'trkpt': ol.format.GPX.parseTrkPt_
+        });
 
 
     /**
@@ -45179,9 +45179,9 @@ function olInit() {
      */
     ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
-    });
+            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
+        });
 
 
     /**
@@ -45191,29 +45191,29 @@ function olInit() {
      */
     ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
-        'magvar': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'geoidheight': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'link': ol.format.GPX.parseLink_,
-        'sym': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'fix': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'sat': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'hdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'vdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'pdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'ageofdgpsdata':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'dgpsid':
-            ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
-        'extensions': ol.format.GPX.parseExtensions_
-    });
+            'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
+            'magvar': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'geoidheight': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'desc': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'src': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'link': ol.format.GPX.parseLink_,
+            'sym': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'type': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'fix': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'sat': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'hdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'vdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'pdop': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'ageofdgpsdata':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'dgpsid':
+                ol.xml.makeObjectPropertySetter(ol.format.XSD.readNonNegativeInteger),
+            'extensions': ol.format.GPX.parseExtensions_
+        });
 
 
     /**
@@ -45485,9 +45485,9 @@ function olInit() {
      */
     ol.format.GPX.LINK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'text': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-    });
+            'text': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+        });
 
 
     /**
@@ -45497,8 +45497,8 @@ function olInit() {
      */
     ol.format.GPX.RTE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-        'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
-    ]);
+            'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
+        ]);
 
 
     /**
@@ -45508,17 +45508,17 @@ function olInit() {
      */
     ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-        'number': ol.xml.makeChildAppender(
-            ol.format.XSD.writeNonNegativeIntegerTextNode),
-        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
-            ol.format.GPX.writeWptType_))
-    });
+            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+            'number': ol.xml.makeChildAppender(
+                ol.format.XSD.writeNonNegativeIntegerTextNode),
+            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+                ol.format.GPX.writeWptType_))
+        });
 
 
     /**
@@ -45528,8 +45528,8 @@ function olInit() {
      */
     ol.format.GPX.RTEPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-        'ele', 'time'
-    ]);
+            'ele', 'time'
+        ]);
 
 
     /**
@@ -45539,8 +45539,8 @@ function olInit() {
      */
     ol.format.GPX.TRK_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-        'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
-    ]);
+            'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
+        ]);
 
 
     /**
@@ -45550,17 +45550,17 @@ function olInit() {
      */
     ol.format.GPX.TRK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-        'number': ol.xml.makeChildAppender(
-            ol.format.XSD.writeNonNegativeIntegerTextNode),
-        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'trkseg': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
-            ol.format.GPX.writeTrkSeg_))
-    });
+            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+            'number': ol.xml.makeChildAppender(
+                ol.format.XSD.writeNonNegativeIntegerTextNode),
+            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'trkseg': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
+                ol.format.GPX.writeTrkSeg_))
+        });
 
 
     /**
@@ -45578,8 +45578,8 @@ function olInit() {
      */
     ol.format.GPX.TRKSEG_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'trkpt': ol.xml.makeChildAppender(ol.format.GPX.writeWptType_)
-    });
+            'trkpt': ol.xml.makeChildAppender(ol.format.GPX.writeWptType_)
+        });
 
 
     /**
@@ -45589,10 +45589,10 @@ function olInit() {
      */
     ol.format.GPX.WPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, [
-        'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
-        'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
-        'ageofdgpsdata', 'dgpsid'
-    ]);
+            'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
+            'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
+            'ageofdgpsdata', 'dgpsid'
+        ]);
 
 
     /**
@@ -45601,29 +45601,29 @@ function olInit() {
      */
     ol.format.GPX.WPT_TYPE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'ele': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'time': ol.xml.makeChildAppender(ol.format.XSD.writeDateTimeTextNode),
-        'magvar': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'geoidheight': ol.xml.makeChildAppender(
-            ol.format.XSD.writeDecimalTextNode),
-        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
-        'sym': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'fix': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'sat': ol.xml.makeChildAppender(
-            ol.format.XSD.writeNonNegativeIntegerTextNode),
-        'hdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'vdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'pdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'ageofdgpsdata': ol.xml.makeChildAppender(
-            ol.format.XSD.writeDecimalTextNode),
-        'dgpsid': ol.xml.makeChildAppender(
-            ol.format.XSD.writeNonNegativeIntegerTextNode)
-    });
+            'ele': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'time': ol.xml.makeChildAppender(ol.format.XSD.writeDateTimeTextNode),
+            'magvar': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'geoidheight': ol.xml.makeChildAppender(
+                ol.format.XSD.writeDecimalTextNode),
+            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'cmt': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'desc': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'src': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'link': ol.xml.makeChildAppender(ol.format.GPX.writeLink_),
+            'sym': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'type': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'fix': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'sat': ol.xml.makeChildAppender(
+                ol.format.XSD.writeNonNegativeIntegerTextNode),
+            'hdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'vdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'pdop': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'ageofdgpsdata': ol.xml.makeChildAppender(
+                ol.format.XSD.writeDecimalTextNode),
+            'dgpsid': ol.xml.makeChildAppender(
+                ol.format.XSD.writeNonNegativeIntegerTextNode)
+        });
 
 
     /**
@@ -45665,10 +45665,10 @@ function olInit() {
      */
     ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.GPX.NAMESPACE_URIS_, {
-        'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
-        'trk': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
-        'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
-    });
+            'rte': ol.xml.makeChildAppender(ol.format.GPX.writeRte_),
+            'trk': ol.xml.makeChildAppender(ol.format.GPX.writeTrk_),
+            'wpt': ol.xml.makeChildAppender(ol.format.GPX.writeWpt_)
+        });
 
 
     /**
@@ -48639,9 +48639,9 @@ function olInit() {
      */
     ol.format.KML.DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'displayName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'value': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+            'displayName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'value': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -48651,9 +48651,9 @@ function olInit() {
      */
     ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Data': ol.format.KML.DataParser_,
-        'SchemaData': ol.format.KML.SchemaDataParser_
-    });
+            'Data': ol.format.KML.DataParser_,
+            'SchemaData': ol.format.KML.SchemaDataParser_
+        });
 
 
     /**
@@ -48663,9 +48663,9 @@ function olInit() {
      */
     ol.format.KML.REGION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LatLonAltBox': ol.format.KML.LatLonAltBoxParser_,
-        'Lod': ol.format.KML.LodParser_
-    });
+            'LatLonAltBox': ol.format.KML.LatLonAltBoxParser_,
+            'Lod': ol.format.KML.LodParser_
+        });
 
 
     /**
@@ -48675,14 +48675,14 @@ function olInit() {
      */
     ol.format.KML.LAT_LON_ALT_BOX_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'minAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'maxAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'north': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'south': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'east': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'west': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-    });
+            'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'minAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'maxAltitude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'north': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'south': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'east': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'west': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+        });
 
 
     /**
@@ -48692,11 +48692,11 @@ function olInit() {
      */
     ol.format.KML.LOD_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'minLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'maxLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'minFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'maxFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-    });
+            'minLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'maxLodPixels': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'minFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'maxFadeExtent': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+        });
 
 
     /**
@@ -48706,10 +48706,10 @@ function olInit() {
      */
     ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-        'tessellate': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-        'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+            'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+            'tessellate': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+            'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -48719,8 +48719,8 @@ function olInit() {
      */
     ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
-    });
+            'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
+        });
 
 
     /**
@@ -48730,9 +48730,9 @@ function olInit() {
      */
     ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'innerBoundaryIs': ol.format.KML.innerBoundaryIsParser_,
-        'outerBoundaryIs': ol.format.KML.outerBoundaryIsParser_
-    });
+            'innerBoundaryIs': ol.format.KML.innerBoundaryIsParser_,
+            'outerBoundaryIs': ol.format.KML.outerBoundaryIsParser_
+        });
 
 
     /**
@@ -48742,11 +48742,11 @@ function olInit() {
      */
     ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'when': ol.format.KML.whenParser_
-    }, ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, {
-        'coord': ol.format.KML.gxCoordParser_
-    }));
+            'when': ol.format.KML.whenParser_
+        }, ol.xml.makeStructureNS(
+            ol.format.KML.GX_NAMESPACE_URIS_, {
+                'coord': ol.format.KML.gxCoordParser_
+            }));
 
 
     /**
@@ -48756,8 +48756,8 @@ function olInit() {
      */
     ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
-    });
+            'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
+        });
 
 
     /**
@@ -48767,14 +48767,14 @@ function olInit() {
      */
     ol.format.KML.ICON_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    }, ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, {
-        'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-    }));
+            'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+        }, ol.xml.makeStructureNS(
+            ol.format.KML.GX_NAMESPACE_URIS_, {
+                'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+                'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+                'w': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+                'h': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+            }));
 
 
     /**
@@ -48784,11 +48784,11 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
-        'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
-        'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
-        'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
-    });
+            'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
+            'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
+            'hotSpot': ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_),
+            'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
+        });
 
 
     /**
@@ -48798,8 +48798,8 @@ function olInit() {
      */
     ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
-    });
+            'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
+        });
 
 
     /**
@@ -48809,9 +48809,9 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-        'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
-    });
+            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+            'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
+        });
 
 
     /**
@@ -48821,9 +48821,9 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-        'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
-    });
+            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+            'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
+        });
 
 
     /**
@@ -48833,12 +48833,12 @@ function olInit() {
      */
     ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
-        'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
-        'MultiGeometry': ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_),
-        'Point': ol.xml.makeArrayPusher(ol.format.KML.readPoint_),
-        'Polygon': ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)
-    });
+            'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
+            'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
+            'MultiGeometry': ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_),
+            'Point': ol.xml.makeArrayPusher(ol.format.KML.readPoint_),
+            'Polygon': ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)
+        });
 
 
     /**
@@ -48848,8 +48848,8 @@ function olInit() {
      */
     ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
-        'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
-    });
+            'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
+        });
 
 
     /**
@@ -48859,16 +48859,16 @@ function olInit() {
      */
     ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'ExtendedData': ol.format.KML.ExtendedDataParser_,
-        'Region': ol.format.KML.RegionParser_,
-        'Link': ol.format.KML.LinkParser_,
-        'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-        'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-    });
+            'ExtendedData': ol.format.KML.ExtendedDataParser_,
+            'Region': ol.format.KML.RegionParser_,
+            'Link': ol.format.KML.LinkParser_,
+            'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+            'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+        });
 
 
     /**
@@ -48878,8 +48878,8 @@ function olInit() {
      */
     ol.format.KML.LINK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    });
+            'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+        });
 
 
     /**
@@ -48889,8 +48889,8 @@ function olInit() {
      */
     ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
-    });
+            'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
+        });
 
 
     /**
@@ -48900,10 +48900,10 @@ function olInit() {
      */
     ol.format.KML.PAIR_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
-        'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    });
+            'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+            'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
+        });
 
 
     /**
@@ -48913,35 +48913,35 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'ExtendedData': ol.format.KML.ExtendedDataParser_,
-        'Region': ol.format.KML.RegionParser_,
-        'MultiGeometry': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readMultiGeometry_, 'geometry'),
-        'LineString': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readLineString_, 'geometry'),
-        'LinearRing': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readLinearRing_, 'geometry'),
-        'Point': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readPoint_, 'geometry'),
-        'Polygon': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readPolygon_, 'geometry'),
-        'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
-        'StyleMap': ol.format.KML.PlacemarkStyleMapParser_,
-        'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-        'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
-        'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-    }, ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, {
-        'MultiTrack': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readGxMultiTrack_, 'geometry'),
-        'Track': ol.xml.makeObjectPropertySetter(
-            ol.format.KML.readGxTrack_, 'geometry')
-    }
-    ));
+            'ExtendedData': ol.format.KML.ExtendedDataParser_,
+            'Region': ol.format.KML.RegionParser_,
+            'MultiGeometry': ol.xml.makeObjectPropertySetter(
+                ol.format.KML.readMultiGeometry_, 'geometry'),
+            'LineString': ol.xml.makeObjectPropertySetter(
+                ol.format.KML.readLineString_, 'geometry'),
+            'LinearRing': ol.xml.makeObjectPropertySetter(
+                ol.format.KML.readLinearRing_, 'geometry'),
+            'Point': ol.xml.makeObjectPropertySetter(
+                ol.format.KML.readPoint_, 'geometry'),
+            'Polygon': ol.xml.makeObjectPropertySetter(
+                ol.format.KML.readPolygon_, 'geometry'),
+            'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
+            'StyleMap': ol.format.KML.PlacemarkStyleMapParser_,
+            'address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'description': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'open': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+            'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
+            'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+        }, ol.xml.makeStructureNS(
+            ol.format.KML.GX_NAMESPACE_URIS_, {
+                'MultiTrack': ol.xml.makeObjectPropertySetter(
+                    ol.format.KML.readGxMultiTrack_, 'geometry'),
+                'Track': ol.xml.makeObjectPropertySetter(
+                    ol.format.KML.readGxTrack_, 'geometry')
+            }
+        ));
 
 
     /**
@@ -48951,10 +48951,10 @@ function olInit() {
      */
     ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
-        'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
-        'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-    });
+            'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
+            'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
+            'outline': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
+        });
 
 
     /**
@@ -48964,8 +48964,8 @@ function olInit() {
      */
     ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'SimpleData': ol.format.KML.SimpleDataParser_
-    });
+            'SimpleData': ol.format.KML.SimpleDataParser_
+        });
 
 
     /**
@@ -48975,11 +48975,11 @@ function olInit() {
      */
     ol.format.KML.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'IconStyle': ol.format.KML.IconStyleParser_,
-        'LabelStyle': ol.format.KML.LabelStyleParser_,
-        'LineStyle': ol.format.KML.LineStyleParser_,
-        'PolyStyle': ol.format.KML.PolyStyleParser_
-    });
+            'IconStyle': ol.format.KML.IconStyleParser_,
+            'LabelStyle': ol.format.KML.LabelStyleParser_,
+            'LineStyle': ol.format.KML.LineStyleParser_,
+            'PolyStyle': ol.format.KML.PolyStyleParser_
+        });
 
 
     /**
@@ -48989,8 +48989,8 @@ function olInit() {
      */
     ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Pair': ol.format.KML.PairDataParser_
-    });
+            'Pair': ol.format.KML.PairDataParser_
+        });
 
 
     /**
@@ -49003,12 +49003,12 @@ function olInit() {
         // FIXME use scope somehow
         var parsersNS = ol.xml.makeStructureNS(
             ol.format.KML.NAMESPACE_URIS_, {
-            'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
-            'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
-            'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
-            'Style': this.readSharedStyle_.bind(this),
-            'StyleMap': this.readSharedStyleMap_.bind(this)
-        });
+                'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
+                'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
+                'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
+                'Style': this.readSharedStyle_.bind(this),
+                'StyleMap': this.readSharedStyleMap_.bind(this)
+            });
         /** @type {Array.<ol.Feature>} */
         var features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack, this);
         if (features) {
@@ -49929,8 +49929,8 @@ function olInit() {
      */
     ol.format.KML.KML_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'Document', 'Placemark'
-    ]);
+            'Document', 'Placemark'
+        ]);
 
 
     /**
@@ -49940,9 +49940,9 @@ function olInit() {
      */
     ol.format.KML.KML_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Document': ol.xml.makeChildAppender(ol.format.KML.writeDocument_),
-        'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
-    });
+            'Document': ol.xml.makeChildAppender(ol.format.KML.writeDocument_),
+            'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
+        });
 
 
     /**
@@ -49952,8 +49952,8 @@ function olInit() {
      */
     ol.format.KML.DOCUMENT_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
-    });
+            'Placemark': ol.xml.makeChildAppender(ol.format.KML.writePlacemark_)
+        });
 
 
     /**
@@ -49963,10 +49963,10 @@ function olInit() {
      */
     ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Data': ol.xml.makeChildAppender(ol.format.KML.writeDataNode_),
-        'value': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeValue_),
-        'displayName': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeName_)
-    });
+            'Data': ol.xml.makeChildAppender(ol.format.KML.writeDataNode_),
+            'value': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeValue_),
+            'displayName': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeName_)
+        });
 
 
     /**
@@ -49992,8 +49992,8 @@ function olInit() {
      */
     ol.format.KML.ICON_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'href'
-    ],
+            'href'
+        ],
         ol.xml.makeStructureNS(ol.format.KML.GX_NAMESPACE_URIS_, [
             'x', 'y', 'w', 'h'
         ]));
@@ -50006,14 +50006,14 @@ function olInit() {
      */
     ol.format.KML.ICON_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'href': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-    }, ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, {
-        'x': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'y': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'w': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'h': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
-    }));
+            'href': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+        }, ol.xml.makeStructureNS(
+            ol.format.KML.GX_NAMESPACE_URIS_, {
+                'x': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+                'y': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+                'w': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+                'h': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
+            }));
 
 
     /**
@@ -50023,8 +50023,8 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'scale', 'heading', 'Icon', 'hotSpot'
-    ]);
+            'scale', 'heading', 'Icon', 'hotSpot'
+        ]);
 
 
     /**
@@ -50034,11 +50034,11 @@ function olInit() {
      */
     ol.format.KML.ICON_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'Icon': ol.xml.makeChildAppender(ol.format.KML.writeIcon_),
-        'heading': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
-        'hotSpot': ol.xml.makeChildAppender(ol.format.KML.writeVec2_),
-        'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
-    });
+            'Icon': ol.xml.makeChildAppender(ol.format.KML.writeIcon_),
+            'heading': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode),
+            'hotSpot': ol.xml.makeChildAppender(ol.format.KML.writeVec2_),
+            'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
+        });
 
 
     /**
@@ -50048,8 +50048,8 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'color', 'scale'
-    ]);
+            'color', 'scale'
+        ]);
 
 
     /**
@@ -50059,9 +50059,9 @@ function olInit() {
      */
     ol.format.KML.LABEL_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
-        'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
-    });
+            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
+            'scale': ol.xml.makeChildAppender(ol.format.KML.writeScaleTextNode_)
+        });
 
 
     /**
@@ -50071,8 +50071,8 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'color', 'width'
-    ]);
+            'color', 'width'
+        ]);
 
 
     /**
@@ -50082,9 +50082,9 @@ function olInit() {
      */
     ol.format.KML.LINE_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
-        'width': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
-    });
+            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_),
+            'width': ol.xml.makeChildAppender(ol.format.XSD.writeDecimalTextNode)
+        });
 
 
     /**
@@ -50094,9 +50094,9 @@ function olInit() {
      */
     ol.format.KML.BOUNDARY_IS_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LinearRing': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_)
-    });
+            'LinearRing': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_)
+        });
 
 
     /**
@@ -50106,14 +50106,14 @@ function olInit() {
      */
     ol.format.KML.MULTI_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'LineString': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_),
-        'Point': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_),
-        'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
-        'GeometryCollection': ol.xml.makeChildAppender(
-            ol.format.KML.writeMultiGeometry_)
-    });
+            'LineString': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_),
+            'Point': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_),
+            'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
+            'GeometryCollection': ol.xml.makeChildAppender(
+                ol.format.KML.writeMultiGeometry_)
+        });
 
 
     /**
@@ -50123,9 +50123,9 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
-        'styleUrl', 'Style'
-    ]);
+            'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
+            'styleUrl', 'Style'
+        ]);
 
 
     /**
@@ -50135,29 +50135,29 @@ function olInit() {
      */
     ol.format.KML.PLACEMARK_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'ExtendedData': ol.xml.makeChildAppender(
-            ol.format.KML.writeExtendedData_),
-        'MultiGeometry': ol.xml.makeChildAppender(
-            ol.format.KML.writeMultiGeometry_),
-        'LineString': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_),
-        'LinearRing': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_),
-        'Point': ol.xml.makeChildAppender(
-            ol.format.KML.writePrimitiveGeometry_),
-        'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
-        'Style': ol.xml.makeChildAppender(ol.format.KML.writeStyle_),
-        'address': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'description': ol.xml.makeChildAppender(
-            ol.format.XSD.writeStringTextNode),
-        'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'open': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-        'phoneNumber': ol.xml.makeChildAppender(
-            ol.format.XSD.writeStringTextNode),
-        'styleUrl': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'visibility': ol.xml.makeChildAppender(
-            ol.format.XSD.writeBooleanTextNode)
-    });
+            'ExtendedData': ol.xml.makeChildAppender(
+                ol.format.KML.writeExtendedData_),
+            'MultiGeometry': ol.xml.makeChildAppender(
+                ol.format.KML.writeMultiGeometry_),
+            'LineString': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_),
+            'LinearRing': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_),
+            'Point': ol.xml.makeChildAppender(
+                ol.format.KML.writePrimitiveGeometry_),
+            'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
+            'Style': ol.xml.makeChildAppender(ol.format.KML.writeStyle_),
+            'address': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'description': ol.xml.makeChildAppender(
+                ol.format.XSD.writeStringTextNode),
+            'name': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'open': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+            'phoneNumber': ol.xml.makeChildAppender(
+                ol.format.XSD.writeStringTextNode),
+            'styleUrl': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'visibility': ol.xml.makeChildAppender(
+                ol.format.XSD.writeBooleanTextNode)
+        });
 
 
     /**
@@ -50167,8 +50167,8 @@ function olInit() {
      */
     ol.format.KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'extrude', 'tessellate', 'altitudeMode', 'coordinates'
-    ]);
+            'extrude', 'tessellate', 'altitudeMode', 'coordinates'
+        ]);
 
 
     /**
@@ -50178,12 +50178,12 @@ function olInit() {
      */
     ol.format.KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'extrude': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-        'tessellate': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
-        'altitudeMode': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-        'coordinates': ol.xml.makeChildAppender(
-            ol.format.KML.writeCoordinatesTextNode_)
-    });
+            'extrude': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+            'tessellate': ol.xml.makeChildAppender(ol.format.XSD.writeBooleanTextNode),
+            'altitudeMode': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+            'coordinates': ol.xml.makeChildAppender(
+                ol.format.KML.writeCoordinatesTextNode_)
+        });
 
 
     /**
@@ -50193,11 +50193,11 @@ function olInit() {
      */
     ol.format.KML.POLYGON_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'outerBoundaryIs': ol.xml.makeChildAppender(
-            ol.format.KML.writeBoundaryIs_),
-        'innerBoundaryIs': ol.xml.makeChildAppender(
-            ol.format.KML.writeBoundaryIs_)
-    });
+            'outerBoundaryIs': ol.xml.makeChildAppender(
+                ol.format.KML.writeBoundaryIs_),
+            'innerBoundaryIs': ol.xml.makeChildAppender(
+                ol.format.KML.writeBoundaryIs_)
+        });
 
 
     /**
@@ -50207,8 +50207,8 @@ function olInit() {
      */
     ol.format.KML.POLY_STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_)
-    });
+            'color': ol.xml.makeChildAppender(ol.format.KML.writeColorTextNode_)
+        });
 
 
     /**
@@ -50218,8 +50218,8 @@ function olInit() {
      */
     ol.format.KML.STYLE_SEQUENCE_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, [
-        'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
-    ]);
+            'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
+        ]);
 
 
     /**
@@ -50229,11 +50229,11 @@ function olInit() {
      */
     ol.format.KML.STYLE_SERIALIZERS_ = ol.xml.makeStructureNS(
         ol.format.KML.NAMESPACE_URIS_, {
-        'IconStyle': ol.xml.makeChildAppender(ol.format.KML.writeIconStyle_),
-        'LabelStyle': ol.xml.makeChildAppender(ol.format.KML.writeLabelStyle_),
-        'LineStyle': ol.xml.makeChildAppender(ol.format.KML.writeLineStyle_),
-        'PolyStyle': ol.xml.makeChildAppender(ol.format.KML.writePolyStyle_)
-    });
+            'IconStyle': ol.xml.makeChildAppender(ol.format.KML.writeIconStyle_),
+            'LabelStyle': ol.xml.makeChildAppender(ol.format.KML.writeLabelStyle_),
+            'LineStyle': ol.xml.makeChildAppender(ol.format.KML.writeLineStyle_),
+            'PolyStyle': ol.xml.makeChildAppender(ol.format.KML.writePolyStyle_)
+        });
 
 
     /**
@@ -51864,9 +51864,9 @@ function olInit() {
      */
     ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-        'nd': ol.format.OSMXML.readNd_,
-        'tag': ol.format.OSMXML.readTag_
-    });
+            'nd': ol.format.OSMXML.readNd_,
+            'tag': ol.format.OSMXML.readTag_
+        });
 
 
     /**
@@ -51876,9 +51876,9 @@ function olInit() {
      */
     ol.format.OSMXML.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-        'node': ol.format.OSMXML.readNode_,
-        'way': ol.format.OSMXML.readWay_
-    });
+            'node': ol.format.OSMXML.readNode_,
+            'way': ol.format.OSMXML.readWay_
+        });
 
 
     /**
@@ -51888,8 +51888,8 @@ function olInit() {
      */
     ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OSMXML.NAMESPACE_URIS_, {
-        'tag': ol.format.OSMXML.readTag_
-    });
+            'tag': ol.format.OSMXML.readTag_
+        });
 
 
     /**
@@ -52296,13 +52296,13 @@ function olInit() {
      */
     ol.format.OWS.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'ServiceIdentification': ol.xml.makeObjectPropertySetter(
-            ol.format.OWS.readServiceIdentification_),
-        'ServiceProvider': ol.xml.makeObjectPropertySetter(
-            ol.format.OWS.readServiceProvider_),
-        'OperationsMetadata': ol.xml.makeObjectPropertySetter(
-            ol.format.OWS.readOperationsMetadata_)
-    });
+            'ServiceIdentification': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readServiceIdentification_),
+            'ServiceProvider': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readServiceProvider_),
+            'OperationsMetadata': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readOperationsMetadata_)
+        });
 
 
     /**
@@ -52312,16 +52312,16 @@ function olInit() {
      */
     ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'DeliveryPoint': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'AdministrativeArea': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'PostalCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    });
+            'DeliveryPoint': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'AdministrativeArea': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'PostalCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'ElectronicMailAddress': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        });
 
 
     /**
@@ -52331,8 +52331,8 @@ function olInit() {
      */
     ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Value': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readValue_)
-    });
+            'Value': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readValue_)
+        });
 
 
     /**
@@ -52342,9 +52342,9 @@ function olInit() {
      */
     ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'AllowedValues': ol.xml.makeObjectPropertySetter(
-            ol.format.OWS.readAllowedValues_)
-    });
+            'AllowedValues': ol.xml.makeObjectPropertySetter(
+                ol.format.OWS.readAllowedValues_)
+        });
 
 
     /**
@@ -52354,9 +52354,9 @@ function olInit() {
      */
     ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Phone': ol.xml.makeObjectPropertySetter(ol.format.OWS.readPhone_),
-        'Address': ol.xml.makeObjectPropertySetter(ol.format.OWS.readAddress_)
-    });
+            'Phone': ol.xml.makeObjectPropertySetter(ol.format.OWS.readPhone_),
+            'Address': ol.xml.makeObjectPropertySetter(ol.format.OWS.readAddress_)
+        });
 
 
     /**
@@ -52366,8 +52366,8 @@ function olInit() {
      */
     ol.format.OWS.DCP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'HTTP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readHttp_)
-    });
+            'HTTP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readHttp_)
+        });
 
 
     /**
@@ -52377,9 +52377,9 @@ function olInit() {
      */
     ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Get': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readGet_),
-        'Post': undefined // TODO
-    });
+            'Get': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readGet_),
+            'Post': undefined // TODO
+        });
 
 
     /**
@@ -52389,8 +52389,8 @@ function olInit() {
      */
     ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'DCP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readDcp_)
-    });
+            'DCP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readDcp_)
+        });
 
 
     /**
@@ -52400,8 +52400,8 @@ function olInit() {
      */
     ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Operation': ol.format.OWS.readOperation_
-    });
+            'Operation': ol.format.OWS.readOperation_
+        });
 
 
     /**
@@ -52411,9 +52411,9 @@ function olInit() {
      */
     ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+            'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -52423,9 +52423,9 @@ function olInit() {
      */
     ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
-        'Constraint': ol.xml.makeObjectPropertyPusher(
-            ol.format.OWS.readConstraint_)
-    });
+            'Constraint': ol.xml.makeObjectPropertyPusher(
+                ol.format.OWS.readConstraint_)
+        });
 
 
     /**
@@ -52436,12 +52436,12 @@ function olInit() {
     ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-            'IndividualName': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'ContactInfo': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readContactInfo_)
-        });
+                'IndividualName': ol.xml.makeObjectPropertySetter(
+                    ol.format.XSD.readString),
+                'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'ContactInfo': ol.xml.makeObjectPropertySetter(
+                    ol.format.OWS.readContactInfo_)
+            });
 
 
     /**
@@ -52452,14 +52452,14 @@ function olInit() {
     ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'AccessConstraints': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
-                ol.format.XSD.readString),
-            'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-        });
+                'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'AccessConstraints': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
+                    ol.format.XSD.readString),
+                'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+            });
 
 
     /**
@@ -52470,11 +52470,11 @@ function olInit() {
     ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
         ol.xml.makeStructureNS(
             ol.format.OWS.NAMESPACE_URIS_, {
-            'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-            'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
-            'ServiceContact': ol.xml.makeObjectPropertySetter(
-                ol.format.OWS.readServiceContact_)
-        });
+                'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+                'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+                'ServiceContact': ol.xml.makeObjectPropertySetter(
+                    ol.format.OWS.readServiceContact_)
+            });
 
     goog.provide('ol.geom.flat.flip');
 
@@ -55910,11 +55910,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Service': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readService_),
-        'Capability': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readCapability_)
-    });
+            'Service': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readService_),
+            'Capability': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readCapability_)
+        });
 
 
     /**
@@ -55924,13 +55924,13 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Request': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readRequest_),
-        'Exception': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readException_),
-        'Layer': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readCapabilityLayer_)
-    });
+            'Request': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readRequest_),
+            'Exception': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readException_),
+            'Layer': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readCapabilityLayer_)
+        });
 
 
     /**
@@ -55940,25 +55940,25 @@ function olInit() {
      */
     ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'KeywordList': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readKeywordList_),
-        'OnlineResource': ol.xml.makeObjectPropertySetter(
-            ol.format.XLink.readHref),
-        'ContactInformation': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readContactInformation_),
-        'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'AccessConstraints': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'LayerLimit': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MaxWidth': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MaxHeight': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger)
-    });
+            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'KeywordList': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readKeywordList_),
+            'OnlineResource': ol.xml.makeObjectPropertySetter(
+                ol.format.XLink.readHref),
+            'ContactInformation': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readContactInformation_),
+            'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'AccessConstraints': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'LayerLimit': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MaxWidth': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MaxHeight': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger)
+        });
 
 
     /**
@@ -55968,19 +55968,19 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readContactPersonPrimary_),
-        'ContactPosition': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'ContactAddress': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readContactAddress_),
-        'ContactVoiceTelephone': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'ContactFacsimileTelephone': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'ContactElectronicMailAddress': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    });
+            'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readContactPersonPrimary_),
+            'ContactPosition': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'ContactAddress': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readContactAddress_),
+            'ContactVoiceTelephone': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'ContactFacsimileTelephone': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'ContactElectronicMailAddress': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        });
 
 
     /**
@@ -55990,11 +55990,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'ContactPerson': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'ContactOrganization': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    });
+            'ContactPerson': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'ContactOrganization': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        });
 
 
     /**
@@ -56004,14 +56004,14 @@ function olInit() {
      */
     ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'StateOrProvince': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'PostCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+            'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'StateOrProvince': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'PostCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -56021,8 +56021,8 @@ function olInit() {
      */
     ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-    });
+            'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
+        });
 
 
     /**
@@ -56032,38 +56032,38 @@ function olInit() {
      */
     ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'KeywordList': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readKeywordList_),
-        'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-        'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
-        'BoundingBox': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readBoundingBox_),
-        'Dimension': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readDimension_),
-        'Attribution': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readAttribution_),
-        'AuthorityURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readAuthorityURL_),
-        'Identifier': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-        'MetadataURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readMetadataURL_),
-        'DataURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readFormatOnlineresource_),
-        'FeatureListURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readFormatOnlineresource_),
-        'Style': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readStyle_),
-        'MinScaleDenominator': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readDecimal),
-        'MaxScaleDenominator': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readDecimal),
-        'Layer': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readLayer_)
-    });
+            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'KeywordList': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readKeywordList_),
+            'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+            'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
+            'BoundingBox': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readBoundingBox_),
+            'Dimension': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readDimension_),
+            'Attribution': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readAttribution_),
+            'AuthorityURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readAuthorityURL_),
+            'Identifier': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+            'MetadataURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readMetadataURL_),
+            'DataURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readFormatOnlineresource_),
+            'FeatureListURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readFormatOnlineresource_),
+            'Style': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readStyle_),
+            'MinScaleDenominator': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readDecimal),
+            'MaxScaleDenominator': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readDecimal),
+            'Layer': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readLayer_)
+        });
 
 
     /**
@@ -56073,12 +56073,12 @@ function olInit() {
      */
     ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'OnlineResource': ol.xml.makeObjectPropertySetter(
-            ol.format.XLink.readHref),
-        'LogoURL': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readSizedFormatOnlineresource_)
-    });
+            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'OnlineResource': ol.xml.makeObjectPropertySetter(
+                ol.format.XLink.readHref),
+            'LogoURL': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readSizedFormatOnlineresource_)
+        });
 
 
     /**
@@ -56106,13 +56106,13 @@ function olInit() {
      */
     ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'GetCapabilities': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readOperationType_),
-        'GetMap': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readOperationType_),
-        'GetFeatureInfo': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readOperationType_)
-    });
+            'GetCapabilities': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readOperationType_),
+            'GetMap': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readOperationType_),
+            'GetFeatureInfo': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readOperationType_)
+        });
 
 
     /**
@@ -56122,10 +56122,10 @@ function olInit() {
      */
     ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-        'DCPType': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readDCPType_)
-    });
+            'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+            'DCPType': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readDCPType_)
+        });
 
 
     /**
@@ -56135,9 +56135,9 @@ function olInit() {
      */
     ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'HTTP': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readHTTP_)
-    });
+            'HTTP': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readHTTP_)
+        });
 
 
     /**
@@ -56147,11 +56147,11 @@ function olInit() {
      */
     ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Get': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readFormatOnlineresource_),
-        'Post': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readFormatOnlineresource_)
-    });
+            'Get': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readFormatOnlineresource_),
+            'Post': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readFormatOnlineresource_)
+        });
 
 
     /**
@@ -56161,16 +56161,16 @@ function olInit() {
      */
     ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-        'LegendURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMSCapabilities.readSizedFormatOnlineresource_),
-        'StyleSheetURL': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readFormatOnlineresource_),
-        'StyleURL': ol.xml.makeObjectPropertySetter(
-            ol.format.WMSCapabilities.readFormatOnlineresource_)
-    });
+            'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+            'LegendURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMSCapabilities.readSizedFormatOnlineresource_),
+            'StyleSheetURL': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readFormatOnlineresource_),
+            'StyleURL': ol.xml.makeObjectPropertySetter(
+                ol.format.WMSCapabilities.readFormatOnlineresource_)
+        });
 
 
     /**
@@ -56193,8 +56193,8 @@ function olInit() {
      */
     ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-        'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-    });
+            'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
+        });
 
     goog.provide('ol.format.WMSGetFeatureInfo');
 
@@ -56673,9 +56673,9 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'Contents': ol.xml.makeObjectPropertySetter(
-            ol.format.WMTSCapabilities.readContents_)
-    });
+            'Contents': ol.xml.makeObjectPropertySetter(
+                ol.format.WMTSCapabilities.readContents_)
+        });
 
 
     /**
@@ -56685,11 +56685,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'Layer': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readLayer_),
-        'TileMatrixSet': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readTileMatrixSet_)
-    });
+            'Layer': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readLayer_),
+            'TileMatrixSet': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readTileMatrixSet_)
+        });
 
 
     /**
@@ -56699,26 +56699,26 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'Style': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readStyle_),
-        'Format': ol.xml.makeObjectPropertyPusher(
-            ol.format.XSD.readString),
-        'TileMatrixSetLink': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readTileMatrixSetLink_),
-        'Dimension': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readDimensions_),
-        'ResourceURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readResourceUrl_)
-    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'Title': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'Abstract': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'WGS84BoundingBox': ol.xml.makeObjectPropertySetter(
-            ol.format.WMTSCapabilities.readWgs84BoundingBox_),
-        'Identifier': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    }));
+            'Style': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readStyle_),
+            'Format': ol.xml.makeObjectPropertyPusher(
+                ol.format.XSD.readString),
+            'TileMatrixSetLink': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readTileMatrixSetLink_),
+            'Dimension': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readDimensions_),
+            'ResourceURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readResourceUrl_)
+        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+            'Title': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'Abstract': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'WGS84BoundingBox': ol.xml.makeObjectPropertySetter(
+                ol.format.WMTSCapabilities.readWgs84BoundingBox_),
+            'Identifier': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        }));
 
 
     /**
@@ -56728,14 +56728,14 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'LegendURL': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readLegendUrl_)
-    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'Title': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'Identifier': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    }));
+            'LegendURL': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readLegendUrl_)
+        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+            'Title': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'Identifier': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        }));
 
 
     /**
@@ -56745,11 +56745,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'TileMatrixSet': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
-            ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
-    });
+            'TileMatrixSet': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
+                ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
+        });
 
     /**
      * @const
@@ -56758,9 +56758,9 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'TileMatrixLimits': ol.xml.makeArrayPusher(
-            ol.format.WMTSCapabilities.readTileMatrixLimits_)
-    });
+            'TileMatrixLimits': ol.xml.makeArrayPusher(
+                ol.format.WMTSCapabilities.readTileMatrixLimits_)
+        });
 
 
     /**
@@ -56770,17 +56770,17 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'TileMatrix': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'MinTileRow': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MaxTileRow': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MinTileCol': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MaxTileCol': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger)
-    });
+            'TileMatrix': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'MinTileRow': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MaxTileRow': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MinTileCol': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MaxTileCol': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger)
+        });
 
 
     /**
@@ -56790,14 +56790,14 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.DIMENSION_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'Default': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'Value': ol.xml.makeObjectPropertyPusher(
-            ol.format.XSD.readString)
-    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'Identifier': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    }));
+            'Default': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'Value': ol.xml.makeObjectPropertyPusher(
+                ol.format.XSD.readString)
+        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+            'Identifier': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        }));
 
 
     /**
@@ -56807,11 +56807,11 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'LowerCorner': ol.xml.makeArrayPusher(
-            ol.format.WMTSCapabilities.readCoordinates_),
-        'UpperCorner': ol.xml.makeArrayPusher(
-            ol.format.WMTSCapabilities.readCoordinates_)
-    });
+            'LowerCorner': ol.xml.makeArrayPusher(
+                ol.format.WMTSCapabilities.readCoordinates_),
+            'UpperCorner': ol.xml.makeArrayPusher(
+                ol.format.WMTSCapabilities.readCoordinates_)
+        });
 
 
     /**
@@ -56821,16 +56821,16 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'TileMatrix': ol.xml.makeObjectPropertyPusher(
-            ol.format.WMTSCapabilities.readTileMatrix_)
-    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'SupportedCRS': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString),
-        'Identifier': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    }));
+            'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'TileMatrix': ol.xml.makeObjectPropertyPusher(
+                ol.format.WMTSCapabilities.readTileMatrix_)
+        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+            'SupportedCRS': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString),
+            'Identifier': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        }));
 
 
     /**
@@ -56840,22 +56840,22 @@ function olInit() {
      */
     ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeStructureNS(
         ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
-        'TopLeftCorner': ol.xml.makeObjectPropertySetter(
-            ol.format.WMTSCapabilities.readCoordinates_),
-        'ScaleDenominator': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readDecimal),
-        'TileWidth': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'TileHeight': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MatrixWidth': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger),
-        'MatrixHeight': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readNonNegativeInteger)
-    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-        'Identifier': ol.xml.makeObjectPropertySetter(
-            ol.format.XSD.readString)
-    }));
+            'TopLeftCorner': ol.xml.makeObjectPropertySetter(
+                ol.format.WMTSCapabilities.readCoordinates_),
+            'ScaleDenominator': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readDecimal),
+            'TileWidth': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'TileHeight': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MatrixWidth': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger),
+            'MatrixHeight': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readNonNegativeInteger)
+        }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+            'Identifier': ol.xml.makeObjectPropertySetter(
+                ol.format.XSD.readString)
+        }));
 
     goog.provide('ol.GeolocationProperty');
 
@@ -63881,9 +63881,9 @@ function olInit() {
                             return !this.multi_;
                         }
                     }).bind(this), {
-                layerFilter: this.layerFilter_,
-                hitTolerance: this.hitTolerance_
-            });
+                    layerFilter: this.layerFilter_,
+                    hitTolerance: this.hitTolerance_
+                });
             var i;
             for (i = features.getLength() - 1; i >= 0; --i) {
                 var feature = features.item(i);
@@ -63922,9 +63922,9 @@ function olInit() {
                             return !this.multi_;
                         }
                     }).bind(this), {
-                layerFilter: this.layerFilter_,
-                hitTolerance: this.hitTolerance_
-            });
+                    layerFilter: this.layerFilter_,
+                    hitTolerance: this.hitTolerance_
+                });
             var j;
             for (j = deselected.length - 1; j >= 0; --j) {
                 features.remove(deselected[j]);
@@ -64944,9 +64944,9 @@ function olInit() {
                     return feature;
                 }
             }.bind(this), {
-            layerFilter: this.layerFilter_,
-            hitTolerance: this.hitTolerance_
-        });
+                layerFilter: this.layerFilter_,
+                hitTolerance: this.hitTolerance_
+            });
     };
 
 
@@ -98330,7 +98330,7 @@ function olInit() {
                 var replacedExpectedVaules = [];
                 for (var j = 0, jj = this.expectedValues.length; j < jj; j++) {
                     var numberValue = +this.expectedValues[j];
-                    if (isNaN(numberValue) || this.expectedValues[j] === '')  {
+                    if (isNaN(numberValue) || this.expectedValues[j] === '') {
                         replacedExpectedVaules.push(pbfLayer.values.indexOf(this.expectedValues[j]));
                     }
                     else {
@@ -101417,15 +101417,15 @@ function olInit() {
                             feature.flatCoordinates_ = flatCoordinates;
                             feature.ends_ = ends;
                         } else if (type === 'MultiLineString') {
-                            //var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
-                            //var flatCoordinates = clipped.flatCoordinates;
-                            //var ends = clipped.ends;
+                            var clipped = self.clipMultiLine(feature.flatCoordinates_, feature.ends_, bbox, squaredTolerance);
+                            var flatCoordinates = clipped.flatCoordinates;
+                            var ends = clipped.ends;
 
-                            //if (flatCoordinates.length <= 2) {
-                            //    continue;
-                            //}
-                            //feature.flatCoordinates_ = flatCoordinates;
-                            //feature.ends_ = ends;
+                            if (flatCoordinates.length <= 2) {
+                               continue;
+                            }
+                            feature.flatCoordinates_ = flatCoordinates;
+                            feature.ends_ = ends;
                         }
                         renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform } }, instructs[i]);
                     }
@@ -101502,8 +101502,9 @@ function olInit() {
 
                 // //Cancel the simplified
                 //var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
-                //if (!shortDistance) {
-                {
+                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= 0);
+
+                if (!shortDistance) {
                     parts[k] = parts[k].concat(segment[0]);
                 }
 
