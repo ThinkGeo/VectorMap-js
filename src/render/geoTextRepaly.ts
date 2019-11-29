@@ -776,6 +776,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             var flatCoordinates = options.flatCoordinates;
             if (label) {
                 var image = label;
+                image['NEAREST'] = true;
                 this.originX = options.originX;
                 this.originY = options.originY;
                 this.width = options.width;

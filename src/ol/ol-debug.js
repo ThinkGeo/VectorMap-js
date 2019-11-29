@@ -67549,7 +67549,7 @@ function olInit() {
                 texture = texturePerImage[uid];
             } else {
                 texture = ol.webgl.Context.createTexture(
-                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, this.label ? gl.NEAREST : gl.LINEAR);
+                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, image.NEAREST ? gl.NEAREST : gl.LINEAR);
                 texturePerImage[uid] = texture;
             }
             textures[i] = texture;
