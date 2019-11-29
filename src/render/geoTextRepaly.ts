@@ -192,8 +192,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
                         var geom = new ol.geom.LineString();
-                        geom.setFlatCoordinates("XY",lineFlatCoordinates);
-                        var  newFeature = new ol.Feature(geom);
+                        geom.setFlatCoordinates("XY", lineFlatCoordinates);
+                        var newFeature = new ol.Feature(geom);
                         newFeature.setProperties(feature.getProperties());
                         newFeature['zCoordinate'] = feature.zCoordinate;
                         newFeature['styleId'] = feature.styleId;
@@ -208,12 +208,12 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
                         var geom = new ol.geom.LineString();
-                        geom.setFlatCoordinates("XY",lineFlatCoordinates);
-                        var  newFeature = new ol.Feature(geom);
+                        geom.setFlatCoordinates("XY", lineFlatCoordinates);
+                        var newFeature = new ol.Feature(geom);
                         newFeature.setProperties(feature.getProperties());
                         newFeature['zCoordinate'] = feature.zCoordinate;
                         newFeature['styleId'] = feature.styleId;
-                        
+
                         this.setTextStyle(style);
                         this.drawLineStringText(geom, newFeature, frameState, declutterGroup);
                     }
@@ -656,13 +656,13 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 mCtx.font = state.font;
             }
             var sum = 0;
-            sum = mCtx.measureText(text).width * state.scale;
+            //sum = mCtx.measureText(text).width * state.scale;
 
-            // var i, ii;
-            // for (i = 0, ii = text.length; i < ii; ++i) {
-            //     var curr = text[i];
-            //     sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
-            // }
+            var i, ii;
+            for (i = 0, ii = text.length; i < ii; ++i) {
+                var curr = text[i];
+                sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+            }
 
             width = widths[text] = sum;
         }
