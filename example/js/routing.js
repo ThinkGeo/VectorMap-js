@@ -417,14 +417,7 @@ const handleResponse = (res) => {
     const data = res.data;
     const routes = data.routes[0];
     generateBox(routes);
-    const waypointsCoord = data.waypoints.map((item) => {
-        //TODO: Remove.
-        if (item.coordinate.x < item.coordinate.y) {
-            return [item.coordinate.x, item.coordinate.y];
-        } else {
-            return [item.coordinate.y, item.coordinate.x];
-        }
-    });
+    const waypointsCoord = data.waypoints.map(item => [item.coordinate.x, item.coordinate.y]);
     addWalkLinesFeatures(waypointsCoord);
 };
 
