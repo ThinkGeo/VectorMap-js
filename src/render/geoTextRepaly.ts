@@ -164,6 +164,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             var style = startIndicesStyles_[i];
             var declutterGroup = style.declutterGroup_;
             var geometry = feature.getGeometry();
+          
             var type = geometry.getType();
             // var resolution = feature.resolution;
             var flatCoordinates = geometry.getFlatCoordinates();
@@ -186,20 +187,29 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
             else if (type == 'MultiLineString') {
                 this.setTextStyle(style);
+                var properties = feature.getProperties()
+                delete properties['geometry'];
 
                 if (style.label) {
                     var ends = geometry.getEnds();
+                   
+
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                        var geom = new ol.geom.LineString();
-                        geom.setFlatCoordinates("XY", lineFlatCoordinates);
-                        var newFeature = new ol.Feature(geom);
-                        newFeature.setProperties(feature.getProperties());
-                        newFeature['zCoordinate'] = feature.zCoordinate;
-                        newFeature['styleId'] = feature.styleId;
 
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
                         this.setTextStyle(style);
-                        this.drawLineStringTextWithLabel(geom, newFeature, frameState, declutterGroup, style.label);
+                        this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.label);
+
+                        // var geom = new ol.geom.LineString();
+                        // geom.setFlatCoordinates("XY", lineFlatCoordinates);
+                        // var newFeature = new ol.Feature(geom);
+                        // newFeature.setProperties(properties);
+                        // newFeature['zCoordinate'] = feature.zCoordinate;
+                        // newFeature['styleId'] = feature.styleId;
+
+                        // this.setTextStyle(style);
+                        // this.drawLineStringTextWithLabel(geom, newFeature, frameState, declutterGroup, style.label);
                     }
                 }
                 else {
@@ -207,15 +217,20 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var ends = geometry.getEnds();
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
-                        var geom = new ol.geom.LineString();
-                        geom.setFlatCoordinates("XY", lineFlatCoordinates);
-                        var newFeature = new ol.Feature(geom);
-                        newFeature.setProperties(feature.getProperties());
-                        newFeature['zCoordinate'] = feature.zCoordinate;
-                        newFeature['styleId'] = feature.styleId;
 
+                        var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
                         this.setTextStyle(style);
-                        this.drawLineStringText(geom, newFeature, frameState, declutterGroup);
+                        this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
+
+                        // var geom = new ol.geom.LineString();
+                        // geom.setFlatCoordinates("XY", lineFlatCoordinates);
+                        // var newFeature = new ol.Feature(geom);
+                        // newFeature.setProperties(properties); 
+                        // newFeature['zCoordinate'] = feature.zCoordinate;
+                        // newFeature['styleId'] = feature.styleId;
+
+                        // this.setTextStyle(style);
+                        // this.drawLineStringText(geom, newFeature, frameState, declutterGroup);
                     }
                 }
             } else {
