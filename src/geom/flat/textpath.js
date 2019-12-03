@@ -46,9 +46,11 @@ export function lineString(
             segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
         }
 
-        if ((x1 > x2) !== reverse) {
-            return false;
-        }
+        // TODO: check the logic.
+        // It makes many roads without words
+        // if ((x1 > x2) !== reverse) {
+        //     return false;
+        // }
 
         // label exceed the road range
         if (offset > end - stride) {

@@ -403,10 +403,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
             pointArray.push(centerPoint);
 
-            if (resolution < 1) {
+            // For the logic of drawing duplicate road names, remove the resolution limit
+            //if (resolution < 1) {
                 this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
                 this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
-            }
+            //}
 
             this.height = this.measureTextHeight();
 
