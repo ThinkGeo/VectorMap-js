@@ -113,6 +113,7 @@ export class GeoLineStyle extends GeoStyle {
             this.onewayStyle = new ol.style.Style({
                 image: this.onewayIcon
             });
+            this.onewayStyle['zCoordinate'] = this.zIndex;
         }
     }
 
