@@ -350,10 +350,8 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             var pointArray = [];
             pointArray.push(centerPoint);
 
-            if (frameState.currentResolution < 1) {
-                this.findCenterPoints(0, centerPoint, pixelDistance, pointArray);
-                this.findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
-            }
+            this.findCenterPoints(0, centerPoint, pixelDistance, pointArray);
+            this.findCenterPoints(centerPoint, pathLength, pixelDistance, pointArray);
 
             for (var len = 0; len < pointArray.length; len++) {
                 let tempDeclutterGroup;
