@@ -13,10 +13,6 @@ export function lineString(
     }
 
 
-    // Keep text upright
-    var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
-
-    var numChars = text.length;
 
     var x1 = flatCoordinates[offset];
     var y1 = flatCoordinates[offset + 1];
@@ -25,6 +21,22 @@ export function lineString(
     var y2 = flatCoordinates[offset + 1];
     var segmentM = 0;
     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+
+    while (segmentM + segmentLength < startM) {
+        x1 = x2;
+        y1 = y2;
+        offset += stride;
+        x2 = flatCoordinates[offset];
+        y2 = flatCoordinates[offset + 1];
+        segmentM += segmentLength;
+        segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
+    }
+
+    // Keep text upright
+    var reverse = x1 > x2;
+
+    var numChars = text.length;
+
 
     var chunk = '';
     var data, index, previousAngle;
@@ -110,7 +122,7 @@ export function lineStringWithLabel(
     var y2 = flatCoordinates[offset + 1];
     var segmentM = 0;
     var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-    
+
     var charM = startM;
 
     while (segmentM + segmentLength < charM) {
