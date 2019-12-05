@@ -11,8 +11,9 @@ var view = new ol.View({
     //center: [-8051563.931156208, 6108477.916978194], // ol polygon 8
     //center:[-15008563.377850933, 4304933.433021126], // country polygon
 
-     center:[-10781710.09549699, 3888480.3828394795],// road clip issue zoom 17.
-    // center:[-10777094.140020758, 3865651.7722501396], //[-10776404.929903472, 3866030.036479002]
+    // center:[-10781710.09549699, 3888480.3828394795],// road clip issue zoom 17.
+    // center:[-10777094.140020758, 3865651.7722501396], 
+    center:[-10776404.929903472, 3866030.036479002],
     zoom: 19,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
@@ -102,7 +103,7 @@ var vectorLayer = new ol.layer.Vector({
         return new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: "red",
-                width: 20
+                width: 1
             })
         })
     }
