@@ -101502,7 +101502,8 @@ function olInit() {
 
                 // //Cancel the simplified
                 //var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= squaredTolerance);
-                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= 0);
+                // 0.00000~00001 is workaround for the computational accuracy problem
+                var shortDistance = (ol.geom.flat.transform.sqDist(segment[0], segment[1]) <= 0.0000000000001);
 
                 if (!shortDistance) {
                     parts[k] = parts[k].concat(segment[0]);
