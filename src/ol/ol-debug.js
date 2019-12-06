@@ -68387,6 +68387,7 @@ function olInit() {
             var tmpPixelCoords2 = ol.transform.apply(frameState.coordinateToPixelTransform, [x2, y2]);
             var segLength = Math.sqrt(Math.pow((tmpPixelCoords1[1] - tmpPixelCoords2[1]), 2) +
                 Math.pow((tmpPixelCoords1[0] - tmpPixelCoords2[0]), 2));
+            segLength = +parseFloat(segLength.toPrecision(9));
 
             var segFlatCoordinates = [x1, y1, x2, y2];
             subResultCoords.push(x1, y1);
@@ -101422,7 +101423,7 @@ function olInit() {
                             var ends = clipped.ends;
 
                             if (flatCoordinates.length <= 2) {
-                               continue;
+                                continue;
                             }
                             feature.flatCoordinates_ = flatCoordinates;
                             feature.ends_ = ends;
