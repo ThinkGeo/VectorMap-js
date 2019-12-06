@@ -71,6 +71,7 @@ export class GeoLineStyle extends GeoStyle {
             this.offsetY = styleJson["line-offset-y"] || 0;
             this.geometryTransform = styleJson["line-geometry-transform"];
             this.lineDirectionImageUri = styleJson["line-direction-image-uri"];
+            this.lineDirectionImageSize = styleJson["line-direction-image-size"];
         }
         if (!this.compounds.includes(this.compound)) {
             this.compound = this.defaultCompund;
@@ -103,9 +104,32 @@ export class GeoLineStyle extends GeoStyle {
         }
 
         if (this.lineDirectionImageUri) {
+            var imageSize;
+            if(this.lineDirectionImageSize!=undefined)
+            {
+                var imageSizeArray=this.lineDirectionImageSize.split(",");
+                if(imageSizeArray.length===1)
+                {
+                    var size = +imageSizeArray[0];
+                    if(!isNaN(size))
+                    {
+                        imageSize=[size,size];
+                    }
+
+                }else if(imageSizeArray.length ===2)
+                {
+                    var imgWidth = +imageSizeArray[0];
+                    var imgHeitht = +imageSizeArray[1];
+                    if(!isNaN(imgWidth)&&!isNaN(imgHeitht))
+                    {
+                        imageSize=[imgWidth,imgHeitht];
+                    }
+                }
+            }
+
             this.onewayIcon = new ol.style.Icon({
                 src: this.lineDirectionImageUri,
-                imgSize: [18, 5],
+                imgSize: imageSize,
                 anchor: [0.5, 0.5],
                 rotateWithView: true
             });
