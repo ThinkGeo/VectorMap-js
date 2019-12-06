@@ -68395,7 +68395,12 @@ function olInit() {
             while (accumulator < segLength) {
                 for (var j = 0; j < lineDash.length; j++) {
                     accumulator += lineDash[j];
+
                     if (accumulator < segLength) {
+                        if (accumulator === 0) {
+                            // workaround:this parameter is then used as a divisor. 
+                            accumulator = 0.001;
+                        }
                         var subPixelCoordinates = myCreateSegDirection(segFlatCoordinates, accumulator, coordinateToPixelTransform);
                         var subFlatCoordinates = ol.transform.apply(frameState.pixelToCoordinateTransform, [subPixelCoordinates[2], subPixelCoordinates[3]]);
                         subResultCoords = subResultCoords.concat(subFlatCoordinates);
