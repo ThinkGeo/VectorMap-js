@@ -272,7 +272,9 @@ export class GeoPointStyle extends GeoStyle {
             outlineWidth = textStrok.getWidth();
         }
 
-        let scale = window.devicePixelRatio;
+        let textScale = glyphTextStyle.getScale();
+        textScale = textScale === undefined ? 1 : textScale;
+        let scale = textScale * window.devicePixelRatio;
 
         let labelWidth = (<any>ol.render.canvas).TextReplay.measureTextWidths(font, [text], []) + outlineWidth;
         let labelHeight = (<any>ol.render.canvas).measureTextHeight(font);
@@ -287,8 +289,13 @@ export class GeoPointStyle extends GeoStyle {
         textAnchorX = canvasSizeInfoWithMask[2];
         textAnchorY = canvasSizeInfoWithMask[3];
 
-        let context = (<any>ol).dom.createCanvasContext2D(canvasWidth, canvasHeight);
+        let context = (<any>ol).dom.createCanvasContext2D(canvasWidth*scale, canvasHeight*scale);
         context.globalAlpha = opacity || 1;
+
+        if (scale !== 1) {
+            context.scale(scale, scale);
+        }
+        context["scale"] = scale;
 
         this.drawMask(context);
 

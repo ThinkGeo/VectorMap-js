@@ -164,7 +164,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             var style = startIndicesStyles_[i];
             var declutterGroup = style.declutterGroup_;
             var geometry = feature.getGeometry();
-          
+
             var type = geometry.getType();
             // var resolution = feature.resolution;
             var flatCoordinates = geometry.getFlatCoordinates();
@@ -192,7 +192,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
                 if (style.label) {
                     var ends = geometry.getEnds();
-                   
+
 
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
@@ -405,8 +405,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
             // For the logic of drawing duplicate road names, remove the resolution limit
             //if (resolution < 1) {
-                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
-                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
+            this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+            this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
             //}
 
             this.height = this.measureTextHeight();
@@ -613,6 +613,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
             state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
             state.scale = textStyle.getScale() || 1;
+
+
+            let scale = window.devicePixelRatio;
+
+
             this.text_ = /** @type {string} */ (textStyle.getText());
             var textAlign = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextAlign()];
             var textBaseline = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextBaseline()];
@@ -620,13 +625,13 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 (<any>ol.render).webgl.defaultTextAlign : textAlign;
             this.textBaseline_ = textBaseline === undefined ?
                 (<any>ol.render).webgl.defaultTextBaseline : textBaseline;
-            this.offsetX_ = textStyle.getOffsetX() || 0;
-            this.offsetY_ = textStyle.getOffsetY() || 0;
+            this.offsetX_ = (textStyle.getOffsetX() || 0) * scale;
+            this.offsetY_ = (textStyle.getOffsetY() || 0) * scale;
             this.rotateWithView = !!textStyle.getRotateWithView();
             this.rotation = textStyle.getRotation() || 0;
             this.maxAngle_ = textStyle.getMaxAngle();
             this.intervalDistance_ = textStyle["intervalDistance"] || 0;
-            this.spacing_ = textStyle["spacing"] || 0;
+            this.spacing_ = (textStyle["spacing"] || 0) * scale;
 
             this.textPlacements = [0, 0]
             if (textStyle["placements"] == "upper") {
