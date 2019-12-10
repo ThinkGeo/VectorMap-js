@@ -101400,7 +101400,6 @@ function olInit() {
                         var featureInfo = features[instructs[i][0]];
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
 
-                        this.console.log(clonedFlatCoordinates.length);
                         var cloneEnds = featureInfo.ends_.slice(0);
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
