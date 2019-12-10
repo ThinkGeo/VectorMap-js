@@ -101399,6 +101399,8 @@ function olInit() {
                         var geoStyle = geoStyles[geoStyleId];
                         var featureInfo = features[instructs[i][0]];
                         var clonedFlatCoordinates = featureInfo.flatCoordinates_.slice(0);
+
+                        this.console.log(clonedFlatCoordinates.length);
                         var cloneEnds = featureInfo.ends_.slice(0);
                         var feature = new ol.render.Feature(featureInfo.type_, clonedFlatCoordinates, cloneEnds, featureInfo.properties_, featureInfo.id_);
                         feature.getGeometry().transform(tileProjection, projection);
@@ -101408,6 +101410,11 @@ function olInit() {
                         feature["styleId"] = geoStyleId;
                         // clip line segment
                         var type = feature.type_;
+
+                        if (clonedFlatCoordinates.length !== 32) {
+                            continue;
+                        }
+                        debugger;
                         if (type === 'LineString') {
                             var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);
                             var flatCoordinates = clipped.flatCoordinates;
@@ -101453,6 +101460,10 @@ function olInit() {
 
             for (var j = 0; j < clipped.length; j++) {
                 var coords = clipped[j];
+                if (coords.length === 6 && coords[0] === coords[4] && coords[1] === coords[5]) {
+                    // work around the line string as :[A,B,A], we just remove the last point A.
+                    coords.length = 4;
+                }
                 if (coords.length > 2) {
                     clippedFlatCoordinates = clippedFlatCoordinates.concat(coords);
                     clippedEnds.push(clippedFlatCoordinates.length);
