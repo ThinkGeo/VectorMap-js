@@ -101410,11 +101410,6 @@ function olInit() {
                         feature["styleId"] = geoStyleId;
                         // clip line segment
                         var type = feature.type_;
-
-                        if (clonedFlatCoordinates.length !== 32) {
-                            continue;
-                        }
-                        debugger;
                         if (type === 'LineString') {
                             var clipped = self.clipLine(feature.flatCoordinates_, bbox, squaredTolerance);
                             var flatCoordinates = clipped.flatCoordinates;
