@@ -614,8 +614,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
             state.scale = textStyle.getScale() || 1;
 
-
-            let scale = window.devicePixelRatio;
+            let scale = state.scale * window.devicePixelRatio;
 
 
             this.text_ = /** @type {string} */ (textStyle.getText());
