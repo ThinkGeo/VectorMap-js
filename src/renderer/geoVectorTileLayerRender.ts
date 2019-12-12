@@ -580,6 +580,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                             let olFeature = new ol.Feature({
                                                 geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
                                             });
+                                            olFeature.getGeometry()['ends_'] = item.ends_
                                             olFeature.setProperties(item.properties_);
                                             olFeature['zCoordinate'] = item.zCoordinate;
                                             olFeature['styleId'] = item.styleId;
@@ -596,6 +597,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                                 let olFeature = new ol.Feature({
                                                     geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
                                                 });
+                                                olFeature.getGeometry()['ends_'] = item.ends_
                                                 olFeature.setProperties(item.properties_);
                                                 olFeature['zCoordinate'] = item.zCoordinate;
                                                 olFeature['styleId'] = item.styleId;
