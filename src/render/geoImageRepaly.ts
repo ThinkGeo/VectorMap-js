@@ -60,6 +60,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
         this.rotateWithView = rotateWithView;
         this.scale = scale;
         this.width = size[0];
+        this.allowOverlapping = imageStyle["allowOverlapping"];
     }
 
     public drawPoint(options) {
@@ -254,7 +255,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
                     value: feature
                 };
 
-                if (!this.declutterTree.collides(box)) {
+                if (!this.declutterTree.collides(box)||this.allowOverlapping) {
                     this.declutterTree.insert(box);
                     for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
                         var declutter = declutterGroup[j];
