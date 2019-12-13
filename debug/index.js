@@ -1,7 +1,7 @@
 var view = new ol.View({
     //center: [0, 0],
     //center: [-10784844.42768457, 4989250.967286606],// poi
-    center: [-8231292.426002176, 4952348.061687753],// NY
+    // center: [-8231292.426002176, 4952348.061687753],// NY
     //center:[-8186799.75338646, 4952102.791557407],// NY road label reverse
     //center: [-10780142.293364197, 3888254.56808908],// dallas road 
     //center: [-10796026.396196617, 5003517.396574807],// country_name
@@ -16,8 +16,8 @@ var view = new ol.View({
     // center:[-10776404.929903472, 3866030.036479002],
 
     //center:[-10774719.96412073, 3866961.8013970205], // footway line dash crash issue.
-    
-    zoom: 10,
+    center: [-10777733.180638682, 3912467.041813029], 
+    zoom: 19,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
