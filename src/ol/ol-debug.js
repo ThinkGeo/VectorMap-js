@@ -68410,6 +68410,7 @@ function olInit() {
                         } else {
                             var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
                             startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
+                            startLengthOfSeg = +parseFloat(startLengthOfSeg.toPrecision(9));
                         }
                         accumulator = Infinity;
                         // solid line
