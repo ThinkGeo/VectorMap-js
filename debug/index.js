@@ -1,7 +1,7 @@
 var view = new ol.View({
     //center: [0, 0],
     //center: [-10784844.42768457, 4989250.967286606],// poi
-    center: [-8231292.426002176, 4952348.061687753],// NY
+    //center: [9237342.073268456,4814462.333458577],// NY
     //center:[-8186799.75338646, 4952102.791557407],// NY road label reverse
     //center: [-10780142.293364197, 3888254.56808908],// dallas road 
     //center: [-10796026.396196617, 5003517.396574807],// country_name
@@ -11,13 +11,18 @@ var view = new ol.View({
     //center: [-8051563.931156208, 6108477.916978194], // ol polygon 8
     //center:[-15008563.377850933, 4304933.433021126], // country polygon
 
-     //center:[-10781710.244788043, 3888472.76899487],// road clip issue zoom 17.
+    //center:[-10781710.244788043, 3888472.76899487],// road clip issue zoom 17.
     // center:[-10777094.140020758, 3865651.7722501396], 
     // center:[-10776404.929903472, 3866030.036479002],
 
     //center:[-10774719.96412073, 3866961.8013970205], // footway line dash crash issue.
     
-    zoom: 10,
+    // center:[-10779756.936417371, 3888820.084823086], // the raod name fuzzy issue,zoom 16
+
+
+    center: [-8236205.431340847,4971057.226777224],
+
+    zoom: 7,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -25,12 +30,24 @@ var view = new ol.View({
 var zoom = view.getZoom();
 document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 view.on("change:resolution", function (e) {
-    var zoom = view.getZoom();
-    if ((zoom.toString()).indexOf(".") > 0) {
-        zoom = zoom.toFixed(2);
-    }
-    document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
-});
+        var zoom = view.getZoom();
+        if ((zoom.toString()).indexOf(".") > 0) {
+            zoom = zoom.toFixed(2);
+        }
+
+        var center = view.getCenter();
+
+        document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom) + " <br\> Center:" +center+" <br>Pixel Ratio:" + ol.has.DEVICE_PIXEL_RATIO;
+    });
+    view.on("change:center", function (e) {
+        var zoom = view.getZoom();
+        if ((zoom.toString()).indexOf(".") > 0) {
+            zoom = zoom.toFixed(2);
+        }
+        var center = view.getCenter();
+
+        document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom) + " <br\> Center:" + center + " <br>Pixel Ratio:" + ol.has.DEVICE_PIXEL_RATIO;
+    });
 
 var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
     declutter: true,
@@ -66,7 +83,6 @@ var mapboxLayer = new ol.layer.VectorTile({
 
     }
 })
-
 
 var olWorldStreetMap = new ol.layer.VectorTile({
     declutter: true,
@@ -123,18 +139,11 @@ var lineStyle= new ol.style.Style({
 var layer = new ol.layer.VectorTile({
     source: new ol.source.VectorTile({
         format: new ol.format.MVT({
-            featureClass:ol.Feature
         }),
         url: 'http://localhost:1314/tile/{z}/{x}/{y}'
     }),
     renderMode: "vector",
-    style:function(f,r)
-    {
-        if(f.get('layer')==='road'&&f.get('class')==='motorway_link')
-        {
-            return lineStyle
-        }
-    }
+
 });
 
 var map = new ol.Map({
