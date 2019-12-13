@@ -12656,10 +12656,6 @@ function olInit() {
         var points;
 
         if (extent && isPolygon) {
-            // TODO2
-            if (flatCoordinates[0] === -10778571.076584868 || flatCoordinates[0] === -10778571.673749149) {
-                debugger;
-            }
             points = ol.geom.flat.transform.clipPolygon(flatCoordinates.slice(offset, end), extent);
 
             for (j = 0; j < points.length; j += 2) {
@@ -98583,20 +98579,6 @@ function olInit() {
                 var length = 0;
                 var styles = [];
                 var clonedFlatCoordinates = feature.getFlatCoordinates().slice(0);
-                // TODO1
-
-                //if (clonedFlatCoordinates[0] === -10778571.673749149
-                //    || clonedFlatCoordinates[0] === -10778544.204192108
-                //    || clonedFlatCoordinates[0] === -10778599.143306188
-                //    || clonedFlatCoordinates[0] === -10778590.78300622 
-                //    || clonedFlatCoordinates[0] === -10778563.31344918
-                //    || clonedFlatCoordinates[0] === -10778535.84389214 
-                //   ) {
-
-                //}
-                //else {
-                //    //return [];
-                //}
 
                 var cloneEnds = feature.getEnds().slice(0);
                 var type = feature.getType();
