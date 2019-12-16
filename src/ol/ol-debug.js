@@ -99924,7 +99924,6 @@ function olInit() {
                 var extent = polygonGeometry.getExtent();
                 var drawingBbox = polygonGeometry["drawingBbox"];
 
-                var hasValidFlatCoordinates = false;
                 //var drawingBbox = undefined;
                 if (ends.length > 0) {
                     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
@@ -99944,10 +99943,6 @@ function olInit() {
                         outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
                             stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
                         outers[index].push(outerRing);
-                        if (outerRing.length > 0) {
-                            hasValidFlatCoordinates = true;
-                        }
-
 
                         var points = flatCoordinates.slice(0, ends[0]);
                         var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
@@ -99981,9 +99976,6 @@ function olInit() {
                                     }
                                 }
                                 outers[index].push(holeFlatCoords);
-                                if (holeFlatCoords.length > 0) {
-                                    hasValidFlatCoordinates = true;
-                                }
                             }
 
                             var points = flatCoordinates.slice(ends[i - 1], ends[i]);
@@ -99999,33 +99991,30 @@ function olInit() {
                             }
                         }
                     }
+                    
+                    this.startIndices.push(this.indices.length);
+                    this.startIndicesFeature.push(feature);
 
-                    if(hasValidFlatCoordinates)
-                    {
-                        this.startIndices.push(this.indices.length);
-                        this.startIndicesFeature.push(feature);
-    
-                        if (this.state_.changed) {
-                            this.zCoordinates.push(feature.zCoordinate);
-                            this.styleIndices_.push(this.indices.length);
-                            this.state_.changed = false;
-                        }
-                        if (this.lineStringReplay) {
-                            this.lineStringReplay.setPolygonStyle(feature);
-                        }
-                        if (this.lineStringReplay) {
-                            for (let i = 0; i < outlines.length; i++) {
-                                const lineStrings = outlines[i];
-                                for (var j = 0; j < lineStrings.length; j++) {
-                                    var lineString = lineStrings[j];
-                                    this.lineStringReplay.drawCoordinates_(lineString, 0, lineString.length, stride);
-                                }
+                    if (this.state_.changed) {
+                        this.zCoordinates.push(feature.zCoordinate);
+                        this.styleIndices_.push(this.indices.length);
+                        this.state_.changed = false;
+                    }
+                    if (this.lineStringReplay) {
+                        this.lineStringReplay.setPolygonStyle(feature);
+                    }
+                    if (this.lineStringReplay) {
+                        for (let i = 0; i < outlines.length; i++) {
+                            const lineStrings = outlines[i];
+                            for (var j = 0; j < lineStrings.length; j++) {
+                                var lineString = lineStrings[j];
+                                this.lineStringReplay.drawCoordinates_(lineString, 0, lineString.length, stride);
                             }
                         }
-                        for (var i = 0; i < outers.length; i++) {
-                            var outer = outers[i];
-                            this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
-                        }
+                    }
+                    for (var i = 0; i < outers.length; i++) {
+                        var outer = outers[i];
+                        this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                     }
                 }
             };
@@ -100916,6 +100905,7 @@ function olInit() {
             if (fillStyle || strokeStyle) {
                 var polygonReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.POLYGON);
+                debugger;
                 polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
                 polygonReplay.drawPolygon(geometry, feature, options);
             }
