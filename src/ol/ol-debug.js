@@ -100905,7 +100905,6 @@ function olInit() {
             if (fillStyle || strokeStyle) {
                 var polygonReplay = replayGroup.getReplay(
                     style.getZIndex(), ol.render.ReplayType.POLYGON);
-                debugger;
                 polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
                 polygonReplay.drawPolygon(geometry, feature, options);
             }
