@@ -98631,6 +98631,8 @@ function olInit() {
                         geometry.ends_ = feature.ends_;
                         var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
                         cloneFeature.extent_ = newExtent_;
+                        var newDrawingBbox = ol.geom.flat.transform.translate(feature.drawingBbox, 0, feature.drawingBbox.length, 2, +offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
+                        cloneFeature.drawingBbox = newDrawingBbox;
                     }
 
                     this.style.setGeometry(cloneFeature.getGeometry());
