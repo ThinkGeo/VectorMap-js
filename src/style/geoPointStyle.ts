@@ -73,6 +73,8 @@ export class GeoPointStyle extends GeoStyle {
             this.linearGradient = styleJson["point-linear-gradient"];
             this.radialGradient = styleJson["point-radial-gradient"];
             this.transform = styleJson["point-transform"];
+
+            this.allowOverlapping = styleJson["point-allow-overlapping"] || false;
         }
         if (!this.compounds.includes(this.compound)) {
             this.compound = this.defaultCompund;
@@ -103,10 +105,12 @@ export class GeoPointStyle extends GeoStyle {
         if (this.pointType === "symbol") {
             this.imageStyle["offsetX"] = this.offsetX;
             this.imageStyle["offsetY"] = this.offsetY;
+            this.imageStyle["allowOverlapping"] = this.allowOverlapping;
             this.imageStyle.setOpacity(this.opacity);
             this.style.setImage(this.imageStyle);
 
             var maskStyle = this.drawMaskForSymbol(this.imageStyle, this.opacity);
+            if (maskStyle) { maskStyle["allowOverlapping"] = this.allowOverlapping; }
             this.style.setText(maskStyle);
         }
 
@@ -114,6 +118,7 @@ export class GeoPointStyle extends GeoStyle {
             if (this.glyphFontName && this.glyphContent) {
                 this.glyphTextStyle["label"] = this.getGlyphImage(this.glyphTextStyle, this.opacity);
                 this.style.setImage(null);
+                this.glyphTextStyle["allowOverlapping"] = this.allowOverlapping;
                 this.style.setText(this.glyphTextStyle);
             }
         }
@@ -289,7 +294,7 @@ export class GeoPointStyle extends GeoStyle {
         textAnchorX = canvasSizeInfoWithMask[2];
         textAnchorY = canvasSizeInfoWithMask[3];
 
-        let context = (<any>ol).dom.createCanvasContext2D(canvasWidth*scale, canvasHeight*scale);
+        let context = (<any>ol).dom.createCanvasContext2D(canvasWidth * scale, canvasHeight * scale);
         context.globalAlpha = opacity || 1;
 
         if (scale !== 1) {

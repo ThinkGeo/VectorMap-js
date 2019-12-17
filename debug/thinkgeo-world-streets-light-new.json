@@ -3809,16 +3809,16 @@
               },
               "style": [
                 {
-                  "filter": "type='gate,sliding_gate,hampshire_gate,kissing_gate'",
+                  "filter": "type='gate,sliding_gate,hampshire_gate,kissing_gate,bump_gate,sally_port'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04c"
                   },
                   "style": [
                     {
-                      "filter": "zoom=16",
+                      "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
                       "text-base-point-style": {
-                        "point-size": 16
+                        "point-size": 14
                       }
                     }
                   ]
@@ -3830,10 +3830,55 @@
                   },
                   "style": [
                     {
-                      "filter": "zoom=16",
+                      "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
                       "text-base-point-style": {
-                        "point-size": 16
+                        "point-size": 14
+                      }
+                    }
+                  ]
+                },
+                {
+                  "filter": "type='motorcycle_barrier'",
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue0e5"
+                  },
+                  "style": [
+                    {
+                      "filter": "zoom>=16",
+                      "text-font": "600 10px Arial",
+                      "text-base-point-style": {
+                        "point-size": 14
+                      }
+                    }
+                  ]
+                },
+                {
+                  "filter": "type='border_control,swing_gate,wicket_gate'",
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue04f"
+                  },
+                  "style": [
+                    {
+                      "filter": "zoom>=16",
+                      "text-font": "600 10px Arial",
+                      "text-base-point-style": {
+                        "point-size": 14
+                      }
+                    }
+                  ]
+                },
+                {
+                  "filter": "type='chain,tank_trap,block'",
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue048"
+                  },
+                  "style": [
+                    {
+                      "filter": "zoom>=16",
+                      "text-font": "600 10px Arial",
+                      "text-base-point-style": {
+                        "point-size": 14
                       }
                     }
                   ]
@@ -4021,6 +4066,7 @@
                   "style": [
                     {
                       "filter": "zoom>=17",
+                      "text-wrap-width": 120,
                       "text-font": "600 14px Arial",
                       "text-base-point-style": {
                         "point-size": 22
@@ -5337,8 +5383,8 @@
                       "filter": "zoom>=18",
                       "text-font": "600 14px Arial",
                       "text-base-point-style": {
-                        "point-size": 6,
-                        "point-offset-y": -6
+                        "point-size": 4,
+                        "point-offset-y": -4
                       }
                     }
                   ]
@@ -6688,6 +6734,22 @@
                   ]
                 },
                 {
+                  "filter": "type='picnic_site'",
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue05f"
+                  },
+                  "style": [
+                    {
+                      "filter": "zoom>=17",
+                      "text-font": "600 10px Arial",
+                      "text-base-point-style": {
+                        "point-size": 18,
+                        "point-offset-y": -10
+                      }
+                    }
+                  ]
+                },
+                {
                   "filter": "type='garden'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d1"
@@ -6960,8 +7022,8 @@
                   "filter": "zoom>=17",
                   "text-font": "600 10px Arial",
                   "text-base-point-style": {
-                    "point-size": 6,
-                    "point-offset-y": -6
+                    "point-size": 4,
+                    "point-offset-y": -4
                   }
                 }
               ]
@@ -7005,8 +7067,8 @@
               "filter": "zoom>=17",
               "text-font": "600 10px Arial",
               "text-base-point-style": {
-                "point-size": 6,
-                "point-offset-y": -6
+                "point-size": 4,
+                "point-offset-y": -4
               }
             }
           ]
@@ -8988,47 +9050,20 @@
           "line-cap": "round",
           "style": [
             {
-              "filter": "structure='tunnel'",
-              "line-opacity": 0.6,
-              "style": [
-                {
-                  "filter": "zoom=19",
-                  "line-width": 6
-                },
-                {
-                  "filter": "zoom=18",
-                  "line-width": 3
-                },
-                {
-                  "filter": "zoom=17",
-                  "line-width": 2
-                },
-                {
-                  "filter": "zoom=16",
-                  "line-width": 1.5
-                }
-              ]
+              "filter": "zoom=19",
+              "line-width": 6
             },
             {
-              "filter": "structure!='tunnel'",
-              "style": [
-                {
-                  "filter": "zoom=19",
-                  "line-width": 6
-                },
-                {
-                  "filter": "zoom=18",
-                  "line-width": 3
-                },
-                {
-                  "filter": "zoom=17",
-                  "line-width": 2
-                },
-                {
-                  "filter": "zoom=16",
-                  "line-width": 1.5
-                }
-              ]
+              "filter": "zoom=18",
+              "line-width": 3
+            },
+            {
+              "filter": "zoom=17",
+              "line-width": 2
+            },
+            {
+              "filter": "zoom=16",
+              "line-width": 1.5
             }
           ]
         },
@@ -9763,6 +9798,7 @@
               ]
             },
             {
+              "filter": "structure=1",
               "style": [
                 {
                   "filter": "zoom=19",
@@ -9940,6 +9976,7 @@
               ]
             },
             {
+              "filter": "structure=1",
               "style": [
                 {
                   "filter": "zoom=19",
@@ -10025,7 +10062,7 @@
           "point-size": 40
         },
         {
-          "filter": "zoom=19",
+          "filter": "zoom>=19",
           "point-size": 50
         }
       ]
@@ -10055,7 +10092,7 @@
           "point-size": 38
         },
         {
-          "filter": "zoom=19",
+          "filter": "zoom>=19",
           "point-size": 48
         }
       ]

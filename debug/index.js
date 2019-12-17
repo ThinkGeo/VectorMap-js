@@ -16,9 +16,7 @@ var view = new ol.View({
     // center:[-10776404.929903472, 3866030.036479002],
 
     //center:[-10774719.96412073, 3866961.8013970205], // footway line dash crash issue.
-
-    center: [-10778576.234563861, 3912385.543161753],// building shadow 19
-    
+    center: [-10779303.015693795,3909269.281045342], 
     zoom: 19,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
