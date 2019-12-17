@@ -6676,7 +6676,6 @@
         {
           "filter": "class='secondary'",
           "line-color": "@road_secondary_outline_color",
-          "line-cap": "butt",
           "style": [
             {
               "filter": "zoom=19",
@@ -6730,7 +6729,6 @@
         },
         {
           "filter": "class='primary'",
-          "line-cap": "butt",
           "style": [
             {
               "filter": "ref!=''",
@@ -6774,7 +6772,7 @@
                 },
                 {
                   "filter": "zoom>=7;zoom<=8",
-                  "line-width": 2.5
+                  "line-width": 10
                 }
               ]
             },
@@ -7635,121 +7633,7 @@
             }
           ]
         },
-        {
-          "filter": "class='primary'",
-          "line-cap": "round",
-          "style": [
-            {
-              "filter": "ref!=''",
-              "line-color": "@road_primary_major_fill_color",
-              "line-cap": "butt",
-              "style": [
-                {
-                  "filter": "zoom=19",
-                  "line-width": 36
-                },
-                {
-                  "filter": "zoom=18",
-                  "line-width": 34
-                },
-                {
-                  "filter": "zoom=17",
-                  "line-width": 18
-                },
-                {
-                  "filter": "zoom=16",
-                  "line-width": 10
-                },
-                {
-                  "filter": "zoom>=14;zoom<=15",
-                  "line-width": 6
-                },
-                {
-                  "filter": "zoom=13",
-                  "line-width": 3.5
-                },
-                {
-                  "filter": "zoom=12",
-                  "line-width": 3
-                },
-                {
-                  "filter": "zoom=11",
-                  "line-width": 2.5
-                },
-                {
-                  "filter": "zoom=10",
-                  "line-width": 2
-                },
-                {
-                  "filter": "zoom=9",
-                  "line-width": 1.7
-                },
-                {
-                  "filter": "zoom=8",
-                  "line-width": 1.3
-                },
-                {
-                  "filter": "zoom>=6;zoom<=7",
-                  "line-width": 1.1
-                }
-              ]
-            },
-            {
-              "filter": "ref=''",
-              "line-color": "@road_primary_fill_color",
-              "style": [
-                {
-                  "filter": "zoom=19",
-                  "line-width": 36
-                },
-                {
-                  "filter": "zoom=18",
-                  "line-width": 34
-                },
-                {
-                  "filter": "zoom=17",
-                  "line-width": 22
-                },
-                {
-                  "filter": "zoom=16",
-                  "line-width": 14
-                },
-                {
-                  "filter": "zoom>=14;zoom<=15",
-                  "line-width": 9
-                },
-                {
-                  "filter": "zoom=13",
-                  "line-width": 6
-                },
-                {
-                  "filter": "zoom=12",
-                  "line-width": 5
-                },
-                {
-                  "filter": "zoom=11",
-                  "line-width": 3.5
-                },
-                {
-                  "filter": "zoom=10",
-                  "line-width": 2.5
-                },
-                {
-                  "filter": "zoom=9",
-                  "line-width": 1.7
-                },
-                {
-                  "filter": "zoom=8",
-                  "line-width": 1.3
-                },
-                {
-                  "filter": "zoom>=6;zoom<=7",
-                  "line-width": 1
-                }
-              ]
-            }
-          ]
-        },
+      
         {
           "filter": "class='trunk'",
           "line-color": "@road_trunk_fill_color",

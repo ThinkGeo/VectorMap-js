@@ -100055,6 +100055,8 @@ function olInit() {
             }
 
             LineStringReplayCustom.prototype.drawLineString = function (lineStringGeometry, feature, strokeStyle, options) {
+                debugger;
+
                 var flatCoordinates = undefined;
                 if (lineStringGeometry.getFlatCoordinates != undefined) {
                     flatCoordinates = lineStringGeometry.getFlatCoordinates();

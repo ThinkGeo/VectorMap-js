@@ -122,7 +122,7 @@ var vectorLayer = new ol.layer.Vector({
         return new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: "red",
-                width: 1
+                width: 10
             })
         })
     }
