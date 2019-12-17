@@ -19,7 +19,6 @@ var view = new ol.View({
     
     // center:[-10779756.936417371, 3888820.084823086], // the raod name fuzzy issue,zoom 16
 
-
     center: [-8236205.431340847,4971057.226777224],
 
     zoom: 7,
