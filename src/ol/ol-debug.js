@@ -68410,6 +68410,7 @@ function olInit() {
                         } else {
                             var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
                             startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
+                            startLengthOfSeg = +parseFloat(startLengthOfSeg.toPrecision(9));
                         }
                         accumulator = Infinity;
                         // solid line
@@ -98577,7 +98578,6 @@ function olInit() {
             GeoAreaStyle.prototype.getConvertedStyleCore = function (feature, resolution, options) {
                 var length = 0;
                 var styles = [];
-
                 var clonedFlatCoordinates = feature.getFlatCoordinates().slice(0);
                 var cloneEnds = feature.getEnds().slice(0);
                 var type = feature.getType();
@@ -99923,6 +99923,7 @@ function olInit() {
                 var stride = polygonGeometry.getStride();
                 var extent = polygonGeometry.getExtent();
                 var drawingBbox = polygonGeometry["drawingBbox"];
+
                 //var drawingBbox = undefined;
                 if (ends.length > 0) {
                     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
@@ -99973,10 +99974,8 @@ function olInit() {
                                         outers[index] = [];
                                         outlines[index] = [];
                                     }
-                                    outers[index].push(holeFlatCoords);
-                                } else {
-                                    outers[index].push(holeFlatCoords);
                                 }
+                                outers[index].push(holeFlatCoords);
                             }
 
                             var points = flatCoordinates.slice(ends[i - 1], ends[i]);
@@ -99992,7 +99991,7 @@ function olInit() {
                             }
                         }
                     }
-
+                    
                     this.startIndices.push(this.indices.length);
                     this.startIndicesFeature.push(feature);
 

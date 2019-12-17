@@ -57,6 +57,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         var imageStyleClone = imageStyle.clone();
         imageStyleClone["offsetX"] = imageStyle["offsetX"];
         imageStyleClone["offsetY"] = imageStyle["offsetY"];
+        imageStyleClone["allowOverlapping"] = imageStyle.allowOverlapping;
         imageStyleClone.declutterGroup_ = replayGroup.addDeclutter(replayGroup.hasDeclutterGroup);
         replayGroup.hasDeclutterGroup = true;
         imageReplay.startIndicesStyles_.push(imageStyleClone);

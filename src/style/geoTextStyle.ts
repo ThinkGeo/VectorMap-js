@@ -99,6 +99,9 @@ export class GeoTextStyle extends GeoStyle {
             this.lineSpacing = styleJson["text-line-spacing"] || 0;
 
             this.basePointStyleJson = styleJson["text-base-point-style"];
+
+            this.allowOverlapping = styleJson["text-allow-overlapping"] || false;
+
         }
         if (!this.compounds.includes(this.compound)) {
             this.compound = this.defaultCompund;
