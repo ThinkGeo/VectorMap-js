@@ -16,8 +16,11 @@ var view = new ol.View({
     // center:[-10776404.929903472, 3866030.036479002],
 
     //center:[-10774719.96412073, 3866961.8013970205], // footway line dash crash issue.
-    center: [-10779303.015693795,3909269.281045342], 
-    zoom: 19,
+
+    // center: [-10775636.062414648, 3878561.8569456004], // label fuzzy(road name)
+
+    center:[-10779714.172249155, 3866857.039358175],// rag on road. 12
+    zoom: 12,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -138,7 +141,7 @@ var layer = new ol.layer.VectorTile({
 });
 
 var map = new ol.Map({
-     layers: [worldStreetsLayer, vectorLayer,debugLayer],
+     layers: [worldStreetsLayer, vectorLayer, debugLayer],
      renderer: 'webgl',
 
     //renderer: ['canvas'],

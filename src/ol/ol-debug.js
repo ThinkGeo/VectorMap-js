@@ -100191,7 +100191,10 @@ function olInit() {
                                             0, 4, stride);
                                     }
                                 }
-                            } else {
+                            } else if(lineString.length===6&&i!==1) {
+                                // TODO1
+                                debugger;
+                                // lineString.splice(0,2)
                                 this.drawCoordinates_(
                                     lineString, 0, lineString.length, stride);
                             }
