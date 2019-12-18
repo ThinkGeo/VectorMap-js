@@ -267,9 +267,15 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     maxY: /** @type {number} */ (declutterGroup[3]),
                     value: feature
                 };
-
                 if (!this.declutterTree.collides(box)) {
                     this.declutterTree.insert(box);
+                    var scaleed = false;
+
+                    if (window.devicePixelRatio === 1) {
+                        window.devicePixelRatio = this.improvePixelRatio = 1.5
+                        scaleed = true;
+                    }
+
                     this.currAtlas_ = this.getAtlas_(this.state_);
 
                     for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
@@ -280,6 +286,10 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         options.currAtlas = this.currAtlas_;
                         this$1.tmpOptions.push(options);
                     }
+                    if (this.improvePixelRatio !== undefined) {
+                        window.devicePixelRatio = 1;
+                    }
+
                 }
                 declutterGroup.length = 5;
                 (<any>ol.extent).createOrUpdateEmpty(declutterGroup);
@@ -404,10 +414,10 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             pointArray.push(centerPoint);
 
             // For the logic of drawing duplicate road names, remove the resolution limit
-            //if (resolution < 1) {
-            this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
-            this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
-            //}
+            if (resolution < 1) {
+                this.findCenterPoints(0, centerPoint, textLength, intervalDistance, pointArray);
+                this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
+            }
 
             this.height = this.measureTextHeight();
 
@@ -823,6 +833,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.drawText_(flatCoordinates, offset, end, stride);
             } else {
                 var devicePixelRatio = window.devicePixelRatio;
+                
+                if (this.improvePixelRatio !== undefined) {
+                    devicePixelRatio = this.improvePixelRatio;
+                }
+
                 var glyphAtlas = options.currAtlas;
                 var j, jj, currX, currY, charArr, charInfo;
                 var anchorX = options.anchorX * devicePixelRatio;
