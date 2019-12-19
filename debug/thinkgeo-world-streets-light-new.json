@@ -217,7 +217,7 @@
     {
       "id": "water_ocean",
       "filter": "layerName='water';class='ocean'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@ocean_color"
         }
@@ -226,7 +226,7 @@
     {
       "id": "bathymetry0",
       "filter": "layerName='water';class='bathymetry_0'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_0_color"
         }
@@ -235,7 +235,7 @@
     {
       "id": "bathymetry200",
       "filter": "layerName='water';class='bathymetry_200'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_200_color"
         }
@@ -244,7 +244,7 @@
     {
       "id": "bathymetry1000",
       "filter": "layerName='water';class='bathymetry_1000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_1000_color"
         }
@@ -253,7 +253,7 @@
     {
       "id": "bathymetry2000",
       "filter": "layerName='water';class='bathymetry_2000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_2000_color"
         }
@@ -262,7 +262,7 @@
     {
       "id": "bathymetry3000",
       "filter": "layerName='water';class='bathymetry_3000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_3000_color"
         }
@@ -271,7 +271,7 @@
     {
       "id": "bathymetry4000",
       "filter": "layerName='water';class='bathymetry_4000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_4000_color"
         }
@@ -280,7 +280,7 @@
     {
       "id": "bathymetry5000",
       "filter": "layerName='water';class='bathymetry_5000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_5000_color"
         }
@@ -289,7 +289,7 @@
     {
       "id": "bathymetry6000",
       "filter": "layerName='water';class='bathymetry_6000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_6000_color"
         }
@@ -298,7 +298,7 @@
     {
       "id": "bathymetry7000",
       "filter": "layerName='water';class='bathymetry_7000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_7000_color"
         }
@@ -307,7 +307,7 @@
     {
       "id": "bathymetry8000",
       "filter": "layerName='water';class='bathymetry_8000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_8000_color"
         }
@@ -316,7 +316,7 @@
     {
       "id": "bathymetry9000",
       "filter": "layerName='water';class='bathymetry_9000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_9000_color"
         }
@@ -325,7 +325,7 @@
     {
       "id": "bathymetry10000",
       "filter": "layerName='water';class='bathymetry_10000'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@bathymetry_10000_color"
         }
@@ -338,7 +338,7 @@
       "polygon-outline-color": "@wood_color",
       "polygon-outline-width": 1,
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2"
         },
@@ -380,7 +380,7 @@
       "polygon-outline-width": 1,
       "polygon-opacity": 1,
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=0;zoom<=5",
           "polygon-fill-color": "@scrub_color"
@@ -399,7 +399,7 @@
       "polygon-outline-width": 1,
       "polygon-opacity": 1,
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2",
           "polygon-opacity": 1
@@ -438,7 +438,7 @@
       "polygon-outline-width": 1,
       "polygon-opacity": 1,
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2",
           "polygon-opacity": 1
@@ -481,7 +481,7 @@
       "polygon-outline-width": 1,
       "polygon-opacity": 1,
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2",
           "polygon-opacity": 1
@@ -520,7 +520,7 @@
     {
       "id": "landcover_rock",
       "filter": "layerName='landcover';class='rock'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@rock_color",
           "polygon-outline-color": "@rock_color",
@@ -532,7 +532,7 @@
       "id": "landcover_sand",
       "filter": "layerName='landcover';class='sand'",
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@sand_color",
           "polygon-outline-color": "@sand_color",
@@ -544,7 +544,7 @@
       "id": "landcover_glacier",
       "filter": "layerName='landcover';class='glacier'",
       "polygon-geometry-transform": "scale(1.1,1.1)",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@glacier_color",
           "polygon-outline-color": "@glacier_color",
@@ -559,7 +559,7 @@
       "polygon-outline-color": "@crop_color",
       "polygon-geometry-transform": "scale(1.1,1.1)",
       "polygon-outline-width": 1,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2",
           "polygon-opacity": 1
@@ -593,7 +593,7 @@
     {
       "id": "landcover_agriculture",
       "filter": "layerName='landcover';class='agriculture';type!='farmland'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@agriculture_color",
           "polygon-outline-color": "@agriculture_color",
@@ -604,7 +604,7 @@
     {
       "id": "landcover_aeroway",
       "filter": "layerName='landcover';class='aeroway'",
-      "style": [
+      "styles": [
         {
           "filter": "type='aerodrome'",
           "polygon-fill-color": "@aeroway_color"
@@ -630,7 +630,7 @@
     {
       "id": "landcover_cemetery",
       "filter": "layerName='landcover';class='cemetery'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@cemetery_color",
           "polygon-outline-color": "@cemetery_color",
@@ -641,7 +641,7 @@
     {
       "id": "landcover_hospital",
       "filter": "layerName='landcover';class='hospital'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@hospital_color",
           "polygon-outline-color": "@hospital_color",
@@ -652,7 +652,7 @@
     {
       "id": "landcover_school",
       "filter": "layerName='landcover';class='school'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@school_color",
           "polygon-outline-color": "@school_color",
@@ -666,7 +666,7 @@
       "polygon-fill-color": "@park_color",
       "polygon-outline-color": "@park_color",
       "polygon-outline-width": 1,
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=6;zoom<=10",
           "polygon-opacity": 1
@@ -689,7 +689,7 @@
       "id": "landcover_urban",
       "filter": "layerName='landcover';class='urban'",
       "polygon-fill-color": "@urban_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=7",
           "polygon-opacity": 0.8
@@ -719,7 +719,7 @@
       "text-baseline": "Top",
       "text-fill-color": "@poi_color",
       "text-spacing": 10,
-      "style": [
+      "styles": [
         {
           "text-base-point-style": {
             "point-type": "glyph",
@@ -732,20 +732,20 @@
             "point-fill-color": "@poi_color"
           },
           "text-compound": "reject",
-          "style": [
+          "styles": [
             {
               "filter": "class='entertainment'",
               "text-fill-color": "@poi_entertainment_color",
               "text-base-point-style": {
                 "point-fill-color": "@poi_entertainment_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='theatre,bandstand'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -769,13 +769,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_sports_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='stadium'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b7"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -801,13 +801,13 @@
                 "point-fill-color": "@poi_shopping_color",
                 "point-glyph-content": "\ue02f"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='supermarket,mall'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!='';area>=5000",
                       "text-base-point-style": {
@@ -831,13 +831,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_education_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='college,university'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ab"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -858,7 +858,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -879,7 +879,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0aa"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -900,7 +900,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue064"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -921,7 +921,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=14;name!=''",
                       "text-base-point-style": {
@@ -942,7 +942,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -963,7 +963,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -982,13 +982,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_transportation_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='station,train_station'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -1012,13 +1012,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_civic_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='courthouse'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue083"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1039,7 +1039,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue08f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1060,7 +1060,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue095"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1081,7 +1081,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue08f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1102,7 +1102,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue098"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1128,13 +1128,13 @@
                 "point-fill-color": "@poi_shopping_color",
                 "point-size": 16
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='alcohol,wine,beverages,brewing_supplies'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue077"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1149,7 +1149,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16;name!=''",
                       "text-font": "600 10px Arial",
@@ -1164,7 +1164,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue053"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1179,7 +1179,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue033"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1194,7 +1194,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue030"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1209,7 +1209,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue024"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1224,7 +1224,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1239,7 +1239,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1254,7 +1254,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue041"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1269,7 +1269,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue028"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1284,7 +1284,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue029"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1299,7 +1299,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue037"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1314,7 +1314,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1329,7 +1329,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1344,7 +1344,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1359,7 +1359,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue034"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1374,7 +1374,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1389,7 +1389,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1403,7 +1403,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16;name!=''",
                       "text-font": "600 10px Arial",
@@ -1421,13 +1421,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_healthcare_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='hospital'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1448,7 +1448,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1469,7 +1469,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1484,7 +1484,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1499,7 +1499,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue054"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1514,7 +1514,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1529,7 +1529,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1547,7 +1547,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_natural_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='forest,wood'",
                   "text-base-point-style": {
@@ -1580,13 +1580,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_arts_historic_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='arts_centre'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1607,7 +1607,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1628,7 +1628,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue098"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1649,7 +1649,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue051"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-base-point-style": {
@@ -1663,7 +1663,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue012"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1684,7 +1684,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue071"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1699,7 +1699,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1720,7 +1720,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1735,7 +1735,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1756,7 +1756,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1777,7 +1777,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue070"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1798,7 +1798,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1819,7 +1819,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1838,14 +1838,14 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_transportation_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='aerodrome'",
                   "text-wrap-width": 100,
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=12;name!=''",
                       "text-base-point-style": {
@@ -1866,7 +1866,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1881,7 +1881,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16;name!=''",
                       "text-base-point-style": {
@@ -1895,7 +1895,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=17",
                       "text-base-point-style": {
@@ -1909,7 +1909,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -1930,7 +1930,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue025"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1945,7 +1945,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue074"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1960,7 +1960,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1975,7 +1975,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue073"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -1990,7 +1990,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2005,7 +2005,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue029"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2020,7 +2020,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2035,7 +2035,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2056,7 +2056,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2071,7 +2071,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2086,7 +2086,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16;name!=''",
                       "text-font": "600 10px Arial",
@@ -2101,7 +2101,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0E1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2119,13 +2119,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_construction_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='farm'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2146,7 +2146,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2161,7 +2161,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue069"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2176,7 +2176,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue045"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2191,7 +2191,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2209,13 +2209,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_public_facilities_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='fire_station'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue096"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2236,7 +2236,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue056"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2257,7 +2257,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue091"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2278,7 +2278,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue090"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2299,7 +2299,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue089"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2317,13 +2317,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_financial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='atm'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2338,7 +2338,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14;name!=''",
                       "text-base-point-style": {
@@ -2359,7 +2359,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2374,7 +2374,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2392,13 +2392,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_sports_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='riding_hall,sports_hall,sports_centre'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d7"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -2419,7 +2419,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2435,7 +2435,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue019"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2451,7 +2451,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2466,7 +2466,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue002"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2481,7 +2481,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue021"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2496,7 +2496,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2511,7 +2511,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2526,7 +2526,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue060"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2542,7 +2542,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0E4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2557,7 +2557,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue061"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2572,7 +2572,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue061"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16;name!=''",
                       "text-font": "600 10px Arial",
@@ -2587,7 +2587,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2602,7 +2602,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue022"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2617,7 +2617,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2632,7 +2632,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2647,7 +2647,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue020"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2662,7 +2662,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue064"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2680,13 +2680,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_entertainment_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='casino,gambling'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue075"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2701,7 +2701,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue099"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2716,7 +2716,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue042"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2731,7 +2731,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2746,7 +2746,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\uee036"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2761,7 +2761,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2776,7 +2776,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue085"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2791,7 +2791,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue050"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2806,7 +2806,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue089"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2821,7 +2821,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2836,7 +2836,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue081"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2851,7 +2851,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue087"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2870,13 +2870,13 @@
                 "point-fill-color": "@poi_drink_food_color",
                 "point-glyph-content": "\ue0ad"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='food_court,restaurant'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ad"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=13;zoom<=15;name!=''",
                       "text-base-point-style": {
@@ -2897,7 +2897,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2912,7 +2912,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2927,7 +2927,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2942,7 +2942,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0af"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -2957,7 +2957,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ac"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2972,7 +2972,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -2987,7 +2987,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ae"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3002,7 +3002,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue052"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3017,7 +3017,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue053"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3032,7 +3032,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue024"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3047,7 +3047,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ad"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3058,7 +3058,7 @@
                   ]
                 },
                 {
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3076,13 +3076,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_living_related_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='animal_boarding,animal_shelter'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=15;name!=''",
                       "text-font": "600 10px Arial",
@@ -3105,7 +3105,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue094"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=15",
                       "text-font": "600 10px Arial",
@@ -3128,7 +3128,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=15;name!=''",
                       "text-font": "600 10px Arial",
@@ -3151,7 +3151,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue056"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3170,13 +3170,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_commercial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='supermarket,marketplace'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=14;zoom<=15;name!=''",
                       "text-base-point-style": {
@@ -3197,7 +3197,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=15",
                       "text-base-point-style": {
@@ -3218,7 +3218,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue038"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3233,7 +3233,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=14",
                       "text-base-point-style": {
@@ -3254,7 +3254,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\uE0B9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3270,7 +3270,7 @@
                     "point-size": 4,
                     "point-offset-y": -3
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-wrap-width": 80,
@@ -3286,13 +3286,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_industrial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='dam,weir'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue016"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3313,7 +3313,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3334,7 +3334,7 @@
                     "point-offset-y": -4,
                     "point-glyph-content": "\ue0d5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3359,13 +3359,13 @@
                 "point-glyph-content": "\ue092",
                 "point-fill-color": "@poi_religion_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='church,place_of_worship'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3380,7 +3380,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue012"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3398,13 +3398,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_agriculture_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='farmland,farmyard'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3425,7 +3425,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue032"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3440,7 +3440,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0D3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3465,7 +3465,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_tourism_park_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='nature_reserve,national_park'",
                   "text-wrap-width": 100,
@@ -3474,7 +3474,7 @@
                     "point-glyph-content": "\ue08d",
                     "point-size": 14
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=6;area>=6000000000"
                     },
@@ -3513,7 +3513,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3535,7 +3535,7 @@
                     "point-glyph-content": "\ue0a7",
                     "point-size": 16
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=8;zoom<=12",
                       "text-font": "600 10px Arial"
@@ -3554,7 +3554,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue045"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3575,7 +3575,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3590,7 +3590,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue001"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3605,7 +3605,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3626,7 +3626,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue081"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3641,7 +3641,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue017"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3656,7 +3656,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue080"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3673,7 +3673,7 @@
                     "point-glyph-content": "\ue082",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3696,7 +3696,7 @@
                     "point-glyph-content": "\ue07f",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3713,7 +3713,7 @@
                     "point-glyph-content": "\ue083",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom<=14",
                       "text-base-point-style": {
@@ -3734,7 +3734,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue05f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=16",
                       "text-font": "600 10px Arial",
@@ -3749,7 +3749,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue084"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -3767,7 +3767,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_military_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom<=14",
                   "text-base-point-style": {
@@ -3790,7 +3790,7 @@
                 "point-glyph-content": "\ue0b9",
                 "point-fill-color": "@poi_general_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom>=15;zoom<=16",
                   "text-font": "600 10px Arial",
@@ -3807,13 +3807,13 @@
                 "point-glyph-content": "\ue04f",
                 "point-fill-color": "@poi_barrier_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='gate,sliding_gate,hampshire_gate,kissing_gate,bump_gate,sally_port'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
@@ -3828,7 +3828,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
@@ -3843,7 +3843,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
@@ -3858,7 +3858,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
@@ -3873,7 +3873,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue048"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=16",
                       "text-font": "600 10px Arial",
@@ -3892,7 +3892,7 @@
                 "point-glyph-content": "\ue0c0",
                 "point-fill-color": "@poi_power_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom>=15;zoom<=16",
                   "text-font": "600 10px Arial",
@@ -3905,11 +3905,11 @@
           ]
         },
         {
-          "style": [
+          "styles": [
             {
               "filter": "class='water'",
               "text-fill-color": "@poi_water_color",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom<=11",
                   "text-font": "500 9px Arial"
@@ -3929,7 +3929,7 @@
               "text-halo-radius": 3,
               "text-fill-color": "@poi_residential_color",
               "text-compound": "reject",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=13",
                   "text-wrap-width": 100,
@@ -3961,7 +3961,7 @@
             "point-glyph-content": "\ue0c0",
             "point-fill-color": "@poi_color"
           },
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15;zoom<=16",
               "text-font": "600 10px Arial",
@@ -3985,7 +3985,7 @@
       "text-baseline": "Top",
       "text-fill-color": "@poi_color",
       "text-spacing": 10,
-      "style": [
+      "styles": [
         {
           "text-base-point-style": {
             "point-type": "glyph",
@@ -3998,20 +3998,20 @@
             "point-fill-color": "@poi_color"
           },
           "text-compound": "reject",
-          "style": [
+          "styles": [
             {
               "filter": "class='entertainment'",
               "text-fill-color": "@poi_entertainment_color",
               "text-base-point-style": {
                 "point-fill-color": "@poi_entertainment_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='theatre,bandstand'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4030,13 +4030,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_sports_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='stadium'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b7"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 11px Arial",
@@ -4057,13 +4057,13 @@
                 "point-fill-color": "@poi_shopping_color",
                 "point-glyph-content": "\ue02f"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='supermarket,mall'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-wrap-width": 120,
@@ -4082,13 +4082,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_education_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='college,university'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ab"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 11px Arial",
@@ -4104,7 +4104,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 11px Arial",
@@ -4120,7 +4120,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0aa"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4136,7 +4136,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue064"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4152,7 +4152,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4168,7 +4168,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4184,7 +4184,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4204,13 +4204,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_transportation_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='station,train_station'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4229,13 +4229,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_civic_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='courthouse'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue083"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4251,7 +4251,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue08f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4267,7 +4267,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue095"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4283,7 +4283,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue08f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4299,7 +4299,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue098"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4320,13 +4320,13 @@
                 "point-fill-color": "@poi_shopping_color",
                 "point-size": 16
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='alcohol,wine,beverages,brewing_supplies'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue077"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4342,7 +4342,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4358,7 +4358,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue053"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4374,7 +4374,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue033"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4390,7 +4390,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue030"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4406,7 +4406,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue024"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4422,7 +4422,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4438,7 +4438,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4454,7 +4454,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue041"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4470,7 +4470,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue028"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4486,7 +4486,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue029"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4502,7 +4502,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue037"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4518,7 +4518,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4534,7 +4534,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4550,7 +4550,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4566,7 +4566,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue034"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4582,7 +4582,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4598,7 +4598,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4613,7 +4613,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4632,13 +4632,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_healthcare_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='hospital'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4654,7 +4654,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4670,7 +4670,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4686,7 +4686,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4702,7 +4702,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue054"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4718,7 +4718,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4734,7 +4734,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4753,7 +4753,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_natural_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='forest,wood'",
                   "text-base-point-style": {
@@ -4786,13 +4786,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_arts_historic_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='arts_centre'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue09a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4808,7 +4808,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4824,7 +4824,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue098"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4840,7 +4840,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue051"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-base-point-style": {
@@ -4854,7 +4854,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue012"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4870,7 +4870,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue071"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4886,7 +4886,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4902,7 +4902,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4918,7 +4918,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4934,7 +4934,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4950,7 +4950,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue070"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4966,7 +4966,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -4982,7 +4982,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5002,14 +5002,14 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_transportation_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='aerodrome'",
                   "text-wrap-width": 100,
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5025,7 +5025,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5041,7 +5041,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a6"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-content": "@name",
@@ -5058,7 +5058,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=18",
                       "text-content": "@name",
@@ -5075,7 +5075,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5091,7 +5091,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue025"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5107,7 +5107,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue074"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5123,7 +5123,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue072"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5139,7 +5139,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5155,7 +5155,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue073"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5171,7 +5171,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5187,7 +5187,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue029"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5203,7 +5203,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5219,7 +5219,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5241,7 +5241,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue06c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5257,7 +5257,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5273,7 +5273,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5289,7 +5289,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0E1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5308,13 +5308,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_construction_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='farm'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5330,7 +5330,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5346,7 +5346,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue069"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5362,7 +5362,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue045"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5378,7 +5378,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=18",
                       "text-font": "600 14px Arial",
@@ -5397,13 +5397,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_public_facilities_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='fire_station'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue096"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5419,7 +5419,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue056"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5435,7 +5435,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue091"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5451,7 +5451,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue090"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16",
                       "text-font": "600 10px Arial",
@@ -5474,7 +5474,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue058"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5490,7 +5490,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue08e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-base-point-style": {
@@ -5505,7 +5505,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue089"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5524,13 +5524,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_financial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='atm'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5546,7 +5546,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0a1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5562,7 +5562,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5578,7 +5578,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5597,13 +5597,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_sports_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='riding_hall,sports_hall,sports_centre'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d7"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5619,7 +5619,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5636,7 +5636,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue019"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5653,7 +5653,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5669,7 +5669,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue002"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5685,7 +5685,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue021"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5701,7 +5701,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5717,7 +5717,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5733,7 +5733,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue060"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5750,7 +5750,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0E4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5766,7 +5766,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue061"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5782,7 +5782,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue061"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5798,7 +5798,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01d"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5814,7 +5814,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue022"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5830,7 +5830,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5846,7 +5846,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue01c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5862,7 +5862,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue020"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5878,7 +5878,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue064"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5897,13 +5897,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_entertainment_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='casino,gambling'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue075"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5919,7 +5919,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue099"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5935,7 +5935,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue042"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5951,7 +5951,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5967,7 +5967,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\uee036"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5983,7 +5983,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -5999,7 +5999,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue085"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6015,7 +6015,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue050"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6031,7 +6031,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue089"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6047,7 +6047,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c7"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6063,7 +6063,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c8"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6079,7 +6079,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue081"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6095,7 +6095,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue087"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6115,13 +6115,13 @@
                 "point-fill-color": "@poi_drink_food_color",
                 "point-glyph-content": "\ue0ad"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='food_court,restaurant'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ad"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6137,7 +6137,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6153,7 +6153,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0b0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6169,7 +6169,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0e2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6185,7 +6185,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0af"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6201,7 +6201,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ac"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6217,7 +6217,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00a"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6233,7 +6233,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ae"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6249,7 +6249,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue052"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6265,7 +6265,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue053"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6281,7 +6281,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue024"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6297,7 +6297,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0ad"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6309,7 +6309,7 @@
                   ]
                 },
                 {
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6328,13 +6328,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_living_related_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='animal_boarding,animal_shelter'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6350,7 +6350,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue094"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6366,7 +6366,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue02b"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6382,7 +6382,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue056"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6401,13 +6401,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_commercial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='supermarket,marketplace'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue03f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 14px Arial",
@@ -6422,7 +6422,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0c9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6438,7 +6438,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue038"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6454,7 +6454,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d0"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 14px Arial",
@@ -6469,7 +6469,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\uE0B9"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6486,7 +6486,7 @@
                     "point-size": 4,
                     "point-offset-y": -3
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom=17",
                       "text-wrap-width": 80,
@@ -6507,13 +6507,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_industrial_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='dam,weir'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue016"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6529,7 +6529,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d4"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6545,7 +6545,7 @@
                     "point-offset-y": -4,
                     "point-glyph-content": "\ue0d5"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6565,13 +6565,13 @@
                 "point-glyph-content": "\ue092",
                 "point-fill-color": "@poi_religion_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='church,place_of_worship'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue00e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6587,7 +6587,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue012"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6606,13 +6606,13 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_agriculture_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='farmland,farmyard'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue018"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6628,7 +6628,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue032"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6644,7 +6644,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0D3"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6664,7 +6664,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_tourism_park_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='nature_reserve,national_park'",
                   "text-wrap-width": 100,
@@ -6673,7 +6673,7 @@
                     "point-glyph-content": "\ue08d",
                     "point-size": 14
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 11px Arial",
@@ -6689,7 +6689,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue07c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6706,7 +6706,7 @@
                     "point-glyph-content": "\ue0a7",
                     "point-size": 16
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 11px Arial",
@@ -6722,7 +6722,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue045"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6738,7 +6738,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue05f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6754,7 +6754,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d1"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6770,7 +6770,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue001"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6786,7 +6786,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue0d2"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6802,7 +6802,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue081"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6818,7 +6818,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue017"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6834,7 +6834,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue080"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6852,7 +6852,7 @@
                     "point-glyph-content": "\ue082",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6870,7 +6870,7 @@
                     "point-glyph-content": "\ue07f",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6888,7 +6888,7 @@
                     "point-glyph-content": "\ue083",
                     "point-fill-color": "@poi_tourism_hotel_color"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6904,7 +6904,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue05f"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6920,7 +6920,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue084"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6939,7 +6939,7 @@
               "text-base-point-style": {
                 "point-fill-color": "@poi_military_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom>=17",
                   "text-font": "600 10px Arial",
@@ -6957,7 +6957,7 @@
                 "point-glyph-content": "\ue0b9",
                 "point-fill-color": "@poi_general_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom>=17",
                   "text-font": "600 10px Arial",
@@ -6975,13 +6975,13 @@
                 "point-glyph-content": "\ue04f",
                 "point-fill-color": "@poi_barrier_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "type='gate,sliding_gate,hampshire_gate,kissing_gate'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04c"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -6997,7 +6997,7 @@
                   "text-base-point-style": {
                     "point-glyph-content": "\ue04e"
                   },
-                  "style": [
+                  "styles": [
                     {
                       "filter": "zoom>=17",
                       "text-font": "600 10px Arial",
@@ -7017,7 +7017,7 @@
                 "point-glyph-content": "\ue0c0",
                 "point-fill-color": "@poi_power_color"
               },
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom>=17",
                   "text-font": "600 10px Arial",
@@ -7031,13 +7031,13 @@
           ]
         },
         {
-          "style": [
+          "styles": [
             {
               "filter": "class='construction';type='residential'",
               "text-halo-radius": 3,
               "text-fill-color": "@poi_residential_color",
               "text-compound": "reject",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=17",
                   "text-wrap-width": 120,
@@ -7062,7 +7062,7 @@
             "point-glyph-content": "\ue0c0",
             "point-fill-color": "@poi_color"
           },
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=17",
               "text-font": "600 10px Arial",
@@ -7082,7 +7082,7 @@
       "text-content": "@name",
       "text-wrap-width": 60,
       "text-halo-color": "@text_white_halo_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=1",
           "text-halo-radius": 1,
@@ -7091,7 +7091,7 @@
         },
         {
           "filter": "zoom=2",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-wrap-width": 60,
@@ -7107,7 +7107,7 @@
         },
         {
           "filter": "zoom>=3;zoom<=4",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-wrap-width": 100,
@@ -7129,7 +7129,7 @@
         },
         {
           "filter": "zoom>=5",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-wrap-width": 120,
@@ -7160,7 +7160,7 @@
       "text-wrap-width": 80,
       "text-halo-color": "@text_white_halo_color",
       "text-letter-case": "Uppercase",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=3;label_rank<=1",
           "text-opacity": 0.9,
@@ -7171,7 +7171,7 @@
           "filter": "zoom=4",
           "text-halo-radius": 2,
           "text-opacity": 0.85,
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-font": "600 11px Arial"
@@ -7188,7 +7188,7 @@
           "text-halo-radius": 3,
           "text-opacity": 0.8,
           "text-spacing": 20,
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-wrap-width": 100,
@@ -7204,7 +7204,7 @@
           "filter": "zoom>6",
           "text-halo-radius": 3,
           "text-opacity": 0.7,
-          "style": [
+          "styles": [
             {
               "filter": "label_rank<=1",
               "text-wrap-width": 100,
@@ -7231,7 +7231,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 2,
       "text-spacing": 20,
-      "style": [
+      "styles": [
         {
           "text-baseline": "Bottom",
           "text-base-point-style": {
@@ -7240,7 +7240,7 @@
             "point-size": 3,
             "point-fill-color": "@place_city_label_color"
           },
-          "style": [
+          "styles": [
             {
               "filter": "zoom=3",
               "text-font": "600 10.5px Arial"
@@ -7300,7 +7300,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 2,
       "text-spacing": 20,
-      "style": [
+      "styles": [
         {
           "text-baseline": "Bottom",
           "text-base-point-style": {
@@ -7309,10 +7309,10 @@
             "point-size": 3,
             "point-fill-color": "@place_city_label_color"
           },
-          "style": [
+          "styles": [
             {
               "filter": "zoom=5",
-              "style": [
+              "styles": [
                 {
                   "filter": "label_rank>=2;label_rank<=4",
                   "text-font": "600 13px Arial"
@@ -7327,7 +7327,7 @@
             {
               "filter": "zoom=6",
               "text-halo-radius": 2,
-              "style": [
+              "styles": [
                 {
                   "filter": "label_rank>4",
                   "text-opacity": 0.9,
@@ -7337,7 +7337,7 @@
             },
             {
               "filter": "zoom=7",
-              "style": [
+              "styles": [
                 {
                   "filter": "label_rank=2",
                   "text-font": "600 14px Arial"
@@ -7361,7 +7361,7 @@
             },
             {
               "filter": "zoom=8",
-              "style": [
+              "styles": [
                 {
                   "filter": "label_rank=2",
                   "text-font": "600 14px Arial"
@@ -7391,7 +7391,7 @@
         },
         {
           "filter": "zoom=9",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank>=2;label_rank<=4",
               "text-font": "600 16px Arial"
@@ -7413,7 +7413,7 @@
         {
           "filter": "zoom>=10;zoom<=11",
           "text-halo-radius": 3,
-          "style": [
+          "styles": [
             {
               "filter": "label_rank>=2;label_rank<=3",
               "text-font": "600 18px Arial"
@@ -7436,7 +7436,7 @@
           "filter": "zoom>=12",
           "text-halo-radius": 6,
           "text-wrap-width": 120,
-          "style": [
+          "styles": [
             {
               "filter": "zoom<=16;label_rank>=2;label_rank<=4",
               "text-font": "600 20px Arial"
@@ -7466,10 +7466,10 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 2,
       "text-spacing": 10,
-      "style": [
+      "styles": [
         {
           "filter": "zoom=7",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank=11",
               "text-halo-radius": 1,
@@ -7479,7 +7479,7 @@
         },
         {
           "filter": "zoom=8",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank=11",
               "text-halo-radius": 1,
@@ -7489,7 +7489,7 @@
         },
         {
           "filter": "zoom=9",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank>11",
               "text-font": "600 10px Arial"
@@ -7498,7 +7498,7 @@
         },
         {
           "filter": "zoom>=10;zoom<=11",
-          "style": [
+          "styles": [
             {
               "filter": "label_rank>11",
               "text-font": "600 11px Verdana"
@@ -7508,7 +7508,7 @@
         {
           "filter": "zoom>=12",
           "text-halo-radius": 4,
-          "style": [
+          "styles": [
             {
               "filter": "label_rank>11",
               "text-font": "600 14px Arial"
@@ -7526,10 +7526,10 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 2,
       "text-spacing": 20,
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=8;zoom<=9",
-          "style": [
+          "styles": [
             {
               "filter": "population>=40000",
               "text-font": "600 12px Arial"
@@ -7549,7 +7549,7 @@
         },
         {
           "filter": "zoom=10",
-          "style": [
+          "styles": [
             {
               "filter": "population>=25000",
               "text-font": "600 13px Verdana"
@@ -7579,7 +7579,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 1,
       "text-font": "600 11px Arial",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=8;zoom<=9",
           "text-baseline": "Bottom",
@@ -7604,7 +7604,7 @@
     {
       "id": "place_suburb",
       "filter": "layerName='place';class='suburb'",
-      "style": [
+      "styles": [
         {
           "text-fill-color": "@place_suburb_label_color",
           "text-content": "@name",
@@ -7625,7 +7625,7 @@
       "text-letter-case": "Uppercase",
       "text-halo-color": "@text_white_halo_color",
       "text-opacity": 0.9,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=12",
           "text-halo-radius": 2,
@@ -7652,7 +7652,7 @@
       "text-letter-case": "Uppercase",
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 2,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=12",
           "text-opacity": 0.9,
@@ -7688,7 +7688,7 @@
       "text-halo-radius": 4,
       "text-opacity": 0.6,
       "text-letter-case": "uppercase",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=10;zoom<=11",
           "text-font": "600 16px Arial"
@@ -7735,7 +7735,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 1,
       "text-font": "600 12px Arial",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=7;zoom<=8",
           "text-baseline": "Bottom",
@@ -7762,7 +7762,7 @@
       "text-halo-radius": 1,
       "text-font": "600 12px Arial",
       "text-spacing": 40,
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=7;zoom<=8",
           "text-baseline": "Bottom",
@@ -7788,7 +7788,7 @@
       "text-wrap-width": 50,
       "text-opacity": 0.8,
       "text-force-horizontal-for-line": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=2",
           "text-font": "italic 600 13px Arial"
@@ -7809,7 +7809,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 1,
       "text-force-horizontal-for-line": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "text-font": "600 9px Arial"
@@ -7836,7 +7836,7 @@
       "text-halo-color": "@text_white_halo_color",
       "text-halo-radius": 1,
       "text-force-horizontal-for-line": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "text-font": "600 9px Arial"
@@ -7864,7 +7864,7 @@
       "text-halo-radius": 1,
       "text-spacing": 5,
       "text-force-horizontal-for-line": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "text-font": "600 9px Arial"
@@ -7891,7 +7891,7 @@
       "text-halo-radius": 1,
       "text-opacity": 0.8,
       "text-force-horizontal-for-line": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "text-font": "600 9px Arial"
@@ -7909,11 +7909,11 @@
     {
       "id": "boundary_country",
       "filter": "layerName='boundary';admin_level='2'",
-      "style": [
+      "styles": [
         {
           "filter": "disputed=0",
           "line-color": "@boundary_country_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=4",
               "line-width": 3
@@ -7942,7 +7942,7 @@
         {
           "filter": "disputed=0",
           "line-color": "@boundary_country_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=1",
               "line-opacity": 0.6,
@@ -7989,7 +7989,7 @@
           "filter": "disputed=1",
           "line-color": "@boundary_country_outline_color",
           "line-dasharray": "3,3",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=5",
               "line-opacity": 0.7,
@@ -8015,7 +8015,7 @@
           "filter": "disputed=1",
           "line-color": "@boundary_country_color",
           "line-dasharray": "3,3",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=1",
               "line-opacity": 0.6,
@@ -8064,7 +8064,7 @@
       "id": "boundary_territory",
       "filter": "layerName='boundary';admin_level='3'",
       "line-color": "@boundary_territory_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "line-width": 1
@@ -8079,7 +8079,7 @@
       "id": "boundary_state",
       "filter": "layerName='boundary';admin_level='4'",
       "line-color": "@boundary_state_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom<=3",
           "line-opacity": 0.7,
@@ -8110,7 +8110,7 @@
     {
       "id": "water_lake",
       "filter": "layerName='water';class='lake'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@water_color"
         }
@@ -8119,7 +8119,7 @@
     {
       "id": "water_reservoir",
       "filter": "layerName='water';class='reservoir'",
-      "style": [
+      "styles": [
         {
           "polygon-fill-color": "@water_color"
         }
@@ -8128,7 +8128,7 @@
     {
       "id": "water_others",
       "filter": "layerName='water';",
-      "style": [
+      "styles": [
         {
           "filter": "class='river,pond,pool,basin,canal,lock,natural'",
           "polygon-fill-color": "@water_color"
@@ -8143,7 +8143,7 @@
       "id": "waterway",
       "filter": "layerName='waterway'",
       "line-color": "@water_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=5;zoom<=15",
           "line-width": 1
@@ -8164,7 +8164,7 @@
       "polygon-fill-color": "@construct_accommodation_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "polygon-shadow": {
@@ -8203,7 +8203,7 @@
       "polygon-fill-color": "@construct_commercial_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "polygon-shadow": {
@@ -8242,7 +8242,7 @@
       "polygon-fill-color": "@construct_religious_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "polygon-shadow": {
@@ -8281,7 +8281,7 @@
       "polygon-fill-color": "@construct_amenity_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "polygon-shadow": {
@@ -8320,7 +8320,7 @@
       "polygon-fill-color": "@construct_agriculture_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=14"
         }
@@ -8329,7 +8329,7 @@
     {
       "id": "construct_sports",
       "filter": "layerName='construct';class='sports'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=14",
           "polygon-fill-color": "@construct_sports_color",
@@ -8341,7 +8341,7 @@
     {
       "id": "construct_storage",
       "filter": "layerName='construct';class='storage'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=15",
           "polygon-fill-color": "@construct_storage_color",
@@ -8353,7 +8353,7 @@
     {
       "id": "construct_vehicle",
       "filter": "layerName='construct';class='vehicle'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=16",
           "polygon-fill-color": "@construct_vehicle_color",
@@ -8365,7 +8365,7 @@
     {
       "id": "construct_transportation",
       "filter": "layerName='construct';class='transportation'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=14",
           "polygon-fill-color": "@construct_transportation_color",
@@ -8377,7 +8377,7 @@
     {
       "id": "construct_fence",
       "filter": "layerName='construct';class='fence'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=17",
           "polygon-fill-color": "@construct_fence_color",
@@ -8392,7 +8392,7 @@
       "polygon-fill-color": "@construct_others_color",
       "polygon-outline-width": 0.6,
       "polygon-outline-color": "@construct_outline_color",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=15; type='roof'"
         },
@@ -8428,7 +8428,7 @@
     {
       "id": "house_number",
       "filter": "layerName='house_number'",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=17",
           "text-font": "600 10px Arial",
@@ -8443,12 +8443,12 @@
       "id": "road",
       "filter": "layerName='road'",
       "z-index-atrribute-name": "layer",
-      "style": [
+      "styles": [
         {
           "filter": "zoom>=15;class='railway'",
           "line-color": "@road_railway_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "type='monorail,subway'",
               "line-width": 2
@@ -8463,7 +8463,7 @@
           "filter": "class='footway'",
           "line-color": "@road_footway_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=16;zoom<=17",
               "line-width": 3
@@ -8478,7 +8478,7 @@
           "filter": "class='path'",
           "line-color": "@road_path_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=16;zoom<=17",
               "line-width": 3
@@ -8491,7 +8491,7 @@
         },
         {
           "filter": "class='road'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "#000000",
@@ -8504,7 +8504,7 @@
           "filter": "class='pedestrian'",
           "line-color": "@road_pedestrian_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=16;zoom<=17",
               "line-width": 7
@@ -8519,7 +8519,7 @@
           "filter": "class='service'",
           "line-color": "@road_service_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 16
@@ -8546,7 +8546,7 @@
           "filter": "class='street'",
           "line-color": "@road_street_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 22
@@ -8577,7 +8577,7 @@
           "filter": "class='tertiary'",
           "line-color": "@road_tertiary_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 28
@@ -8622,7 +8622,7 @@
           "filter": "class='secondary'",
           "line-color": "@road_secondary_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 30
@@ -8676,11 +8676,11 @@
         {
           "filter": "class='primary'",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "ref!=''",
               "line-color": "@road_white_outline_color",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 40
@@ -8734,7 +8734,7 @@
             {
               "filter": "ref=''",
               "line-color": "@road_primary_outline_color",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 38
@@ -8791,7 +8791,7 @@
           "filter": "class='trunk'",
           "line-color": "@road_white_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 36
@@ -8842,7 +8842,7 @@
           "filter": "class='motorway'",
           "line-color": "@road_white_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 36
@@ -8897,7 +8897,7 @@
           "filter": "class='tertiary_link'",
           "line-color": "@road_tertiary_link_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 8
@@ -8920,7 +8920,7 @@
           "filter": "class='secondary_link'",
           "line-color": "@road_secondary_link_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 10
@@ -8947,7 +8947,7 @@
           "filter": "class='primary_link'",
           "line-color": "@road_primary_link_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 12
@@ -8974,7 +8974,7 @@
           "filter": "class='trunk_link'",
           "line-color": "@road_white_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 16
@@ -9009,7 +9009,7 @@
           "filter": "class='motorway_link'",
           "line-color": "@road_white_outline_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 26
@@ -9048,7 +9048,7 @@
           "filter": "class='tertiary_link'",
           "line-color": "@road_tertiary_link_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 6
@@ -9071,7 +9071,7 @@
           "filter": "class='secondary_link'",
           "line-color": "@road_secondary_link_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 8
@@ -9098,7 +9098,7 @@
           "filter": "class='primary_link'",
           "line-color": "@road_primary_link_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 10
@@ -9125,7 +9125,7 @@
           "filter": "class='trunk_link'",
           "line-color": "@road_trunk_link_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 12
@@ -9160,7 +9160,7 @@
           "filter": "class='motorway_link'",
           "line-color": "@road_motorway_link_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 20
@@ -9199,7 +9199,7 @@
           "filter": "class='aeroway'",
           "line-color": "@road_aeroway_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=11;zoom<=12",
               "line-width": 1
@@ -9220,7 +9220,7 @@
         },
         {
           "filter": "class='railway';type!='monorail,subway'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "@road_railway_color",
@@ -9232,7 +9232,7 @@
         },
         {
           "filter": "class='ferry'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=9",
               "line-color": "@road_ferry_color",
@@ -9244,7 +9244,7 @@
         },
         {
           "filter": "class='aerialway'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "@road_aerialway_color",
@@ -9256,7 +9256,7 @@
         },
         {
           "filter": "class='construction'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "@road_construction_color",
@@ -9268,7 +9268,7 @@
         },
         {
           "filter": "class='cycleway'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "@road_cycleway_color",
@@ -9283,7 +9283,7 @@
           "line-color": "@road_path_fill_color",
           "line-cap": "butt",
           "line-dasharray": "4,1",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=15",
               "line-width": 1.2
@@ -9300,7 +9300,7 @@
         },
         {
           "filter": "class='steps'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=16",
               "line-color": "@road_steps_color",
@@ -9315,7 +9315,7 @@
           "line-color": "@road_bridleway_color",
           "line-cap": "butt",
           "line-dasharray": "5,2",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=14",
               "line-width": 1
@@ -9331,7 +9331,7 @@
           "line-color": "@road_footway_fill_color",
           "line-cap": "butt",
           "line-dasharray": "4,1",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=15",
               "line-width": 1.2
@@ -9348,7 +9348,7 @@
         },
         {
           "filter": "class='road'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15",
               "line-color": "@road_road_fill_color",
@@ -9359,7 +9359,7 @@
         },
         {
           "filter": "class='raceway'",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=17",
               "line-color": "@road_raceway_fill_color",
@@ -9373,7 +9373,7 @@
           "line-color": "@road_track_fill_color",
           "line-cap": "butt",
           "line-dasharray": "4,1",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=14",
               "line-width": 1
@@ -9388,7 +9388,7 @@
           "filter": "class='pedestrian'",
           "line-color": "@road_pedestrian_fill_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=14",
               "line-width": 0.6
@@ -9417,7 +9417,7 @@
           "filter": "class='service'",
           "line-color": "@road_service_fill_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 14
@@ -9448,7 +9448,7 @@
           "filter": "class='street'",
           "line-color": "@road_street_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 20
@@ -9487,7 +9487,7 @@
           "filter": "class='tertiary'",
           "line-color": "@road_tertiary_fill_color",
           "line-cap": "square",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 26
@@ -9530,7 +9530,7 @@
           "filter": "class='secondary'",
           "line-color": "@road_secondary_fill_color",
           "line-cap": "butt",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=19",
               "line-width": 28
@@ -9580,12 +9580,12 @@
         {
           "filter": "class='primary'",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "ref!=''",
               "line-color": "@road_primary_major_fill_color",
               "line-cap": "butt",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 36
@@ -9643,7 +9643,7 @@
             {
               "filter": "ref=''",
               "line-color": "@road_primary_fill_color",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 36
@@ -9692,11 +9692,11 @@
           "filter": "class='trunk'",
           "line-color": "@road_trunk_fill_color",
           "line-cap": "round",
-          "style": [
+          "styles": [
             {
               "filter": "structure=4",
               "line-opacity": 0.3,
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -9746,7 +9746,7 @@
             {
               "filter": "structure>=16",
               "line-opacity": 0.6,
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -9799,7 +9799,7 @@
             },
             {
               "filter": "structure=1",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -9856,11 +9856,11 @@
           "filter": "class='motorway'",
           "line-cap": "round",
           "line-color": "@road_motorway_fill_color",
-          "style": [
+          "styles": [
             {
               "filter": "structure=4",
               "line-opacity": 0.3,
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -9919,7 +9919,7 @@
             {
               "filter": "structure>=16",
               "line-opacity": 0.6,
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -9977,7 +9977,7 @@
             },
             {
               "filter": "structure=1",
-              "style": [
+              "styles": [
                 {
                   "filter": "zoom=19",
                   "line-width": 32
@@ -10044,7 +10044,7 @@
       "point-symbol-type": "circle",
       "point-fill-color": "@road_street_outline_color",
       "point-allow-overlapping": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "point-size": 10
@@ -10074,7 +10074,7 @@
       "point-symbol-type": "circle",
       "point-fill-color": "@road_street_fill_color",
       "point-allow-overlapping": true,
-      "style": [
+      "styles": [
         {
           "filter": "zoom=15",
           "point-size": 8
@@ -10100,11 +10100,11 @@
     {
       "id": "road_oneway",
       "filter": "oneway=1;layerName='road'",
-      "style": [
+      "styles": [
         {
           "filter": "class='motorway,trunk,motorway_link,trunk_link'",
           "line-direction-image-uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAKCAYAAAC9vt6cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABTSURBVChTrZEJCgAgCAT78L7Bpxd2qogZNDCQiUtHAZCyDsjuqyJyBjAqhBtZJTuEG5TU0kNs8iv0JcA7rqdlXyGr5DziWtycg4z+RllEesMASgO78Lg4FvT6ZgAAAABJRU5ErkJggg==",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=16;zoom<=17",
               "line-direction-image-size": "10,5"
@@ -10117,7 +10117,7 @@
         },
         {
           "line-direction-image-uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAKCAYAAAC9vt6cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABTSURBVChTrZEJCgAgCAT78L7Bpxd2qogZNDCQiUtHAZCyDsjuqyJyBjAqhBtZJTuEG5TU0kNs8iv0JcA7rqdlXyGr5DziWtycg4z+RllEesMASgO78Lg4FvT6ZgAAAABJRU5ErkJggg==",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15;zoom<=16;class='primary';ref!=''",
               "line-direction-image-size": "10,5"
@@ -10130,7 +10130,7 @@
         },
         {
           "line-direction-image-uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAKCAYAAAC9vt6cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABiSURBVChTpZKBCsAgCETPfqkPnPvA/CW3RoW1BcoeHCZ0R0rwUkrRW0drB6lVL7yGJFWFR4YphL6etYFb7XDO+awBU3wQju7gxf8RlgVtERF78THXQyIieGQY5kr4H1gzAFwo70RBYPf8BQAAAABJRU5ErkJggg==",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15;zoom<=16;class='secondary'",
               "line-direction-image-size": "10,5"
@@ -10159,12 +10159,12 @@
       "text-halo-color": "@road_text_white_halo_color",
       "text-halo-radius": 1,
       "text-max-char-angle-delta": 0.8,
-      "style": [
+      "styles": [
         {
           "filter": "class='motorway'",
           "text-fill-color": "@road_motorway_name_color",
           "text-halo-color": "@road_motorway_name_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=11",
               "text-halo-radius": 1,
@@ -10191,7 +10191,7 @@
           "filter": "class='trunk'",
           "text-fill-color": "@road_trunk_name_color",
           "text-halo-color": "@road_trunk_name__outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=11",
               "text-halo-radius": 1,
@@ -10223,7 +10223,7 @@
           "filter": "class='primary'",
           "text-fill-color": "@road_primary_name_color",
           "text-halo-color": "@road_primary_name_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=11",
               "text-halo-radius": 1,
@@ -10258,7 +10258,7 @@
           "filter": "class='secondary'",
           "text-fill-color": "@road_secondary_name_color",
           "text-halo-color": "@road_secondary_name_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=11;zoom<=12",
               "text-halo-radius": 1,
@@ -10287,7 +10287,7 @@
           "filter": "class='tertiary'",
           "text-fill-color": "@road_tertiary_name_color",
           "text-halo-color": "@road_tertiary_name_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=12;zoom<=14",
               "text-font": "500 10px Arial"
@@ -10306,7 +10306,7 @@
           "filter": "class='street'",
           "text-fill-color": "@road_street_name_color",
           "text-halo-color": "@road_street_name_outline_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=12;zoom<=16",
               "text-font": "500 10px Arial"
@@ -10324,7 +10324,7 @@
         {
           "filter": "class='service'",
           "text-fill-color": "@road_street_name_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=15;zoom<=16",
               "text-font": "600 10px Arial"
@@ -10338,7 +10338,7 @@
         {
           "filter": "class='road,path,construction,footway,pedestrian'",
           "text-fill-color": "@road_street_name_color",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=15",
               "text-font": "600 10px Arial"
@@ -10354,7 +10354,7 @@
           "text-fill-color": "@road_street_name_color",
           "text-interval-distance": 100,
           "text-content": "{ref}",
-          "style": [
+          "styles": [
             {
               "filter": "zoom=15",
               "text-font": "600 10px Arial"
@@ -10378,12 +10378,12 @@
       "text-mask-outline-width": 1,
       "text-mask-type": "rectangle",
       "text-mask-margin": "1,1,1,1",
-      "style": [
+      "styles": [
         {
           "filter": "class='motorway'",
           "text-mask-color": "@road_motorway_number_background",
           "text-mask-outline-color": "@road_motorway_number_outline",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=7;zoom<=9",
               "text-spacing": 80
@@ -10402,7 +10402,7 @@
           "filter": "class='trunk'",
           "text-mask-color": "@road_trunk_number_background",
           "text-mask-outline-color": "@road_trunk_number_outline",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=7;zoom<=9",
               "text-spacing": 80
@@ -10421,7 +10421,7 @@
           "filter": "class='primary'",
           "text-mask-color": "@road_primary_number_background",
           "text-mask-outline-color": "@road_primary_number_outline",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=7;zoom<=9",
               "text-spacing": 80
@@ -10440,7 +10440,7 @@
           "filter": "class='secondary'",
           "text-mask-color": "@road_secondary_number_background",
           "text-mask-outline-color": "@road_secondary_number_outline",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=10",
               "text-spacing": 100
@@ -10451,7 +10451,7 @@
           "filter": "class='tertiary'",
           "text-mask-color": "@road_tertiary_number_background",
           "text-mask-outline-color": "@road_tertiary_number_outline",
-          "style": [
+          "styles": [
             {
               "filter": "zoom>=10",
               "text-mask-type": "roundedEnds",
@@ -10468,7 +10468,7 @@
       "text-interval-distance": 50,
       "text-halo-color": "@road_text_white_halo_color",
       "text-fill-color": "@waterway_name",
-      "style": [
+      "styles": [
         {
           "filter": "zoom=14",
           "text-font": "italic 500 11px Verdana"

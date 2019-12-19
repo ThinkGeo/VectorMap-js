@@ -16,8 +16,8 @@ var view = new ol.View({
     // center:[-10776404.929903472, 3866030.036479002],
 
     //center:[-10774719.96412073, 3866961.8013970205], // footway line dash crash issue.
-    center: [-10779303.015693795,3909269.281045342], 
-    zoom: 19,
+    center: [-25039682.65517518, 4756795.348892094], 
+    zoom: 2,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -170,9 +170,34 @@ map.on("click", function showInfo(event) {
             console.log(element["styleId"]);
         }
         vectorLayer.getSource().clear();
-        vectorLayer.getSource().addFeature(features[0]);
+        let olFeature = new ol.Feature({
+            geometry: getGeometryByType(features[0].type_, features[0].flatCoordinates_, 'XY')
+        });
+        olFeature.getGeometry()['ends_'] = features[0].ends_;
+        olFeature.setProperties(features[0].properties_);
+        vectorLayer.getSource().addFeature(olFeature);
     }
     else {
         vectorLayer.getSource().clear();
     }
 })
+
+let getGeometryByType = (type, flatCoordinates, layout) => {
+    var geometry;
+    layout = layout || 'XY';
+
+    var transformedCoordinates = [];
+    for (let i = 0; i < flatCoordinates.length; i += 2) {
+        transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
+    }
+
+    switch (type) {
+        case 'Point': geometry = new ol.geom.Point(flatCoordinates, layout); break;
+        case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
+        case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
+        case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
+        default: console.log(type);
+    }
+
+    return geometry;
+};
