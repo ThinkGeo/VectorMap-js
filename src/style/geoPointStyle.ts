@@ -82,6 +82,10 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     initializeCore() {
+        if(this.size===0)
+        {
+            return ;
+        }
         this.style = new ol.style.Style();
         if (this.pointType) {
             this.pointType = this.pointType.toLowerCase();
@@ -125,7 +129,10 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
-
+        if(this.size===0)
+        {
+            return [];
+        }
         let geometryFeature = feature.getGeometry();
 
         var textStyle = this.style.getText();
