@@ -101202,7 +101202,6 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
-            debugger;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
             var features = readData[0];
             var instructsTree = readData[1];

@@ -547,19 +547,19 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         var instructs = messageData["instructs"];
 
                         if (features && instructs) {
+
                             for (let i = 0; i < instructs.length; i++) {
                                 let geoStyleId = instructs[i][1];
                                 let geoStyle = geoStyles[geoStyleId];
 
                                 let featureInfo = features[instructs[i][0]];
 
-                                // let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
-
-                                let feature = new ol.Feature({
-                                    geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
-                                })
-                                feature.setProperties(featureInfo.properties_);
-                                feature.getGeometry()['ends_'] = featureInfo.ends_
+                                let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                // let feature = new ol.Feature({
+                                //     geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
+                                // })
+                                // feature.setProperties(featureInfo.properties_);
+                                // feature.getGeometry()['ends_'] = featureInfo.ends_
                                 // feature.getGeometry()['extent_'] = featureInfo.extent_;
 
                                 feature["tempTreeZindex"] = instructs[i][2];
@@ -577,11 +577,13 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 for (let key in workerReplay) {
                                     if (key === 'startIndicesFeature') {
                                         replay[key] = workerReplay[key].map(item => {
-                                            let olFeature = new ol.Feature({
-                                                geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
-                                            });
-                                            olFeature.getGeometry()['ends_'] = item.ends_
-                                            olFeature.setProperties(item.properties_);
+                                            let olFeature = new (<any>ol.render).Feature(item.type_, item.flatCoordinates_, item.ends_, item.properties_);
+                                            // let olFeature = new ol.Feature({
+                                            //     geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
+                                            // });
+                                            // olFeature.getGeometry()['ends_'] = item.ends_
+                                            // olFeature.setProperties(item.properties_);
+
                                             olFeature['zCoordinate'] = item.zCoordinate;
                                             olFeature['styleId'] = item.styleId;
                                             return olFeature;
@@ -594,11 +596,12 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                     for (let lineStringKey in workerReplay['lineStringReplay']) {
                                         if (lineStringKey === 'startIndicesFeature') {
                                             replay['lineStringReplay'][lineStringKey] = workerReplay['lineStringReplay'][lineStringKey].map(item => {
-                                                let olFeature = new ol.Feature({
-                                                    geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
-                                                });
-                                                olFeature.getGeometry()['ends_'] = item.ends_
-                                                olFeature.setProperties(item.properties_);
+                                                let olFeature = new (<any>ol.render).Feature(item.type_, item.flatCoordinates_, item.ends_, item.properties_);
+                                                // let olFeature = new ol.Feature({
+                                                //     geometry: that_.getGeometryByType(item.type_, item.flatCoordinates_, 'XY')
+                                                // });
+                                                //olFeature.getGeometry()['ends_'] = item.ends_
+                                                //olFeature.setProperties(item.properties_);
                                                 olFeature['zCoordinate'] = item.zCoordinate;
                                                 olFeature['styleId'] = item.styleId;
                                                 return olFeature;
@@ -795,7 +798,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 if (sourceTile.getState() == (<any>ol).TileState.ERROR) {
                     continue;
                 }
-                replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+                replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
                 if (!replayGroup || !layerState) {
                     continue;
                 }
