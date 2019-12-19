@@ -9,8 +9,8 @@ export class GeoTextStyle extends GeoStyle {
     static measureCanvas = undefined;
     static measureContext = undefined;
 
-    compounds = ['overlay', 'reject'];
-    defaultCompund = 'overlay';
+    compounds = ['apply-all', 'apply-first'];
+    defaultCompund = 'apply-first';
 
     aligns = ["left", "right", "center"];
     defaultAlign = "center";
@@ -61,7 +61,7 @@ export class GeoTextStyle extends GeoStyle {
         this.charWidths = {};
 
         if (styleJson) {
-            this.compound = styleJson["text-compound"];
+            this.compound = styleJson["filter-apply-mode"];
 
             this.font = styleJson["text-font"];
             this.fillColor = styleJson["text-fill-color"];

@@ -97438,7 +97438,7 @@ function olInit() {
                                                     tempStyleIndexGroups[index] = styleIndexGroup = [];
                                                 }
 
-                                                if (geoStyle.compound === "reject") {
+                                                if (geoStyle.compound === "apply-first") {
                                                     styleIndexGroup.length = 0;
                                                     styleIndexGroup.push([instruct[0], geoStyle.id, i]);
                                                     break;
@@ -98518,10 +98518,10 @@ function olInit() {
             __extends(GeoAreaStyle, _super);
             function GeoAreaStyle(styleJson) {
                 var _this = _super.call(this, styleJson) || this;
-                _this.compounds = ['overlay', 'reject'];
-                _this.defaultCompund = 'overlay';
+                _this.compounds = ['apply-all', 'apply-first'];
+                _this.defaultCompund = 'apply-first';
                 if (styleJson) {
-                    _this.compound = styleJson["polygon-compound"];
+                    _this.compound = styleJson["filter-apply-mode"];
                     _this.outlineColor = styleJson["polygon-outline-color"];
                     _this.outlineWidth = styleJson["polygon-outline-width"];
                     _this.outlineDashArray = styleJson["polygon-outline-dasharray"];
@@ -98720,11 +98720,11 @@ function olInit() {
                     miterclipped: "miter",
                     custom: "square"
                 };
-                _this.compounds = ['overlay', 'reject'];
-                _this.defaultCompund = 'overlay';
+                _this.compounds = ['apply-all', 'apply-first'];
+                _this.defaultCompund = 'apply-first';
                 _this.convertedDashArray = new Array();
                 if (styleJson) {
-                    _this.compound = styleJson["line-compound"];
+                    _this.compound = styleJson["filter-apply-mode"];
                     _this.color = styleJson["line-color"];
                     _this.dashArray = styleJson["line-dasharray"];
                     _this.width = styleJson["line-width"];
@@ -99046,10 +99046,10 @@ function olInit() {
                 var _this = _super.call(this, styleJson) || this;
                 _this.pointTypes = ["symbol", "image", "glyph"];
                 _this.symbolTypes = ["circle", "square", "triangle", "cross", "star"];
-                _this.compounds = ['overlay', 'reject'];
-                _this.defaultCompund = 'overlay';
+                _this.compounds = ['apply-all', 'apply-first'];
+                _this.defaultCompund = 'apply-first';
                 if (styleJson) {
-                    _this.compound = styleJson["point-compound"];
+                    _this.compound = styleJson["filter-apply-mode"];
                     _this.outlineColor = styleJson["point-outline-color"];
                     _this.outlineWidth = styleJson["point-outline-width"] || 0;
                     _this.symbolType = styleJson["point-symbol-type"];
@@ -99865,10 +99865,10 @@ function olInit() {
                 _this.placements = ["upperleft", "upper", "upperright", "right", "center", "left", "lowerleft", "lowerleft", "lower", "lowerright", "autoPlacement"];
                 _this.defaultPlacement = "center";
                 _this.drawnMask = false;
-                _this.compounds = ['overlay', 'reject'];
-                _this.defaultCompund = 'overlay';
+                _this.compounds = ['apply-all', 'apply-first'];
+                _this.defaultCompund = 'apply-first';
                 if (styleJson) {
-                    _this.compound = styleJson["text-compound"];
+                    _this.compound = styleJson["filter-apply-mode"];
                     _this.font = styleJson["text-font"];
                     _this.fillColor = styleJson["text-fill-color"];
                     _this.haloColor = styleJson["text-halo-color"];
@@ -101202,8 +101202,8 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
+            debugger;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
-
             var features = readData[0];
             var instructsTree = readData[1];
             var extent = readData[2];
