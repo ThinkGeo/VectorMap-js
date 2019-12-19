@@ -144,34 +144,34 @@ export class StyleJsonCacheItem {
     }
 
     createSubItems(styleJson, dataLayerColumnName, styleIdIndex) {
-        if (styleJson.style) {
+        if (styleJson.styles) {
             // apply the property to sub style.
             for (let key in styleJson) {
-                if (key !== "style" && key !== "filter") {
-                    for (let i = 0; i < styleJson.style.length; i++) {
+                if (key !== "styles" && key !== "filter") {
+                    for (let i = 0; i < styleJson.styles.length; i++) {
                         // Apply the property to sub style if the sub style does not included.
-                        if (styleJson.style[i][key] === undefined||key === 'text-base-point-style') {
+                        if (styleJson.styles[i][key] === undefined||key === 'text-base-point-style') {
                             if (key === "id") {
-                                styleJson.style[i][key] = styleJson[key] + "#" + i;
+                                styleJson.styles[i][key] = styleJson[key] + "#" + i;
                             } else if (key === 'text-base-point-style') {
-                                if (styleJson.style[i][key] === undefined) {
-                                    styleJson.style[i][key] = styleJson[key];
+                                if (styleJson.styles[i][key] === undefined) {
+                                    styleJson.styles[i][key] = styleJson[key];
                                 }
                                 else
                                 {
                                     for (let subKey in styleJson[key]){
-                                        if(subKey!=='style'&&subKey!=="filter")
+                                        if(subKey!=='styles'&&subKey!=="filter")
                                         {
-                                            if (styleJson.style[i][key][subKey] === undefined)
+                                            if (styleJson.styles[i][key][subKey] === undefined)
                                             {
-                                                styleJson.style[i][key][subKey] = styleJson[key][subKey];
+                                                styleJson.styles[i][key][subKey] = styleJson[key][subKey];
                                             }
                                         }
                                     }
                                 }
                             }
                             else {
-                                styleJson.style[i][key] = styleJson[key];
+                                styleJson.styles[i][key] = styleJson[key];
                             }
                         }
                     }
@@ -180,7 +180,7 @@ export class StyleJsonCacheItem {
             // let subItemMinZoom;
             // let subItemMaxZoom;
             var subItemZoomArr = [];
-            for (let subStyle of styleJson.style) {
+            for (let subStyle of styleJson.styles) {
                 let styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex);
                 this.zoomArr.forEach(function (item) {
                     if (!subItemZoomArr.includes(item)) {
@@ -210,7 +210,7 @@ export class StyleJsonCacheItem {
     createGeoStyle(styleJson) {
         let geoStyle;
         for (let key in styleJson) {
-            if (key !== "style" && key !== "filter") {
+            if (key !== "styles" && key !== "filter") {
                 let keys = key.split("-");
                 if (keys.length > 1) {
                     switch (keys[0]) {

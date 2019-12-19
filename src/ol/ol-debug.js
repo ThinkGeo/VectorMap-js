@@ -97953,18 +97953,18 @@ function olInit() {
                 return filterGroup;
             };
             StyleJsonCacheItem.prototype.createSubItems = function (styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
-                if (styleJson.style) {
+                if (styleJson.styles) {
                     // apply the property to sub style.
                     for (var key in styleJson) {
-                        if (key !== "style" && key !== "filter") {
-                            for (var i = 0; i < styleJson.style.length; i++) {
+                        if (key !== "styles" && key !== "filter") {
+                            for (var i = 0; i < styleJson.styles.length; i++) {
                                 // Apply the property to sub style if the sub style does not included.
-                                if (styleJson.style[i][key] === undefined) {
+                                if (styleJson.styles[i][key] === undefined) {
                                     if (key === "id") {
-                                        styleJson.style[i][key] = styleJson[key] + "#" + i;
+                                        styleJson.styles[i][key] = styleJson[key] + "#" + i;
                                     }
                                     else {
-                                        styleJson.style[i][key] = styleJson[key];
+                                        styleJson.styles[i][key] = styleJson[key];
                                     }
                                 }
                             }
@@ -97974,7 +97974,7 @@ function olInit() {
                     // var subItemMaxZoom = void 0;
                     var subItemZoomArr = [];
 
-                    for (var _i = 0, _a = styleJson.style; _i < _a.length; _i++) {
+                    for (var _i = 0, _a = styleJson.styles; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
                         styleJsonCacheItemMakeIndexObj.styleIndex++;
                         var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
@@ -98003,7 +98003,7 @@ function olInit() {
             StyleJsonCacheItem.prototype.createGeoStyle = function (styleJson) {
                 var geoStyle;
                 for (var key in styleJson) {
-                    if (key !== "style" && key !== "filter") {
+                    if (key !== "styles" && key !== "filter") {
                         var keys = key.split("-");
                         if (keys.length > 1) {
                             switch (keys[0]) {
@@ -99993,7 +99993,7 @@ function olInit() {
                             }
                         }
                     }
-                    
+
                     this.startIndices.push(this.indices.length);
                     this.startIndicesFeature.push(feature);
 
@@ -101441,7 +101441,7 @@ function olInit() {
             strategyTree.clear();
 
             return {
-                'replays': replayGroup.replaysByZIndex_,
+                replays: replayGroup.replaysByZIndex_,
                 features: mainFeatures,
                 instructs: mainDrawingInstructs
             };
@@ -101463,7 +101463,6 @@ function olInit() {
                     clippedEnds.push(clippedFlatCoordinates.length);
                 }
             }
-
             return {
                 flatCoordinates: clippedFlatCoordinates,
                 ends: clippedEnds
