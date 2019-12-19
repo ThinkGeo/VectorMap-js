@@ -7,8 +7,8 @@ export class GeoPointStyle extends GeoStyle {
     pointTypes = ["symbol", "image", "glyph"];
     symbolTypes = ["circle", "square", "triangle", "cross", "star"];
 
-    compounds = ['overlay', 'reject'];
-    defaultCompund = 'overlay';
+    compounds = ['apply-all', 'apply-first'];
+    defaultCompund = 'apply-first';
 
     glyphFontName: string;
     fillColor: string;
@@ -41,7 +41,7 @@ export class GeoPointStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
-            this.compound = styleJson["point-compound"];
+            this.compound = styleJson["filter-apply-mode"];
 
             this.outlineColor = styleJson["point-outline-color"];
             this.outlineWidth = styleJson["point-outline-width"] || 0;

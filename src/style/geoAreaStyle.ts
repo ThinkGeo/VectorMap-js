@@ -3,8 +3,8 @@ import { GeoBrush } from "./geoBrush";
 import { GeoBrushType } from "./geoBrushType";
 
 export class GeoAreaStyle extends GeoStyle {
-    compounds = ['overlay', 'reject'];
-    defaultCompund = 'overlay';
+    compounds = ['apply-all', 'apply-first'];
+    defaultCompund = 'apply-first';
 
     offsetX: number;
     offsetY: number;
@@ -33,7 +33,7 @@ export class GeoAreaStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
-            this.compound = styleJson["polygon-compound"];
+            this.compound = styleJson["filter-apply-mode"];
 
             this.outlineColor = styleJson["polygon-outline-color"];
             this.outlineWidth = styleJson["polygon-outline-width"];

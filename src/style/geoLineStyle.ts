@@ -28,8 +28,8 @@ export class GeoLineStyle extends GeoStyle {
         custom: "square"
     };
 
-    compounds = ['overlay', 'reject'];
-    defaultCompund = 'overlay';
+    compounds =  ['apply-all', 'apply-first'];
+    defaultCompund = 'apply-first';
 
     lineCap: string;
     color: string;
@@ -59,7 +59,7 @@ export class GeoLineStyle extends GeoStyle {
     constructor(styleJson?: any) {
         super(styleJson);
         if (styleJson) {
-            this.compound = styleJson["line-compound"];
+            this.compound = styleJson["filter-apply-mode"];
             this.color = styleJson["line-color"];
             this.dashArray = styleJson["line-dasharray"];
             this.width = styleJson["line-width"];
