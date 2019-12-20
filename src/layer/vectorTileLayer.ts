@@ -105,73 +105,86 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         this.replaceVariables(styleJson, this.variables);
 
         this.geoSources = {};
-        if (styleJson["map-layers"] && styleJson["map-layers"].length > 0) {
-            var layerJson = styleJson["map-layers"][0];
+        var source;
+        var layerJson = {};
+
+        if (styleJson["map-layers"] === undefined || styleJson["map-layers"].length === 0) {
+            if (this.forAssemblySource != undefined && styleJson["styles"]) {
+                source = this.assembleGeoSource(this.forAssemblySource);
+                layerJson["style-drawing-order"] = [];
+                for (let index = 0; index < styleJson["styles"].length; index++) {
+                    const element = styleJson["styles"][index];
+                    layerJson["style-drawing-order"].push(element.id);
+                }
+            }
+        }
+        else if (styleJson["map-layers"] && styleJson["map-layers"].length > 0) {
+            layerJson = styleJson["map-layers"][0];
             var sourceId = layerJson["source"];
 
-            var source;
             if (this.forAssemblySource != undefined) {
                 source = this.assembleGeoSource(this.forAssemblySource);
             }
             else {
                 source = this.getGeoSource(sourceId);
             }
-            if (source) {
-                this.setSource(source);
-                if (this.background) {
-                    let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
-                    if (backgroundColor) {
-                        this["background"] = backgroundColor;
+        }
+
+        if (source) {
+            this.setSource(source);
+            if (this.background) {
+                let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
+                if (backgroundColor) {
+                    this["background"] = backgroundColor;
+                }
+            }
+
+            let styleJsons = styleJson["styles"];
+            let styleIds = layerJson["style-drawing-order"];
+            let minZoom = 0;
+            let maxZoom = 22;
+            let layerName = source.getGeoFormat().getLayerName();
+
+            let styleJsonCache = new StyleJsonCache();
+            let styleIdIndex = 1;
+            let tmpZoomArr = [];
+            for (let i = minZoom; i <= maxZoom; i++) {
+                tmpZoomArr.push(i);
+            }
+            for (let styleId of styleIds) {
+                let styleJsonTmp;
+                for (let index = 0; index < styleJsons.length; index++) {
+                    if (styleJsons[index].id === styleId) {
+                        styleJsonTmp = styleJsons[index];
                     }
                 }
+                if (styleJsonTmp) {
+                    styleJsonCache.styleJson[styleId] = styleJsonTmp;
+                    let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
+                    item.zoomArr.forEach(function (zoom) {
+                        let treeNode = new TreeNode<StyleJsonCacheItem>(item);
+                        this.createChildrenNode(treeNode, item, zoom);
+                        styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                    }.bind(this));
+                    // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                    // }
 
-                let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["style-drawing-order"];
-                let minZoom = 0;
-                let maxZoom = 22;
-                let layerName = source.getGeoFormat().getLayerName();
-
-                let styleJsonCache = new StyleJsonCache();
-                let styleIdIndex = 1;
-                let tmpZoomArr = [];
-                for (let i = minZoom; i <= maxZoom; i++) {
-                    tmpZoomArr.push(i);
+                    styleIdIndex += 1;
                 }
-                for (let styleId of styleIds) {
-                    let styleJsonTmp;
-                    for (let index = 0; index < styleJsons.length; index++) {
-                        if (styleJsons[index].id === styleId) {
-                            styleJsonTmp = styleJsons[index];
-                        }
-                    }
-                    if (styleJsonTmp) {
-                        styleJsonCache.styleJson[styleId] = styleJsonTmp;
-                        let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
-                        item.zoomArr.forEach(function (zoom) {
-                            let treeNode = new TreeNode<StyleJsonCacheItem>(item);
-                            this.createChildrenNode(treeNode, item, zoom);
-                            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                        }.bind(this));
-                        // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
-                        // }
+            }
+            let geoFormat = source.getGeoFormat();
+            geoFormat["styleJsonCache"] = styleJsonCache;
 
-                        styleIdIndex += 1;
-                    }
-                }
-                let geoFormat = source.getGeoFormat();
-                geoFormat["styleJsonCache"] = styleJsonCache;
+            if (this.isMultithread) {
+                if (this.workerManager) {
+                    let messageData = {
+                        formatId: (<any>ol).getUid(geoFormat),
+                        styleJson: styleJsonCache.styleJson,
+                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
+                    };
 
-                if (this.isMultithread) {
-                    if (this.workerManager) {
-                        let messageData = {
-                            formatId: (<any>ol).getUid(geoFormat),
-                            styleJson: styleJsonCache.styleJson,
-                            geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
-                        };
-
-                        for (let i = 0; i < this.workerManager.workerCount; i++) {
-                            this.workerManager.postMessage((<any>ol).getUid(messageData), "initStyleJSON", messageData, undefined, i);
-                        }
+                    for (let i = 0; i < this.workerManager.workerCount; i++) {
+                        this.workerManager.postMessage((<any>ol).getUid(messageData), "initStyleJSON", messageData, undefined, i);
                     }
                 }
             }
@@ -188,10 +201,22 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         this.replaceVariables(styleJson, this.variables);
 
-        if (styleJson["map-layer-id"] && styleJson["map-layer-id"].length > 0) {
-            var layerJson = styleJson["map-layer-id"][0];
+        var source;
+        var layerJson = {};
+
+        if (styleJson["map-layers"] === undefined || styleJson["map-layers"].length === 0) {
+            if (this.forAssemblySource != undefined && styleJson["styles"]) {
+                source = this.assembleGeoSource(this.forAssemblySource);
+                layerJson["style-drawing-order"] = [];
+                for (let index = 0; index < styleJson["styles"].length; index++) {
+                    const element = styleJson["styles"][index];
+                    layerJson["style-drawing-order"].push(element.id);
+                }
+            }
+        }
+        else if (styleJson["map-layer-id"] && styleJson["map-layer-id"].length > 0) {
+            layerJson = styleJson["map-layer-id"][0];
             var sourceId = layerJson["source"];
-            var source;
 
             if (this.forAssemblySource != undefined) {
                 source = this.assembleGeoSource(this.forAssemblySource);
@@ -206,82 +231,83 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }
             }
 
-            if (source) {
-                this.setSource(source);
-                if (this.background) {
-                    let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
-                    if (backgroundColor) {
-                        this["background"] = backgroundColor;
+        }
+
+        if (source) {
+            this.setSource(source);
+            if (this.background) {
+                let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
+                if (backgroundColor) {
+                    this["background"] = backgroundColor;
+                }
+            }
+
+            let styleJsons = styleJson["styles"];
+            let styleIds = layerJson["style-drawing-order"];
+            let minZoom = 0;
+            let maxZoom = 22;
+            let layerName = source.getGeoFormat().getLayerName();
+
+            let styleJsonCache = new StyleJsonCache();
+            let styleIdIndex = 1;
+            let tmpZoomArr = [];
+            for (let i = minZoom; i <= maxZoom; i++) {
+                tmpZoomArr.push(i);
+            }
+            for (let styleId of styleIds) {
+                let styleJsonTmp;
+                for (let index = 0; index < styleJsons.length; index++) {
+                    if (styleJsons[index].id === styleId) {
+                        styleJsonTmp = styleJsons[index];
                     }
                 }
+                if (styleJsonTmp) {
+                    styleJsonCache.styleJson[styleId] = styleJsonTmp;
+                    let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
+                    item.zoomArr.forEach(function (zoom) {
+                        let treeNode = new TreeNode<StyleJsonCacheItem>(item);
+                        this.createChildrenNode(treeNode, item, zoom);
+                        styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
+                    }.bind(this));
+                    // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
+                    // }
 
-                let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["style-drawing-order"];
-                let minZoom = 0;
-                let maxZoom = 22;
-                let layerName = source.getGeoFormat().getLayerName();
-
-                let styleJsonCache = new StyleJsonCache();
-                let styleIdIndex = 1;
-                let tmpZoomArr = [];
-                for (let i = minZoom; i <= maxZoom; i++) {
-                    tmpZoomArr.push(i);
+                    styleIdIndex += 1;
                 }
-                for (let styleId of styleIds) {
-                    let styleJsonTmp;
-                    for (let index = 0; index < styleJsons.length; index++) {
-                        if (styleJsons[index].id === styleId) {
-                            styleJsonTmp = styleJsons[index];
-                        }
+            }
+            let geoFormat = source.getGeoFormat();
+            geoFormat["styleJsonCache"] = styleJsonCache;
+
+            if (this.isMultithread) {
+                if (this.workerManager) {
+                    var tileCaches = source.tileCache.getValues();
+                    var sourceTiles_ = source.sourceTiles_;
+                    var that_ = this;
+                    var callback = function (messageData) {
+                        tileCaches.forEach(function (vectorImageTile) {
+                            var replayState = vectorImageTile.getReplayState(that_);
+                            replayState.dirty = true;
+                            var tileKeys = vectorImageTile.tileKeys;
+                            tileKeys.forEach(element => {
+                                var sourceTile = sourceTiles_[element];
+                                var replayGroups_ = sourceTile.replayGroups_;
+                                if (Object.keys(replayGroups_).length > 0) {
+                                    sourceTile.tmpReplayGroups_ = replayGroups_;
+                                    sourceTile.replayGroups_ = {};
+                                    vectorImageTile.setState((<any>ol).TileState.LOADED);
+                                }
+                            });
+                        })
                     }
-                    if (styleJsonTmp) {
-                        styleJsonCache.styleJson[styleId] = styleJsonTmp;
-                        let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
-                        item.zoomArr.forEach(function (zoom) {
-                            let treeNode = new TreeNode<StyleJsonCacheItem>(item);
-                            this.createChildrenNode(treeNode, item, zoom);
-                            styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
-                        }.bind(this));
-                        // for (let zoom = item.minZoom; zoom <= item.maxZoom; zoom++) {
-                        // }
 
-                        styleIdIndex += 1;
-                    }
-                }
-                let geoFormat = source.getGeoFormat();
-                geoFormat["styleJsonCache"] = styleJsonCache;
+                    let messageData = {
+                        formatId: (<any>ol).getUid(geoFormat),
+                        styleJson: styleJsonCache.styleJson,
+                        geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
+                    };
 
-                if (this.isMultithread) {
-                    if (this.workerManager) {
-                        var tileCaches = source.tileCache.getValues();
-                        var sourceTiles_ = source.sourceTiles_;
-                        var that_ = this;
-                        var callback = function (messageData) {
-                            tileCaches.forEach(function (vectorImageTile) {
-                                var replayState = vectorImageTile.getReplayState(that_);
-                                replayState.dirty = true;
-                                var tileKeys = vectorImageTile.tileKeys;
-                                tileKeys.forEach(element => {
-                                    var sourceTile = sourceTiles_[element];
-                                    var replayGroups_ = sourceTile.replayGroups_;
-                                    if (Object.keys(replayGroups_).length > 0) {
-                                        sourceTile.tmpReplayGroups_ = replayGroups_;
-                                        sourceTile.replayGroups_ = {};
-                                        vectorImageTile.setState((<any>ol).TileState.LOADED);
-                                    }
-                                });
-                            })
-                        }
-
-                        let messageData = {
-                            formatId: (<any>ol).getUid(geoFormat),
-                            styleJson: styleJsonCache.styleJson,
-                            geoTextStyleInfos: styleJsonCache.geoTextStyleInfo
-                        };
-
-                        for (let i = 0; i < this.workerManager.workerCount; i++) {
-                            this.workerManager.postMessage((<any>ol).getUid(messageData), "updateStyleJSON", messageData, callback, i);
-                        }
+                    for (let i = 0; i < this.workerManager.workerCount; i++) {
+                        this.workerManager.postMessage((<any>ol).getUid(messageData), "updateStyleJSON", messageData, callback, i);
                     }
                 }
             }
