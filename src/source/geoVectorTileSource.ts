@@ -1,9 +1,20 @@
 
+import { GeoVectorTile } from "../geoVectorTile";
+import { GeoMVTFormat } from "../format/geoMvt";
+
+
 export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.source.VectorTileOptions): any; }) {
     geoFormat: any;
     isMultithread: boolean;
-    constructor(options) {
+    constructor(opt_options) {
+        var options = opt_options ? opt_options : {};
+        options.tileClass = GeoVectorTile;
+        options.projection = "EPSG:3857";
+        options.tileGrid = new ol.tilegrid.createXYZ({ tileSize: 512, maxZoom: 22 });
+        options.cacheSize = 1024;
+        options.format = options.format || new GeoMVTFormat(undefined, { multithread: true, minimalist: true });
         super(options);
+        options.format["source"] = this;
         this.maxDataZoom = options.maxDataZoom;
         if (options["tileUrlFunction"] === undefined) {
             this.setTileUrlFunction(this.getGeoTileUrlFunction());
@@ -105,8 +116,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                 }
                 this.requestTileCoord = requestTileCoord;
 
-                let tileGrid=self.getTileGrid();
-                let tileExtent= tileGrid.getTileCoordExtent(sourceTile.tileCoord);
+                let tileGrid = self.getTileGrid();
+                let tileExtent = tileGrid.getTileCoordExtent(sourceTile.tileCoord);
                 let tileResolution = tileGrid.getResolution(sourceTile.tileCoord[0]);
 
                 let callback = function (tile, callbackFunction, sourceProjection, lastExtent) {
@@ -138,8 +149,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                             tileRange: sourceTile.tileRange,
                             // tileCoordWithSourceCoord: sourceTile.tileCoordWithSourceCoord,
                             vectorImageTileCoord: sourceTile.vectorImageTileCoord,
-                            tileExtent:tileExtent,
-                            tileResolution:tileResolution,
+                            tileExtent: tileExtent,
+                            tileResolution: tileResolution,
                             tileSize: this.format_.source.tileGrid.tileSize_ * sourceTile.pixelRatio
                         };
 
@@ -161,8 +172,8 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
                                     loadEventInfo.callback(loadEventInfo.tile, loadEventInfo.failureFunction, format.readProjection());
                                 }
                             }
-                        }                        
-                        
+                        }
+
                         format.workerManager.postMessage(this.tileCoord + (<any>ol).getUid(loadedCallback), "request", requestInfo, loadedCallback, undefined);
                     }
                     else {

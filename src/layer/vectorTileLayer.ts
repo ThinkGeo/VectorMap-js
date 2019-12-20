@@ -16,6 +16,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
     threadMode: VectorTileLayerThreadMode;
     isMultithread: boolean;
     workerManager: WorkerManager;
+    forAssemblySource: GeoVectorTileSource;
 
     constructor(styleJson: any, opt_options?: olx.layer.VectorTileOptions) {
         // default
@@ -23,6 +24,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             opt_options["declutter"] = opt_options["declutter"] === undefined ? true : opt_options["declutter"];
             opt_options["minimalist"] = opt_options["minimalist"] === undefined ? true : opt_options["minimalist"];
             opt_options["renderMode"] = 'vector';
+            if (opt_options["source"]) {
+                this.forAssemblySource = opt_options["source"]
+                delete opt_options["source"];
+            }
             super(opt_options);
         } else {
             var options = {}
@@ -33,14 +38,12 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
 
         if (opt_options !== undefined) {
-            // temp Emil
             var tempIsMultithread = opt_options["multithread"] === undefined ? true : opt_options["multithread"];
 
             this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
             this.isMultithread = this.threadMode !== VectorTileLayerThreadMode.SingleThread;
             this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
 
-            // temp Emil
             if (tempIsMultithread) {
                 this.threadMode = VectorTileLayerThreadMode.Default;
                 this.backgroundWorkerCount = 2;
@@ -57,6 +60,8 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.minimalist = true;
             this.maxDataZoom = 14;
         }
+
+
         this.registerGeoVector();
         if (this.isStyleJsonUrl(styleJson)) {
             this.loadStyleJsonAsyn(styleJson, undefined);
@@ -64,7 +69,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         else {
             this.loadStyleJson(styleJson);
         }
-        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;    
+        this.type = (<any>ol).LayerType.MAPSUITE_VECTORTILE;
     }
 
     loadStyleJsonAsyn(styleJsonUrl, method) {
@@ -77,9 +82,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 source = xhr.responseText;
                 this.styleJson = JSON.parse(source);
 
-                if(method === 'update'){
+                if (method === 'update') {
                     this.updateStyleJson(JSON.parse(source));
-                }else{
+                } else {
                     this.loadStyleJson(JSON.parse(source));
                 }
             }
@@ -99,12 +104,18 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         this.replaceVariables(styleJson, this.variables);
 
-        this.geoSources = {};        
-        if (styleJson["layers"] && styleJson["layers"].length > 0) {
-            var layerJson = styleJson["layers"][0];
+        this.geoSources = {};
+        if (styleJson["map-layers"] && styleJson["map-layers"].length > 0) {
+            var layerJson = styleJson["map-layers"][0];
             var sourceId = layerJson["source"];
 
-            var source = this.getGeoSource(sourceId);
+            var source;
+            if (this.forAssemblySource != undefined) {
+                source = this.assembleGeoSource(this.forAssemblySource);
+            }
+            else {
+                source = this.getGeoSource(sourceId);
+            }
             if (source) {
                 this.setSource(source);
                 if (this.background) {
@@ -115,7 +126,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }
 
                 let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["styles"];
+                let styleIds = layerJson["style-drawing-order"];
                 let minZoom = 0;
                 let maxZoom = 22;
                 let layerName = source.getGeoFormat().getLayerName();
@@ -123,7 +134,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let styleJsonCache = new StyleJsonCache();
                 let styleIdIndex = 1;
                 let tmpZoomArr = [];
-                for(let i = minZoom; i <= maxZoom; i++){
+                for (let i = minZoom; i <= maxZoom; i++) {
                     tmpZoomArr.push(i);
                 }
                 for (let styleId of styleIds) {
@@ -136,7 +147,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     if (styleJsonTmp) {
                         styleJsonCache.styleJson[styleId] = styleJsonTmp;
                         let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
-                        item.zoomArr.forEach(function(zoom){
+                        item.zoomArr.forEach(function (zoom) {
                             let treeNode = new TreeNode<StyleJsonCacheItem>(item);
                             this.createChildrenNode(treeNode, item, zoom);
                             styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
@@ -177,16 +188,21 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         this.replaceVariables(styleJson, this.variables);
 
-        if (styleJson["layers"] && styleJson["layers"].length > 0) {
-            var layerJson = styleJson["layers"][0];
+        if (styleJson["map-layer-id"] && styleJson["map-layer-id"].length > 0) {
+            var layerJson = styleJson["map-layer-id"][0];
             var sourceId = layerJson["source"];
             var source;
 
-            if (this.geoSources) {
-                if(!this.geoSources[sourceId]){
-                    source = this.getGeoSource(Object.keys(this.geoSources)[0]);
-                }else{
-                    source = this.geoSources[sourceId];
+            if (this.forAssemblySource != undefined) {
+                source = this.assembleGeoSource(this.forAssemblySource);
+            }
+            else {
+                if (this.geoSources) {
+                    if (!this.geoSources[sourceId]) {
+                        source = this.getGeoSource(Object.keys(this.geoSources)[0]);
+                    } else {
+                        source = this.geoSources[sourceId];
+                    }
                 }
             }
 
@@ -200,7 +216,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 }
 
                 let styleJsons = styleJson["styles"];
-                let styleIds = layerJson["styles"];
+                let styleIds = layerJson["style-drawing-order"];
                 let minZoom = 0;
                 let maxZoom = 22;
                 let layerName = source.getGeoFormat().getLayerName();
@@ -208,7 +224,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                 let styleJsonCache = new StyleJsonCache();
                 let styleIdIndex = 1;
                 let tmpZoomArr = [];
-                for(let i = minZoom; i <= maxZoom; i++){
+                for (let i = minZoom; i <= maxZoom; i++) {
                     tmpZoomArr.push(i);
                 }
                 for (let styleId of styleIds) {
@@ -221,7 +237,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     if (styleJsonTmp) {
                         styleJsonCache.styleJson[styleId] = styleJsonTmp;
                         let item = new StyleJsonCacheItem(styleJsonTmp, tmpZoomArr, layerName, styleIdIndex);
-                        item.zoomArr.forEach(function(zoom){
+                        item.zoomArr.forEach(function (zoom) {
                             let treeNode = new TreeNode<StyleJsonCacheItem>(item);
                             this.createChildrenNode(treeNode, item, zoom);
                             styleJsonCache.add(zoom, item.dataLayerName, new Tree(treeNode, styleIdIndex));
@@ -240,15 +256,15 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                         var tileCaches = source.tileCache.getValues();
                         var sourceTiles_ = source.sourceTiles_;
                         var that_ = this;
-                        var callback = function(messageData){
-                            tileCaches.forEach(function(vectorImageTile){
+                        var callback = function (messageData) {
+                            tileCaches.forEach(function (vectorImageTile) {
                                 var replayState = vectorImageTile.getReplayState(that_);
                                 replayState.dirty = true;
                                 var tileKeys = vectorImageTile.tileKeys;
                                 tileKeys.forEach(element => {
                                     var sourceTile = sourceTiles_[element];
                                     var replayGroups_ = sourceTile.replayGroups_;
-                                    if(Object.keys(replayGroups_).length > 0){
+                                    if (Object.keys(replayGroups_).length > 0) {
                                         sourceTile.tmpReplayGroups_ = replayGroups_;
                                         sourceTile.replayGroups_ = {};
                                         vectorImageTile.setState((<any>ol).TileState.LOADED);
@@ -272,10 +288,10 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
     }
 
-    update(styleJson: any){
-        if(this.isStyleJsonUrl(styleJson)){
+    update(styleJson: any) {
+        if (this.isStyleJsonUrl(styleJson)) {
             this.loadStyleJsonAsyn(styleJson, 'update');
-        }else{
+        } else {
             this.updateStyleJson(styleJson);
         }
     }
@@ -327,7 +343,6 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         if (sourceJson["type"] === "MVT") {
             var format = this.getVectorSourceFormat();
             var source = new GeoVectorTileSource({
-                tileClass: <any>GeoVectorTile,
                 urls: sourceJson["urls"],
                 clientId: this.clientId,
                 clientSecret: this.clientSecret,
@@ -344,6 +359,27 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             return source;
         }
     }
+
+    assembleGeoSource(source) {
+        if (source) {
+            source.cacheSize = 1024;
+            source.multithread = this.isMultithread;
+            source.minimalist = this.minimalist;
+            source.maxDataZoom = this.maxDataZoom;
+            var format = source.getGeoFormat();
+            if (this.isMultithread) {
+                if (!this.workerManager || !this.workerManager.inited) {
+                    this.workerManager = new WorkerManager(this.threadMode, this.backgroundWorkerCount);
+                    this.workerManager.initWorkers();
+                }
+                if (this.workerManager.inited) {
+                    format["workerManager"] = this.workerManager;
+                }
+            }
+        }
+        return source;
+    }
+
 
     protected getVectorSourceFormat() {
         let format = new GeoMVTFormat(undefined, { multithread: this.isMultithread, minimalist: this.minimalist });
@@ -414,7 +450,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             for (let i = 0, ii = item.subStyleCacheItems.length; i < ii; i++) {
                 let subStyleItem = item.subStyleCacheItems[i];
                 // if (zoom >= subStyleItem.minZoom && zoom <= subStyleItem.maxZoom) {
-                if(subStyleItem.zoomArr.includes(zoom)){
+                if (subStyleItem.zoomArr.includes(zoom)) {
                     let node = new TreeNode<StyleJsonCacheItem>(subStyleItem);
                     currentNode.children.push(node);
                     this.createChildrenNode(node, subStyleItem, zoom);
@@ -447,7 +483,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     var vectorTile = this.sourceTiles_[sourceTileKey];
                     var replayGroups = vectorTile.replayGroups_;
 
-                    for(var key in replayGroups){
+                    for (var key in replayGroups) {
                         replayGroups[key].getDeleteResourcesFunction(context)();
                     }
 
@@ -637,7 +673,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
                     if (!quickZoom) {
                         quickZoom = Math.abs(animation["sourceResolution"] - animation["targetResolution"]) * 2 >= animation["sourceResolution"];
                     }
-                   
+
                 }
 
                 if (options.rotation !== undefined) {
@@ -752,9 +788,9 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
             this.dispatchEvent(
                 new ol.MapEvent((<any>ol).MapEventType.POSTRENDER, this, frameState));
-               
+
             setTimeout(this.handlePostRender.bind(this), 0);
 
-        };    
+        };
     }
 }
