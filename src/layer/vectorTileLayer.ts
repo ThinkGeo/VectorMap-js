@@ -43,6 +43,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             this.threadMode = opt_options["threadMode"] === undefined ? true : opt_options["threadMode"];
             this.isMultithread = this.threadMode !== VectorTileLayerThreadMode.SingleThread;
             this.backgroundWorkerCount = opt_options["backgroundWorkerCount"];
+            this.mapLayerId = opt_options["mapLayerId"]
 
             if (tempIsMultithread) {
                 this.threadMode = VectorTileLayerThreadMode.Default;
@@ -106,7 +107,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
 
         this.geoSources = {};
         var source;
-        var layerJson = {};
+        var layerJson;
 
         if (styleJson["map-layers"] === undefined || styleJson["map-layers"].length === 0) {
             if (this.forAssemblySource != undefined && styleJson["styles"]) {
@@ -119,18 +120,31 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
         }
         else if (styleJson["map-layers"] && styleJson["map-layers"].length > 0) {
-            layerJson = styleJson["map-layers"][0];
-            var sourceId = layerJson["source"];
-
-            if (this.forAssemblySource != undefined) {
-                source = this.assembleGeoSource(this.forAssemblySource);
+            if (this.mapLayerId != undefined) {
+                for (let index = 0; index < styleJson['map-layers'].length; index++) {
+                    const element = styleJson['map-layers'][index];
+                    if (element['map-layer-id'] === this.mapLayerId) {
+                        layerJson = element;
+                        break;
+                    }
+                }
+                // Throw exception information: no matched map-layer-id
             }
             else {
-                source = this.getGeoSource(sourceId);
+                layerJson = styleJson["map-layers"][0];
+            }
+            if (layerJson) {
+                if (this.forAssemblySource != undefined) {
+                    source = this.assembleGeoSource(this.forAssemblySource);
+                }
+                else {
+                    var sourceId = layerJson["source"];
+                    source = this.getGeoSource(sourceId);
+                }
             }
         }
 
-        if (source) {
+        if (source && layerJson) {
             this.setSource(source);
             if (this.background) {
                 let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
@@ -202,7 +216,7 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         this.replaceVariables(styleJson, this.variables);
 
         var source;
-        var layerJson = {};
+        var layerJson;
 
         if (styleJson["map-layers"] === undefined || styleJson["map-layers"].length === 0) {
             if (this.forAssemblySource != undefined && styleJson["styles"]) {
@@ -215,25 +229,36 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
             }
         }
         else if (styleJson["map-layer-id"] && styleJson["map-layer-id"].length > 0) {
-            layerJson = styleJson["map-layer-id"][0];
-            var sourceId = layerJson["source"];
-
-            if (this.forAssemblySource != undefined) {
-                source = this.assembleGeoSource(this.forAssemblySource);
+            if (this.mapLayerId != undefined) {
+                for (let index = 0; index < styleJson['map-layers'].length; index++) {
+                    const element = styleJson['map-layers'][index];
+                    if (element['map-layer-id'] === this.mapLayerId) {
+                        layerJson = element;
+                        break;
+                    }
+                }
+                // Throw exception information: no matched map-layer-id
             }
             else {
-                if (this.geoSources) {
-                    if (!this.geoSources[sourceId]) {
-                        source = this.getGeoSource(Object.keys(this.geoSources)[0]);
-                    } else {
-                        source = this.geoSources[sourceId];
+                layerJson = styleJson["map-layers"][0];
+            }
+            if (layerJson) {
+                if (this.forAssemblySource != undefined) {
+                    source = this.assembleGeoSource(this.forAssemblySource);
+                }
+                else {
+                    if (this.geoSources) {
+                        if (!this.geoSources[sourceId]) {
+                            source = this.getGeoSource(Object.keys(this.geoSources)[0]);
+                        } else {
+                            source = this.geoSources[sourceId];
+                        }
                     }
                 }
             }
-
         }
 
-        if (source) {
+        if (source && layerJson) {
             this.setSource(source);
             if (this.background) {
                 let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);

@@ -35,6 +35,7 @@ var worldStreetsSource = new ol.thinkgeo.VectorTileSource({
 })
 
 var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
+    mapLayerId:"worldstreets",
     source: worldStreetsSource
 });
 
