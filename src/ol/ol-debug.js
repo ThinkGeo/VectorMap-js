@@ -97393,6 +97393,7 @@ function olInit() {
         var getInstructs = function (instructsTree) {
             var instructs = [];
             var mainGeoStyleIds = {};
+
             if (instructsTree) {
                 // the tress index means the index of SyleId.
                 for (var i = 0; i < instructsTree.length; i++) {
@@ -97413,19 +97414,6 @@ function olInit() {
                                         styleIndexGroups.maxStyleIndex = maxStyleIndex;
                                     }
 
-                                    //for (let index = 0; index <= maxStyleIndex; index++) {
-                                    //    const element = matchedNode[index];
-                                    //    if (element) {
-                                    //        var geoStyle = element.geoStyle;
-                                    //        if (geoStyle) {
-                                    //            var styleIndexGroup = styleIndexGroups[index];
-                                    //            if (styleIndexGroup === undefined) {
-                                    //                styleIndexGroups[index] = styleIndexGroup = [];
-                                    //            }
-                                    //            styleIndexGroup.push([instruct[0], geoStyle.id, i]);
-                                    //        }
-                                    //    }
-                                    //}
                                     var tempStyleIndexGroups = [];
 
                                     for (let index = 0; index <= maxStyleIndex; index++) {
@@ -97437,14 +97425,16 @@ function olInit() {
                                                 if (styleIndexGroup === undefined) {
                                                     tempStyleIndexGroups[index] = styleIndexGroup = [];
                                                 }
-
+                                                var zCoordinates = i + j * 0.01 + index * 0.00001;
+                                                //todo1
+                                                // zCoordinates = i;
                                                 if (geoStyle.compound === "apply-first") {
                                                     styleIndexGroup.length = 0;
-                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, zCoordinates]);
                                                     break;
                                                 }
                                                 else {
-                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, zCoordinates]);
                                                 }
                                             }
                                         }
@@ -98857,7 +98847,8 @@ function olInit() {
                         return feature.getGeometry();
                     };
                     this.lineStyle.setGeometry(geometryFunction);
-                    this.lineStyle.zCoordinate = this.zIndex;
+                    // this.lineStyle.zCoordinate = this.zIndex;
+                    this.lineStyle.zCoordinate = options.zCoordinate;
                     styles.push(this.lineStyle);
 
                     if (this.geometryLineCaps.includes(this.lineCap)) {
@@ -98866,7 +98857,9 @@ function olInit() {
                             return GeoLineStyle.createAnchoredGeometry(geometry, _this.lineCap, _this.width, resolution);
                         };
                         this.lineCapStyle.setGeometry(geometryFunction_1);
-                        this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
+                        // this.lineCapStyle.zCoordinate = this.zIndex + 0.1;
+                        this.lineCapStyle.zCoordinate = options.zCoordinate;
+
                         styles.push(this.lineCapStyle);
                     }
                 }
@@ -98892,7 +98885,8 @@ function olInit() {
                     var geometry = new ol.geom.Point(centerPoint, "XY");
                     this.onewayIcon.rotation_ = -rotation;
                     this.onewayStyle.setGeometry(geometry);
-                    this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
+                    // this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
+                    this.lineCapStyle.zCoordinate = options.zCoordinate;
                     styles.push(this.onewayStyle);
                 }
                 return styles;
@@ -101202,6 +101196,7 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
+            // TODO1;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
             var features = readData[0];
             var instructsTree = readData[1];
@@ -101391,7 +101386,6 @@ function olInit() {
             var tileGrid = new ol.source.XYZ().getTileGrid();
             var bbox = tileGrid.getTileCoordExtent(tileCoord);
 
-
             if (instructs && instructs.length > 0) {
                 for (var i = 0; i < instructs.length; i++) {
                     var geoStyleId = instructs[i][1];
@@ -101434,7 +101428,11 @@ function olInit() {
                             feature.flatCoordinates_ = flatCoordinates;
                             feature.ends_ = ends;
                         }
-                        renderFeature.call(this, feature, [geoStyle], { strategyTree: strategyTree, frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform } }, instructs[i]);
+                        renderFeature.call(this, feature, [geoStyle], {
+                            strategyTree: strategyTree,
+                            zCoordinate: instructs[i][2],
+                            frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform }
+                        }, instructs[i]);
                     }
                 }
             }
