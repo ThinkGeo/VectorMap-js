@@ -30,11 +30,12 @@ view.on("change:resolution", function (e) {
     document.getElementById("olzoom").innerHTML = "Zoom:" + (zoom);
 });
 
+var worldStreetsSource = new ol.thinkgeo.VectorTileSource({
+    url: 'http://localhost:1314/tile/{z}/{x}/{y}'
+})
+
 var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
-    declutter: true,
-    multithread: true,
-    minimalist: true,
-    //apiKey: "GoE6l7_Ji_JfDnUhby9awntg9Pi1MABMYv0J6cNTPzY~"
+    source: worldStreetsSource
 });
 
 var vectorPolygons = new ol.layer.Vector({

@@ -15,7 +15,7 @@ export class GeoVectorTileSource extends (ol.source.VectorTile as { new(p: olx.s
         options.format = options.format || new GeoMVTFormat(undefined, { multithread: true, minimalist: true });
         super(options);
         options.format["source"] = this;
-        this.maxDataZoom = options.maxDataZoom;
+        this.maxDataZoom = options.maxDataZoom || 14;
         if (options["tileUrlFunction"] === undefined) {
             this.setTileUrlFunction(this.getGeoTileUrlFunction());
         }
