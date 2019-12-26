@@ -97393,7 +97393,8 @@ function olInit() {
         var getInstructs = function (instructsTree) {
             var instructs = [];
             var mainGeoStyleIds = {};
-
+            debugger;
+            var drawingZCoordinates = 0;
             if (instructsTree) {
                 // the tress index means the index of SyleId.
                 for (var i = 0; i < instructsTree.length; i++) {
@@ -97425,8 +97426,8 @@ function olInit() {
                                                 if (styleIndexGroup === undefined) {
                                                     tempStyleIndexGroups[index] = styleIndexGroup = [];
                                                 }
-                                                var zCoordinates = i + j * 0.01 + index * 0.00001;
-                                                //todo1
+                                                // todo1
+                                                var zCoordinates = i * 10000 + j * 1000 + index;
                                                 // zCoordinates = i;
                                                 if (geoStyle.compound === "apply-first") {
                                                     styleIndexGroup.length = 0;
@@ -97454,6 +97455,11 @@ function olInit() {
                                 for (let index = 0; index <= styleIndexGroups.maxStyleIndex; index++) {
                                     var element = styleIndexGroups[index];
                                     if (element) {
+                                        drawingZCoordinates += 2;
+                                        for (let index = 0; index < element.length; index++) {
+                                            const item = element[index];
+                                            item[2] = drawingZCoordinates;
+                                        }
                                         Array.prototype.push.apply(instructs, element);
                                     }
                                 }
@@ -98584,7 +98590,8 @@ function olInit() {
                         if (shadowOLStyle) {
                             for (var index = 0; index < shadowOLStyle.length; index++) {
                                 var element = shadowOLStyle[index];
-                                element['zCoordinate'] = this.zIndex - 0.5;
+                                // todo2
+                                element['zCoordinate'] = this.zIndex - 0.1;
                             }
                         }
                         Array.prototype.push.apply(styles, shadowOLStyle);
@@ -101196,7 +101203,6 @@ function olInit() {
 
         self.createDrawingInstructs = function (source, zoom, formatId, tileCoord, requestCoord, layerName, vectorTileDataCahceSize, tileExtent, tileResolution) {
             var styleJsonCache = self.styleJsonCache[formatId];
-            // TODO1;
             var readData = readFeaturesAndCreateInstructTrees(source, zoom, requestCoord[0], styleJsonCache, layerName, tileExtent, tileResolution);
             var features = readData[0];
             var instructsTree = readData[1];
