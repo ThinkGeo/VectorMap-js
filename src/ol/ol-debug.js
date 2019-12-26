@@ -97393,7 +97393,6 @@ function olInit() {
         var getInstructs = function (instructsTree) {
             var instructs = [];
             var mainGeoStyleIds = {};
-            debugger;
             var drawingZCoordinates = 0;
             if (instructsTree) {
                 // the tress index means the index of SyleId.
