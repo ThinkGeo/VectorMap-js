@@ -43,7 +43,7 @@
     "@school_color": "#cbdfe8",
     "@park_color": "#b6e69d",
     "@urban_color": "#d4d4d4",
-    "@agriculture_color": "#dcd9d6",
+    "@agriculture_color": "#E2E2E2",
     "@boundary_country_color": "#808080",
     "@boundary_country_outline_color": "#dddddd",
     "@boundary_territory_color": "#bcb19e",
@@ -58,8 +58,8 @@
     "@construct_agriculture_color": "#eaf7b1",
     "@construct_sports_color": "#dcd9d6",
     "@construct_sports_sand_color": "#FFEEE4",
-    "@construct_sports_pitch_color": "#b6e69d",
-    "@construct_sports_track_color": "#8CDAD6",
+    "@construct_sports_pitch_color": "#D5E6BE",
+    "@construct_sports_track_color": "#B6DAD6",
     "@construct_storage_color": "#b2e3da",
     "@construct_vehicle_color": "#ecfbfc",
     "@construct_transportation_color": "#e4e1da",
@@ -2649,6 +2649,20 @@
                   "styles": [
                     {
                       "filter": "zoom>=15;zoom<=16"
+                    }
+                  ]
+                },
+                {
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue088",
+                    "point-size": 16
+                  },
+                  "styles": [
+                    {
+                      "filter": "zoom=15;name!=''"
+                    },
+                    {
+                      "filter": "zoom=16"
                     }
                   ]
                 }
@@ -5253,6 +5267,17 @@
                       "filter": "zoom>=17"
                     }
                   ]
+                },
+                {
+                  "text-base-point-style": {
+                    "point-glyph-content": "\ue088",
+                    "point-size": 16
+                  },
+                  "styles": [
+                    {
+                      "filter": "zoom>=17"
+                    }
+                  ]
                 }
               ]
             },
@@ -6851,6 +6876,7 @@
     {
       "id": "boundary_country",
       "filter": "layerName='boundary';admin_level='2'",
+      "filter-apply-mode": "apply-all",
       "styles": [
         {
           "filter": "disputed=0",
@@ -7061,8 +7087,8 @@
           "filter": "zoom>=14",
           "polygon-shadow": {
             "polygon-fill-color": "#90BBF5",
-            "polygon-offset-x": -2,
-            "polygon-offset-y": 2
+            "polygon-offset-x": -1.5,
+            "polygon-offset-y": 1.5
           }
         }
       ]
@@ -7079,8 +7105,8 @@
           "filter": "zoom>=14",
           "polygon-shadow": {
             "polygon-fill-color": "#90BBF5",
-            "polygon-offset-x": -2,
-            "polygon-offset-y": 2
+            "polygon-offset-x": -1.5,
+            "polygon-offset-y": 1.5
           }
         }
       ]
@@ -7100,8 +7126,8 @@
               "filter": "zoom>=14",
               "polygon-shadow": {
                 "polygon-fill-color": "#90BBF5",
-                "polygon-offset-x": -2,
-                "polygon-offset-y": 2
+                "polygon-offset-x": -1.5,
+                "polygon-offset-y": 1.5
               }
             }
           ]
@@ -7111,8 +7137,8 @@
           "polygon-fill-color": "@water_color",
           "polygon-shadow": {
             "polygon-fill-color": "#90BBF5",
-            "polygon-offset-x": -2,
-            "polygon-offset-y": 2
+            "polygon-offset-x": -1.5,
+            "polygon-offset-y": 1.5
           }
         }
       ]
@@ -7540,7 +7566,7 @@
           "styles": [
             {
               "filter": "zoom>=15",
-              "line-color": "#000000",
+              "line-color": "@road_road_outline_color",
               "line-cap": "butt",
               "line-width": 4
             }
@@ -9637,19 +9663,56 @@
       ]
     }
   ],
-  "sources": [
-    {
-      "id": "data_source",
-      "url": "http://localhost:1314/tile/{z}/{x}/{y}",
-      "type": "MVT"
-    }
-  ],
   "map-layers": [
     {
       "map-layer-id": "worldstreets",
-      "source": "data_source",
       "style-drawing-order": [
+        "landcover_urban",
+        "landcover_park_big_zoom",
+        "landcover_grass_big_zoom",
+        "landcover_sand",
+        "landcover_tundra",
+        "landcover_wetland",
+        "landcover_aeroway",
+        "landcover_school",
+        "landcover_hospital",
+        "landcover_grass",
+        "landcover_crop",
+        "landcover_wood",
+        "landcover_glacier",
+        "landcover_scrub",
+        "landcover_rock",
+        "landcover_park",
+        "landcover_agriculture",
+        "water_reservoir",
+        "water_ocean",
+        "bathymetry0",
+        "bathymetry200",
+        "bathymetry1000",
+        "bathymetry2000",
+        "bathymetry3000",
+        "bathymetry4000",
+        "bathymetry5000",
+        "bathymetry6000",
+        "bathymetry7000",
+        "bathymetry8000",
+        "bathymetry9000",
+        "bathymetry10000",
+        "construct_agriculture",
+        "construct_amenity",
+        "construct_sports",
+        "construct_sports_pitch",
+        "construct_sports_track",
+        "construct_sports_sand",
+        "water_lake",
+        "landcover_cemetery",
+        "waterway",
+        "construct_accommodation",
+        "construct_commercial",
+        "construct_religious",
+        "construct_storage",
         "construct_vehicle",
+     
         "road"
       ]
     }

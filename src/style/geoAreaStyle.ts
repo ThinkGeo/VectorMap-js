@@ -105,7 +105,7 @@ export class GeoAreaStyle extends GeoStyle {
                 if (shadowOLStyle) {
                     for (let index = 0; index < shadowOLStyle.length; index++) {
                         const element = shadowOLStyle[index];
-                        element['zCoordinate'] = this.zIndex - 0.5;
+                        element['zCoordinate'] = options.zCoordinate - 0.5;
                     }
                 }
                 Array.prototype.push.apply(styles, shadowOLStyle);
@@ -126,7 +126,7 @@ export class GeoAreaStyle extends GeoStyle {
                 cloneGeometry.translate(+offsetTranslateValue[0].trim(), +offsetTranslateValue[1].trim());
             }
             this.style.setGeometry(cloneGeometry);
-            this.style['zCoordinate'] = this.zIndex;
+            this.style['zCoordinate'] = options.zCoordinate
             styles.push(this.style);
         }
 

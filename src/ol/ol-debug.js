@@ -97470,6 +97470,7 @@ function olInit() {
                 }
                 instructsTree.length = 0;
             }
+            debugger;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -98590,7 +98591,7 @@ function olInit() {
                             for (var index = 0; index < shadowOLStyle.length; index++) {
                                 var element = shadowOLStyle[index];
                                 // todo2
-                                element['zCoordinate'] = this.zIndex - 0.1;
+                                element['zCoordinate'] = options.zCoordinate - 0.1;
                             }
                         }
                         Array.prototype.push.apply(styles, shadowOLStyle);
@@ -98632,7 +98633,7 @@ function olInit() {
                     }
 
                     this.style.setGeometry(cloneFeature.getGeometry());
-                    this.style['zCoordinate'] = this.zIndex;
+                    this.style['zCoordinate'] = options.zCoordinate;
                     styles.push(this.style);
                 }
 

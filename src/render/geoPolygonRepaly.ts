@@ -122,7 +122,7 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
                 nextStyle = this.styles_[i];
                 // the u_index extent is -0.9999999 to 0.9999999.Objects with smaller values are closer to the eye.
                 // when the values are equal, the object drawn first is closer to the eye.
-                var uZindex =  (this.zCoordinates[i] ? 99999 - this.zCoordinates[i] : 0)/100000;
+                var uZindex =  (this.zCoordinates[i] ? 999999 - this.zCoordinates[i] : 0)/1000000;
                 uZindex = parseFloat(uZindex);
                 gl.uniform1f(this.u_zIndex, uZindex);
                 this.setFillStyle_(gl, nextStyle);

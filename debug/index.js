@@ -17,7 +17,7 @@ var view = new ol.View({
     //center: [-10775289.808138244, 3865732.688010553], zoom: 19, //// drawing order of road in Dallas
     //center: [-10781709.991733968, 3888501.660642869], zoom: 19, //// drawing order of road in Dallas
     //center: [-10775277.566270417, 3865890.936545674], zoom: 19,
-    center: [-10777010.904029867, 3867540.0865789074], zoom: 19,
+    center: [-10777048.158370923, 3867537.467766296], zoom: 19,
 
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
