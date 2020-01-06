@@ -116,13 +116,15 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         } else {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
-            for (i = 0; i < this.styleIndices_.length; ++i) {
+
+            for (i = this.styleIndices_.length - 1; i >= 0; --i) {
                 start = this.styleIndices_[i];
                 end = this.styleIndices_[i + 1] !== undefined ? this.styleIndices_[i + 1] : this.startIndices[this.startIndices.length - 1];
                 nextStyle = this.styles_[i];
                 // the u_index extent is -0.9999999 to 0.9999999.Objects with smaller values are closer to the eye.
                 // when the values are equal, the object drawn first is closer to the eye.
-                var uZindex =  (this.zCoordinates[i] ? 999999 - this.zCoordinates[i] : 0)/1000000;
+
+                var uZindex = (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0) / 10000000;
                 uZindex = parseFloat(uZindex);
                 gl.uniform1f(this.u_zIndex, uZindex);
                 this.setFillStyle_(gl, nextStyle);

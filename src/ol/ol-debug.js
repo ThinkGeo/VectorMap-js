@@ -97393,14 +97393,18 @@ function olInit() {
         var getInstructs = function (instructsTree) {
             var instructs = [];
             var mainGeoStyleIds = {};
-            var drawingZCoordinates = 0;
             if (instructsTree) {
                 // the tress index means the index of SyleId.
                 for (var i = 0; i < instructsTree.length; i++) {
+
+                    var styleIdZCoordinates = i * 100000;
+
                     var instructsInOneTree = instructsTree[i];
                     if (instructsInOneTree) {
                         for (var j = instructsInOneTree.min, jj = instructsInOneTree.max; j <= jj; j++) {
                             var instructsInOneZIndex = instructsInOneTree[j];
+                            var zIndexZCoordinates = (j + 10) * 1000;
+
                             if (instructsInOneZIndex) {
                                 var styleIndexGroups = {
                                     maxStyleIndex: 0
@@ -97425,16 +97429,13 @@ function olInit() {
                                                 if (styleIndexGroup === undefined) {
                                                     tempStyleIndexGroups[index] = styleIndexGroup = [];
                                                 }
-                                                // todo1
-                                                var zCoordinates = i * 10000 + j * 1000 + index;
-                                                // zCoordinates = i;
                                                 if (geoStyle.compound === "apply-first") {
                                                     styleIndexGroup.length = 0;
-                                                    styleIndexGroup.push([instruct[0], geoStyle.id, zCoordinates]);
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
                                                     break;
                                                 }
                                                 else {
-                                                    styleIndexGroup.push([instruct[0], geoStyle.id, zCoordinates]);
+                                                    styleIndexGroup.push([instruct[0], geoStyle.id, i]);
                                                 }
                                             }
                                         }
@@ -97454,10 +97455,12 @@ function olInit() {
                                 for (let index = 0; index <= styleIndexGroups.maxStyleIndex; index++) {
                                     var element = styleIndexGroups[index];
                                     if (element) {
-                                        drawingZCoordinates += 2;
+                                   
+                                        var zCoordinates = styleIdZCoordinates + zIndexZCoordinates + index;
+
                                         for (let index = 0; index < element.length; index++) {
                                             const item = element[index];
-                                            item[2] = drawingZCoordinates;
+                                            item[2] = zCoordinates;
                                         }
                                         Array.prototype.push.apply(instructs, element);
                                     }
@@ -97470,7 +97473,6 @@ function olInit() {
                 }
                 instructsTree.length = 0;
             }
-            debugger;
             return [instructs, mainGeoStyleIds];
         };
 
@@ -97834,7 +97836,6 @@ function olInit() {
 
         var StyleJsonCacheItem = /** @class */ (function () {
             function StyleJsonCacheItem(styleJson, zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj) {
-                this.styleIndex = styleJsonCacheItemMakeIndexObj.styleIndex;
                 this.childrenGeoStyles = [];
                 this.subStyleCacheItems = [];
                 this.zoomArr = zoomArr;
@@ -97842,8 +97843,24 @@ function olInit() {
                 this.zIndex = styleJson["z-index-atrribute-name"];
                 this.styleFirst = styleJson["style-first"];
                 this.filterGroup = this.createFilters(styleJson.filter, dataLayerColumnName) || [];
-                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 this.geoStyle = this.createGeoStyle(styleJson);
+                // if (this.geoStyle && this.geoStyle.constructor.name === "GeoAreaStyle") {
+                //     styleJsonCacheItemMakeIndexObj.styleIndex++;
+                //     if (styleJsonCacheItemMakeIndexObj.styleIndex % 10===8) {
+                //         styleJsonCacheItemMakeIndexObj.styleIndex+=3;
+                //     }
+                //     else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===3)
+                //     {
+                //         styleJsonCacheItemMakeIndexObj.styleIndex++;
+                //     }
+                //     else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===1)
+                //     {
+                //         styleJsonCacheItemMakeIndexObj.styleIndex++;
+                //     }
+                // }
+              
+                this.styleIndex = styleJsonCacheItemMakeIndexObj.styleIndex;
+                this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 // used for webgl depth test
                 this.geoStyle && (this.geoStyle['zIndex'] = styleIdIndex);
                 this.createChildrenGeoStyle(styleJson, styleIdIndex);
@@ -97973,6 +97990,22 @@ function olInit() {
                     for (var _i = 0, _a = styleJson.styles; _i < _a.length; _i++) {
                         var subStyle = _a[_i];
                         styleJsonCacheItemMakeIndexObj.styleIndex++;
+
+                        // if (styleJsonCacheItemMakeIndexObj.styleIndex% 10===8) {
+                        //     styleJsonCacheItemMakeIndexObj.styleIndex+=2;
+                        // }
+                        // else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===9)
+                        // {
+                        //     styleJsonCacheItemMakeIndexObj.styleIndex++;
+                        // }
+                        // else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===3){
+                        //     styleJsonCacheItemMakeIndexObj.styleIndex++;
+                        // }
+                        // else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===1){
+                        //     styleJsonCacheItemMakeIndexObj.styleIndex++;
+                        // }
+                       
+                       
                         var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                         this.zoomArr.forEach(function (item) {
                             if (!subItemZoomArr.includes(item)) {
@@ -98583,15 +98616,14 @@ function olInit() {
                 var cloneFeature = new ol.render.Feature(type, clonedFlatCoordinates, cloneEnds, properties, id);
                 cloneFeature["drawingBbox"] = feature["drawingBbox"];
                 cloneFeature["styleId"] = feature["styleId"];
-
+                // TODO1
                 if (this.shadowStyle && !this.isShadow) {
                     if (this.shadowStyle) {
                         var shadowOLStyle = this.shadowStyle.getStyles(cloneFeature, resolution, options);
                         if (shadowOLStyle) {
                             for (var index = 0; index < shadowOLStyle.length; index++) {
                                 var element = shadowOLStyle[index];
-                                // todo2
-                                element['zCoordinate'] = options.zCoordinate - 0.1;
+                                element['zCoordinate'] = options.zCoordinate - 10;
                             }
                         }
                         Array.prototype.push.apply(styles, shadowOLStyle);
@@ -100146,19 +100178,8 @@ function olInit() {
                         var clippedFlatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
                             stride, -this.origin[0], -this.origin[1]);
                         if (this.state_.changed) {
-                            var z_order = lineStringGeometry.properties_.layer;
-                            var styleId = lineStringGeometry.styleId;
-                            if (z_order == undefined) {
-                                z_order = 0;
-                            }
-
-                            if (styleId.includes('#c')) {
-                                z_order += 0.5;
-                            }
-                            z_order = feature.zCoordinate + z_order / 100;
-
                             this.styleIndices_.push(this.indices.length);
-                            this.zCoordinates.push(z_order);
+                            this.zCoordinates.push(feature.zCoordinate);
                             this.state_.changed = false;
                         }
                         this.startIndices.push(this.indices.length);

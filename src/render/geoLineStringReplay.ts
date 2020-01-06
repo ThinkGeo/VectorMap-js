@@ -30,7 +30,7 @@ export class GeoLineStringReplay extends ((<any>ol).render.webgl.LineStringRepla
                 // the u_index extent is -0.9999999 to 0.9999999.Objects with smaller values are closer to the eye.
                 // when the values are equal, the object drawn first is closer to the eye.
 
-                var uZindex =  (this.zCoordinates[i] ? 999999 - this.zCoordinates[i] : 0)/1000000;
+                var uZindex =  (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0)/10000000;
                 uZindex = parseFloat(uZindex);
                 gl.uniform1f(this.u_zIndex, uZindex);
                 this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
