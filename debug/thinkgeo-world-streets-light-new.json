@@ -1,8 +1,8 @@
 {
-  "id": "gpx-stylejson",
-  "version": 1.3,
+  "id": "thinkgeo-world-streets-light",
+  "version": 2,
   "owner": "ThinkGeo LLC",
-  "time": "2018/06/09",
+  "time": "2020/02/01",
   "background": "#ebe9e4",
   "variables": {
     "@ocean_color": "#90d2f5",
@@ -40,7 +40,7 @@
     "@aeroway_runway_color": "#bbbbcc",
     "@cemetery_color": "#c1eac1",
     "@hospital_color": "#f0e4e4",
-    "@school_color": "#cbdfe8",
+    "@school_color": "#e7e4d8",
     "@park_color": "#b6e69d",
     "@urban_color": "#d4d4d4",
     "@agriculture_color": "#E2E2E2",
@@ -49,10 +49,10 @@
     "@boundary_territory_color": "#bcb19e",
     "@boundary_state_color": "#aaaaaa",
 
-    "@construct_outline_color": "#d4d1cd",
-    "@construct_shadow_color": "#ccc8bd",
+    "@construct_outline_color": "#d1d1d1",
+    "@construct_shadow_color": "#bcbcbc",
     "@construct_accommodation_color": "#e3dccd",
-    "@construct_commercial_color": "#d6dfd2",
+    "@construct_commercial_color": "#dcd9d6",
     "@construct_religious_color": "#dddddd",
     "@construct_building_color": "#dcd9d6",
     "@construct_agriculture_color": "#eaf7b1",
@@ -61,7 +61,7 @@
     "@construct_sports_pitch_color": "#D5E6BE",
     "@construct_sports_track_color": "#B6DAD6",
     "@construct_storage_color": "#b2e3da",
-    "@construct_vehicle_color": "#ecfbfc",
+    "@construct_vehicle_color": "#f3f3f3",
     "@construct_transportation_color": "#e4e1da",
     "@construct_transportation_pedestrian_color": "#FDF6D6",
     "@construct_fence_color": "#E8E9D5",
@@ -2653,6 +2653,7 @@
                   ]
                 },
                 {
+                  "filter": "type='pitch'",
                   "text-base-point-style": {
                     "point-glyph-content": "\ue088",
                     "point-size": 16
@@ -5267,17 +5268,6 @@
                       "filter": "zoom>=17"
                     }
                   ]
-                },
-                {
-                  "text-base-point-style": {
-                    "point-glyph-content": "\ue088",
-                    "point-size": 16
-                  },
-                  "styles": [
-                    {
-                      "filter": "zoom>=17"
-                    }
-                  ]
                 }
               ]
             },
@@ -7400,6 +7390,45 @@
           "polygon-opacity": 0.56,
           "polygon-outline-width": 0.6,
           "polygon-outline-color": "@construct_outline_color"
+        }
+      ]
+    },
+    {
+      "id": "construct_vehicle_garage",
+      "polygon-fill-color": "@construct_vehicle_color",
+      "polygon-outline-width": 1,
+      "polygon-outline-color": "@construct_shadow_color",
+      "filter": "layerName='construct';class='vehicle';type='garage'",
+      "styles": [
+        {
+          "filter": "zoom=15",
+          "polygon-shadow": {
+            "polygon-fill-color": "@construct_shadow_color"
+          }
+        },
+        {
+          "filter": "zoom=16",
+          "polygon-shadow": {
+            "polygon-fill-color": "@construct_shadow_color",
+            "polygon-offset-x": 1,
+            "polygon-offset-y": -1
+          }
+        },
+        {
+          "filter": "zoom=17",
+          "polygon-shadow": {
+            "polygon-fill-color": "@construct_shadow_color",
+            "polygon-offset-x": 2,
+            "polygon-offset-y": -2
+          }
+        },
+        {
+          "filter": "zoom>=18",
+          "polygon-shadow": {
+            "polygon-fill-color": "@construct_shadow_color",
+            "polygon-offset-x": 4,
+            "polygon-offset-y": -4
+          }
         }
       ]
     },
@@ -9712,8 +9741,44 @@
         "construct_religious",
         "construct_storage",
         "construct_vehicle",
-     
-        "road"
+        "construct_vehicle_garage",
+        "water_others",
+        "construct_fence",
+        "construct_transportation",
+        "construct_others",
+        "road_turning_circle_outer",
+        "road",
+        "road_turning_circle_inner",
+        "boundary_state",
+        "boundary_territory",
+        "boundary_country",
+        "place_ocean",
+        "place_country",
+        "place_bay",
+        "place_gulf",
+        "place_sea",
+        "place_channel",
+        "place_state",
+        "place_big_city",
+        "place_city",
+        "place_town",
+        "poi_big_zoom",
+        "road_name",
+        "place_borough",
+        "place_suburb",
+        "place_neighbourhood",
+        "place_quarter",
+        "place_county",
+        "place_small_city",
+        "place_village",
+        "place_hamlet",
+        "place_archipelago",
+        "place_island",
+        "poi",
+        "road_oneway",
+        "house_number",
+        "waterway_name",
+        "road_number"
       ]
     }
   ]
