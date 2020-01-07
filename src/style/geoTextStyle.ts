@@ -222,14 +222,15 @@ export class GeoTextStyle extends GeoStyle {
 
         this.style.getText().setText(featureText);
 
-        this.style['zCoordinate'] = this.zIndex;
+        this.style.setZIndex(this.zIndex);
+
         this.style.getText()["placements"] = this.placement;
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             let featureZindex = feature["tempTreeZindex"];
             if (featureZindex === undefined) {
                 featureZindex = 0;
             }
-            this.style.setZIndex(featureZindex);
+            this.style['zCoordinate'] = featureZindex;
             textStyles.push(this.style);
         }
 

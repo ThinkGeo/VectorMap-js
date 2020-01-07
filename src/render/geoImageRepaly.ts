@@ -281,7 +281,9 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             var i, ii, start;
             for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
                 gl.bindTexture((<any>ol).webgl.TEXTURE_2D, textures[i]);
-                gl.uniform1f(this.u_zIndex, this.zCoordinates[i] ? (0.1 / this.zCoordinates[i]) : 0);
+                var uZindex =  (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0)/10000000;
+                uZindex = parseFloat(uZindex);
+                gl.uniform1f(this.u_zIndex, uZindex);
                 var end = groupIndices[i];
                 this.drawElements(gl, context, start, end);
                 start = end;

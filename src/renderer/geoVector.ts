@@ -51,7 +51,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         }
         // FIXME replace it with style.getZIndex()
         var imageReplay = replayGroup.getReplay(
-            style.zCoordinate, (<any>ol.render).ReplayType.IMAGE);
+            style.getZIndex(), (<any>ol.render).ReplayType.IMAGE);
         feature.pointCoordinates_ = geometry.getFlatCoordinates();
         imageReplay.startIndicesFeatures_.push(feature);
         var imageStyleClone = imageStyle.clone();
@@ -65,7 +65,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            style.zCoordinate, (<any>ol.render).ReplayType.TEXT);
+            style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
@@ -91,7 +91,7 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            style.zCoordinate, (<any>ol.render).ReplayType.TEXT);
+            style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
@@ -100,6 +100,7 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
         textStyleClone["spacing"] = textStyle["spacing"];
         textStyleClone.declutterGroup_ = replayGroup.addDeclutter(false);
+        textStyleClone["zCoordinate"] = style["zCoordinate"]
         textReplay.startIndicesStyles_.push(textStyleClone);
     }
 }
@@ -116,7 +117,7 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
     var textStyle = style.getText();
     if (textStyle) {
         var textReplay = replayGroup.getReplay(
-            style.zCoordinate, (<any>ol.render).ReplayType.TEXT);
+            style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
         textStyleClone.label = textStyle.label;
@@ -159,7 +160,7 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
             return;
         }
         var imageReplay = replayGroup.getReplay(
-            style.zCoordinate, (<any>ol.render).ReplayType.BACKGROUNDIMAGE);
+            style.getZIndex(), (<any>ol.render).ReplayType.BACKGROUNDIMAGE);
         imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
         imageReplay.indices = polygonReplay.indices.slice();
         imageReplay.vertices = polygonReplay.vertices.slice();

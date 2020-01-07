@@ -343,6 +343,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 var tmpOptions = replay.tmpOptions;
 
                 replay.startIndices.length = 0;
+                replay.zCoordinates.length = 0;
                 replay.indices.length = 0;
                 replay.vertices.length = 0;
                 replay.groupIndices.length = 0;
@@ -565,7 +566,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                                 feature["tempTreeZindex"] = instructs[i][2];
                                 feature["styleId"] = geoStyleId;
 
-                                renderFeature.call(that_, feature, [geoStyle], { strategyTree: strategyTree, frameState: frameState });
+                                renderFeature.call(that_, feature, [geoStyle], { strategyTree: strategyTree, zCoordinate: instructs[i][2], frameState: frameState });
                             }
                         }
 

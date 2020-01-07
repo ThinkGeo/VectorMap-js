@@ -142,8 +142,8 @@ export class GeoPointStyle extends GeoStyle {
         if (featureZindex === undefined) {
             featureZindex = 0;
         }
-        this.style.setZIndex(featureZindex);
-        this.style['zCoordinate'] = this.zIndex;
+        this.style.setZIndex(this.zIndex);
+        this.style['zCoordinate'] = featureZindex;
 
         this.styles = [];
         this.styles[0] = this.style;
