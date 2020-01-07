@@ -16,13 +16,15 @@ var view = new ol.View({
     //center: [-22997335.8, -3253574.954307], zoom: 17,// drawing order of road
     //center:[-22997462.8, -3250401.7], zoom:19, // drawing order of road
 
-    //center: [-10775289.210973945, 3865761.202605083], zoom: 19, //// drawing order of road in Dallas
+    center: [-10775289.210973945, 3865761.202605083], zoom: 19, //// drawing order of road in Dallas
     //center: [-10781709.991733968, 3888501.660642869], zoom: 19, //// drawing order of road in Dallas
     //center: [-10775277.566270417, 3865890.936545674], zoom: 19,
     //center: [-10777048.158370923, 3867537.467766296], zoom: 19,
-    center:[-10777049.352699492, 3867713.631229918],zoom:16,
+    //center:[-10777049.352699492, 3867713.631229918],zoom:16,
 
-    maxZoom: 19,
+    //center: [-10893951.564327799, 3897504.687934755],zoom:18,
+
+    maxZoom: 10,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
 });
@@ -142,7 +144,7 @@ var layer = new ol.layer.VectorTile({
 });
 
 var map = new ol.Map({
-    layers: [worldStreetsLayer, vectorLayer],
+    layers: [worldStreetsLayer, vectorLayer,debugLayer],
     renderer: 'webgl',
 
     //renderer: ['canvas'],

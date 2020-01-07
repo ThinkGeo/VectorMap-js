@@ -806,5 +806,73 @@
   content: "\e0c9";
 }
 
+.icon-tg-retail:before {
+  content: "\e0d0";
+}
+
+.icon-tg-garden:before {
+  content: "\e0d1";
+}
+
+.icon-tg-attraction2:before {
+  content: "\e0d2";
+}
+
+.icon-tg-land:before {
+  content: "\e0d3";
+}
+
+.icon-tg-garbage:before {
+  content: "\e0d4";
+}
+
+.icon-tg-gear:before {
+  content: "\e0d5";
+}
+
+.icon-tg-tower:before {
+  content: "\e0d6";
+}
+
+.icon-tg-sports-field:before {
+  content: "\e0d7";
+}
+
+.icon-tg-training:before {
+  content: "\e0d8";
+}
+
+.icon-tg-book:before {
+  content: "\e0d9";
+}
+
+.icon-tg-tram:before {
+  content: "\e0e0";
+}
+
+.icon-tg-parking-space:before {
+  content: "\e0e1";
+}
+
+.icon-tg-steak:before {
+  content: "\e0e2";
+}
+
+.icon-tg-public-facility:before {
+  content: "\e0e3";
+}
+
+.icon-tg-basketball:before {
+  content: "\e0e4";
+}
+
+.icon-tg-narrow:before {
+  content: "\e0e5";
+}
+
+.icon-tg-soccer:before {
+  content: "\e0e6";
+}
+
 
 
