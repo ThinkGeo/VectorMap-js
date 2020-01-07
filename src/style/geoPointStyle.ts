@@ -82,9 +82,8 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     initializeCore() {
-        if(this.size===0)
-        {
-            return ;
+        if (this.size === 0) {
+            return;
         }
         this.style = new ol.style.Style();
         if (this.pointType) {
@@ -129,8 +128,7 @@ export class GeoPointStyle extends GeoStyle {
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
-        if(this.size===0)
-        {
+        if (this.size === 0) {
             return [];
         }
         let geometryFeature = feature.getGeometry();
@@ -330,7 +328,6 @@ export class GeoPointStyle extends GeoStyle {
                 context.fillText(glyphTextStyle.text_, canvasWidth / 2, canvasHeight / 2);
             }
         }
-
         return context.canvas;
     }
 
@@ -703,9 +700,9 @@ export class GeoPointStyle extends GeoStyle {
                 case "Circle":
                     var halfCanvasWidth = canvasWidth / 2;
                     var halfCanvasHeight = canvasHeight / 2;
-                    let radius = Math.sqrt(Math.pow(halfCanvasWidth, 2) + Math.pow(halfCanvasHeight, 2));
-                    radius = Math.ceil(radius);
+                    let radius = Math.max(halfCanvasWidth, halfCanvasHeight)
                     canvasWidth = radius * 2 + maskStrokeWidth * 2;
+                    canvasWidth = Math.ceil(canvasWidth);
                     canvasHeight = canvasWidth;
 
                     textAnchorX += radius - halfCanvasWidth + maskStrokeWidth;
