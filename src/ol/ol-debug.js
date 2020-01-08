@@ -15906,7 +15906,7 @@ function olInit() {
         ol.Object.call(this);
         var options = ol.obj.assign({}, opt_options);
 
-        this.progressiveZoom = opt_options["progressiveZoom"];
+        this.progressiveZoom = options["progressiveZoom"];
         /**
          * @private
          * @type {Array.<number>}
