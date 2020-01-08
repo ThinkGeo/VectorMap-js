@@ -197,6 +197,22 @@ export class GeoTextStyle extends GeoStyle {
             // TODO the letterSpacing doesn't work on Safari
             this.letterSpacing = 0;
         }
+
+        if (this.contentFormat) {
+            var replaceMatch = /\{(.+?)\}/g;
+            var replaceOptions = this.contentFormat.match(replaceMatch);
+            for (var index = 0; index < replaceOptions.length; index++) {
+                var element = replaceOptions[index];
+                element = element.substr(1, element.length - 2);
+                if (element.indexOf("name_" > 0)
+                {
+                    if (this.contentFormatNameReplace === undefined) {
+                        this.contentFormatNameReplace = [];
+                    }
+                    this.contentFormatNameReplace.push(element);
+                }
+            }
+        }
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
@@ -711,6 +727,15 @@ export class GeoTextStyle extends GeoStyle {
 
         if (str.indexOf("{") >= 0) {
             var args = feature.getProperties();
+            if (this.contentFormatNameReplace) {
+                for (var index = 0; index < this.contentFormatNameReplace.length; index++) {
+                    var element = this.contentFormatNameReplace[index];
+                    if (!args[element]) {
+                        str = str.replace(element, "name");
+                    }
+                }
+            }
+
             var key;
             for (key in args) {
                 var value = args[key];
