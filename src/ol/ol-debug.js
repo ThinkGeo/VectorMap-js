@@ -97420,14 +97420,14 @@ function olInit() {
 
                                     var tempStyleIndexGroups = [];
 
-                                    for (let index = 0; index <= maxStyleIndex; index++) {
-                                        const element = matchedNode[index];
-                                        if (element) {
-                                            var geoStyle = element.geoStyle;
+                                    for (var msi = 0; msi <= maxStyleIndex; msi++) {
+                                        var styleJSONItem = matchedNode[msi];
+                                        if (styleJSONItem) {
+                                            var geoStyle = styleJSONItem.geoStyle;
                                             if (geoStyle) {
-                                                var styleIndexGroup = tempStyleIndexGroups[index];
+                                                var styleIndexGroup = tempStyleIndexGroups[msi];
                                                 if (styleIndexGroup === undefined) {
-                                                    tempStyleIndexGroups[index] = styleIndexGroup = [];
+                                                    tempStyleIndexGroups[msi] = styleIndexGroup = [];
                                                 }
                                                 if (geoStyle.compound === "apply-first") {
                                                     styleIndexGroup.length = 0;
@@ -97441,28 +97441,28 @@ function olInit() {
                                         }
                                     }
 
-                                    for (let index = 0; index <= maxStyleIndex; index++) {
-                                        if (tempStyleIndexGroups[index]) {
-                                            var styleIndexGroup = styleIndexGroups[index];
+                                    for (var selectIndex = 0; selectIndex <= maxStyleIndex; selectIndex++) {
+                                        if (tempStyleIndexGroups[selectIndex]) {
+                                            var styleIndexGroup = styleIndexGroups[selectIndex];
                                             if (styleIndexGroup === undefined) {
-                                                styleIndexGroups[index] = styleIndexGroup = [];
+                                                styleIndexGroups[selectIndex] = styleIndexGroup = [];
                                             }
-                                            Array.prototype.push.apply(styleIndexGroup, tempStyleIndexGroups[index]);
+                                            Array.prototype.push.apply(styleIndexGroup, tempStyleIndexGroups[selectIndex]);
                                         }
                                     }
                                 }
 
-                                for (let index = 0; index <= styleIndexGroups.maxStyleIndex; index++) {
-                                    var element = styleIndexGroups[index];
-                                    if (element) {
-                                   
-                                        var zCoordinates = styleIdZCoordinates + zIndexZCoordinates + index;
+                                for (var styleIndexGroupIndex = 0; styleIndexGroupIndex <= styleIndexGroups.maxStyleIndex; styleIndexGroupIndex++) {
+                                    var styleIndexGroupItem = styleIndexGroups[styleIndexGroupIndex];
+                                    if (styleIndexGroupItem) {
 
-                                        for (let index = 0; index < element.length; index++) {
-                                            const item = element[index];
-                                            item[2] = zCoordinates;
+                                        var zCoordinates = styleIdZCoordinates + zIndexZCoordinates + styleIndexGroupIndex;
+
+                                        for (var itemIndex = 0; itemIndex < styleIndexGroupItem.length; itemIndex++) {
+                                            var instructItem = styleIndexGroupItem[itemIndex];
+                                            instructItem[2] = zCoordinates;
                                         }
-                                        Array.prototype.push.apply(instructs, element);
+                                        Array.prototype.push.apply(instructs, styleIndexGroupItem);
                                     }
                                 }
 
@@ -97858,7 +97858,7 @@ function olInit() {
                 //         styleJsonCacheItemMakeIndexObj.styleIndex++;
                 //     }
                 // }
-              
+
                 this.styleIndex = styleJsonCacheItemMakeIndexObj.styleIndex;
                 this.createSubItems(styleJson, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                 // used for webgl depth test
@@ -98004,8 +98004,8 @@ function olInit() {
                         // else if(styleJsonCacheItemMakeIndexObj.styleIndex%10===1){
                         //     styleJsonCacheItemMakeIndexObj.styleIndex++;
                         // }
-                       
-                       
+
+
                         var styleJsonCacheSubItem = new StyleJsonCacheItem(subStyle, this.zoomArr, dataLayerColumnName, styleIdIndex, styleJsonCacheItemMakeIndexObj);
                         this.zoomArr.forEach(function (item) {
                             if (!subItemZoomArr.includes(item)) {
@@ -98493,7 +98493,7 @@ function olInit() {
                 layout = layout || 'XY';
 
                 var transformedCoordinates = [];
-                for (let i = 0; i < flatCoordinates.length; i += 2) {
+                for (var i = 0; i < flatCoordinates.length; i += 2) {
                     transformedCoordinates.push([flatCoordinates[i], flatCoordinates[i + 1]]);
                 }
 
@@ -98636,10 +98636,12 @@ function olInit() {
                     }
 
                     if (this.offsetX || this.offsetY) {
-                        let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
+                        var offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
                         if (offsetTranslateValue === undefined) {
-                            let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                            this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                            var tmpResolution = Math.round(resolution * 100000000) / 100000000;
+
+                            this.shadowTranslate = "translate(" + (this.offsetX ? this.offsetX : 0) * tmpResolution + "," + (this.offsetY ? this.offsetY : 0) * tmpResolution + ")";
+
                             offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
                             this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
                         }
@@ -98706,8 +98708,8 @@ function olInit() {
                     geometry.scale(+this.geometryTransformValue[0].trim(), +this.geometryTransformValue[1].trim());
                 }
                 else if (this.geometryTransform.indexOf("rotate") === 0) {
-                    let center = ol.extent.getCenter(cloneGeometry.getExtent());
-                    let angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
+                    var center = ol.extent.getCenter(cloneGeometry.getExtent());
+                    var angle = +this.geometryTransformValue[0].trim() * Math.PI / 180;
                     geometry.rotate(angle, center);
                 }
                 // TODO:
@@ -99754,8 +99756,8 @@ function olInit() {
                             break;
                     }
                 }
-                let numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
-                let num = Number(featureText);
+                var numeric = new Intl.NumberFormat(tmpArguments[0], numericFormatOptions);
+                var num = Number(featureText);
                 if (num) {
                     return numeric.format(num);
                 }
@@ -99765,9 +99767,9 @@ function olInit() {
             };
             GeoShieldStyle.prototype.getTextWithDateFormat = function (featureText) {
                 if (Date.parse(featureText)) {
-                    let date = new Date(featureText);
-                    let fmt = this.dateFormat;
-                    let o = {
+                    var date = new Date(featureText);
+                    var fmt = this.dateFormat;
+                    var o = {
                         "M+": date.getMonth() + 1,
                         "d+": date.getDate(),
                         "h+": date.getHours(),
@@ -99778,7 +99780,7 @@ function olInit() {
                     };
                     if (/(y+)/.test(fmt))
                         fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (let k in o)
+                    for (var k in o)
                         if (new RegExp("(" + k + ")").test(fmt))
                             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 
@@ -99985,8 +99987,8 @@ function olInit() {
                         var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
                             stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
                         outlines[index].push(lineSring);
-                        for (var i = 0; i <= cilped.ends.length - 1; i++) {
-                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[i], cilped.ends[i + 1],
+                        for (var outlineIndex = 0; outlineIndex <= cilped.ends.length - 1; outlineIndex++) {
+                            var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, cilped.ends[outlineIndex], cilped.ends[outlineIndex + 1],
                                 stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, false);
                             outlines[index].push(lineSring);
                         }
@@ -99997,11 +99999,11 @@ function olInit() {
                     }
 
                     var holes = [];
-                    var i, ii, holeFlatCoords;
-                    for (i = 1, ii = ends.length; i < ii; ++i) {
-                        if (ends[i] !== ends[i - 1] && (ends[i] - ends[i - 1] > 6)) {
-                            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
-                                ends[i], stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
+                    var outlineIndex, ii, holeFlatCoords;
+                    for (outlineIndex = 1, ii = ends.length; outlineIndex < ii; ++outlineIndex) {
+                        if (ends[outlineIndex] !== ends[outlineIndex - 1] && (ends[outlineIndex] - ends[outlineIndex - 1] > 6)) {
+                            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[outlineIndex - 1],
+                                ends[outlineIndex], stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
                             if (holeFlatCoords.length > 6) {
                                 isClockwise = ol.geom.flat.orient.linearRingIsClockwise(holeFlatCoords, 0, holeFlatCoords.length, stride);
                                 if (isClockwise) {
@@ -100013,7 +100015,7 @@ function olInit() {
                                 outers[index].push(holeFlatCoords);
                             }
 
-                            var points = flatCoordinates.slice(ends[i - 1], ends[i]);
+                            var points = flatCoordinates.slice(ends[outlineIndex - 1], ends[outlineIndex]);
                             var cilped = self.clipLine(points, drawingBbox, options.squaredTolerance);
 
                             var lineSring = ol.geom.flat.transform.translate(cilped.flatCoordinates, 0, cilped.ends[0],
@@ -100039,16 +100041,16 @@ function olInit() {
                         this.lineStringReplay.setPolygonStyle(feature);
                     }
                     if (this.lineStringReplay) {
-                        for (let i = 0; i < outlines.length; i++) {
-                            const lineStrings = outlines[i];
+                        for (var outlineIndex = 0; outlineIndex < outlines.length; outlineIndex++) {
+                            var lineStrings = outlines[outlineIndex];
                             for (var j = 0; j < lineStrings.length; j++) {
                                 var lineString = lineStrings[j];
                                 this.lineStringReplay.drawCoordinates_(lineString, 0, lineString.length, stride);
                             }
                         }
                     }
-                    for (var i = 0; i < outers.length; i++) {
-                        var outer = outers[i];
+                    for (var outerIndex = 0; outerIndex < outers.length; outerIndex++) {
+                        var outer = outers[outerIndex];
                         this.drawCoordinates_(outer[0], outer.slice(1, outer.length), stride);
                     }
                 }
