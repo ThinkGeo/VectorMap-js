@@ -201,16 +201,11 @@ export class GeoTextStyle extends GeoStyle {
         if (this.contentFormat) {
             var replaceMatch = /\{(.+?)\}/g;
             var replaceOptions = this.contentFormat.match(replaceMatch);
+            this.contentFormatItems = [];
             for (var index = 0; index < replaceOptions.length; index++) {
                 var element = replaceOptions[index];
                 element = element.substr(1, element.length - 2);
-                if (element.indexOf("name_" > 0)
-                {
-                    if (this.contentFormatNameReplace === undefined) {
-                        this.contentFormatNameReplace = [];
-                    }
-                    this.contentFormatNameReplace.push(element);
-                }
+                this.contentFormatItems.push(element);
             }
         }
     }
@@ -725,50 +720,21 @@ export class GeoTextStyle extends GeoStyle {
     getTextWithContent(contentFormat: string, feature: any, dateFormat, numericFormat): string {
         var str = contentFormat || "";
 
-        if (str.indexOf("{") >= 0) {
+        if (this.contentFormatItems && this.contentFormatItems.length > 0) {
             var args = feature.getProperties();
-            if (this.contentFormatNameReplace) {
-                for (var index = 0; index < this.contentFormatNameReplace.length; index++) {
-                    var element = this.contentFormatNameReplace[index];
-                    if (!args[element]) {
-                        str = str.replace(element, "name");
-                    }
-                }
-            }
 
-            var key;
-            for (key in args) {
-                var value = args[key];
-
-                // A workaround for the language, remove it after data update
-                if ((value === undefined || value === "") && (key.indexOf("name_") === 0)) {
-                    value = args["name"]
+            for (var itemIndex = 0; itemIndex < this.contentFormatItems.length; itemIndex++) {
+                var item = this.contentFormatItems[itemIndex];
+                var value = "";
+                if (args[item]) {
+                    value = args[item]
                 }
-
-                if (numericFormat) {
-                    value = this.getTextWithNumericFormat(numericFormat, value);
+                else if (item.indexOf('name_') >= 0) {
+                    value = args["name"];
                 }
-                if (dateFormat) {
-                    value = this.getTextWithDateFormat(dateFormat, value);
-                }
-                str = str.replace(new RegExp("\\{" + key + "\\}", "gi") ，value);
+                str = str.replace("{" + item + "}", value]
             }
         }
-        // // just keep "{columnName}" if columName is missing in feature properties.
-        // else {
-        //     str = feature.get(contentFormat);
-        //     if (str) {
-        //         if (this.numericFormat) {
-        //             str = this.getTextWithNumericFormat(str);
-        //         }
-        //         if (this.dateFormat) {
-        //             str = this.getTextWithDateFormat(str);
-        //         }
-        //     }
-        //     else {
-        //         str = contentFormat;
-        //     }
-        // }
 
         return str;
     }
