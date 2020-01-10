@@ -68387,7 +68387,7 @@ function olInit() {
             var tmpPixelCoords2 = ol.transform.apply(frameState.coordinateToPixelTransform, [x2, y2]);
             var segLength = Math.sqrt(Math.pow((tmpPixelCoords1[1] - tmpPixelCoords2[1]), 2) +
                 Math.pow((tmpPixelCoords1[0] - tmpPixelCoords2[0]), 2));
-            segLength = +parseFloat(segLength.toPrecision(9));
+            segLength = +parseFloat(segLength.toPrecision(4));
 
             var segFlatCoordinates = [x1, y1, x2, y2];
             subResultCoords.push(x1, y1);
@@ -68410,7 +68410,7 @@ function olInit() {
                         } else {
                             var tmpLastCoords = ol.transform.apply(frameState.coordinateToPixelTransform, [subResultCoords[subResultCoords.length - 2], subResultCoords[subResultCoords.length - 1]]);
                             startLengthOfSeg = Math.sqrt(Math.pow((tmpLastCoords[0] - tmpPixelCoords2[0]), 2) + Math.pow((tmpLastCoords[1] - tmpPixelCoords2[1]), 2));
-                            startLengthOfSeg = +parseFloat(startLengthOfSeg.toPrecision(9));
+                            startLengthOfSeg = +parseFloat(startLengthOfSeg.toPrecision(4));
                         }
                         accumulator = Infinity;
                         // solid line
