@@ -28,7 +28,7 @@ export class GeoLineStyle extends GeoStyle {
         custom: "square"
     };
 
-    compounds =  ['apply-all', 'apply-first'];
+    compounds = ['apply-all', 'apply-first'];
     defaultCompund = 'apply-first';
 
     lineCap: string;
@@ -105,24 +105,19 @@ export class GeoLineStyle extends GeoStyle {
 
         if (this.lineDirectionImageUri) {
             var imageSize;
-            if(this.lineDirectionImageSize!=undefined)
-            {
-                var imageSizeArray=this.lineDirectionImageSize.split(",");
-                if(imageSizeArray.length===1)
-                {
+            if (this.lineDirectionImageSize != undefined) {
+                var imageSizeArray = this.lineDirectionImageSize.split(",");
+                if (imageSizeArray.length === 1) {
                     var size = +imageSizeArray[0];
-                    if(!isNaN(size))
-                    {
-                        imageSize=[size,size];
+                    if (!isNaN(size)) {
+                        imageSize = [size, size];
                     }
 
-                }else if(imageSizeArray.length ===2)
-                {
+                } else if (imageSizeArray.length === 2) {
                     var imgWidth = +imageSizeArray[0];
                     var imgHeitht = +imageSizeArray[1];
-                    if(!isNaN(imgWidth)&&!isNaN(imgHeitht))
-                    {
-                        imageSize=[imgWidth,imgHeitht];
+                    if (!isNaN(imgWidth) && !isNaN(imgHeitht)) {
+                        imageSize = [imgWidth, imgHeitht];
                     }
                 }
             }
@@ -137,7 +132,8 @@ export class GeoLineStyle extends GeoStyle {
             this.onewayStyle = new ol.style.Style({
                 image: this.onewayIcon
             });
-            this.onewayStyle['zCoordinate'] = this.zIndex;
+
+            this.onewayStyle.setZIndex(this.zIndex);
         }
     }
 
@@ -264,8 +260,10 @@ export class GeoLineStyle extends GeoStyle {
             let geometry = new ol.geom.Point(centerPoint, "XY");
 
             this.onewayIcon.rotation_ = -rotation;
-
             this.onewayStyle.setGeometry(geometry);
+            this.onewayStyle['zCoordinate'] = options.zCoordinate;
+            
+            // old logic
             // this.lineCapStyle.zCoordinate = this.zIndex + 0.4;
             this.lineCapStyle.zCoordinate = options.zCoordinate;// +0.4
             styles.push(this.onewayStyle);

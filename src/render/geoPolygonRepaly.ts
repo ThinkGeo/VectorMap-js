@@ -250,7 +250,6 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
             outlines[index] = [];
 
             if (ends[0] > 6) {
-                debugger;
                 outerRing = (<any>ol.geom).flat.transform.translate(flatCoordinates, 0, ends[0],
                     stride, -this.origin[0], -this.origin[1], undefined, drawingBbox || extent, true);
                 // FIXME it is also a anticlockwise, we don't judge for efficiency
