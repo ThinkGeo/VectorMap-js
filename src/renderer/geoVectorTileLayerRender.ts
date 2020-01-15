@@ -539,7 +539,8 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         x,
                         y,
                         frameState["pixelToCoordinateTransform"],
-                        sourceTile.tmpReplayGroups_ && !Object.keys(sourceTile.replayGroups_).length ? 'update' : undefined
+                        sourceTile.tmpReplayGroups_ && !Object.keys(sourceTile.replayGroups_).length ? 'update' : undefined,
+                        layer.minimalist
                     ];
                     var that_ = this;
                     let callabck = function (messageData) {

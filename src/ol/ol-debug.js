@@ -66652,23 +66652,27 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 start = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature)
+                {
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid] === undefined &&
-                    feature.getGeometry() &&
-                    (opt_hitExtent === undefined || ol.extent.intersects(
-                /** @type {Array<number>} */(opt_hitExtent),
-                        feature.getGeometry().getExtent()))) {
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    this.drawElements(gl, context, start, end);
-
-                    var result = featureCallback(feature);
-
-                    if (result) {
-                        return result;
+                    if (skippedFeaturesHash[featureUid] === undefined &&
+                        feature.getGeometry() &&
+                        (opt_hitExtent === undefined || ol.extent.intersects(
+                    /** @type {Array<number>} */(opt_hitExtent),
+                            feature.getGeometry().getExtent()))) {
+                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                        this.drawElements(gl, context, start, end);
+    
+                        var result = featureCallback(feature);
+    
+                        if (result) {
+                            return result;
+                        }
+    
                     }
-
                 }
+               
                 featureIndex--;
                 end = start;
             }
@@ -66698,14 +66702,18 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 featureStart = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature)
+                {
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid]) {
-                    if (start !== end) {
-                        this.drawElements(gl, context, start, end);
+                    if (skippedFeaturesHash[featureUid]) {
+                        if (start !== end) {
+                            this.drawElements(gl, context, start, end);
+                        }
+                        end = featureStart;
                     }
-                    end = featureStart;
                 }
+              
                 featureIndex--;
                 start = featureStart;
             }
@@ -67685,23 +67693,26 @@ function olInit() {
             while (featureIndex < this.startIndices.length &&
                 this.startIndices[featureIndex] <= groupEnd) {
                 var feature = this.startIndicesFeature[featureIndex];
-
-                var featureUid = ol.getUid(feature).toString();
-                if (skippedFeaturesHash[featureUid] !== undefined) {
-                    // feature should be skipped
-                    if (start !== end) {
-                        // draw the features so far
-                        this.drawElements(gl, context, start, end);
+                if(feature)
+                {
+                    var featureUid = ol.getUid(feature).toString();
+                    if (skippedFeaturesHash[featureUid] !== undefined) {
+                        // feature should be skipped
+                        if (start !== end) {
+                            // draw the features so far
+                            this.drawElements(gl, context, start, end);
+                        }
+                        // continue with the next feature
+                        start = (featureIndex === this.startIndices.length - 1) ?
+                            groupEnd : this.startIndices[featureIndex + 1];
+                        end = start;
+                    } else {
+                        // the feature is not skipped, augment the end index
+                        end = (featureIndex === this.startIndices.length - 1) ?
+                            groupEnd : this.startIndices[featureIndex + 1];
                     }
-                    // continue with the next feature
-                    start = (featureIndex === this.startIndices.length - 1) ?
-                        groupEnd : this.startIndices[featureIndex + 1];
-                    end = start;
-                } else {
-                    // the feature is not skipped, augment the end index
-                    end = (featureIndex === this.startIndices.length - 1) ?
-                        groupEnd : this.startIndices[featureIndex + 1];
                 }
+             
                 featureIndex++;
             }
 
@@ -67732,21 +67743,24 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 start = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature){
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid] === undefined &&
-                    feature.getGeometry() &&
-                    (opt_hitExtent === undefined || ol.extent.intersects(
-                /** @type {Array<number>} */(opt_hitExtent),
-                        feature.getGeometry().getExtent()))) {
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    this.drawElements(gl, context, start, end);
-
-                    var result = featureCallback(feature);
-                    if (result) {
-                        return result;
+                    if (skippedFeaturesHash[featureUid] === undefined &&
+                        feature.getGeometry() &&
+                        (opt_hitExtent === undefined || ol.extent.intersects(
+                    /** @type {Array<number>} */(opt_hitExtent),
+                            feature.getGeometry().getExtent()))) {
+                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                        this.drawElements(gl, context, start, end);
+    
+                        var result = featureCallback(feature);
+                        if (result) {
+                            return result;
+                        }
                     }
                 }
+                
 
                 end = start;
                 featureIndex--;
@@ -68849,15 +68863,18 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 featureStart = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature){
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid]) {
-                    if (start !== end) {
-                        this.drawElements(gl, context, start, end);
-                        gl.clear(gl.DEPTH_BUFFER_BIT);
+                    if (skippedFeaturesHash[featureUid]) {
+                        if (start !== end) {
+                            this.drawElements(gl, context, start, end);
+                            gl.clear(gl.DEPTH_BUFFER_BIT);
+                        }
+                        end = featureStart;
                     }
-                    end = featureStart;
                 }
+                
                 featureIndex--;
                 start = featureStart;
             }
@@ -68887,23 +68904,27 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 start = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature)
+                {
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid] === undefined &&
-                    feature.getGeometry() &&
-                    (opt_hitExtent === undefined || ol.extent.intersects(
-                /** @type {Array<number>} */(opt_hitExtent),
-                        feature.getGeometry().getExtent()))) {
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    this.drawElements(gl, context, start, end);
-
-                    var result = featureCallback(feature);
-
-                    if (result) {
-                        return result;
+                    if (skippedFeaturesHash[featureUid] === undefined &&
+                        feature.getGeometry() &&
+                        (opt_hitExtent === undefined || ol.extent.intersects(
+                    /** @type {Array<number>} */(opt_hitExtent),
+                            feature.getGeometry().getExtent()))) {
+                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                        this.drawElements(gl, context, start, end);
+    
+                        var result = featureCallback(feature);
+    
+                        if (result) {
+                            return result;
+                        }
+    
                     }
-
                 }
+              
                 featureIndex--;
                 end = start;
             }
@@ -70278,23 +70299,26 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 start = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature)
+                {
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid] === undefined &&
-                    feature.getGeometry() &&
-                    (opt_hitExtent === undefined || ol.extent.intersects(
-                /** @type {Array<number>} */(opt_hitExtent),
-                        feature.getGeometry().getExtent()))) {
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    this.drawElements(gl, context, start, end);
-
-                    var result = featureCallback(feature);
-
-                    if (result) {
-                        return result;
+                    if (skippedFeaturesHash[featureUid] === undefined &&
+                        feature.getGeometry() &&
+                        (opt_hitExtent === undefined || ol.extent.intersects(
+                    /** @type {Array<number>} */(opt_hitExtent),
+                            feature.getGeometry().getExtent()))) {
+                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                        this.drawElements(gl, context, start, end);
+    
+                        var result = featureCallback(feature);
+    
+                        if (result) {
+                            return result;
+                        }
                     }
-
                 }
+               
                 featureIndex--;
                 end = start;
             }
@@ -70322,15 +70346,19 @@ function olInit() {
                 this.startIndices[featureIndex] >= groupStart) {
                 featureStart = this.startIndices[featureIndex];
                 feature = this.startIndicesFeature[featureIndex];
-                featureUid = ol.getUid(feature).toString();
+                if(feature)
+                {
+                    featureUid = ol.getUid(feature).toString();
 
-                if (skippedFeaturesHash[featureUid]) {
-                    if (start !== end) {
-                        this.drawElements(gl, context, start, end);
-                        gl.clear(gl.DEPTH_BUFFER_BIT);
+                    if (skippedFeaturesHash[featureUid]) {
+                        if (start !== end) {
+                            this.drawElements(gl, context, start, end);
+                            gl.clear(gl.DEPTH_BUFFER_BIT);
+                        }
+                        end = featureStart;
                     }
-                    end = featureStart;
                 }
+                
                 featureIndex--;
                 start = featureStart;
             }
@@ -100030,7 +100058,9 @@ function olInit() {
                     }
 
                     this.startIndices.push(this.indices.length);
-                    this.startIndicesFeature.push(feature);
+                    if (!options.minimalist) {
+                        this.startIndicesFeature.push(feature);
+                    }
 
                     if (this.state_.changed) {
                         this.zCoordinates.push(feature.zCoordinate);
@@ -100185,7 +100215,9 @@ function olInit() {
                             this.state_.changed = false;
                         }
                         this.startIndices.push(this.indices.length);
-                        this.startIndicesFeature.push(feature);
+                        if (!options.minimalist) {
+                            this.startIndicesFeature.push(feature);
+                        }
                         this.drawCoordinates_(
                             clippedFlatCoordinates, 0, clippedFlatCoordinates.length, stride);
                     }
@@ -100224,7 +100256,9 @@ function olInit() {
 
                     if (this.indices.length > indexCount) {
                         this.startIndices.push(indexCount);
-                        this.startIndicesFeature.push(feature);
+                        if (!options.minimalist) {
+                            this.startIndicesFeature.push(feature);
+                        }
                         if (this.state_.changed) {
                             var z_order = multiLineStringGeometry.properties_.layer;
                             var styleId = multiLineStringGeometry.styleId;
@@ -100974,6 +101008,7 @@ function olInit() {
             if (textStyle) {
                 var textReplay = replayGroup.getReplay(
                     3, ol.render.ReplayType.TEXT);
+                debugger;
                 textReplay.startIndicesFeature.push(feature);
                 var textStyleClone = textStyle.clone();
                 textStyleClone.label = textStyle.label;
@@ -100996,6 +101031,7 @@ function olInit() {
             if (textStyle) {
                 var textReplay = replayGroup.getReplay(
                     3, ol.render.ReplayType.TEXT);
+                debugger;
                 textReplay.startIndicesFeature.push(feature);
                 var textStyleClone = textStyle.clone();
                 textStyleClone.label = textStyle.label;
@@ -101294,11 +101330,13 @@ function olInit() {
             var pixelToCoordinateTransform = messageData[13];
             var maxDataZoom = messageData[9];
             var vectorTileDataCahceSize = messageData[10];
+            var state_ = messageData[messageData.length - 2];
+            var minimalist = messageData[messageData.length - 1];
+
             var replayGroup = new ReplayGroupCustom(replayGroupInfo[0], replayGroupInfo[1], replayGroupInfo[3]);
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
-            var state_ = messageData[messageData.length - 1];
 
             var renderFeature = function (feature, geoStyles, options, instruct) {
                 var styles = undefined;
@@ -101460,6 +101498,7 @@ function olInit() {
                         renderFeature.call(this, feature, [geoStyle], {
                             strategyTree: strategyTree,
                             zCoordinate: instructs[i][2],
+                            minimalist: minimalist,
                             frameState: { coordinateToPixelTransform: coordinateToPixelTransform, pixelToCoordinateTransform: pixelToCoordinateTransform }
                         }, instructs[i]);
                     }
