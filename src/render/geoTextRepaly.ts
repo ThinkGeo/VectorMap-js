@@ -713,7 +713,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         }
         var height = heights[state.font];
         if (!height) {
-            debugger;
             var font = state.font;
             if (!this.measureSpan) {
                 this.measureSpan = document.createElement('span');
