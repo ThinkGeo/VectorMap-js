@@ -13,6 +13,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.startIndicesStyles_ = [];
         this.widths_ = {};
         this.heights_ = {};
+        this.measureSpan;
     }
 
     public finish(context) {
@@ -308,11 +309,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             var i, ii, start;
             for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
                 gl.bindTexture((<any>ol).webgl.TEXTURE_2D, textures[i]);
-                var uZindex =  (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0)/10000000;
+                var uZindex = (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0) / 10000000;
                 uZindex = parseFloat(uZindex);
-             
-                gl.uniform1f(this.u_zIndex,uZindex);
-                
+
+                gl.uniform1f(this.u_zIndex, uZindex);
+
                 var end = groupIndices[i];
                 this.drawElements(gl, context, start, end);
                 start = end;
@@ -434,7 +435,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
                 var startM = (pointArray[len] - textLength / 2);
                 let parts = textpathLineString(lineStringCoordinates, offset, end, 2, text, this, startM,
-                    maxAngle, resolution);
+                    maxAngle, resolution, this.height / 2);
 
                 if (parts) {
                     for (let i = 0; i < parts.length; i++) {
@@ -695,7 +696,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             var i, ii;
             for (i = 0, ii = text.length; i < ii; ++i) {
                 var curr = text[i];
-                sum += Math.ceil(mCtx.measureText(curr).width * state.scale);
+                sum += Math.ceil((mCtx.measureText(curr).width) * state.scale);
             }
 
             width = widths[text] = sum;
@@ -706,20 +707,33 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
     public measureTextHeight() {
         var state = this.state_;
-
         var heights = this.heights_[state.font];
         if (!heights) {
             this.heights_[state.font] = heights = {};
         }
         var height = heights[state.font];
         if (!height) {
-            var mCtx = this.measureCanvas_.getContext('2d');
-            if (state.font != mCtx.font) {
-                mCtx.font = state.font;
+            debugger;
+            var font = state.font;
+            if (!this.measureSpan) {
+                this.measureSpan = document.createElement('span');
+                this.measureSpan.textContent = 'M';
+                this.measureSpan.style.margin = this.measureSpan.style.padding = '0 !important';
+                this.measureSpan.style.position = 'absolute !important';
+                this.measureSpan.style.left = '-99999px !important';
             }
-            height = Math.ceil((mCtx.measureText('M').width * 1.5 +
-                state.lineWidth / 2) * state.scale);
-            heights[state.font] = height;
+            this.measureSpan.style.font = font;
+            document.body.appendChild(this.measureSpan);
+            height = heights[font] = this.measureSpan.offsetHeight;
+            document.body.removeChild(this.measureSpan);
+
+            // var mCtx = this.measureCanvas_.getContext('2d');
+            // if (state.font != mCtx.font) {
+            //     mCtx.font = state.font;
+            // }
+            // height = Math.ceil((mCtx.measureText('M').width * 1.5 +
+            //     state.lineWidth / 2) * state.scale);
+            // heights[state.font] = height;
         }
 
         return height;
@@ -837,7 +851,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.drawText_(flatCoordinates, offset, end, stride);
             } else {
                 var devicePixelRatio = window.devicePixelRatio;
-                
+
                 if (this.improvePixelRatio !== undefined) {
                     devicePixelRatio = this.improvePixelRatio;
                 }

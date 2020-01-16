@@ -1,5 +1,5 @@
 export function lineString(
-    inputFlatCoordinates, inputOffset, inputEnd, stride, text, webglTextReplay, startM, maxAngle, resolution) {
+    inputFlatCoordinates, inputOffset, inputEnd, stride, text, webglTextReplay, startM, maxAngle, resolution, halfHeight) {
     var result = [];
 
     var flatCoordinates = inputFlatCoordinates.slice(inputOffset, inputEnd);
@@ -11,8 +11,6 @@ export function lineString(
         attachSegment(attachSegmentLength, flatCoordinates, stride, resolution, true);
         startM = 0;
     }
-
-
 
     var x1 = flatCoordinates[offset];
     var y1 = flatCoordinates[offset + 1];
@@ -46,8 +44,8 @@ export function lineString(
         var char = text.charAt(index);
         chunk = reverse ? char + chunk : chunk + char;
         var charLength = webglTextReplay.measure(char);
-        var charM = startM + charLength / 2;
 
+        var charM = startM + charLength / 2;
         while (segmentM + segmentLength < charM) {
             x1 = x2;
             y1 = y2;
@@ -56,19 +54,20 @@ export function lineString(
             y2 = flatCoordinates[offset + 1];
             segmentM += segmentLength;
             segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
-        }
 
-        // TODO: check the logic.
-        // It makes many roads without words
-        // if ((x1 > x2) !== reverse) {
-        //     return false;
-        // }
+            if (previousAngle !== undefined && segmentM + segmentLength >= charM) {
+                var target = halfHeight * (Math.abs(y2 - y1) / resolution) / segmentLength
+                if (target < segmentLength) {
+                    charM += target;
+                    startM += target;
+                }
+            }
+        }
 
         // label exceed the road range
         if (offset > end - stride) {
             return false;
         }
-
         var segmentPos = charM - segmentM;
         var angle = Math.atan2(y2 - y1, x2 - x1);
         if (reverse) {
