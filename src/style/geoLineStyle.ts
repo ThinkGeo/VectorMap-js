@@ -204,7 +204,7 @@ export class GeoLineStyle extends GeoStyle {
                         var geometry = this.getGeometry(feature);
                         var dx = this.offsetX * resolution;
                         var dy = this.offsetY * resolution;
-                        geometry.translate(+dx, +dy);
+                        geometry.translate(+dx, -dy);
                         var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
                         geometry.extent_ = newExtent_;
                         feature.flatCoordinates_ = geometry.getFlatCoordinates();

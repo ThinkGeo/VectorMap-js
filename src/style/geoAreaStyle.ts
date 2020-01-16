@@ -119,7 +119,7 @@ export class GeoAreaStyle extends GeoStyle {
                 let offsetTranslateValue = this.offsetTranslateValueByResolution[resolution];
                 if (offsetTranslateValue === undefined) {
                     let tmpResolution = Math.round(resolution * 100000000) / 100000000;
-                    this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? this.offsetY : 0) * tmpResolution})`);
+                    this.shadowTranslate = (`translate(${(this.offsetX ? this.offsetX : 0) * tmpResolution},${(this.offsetY ? -this.offsetY : 0) * tmpResolution})`);
                     offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
                     this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
                 }

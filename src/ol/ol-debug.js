@@ -98668,7 +98668,7 @@ function olInit() {
                         if (offsetTranslateValue === undefined) {
                             var tmpResolution = Math.round(resolution * 100000000) / 100000000;
 
-                            this.shadowTranslate = "translate(" + (this.offsetX ? this.offsetX : 0) * tmpResolution + "," + (this.offsetY ? this.offsetY : 0) * tmpResolution + ")";
+                            this.shadowTranslate = "translate(" + (this.offsetX ? this.offsetX : 0) * tmpResolution + "," + (this.offsetY ? -this.offsetY : 0) * tmpResolution + ")";
 
                             offsetTranslateValue = this.getTransformValues(this.shadowTranslate);
                             this.offsetTranslateValueByResolution[resolution] = offsetTranslateValue;
@@ -98907,8 +98907,8 @@ function olInit() {
                             var geometry = _this.getGeometry(feature);
                             var dx = _this.offsetX * resolution;
                             var dy = _this.offsetY * resolution;
-                            geometry.translate(+dx, +dy);
-                            var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, -dx, -dy);
+                            geometry.translate(+dx, -dy);
+                            var newExtent_ = ol.geom.flat.transform.translate(feature.extent_, 0, feature.extent_.length, 2, dx, -dy);
                             geometry.extent_ = newExtent_;
                             feature.flatCoordinates_ = geometry.getFlatCoordinates();
                         }
