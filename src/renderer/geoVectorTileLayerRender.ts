@@ -697,7 +697,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
             case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
             case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
-            default: console.log(type);
+            default: ;
         }
 
         return geometry;

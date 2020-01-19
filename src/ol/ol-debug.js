@@ -98530,7 +98530,7 @@ function olInit() {
                     case 'Polygon': geometry = new ol.geom.Polygon([transformedCoordinates], layout); break;
                     case 'LineString': geometry = new ol.geom.LineString(transformedCoordinates, layout); break;
                     case 'MultiLineString': geometry = new ol.geom.MultiLineString([transformedCoordinates], layout); break;
-                    default: console.log(type);
+                    default: ;
                 }
 
                 return geometry;
@@ -101430,7 +101430,6 @@ function olInit() {
                 // }
             }
             else {
-                this.console.log("missing", tileCoord, tileCoordKey);
 
                 return false;
             }

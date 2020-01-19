@@ -38,12 +38,13 @@ export function lineString(
 
     var chunk = '';
     var data, index, previousAngle;
-
+    var stringLength = 0;
     for (var i = 0; i < numChars; ++i) {
         index = reverse ? numChars - i - 1 : i;
         var char = text.charAt(index);
         chunk = reverse ? char + chunk : chunk + char;
         var charLength = webglTextReplay.measure(char);
+        stringLength += charLength;
 
         var charM = startM + charLength / 2;
         while (segmentM + segmentLength < charM) {
@@ -55,11 +56,22 @@ export function lineString(
             segmentM += segmentLength;
             segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) / resolution;
 
+            stringLength = charLength;
+
             if (previousAngle !== undefined && segmentM + segmentLength >= charM) {
-                var target = halfHeight * (Math.abs(y2 - y1) / resolution) / segmentLength
-                if (target < segmentLength) {
-                    charM += target;
-                    startM += target;
+                var tempAngle = Math.atan2(y2 - y1, x2 - x1);
+
+                if (reverse) {
+                    tempAngle += tempAngle > 0 ? -Math.PI : Math.PI;
+                }
+                var d = (segmentM - startM);
+                var target = halfHeight / 1.5 * Math.abs(tempAngle - previousAngle) + charLength / 2 - (d > 0 ? d : 0)
+                if (target <= segmentLength) {
+                    var adjustDistance = target - (charM - segmentM);
+                    if (adjustDistance > 0) {
+                        charM += adjustDistance;
+                        startM += adjustDistance;
+                    }
                 }
             }
         }
@@ -90,9 +102,10 @@ export function lineString(
                 data[2] = charLength / 2;
             }
             data[4] = chunk;
+            data[5] = stringLength;
         } else {
             chunk = char;
-            data = [x, y, charLength / 2, -angle, chunk];
+            data = [x, y, charLength / 2, -angle, chunk, stringLength];
             if (reverse) {
                 result.unshift(data);
             } else {

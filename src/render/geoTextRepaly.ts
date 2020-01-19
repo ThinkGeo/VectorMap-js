@@ -194,12 +194,10 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 if (style.label) {
                     var ends = geometry.getEnds();
 
-
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
 
                         var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
-                        this.setTextStyle(style);
                         this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.label);
 
                         // var geom = new ol.geom.LineString();
@@ -216,11 +214,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 else {
                     // new logic
                     var ends = geometry.getEnds();
+
                     for (var k = 0; k < ends.length; k++) {
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
 
                         var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
-                        this.setTextStyle(style);
                         this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
 
                         // var geom = new ol.geom.LineString();
@@ -235,8 +233,9 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     }
                 }
             } else {
-                this.setTextStyle(style);
                 if (style.label) {
+                    this.setTextStyleForLabel(style);
+
                     var flatCoordinates = style.labelPosition;
                     var end = flatCoordinates.length;
                     this.label = style.label;
@@ -250,6 +249,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     this.replayImage_(frameState, declutterGroup, flatCoordinates, this.state_.scale / pixelRatio, end, feature);
                     this.renderDeclutterLabel_(declutterGroup, feature);
                 } else {
+                    this.setTextStyle(style);
                     this.label = style.label;
                     this.drawLineStringText(geometry, feature, frameState, declutterGroup);
                 }
@@ -441,7 +441,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     for (let i = 0; i < parts.length; i++) {
                         var part = parts[i];
                         var lines = part[4];
-                        this.width = this.measure(lines);
+                        this.width = part[5];
                         this.replayCharImage_(frameState, tempDeclutterGroup, part, feature);
                     }
                     var size = frameState.size;
@@ -481,7 +481,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var lineStringCoordinates = geometry.getFlatCoordinates();
         var end = lineStringCoordinates.length;
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
-        let textLength = label.width
+        let textLength = label.width;
 
         if (textLength <= pathLength * 1.2) {
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
@@ -661,6 +661,49 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.textPlacements = [-0.5, 0];
             }
         }
+    }
+
+    public setTextStyleForLabel(textStyle) {
+        var state = this.state_;
+        var textStrokeStyle = textStyle.getStroke();
+
+        if (!textStrokeStyle) {
+            state.strokeColor = null;
+            state.lineWidth = 0;
+        } else {
+            state.lineWidth = textStrokeStyle.getWidth() || (<any>ol.render).webgl.defaultLineWidth;
+        }
+        state.scale = textStyle.getScale() || 1;
+
+        let scale = state.scale * window.devicePixelRatio;
+
+
+        var textBaseline = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextBaseline()];
+        this.textBaseline_ = textBaseline === undefined ?
+            (<any>ol.render).webgl.defaultTextBaseline : textBaseline;
+
+        this.offsetX_ = (textStyle.getOffsetX() || 0) * scale;
+        this.offsetY_ = (textStyle.getOffsetY() || 0) * scale;
+
+        this.rotateWithView = !!textStyle.getRotateWithView();
+        this.rotation = textStyle.getRotation() || 0;
+
+        this.spacing_ = (textStyle["spacing"] || 0) * scale;
+
+        this.textPlacements = [0, 0]
+        if (textStyle["placements"] == "upper") {
+            this.textPlacements = [0, 0.5];
+        }
+        if (textStyle["placements"] == "lower") {
+            this.textPlacements = [0, -0.5];
+        }
+        if (textStyle["placements"] == "left") {
+            this.textPlacements = [0.5, 0];
+        }
+        if (textStyle["placements"] == "right") {
+            this.textPlacements = [-0.5, 0];
+        }
+    }
 
     public getText_(lines) {
         var self = this;
@@ -678,14 +721,16 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
 
     public measure(text) {
-        var widths = this.widths_[this.state_.font];
-        if (!widths) {
-            this.widths_[this.state_.font] = widths = {};
-        }
-        var width = widths[text];
+        var width = this.measureCache(text]);
+
         if (!width) {
             var state = this.state_;
             var mCtx = this.measureCanvas_.getContext('2d');
+
+            var widths = this.widths_[this.state_.font];
+            if (widths === undefined) {
+                widths = this.widths_[this.state_.font] = {};
+            }
 
             if (state.font != mCtx.font) {
                 mCtx.font = state.font;
@@ -703,6 +748,21 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         }
 
         return width;
+    }
+
+    public measureCache(text) {
+        var width;
+        var widths = this.widths_[this.state_.font];
+        if (widths !== undefined) {
+            width = widths[text];
+        }
+        return width;
+
+        // var width;
+        // if (this.widths_[this.state_.font] !== undefined) {
+        //     width = this.widths_[this.state_.font][text];
+        // }
+        // return width;
     }
 
     public measureTextHeight() {
