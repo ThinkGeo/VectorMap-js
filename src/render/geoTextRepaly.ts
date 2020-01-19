@@ -598,11 +598,19 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
 
     public setTextStyle(textStyle) {
+        if (this.previousTextStyle !== undefined) {
+            if (this.previousTextStyle.uid === textStyle.uid) {
+                this.text_ = /** @type {string} */ (textStyle.getText());
+                return;
+            }
+        }
+
         var state = this.state_;
         var textFillStyle = textStyle.getFill();
         var textStrokeStyle = textStyle.getStroke();
         if (!textStyle || !textStyle.getText() || (!textFillStyle && !textStrokeStyle)) {
             this.text_ = '';
+            debugger;
         } else {
             if (!textFillStyle) {
                 state.fillColor = null;
@@ -661,6 +669,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.textPlacements = [-0.5, 0];
             }
         }
+        this.previousTextStyle = textStyle;
     }
 
     public setTextStyleForLabel(textStyle) {

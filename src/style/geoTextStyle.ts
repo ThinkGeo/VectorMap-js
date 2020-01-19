@@ -115,6 +115,7 @@ export class GeoTextStyle extends GeoStyle {
             fill: fill,
             stroke: stroke
         });
+        ol.getUid(textStyle);
 
         if (this.basePointStyleJson) {
             this.basePointStyle = new GeoPointStyle(this.basePointStyleJson);

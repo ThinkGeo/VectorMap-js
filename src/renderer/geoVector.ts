@@ -68,6 +68,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
+        textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
@@ -94,6 +95,7 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
+        textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
@@ -120,6 +122,7 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
+        textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
@@ -146,6 +149,7 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
+        textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
@@ -183,6 +187,7 @@ function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
             style.getZIndex(), (<any>ol.render).ReplayType.TEXT);
         textReplay.startIndicesFeatures_.push(feature);
         var textStyleClone = textStyle.clone();
+        textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
