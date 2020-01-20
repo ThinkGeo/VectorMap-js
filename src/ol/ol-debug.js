@@ -100107,7 +100107,10 @@ function olInit() {
                 }
                 var triangles = self.earcut(coords, holeIndices, stride);
                 triangles = triangles.map(function (i) { return i + baseIndex; });
-                Array.prototype.push.apply(this.indices, triangles);
+
+                for (var tempIndex = 0; tempIndex < triangles.length; tempIndex++) {
+                    this.indices.push(triangles[tempIndex]);
+                }
             }
             return GeoPolygonReplay;
         }(ol.render.webgl.PolygonReplay));
