@@ -273,7 +273,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var scaleed = false;
 
                     if (window.devicePixelRatio === 1) {
-                        window.devicePixelRatio = this.improvePixelRatio = 1.5
+                        window.devicePixelRatio = this.improvePixelRatio = 2
                         scaleed = true;
                     }
 
