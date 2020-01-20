@@ -159,6 +159,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.startIndicesFeature = [];
         // haven't used currently.
         this.startIndicesStyle = [];
+        this.previousTextStyle=undefined;
 
         for (var i = 0; i < startIndicesFeatures_.length; i++) {
             var feature = startIndicesFeatures_[i];
@@ -598,14 +599,16 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
     }
 
     public setTextStyle(textStyle) {
+        var state = this.state_;
+        state.scale = textStyle.getScale() || 1;
         if (this.previousTextStyle !== undefined) {
             if (this.previousTextStyle.uid === textStyle.uid) {
                 this.text_ = /** @type {string} */ (textStyle.getText());
+
                 return;
             }
         }
 
-        var state = this.state_;
         var textFillStyle = textStyle.getFill();
         var textStrokeStyle = textStyle.getStroke();
         if (!textStyle || !textStyle.getText() || (!textFillStyle && !textStrokeStyle)) {
@@ -635,7 +638,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 state.lineDash = lineDash ? lineDash.slice() : (<any>ol.render).webgl.defaultLineDash;
             }
             state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
-            state.scale = textStyle.getScale() || 1;
+           
 
             let scale = state.scale * window.devicePixelRatio;
 
