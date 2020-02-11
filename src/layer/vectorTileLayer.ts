@@ -1,6 +1,8 @@
 import { GeoVectorTileSource } from "../source/geoVectorTileSource";
 import { GeoVectorTile } from "../geoVectorTile";
 import { GeoStyle } from "../style/geoStyle";
+import { GeoFilterItem } from "../filter/geoFilterItem";
+import { GeoZoomFilter } from "../filter/geoZoomFilter";
 import { GeoMVTFormat } from "../format/geoMvt";
 import { StyleJsonCache } from "../tree/styleJsonCache";
 import { StyleJsonCacheItem } from "../tree/styleJsonCacheItem";
@@ -147,9 +149,15 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         if (source && layerJson) {
             this.setSource(source);
             if (this.background) {
-                let backgroundColor = GeoStyle.blendColorAndOpacity(this.background);
-                if (backgroundColor) {
-                    this["background"] = backgroundColor;
+
+
+                for (var bgIndex = 0; bgIndex < this.background.length; bgIndex++) {
+                    var element = this.background[bgIndex];
+                    let backgroundColor = GeoStyle.blendColorAndOpacity(element.color);
+                    if (backgroundColor) {
+                        element.color= backgroundColor;
+                    }
+                    element.filterGrounps=this.createZoomFilters(element.filter);
                 }
             }
 
@@ -518,6 +526,45 @@ export class VectorTileLayer extends (ol.layer.VectorTile as { new(p: olx.layer.
         }
         return false;
     }
+
+    createZoomFilters(filterString){
+        let filterGroups = [];
+        if(filterString)
+        {
+            let filterStrings = filterString.split("|");
+            for (let i = 0; i < filterStrings.length; i++)
+            {
+                let filterStr = filterStrings[i];
+                let expression = "(\\w+?=~'.+?')|(\\w+?[<>!=]*'[^;]+?')|(\\w+?[<>!=]*[^;]+)";
+                let regex = new RegExp(expression, "g");
+                let results = filterStr.match(regex);
+                let rangeFilters = {};
+
+                let geoZoomFilter: GeoZoomFilter;
+                for (let i = 0; i < results.length; i++) 
+                {
+                    if (results[i])
+                    {
+                        let filterItem = GeoFilterItem.createFilterItem(results[i]);
+                        if (filterItem.key === "zoom")
+                        {
+                            if (geoZoomFilter === undefined) {
+                                geoZoomFilter = new GeoZoomFilter([]);
+                            }
+                            geoZoomFilter.addFilterItem(filterItem);
+                        }
+                    }
+                }
+                if(geoZoomFilter)
+                {
+                    geoZoomFilter.initialize();
+                }
+                filterGroups.push(geoZoomFilter);
+            }
+        }
+        return filterGroups;
+    }
+
 
     private registerGeoVector() {
         (<any>ol).LayerType["GEOVECTORTILE"] = "GEOVECTORTILE";

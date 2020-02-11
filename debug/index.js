@@ -16,7 +16,7 @@ var view = new ol.View({
     //center: [-22997335.8, -3253574.954307], zoom: 17,// drawing order of road
     //center:[-22997462.8, -3250401.7], zoom:19, // drawing order of road
 
-    center: [-10775289.210973945, 3865761.202605083], zoom: 19, //// drawing order of road in Dallas
+    center: [-10775289.210973945, 3865761.202605083], zoom: 2, //// drawing order of road in Dallas
     //center: [-10781709.991733968, 3888501.660642869], zoom: 19, //// drawing order of road in Dallas
     //center: [-10775277.566270417, 3865890.936545674], zoom: 19,
     //center: [-10777048.158370923, 3867537.467766296], zoom: 19,
@@ -24,7 +24,7 @@ var view = new ol.View({
 
     //center: [-10893951.564327799, 3897504.687934755],zoom:18,
 
-    maxZoom: 10,
+    maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
 });
@@ -44,6 +44,7 @@ var worldStreetsSource = new ol.thinkgeo.VectorTileSource({
 
 var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
     mapLayerId: "worldstreets",
+    minimalist:false,
     source: worldStreetsSource
 });
 
