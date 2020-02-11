@@ -4,7 +4,7 @@ import { VecorRenderFeature } from "./geoVector";
 export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLayer as { new(a: any, p: ol.layer.Tile): any; }) {
     constructor(mapRenderer: any, layer: ol.layer.VectorTile) {
         super(mapRenderer, layer);
-        this.zDirection = 1;
+        // this.zDirection = 1;
         this.renderedTiles = [];
         this.declutterTree_ = (<any>layer).getDeclutter() ? (<any>ol).ext.rbush(9) : null;
         this.VECTOR_REPLAYS = this.VECTOR_REPLAYS_CUSTOM;
@@ -253,8 +253,33 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         // Set background color to map
         const background = layer.background;
         const canvasBackground = gl.canvas.style.backgroundColor;
-        if (background && background !== canvasBackground) {
-            gl.canvas.style.backgroundColor = background;
+        if (background) {
+            var zoom = frameState.viewState.zoom;
+            var color;
+            var matched = false;
+            for (var bgIndex = 0; bgIndex < background.length; bgIndex++) {
+                var element = background[bgIndex];
+                if (element.filterGrounps) {
+                    var groupMatched = false;
+                    for (let grounpIndex = 0; grounpIndex < element.filterGrounps.length; grounpIndex++) {
+                        var filter = element.filterGrounps[grounpIndex];
+                        if (filter.matchOLFeature(null, zoom)) {
+                            groupMatched = true;
+                            break;
+                        }
+                    }
+                    if (groupMatched) {
+                        matched = true;
+                        color = element.color;
+                        break;
+                    }
+                }
+            }
+            if (matched) {
+                if (color && color !== canvasBackground) {
+                    gl.canvas.style.backgroundColor = color;
+                }
+            }
         }
 
         if (declutterReplays) {
