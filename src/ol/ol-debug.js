@@ -101340,7 +101340,29 @@ function olInit() {
             var mainDrawingInstructs = [];
             var mainFeatures = [];
             var mainFeatureIndex = 0;
-
+            var types = {
+                POINT: 'Point',
+                LINE_STRING: 'LineString',
+                LINEAR_RING: 'LinearRing',
+                POLYGON: 'Polygon',
+                MULTI_POINT: 'MultiPoint',
+                MULTI_LINE_STRING: 'MultiLineString',
+                MULTI_POLYGON: 'MultiPolygon',
+                GEOMETRY_COLLECTION: 'GeometryCollection',
+                CIRCLE: 'Circle'
+            };
+            var geomTypes=
+            {
+               'Point':0,
+                 'LineString':1,
+                'LinearRing':2,
+               'Polygon':3,
+               'MultiPoint':4,
+                 'MultiLineString':5,
+               'MultiPolygon':6,
+                'GeometryCollection':7,
+               'Circle':8
+            }
             var renderFeature = function (feature, geoStyles, options, instruct) {
                 var styles = undefined;
                 if (geoStyles) {
@@ -101350,7 +101372,13 @@ function olInit() {
                                 //if (true){
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
                                     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
-                                    mainFeatures.push(feature);
+                                        var mainFeature ={
+                                        type_: geomTypes[feature.type_],
+                                        flatCoordinates_:feature.flatCoordinates_,
+                                        ends_: feature.ends_,
+                                        properties_: feature.properties_
+                                    }
+                                        mainFeatures.push(mainFeature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                     mainFeatureIndex++;
                                 }
@@ -101358,7 +101386,13 @@ function olInit() {
                                     var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
                                     if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
                                         if (ol4Styles) {
-                                            mainFeatures.push(feature);
+                                            var mainFeature ={
+                                        type_: geomTypes[feature.type_],
+                                                flatCoordinates_:feature.flatCoordinates_,
+                                                ends_: feature.ends_,
+                                                properties_: feature.properties_
+                                            }
+                                            mainFeatures.push(mainFeature);
                                             mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
                                             mainFeatureIndex++;
                                         }
@@ -101511,7 +101545,8 @@ function olInit() {
             return {
                 replays: replayGroup.replaysByZIndex_,
                 features: mainFeatures,
-                instructs: mainDrawingInstructs
+                instructs: mainDrawingInstructs,
+                bbox:bbox
             };
         }
 

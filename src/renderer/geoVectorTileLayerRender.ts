@@ -578,6 +578,18 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         var features = messageData["features"];
                         var instructs = messageData["instructs"];
 
+var geomTypes=
+            {
+               0:'Point',
+                1: 'LineString',
+                2:'LinearRing',
+               3:'Polygon',
+               4:'MultiPoint',
+                 5:'MultiLineString',
+               6:'MultiPolygon',
+                7:'GeometryCollection',
+               8:'Circle'
+            }
                         if (features && instructs) {
 
                             for (let i = 0; i < instructs.length; i++) {
@@ -586,7 +598,9 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
 
                                 let featureInfo = features[instructs[i][0]];
 
-                                let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+
+
+                                let feature = new (<any>ol.render).Feature(geomTypes[featureInfo.type_], featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
                                 // let feature = new ol.Feature({
                                 //     geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
                                 // })
