@@ -250,11 +250,16 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         let pixelRatio = frameState.pixelRatio;
         let opacity = layerState.opacity;
 
+        let projection = viewState.projection;
+        let viewResolution = viewState.resolution;
+        let tileSource = /** @type {ol.source.Tile} */ (layer.getSource());
+        let tileGrid = tileSource.getTileGridForProjection(projection);
+        let zoom = tileGrid.getZForResolution(viewResolution, this.zDirection);
+
         // Set background color to map
         const background = layer.background;
         const canvasBackground = gl.canvas.style.backgroundColor;
         if (background) {
-            var zoom = frameState.viewState.zoom;
             var color;
             var matched = false;
             for (var bgIndex = 0; bgIndex < background.length; bgIndex++) {
