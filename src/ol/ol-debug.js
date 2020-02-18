@@ -101363,6 +101363,12 @@ function olInit() {
                 'GeometryCollection':7,
                'Circle':8
             }
+            var keys={};
+            var keyArray=[];
+            var keyIndex=0;
+            var values={};
+            var valueArray=[];
+            var valueIndex=0;
             var renderFeature = function (feature, geoStyles, options, instruct) {
                 var styles = undefined;
                 if (geoStyles) {
@@ -101372,11 +101378,29 @@ function olInit() {
                                 //if (true){
                                 if ((geoStyle.constructor.name === "GeoLineStyle" && geoStyle.lineDirectionImageUri !== undefined) ||
                                     (geoStyle.constructor.name === "GeoAreaStyle" && geoStyle.brushType === 'texture')) {
+                                        var properties= feature.properties_;
+                                        var keyAndValue= {};
+                                        for(var key in properties)
+                                        {
+                                            var value= properties[key];
+                                            if(keys[key]===undefined)
+                                            {
+                                                keys[key]= keyIndex;
+                                                keyIndex++;
+                                                keyArray.push(key);
+                                            }
+                                            if(values[value]===undefined)
+                                            {
+                                                values[value]= valueIndex++;
+                                                valueArray.push(value);
+                                            }
+                                            keyAndValue[keys[key]]= values[value];
+                                        }
                                         var mainFeature ={
                                         type_: geomTypes[feature.type_],
                                         flatCoordinates_:feature.flatCoordinates_,
                                         ends_: feature.ends_,
-                                        properties_: feature.properties_
+                                        keyAndValue: keyAndValue
                                     }
                                         mainFeatures.push(mainFeature);
                                     mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
@@ -101386,11 +101410,31 @@ function olInit() {
                                     var ol4Styles = geoStyles[i].getStyles(feature, resolution, options);
                                     if (geoStyles[i] instanceof GeoTextStyle || geoStyles[i] instanceof GeoShieldStyle || geoStyles[i] instanceof GeoPointStyle) {
                                         if (ol4Styles) {
+
+                                            var properties= feature.properties_;
+                                        var keyAndValue= {};
+                                        for(var key in properties)
+                                        {
+                                            var value= properties[key];
+                                            if(keys[key]===undefined)
+                                            {
+                                                keys[key]= keyIndex;
+                                                keyIndex++;
+                                                keyArray.push(key);
+                                            }
+                                            if(values[value]===undefined)
+                                            {
+                                                values[value]= valueIndex++;
+                                                valueArray.push(value);
+                                            }
+                                            keyAndValue[keys[key]]= values[value];
+                                        }
+
                                             var mainFeature ={
                                         type_: geomTypes[feature.type_],
                                                 flatCoordinates_:feature.flatCoordinates_,
                                                 ends_: feature.ends_,
-                                                properties_: feature.properties_
+                                                keyAndValue: keyAndValue
                                             }
                                             mainFeatures.push(mainFeature);
                                             mainDrawingInstructs.push([mainFeatureIndex, geoStyles[i].id, instruct[2]]);
@@ -101546,7 +101590,8 @@ function olInit() {
                 replays: replayGroup.replaysByZIndex_,
                 features: mainFeatures,
                 instructs: mainDrawingInstructs,
-                bbox:bbox
+                keyArray:keyArray,
+                valueArray:valueArray
             };
         }
 

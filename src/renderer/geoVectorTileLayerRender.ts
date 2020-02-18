@@ -534,6 +534,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             let geoStyle = geoStyles[geoStyleId];
 
                             let featureInfo = features[instructs[i][0]];
+                            
                             let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
 
                             if (featureInfo["projected"] === undefined) {
@@ -598,9 +599,15 @@ var geomTypes=
 
                                 let featureInfo = features[instructs[i][0]];
 
+                            var properties={};
+                            var keyAndValue = featureInfo.keyAndValue;
+                            for(var key in keyAndValue)
+                            {
+                                messageData.keyArray[key]
+                                properties[messageData.keyArray[key]]= messageData.valueArray[keyAndValue[key]]
+                            }
 
-
-                                let feature = new (<any>ol.render).Feature(geomTypes[featureInfo.type_], featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
+                                let feature = new (<any>ol.render).Feature(geomTypes[featureInfo.type_], featureInfo.flatCoordinates_, featureInfo.ends_, properties);
                                 // let feature = new ol.Feature({
                                 //     geometry: that_.getGeometryByType(featureInfo.type_, featureInfo.flatCoordinates_, 'XY')
                                 // })
