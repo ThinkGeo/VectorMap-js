@@ -119,6 +119,7 @@ export class GeoTextStyle extends GeoStyle {
 
         if (this.basePointStyleJson) {
             this.basePointStyle = new GeoPointStyle(this.basePointStyleJson);
+            this.basePointStyle["zIndex"] = this.zIndex;
             this.isBasePointStyleJson = true;
         }
 
@@ -209,6 +210,7 @@ export class GeoTextStyle extends GeoStyle {
                 this.contentFormatItems.push(element);
             }
         }
+        this.style.setZIndex(this.zIndex);
     }
 
     getConvertedStyleCore(feature: any, resolution: number, options: any): ol.style.Style[] {
@@ -234,7 +236,6 @@ export class GeoTextStyle extends GeoStyle {
 
         this.style.getText().setText(featureText);
 
-        this.style.setZIndex(this.zIndex);
 
         this.style.getText()["placements"] = this.placement;
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
