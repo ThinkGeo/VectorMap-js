@@ -24,15 +24,50 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
 
         // create textures
         this.textures_ = [];
+        if (this.texturePerImage === undefined) {
+            this.texturePerImage = {};
+        }
+        if(this.hitDetectionImages_===undefined)
+        {
+            this.hitDetectionImages_ = {};
+        }
 
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+        var selectedTexture = {};
+        var hitSelectedTexture1 = {};
+
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl,selectedTexture);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-            this.texturePerImage, gl);
+            this.texturePerImage, gl, hitSelectedTexture1);
+
+        for (var uid in this.texturePerImage) {
+            gl.deleteTexture(this.texturePerImage[uid]);
+        }
+
+        this.texturePerImage = selectedTexture;
 
         this.images_ = [];
         this.hitDetectionImages_ = [];
     }
+
+    public createTextures = function (textures, images, texturePerImage, gl, selectedTexture) {
+        var texture, image, uid, i;
+        var ii = images.length;
+        for (i = 0; i < ii; ++i) {
+            image = images[i];
+
+            uid = ol.getUid(image).toString();
+            if (uid in texturePerImage) {
+                texture = texturePerImage[uid];
+                delete texturePerImage[uid];
+            } else {
+                texture = ol.webgl.Context.createTexture(
+                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, image.NEAREST ? gl.NEAREST : gl.LINEAR);
+            }
+            selectedTexture[uid] = texture;
+            textures[i] = texture;
+        }
+    };
 
     public setImageStyle(imageStyle) {
         var anchor = imageStyle.getAnchor();
@@ -255,7 +290,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
                     value: feature
                 };
 
-                if (!this.declutterTree.collides(box)||this.allowOverlapping) {
+                if (!this.declutterTree.collides(box) || this.allowOverlapping) {
                     this.declutterTree.insert(box);
                     for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
                         var declutter = declutterGroup[j];
@@ -281,7 +316,7 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             var i, ii, start;
             for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
                 gl.bindTexture((<any>ol).webgl.TEXTURE_2D, textures[i]);
-                var uZindex =  (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0)/10000000;
+                var uZindex = (this.zCoordinates[i] ? 9999999 - this.zCoordinates[i] : 0) / 10000000;
                 uZindex = parseFloat(uZindex);
                 gl.uniform1f(this.u_zIndex, uZindex);
                 var end = groupIndices[i];
