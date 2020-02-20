@@ -16,14 +16,17 @@ var view = new ol.View({
     //center: [-22997335.8, -3253574.954307], zoom: 17,// drawing order of road
     //center:[-22997462.8, -3250401.7], zoom:19, // drawing order of road
 
-    center: [-10775289.210973945, 3865761.202605083], zoom: 2, //// drawing order of road in Dallas
+    //center: [-10775289.210973945, 3865761.202605083], zoom: 2, //// drawing order of road in Dallas
     //center: [-10781709.991733968, 3888501.660642869], zoom: 19, //// drawing order of road in Dallas
     //center: [-10775277.566270417, 3865890.936545674], zoom: 19,
     //center: [-10777048.158370923, 3867537.467766296], zoom: 19,
     //center:[-10777049.352699492, 3867713.631229918],zoom:16,
 
     //center: [-10893951.564327799, 3897504.687934755],zoom:18,
+     center:[-10774544.651882764, 3866357.9649097803],zoom:1,
 
+    // zoom: 18,
+    // center: [11582817.642707704,3580985.7848741873],
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -113,6 +116,18 @@ var vectorLayer = new ol.layer.Vector({
     source: new ol.source.Vector(),
     style: function (feature, resolution) {
         return new ol.style.Style({
+            image: new ol.style.Circle({
+                fill: new ol.style.Fill({
+                    color: "red"
+                }),
+                radius: 10
+            }),
+            text: new ol.style.Text({
+                fill: new ol.style.Fill({
+                    color: "black"
+                }),
+                text: "ABC"
+            }),
             stroke: new ol.style.Stroke({
                 color: "red",
                 width: 1
@@ -145,7 +160,7 @@ var layer = new ol.layer.VectorTile({
 });
 
 var map = new ol.Map({
-    layers: [worldStreetsLayer, vectorLayer,debugLayer],
+    layers: [worldStreetsLayer, vectorLayer, debugLayer],
     renderer: 'webgl',
 
     //renderer: ['canvas'],
@@ -157,36 +172,38 @@ var map = new ol.Map({
 });
 
 map.on("click", function showInfo(event) {
-    var features = map.getFeaturesAtPixel(event.pixel);
+    vectorLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point(event.coordinate)))
 
-    if (!features) {
-        info.innerText = '';
-        info.style.opacity = 0;
-    }
-    else {
-        var properties = features[0].getProperties();
-        delete properties["geometry"];
-        info.innerText = JSON.stringify(properties, null, 2);
-        info.style.opacity = 1;
-    }
+    // var features = map.getFeaturesAtPixel(event.pixel);
+
+    // if (!features) {
+    //     info.innerText = '';
+    //     info.style.opacity = 0;
+    // }
+    // else {
+    //     var properties = features[0].getProperties();
+    //     delete properties["geometry"];
+    //     info.innerText = JSON.stringify(properties, null, 2);
+    //     info.style.opacity = 1;
+    // }
 
 
-    if (features) {
-        for (let index = 0; index < features.length; index++) {
-            const element = features[index];
-            console.log(element["styleId"]);
-        }
-        vectorLayer.getSource().clear();
-        let olFeature = new ol.Feature({
-            geometry: getGeometryByType(features[0].type_, features[0].flatCoordinates_, 'XY')
-        });
-        olFeature.getGeometry()['ends_'] = features[0].ends_;
-        olFeature.setProperties(features[0].properties_);
-        vectorLayer.getSource().addFeature(olFeature);
-    }
-    else {
-        vectorLayer.getSource().clear();
-    }
+    // if (features) {
+    //     for (let index = 0; index < features.length; index++) {
+    //         const element = features[index];
+    //         console.log(element["styleId"]);
+    //     }
+    //     vectorLayer.getSource().clear();
+    //     let olFeature = new ol.Feature({
+    //         geometry: getGeometryByType(features[0].type_, features[0].flatCoordinates_, 'XY')
+    //     });
+    //     olFeature.getGeometry()['ends_'] = features[0].ends_;
+    //     olFeature.setProperties(features[0].properties_);
+    //     vectorLayer.getSource().addFeature(olFeature);
+    // }
+    // else {
+    //     vectorLayer.getSource().clear();
+    // }
 })
 
 let getGeometryByType = (type, flatCoordinates, layout) => {

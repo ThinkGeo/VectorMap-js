@@ -30,13 +30,18 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         // create textures
         /** @type {Object.<string, WebGLTexture>} */
         this.textures_ = [];
+        if (this.texturePerImage === undefined) {
+            this.texturePerImage = {};
+        }
+        var selectedTexture = {};
+
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl, selectedTexture);
 
         for (var uid in this.texturePerImage) {
             gl.deleteTexture(this.texturePerImage[uid]);
         }
-        this.texturePerImage = {};
-
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl);
+       
+        this.texturePerImage = selectedTexture;
 
         this.state_ = {
             strokeColor: null,
@@ -57,6 +62,25 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.offsetY_ = undefined;
         this.images_ = [];
     }
+
+    public createTextures = function (textures, images, texturePerImage, gl, selectedTexture) {
+        var texture, image, uid, i;
+        var ii = images.length;
+        for (i = 0; i < ii; ++i) {
+            image = images[i];
+
+            uid = ol.getUid(image).toString();
+            if (uid in texturePerImage) {
+                texture = texturePerImage[uid];
+                delete texturePerImage[uid];
+            } else {
+                texture = ol.webgl.Context.createTexture(
+                    gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, image.NEAREST ? gl.NEAREST : gl.LINEAR);
+            }
+            selectedTexture[uid] = texture;
+            textures[i] = texture;
+        }
+    };
 
     public replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash,
         featureCallback, oneByOne, opt_hitExtent, screenXY) {
@@ -159,7 +183,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.startIndicesFeature = [];
         // haven't used currently.
         this.startIndicesStyle = [];
-        this.previousTextStyle=undefined;
+        this.previousTextStyle = undefined;
 
         for (var i = 0; i < startIndicesFeatures_.length; i++) {
             var feature = startIndicesFeatures_[i];
@@ -638,7 +662,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 state.lineDash = lineDash ? lineDash.slice() : (<any>ol.render).webgl.defaultLineDash;
             }
             state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
-           
+
 
             let scale = state.scale * window.devicePixelRatio;
 
