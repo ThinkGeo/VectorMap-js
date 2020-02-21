@@ -966,6 +966,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
                     if (charInfo) {
                         var image = charInfo.image;
+                        delete image["ol_uid"];
                         this$1.anchorX = anchorX - currX;
                         this$1.anchorY = anchorY - currY;
                         this$1.originX = (j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX) * devicePixelRatio;
