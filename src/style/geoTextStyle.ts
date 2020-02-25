@@ -236,7 +236,6 @@ export class GeoTextStyle extends GeoStyle {
 
         this.style.getText().setText(featureText);
 
-
         this.style.getText()["placements"] = this.placement;
         if (this.setLabelPosition(featureText, feature.getGeometry(), resolution, this.style.getText(), options.strategyTree, options.frameState)) {
             let featureZindex = feature["tempTreeZindex"];
@@ -538,13 +537,14 @@ export class GeoTextStyle extends GeoStyle {
             }
 
             let context = canvas.getContext("2d");
+            
+
+            context.globalAlpha = opacity || 1;
+            this.drawMask(context);
             if (scale !== 1) {
                 context.scale(scale, scale);
             }
             context["scale"] = scale;
-
-            context.globalAlpha = opacity || 1;
-            this.drawMask(context);
 
             // set the property of canvas.
             context.font = textStyle.getFont();

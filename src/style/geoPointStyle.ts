@@ -302,12 +302,12 @@ export class GeoPointStyle extends GeoStyle {
         let context = (<any>ol).dom.createCanvasContext2D(canvasWidth * scale, canvasHeight * scale);
         context.globalAlpha = opacity || 1;
 
+        this.drawMask(context);
+        
         if (scale !== 1) {
             context.scale(scale, scale);
         }
         context["scale"] = scale;
-
-        this.drawMask(context);
 
         context.font = font;
         context.textBaseline = "middle";
