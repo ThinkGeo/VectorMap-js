@@ -540,11 +540,12 @@ export class GeoTextStyle extends GeoStyle {
             
 
             context.globalAlpha = opacity || 1;
-            this.drawMask(context);
             if (scale !== 1) {
                 context.scale(scale, scale);
             }
-            context["scale"] = scale;
+            context["currentScale"] = scale;
+            
+            this.drawMask(context);
 
             // set the property of canvas.
             context.font = textStyle.getFont();
@@ -797,7 +798,7 @@ export class GeoTextStyle extends GeoStyle {
         var width = context.canvas.width;
         var height = context.canvas.height;
 
-        var scale = context["scale"] || 1;
+        var scale = context["currentScale"] || 1;
 
         width = width / scale;
         height = height / scale;
@@ -839,7 +840,7 @@ export class GeoTextStyle extends GeoStyle {
         var width = context.canvas.width;
         var height = context.canvas.height;
 
-        var scale = context["scale"] || 1;
+        var scale = context["currentScale"] || 1;
 
         width = width / scale;
         height = height / scale;
@@ -920,7 +921,7 @@ export class GeoTextStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
-        var scale = context["scale"] || 1;
+        var scale = context["currentScale"] || 1;
 
         width = width / scale;
         height = height / scale;
@@ -984,6 +985,12 @@ export class GeoTextStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
         var strokeWidth = 0;
         var halfStrokeWidth = 0;
         var doubleStrokeWidth = 0;

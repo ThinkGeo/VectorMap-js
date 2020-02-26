@@ -302,12 +302,13 @@ export class GeoPointStyle extends GeoStyle {
         let context = (<any>ol).dom.createCanvasContext2D(canvasWidth * scale, canvasHeight * scale);
         context.globalAlpha = opacity || 1;
 
-        this.drawMask(context);
-        
+         
         if (scale !== 1) {
             context.scale(scale, scale);
         }
-        context["scale"] = scale;
+        context["currentScale"] = scale;
+
+        this.drawMask(context);
 
         context.font = font;
         context.textBaseline = "middle";
@@ -348,6 +349,7 @@ export class GeoPointStyle extends GeoStyle {
 
             let context = (<any>ol).dom.createCanvasContext2D(canvasWidth, canvasHeight);
             context.globalAlpha = opacity || 1;
+
             this.drawMask(context);
 
             let maskStyle = new ol.style.Text({
@@ -413,6 +415,11 @@ export class GeoPointStyle extends GeoStyle {
         var width = context.canvas.width;
         var height = context.canvas.height;
 
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
         var strokeWidth = 0;
         var halfStrokeWidth = 0;
         var doubleStrokeWidth = 0;
@@ -447,6 +454,11 @@ export class GeoPointStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
 
         let radius = (width < height ? width : height) * 0.25;
         radius = radius >= 5 ? 5 : radius;
@@ -525,6 +537,11 @@ export class GeoPointStyle extends GeoStyle {
         var width = context.canvas.width;
         var height = context.canvas.height;
 
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
         var radius = height / 2;
 
         var strokeWidth = 0;
@@ -584,6 +601,12 @@ export class GeoPointStyle extends GeoStyle {
         var y = 0;
         var width = context.canvas.width;
         var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+        
         var strokeWidth = 0;
         var halfStrokeWidth = 0;
         var doubleStrokeWidth = 0;

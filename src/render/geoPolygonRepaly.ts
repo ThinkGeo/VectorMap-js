@@ -116,7 +116,6 @@ export class GeoPolygonReplay extends ((<any>ol).render.webgl.PolygonReplay as {
         } else {
             //Draw by style groups to minimize drawElements() calls.
             var i, start, end, nextStyle;
-
             for (i = 0; i < this.styleIndices_.length; ++i)  {
                 start = this.styleIndices_[i];
                 end = this.styleIndices_[i + 1] !== undefined ? this.styleIndices_[i + 1] : this.startIndices[this.startIndices.length - 1];
