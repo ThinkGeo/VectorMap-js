@@ -346,7 +346,12 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
             this.replayDeclutter(declutterReplays, context, center, resolution, rotation, size, pixelRatio,
                 opacity, {}, undefined, false, {});
         }
-        // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);      
+
+        // (<any>ol).renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);
+        if (ol.testLabelReplays) {
+            //console.log(JSON.stringify(ol.testLabelReplays));
+            ol.testLabelReplays = undefined;
+        }
 
         gl.disable(gl.DEPTH_TEST);
     }
@@ -386,6 +391,11 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                     }
                 }
                 replay.finish(context);
+                if (ol.testLabelReplays === undefined) {
+                    ol.testLabelReplays = {};
+                }
+                ol.testLabelReplays[ol.getUid(replay)] = ol.testLabels;
+                ol.testLabels = undefined;
 
                 replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity,
                     skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, screenXY);
@@ -534,7 +544,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                             let geoStyle = geoStyles[geoStyleId];
 
                             let featureInfo = features[instructs[i][0]];
-                            
+
                             let feature = new (<any>ol.render).Feature(featureInfo.type_, featureInfo.flatCoordinates_, featureInfo.ends_, featureInfo.properties_);
 
                             if (featureInfo["projected"] === undefined) {
@@ -579,18 +589,18 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                         var features = messageData["features"];
                         var instructs = messageData["instructs"];
 
-var geomTypes=
-            {
-               0:'Point',
-                1: 'LineString',
-                2:'LinearRing',
-               3:'Polygon',
-               4:'MultiPoint',
-                 5:'MultiLineString',
-               6:'MultiPolygon',
-                7:'GeometryCollection',
-               8:'Circle'
-            }
+                        var geomTypes =
+                        {
+                            0: 'Point',
+                            1: 'LineString',
+                            2: 'LinearRing',
+                            3: 'Polygon',
+                            4: 'MultiPoint',
+                            5: 'MultiLineString',
+                            6: 'MultiPolygon',
+                            7: 'GeometryCollection',
+                            8: 'Circle'
+                        }
                         if (features && instructs) {
 
                             for (let i = 0; i < instructs.length; i++) {
@@ -599,13 +609,12 @@ var geomTypes=
 
                                 let featureInfo = features[instructs[i][0]];
 
-                            var properties={};
-                            var keyAndValue = featureInfo.keyAndValue;
-                            for(var key in keyAndValue)
-                            {
-                                messageData.keyArray[key]
-                                properties[messageData.keyArray[key]]= messageData.valueArray[keyAndValue[key]]
-                            }
+                                var properties = {};
+                                var keyAndValue = featureInfo.keyAndValue;
+                                for (var key in keyAndValue) {
+                                    messageData.keyArray[key]
+                                    properties[messageData.keyArray[key]] = messageData.valueArray[keyAndValue[key]]
+                                }
 
                                 let feature = new (<any>ol.render).Feature(geomTypes[featureInfo.type_], featureInfo.flatCoordinates_, featureInfo.ends_, properties);
                                 // let feature = new ol.Feature({

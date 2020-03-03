@@ -14,7 +14,7 @@ var view = new ol.View({
     // center: [-22997335.8, -3253574.954307], zoom: 17,// drawing order of road
     // center:[-22997462.8, -3250401.7], zoom:19, // drawing order of road
 
-    // center: [-10775289.210973945, 3865761.202605083], zoom: 2, //// drawing order of road in Dallas
+    //center: [-10775819.492857665, 3865923.6312901936], zoom: 10, //// drawing order of road in Dallas
     // center: [-10781709.991733968, 3888501.660642869], zoom: 19, //// drawing order of road in Dallas
     // center: [-10775277.566270417, 3865890.936545674], zoom: 19,
     // center: [-10777048.158370923, 3867537.467766296], zoom: 19,
@@ -24,11 +24,11 @@ var view = new ol.View({
     //  center:[29293093.474837333, 3859961.6120968084],zoom:13,
 
     //  center: [11582333.09242295, 3580947.897975624], zoom: 15, // the road issue in China
-    
+
 
     // center:[31836388.601296086, 4964536.01698872],zoom:12, // the road name issue.
 
-    center: [-10777868.077121135, 3907991.491291499], zoom:15,
+    center: [4970241.327215305, 3796168.5727549903], zoom: 2,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -192,7 +192,7 @@ var vectorLayer = new ol.layer.Vector({
     //         })
     //     })
     // }
-     style: styleFunction
+    style: styleFunction
 })
 vectorLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point([-10783941.374986181, 4990142.424126486])))
 
@@ -219,8 +219,8 @@ var layer = new ol.layer.VectorTile({
 });
 
 var map = new ol.Map({
-    layers: [worldStreetsLayer, vectorLayer, debugLayer],
-    renderer:['webgl'],
+    layers: [worldStreetsLayer],
+    renderer: ['webgl'],
 
     target: 'map',
     view: view,
@@ -287,3 +287,13 @@ let getGeometryByType = (type, flatCoordinates, layout) => {
 
     return geometry;
 };
+
+
+function update() {
+
+    map.render();
+
+    requestAnimationFrame(update);
+
+}
+requestAnimationFrame(update);

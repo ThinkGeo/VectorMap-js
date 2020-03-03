@@ -67461,9 +67461,33 @@ function olInit() {
         var numVertices = this.vertices.length;
         var i, n, offsetX, offsetY, x, y;
 
+        var object= {
+            anchorX,
+            anchorY,
+            height,
+            imageHeight,
+            imageWidth,
+            opacity,
+            originX,
+            originY,
+            rotateWithView,
+            rotation,
+            scale,
+            width,
+            flatCoordinates,
+            text:this.testText,
+            base64:this.base64
+        }
+        if(ol.testLabels===undefined)
+        {
+            ol.testLabels={};
+        }
+        ol.testLabels[object.text]= object
+      
+
         for (i = offset; i < end; i += stride) {
-            x = flatCoordinates[i] - this.origin[0];
-            y = flatCoordinates[i + 1] - this.origin[1];
+            x = flatCoordinates[i] 
+            y = flatCoordinates[i + 1]
 
             // There are 4 vertices per [x, y] point, one for each corner of the
             // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
@@ -67532,6 +67556,8 @@ function olInit() {
             this.indices[numIndices++] = n;
             this.indices[numIndices++] = n + 2;
             this.indices[numIndices++] = n + 3;
+
+
         }
 
         return numVertices;

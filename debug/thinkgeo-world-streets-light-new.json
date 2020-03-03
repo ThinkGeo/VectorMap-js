@@ -185,7 +185,7 @@
     "@place_hamlet_label_color": "#434343",
     "@place_island_label_color": "#434343",
     "@place_ocean_label_color": "#eeeeee",
-    "@place_bay_label_color": "#2869c6",
+    "@place_bay_label_color": "#00000055",
     "@place_gulf_label_color": "#2869c6",
     "@place_sea_label_color": "#2869c6",
     "@place_channel_label_color": "#2869c6",
@@ -858,15 +858,9 @@
                   },
                   "styles": [
                     {
-                      "filter": "zoom<=14;name!=''",
+                      "filter": "zoom<=14;name!='';area<=50000",
                       "text-base-point-style": {
                         "point-size": 14
-                      }
-                    },
-                    {
-                      "filter": "zoom>=15;zoom<=16",
-                      "text-base-point-style": {
-                        "point-size": 16
                       }
                     }
                   ]
@@ -2098,7 +2092,7 @@
                   },
                   "styles": [
                     {
-                      "filter": "zoom=16;name!=''"
+                      "filter": "zoom=16;area>=9000"
                     }
                   ]
                 }
@@ -3161,6 +3155,19 @@
                   },
                   "styles": [
                     {
+                      "filter": "zoom<=14;name!='';area>50000",
+                      "text-base-point-style": {
+                        "point-size": 14
+                      }
+                    },
+                    {
+                      "filter": "zoom>=15;zoom<=16",
+                      "text-font": "600 10px Arial",
+                      "text-base-point-style": {
+                        "point-size": 16
+                      }
+                    },
+                    {
                       "filter": "zoom>=17"
                     }
                   ]
@@ -4113,7 +4120,16 @@
                   },
                   "styles": [
                     {
-                      "filter": "zoom>=18"
+                      "filter": "zoom=17;area>=5000",
+                      "text-base-point-style": {
+                        "point-size": 16
+                      }
+                    },
+                    {
+                      "filter": "zoom=18;area>=1000"
+                    },
+                    {
+                      "filter": "zoom>=19;area>=200"
                     }
                   ]
                 },
@@ -6291,7 +6307,7 @@
     },
     {
       "id": "place_bay",
-      "filter": "layerName='place';class='ocean';type='bay'",
+      "filter": "layerName='place'",
       "text-fill-color": "@place_bay_label_color",
       "text-content": "@name",
       "text-wrap-width": 50,
@@ -6302,7 +6318,7 @@
       "styles": [
         {
           "filter": "zoom<=3",
-          "text-font": "600 9px Arial"
+          "text-font": "600 15px Arial"
         },
         {
           "filter": "zoom=4;zoom=5",
@@ -9464,90 +9480,8 @@
     {
       "map-layer-id": "worldstreets",
       "style-drawing-order": [
-        "landcover_urban",
-        "landcover_park_big_zoom",
-        "landcover_grass_big_zoom",
-        "landcover_grass",
-        "landcover_sand",
-        "landcover_tundra",
-        "landcover_wetland",
-        "landcover_aeroway",
-        "landcover_school",
-        "landcover_hospital",
-        "landcover_wood",
-        "landcover_glacier",
-        "landcover_scrub",
-        "landcover_rock",
-        "landcover_park",
-        "landcover_agriculture",
-        "water_reservoir",
-        "water_ocean",
-        "bathymetry0",
-        "bathymetry200",
-        "bathymetry1000",
-        "bathymetry2000",
-        "bathymetry3000",
-        "bathymetry4000",
-        "bathymetry5000",
-        "bathymetry6000",
-        "bathymetry7000",
-        "bathymetry8000",
-        "bathymetry9000",
-        "bathymetry10000",
-        "construct_agriculture",
-        "construct_amenity",
-        "construct_sports",
-        "construct_sports_pitch",
-        "construct_sports_track",
-        "construct_sports_sand",
-        "water_lake",
-        "landcover_cemetery",
-        "waterway",
-        "construct_vehicle",
-        "construct_accommodation",
-        "construct_commercial",
-        "construct_religious",
-        "construct_storage",
-        "construct_vehicle_garage",
-        "water_others",
-        "construct_fence",
-        "construct_transportation",
-        "construct_others",
-        "road_turning_circle_outer",
-        "road",
-        "road_turning_circle_inner",
-        "boundary_state",
-        "boundary_territory",
-        "boundary_country",
-        "place_ocean",
-        "place_country",
-        "place_bay",
-        "place_gulf",
-        "place_sea",
-        "place_channel",
-        "place_state",
-        "place_big_city",
-        "poi_airport",
-        "place_city",
-        "place_small_city",
-        "place_borough",
-        "place_suburb",
-        "place_quarter",
-        "place_county",
-        "place_town",
-        "place_village",
-        "place_hamlet",
-        "poi_big_zoom",
-        "place_neighbourhood",
-        "road_number_small_zoom",
-        "place_archipelago",
-        "place_island",
-        "road_name",
-        "poi",
-        "road_oneway",
-        "house_number",
-        "waterway_name",
-        "road_number"
+        "place_bay"
+       
       ]
     }
   ]

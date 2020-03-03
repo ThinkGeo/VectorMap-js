@@ -126,7 +126,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         if (!screenXY) {
             (<any>ol).transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
         } else {
-            (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
+            (<any>ol).transform.translate(projectionMatrix, -(center[0] ), -(center[1] ));
         }
 
         var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
@@ -942,7 +942,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         this.images_.push(image);
                     }
                 }
-
+                this.testText=  options.feature.get("name");
+                //this.base64= image.toDataURL();
                 this.drawText_(flatCoordinates, offset, end, stride);
             } else {
                 var devicePixelRatio = window.devicePixelRatio;
