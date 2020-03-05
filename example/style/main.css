@@ -1,6 +1,7 @@
 ﻿/*
  * Base structure
  */
+
 html {
     font-size: 10px;
     height: 100%;
@@ -8,7 +9,6 @@ html {
 
 body div {
     font-size: 1.3rem;
-
 }
 
 body {
@@ -25,7 +25,7 @@ body {
 }
 
 .bg-dark {
-    background: #2a2d33 !important;
+    background: #26282c !important;
 }
 
 .navbar-brand {
@@ -68,6 +68,7 @@ body {
     margin-right: 0.6rem;
     color: #ffffff;
     font-size: 1.5rem;
+    line-height: 35px;
 }
 
 .navbar-nav li {
@@ -81,6 +82,7 @@ body {
 }
 
 /* left content */
+
 .sidebar {
     position: fixed;
     width: 320px;
@@ -89,7 +91,7 @@ body {
     left: 0;
     z-index: 2;
     display: block;
-    padding-top: 10px;
+    padding-top: 20px;
     padding-left: 0;
     padding-right: 0;
     overflow-x: hidden;
@@ -142,12 +144,29 @@ body {
 /* Sidebar navigation */
 
 .nav-sidebar {
+    margin-top: 10px;
     position: absolute;
-    padding-top: 16px;
     top: 0;
     overflow: auto;
     width: 100%;
     max-height: calc(100% - 60px);
+    scrollbar-color: #666666 #1d1d1d;
+}
+
+    .nav-sidebar::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    .nav-sidebar::-webkit-scrollbar-track {
+      background: #3a3a3abf;
+    }
+
+    .nav-sidebar::-webkit-scrollbar-thumb {
+      background: #8f8f8f;
+    }
+
+.nav-sidebar a:hover {
+    text-decoration: underline
 }
 
 .nav-sidebar a {
@@ -161,7 +180,7 @@ body {
 }
 
 #menu-bar>li>a {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
 }
 
 #menu-bar>ul {
@@ -175,23 +194,17 @@ body {
     margin-bottom: 0;
 }
 
+.nav-sidebar>li>a i {
+    width: 20px;
+}
+
 .nav-sidebar>li>a {
     font-weight: 600;
     font-size: large;
 }
 
-.nav-sidebar>li>a i {
-    width: 20px;
-}
-
-.sub-menu .active,
-.sub-menu .active:hover,
-.sub-menu .active:focus {
+.sub-menu .active, .sub-menu .active:hover, .sub-menu .active:focus {
     background-color: #505050;
-}
-
-.nav>li>a:hover {
-    text-decoration: none;
 }
 
 .sidebar>.nav>li:hover {
@@ -199,7 +212,7 @@ body {
 }
 
 .sidebar>.nav>li:hover a {
-    color: #60B9E2;
+    text-decoration: none
 }
 
 .arrow:before {
@@ -229,13 +242,14 @@ body {
 /*
  * Main content
  */
+
 .container-fluid {
     height: 100%;
-    background-color: #3D3D3E;
+    background: #3D3D3E
 }
 
 .tab-content {
-    height: calc(100% - 115px);
+    height: calc(100% - 76px);
 }
 
 .container-fluid .row {
@@ -247,17 +261,13 @@ body {
     padding-left: 340px;
     height: 100%;
     width: 100%;
-    max-height: 100%;
+    max-height: calc(100vh - 5px - 72px);
     overflow: hidden;
 }
 
 #child-page-component .active {
     background-color: #f5f5f5;
     border-bottom: 1px solid #f5f5f5;
-}
-
-#child-page-view {
-    height: 100%;
 }
 
 pre {
@@ -272,8 +282,6 @@ pre {
     display: none;
 }
 
-
-
 /*
  * Override bootstrap and awesome
  */
@@ -286,32 +294,56 @@ pre {
 child pages
 */
 
+#codepen a {
+    opacity: 0.6;
+}
+
 #codepen .nav-link:hover {
-    border-width: 1px;
+    border-width: 0px;
     opacity: 1;
 }
 
 #child-page-title {
+    position: relative;
     width: 100%;
     height: auto;
-    color: #ffffff;
+    color: #ffffff
 }
 
 #child-page-title h1 {
     margin-bottom: 1.5rem;
+    color: #ffffff
 }
 
-.child-page-title p {
-    font-size: 1.5rem
+.download-sample {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    color: #ffffff;
+    background-color: #666666;
+    padding: 5px 10px 5px 10px;
+    border-radius: 2px;
+    appearance: none;
+    -webkit-appearance: none!important;
 }
 
-.nav-tabs .nav-item{
-    background-color: #eee;
+.download-sample:hover {
+    color: #ffffff;
+    text-decoration: none;
 }
 
-.nav-item .nav-link {
-    font-size: 1.6rem;
-    color:rgb(73, 80, 87)
+.download-sample:active {
+    -webkit-transform: translateY(1px);
+    transform: translateY(1px);
+}
+
+.download-sample:focus {
+    outline: none;
+}
+
+.nav-tabs .nav-link {
+    font-size: 1.6rem !important;
+    color: #2d3e50
 }
 
 .nav-link img {
@@ -324,16 +356,14 @@ child pages
     margin-top: 0;
 }
 
-#child-page-js,
-#child-page-html {
+#child-page-js, #child-page-html {
     padding: 0;
     background-color: #ffffff;
     height: 100%;
     z-index: 1;
 }
 
-#child-page-html pre,
-#child-page-js pre {
+#child-page-html pre, #child-page-js pre {
     border-radius: 0;
     height: 100%;
     margin-bottom: 0;
@@ -359,10 +389,6 @@ pre {
     line-height: 133%;
     color: #AAA;
     list-style: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 .has-numbering {
@@ -371,4 +397,9 @@ pre {
 
 .pre-numbering li {
     margin: 0;
+}
+
+/* Info Button */
+.info{
+    display: none;
 }
