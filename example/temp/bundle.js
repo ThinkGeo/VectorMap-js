@@ -245,12 +245,6 @@
                 } else {
                     target = e.target;
                 }
-
-                if (target.classList.contains('mobile-des') || target.classList.contains('info')) {
-                    document.getElementsByClassName('mobile-des')[0].classList.remove('hide');
-                } else {
-                    document.getElementsByClassName('mobile-des')[0].classList.add('hide');
-                }
             });
 
             // Set the height
@@ -568,7 +562,7 @@
 
         function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        var childPageTemplate = ' <div id="child-page-title" class="pl-md-0 pl-3">\n    <h1><span class="title"></span> <span class="info">i<p class="mobile-des hide"></p></span></h1>\n    <div class="description-wrap">\n        <p class="sample-description"><p>\n        <a type="button" class="download-sample">Download <span>Source</span></a>\n    </div>\n</div>\n<div class="tab-content" id="child-page-view">\n    \n</div>\n</div>';
+        var childPageTemplate = ' <div id="child-page-title" class="pl-md-0 pl-3">\n    <h1><span class="title"></span><a type="button" class="download-sample" target="_blank">View Source</a> </h1>\n    <div class="description-wrap">\n        <p class="sample-description"><p>\n        \n    </div>\n</div>\n<div class="tab-content" id="child-page-view">\n    \n</div>\n</div>';
         var addChildPage = function addChildPage(ele) {
             ele.innerHTML = childPageTemplate;
         };
@@ -583,7 +577,6 @@
                 this.codePenDownloadUrl = childPageObj.codePenDownloadUrl;
                 this.codePenIframeOnLargeScreen = childPageObj.codePenIframeOnLargeScreen;
                 this.codePenIframeOnSmallScreen = childPageObj.codePenIframeOnSmallScreen;
-                document.querySelector('.mobile-des').innerHTML = this.comments;
                 document.querySelector('.title').innerHTML = this.title;
                 // document.querySelector('#child-page-title>h1').innerText = this.title;
                 document.querySelector('.sample-description').innerHTML = this.comments;
@@ -596,11 +589,9 @@
                     // Handle the Donload and description UI.
                     if (document.getElementById('child-page-view').offsetWidth >= 600) {
                         this.codePenIframe = this.codePenIframeOnLargeScreen;
-                        document.querySelector('.download-sample span').style.display = 'inline-block';
                         document.querySelector('.sample-description').style.paddingRight = '132px';
                     } else {
                         this.codePenIframe = this.codePenIframeOnSmallScreen;
-                        document.querySelector('.download-sample span').style.display = 'none';
                         document.querySelector('.sample-description').style.paddingRight = '90px';
                     }
 
