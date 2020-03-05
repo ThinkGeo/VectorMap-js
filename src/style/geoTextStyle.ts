@@ -54,6 +54,8 @@ export class GeoTextStyle extends GeoStyle {
     basePointStyle: any;
     style: ol.style.Style;
     state_: any;
+    contentColumnPriority: any;
+    contentColumnPriorityItems: any;
 
     constructor(styleJson?: any) {
         super(styleJson);
@@ -96,11 +98,14 @@ export class GeoTextStyle extends GeoStyle {
             this.maxCharAngleDelta = styleJson["text-max-char-angle-delta"];
             this.opacity = styleJson["text-opacity"];
 
+
             this.lineSpacing = styleJson["text-line-spacing"] || 0;
 
             this.basePointStyleJson = styleJson["text-base-point-style"];
 
             this.allowOverlapping = styleJson["text-allow-overlapping"] || false;
+
+            this.contentColumnPriority = styleJson["text-content-column-priority"];
 
         }
         if (!this.compounds.includes(this.compound)) {
@@ -187,6 +192,16 @@ export class GeoTextStyle extends GeoStyle {
         textStyle["placements"] = this.placement;
         textStyle["intervalDistance"] = this.intervalDistance;
         textStyle["spacing"] = this.spacing / 2;
+
+        if (this.contentColumnPriority) {
+            var items = this.contentColumnPriority.split(",");
+            this.contentColumnPriorityItems=[];
+            for (var index = 0; index < items.length; index++) {
+                var element = items[index];
+                element = element.substr(1, element.length - 2);
+                this.contentColumnPriorityItems.push(element);
+            }
+        }
 
         if (this.rotationAngle) {
             textStyle.setRotation(this.rotationAngle);
@@ -537,14 +552,14 @@ export class GeoTextStyle extends GeoStyle {
             }
 
             let context = canvas.getContext("2d");
-            
+
 
             context.globalAlpha = opacity || 1;
             if (scale !== 1) {
                 context.scale(scale, scale);
             }
             context["currentScale"] = scale;
-            
+
             this.drawMask(context);
 
             // set the property of canvas.
@@ -732,8 +747,9 @@ export class GeoTextStyle extends GeoStyle {
                 if (args[item]) {
                     value = args[item]
                 }
-                else if (item.indexOf('name_') >= 0) {
-                    value = args["name"];
+                else if (this.contentColumnPriority && this.contentColumnPriorityItems.indexOf( item) === 0 && this.contentColumnPriorityItems.length >= 2) {
+
+                    value = args[this.contentColumnPriorityItems[1]];
                 }
                 str = str.replace("{" + item + "}", value]
             }
