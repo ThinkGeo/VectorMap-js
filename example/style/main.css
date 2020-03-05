@@ -52,21 +52,6 @@ body {
     border-radius: 0 10px 0 0;
 }
 
-.download-sample {
-    margin-right: 2rem;
-    margin-top: 4rem;
-    float: right;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: normal;
-    color: #ffffff;
-    background-color: #666666;
-    padding: 5px 10px 5px 10px;
-    border-radius: 2px;
-    appearance: none;
-    -webkit-appearance: none !important;
-}
-
 .navbar-text h6 {
     color: rgb(157, 157, 157);
     font-size: 1.2rem;
@@ -176,17 +161,17 @@ body {
     scrollbar-color: #666666 #1d1d1d;
 }
 
-.nav-sidebar::-webkit-scrollbar {
-    width: 12px;
-}
+    .nav-sidebar::-webkit-scrollbar {
+        width: 12px;
+    }
 
-.nav-sidebar::-webkit-scrollbar-track {
-    background: #3a3a3abf;
-}
+    .nav-sidebar::-webkit-scrollbar-track {
+      background: #3a3a3abf;
+    }
 
-.nav-sidebar::-webkit-scrollbar-thumb {
-    background: #8f8f8f;
-}
+    .nav-sidebar::-webkit-scrollbar-thumb {
+      background: #8f8f8f;
+    }
 
 .nav-sidebar a:hover {
     text-decoration: underline
@@ -423,7 +408,6 @@ pre {
 }
 
 /* Info Button */
-
-.info {
+.info{
     display: none;
 }
