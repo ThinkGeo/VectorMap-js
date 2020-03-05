@@ -378,87 +378,175 @@
             subitems: [{
                 comments: "ThinkGeo's Map Suite WebAPI Edition makes it easy for you to add mapping functionality to your application quickly and efficiently. This sample shows some of the basic functionality of each of the JavaScript client libraries. The Quick Start Guide will show you everything you need to know to start building your first app.",
                 title: 'Getting Started',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/vector-tiles.zip',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/GettingStartedSample',
                 codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Getting Started" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GetStartedWithMap/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
                 codePenIframeOnSmallScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Getting Started" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GetStartedWithMap/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Customize your labeling with Map Suite WebAPI Edition. Explore different techniques for labeling features.",
                 title: 'Labeling',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/vector-tiles-on-aerial-imagery.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Vector Tiles on Aerial Imagery" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Vector Tiles on Aerial Imagery" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/LabelingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Labeling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Labeling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Visualize your data with a variety of styles available in Map Suite WebAPI Edition. Some of the available styles include: filter styles, point cluster styles, ZedGraph, dot density renderers, heat styling and more.",
                 title: 'Visualization',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/vector-tiles-on-3rd-party-imagery.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Vector Tiles on 3rd Party Imagery" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Vector Tiles on 3rd Party Imagery" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/VisualizationSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Visualization" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Visualization" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Utilize geometric functions to manipulate and analyze features in a variety of ways. From basic area and distance measurements to complex buffering; Map Suite WebAPI Edition provides you with a number of geometric functions.",
                 title: 'Geometric Functions',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-tiles.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Raster Tiles" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Raster Tiles" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/GeometricFunctionsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Geometric Functions" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Geometric Functions" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Create and edit shapes on the map. Draw and edit existing features to create powerful mapping applications.",
                 title: 'Draw and Edit Features',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/DrawingAndEditingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Draw and Edit Features" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Draw and Edit Features" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Map Suite supports a number of data format. This sample shows you how to render some of the more common data formats.",
                 title: 'Layers',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-map-through-wms.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Map through WMS" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Map through WMS" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/LayersSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Layers" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Layers" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Visualize your data with some of available styles, including PointStyle, LineStyle, AreaStyle, CompoundStyles, and PredefinedStyles. These can be used together to achieve desired effects.",
                 title: 'Basic Styling',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/BasicStylingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Basic Styling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Basic Styling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Explore how to make your maps more interactive by using Markers and Popups.",
                 title: 'Markers and Popups',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-map-through-wms.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Map through WMS" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Map through WMS" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/MarkerAndPopupSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Markers and Popups" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Markers and Popups" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Discover all the different ways you can query your data. This sample contains various querying tools.",
                 title: 'Query Tools',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/QueryToolsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Query Tools" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Query Tools" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Discover how to use overlays to build up your map or add existing basemaps to your application. In this sample we show you how add World Map Kit, Open Street Map, Bing Maps, Google Maps and custom overlays.",
                 title: 'Overlays',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/OverlaysSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Overlays" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Overlays" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn about map projections and how to apply it to your data. This sample shows you some of the more common map projections.",
                 title: 'Projection',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Projection" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Projection" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn about how to use topology validation with map suite. You can add build those validation to your projects.",
                 title: 'Topology Validation',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/TopologyValidationSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn how to implement printing capabilities into your application.",
                 title: 'Printing',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn how to add legends, scale bars, north arrows and many more adornments to your map.",
                 title: 'Adornments',
-                codePenDownloadUrl: 'https://cdn.thinkgeo.com/samples/cloud/thinkgeo-base-maps/raster-maps-high-resolution.zip',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Raster Tiles (High Resolution)" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/AdornmentsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Adornments" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Adornments" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }]
+        }, {
+            dataTarget: 'leaflet',
+            styleName: 'Leaflet',
+            subitems: [{
+                comments: "ThinkGeo's Map Suite WebAPI Edition makes it easy for you to add mapping functionality to your application quickly and efficiently. This sample shows some of the basic functionality of each of the JavaScript client libraries. The Quick Start Guide will show you everything you need to know to start building your first app.",
+                title: 'Getting Started',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/GettingStartedSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Getting Started" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GetStartedWithMap/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Getting Started" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GetStartedWithMap/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Customize your labeling with Map Suite WebAPI Edition. Explore different techniques for labeling features.",
+                title: 'Labeling',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/LabelingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Labeling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Labeling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Labeling/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Visualize your data with a variety of styles available in Map Suite WebAPI Edition. Some of the available styles include: filter styles, point cluster styles, ZedGraph, dot density renderers, heat styling and more.",
+                title: 'Visualization',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/VisualizationSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Visualization" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Visualization" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/visualization/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Utilize geometric functions to manipulate and analyze features in a variety of ways. From basic area and distance measurements to complex buffering; Map Suite WebAPI Edition provides you with a number of geometric functions.",
+                title: 'Geometric Functions',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/GeometricFunctionsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Geometric Functions" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%;" style="width: 100%;" scrolling="no" title="Geometric Functions" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/GeometricFunctions/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Create and edit shapes on the map. Draw and edit existing features to create powerful mapping applications.",
+                title: 'Draw and Edit Features',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/DrawingAndEditingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Draw and Edit Features" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Draw and Edit Features" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/DrawEditFeatures/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Map Suite supports a number of data format. This sample shows you how to render some of the more common data formats.",
+                title: 'Layers',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/LayersSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Layers" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Layers" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Layers/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Visualize your data with some of available styles, including PointStyle, LineStyle, AreaStyle, CompoundStyles, and PredefinedStyles. These can be used together to achieve desired effects.",
+                title: 'Basic Styling',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/BasicStylingSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Basic Styling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Basic Styling" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/BasicStyling/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Explore how to make your maps more interactive by using Markers and Popups.",
+                title: 'Markers and Popups',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/MarkerAndPopupSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Markers and Popups" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Markers and Popups" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/MarkerAndPopup/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Discover all the different ways you can query your data. This sample contains various querying tools.",
+                title: 'Query Tools',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/QueryToolsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Query Tools" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Query Tools" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/QueryTools/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Discover how to use overlays to build up your map or add existing basemaps to your application. In this sample we show you how add World Map Kit, Open Street Map, Bing Maps, Google Maps and custom overlays.",
+                title: 'Overlays',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/OverlaysSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Overlays" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Overlays" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Overlays/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Learn about map projections and how to apply it to your data. This sample shows you some of the more common map projections.",
+                title: 'Projection',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Projection" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Projection" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Learn about how to use topology validation with map suite. You can add build those validation to your projects.",
+                title: 'Topology Validation',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/TopologyValidationSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Learn how to implement printing capabilities into your application.",
+                title: 'Printing',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+            }, {
+                comments: "Learn how to add legends, scale bars, north arrows and many more adornments to your map.",
+                title: 'Adornments',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/AdornmentsSample',
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Adornments" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Adornments" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Adornments/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }]
         }];
 
