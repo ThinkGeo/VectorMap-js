@@ -459,12 +459,12 @@
                 comments: "Learn about how to use topology validation with map suite. You can add build those validation to your projects.",
                 title: 'Topology Validation',
                 codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/TopologyValidationSample',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/TopologyValidation/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/TopologyValidation/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn how to implement printing capabilities into your application.",
                 title: 'Printing',
-                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/PrintingSample',
                 codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
                 codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/openlayers/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
@@ -547,12 +547,12 @@
                 comments: "Learn about how to use topology validation with map suite. You can add build those validation to your projects.",
                 title: 'Topology Validation',
                 codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/TopologyValidationSample',
-                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
-                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Projection/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
+                codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/TopologyValidation/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
+                codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;" scrolling="no" title="Topology Validation" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/TopologyValidation/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
                 comments: "Learn how to implement printing capabilities into your application.",
                 title: 'Printing',
-                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/ProjectionSample',
+                codePenDownloadUrl: 'https://gitlab.com/thinkgeo/public/thinkgeo-web-maps/-/tree/master/samples/web-api/PrintingSample',
                 codePenIframeOnLargeScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>',
                 codePenIframeOnSmallScreen: '<iframe height="100%" style="width: 100%;background-color:#ffffff" scrolling="no" title="Printing" src="https://samples.thinkgeo.com/WebApiEdition/SampleTemplates/Printing/leaflet/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>'
             }, {
@@ -582,7 +582,7 @@
 
         function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        var childPageTemplate = ' <div id="child-page-title" class="pl-md-0 pl-3">\n    <h1><span class="title"></span> <span class="info">i<p class="mobile-des hide"></p></span></h1>\n    <div class="description-wrap">\n        <p class="sample-description"><p>\n        <a type="button" class="download-sample">View Source</a>\n    </div>\n</div>\n<div class="tab-content" id="child-page-view">\n    \n</div>\n</div>';
+        var childPageTemplate = ' <div id="child-page-title" class="pl-md-0 pl-3">\n    <h1><span class="title"></span> <span class="info">i<p class="mobile-des hide"></p></span></h1>\n    <div class="description-wrap">\n        <p class="sample-description"><p>\n        <a type="button" target="_blank" class="download-sample">View Source</a>\n    </div>\n</div>\n<div class="tab-content" id="child-page-view">\n    \n</div>\n</div>';
         var addChildPage = function addChildPage(ele) {
             ele.innerHTML = childPageTemplate;
         };
