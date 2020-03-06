@@ -15906,6 +15906,8 @@ function olInit() {
         ol.Object.call(this);
         var options = ol.obj.assign({}, opt_options);
 
+        options["extent"] =options.hasOwnProperty("extent")? options["extent"]:  [-75140656.28545967, -36670205.6976436, 75140656.28545967, 36670205.6976436];
+
         this.progressiveZoom = options["progressiveZoom"];
         /**
          * @private
