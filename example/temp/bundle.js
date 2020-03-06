@@ -267,6 +267,20 @@
             }
             document.querySelector('#child-page-view').style.height = contentH + 'px';
         });
+        window.addEventListener('resize',function(){
+            var totalH = document.querySelector('#content').clientHeight;
+            var titleH = document.querySelector('#child-page-title').clientHeight;
+            var navbarH = document.querySelector('.navbar').clientHeight;
+            var u = navigator.userAgent;
+            var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+            var contentH = 0;
+            if (isiOS) {
+                contentH = totalH - titleH - navbarH - 60;
+            } else {
+                contentH = totalH - titleH - 36;
+            }
+            document.querySelector('#child-page-view').style.height = contentH + 'px';
+        })
 
         exports.default = sidebarClickHandle;
 
