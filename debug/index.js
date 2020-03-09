@@ -28,7 +28,8 @@ var view = new ol.View({
 
     // center:[31836388.601296086, 4964536.01698872],zoom:12, // the road name issue.
 
-    center: [-10777868.077121135, 3907991.491291499], zoom:15,
+    // center: [-10777868.077121135, 3907991.491291499], zoom:15,
+    center:[-28781637.17998284, 3956411.755378091],zoom:4,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -287,3 +288,11 @@ let getGeometryByType = (type, flatCoordinates, layout) => {
 
     return geometry;
 };
+
+
+function update()
+{
+    map.render();
+    requestAnimationFrame(update);
+}
+requestAnimationFrame(update);
