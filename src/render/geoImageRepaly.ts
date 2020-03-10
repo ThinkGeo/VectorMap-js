@@ -215,8 +215,8 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             // gl.stencilFunc(context.NOTEQUAL, 1, 255);
         }
 
-        context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer, false);
-        context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer, false);
+        context.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer, true);
+        context.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer, true);
 
         var locations = this.setUpProgram(gl, context, size, pixelRatio);
 
@@ -259,6 +259,9 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash,
                 featureCallback, oneByOne, opt_hitExtent);
         }
+
+        context.deleteBuffer(this.verticesBuffer);
+        context.deleteBuffer(this.indicesBuffer);
 
         // disable the vertex attrib arrays
         this.shutDownProgram(gl, locations);
