@@ -54,8 +54,6 @@ export class GeoTextStyle extends GeoStyle {
     basePointStyle: any;
     style: ol.style.Style;
     state_: any;
-    contentColumnPriority: any;
-    contentColumnPriorityItems: any;
 
     constructor(styleJson?: any) {
         super(styleJson);
@@ -104,9 +102,6 @@ export class GeoTextStyle extends GeoStyle {
             this.basePointStyleJson = styleJson["text-base-point-style"];
 
             this.allowOverlapping = styleJson["text-allow-overlapping"] || false;
-
-            this.contentColumnPriority = styleJson["text-content-column-priority"];
-
         }
         if (!this.compounds.includes(this.compound)) {
             this.compound = this.defaultCompund;
@@ -192,16 +187,6 @@ export class GeoTextStyle extends GeoStyle {
         textStyle["placements"] = this.placement;
         textStyle["intervalDistance"] = this.intervalDistance;
         textStyle["spacing"] = this.spacing / 2;
-
-        if (this.contentColumnPriority) {
-            var items = this.contentColumnPriority.split(",");
-            this.contentColumnPriorityItems=[];
-            for (var index = 0; index < items.length; index++) {
-                var element = items[index];
-                element = element.substr(1, element.length - 2);
-                this.contentColumnPriorityItems.push(element);
-            }
-        }
 
         if (this.rotationAngle) {
             textStyle.setRotation(this.rotationAngle);
@@ -737,7 +722,6 @@ export class GeoTextStyle extends GeoStyle {
     }
     getTextWithContent(contentFormat: string, feature: any, dateFormat, numericFormat): string {
         var str = contentFormat || "";
-
         if (this.contentFormatItems && this.contentFormatItems.length > 0) {
             var args = feature.getProperties();
 
@@ -747,10 +731,18 @@ export class GeoTextStyle extends GeoStyle {
                 if (args[item]) {
                     value = args[item]
                 }
-                else if (this.contentColumnPriority && this.contentColumnPriorityItems.indexOf( item) === 0 && this.contentColumnPriorityItems.length >= 2) {
-
-                    value = args[this.contentColumnPriorityItems[1]];
+                else {
+                    var items = item.split(',');
+                    var element;
+                    for (let index = 0; index < items.length; index++) {
+                        element = items[index];
+                        if (args[element]) {
+                            value = args[element]
+                            break;
+                        }
+                    }
                 }
+
                 str = str.replace("{" + item + "}", value]
             }
         }
