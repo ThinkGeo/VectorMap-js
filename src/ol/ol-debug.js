@@ -97491,8 +97491,8 @@ function olInit() {
                                         for (var itemIndex = 0; itemIndex < styleIndexGroupItem.length; itemIndex++) {
                                             var instructItem = styleIndexGroupItem[itemIndex];
                                             instructItem[2] = zCoordinates;
+                                            instructs.push(instructItem);
                                         }
-                                        Array.prototype.push.apply(instructs, styleIndexGroupItem);
                                     }
                                 }
 
