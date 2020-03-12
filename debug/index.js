@@ -29,7 +29,7 @@ var view = new ol.View({
     // center:[31836388.601296086, 4964536.01698872],zoom:12, // the road name issue.
 
     // center: [-10777868.077121135, 3907991.491291499], zoom:15,
-    center:[-28781637.17998284, 3956411.755378091],zoom:4,
+    center:[16137236.330388919, -4553038.742626694],zoom:17,
     maxZoom: 19,
     maxResolution: 40075016.68557849 / 512,
     progressiveZoom: true
@@ -45,7 +45,7 @@ view.on("change:resolution", function (e) {
 });
 
 var worldStreetsSource = new ol.thinkgeo.VectorTileSource({
-    url: 'http://localhost:1314/tile/{z}/{x}/{y}'
+    url: 'http://localhost:1314/v2/tile/{z}/{x}/{y}'
 })
 
 var worldStreetsLayer = new ol.thinkgeo.VectorTileLayer("thinkgeo-world-streets-light-new.json", {
