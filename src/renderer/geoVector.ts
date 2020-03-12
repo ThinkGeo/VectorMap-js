@@ -70,6 +70,7 @@ function renderPointGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
+        textStyleClone.imageDrawingOptions = textStyle.imageDrawingOptions;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
         textStyleClone["spacing"] = textStyle["spacing"];
@@ -97,6 +98,7 @@ function renderLineStringGeometry_(replayGroup, geometry, style, feature, option
         var textStyleClone = textStyle.clone();
         textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
+        textStyleClone.imageDrawingOptions = textStyle.imageDrawingOptions;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
@@ -124,6 +126,7 @@ function renderMultiLineStringGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
+        textStyleClone.imageDrawingOptions = textStyle.imageDrawingOptions;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
@@ -151,6 +154,7 @@ function renderPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
+        textStyleClone.imageDrawingOptions = textStyle.imageDrawingOptions;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];
@@ -189,6 +193,7 @@ function renderMultiPolygonGeometry_(replayGroup, geometry, style, feature) {
         var textStyleClone = textStyle.clone();
         textStyleClone['uid'] = ol.getUid(textStyle);
         textStyleClone.label = textStyle.label;
+        textStyleClone.imageDrawingOptions = textStyle.imageDrawingOptions;
         textStyleClone.labelPosition = textStyle.labelPosition;
         textStyleClone["placements"] = textStyle["placements"];
         textStyleClone["intervalDistance"] = textStyle["intervalDistance"];

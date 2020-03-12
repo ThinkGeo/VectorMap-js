@@ -54,6 +54,7 @@ export class GeoTextStyle extends GeoStyle {
     basePointStyle: any;
     style: ol.style.Style;
     state_: any;
+    charWidths: any;
 
     constructor(styleJson?: any) {
         super(styleJson);
@@ -204,10 +205,12 @@ export class GeoTextStyle extends GeoStyle {
             var replaceMatch = /\{(.+?)\}/g;
             var replaceOptions = this.contentFormat.match(replaceMatch);
             this.contentFormatItems = [];
-            for (var index = 0; index < replaceOptions.length; index++) {
-                var element = replaceOptions[index];
-                element = element.substr(1, element.length - 2);
-                this.contentFormatItems.push(element);
+            if (replaceOptions) {
+                for (var index = 0; index < replaceOptions.length; index++) {
+                    var element = replaceOptions[index];
+                    element = element.substr(1, element.length - 2);
+                    this.contentFormatItems.push(element);
+                }
             }
         }
         this.style.setZIndex(this.zIndex);
@@ -310,13 +313,14 @@ export class GeoTextStyle extends GeoStyle {
 
             if (flatCoordinates === undefined) { return false; }
 
-            var labelImage = this.getImage(text, textState, labelInfo, this.opacity);
+            var labelObj = this.getImageDrawingOptions(text, textState, labelInfo, this.opacity);
 
-            if (labelImage === undefined) {
+            if (labelObj.canvas === undefined) {
                 return;
             }
 
-            (<any>textState).label = labelImage;
+            (<any>textState).label ="a";
+            (<any>textState).imageDrawingOptions = labelObj.imageDrawingOptions;
         }
         (<any>textState).labelPosition = flatCoordinates;
 
@@ -439,7 +443,19 @@ export class GeoTextStyle extends GeoStyle {
         let maxWidth = 0;
         for (var i = 0; i < lines.length; i++) {
             let line = lines[i];
-            let lineWidth = Math.ceil(tempContext.measureText(line).width - letterSpacing + strokeWidth);
+            let lineWidth = 0;
+            var char;
+            var charWidth = 0;
+            for (var j = 0; j < line.length; j++) {
+                char = line[j];
+                charWidth = this.charWidths[char];
+                if (charWidth === undefined) {
+                    charWidth = tempContext.measureText(char).width;
+                    this.charWidths[char] = charWidth;
+                }
+                lineWidth += charWidth;
+            }
+            lineWidth = Math.ceil(lineWidth - letterSpacing + strokeWidth);
             widths.push(lineWidth);
             if (lineWidth > maxWidth) {
                 maxWidth = lineWidth;
@@ -494,136 +510,170 @@ export class GeoTextStyle extends GeoStyle {
         return lineHeight + strokeWidth;
     }
 
-    getImage(text: any, textStyle: ol.style.Text, labelInfo: any, opacity) {
-        var labelCache = (<any>ol).render.canvas.labelCache;
+    getImageDrawingOptions(text: any, textStyle: ol.style.Text, labelInfo: any, opacity) {
+        var imageDrawingOptionsCache = (<any>ol).render.canvas.labelCache;
         var key = (<any>ol).getUid(this);
         key += text;
-        if (!labelCache.containsKey(key)) {
-            let strokeStyle = textStyle.getStroke();
-            let fillStyle = textStyle.getFill();
+        if (!imageDrawingOptionsCache.containsKey(key)) {
+            let imageDrawingOptions = {
+                labelInfo: labelInfo,
+                style: textStyle,
+                letterSpacing: this.letterSpacing,
+                lineSpacing: this.lineSpacing,
+                align: this.align,
+                maskType: this.maskType,
+                maskMarginList: this.maskMarginList,
+                maskStrokeWidth: this.maskStrokeWidth,
+                opacity: opacity,
+                maskType: this.maskType,
+                maskColor: this.maskColor,
+                maskOutlineColor: this.maskOutlineColor,
+                maskOutlineWidth: this.maskOutlineWidth
+            };
 
-            let scale = labelInfo.scale;
-            let labelHeight = labelInfo.labelHeight;
-            let labelWidth = labelInfo.labelWidth;
-            let lineHeight = labelInfo.lineHeight;
-            let letterSpacing = this.letterSpacing;
-            var lineSpacing = this.lineSpacing;
-            let align = this.align;
-            let strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
+            var canvasSizeInfoWithMask = this.getCanvasSizeByMaskType(labelInfo.labelWidth, labelInfo.labelHeight, this.maskType, this.maskMarginList, this.maskStrokeWidth);
+            imageDrawingOptions.canvasSizeInfoWithMask = canvasSizeInfoWithMask;
 
-            let canvasWidth = labelWidth;
-            let canvasHeight = labelHeight;
-            let textAnchorX = 0;
-            let textAnchorY = 0;
-
-            var canvasSizeInfoWithMask = this.getCanvasSizeByMaskType(labelWidth, labelHeight, this.maskType, this.maskMarginList, this.maskStrokeWidth);
-            canvasWidth = canvasSizeInfoWithMask[0];
-            canvasHeight = canvasSizeInfoWithMask[1];
-            textAnchorX = canvasSizeInfoWithMask[2];
-            textAnchorY = canvasSizeInfoWithMask[3];
-
-            let canvas = GeoTextStyle.createCanvas(canvasWidth * scale, canvasHeight * scale);
-            labelCache.set(key, canvas);
-
-            // For letterSpacing we need appendChild
-            let body;
-            if (letterSpacing) {
-                body = document.getElementsByTagName("body")[0];
-                if (body) {
-                    canvas.style.display = "none";
-                    body.appendChild(canvas);
-                }
-                canvas.style.letterSpacing = letterSpacing + "px";
+            let canvas="a"; //= this.drawImage(imageDrawingOptions);
+            let labelObj = {
+                canvas: canvas,
+                imageDrawingOptions
             }
-
-            let context = canvas.getContext("2d");
-
-
-            context.globalAlpha = opacity || 1;
-            if (scale !== 1) {
-                context.scale(scale, scale);
-            }
-            context["currentScale"] = scale;
-
-            this.drawMask(context);
-
-            // set the property of canvas.
-            context.font = textStyle.getFont();
-            context.lineWidth = strokeWidth;
-            context.lineJoin = "round";
-
-            var x = textAnchorX;
-            var y = -lineHeight - lineSpacing + textAnchorY;
-
-            var letterSpacingOffset = letterSpacing;
-            var alignOffsetX = 0;
-            var canvasTextAlign = "center";
-            if (align == "left") {
-                alignOffsetX = Math.ceil(strokeWidth / 2);
-                canvasTextAlign = "left";
-            }
-            else if (align == "right") {
-                alignOffsetX = Math.floor(labelWidth - strokeWidth / 2 + letterSpacing);
-                canvasTextAlign = "right";
-            }
-            else {
-                alignOffsetX = Math.floor((labelWidth) / 2 + letterSpacingOffset / 2);
-            }
-
-            var linesInfo = labelInfo.linesInfo;
-            var lines = linesInfo.lines;
-            for (var i = 0; i < lines.length; i++) {
-                y += lineHeight + lineSpacing;
-                let line = lines[i];
-
-                // context.fillStyle = "#FF00FF99";
-                // context.fillRect(x, y, labelWidth, lineHeight);
-
-                context.textAlign = canvasTextAlign;
-                context.textBaseline = 'middle';
-                var anchorX = x + alignOffsetX;
-                var anchorY = y + lineHeight / 2;
-                if (strokeStyle) {
-                    context.strokeStyle = strokeStyle.getColor();
-                    context.strokeText(line, anchorX, anchorY);
-                }
-
-                context.fillStyle = fillStyle.getColor();
-                context.fillText(line, anchorX, anchorY);
-            }
-            if (this.letterSpacing && body) {
-                body.removeChild(canvas);
-            }
+            imageDrawingOptionsCache.set(key, labelObj);
         }
-        return labelCache.get(key);
+
+        return imageDrawingOptionsCache.get(key);
     }
 
-    drawMask(context: any) {
+    drawImage(drawOptions) {
+        var labelInfo = drawOptions.labelInfo;
+        var textStyle = drawOptions.style;
+        var letterSpacing = drawOptions.letterSpacing;
+        var lineSpacing = drawOptions.lineSpacing;
+        var align = drawOptions.align;
+        var maskType = drawOptions.maskType;
+        var maskMarginList = drawOptions.maskMarginList
+        var maskStrokeWidth = drawOptions.maskStrokeWidth;
+        var opacity = drawOptions.opacity;
+        var maskType = drawOptions.maskType;
+        var maskColor = drawOptions.maskColor;
+        var maskOutlineColor = drawOptions.maskOutlineColor;
+        var maskOutlineWidth = drawOptions.maskOutlineWidth;
+        var canvasSizeInfoWithMask = drawOptions.canvasSizeInfoWithMask;
+
+        var strokeStyle = textStyle.getStroke();
+        var fillStyle = textStyle.getFill();
+
+        var scale = labelInfo.scale;
+        var labelHeight = labelInfo.labelHeight;
+        var labelWidth = labelInfo.labelWidth;
+        var lineHeight = labelInfo.lineHeight;
+        var strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
+
+        var canvasWidth = labelWidth;
+        var canvasHeight = labelHeight;
+        var textAnchorX = 0;
+        var textAnchorY = 0;
+
+        canvasWidth = canvasSizeInfoWithMask[0];
+        canvasHeight = canvasSizeInfoWithMask[1];
+        textAnchorX = canvasSizeInfoWithMask[2];
+        textAnchorY = canvasSizeInfoWithMask[3];
+
+        var canvas = GeoTextStyle.createCanvas(canvasWidth * scale, canvasHeight * scale);
+
+        // For letterSpacing we need appendChild
+        var body;
+        if (letterSpacing) {
+            body = document.getElementsByTagName("body")[0];
+            if (body) {
+                canvas.style.display = "none";
+                body.appendChild(canvas);
+            }
+            canvas.style.letterSpacing = letterSpacing + "px";
+        }
+
+        var context = canvas.getContext("2d");
+
+        context.globalAlpha = opacity || 1;
+        if (scale !== 1) {
+            context.scale(scale, scale);
+        }
+        context["currentScale"] = scale;
+
+        this.drawMask(context, maskType, maskColor, maskOutlineColor, maskOutlineWidth);
+
+        // set the property of canvas.
+        context.font = textStyle.getFont();
+        context.lineWidth = strokeWidth;
+        context.lineJoin = "round";
+
+        var x = textAnchorX;
+        var y = -lineHeight - lineSpacing + textAnchorY;
+
+        var letterSpacingOffset = letterSpacing;
+        var alignOffsetX = 0;
+        var canvasTextAlign = "center";
+        if (align == "left") {
+            alignOffsetX = Math.ceil(strokeWidth / 2);
+            canvasTextAlign = "left";
+        }
+        else if (align == "right") {
+            alignOffsetX = Math.floor(labelWidth - strokeWidth / 2 + letterSpacing);
+            canvasTextAlign = "right";
+        }
+        else {
+            alignOffsetX = Math.floor((labelWidth) / 2 + letterSpacingOffset / 2);
+        }
+
+        var linesInfo = labelInfo.linesInfo;
+        var lines = linesInfo.lines;
+        for (var i = 0; i < lines.length; i++) {
+            y += lineHeight + lineSpacing;
+            let line = lines[i];
+
+            // context.fillStyle = "#FF00FF99";
+            // context.fillRect(x, y, labelWidth, lineHeight);
+
+            context.textAlign = canvasTextAlign;
+            context.textBaseline = 'middle';
+            var anchorX = x + alignOffsetX;
+            var anchorY = y + lineHeight / 2;
+            if (strokeStyle) {
+                context.strokeStyle = strokeStyle.getColor();
+                context.strokeText(line, anchorX, anchorY);
+            }
+
+            context.fillStyle = fillStyle.getColor();
+            context.fillText(line, anchorX, anchorY);
+        }
+        if (this.letterSpacing && body) {
+            body.removeChild(canvas);
+        }
+
+        return canvas;
+    }
+
+    drawMask(context, maskType, maskColor, maskOutlineColor, maskOutlineWidth) {
         let fill = undefined;
         let stroke = undefined;
 
-        if (this.maskColor) {
+        if (maskColor) {
             fill = new ol.style.Fill();
-            fill.setColor(this.maskColor);
+            fill.setColor(maskColor);
         }
 
-        if (this.maskOutlineColor && this.maskOutlineWidth) {
+        if (maskOutlineColor && maskOutlineWidth) {
             stroke = new ol.style.Stroke();
-            if (this.maskOutlineColor) {
-                stroke.setColor(this.maskOutlineColor);
+            if (maskOutlineColor) {
+                stroke.setColor(maskOutlineColor);
             }
-            if (this.maskOutlineWidth) {
-                stroke.setWidth(this.maskOutlineWidth ? this.maskOutlineWidth : 0);
+            if (maskOutlineWidth) {
+                stroke.setWidth(maskOutlineWidth ? maskOutlineWidth : 0);
             }
         }
 
-        if (this.maskType) {
-            this.drawnMask = true;
-        } else {
-            this.drawnMask = false;
-        }
-
-        switch (this.maskType) {
+        switch (maskType) {
             case "default":
             case "Default":
             case "rectangle":

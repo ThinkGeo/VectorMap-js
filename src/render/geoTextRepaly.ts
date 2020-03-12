@@ -4,6 +4,7 @@ import { lineString as textpathLineString } from '../geom/flat/textpath.js';
 import { lineStringWithLabel as textpathLineStringWithLabel } from '../geom/flat/textpath.js';
 import { lineString as lengthLineString } from '../geom/flat/length.js';
 import { imagelineString as textpathImageLineString } from '../geom/flat/textpath.js';
+import { GeoTextStyle } from "../style/geoTextStyle";
 
 
 export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(tolerance: number, maxExtent: any, declutterTree: any) }) {
@@ -158,7 +159,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
         context.deleteBuffer(this.verticesBuffer);
         context.deleteBuffer(this.indicesBuffer);
-        
+
         // disable the vertex attrib arrays
         this.shutDownProgram(gl, locations);
 
@@ -208,7 +209,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.setTextStyle(style);
 
                 if (style.label) {
-                    this.drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, style.label);
+                    this.drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, style.imageDrawingOptions);
                 }
                 else {
                     this.drawLineStringText(geometry, feature, frameState, declutterGroup);
@@ -226,17 +227,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         var lineFlatCoordinates = flatCoordinates.slice(ends[k - 1] || 0, ends[k]);
 
                         var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
-                        this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.label);
-
-                        // var geom = new ol.geom.LineString();
-                        // geom.setFlatCoordinates("XY", lineFlatCoordinates);
-                        // var newFeature = new ol.Feature(geom);
-                        // newFeature.setProperties(properties);
-                        // newFeature['zCoordinate'] = feature.zCoordinate;
-                        // newFeature['styleId'] = feature.styleId;
-
-                        // this.setTextStyle(style);
-                        // this.drawLineStringTextWithLabel(geom, newFeature, frameState, declutterGroup, style.label);
+                        this.drawLineStringTextWithLabel(newFeature.getGeometry(), newFeature, frameState, declutterGroup, style.imageDrawingOptions);
                     }
                 }
                 else {
@@ -248,16 +239,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
 
                         var newFeature = new (<any>ol).render.Feature('LineString', lineFlatCoordinates, [lineFlatCoordinates.length], properties, feature.id_);
                         this.drawLineStringText(newFeature.getGeometry(), newFeature, frameState, declutterGroup);
-
-                        // var geom = new ol.geom.LineString();
-                        // geom.setFlatCoordinates("XY", lineFlatCoordinates);
-                        // var newFeature = new ol.Feature(geom);
-                        // newFeature.setProperties(properties); 
-                        // newFeature['zCoordinate'] = feature.zCoordinate;
-                        // newFeature['styleId'] = feature.styleId;
-
-                        // this.setTextStyle(style);
-                        // this.drawLineStringText(geom, newFeature, frameState, declutterGroup);
                     }
                 }
             } else {
@@ -267,9 +248,17 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     var flatCoordinates = style.labelPosition;
                     var end = flatCoordinates.length;
                     this.label = style.label;
+                    this.imageDrawingOptions = style.imageDrawingOptions;
                     var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
-                    this.width = this.label.width
-                    this.height = this.label.height;
+                    if (this.imageDrawingOptions) {
+                        this.width = this.imageDrawingOptions.canvasSizeInfoWithMask[0] * this.imageDrawingOptions.labelInfo.scale;
+                        this.height = this.imageDrawingOptions.canvasSizeInfoWithMask[1] * this.imageDrawingOptions.labelInfo.scale;
+                    }
+                    else {
+                        this.width = this.label.width;
+                        this.height = this.label.height;
+                    }
+
                     this.originX = 0;
                     this.originY = 0;
                     this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
@@ -413,6 +402,13 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         var declutter = declutterGroup[j];
                         var options = declutter[0];
                         var this$1 = declutter[1];
+                        if (options.imageDrawingOptions) {
+                            if (options.imageDrawingOptions.canvas === undefined) {
+                                options.imageDrawingOptions.canvas = this$1.drawLabelImage(options.imageDrawingOptions);
+                            }
+                            options.label = options.imageDrawingOptions.canvas;
+                        }
+
                         this$1.tmpOptions.push(options);
                     }
                 }
@@ -421,6 +417,393 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
         }
     }
+
+    public drawLabelImage(drawOptions) {
+        var labelInfo = drawOptions.labelInfo;
+        var textStyle = drawOptions.style;
+        var letterSpacing = drawOptions.letterSpacing;
+        var lineSpacing = drawOptions.lineSpacing;
+        var align = drawOptions.align;
+        var maskType = drawOptions.maskType;
+        var maskMarginList = drawOptions.maskMarginList
+        var maskStrokeWidth = drawOptions.maskStrokeWidth;
+        var opacity = drawOptions.opacity;
+        var maskType = drawOptions.maskType;
+        var maskColor = drawOptions.maskColor;
+        var maskOutlineColor = drawOptions.maskOutlineColor;
+        var maskOutlineWidth = drawOptions.maskOutlineWidth;
+        var canvasSizeInfoWithMask = drawOptions.canvasSizeInfoWithMask;
+
+        var strokeStyle = textStyle.getStroke();
+        var fillStyle = textStyle.getFill();
+
+        var scale = labelInfo.scale;
+        var labelHeight = labelInfo.labelHeight;
+        var labelWidth = labelInfo.labelWidth;
+        var lineHeight = labelInfo.lineHeight;
+        var strokeWidth = strokeStyle ? strokeStyle.getWidth() : 0;
+
+        var canvasWidth = labelWidth;
+        var canvasHeight = labelHeight;
+        var textAnchorX = 0;
+        var textAnchorY = 0;
+
+        canvasWidth = canvasSizeInfoWithMask[0];
+        canvasHeight = canvasSizeInfoWithMask[1];
+        textAnchorX = canvasSizeInfoWithMask[2];
+        textAnchorY = canvasSizeInfoWithMask[3];
+
+        var canvas = GeoTextStyle.createCanvas(canvasWidth * scale, canvasHeight * scale);
+
+        // For letterSpacing we need appendChild
+        var body;
+        if (letterSpacing) {
+            body = document.getElementsByTagName("body")[0];
+            if (body) {
+                canvas.style.display = "none";
+                body.appendChild(canvas);
+            }
+            canvas.style.letterSpacing = letterSpacing + "px";
+        }
+
+        var context = canvas.getContext("2d");
+
+        context.globalAlpha = opacity || 1;
+        if (scale !== 1) {
+            context.scale(scale, scale);
+        }
+        context["currentScale"] = scale;
+
+        if (maskType) {
+            this.drawMask(context, maskType, maskColor, maskOutlineColor, maskOutlineWidth);
+        }
+
+        // set the property of canvas.
+        context.font = textStyle.getFont();
+        context.lineWidth = strokeWidth;
+        context.lineJoin = "round";
+
+        var x = textAnchorX;
+        var y = -lineHeight - lineSpacing + textAnchorY;
+
+        var letterSpacingOffset = letterSpacing;
+        var alignOffsetX = 0;
+        var canvasTextAlign = "center";
+        if (align == "left") {
+            alignOffsetX = Math.ceil(strokeWidth / 2);
+            canvasTextAlign = "left";
+        }
+        else if (align == "right") {
+            alignOffsetX = Math.floor(labelWidth - strokeWidth / 2 + letterSpacing);
+            canvasTextAlign = "right";
+        }
+        else {
+            alignOffsetX = Math.floor((labelWidth) / 2 + letterSpacingOffset / 2);
+        }
+
+        var linesInfo = labelInfo.linesInfo;
+        var lines = linesInfo.lines;
+        for (var i = 0; i < lines.length; i++) {
+            y += lineHeight + lineSpacing;
+            let line = lines[i];
+
+            // context.fillStyle = "#FF00FF99";
+            // context.fillRect(x, y, labelWidth, lineHeight);
+
+            context.textAlign = canvasTextAlign;
+            context.textBaseline = 'middle';
+            var anchorX = x + alignOffsetX;
+            var anchorY = y + lineHeight / 2;
+            if (strokeStyle) {
+                context.strokeStyle = strokeStyle.getColor();
+                context.strokeText(line, anchorX, anchorY);
+            }
+
+            context.fillStyle = fillStyle.getColor();
+            context.fillText(line, anchorX, anchorY);
+        }
+        if (this.letterSpacing && body) {
+            body.removeChild(canvas);
+        }
+
+        return canvas;
+    }
+    drawMask(context, maskType, maskColor, maskOutlineColor, maskOutlineWidth) {
+        let fill = undefined;
+        let stroke = undefined;
+
+        if (maskColor) {
+            fill = new ol.style.Fill();
+            fill.setColor(maskColor);
+        }
+
+        if (maskOutlineColor && maskOutlineWidth) {
+            stroke = new ol.style.Stroke();
+            if (maskOutlineColor) {
+                stroke.setColor(maskOutlineColor);
+            }
+            if (maskOutlineWidth) {
+                stroke.setWidth(maskOutlineWidth ? maskOutlineWidth : 0);
+            }
+        }
+
+        switch (maskType) {
+            case "default":
+            case "Default":
+            case "rectangle":
+            case "Rectangle":
+                this.drawRectangle(context, fill, stroke);
+                break;
+            case "roundedCorners":
+            case "RoundedCorners":
+                this.drawRoundedCorners(context, fill, stroke);
+                break;
+            case "roundedEnds":
+            case "RoundedEnds":
+                this.drawRoundedEnds(context, fill, stroke);
+                break;
+            case "circle":
+            case "Circle":
+                this.drawCircle(context, fill, stroke);
+                break;
+        }
+    }
+    drawRectangle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        if (fill) {
+            context.fillStyle = fill.getColor();
+            context.fillRect(x + strokeWidth, y + strokeWidth, width - doubleStrokeWidth, height - doubleStrokeWidth);
+        }
+
+        if (stroke) {
+            context.lineWidth = strokeWidth;
+            context.strokeStyle = stroke.getColor();
+            context.strokeRect(x + halfStrokeWidth, y + halfStrokeWidth, width - strokeWidth, height - strokeWidth);
+        }
+
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(x, y, width, height);
+
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(x, y + height / 2, width, 2);
+        // context.fillRect(x + (width / 2), y, 1, height);
+    }
+    drawRoundedCorners(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
+        let radius = (width < height ? width : height) * 0.25;
+        radius = radius >= 5 ? 5 : radius;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        let upperLeft = [strokeWidth, strokeWidth];
+        let upperRight = [width - strokeWidth, strokeWidth];
+        let bottomLeft = [strokeWidth, height - strokeWidth];
+        let bottomRight = [width - strokeWidth, height - strokeWidth];
+
+        if (fill) {
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1]);
+            context.lineTo(upperRight[0] - radius, upperRight[1]);
+            context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
+            context.lineTo(upperRight[0], upperRight[1] + radius);
+            context.lineTo(bottomRight[0], bottomRight[1] - radius);
+            context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1]);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
+            context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
+            context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
+            context.lineTo(upperLeft[0], upperLeft[1] + radius);
+            context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+
+        if (stroke) {
+            radius += halfStrokeWidth;
+            upperLeft = [halfStrokeWidth, halfStrokeWidth];
+            upperRight = [width - halfStrokeWidth, halfStrokeWidth];
+            bottomLeft = [halfStrokeWidth, height - halfStrokeWidth];
+            bottomRight = [width - halfStrokeWidth, height - halfStrokeWidth];
+
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1]);
+            context.lineTo(upperRight[0] - radius, upperRight[1]);
+            context.arc(upperRight[0] - radius, upperRight[1] + radius, radius, 1.5 * Math.PI, 0);
+            context.lineTo(upperRight[0], upperRight[1] + radius);
+            context.lineTo(bottomRight[0], bottomRight[1] - radius);
+            context.arc(bottomRight[0] - radius, bottomRight[1] - radius, radius, 0, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1]);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1]);
+            context.arc(bottomLeft[0] + radius, bottomLeft[1] - radius, radius, 0.5 * Math.PI, 1 * Math.PI);
+            context.lineTo(bottomLeft[0], bottomLeft[1] - radius);
+            context.lineTo(upperLeft[0], upperLeft[1] + radius);
+            context.arc(upperLeft[0] + radius, upperLeft[1] + radius, radius, 1 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
+
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+    drawRoundedEnds(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
+        var radius = height / 2;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        let upperLeft = [0, 0];
+        let upperRight = [width, 0];
+        let bottomLeft = [0, height];
+        let bottomRight = [width, height];
+
+
+        if (fill) {
+            var innerRadius = radius - strokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + strokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + strokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - strokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - strokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+        if (stroke) {
+            var innerRadius = radius - halfStrokeWidth;
+            context.beginPath();
+            context.moveTo(upperLeft[0] + radius, upperLeft[1] + halfStrokeWidth);
+            context.lineTo(upperRight[0] - radius, upperRight[1] + halfStrokeWidth);
+            context.arc(width - radius, radius, innerRadius, 1.5 * Math.PI, 0.5 * Math.PI);
+            context.lineTo(bottomRight[0] - radius, bottomRight[1] - halfStrokeWidth);
+            context.lineTo(bottomLeft[0] + radius, bottomLeft[1] - halfStrokeWidth);
+            context.arc(radius, radius, innerRadius, 0.5 * Math.PI, 1.5 * Math.PI);
+            context.closePath();
+            context.lineWidth = stroke.getWidth();
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
+
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+    drawCircle(context: any, fill: ol.style.Fill, stroke: ol.style.Stroke) {
+        var x = 0;
+        var y = 0;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
+
+        var scale = context["currentScale"] || 1;
+
+        width = width / scale;
+        height = height / scale;
+
+        var strokeWidth = 0;
+        var halfStrokeWidth = 0;
+        var doubleStrokeWidth = 0;
+
+        if (stroke) {
+            strokeWidth = stroke.getWidth();
+            halfStrokeWidth = strokeWidth / 2;
+            doubleStrokeWidth = strokeWidth * 2;
+        }
+
+        if (fill) {
+            let radius = width / 2 - strokeWidth;
+            context.beginPath();
+            context.arc(width / 2, width / 2, radius, 0, 2 * Math.PI);
+            context.closePath();
+            context.fillStyle = fill.getColor();
+            context.fill();
+        }
+
+        if (stroke) {
+            let radius = width / 2 - halfStrokeWidth;
+            context.beginPath();
+            context.arc(width / 2, width / 2, radius, 0, 2 * Math.PI);
+            context.closePath();
+            context.lineWidth = strokeWidth;
+            context.strokeStyle = stroke.getColor();
+            context.stroke();
+        }
+
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#000";
+        // context.strokeRect(0, 0, width, height);
+
+        // context.fillStyle = "#00ff00";
+        // context.fillRect(0, 0 + height / 2, width, 2);
+        // context.fillRect(0 + (width / 2), 0, 1, height);
+    }
+
 
     public drawLineStringText(geometry, feature, frameState, declutterGroup) {
         var offset = 0;
@@ -496,7 +879,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         }
     }
 
-    public drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, label) {
+    public drawLineStringTextWithLabel(geometry, feature, frameState, declutterGroup, labelOptions) {
         var offset = 0;
         var stride = 2;
         var resolution = frameState.viewState.resolution;
@@ -509,7 +892,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         var lineStringCoordinates = geometry.getFlatCoordinates();
         var end = lineStringCoordinates.length;
         var pathLength = lengthLineString(lineStringCoordinates, offset, end, stride, resolution);
-        let textLength = label.width;
+        let textLength = labelOptions.canvasSizeInfoWithMask[0] * labelOptions.labelInfo.scale;
+        this.width = textLength
 
         if (textLength <= pathLength * 1.2) {
             this.extent = (<any>ol.extent).createOrUpdateEmpty();
@@ -524,7 +908,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.findCenterPoints(centerPoint, pathLength, textLength, intervalDistance, pointArray);
             }
 
-            this.height = label.height;
+            this.height = labelOptions.canvasSizeInfoWithMask[1] * labelOptions.labelInfo.scale;
             for (var len = 0; len < pointArray.length; len++) {
                 let tempDeclutterGroup;
                 if (declutterGroup) {
@@ -535,9 +919,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                     maxAngle, resolution);
 
                 if (parts) {
-                    this.label = label;
-                    this.width = this.label.width
-                    this.height = this.label.height;
+                    this.label = labelOptions;
+                    this.imageDrawingOptions = labelOptions;
                     this.originX = 0;
                     this.originY = 0;
                     this.anchorX = Math.ceil(this.width * (this.textPlacements[0] + 0.5) - this.offsetX_);
@@ -666,9 +1049,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
             state.font = textStyle.getFont() || (<any>ol.render).webgl.defaultFont;
 
-
             let scale = state.scale * window.devicePixelRatio;
-
 
             this.text_ = /** @type {string} */ (textStyle.getText());
             var textAlign = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextAlign()];
@@ -715,7 +1096,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         state.scale = textStyle.getScale() || 1;
 
         let scale = state.scale * window.devicePixelRatio;
-
 
         var textBaseline = (<any>ol.render).replay.TEXT_ALIGN[textStyle.getTextBaseline()];
         this.textBaseline_ = textBaseline === undefined ?
@@ -902,7 +1282,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 opacity: this.opacity,
                 originX: this.originX,
                 originY: this.originY,
-                feature
+                feature,
+                imageDrawingOptions: this.imageDrawingOptions
             }, this];
             declutterGroup.push(declutterArgs);
         }
