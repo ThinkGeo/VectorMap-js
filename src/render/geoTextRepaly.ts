@@ -839,7 +839,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.images_.push(image);
             }
         }
-
+        this.scale_=undefined;
         this.drawCoordinates(flatCoordinates, offset, end, stride);
     }
 
