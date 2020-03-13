@@ -1416,4 +1416,101 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             }
         }
     }
+
+    public drawCoordinates = function (flatCoordinates, offset, end, stride) {
+        var anchorX = /** @type {number} */ (this.anchorX);
+        var anchorY = /** @type {number} */ (this.anchorY);
+        var height = /** @type {number} */ (this.height);
+        var imageHeight = /** @type {number} */ (this.imageHeight);
+        var imageWidth = /** @type {number} */ (this.imageWidth);
+        var opacity = /** @type {number} */ (this.opacity);
+        var originX = /** @type {number} */ (this.originX);
+        var originY = /** @type {number} */ (this.originY);
+        var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
+        // this.rotation_ is anti-clockwise, but rotation is clockwise
+        var rotation = /** @type {number} */ (-this.rotation);
+        var scale = this.scale_ || /** @type {number} */ (this.scale);
+        var width = /** @type {number} */ (this.width);
+        var cos = Math.cos(rotation);
+        var sin = Math.sin(rotation);
+        var numIndices = this.indices.length;
+        var numVertices = this.vertices.length;
+        var i, n, offsetX, offsetY, x, y;
+
+        for (i = offset; i < end; i += stride) {
+            x = flatCoordinates[i];
+            y = flatCoordinates[i + 1];
+
+            // There are 4 vertices per [x, y] point, one for each corner of the
+            // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
+            // WebGL supported Geometry Shaders (which can emit new vertices), but that
+            // is not currently the case.
+            //
+            // And each vertex includes 8 values: the x and y coordinates, the x and
+            // y offsets used to calculate the position of the corner, the u and
+            // v texture coordinates for the corner, the opacity, and whether the
+            // the image should be rotated with the view (rotateWithView).
+
+            n = numVertices / 8;
+
+            // bottom-left corner
+            offsetX = -scale * anchorX;
+            offsetY = -scale * (height - anchorY);
+
+            this.vertices[numVertices++] = x;
+            this.vertices[numVertices++] = y;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = originX / imageWidth;
+            this.vertices[numVertices++] = (originY + height) / imageHeight;
+            this.vertices[numVertices++] = opacity;
+            this.vertices[numVertices++] = rotateWithView;
+
+            // bottom-right corner
+            offsetX = scale * (width - anchorX);
+            offsetY = -scale * (height - anchorY);
+            this.vertices[numVertices++] = x;
+            this.vertices[numVertices++] = y;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = (originX + width) / imageWidth;
+            this.vertices[numVertices++] = (originY + height) / imageHeight;
+            this.vertices[numVertices++] = opacity;
+            this.vertices[numVertices++] = rotateWithView;
+
+            // top-right corner
+            offsetX = scale * (width - anchorX);
+            offsetY = scale * anchorY;
+            this.vertices[numVertices++] = x;
+            this.vertices[numVertices++] = y;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = (originX + width) / imageWidth;
+            this.vertices[numVertices++] = originY / imageHeight;
+            this.vertices[numVertices++] = opacity;
+            this.vertices[numVertices++] = rotateWithView;
+
+            // top-left corner
+            offsetX = -scale * anchorX;
+            offsetY = scale * anchorY;
+            this.vertices[numVertices++] = x;
+            this.vertices[numVertices++] = y;
+            this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+            this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+            this.vertices[numVertices++] = originX / imageWidth;
+            this.vertices[numVertices++] = originY / imageHeight;
+            this.vertices[numVertices++] = opacity;
+            this.vertices[numVertices++] = rotateWithView;
+
+            this.indices[numIndices++] = n;
+            this.indices[numIndices++] = n + 1;
+            this.indices[numIndices++] = n + 2;
+            this.indices[numIndices++] = n;
+            this.indices[numIndices++] = n + 2;
+            this.indices[numIndices++] = n + 3;
+        }
+
+        return numVertices;
+    };
+
 }
