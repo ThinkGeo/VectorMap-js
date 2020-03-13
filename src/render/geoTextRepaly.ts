@@ -1366,7 +1366,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         this.images_.push(image);
                     }
                 }
-
+                this.scale_=undefined;
                 this.drawText_(flatCoordinates, offset, end, stride);
             } else {
                 var devicePixelRatio = window.devicePixelRatio;
