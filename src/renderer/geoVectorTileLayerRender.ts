@@ -397,6 +397,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 screenXY[1] -= screenXY[1];
 
                 this.drawingTextReplay.origin = replay.origin;
+                this.drawingTextReplay.improvePixelRatio = replay.improvePixelRatio;
                 for (var k = 0; k < tmpOptions.length; k++) {
                     if (replay instanceof (<any>ol).render.webgl.TextReplay) {
                         this.drawingTextReplay.drawText(tmpOptions[k]);

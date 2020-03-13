@@ -1041,6 +1041,8 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             rotation,
             flatCoordinates: [part[0], part[1]],
             text,
+            lineWidth: this.state_.lineWidth,
+            scale: this.state_.scale,
             feature
         }, this];
         declutterGroup.push(declutterArgs);
@@ -1377,7 +1379,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 var j, jj, currX, currY, charArr, charInfo;
                 var anchorX = options.anchorX * devicePixelRatio;
                 var anchorY = options.anchorY * devicePixelRatio;
-                var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
+                var lineWidth = (options.lineWidth / 2) * options.scale;
                 this$1.rotation = options.rotation;
                 currX = 0;
                 currY = 0;
