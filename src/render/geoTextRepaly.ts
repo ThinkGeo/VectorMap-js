@@ -39,7 +39,9 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         this.createTextures(this.textures_, this.images_, this.texturePerImage, gl, selectedTexture);
 
         for (var uid in this.texturePerImage) {
-            gl.deleteTexture(this.texturePerImage[uid]);
+            if (selectedTexture[uid] === undefined) {
+                gl.deleteTexture(this.texturePerImage[uid]);
+            }
         }
 
         this.texturePerImage = selectedTexture;
@@ -73,7 +75,6 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
             uid = ol.getUid(image).toString();
             if (uid in texturePerImage) {
                 texture = texturePerImage[uid];
-                delete texturePerImage[uid];
             } else {
                 texture = ol.webgl.Context.createTexture(
                     gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, image.NEAREST ? gl.NEAREST : gl.LINEAR);
@@ -127,7 +128,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         if (!screenXY) {
             (<any>ol).transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
         } else {
-            (<any>ol).transform.translate(projectionMatrix, -(center[0] - screenXY[0]), -(center[1] - screenXY[1]));
+            (<any>ol).transform.translate(projectionMatrix, -(center[0]), -(center[1]));
         }
 
         var offsetScaleMatrix = (<any>ol).transform.reset(this.offsetScaleMatrix_);
@@ -804,6 +805,43 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
         // context.fillRect(0 + (width / 2), 0, 1, height);
     }
 
+
+    public drawPoint(options) {
+        var offset = 0;
+        var end = 2;
+        var stride = 2;
+        var flatCoordinates = options.flatCoordinates;
+        var image = options.image;
+        var hitDetectionImage = options.hitDetectionImage;
+        this.originX = options.originX;
+        this.originY = options.originY;
+        this.imageWidth = options.imageWidth;
+        this.imageHeight = options.imageHeight;
+        this.opacity = options.opacity;
+        this.width = options.width;
+        this.height = options.height;
+        this.rotation = options.rotation;
+        this.rotateWithView = 1;
+        this.scale = options.scale;
+        this.anchorX = options.anchorX;
+        this.anchorY = options.anchorY;
+        var currentImage;
+        this.startIndices.push(this.indices.length);
+        this.startIndicesFeature.push(options.feature);
+        this.zCoordinates.push(options.feature.zCoordinate);
+        if (this.images_.length === 0) {
+            this.images_.push(image);
+        }
+        else {
+            currentImage = this.images_[this.images_.length - 1];
+            if ((<any>ol).getUid(currentImage) != (<any>ol).getUid(image)) {
+                this.groupIndices.push(this.indices.length);
+                this.images_.push(image);
+            }
+        }
+
+        this.drawCoordinates(flatCoordinates, offset, end, stride);
+    }
 
     public drawLineStringText(geometry, feature, frameState, declutterGroup) {
         var offset = 0;

@@ -27,21 +27,22 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
         if (this.texturePerImage === undefined) {
             this.texturePerImage = {};
         }
-        if(this.hitDetectionImages_===undefined)
-        {
+        if (this.hitDetectionImages_ === undefined) {
             this.hitDetectionImages_ = {};
         }
 
         var selectedTexture = {};
         var hitSelectedTexture1 = {};
 
-        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl,selectedTexture);
+        this.createTextures(this.textures_, this.images_, this.texturePerImage, gl, selectedTexture);
 
         this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
             this.texturePerImage, gl, hitSelectedTexture1);
 
         for (var uid in this.texturePerImage) {
-            gl.deleteTexture(this.texturePerImage[uid]);
+            if (selectedTexture[uid] === undefined) {
+                gl.deleteTexture(this.texturePerImage[uid]);
+            }
         }
 
         this.texturePerImage = selectedTexture;
@@ -59,7 +60,6 @@ export class GeoImageReplay extends ((<any>ol).render.webgl.ImageReplay as { new
             uid = ol.getUid(image).toString();
             if (uid in texturePerImage) {
                 texture = texturePerImage[uid];
-                delete texturePerImage[uid];
             } else {
                 texture = ol.webgl.Context.createTexture(
                     gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE, image.NEAREST ? gl.NEAREST : gl.LINEAR);
