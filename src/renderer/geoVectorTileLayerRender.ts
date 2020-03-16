@@ -374,6 +374,7 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
         this.drawingTextReplay.vertices.length = 0;
         this.drawingTextReplay.groupIndices.length = 0;
 
+        var merge = true;
         for (var z = 0, zz = zs.length; z < zz; ++z) {
             var replayData = declutterReplays[zs[z].toString()];
             for (var i = 0, ii = replayData.length; i < ii;) {
@@ -386,38 +387,53 @@ export class GeoVectorTileLayerRender extends ((<any>ol).renderer.webgl.TileLaye
                 replay.indices.length = 0;
                 replay.vertices.length = 0;
                 replay.groupIndices.length = 0;
-                var x = replay.origin[0]
-                replay.origin[0] -= screenXY[0];
-                var x1 = screenXY[0];
-                screenXY[0] -= screenXY[0];
 
-                var y = replay.origin[1];
-                replay.origin[1] -= screenXY[1];
-                var y1 = screenXY[1];
-                screenXY[1] -= screenXY[1];
-
-                this.drawingTextReplay.origin = replay.origin;
-                this.drawingTextReplay.improvePixelRatio = replay.improvePixelRatio;
-                for (var k = 0; k < tmpOptions.length; k++) {
-                    if (replay instanceof (<any>ol).render.webgl.TextReplay) {
-                        this.drawingTextReplay.drawText(tmpOptions[k]);
-                        //replay.drawText(tmpOptions[k]);
-                    } else if (replay instanceof (<any>ol).render.webgl.ImageReplay) {
-                        this.drawingTextReplay.drawPoint(tmpOptions[k]);
-                        //replay.drawPoint(tmpOptions[k]);
+                if (!merge) {
+                    for (var k = 0; k < tmpOptions.length; k++) {
+                        if (replay instanceof (<any>ol).render.webgl.TextReplay) {
+                            replay.drawText(tmpOptions[k]);
+                        } else if (replay instanceof (<any>ol).render.webgl.ImageReplay) {
+                            replay.drawPoint(tmpOptions[k]);
+                        }
                     }
+                    replay.finish(context);
+                    replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, screenXY);
                 }
-                //replay.finish(context);
-                //replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, [0, 0]);
+                else {
+                    var x = replay.origin[0]
+                    replay.origin[0] -= screenXY[0];
+                    var x1 = screenXY[0];
+                    screenXY[0] -= screenXY[0];
 
-                screenXY[0] = x1;
-                replay.origin[0] = x;
-                screenXY[1] = y1;
-                replay.origin[1] = y;
+                    var y = replay.origin[1];
+                    replay.origin[1] -= screenXY[1];
+                    var y1 = screenXY[1];
+                    screenXY[1] -= screenXY[1];
+
+                    replay.origin[0] += center[0];
+                    replay.origin[1] += center[1];
+
+                    this.drawingTextReplay.origin = replay.origin;
+                    this.drawingTextReplay.improvePixelRatio = replay.improvePixelRatio;
+                    for (var k = 0; k < tmpOptions.length; k++) {
+                        if (replay instanceof (<any>ol).render.webgl.TextReplay) {
+                            this.drawingTextReplay.drawText(tmpOptions[k]);
+                        } else if (replay instanceof (<any>ol).render.webgl.ImageReplay) {
+                            this.drawingTextReplay.drawPoint(tmpOptions[k]);
+                        }
+                    }
+
+                    screenXY[0] = x1;
+                    replay.origin[0] = x;
+                    screenXY[1] = y1;
+                    replay.origin[1] = y;
+                }
             }
         }
-        this.drawingTextReplay.finish(context);
-        this.drawingTextReplay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, [0, 0]);
+        if (merge) {
+            this.drawingTextReplay.finish(context);
+            this.drawingTextReplay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent, [0, 0]);
+        }
     }
 
     public createReplayGroup_(tile: ol.VectorTile, frameState: olx.FrameState, x, y) {
