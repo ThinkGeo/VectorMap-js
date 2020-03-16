@@ -101484,14 +101484,6 @@ function olInit() {
             var requestTileCoord = messageData[1];
             var tileCoord = messageData[2];
 
-            // TEST     
-            // console.log(tileCoord.toString());
-            // if(tileCoord.toString() !== "14,3786,-6613"){
-            // if(tileCoord.toString() !== "3,2,-4"){
-            // return
-            // }
-            // TEST END
-
             var tileProjection = new ol.proj.Projection({
                 code: 'EPSG:3857',
                 units: ol.proj.Units.TILE_PIXELS

@@ -332,7 +332,6 @@
 
     var bar = function bar(options, serie, coordinateSystem) {
         if (isObject(options.grid) && !Array.isArray(options.grid)) {
-            console.log(options);
         } else if (Array.isArray(options.grid)) {
             options.grid = options.grid.map(function (gri, index) {
                 var coorPixel = coordinateSystem.dataToPoint(options.series[index].coordinates);
