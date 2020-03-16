@@ -11838,10 +11838,20 @@ function olInit() {
              */
             function (center) {
                 if (center) {
-                    return [
-                        ol.math.clamp(center[0], extent[0], extent[2]),
-                        ol.math.clamp(center[1], extent[1], extent[3])
-                    ];
+                    if(extent.length===2)
+                    {
+                        return [
+                            center[0],
+                            ol.math.clamp(center[1], extent[0], extent[1])
+                        ];
+                    }
+                    else
+                    {
+                        return [
+                            ol.math.clamp(center[0], extent[0], extent[2]),
+                            ol.math.clamp(center[1], extent[1], extent[3])
+                        ];
+                    }
                 } else {
                     return undefined;
                 }
@@ -15906,7 +15916,7 @@ function olInit() {
         ol.Object.call(this);
         var options = ol.obj.assign({}, opt_options);
 
-        options["extent"] =options.hasOwnProperty("extent")? options["extent"]:  [-75140656.28545967, -36670205.6976436, 75140656.28545967, 36670205.6976436];
+        options["extent"] =options.hasOwnProperty("extent")? options["extent"]:  [-36670205.6976436, 36670205.6976436];
 
         this.progressiveZoom = options["progressiveZoom"];
         /**
@@ -101013,7 +101023,6 @@ function olInit() {
             if (textStyle) {
                 var textReplay = replayGroup.getReplay(
                     3, ol.render.ReplayType.TEXT);
-                debugger;
                 textReplay.startIndicesFeature.push(feature);
                 var textStyleClone = textStyle.clone();
                 textStyleClone.label = textStyle.label;
@@ -101036,7 +101045,6 @@ function olInit() {
             if (textStyle) {
                 var textReplay = replayGroup.getReplay(
                     3, ol.render.ReplayType.TEXT);
-                debugger;
                 textReplay.startIndicesFeature.push(feature);
                 var textStyleClone = textStyle.clone();
                 textStyleClone.label = textStyle.label;
