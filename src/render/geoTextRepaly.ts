@@ -839,7 +839,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 this.images_.push(image);
             }
         }
-        this.scale_=undefined;
+        this.scale_ = undefined;
         this.drawCoordinates(flatCoordinates, offset, end, stride);
     }
 
@@ -1300,10 +1300,11 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                 return;
             }
 
-            box[0] -= this.spacing_;
-            box[1] -= this.spacing_;
-            box[2] += this.spacing_;
-            box[3] += this.spacing_;
+            var spacing = this.spacing_ * scale;
+            box[0] -= spacing;
+            box[1] -= spacing;
+            box[2] += spacing;
+            box[3] += spacing;
             (<any>ol).extent.extend(declutterGroup, box);
 
             var declutterArgs = [{
@@ -1366,7 +1367,7 @@ export class GeoTextReplay extends ((<any>ol).render.webgl.TextReplay as { new(t
                         this.images_.push(image);
                     }
                 }
-                this.scale_=undefined;
+                this.scale_ = undefined;
                 this.drawText_(flatCoordinates, offset, end, stride);
             } else {
                 var devicePixelRatio = window.devicePixelRatio;
